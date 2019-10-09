@@ -3,11 +3,10 @@
     "name": "Alfie"
   },
   "dependencies": {
+    "axios": "^0.19.0",
     "cheerio": "^1.0.0-rc.3",
     "moment": "^2.24.0",
-    "moment-duration-format": "^2.2.2",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.4"
+    "moment-duration-format": "^2.3.2"
   },
   "description": "Brawlhalla API Wrapper for Node.js, provided by corehalla.com.",
   "keywords": [
