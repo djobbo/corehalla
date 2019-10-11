@@ -1,5 +1,5 @@
 const decodeURI = require('../util/decodeURI');
-const calculateWinrate = require('../util/calculateWinrate');
+const { winrate } = require('../util/calculations');
 
 module.exports = (leaderboard, bracket) => {
     return new Promise((resolve, reject) => {
@@ -31,7 +31,7 @@ module.exports = (leaderboard, bracket) => {
                     peak_rating: x.peak_rating,
                     tier: x.tier,
                     region: x.region.toUpperCase(),
-                    winrate: calculateWinrate(x.wins, x.games, 1)
+                    winrate: winrate(x.wins, x.games, 1)
                 }
             }
         }))

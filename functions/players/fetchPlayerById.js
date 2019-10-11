@@ -1,4 +1,4 @@
-const axios = require(axios);
+const axios = require('axios');
 
 module.exports = (api_key, brawlhalla_id, dataType) => {
     return new Promise((resolve, reject) => {

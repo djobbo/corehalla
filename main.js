@@ -1,16 +1,19 @@
 const axios = require('axios');
 // const cheerio = require('cheerio');
 
-const parser = require('./util/data_parser');
+// const parser = require('./util/data_parser');
 
 module.exports = (api_key) => {
 
     var legends_data = [];
 
     this.fetchLeaderboard = (options = { bracket: '1v1', region: 'all', page: '1', name: '' }) => {
-        console.log(options);
         return require('./functions/leaderboard/fetchLeaderboard')(api_key, options);
     };
+
+    this.fetchPlayerStats = (brawlhalla_id) => {
+        return require('./functions/players/fetchPlayerStats')(api_key, brawlhalla_id);
+    }
 
     this.fetchLeaderboardFormat = (options = { bracket: '1v1', region: 'all', page: 1, player_name: '' }) => {
         return new Promise((resolve, reject) => {
