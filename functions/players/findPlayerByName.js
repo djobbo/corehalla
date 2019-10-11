@@ -1,4 +1,4 @@
-const fetchLeaderboard = require('./fetchLeaderboard');
+const fetchLeaderboard = require('../leaderboard/fetchLeaderboard');
 
 module.exports = (api_key, name, options = { perfect_match: false, unique: false, region: 'all' }) => {
     return new Promise((resolve, reject) => {

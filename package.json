@@ -16,10 +16,10 @@
     "Corehalla"
   ],
   "license": "ISC",
-  "main": "app.js",
+  "main": "main.js",
   "name": "corehalla",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js"
   },
   "version": "0.2.9",
   "repository": {
