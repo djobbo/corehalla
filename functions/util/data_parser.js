@@ -43,13 +43,13 @@ function parsePlayerStats(playerStats, playerRank, legends_data) {
             legends: [],
             weapons: {}
         }
-        
+
         //Teams
         if (playerRank['2v2']) {
             player.teams = parse2v2TeamsStats(player.id, player.name, playerRank['2v2']);
             player.teams.sort((a, b) => b.rating - a.rating || b.peak_rating - a.peak_rating || b.name.localeCompare(a.name));
         }
-        
+
         for (var i = 0; i < legends_data.length; i++) {
             var legendStats = playerStats.legends.find(l => {
                 return l.legend_id === legends_data[i].legend_id;
@@ -57,11 +57,11 @@ function parsePlayerStats(playerStats, playerRank, legends_data) {
             var legendRank = playerRank.legends.find(l => {
                 return l.legend_id === legends_data[i].legend_id;
             });
-            
+
             var legend_name_bio = legends_data[i].bio_name;
             var weapon_one = legends_data[i].weapon_one;
             var weapon_two = legends_data[i].weapon_two;
-            
+
             if (!player.unarmed) {
                 player.unarmed = {
                     time_held: 0,
@@ -69,7 +69,7 @@ function parsePlayerStats(playerStats, playerRank, legends_data) {
                     kos: 0
                 }
             }
-            
+
             if (!player.weapons[weapon_one]) {
                 player.weapons[weapon_one] = {
                     name: weapon_one,
@@ -92,7 +92,7 @@ function parsePlayerStats(playerStats, playerRank, legends_data) {
                     }
                 }
             }
-            
+
             if (!player.weapons[weapon_two]) {
                 player.weapons[weapon_two] = {
                     name: weapon_two,
@@ -115,13 +115,13 @@ function parsePlayerStats(playerStats, playerRank, legends_data) {
                     }
                 }
             }
-            
+
             var legend = {
                 id: legends_data[i].legend_id,
                 name_key: legends_data[i].legend_name_key,
                 name: legend_name_bio
             }
-            
+
             if (legendStats) {
                 legend.level = legendStats.level;
                 legend.xp = legendStats.xp;
@@ -176,25 +176,25 @@ function parsePlayerStats(playerStats, playerRank, legends_data) {
                         kos: legendStats.kothrownitem
                     }
                 };
-                
+
                 player.unarmed.time_held += legend.weapons.unarmed.time_held;
                 player.unarmed.damage += parseInt(legend.weapons.unarmed.damage);
                 player.unarmed.kos += legend.weapons.unarmed.kos;
-                
+
                 player.weapons[weapon_one].time_held += legend.weapons.weapon_one.time_held;
                 player.weapons[weapon_one].global.games += legend.global.games;
                 player.weapons[weapon_one].global.wins += legend.global.wins;
                 player.weapons[weapon_one].global.losses += legend.global.losses;
                 player.weapons[weapon_one].damage += parseInt(legend.weapons.weapon_one.damage);
                 player.weapons[weapon_one].kos += legend.weapons.weapon_one.kos;
-                
+
                 player.weapons[weapon_two].time_held += legend.weapons.weapon_two.time_held;
                 player.weapons[weapon_two].global.games += legend.global.games;
                 player.weapons[weapon_two].global.wins += legend.global.wins;
                 player.weapons[weapon_two].global.losses += legend.global.losses;
                 player.weapons[weapon_two].damage += parseInt(legend.weapons.weapon_two.damage);
                 player.weapons[weapon_two].kos += legend.weapons.weapon_two.kos;
-                
+
                 player.kos += legend.kos;
                 player.falls += legend.falls;
                 player.suicides += legend.suicides;
@@ -257,7 +257,7 @@ function parsePlayerStats(playerStats, playerRank, legends_data) {
                     }
                 };
             }
-            
+
             if (legendRank) {
                 legend.season = {
                     games: legendRank.games,
@@ -268,11 +268,11 @@ function parsePlayerStats(playerStats, playerRank, legends_data) {
                     tier: legendRank.tier,
                     winrate: Math.round(legendRank.wins / legendRank.games * 1000) / 10
                 };
-                
+
                 player.weapons[weapon_one].season.games += legendRank.games;
                 player.weapons[weapon_one].season.wins += legendRank.wins;
                 player.weapons[weapon_one].season.losses += legendRank.games - legendRank.wins;
-                
+
                 if (player.weapons[weapon_one].season.highest_rating < legendRank.rating) {
                     player.weapons[weapon_one].season.highest_rating = legendRank.rating;
                     player.weapons[weapon_one].season.highest_rating_legend = legend_name_bio;
@@ -280,7 +280,7 @@ function parsePlayerStats(playerStats, playerRank, legends_data) {
                 else if (player.weapons[weapon_one].season.highest_rating === legendRank.rating) {
                     player.weapons[weapon_one].season.highest_rating_legend += ' • ' + legend_name_bio;
                 }
-                
+
                 if (player.weapons[weapon_one].season.highest_peak_rating < legendRank.rating) {
                     player.weapons[weapon_one].season.highest_peak_rating = legendRank.rating;
                     player.weapons[weapon_one].season.highest_peak_rating_legend = legend_name_bio;
@@ -288,11 +288,11 @@ function parsePlayerStats(playerStats, playerRank, legends_data) {
                 else if (player.weapons[weapon_one].season.highest_peak_rating === legendRank.rating) {
                     player.weapons[weapon_one].season.highest_peak_rating_legend += ' • ' + legend_name_bio;
                 }
-                
+
                 player.weapons[weapon_two].season.games += legendRank.games;
                 player.weapons[weapon_two].season.wins += legendRank.wins;
                 player.weapons[weapon_two].season.losses += legendRank.games - legendRank.wins;
-                
+
                 if (player.weapons[weapon_two].season.highest_rating < legendRank.rating) {
                     player.weapons[weapon_two].season.highest_rating = legendRank.rating;
                     player.weapons[weapon_two].season.highest_rating_legend = legend_name_bio;
@@ -300,7 +300,7 @@ function parsePlayerStats(playerStats, playerRank, legends_data) {
                 else if (player.weapons[weapon_two].season.highest_rating === legendRank.rating) {
                     player.weapons[weapon_two].season.highest_rating_legend += ' • ' + legend_name_bio;
                 }
-                
+
                 if (player.weapons[weapon_two].season.highest_peak_rating < legendRank.rating) {
                     player.weapons[weapon_two].season.highest_peak_rating = legendRank.rating;
                     player.weapons[weapon_two].season.highest_peak_rating_legend = legend_name_bio;
@@ -319,19 +319,19 @@ function parsePlayerStats(playerStats, playerRank, legends_data) {
                     tier: 'Tin 1 (Unranked)'
                 };
             }
-            
+
             player.legends.push(legend);
         }
-        
+
         player.legends.sort(function(a, b) {
             return b.xp - a.xp || b.season.rating - a.season.rating || b.season.peak_rating - a.season.peak_rating || b.name.localeCompare(a.name);
         });
-        
+
         player.weapons = Object.values(player.weapons);
         player.weapons.sort(function(a, b) {
             return b.time_held - a.time_held || b.global.games - a.global.games || b.global.wins - a.global.wins || b.name.localeCompare(a.name);
         });
-        
+
         for (var i = 0; i < player.weapons.length; i++) {
             player.weapons[i].time_held_format = moment.duration(player.weapons[i].time_held, 'seconds').format('hh[h] mm[m] ss[s]');
             player.weapons[i].global.winrate = player.weapons[i].global.games === 0 ? 'N/A' : Math.round(player.weapons[i].global.wins / player.weapons[i].global.games * 1000) / 10;
@@ -345,7 +345,7 @@ function parsePlayerStats(playerStats, playerRank, legends_data) {
                 player.weapons[i].ttk = Math.round(player.weapons[i].time_held / player.weapons[i].kos * 10) / 10;
             }
         }
-        
+
         player.unarmed.time_held_format = moment.duration(player.unarmed.time_held, 'seconds').format('hh[h] mm[m] ss[s]');
         player.matchtime_format = moment.duration(player.matchtime, 'seconds').format('hh[h] mm[m] ss[s]');
         player.dps = Math.round(player.damage / player.matchtime * 10) / 10;
@@ -355,19 +355,19 @@ function parsePlayerStats(playerStats, playerRank, legends_data) {
         player.game_length = Math.round(player.matchtime / player.global.games * 10) / 10;
         player.kos_per_game = Math.round(player.kos / player.global.games * 10) / 10;
         player.falls_per_game = Math.round(player.falls / player.global.games * 10) / 10;
-        
+
         resolve(player);
     });
 }
 
 function parseClanStats(clanStats) {
     return new Promise((resolve, reject) => {
-        
+
         for (var i = 0; i < clanStats.clan.length; i++) {
             clanStats.clan[i].name = clean_string(clanStats.clan[i].name);
             clanStats.clan[i].join_date = moment.unix(clanStats.clan[i].join_date).utc().format("MMMM DD, YYYY");
         }
-        
+
         var clan = {
             id: clanStats.clan_id,
             name: clanStats.clan_name,
@@ -386,7 +386,7 @@ function parseClanStats(clanStats) {
                 return member.rank === 'Recruit';
             })
         }
-        
+
         resolve(clan);
     });
 }
@@ -414,32 +414,9 @@ function parse2v2TeamsStats(player_id, player_name, teamsStats) {
     return parsedTeams;
 }
 
-function parseLeaderboard(leaderboard, duos) {
-    return new Promise((resolve, reject) => {
-        resolve(leaderboard.map(x => {
-            var teamname = clean_string(x.teamname);
-            return {
-                rank: x.rank,
-                player_one_name: duos ? teamname.substring(0, teamname.indexOf('+')) : clean_string(x.name),
-                player_two_name: duos ? teamname.substring(teamname.indexOf('+') + 1) : undefined,
-                player_one_id: duos ? x.brawlhalla_id_one : x.brawlhalla_id,
-                player_two_id: duos ? x.brawlhalla_id_two : undefined,
-                games: x.games,
-                wins: x.wins,
-                losses: x.games - x.wins,
-                rating: x.rating,
-                peak_rating: x.peak_rating,
-                tier: x.tier,
-                region: x.region.toLowerCase(),
-                winrate: Math.round(x.wins / x.games * 1000) / 10
-            };
-        }));
-    });
-}
 
 module.exports = {
     parsePlayerStats,
     parseClanStats,
     parse2v2TeamsStats,
-    parseLeaderboard
 }
