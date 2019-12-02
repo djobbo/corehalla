@@ -1,7 +1,4 @@
 const axios = require('axios');
-// const cheerio = require('cheerio');
-
-// const parser = require('./util/data_parser');
 
 module.exports = (api_key) => {
 

@@ -5,22 +5,9 @@ module.exports = (api_key, name, options = { perfect_match: false, unique: false
 
         fetchLeaderboard(api_key, { bracket: '1v1', region, name })
             .then(lead => {
-                if (options.perfect_match) {
-                    var players = lead.filter(x => x.name === name);
-
-                    if (players.length <= 1)
-                        resolve(players);
-                    else
-                        if (options.unique) resolve(players[0]);
-                        else resolve(players);
-                }
-                else {
-                    if (lead.length <= 1)
-                        resolve(lead);
-                    else
-                        if (options.unique) resolve(lead[0]);
-                        else resolve(lead);
-                }
+                if (options.perfect_match)
+                    lead = lead.filter(x => x.name === name);
+                resolve(options.unique ? lead[0] || null : lead);
             })
             .catch(console.error);
     })
