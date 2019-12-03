@@ -12,6 +12,10 @@ module.exports = (api_key) => {
         return require('./functions/players/fetchPlayerStats')(api_key, brawlhalla_id);
     }
 
+    this.fetchPlayerRanked = (brawlhalla_id) => {
+        return require('./functions/players/fetchPlayerRanked')(api_key, brawlhalla_id);
+    }
+
     this.fetchLeaderboardFormat = (options = { bracket: '1v1', region: 'all', page: 1, player_name: '' }) => {
         return new Promise((resolve, reject) => {
             this.fetchLeaderboard(options).then(rankings => {

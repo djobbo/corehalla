@@ -2,61 +2,44 @@ const fs = require('fs');
 const convertXML = require('xml-js');
 
 const staticLegendsDataXML = fs.readFileSync('functions/util/static-data/HeroTypes.xml');
-const staticLegendsData = convertXML.xml2js(staticLegendsDataXML, { compact: true });
-console.log(staticLegendsData.HeroTypes.HeroType[3].HeroID._text);
+const staticLegendsData = convertXML.xml2js(staticLegendsDataXML, { compact: true }).HeroTypes.HeroType;
 
 module.exports = (legendsStats, legendsRanked) => {
     return new Promise((resolve, reject) => {
-        let data = {
-            player: {
-                damage: {
-                    dealt: 0,
-                    taken: 0
-                },
-                kos: {
-                    kills: 0,
-                    falls: 0,
-                    suicides: 0,
-                    team_kills: 0
-                },
-                // matchTime + format
-            },
-            legends: []
-        }
-        let weapons = [];
-        staticLegendsData.HeroTypes.HeroType.forEach(hero => {
-            const legendStats = legendsStats.find(l => l.legend_id.toString() === hero.HeroID._text) || null;
-            const legendRanked = legendsRanked.find(l => l.legend_id.toString() === hero.HeroID._text) || null;
-
+        let legends = [];
+        staticLegendsData.forEach(hero => {
+            const legendStats = legendsStats ? legendsStats.find(l => l.legend_id.toString() === hero.HeroID._text) || {} : {};
+            const legendRanked = legendsRanked ? legendsRanked.find(l => l.legend_id.toString() === hero.HeroID._text) || {} : {};
             let weapon_one = getWeaponStats(
                 hero.BaseWeapon1._text,
-                hero.damageweaponone || 0,
-                hero.koweaponone || 0,
-                hero.timeheldweaponone || 0
+                legendStats.damageweaponone || 0,
+                legendStats.koweaponone || 0,
+                legendStats.timeheldweaponone || 0
             );
+            console.log(weapon_one);
 
             let weapon_two = getWeaponStats(
                 hero.BaseWeapon2._text,
-                hero.damageweapontwo || 0,
-                hero.koweapontwo || 0,
-                hero.timeheldweapontwo || 0
+                legendStats.damageweapontwo || 0,
+                legendStats.koweapontwo || 0,
+                legendStats.timeheldweapontwo || 0
             );
 
             let unarmed = getWeaponStats(
                 'Unarmed',
-                hero.damageunarmed || 0,
-                hero.kounarmed || 0,
-                hero.matchtime - (hero.timeheldweaponone + hero.timeheldweapontwo) || 0
+                legendStats.damageunarmed || 0,
+                legendStats.kounarmed || 0,
+                legendStats.matchtime - (legendStats.timeheldweaponone + legendStats.timeheldweapontwo) || 0
             );
 
             let gadgets = {
-                damage_dealt: hero.damagegadgets || 0,
-                kills: hero.kogadgets || 0
+                damage_dealt: legendStats.damagegadgets || 0,
+                kills: legendStats.kogadgets || 0
             };
 
             let throws = {
-                damage_dealt: hero.damagethrownitem || 0,
-                kills: hero.kothrownitem || 0
+                damage_dealt: legendStats.damagethrownitem || 0,
+                kills: legendStats.kothrownitem || 0
             };
 
             let legend = {
@@ -95,32 +78,9 @@ module.exports = (legendsStats, legendsRanked) => {
 
             }
 
-            data.legends.push(legend);
-            // TODO: Add XP Level Games W L matchtime
-            weapons[hero.BaseWeapon1._text].push(weapon_one);
-            weapons[hero.BaseWeapon2._text].push(weapon_two);
-            weapons['Unarmed'].push(unarmed);
-            weapons['Gadgets'].push(gadgets);
-            weapons['Throws'].push(throws);
+            legends.push(legend);
         });
-
-        let i = 0;
-        for (let w in weapons) {
-            let weapon = {
-                name: w[0].name,
-                damage_dealt: w[0].damage_dealt,
-                kills: w[0].kills,
-                time_held: w[0].time_held
-            }
-            for (let j = 1; j < w.length; j++) {
-                weapon.damage_dealt += w[j].damage_dealt;
-                weapon.kills += w[j].kills;
-                weapon.time_held += w[j].time_held;
-                weapon.damage_dealt += w[j].damage_dealt;
-            }
-            i++;
-        }
-        resolve(data);
+        resolve(legends);
     });
 }
 
