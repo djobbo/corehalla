@@ -25,11 +25,9 @@ Import the module and connect using your api key:
 const bh_api = require('corehalla')('API_KEY');
 ```
 
-## Methods
+## Default API Methods
 
-### Default
-
-#### Leaderboard
+### Leaderboard
 
 **.fetchLeaderboard(options)**
 *Uses One Brawlhalla API Call*
