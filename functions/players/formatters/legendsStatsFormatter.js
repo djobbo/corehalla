@@ -75,9 +75,7 @@ module.exports = (legendsStats, legendsRanked) => {
                     wins: legendRanked.wins || 0,
                     losses: legendRanked.games - legendRanked.wins || 0
                 }
-
             }
-
             legends.push(legend);
         });
         resolve(legends);
