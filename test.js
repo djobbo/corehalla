@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const bh_api = require('./main')(process.env.BRAWLHALLA_API_KEY);
 const express = require('express');
 

@@ -102,6 +102,10 @@ module.exports = (legendsStats, legendsRanked) => {
 				}
 			};
 			legends.push(legend);
+			weapons = [
+				...weapons,
+				...[weapon_one, weapon_two, unarmed, gadgets, throws]
+			];
 		});
 		weapons = _.values(_.groupBy(weapons, 'name'));
 		weapons.forEach((w, i) => {

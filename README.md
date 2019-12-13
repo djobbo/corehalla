@@ -48,7 +48,7 @@ bh_api
 	.then(leaderboard => {
 		// Do something
 	})
-	.catch(err => console.log(err));
+	.catch(console.error);
 ```
 
 ## Custom Methods
