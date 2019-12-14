@@ -1,9 +1,7 @@
 const fs = require('fs');
 const convertXML = require('xml-js');
 
-const staticLegendsDataXML = fs.readFileSync(
-	'functions/util/static-data/HeroTypes.xml'
-);
+const staticLegendsDataXML = fs.readFileSync('data/HeroTypes.xml');
 const staticLegendsData = convertXML.xml2js(staticLegendsDataXML, {
 	compact: true
 }).HeroTypes.HeroType;
