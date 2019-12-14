@@ -1,6 +1,5 @@
 const fs = require('fs');
 const convertXML = require('xml-js');
-const _ = require('lodash');
 
 const staticLegendsDataXML = fs.readFileSync(
 	'functions/util/static-data/HeroTypes.xml'
@@ -12,7 +11,6 @@ const staticLegendsData = convertXML.xml2js(staticLegendsDataXML, {
 module.exports = (legendsStats, legendsRanked) => {
 	return new Promise((resolve, reject) => {
 		let legends = [];
-		let weapons = [];
 		staticLegendsData.forEach(hero => {
 			const legendStats = legendsStats
 				? legendsStats.find(
@@ -52,7 +50,7 @@ module.exports = (legendsStats, legendsRanked) => {
 				undefined
 			);
 
-			let throws = getWeaponStats(
+			let weapon_throws = getWeaponStats(
 				'Weapon Throws',
 				legendStats.damagethrownitem || 0,
 				legendStats.kothrownitem || 0,
@@ -67,8 +65,8 @@ module.exports = (legendsStats, legendsRanked) => {
 					xp: legendStats.xp || 0,
 					xp_percentage: legendStats.xp_percentage || 0,
 					damage: {
-						dealt: legendStats.damagedealt || 0,
-						taken: legendStats.damagetaken || 0
+						dealt: parseInt(legendStats.damagedealt || 0),
+						taken: parseInt(legendStats.damagetaken || 0)
 					},
 					kos: {
 						kills: legendStats.kos || 0,
@@ -76,18 +74,18 @@ module.exports = (legendsStats, legendsRanked) => {
 						suicides: legendStats.suicides || 0,
 						team_kills: legendStats.teamkos || 0
 					},
-					matchTime: legendStats.matchtime || 0,
+					matchtime: legendStats.matchtime || 0,
 					games: {
 						total_games: legendStats.games || 0,
 						wins: legendStats.wins || 0,
 						losses: legendStats.games - legendStats.wins || 0
 					},
 					weapons: {
-						weapon_one,
-						weapon_two,
+						[hero.BaseWeapon1._text]: weapon_one,
+						[hero.BaseWeapon2._text]: weapon_two,
 						unarmed,
 						gadgets,
-						throws
+						weapon_throws
 					}
 				},
 				season: {
@@ -101,93 +99,19 @@ module.exports = (legendsStats, legendsRanked) => {
 					}
 				}
 			};
-			legends.push(legend);
-			weapons = [
-				...weapons,
-				...[weapon_one, weapon_two, unarmed, gadgets, throws]
-			];
-		});
-		weapons = _.values(_.groupBy(weapons, 'name'));
-		weapons.forEach((w, i) => {
-			weapons[i] = w.reduceRight((prev, item, j) => {
-				let weapon = {
-					name: prev.name || item.name,
-					damage_dealt:
-						parseInt(prev.damage_dealt || 0) +
-						parseInt(item.damage_dealt),
-					kills: (prev.kills || 0) + item.kills
-				};
-				if (item.overall) {
-					weapon.overall = {
-						level: (prev.overall.level || 0) + item.overall.level,
-						xp: (prev.overall.xp || 0) + item.overall.xp,
-						matchtime:
-							(prev.overall.matchTime || 0) +
-							item.overall.matchTime,
-						games: {
-							total_games:
-								(prev.overall.games.total_games || 0) +
-								item.overall.games.total_games,
-							wins:
-								(prev.overall.games.wins || 0) +
-								item.overall.games.wins,
-							losses:
-								(prev.overall.games.losses || 0) +
-								item.overall.games.losses
-						}
-					};
-				}
-				if (item.season) {
-					weapon.season = {
-						total_rating:
-							(prev.season.total_rating || 0) +
-							item.season.rating,
-						total_peak_rating:
-							(prev.season.total_peak_rating || 0) +
-							item.season.peak_rating,
-						max_rating:
-							(prev.season.max_rating || 0) > item.season.rating
-								? prev.season.max_rating
-								: item.season.rating, // TODO: Multiple Legends w/ same rating/peak rating?
-						max_peak_rating:
-							(prev.season.max_peak_rating || 0) >
-							item.season.peak_rating
-								? prev.season.max_peak_rating
-								: item.season.peak_rating, // TODO: Multiple Legends w/ same rating/peak rating?
-						games: {
-							total_games:
-								(prev.season.games.total_games || 0) +
-								item.season.games.total_games,
-							wins:
-								(prev.season.games.wins || 0) +
-								item.season.games.wins,
-							losses:
-								(prev.season.games.losses || 0) +
-								item.season.games.losses
-						}
-					};
-				}
-				if (item.time_held) {
-					weapon.time_held = (prev.time_held || 0) + item.time_held;
-					if (j == 0) {
-						weapon.computed = {
-							damage_dealt_per_second:
-								weapon.damage_dealt / weapon.time_held || 0,
-							time_to_kill:
-								weapon.time_held / weapon.kills || '∞',
-							damage_per_kill:
-								weapon.damage_dealt / weapon.kills || '∞'
-						};
-					}
-				}
 
-				return weapon;
-			});
+			legends.push(legend);
 		});
-		resolve({ legends, weapons });
+
+		resolve(legends);
 	});
 };
 
 function getWeaponStats(name, damage_dealt, kills, time_held) {
-	return { name, damage_dealt, kills, time_held: time_held };
+	return {
+		name,
+		damage_dealt: parseInt(damage_dealt),
+		kills,
+		time_held
+	};
 }

@@ -99,3 +99,5 @@ public
 
 # TernJS port file
 .tern-port
+
+data.json
