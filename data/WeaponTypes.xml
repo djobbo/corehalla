@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<WeaponTypes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <WeaponType WeaponName="Pistol">
+        <WeaponID>0</WeaponID>
+        <WeaponDisplayName>BLASTERS</WeaponDisplayName>
+        <BioName>Blasters</BioName>
+    </WeaponType>
+    <WeaponType WeaponName="Sword">
+        <WeaponID>0</WeaponID>
+        <WeaponDisplayName>SWORD</WeaponDisplayName>
+        <BioName>Sword</BioName>
+    </WeaponType>
+    <WeaponType WeaponName="RocketLance">
+        <WeaponID>0</WeaponID>
+        <WeaponDisplayName>ROCKET LANCE</WeaponDisplayName>
+        <BioName>Rocket Lance</BioName>
+    </WeaponType>
+    <WeaponType WeaponName="Hammer">
+        <WeaponID>0</WeaponID>
+        <WeaponDisplayName>HAMMER</WeaponDisplayName>
+        <BioName>Hammer</BioName>
+    </WeaponType>
+    <WeaponType WeaponName="Spear">
+        <WeaponID>0</WeaponID>
+        <WeaponDisplayName>SPEAR</WeaponDisplayName>
+        <BioName>Spear</BioName>
+    </WeaponType>
+    <WeaponType WeaponName="Katar">
+        <WeaponID>0</WeaponID>
+        <WeaponDisplayName>KATARS</WeaponDisplayName>
+        <BioName>Katars</BioName>
+    </WeaponType>
+    <WeaponType WeaponName="Bow">
+        <WeaponID>0</WeaponID>
+        <WeaponDisplayName>BOW</WeaponDisplayName>
+        <BioName>Bow</BioName>
+    </WeaponType>
+    <WeaponType WeaponName="Axe">
+        <WeaponID>0</WeaponID>
+        <WeaponDisplayName>AXE</WeaponDisplayName>
+        <BioName>Axe</BioName>
+    </WeaponType>
+    <WeaponType WeaponName="Fists">
+        <WeaponID>0</WeaponID>
+        <WeaponDisplayName>GAUNTLETS</WeaponDisplayName>
+        <BioName>Gauntlets</BioName>
+    </WeaponType>
+    <WeaponType WeaponName="Scythe">
+        <WeaponID>0</WeaponID>
+        <WeaponDisplayName>SCYTHE</WeaponDisplayName>
+        <BioName>Scythe</BioName>
+    </WeaponType>
+    <WeaponType WeaponName="Cannon">
+        <WeaponID>0</WeaponID>
+        <WeaponDisplayName>CANNON</WeaponDisplayName>
+        <BioName>Cannon</BioName>
+    </WeaponType>
+    <WeaponType WeaponName="Orb">
+        <WeaponID>0</WeaponID>
+        <WeaponDisplayName>ORB</WeaponDisplayName>
+        <BioName>Orb</BioName>
+    </WeaponType>
+    <WeaponType WeaponName="Unarmed">
+        <WeaponID>0</WeaponID>
+        <WeaponDisplayName>UNARMED</WeaponDisplayName>
+        <BioName>Unarmed</BioName>
+    </WeaponType>
+    <WeaponType WeaponName="Gadgets">
+        <WeaponID>0</WeaponID>
+        <WeaponDisplayName>GADGETS</WeaponDisplayName>
+        <BioName>Gadgets</BioName>
+    </WeaponType>
+    <WeaponType WeaponName="Throws">
+        <WeaponID>0</WeaponID>
+        <WeaponDisplayName>WEAPON THROWS</WeaponDisplayName>
+        <BioName>Weapon Throws</BioName>
+    </WeaponType>
+</WeaponTypes>

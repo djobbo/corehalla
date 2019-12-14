@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<HeroTypes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <HeroType HeroName="Viking">
+        <HeroID>3</HeroID>
+        <HeroDisplayName>BÖDVAR</HeroDisplayName>
+        <BaseWeapon1>Hammer</BaseWeapon1>
+        <BaseWeapon2>Sword</BaseWeapon2>
+        <BioName>Bödvar</BioName>
+    </HeroType>
+    <HeroType HeroName="Cowgirl">
+        <HeroID>4</HeroID>
+        <HeroDisplayName>CASSIDY</HeroDisplayName>
+        <BaseWeapon1>Pistol</BaseWeapon1>
+        <BaseWeapon2>Hammer</BaseWeapon2>
+        <BioName>Cassidy</BioName>
+    </HeroType>
+    <HeroType HeroName="Valkyrie">
+        <HeroID>5</HeroID>
+        <HeroDisplayName>ORION</HeroDisplayName>
+        <BaseWeapon1>RocketLance</BaseWeapon1>
+        <BaseWeapon2>Spear</BaseWeapon2>
+        <BioName>Orion</BioName>
+    </HeroType>
+    <HeroType HeroName="Alien">
+        <HeroID>6</HeroID>
+        <HeroDisplayName>LORD VRAXX</HeroDisplayName>
+        <BaseWeapon1>RocketLance</BaseWeapon1>
+        <BaseWeapon2>Pistol</BaseWeapon2>
+        <BioName>Lord Vraxx</BioName>
+    </HeroType>
+    <HeroType HeroName="Caveman">
+        <HeroID>7</HeroID>
+        <HeroDisplayName>GNASH</HeroDisplayName>
+        <BaseWeapon1>Hammer</BaseWeapon1>
+        <BaseWeapon2>Spear</BaseWeapon2>
+        <BioName>Gnash</BioName>
+    </HeroType>
+    <HeroType HeroName="Witch">
+        <HeroID>8</HeroID>
+        <HeroDisplayName>QUEEN NAI</HeroDisplayName>
+        <BaseWeapon1>Spear</BaseWeapon1>
+        <BaseWeapon2>Katar</BaseWeapon2>
+        <BioName>Queen Nai</BioName>
+    </HeroType>
+    <HeroType HeroName="Ninja">
+        <HeroID>10</HeroID>
+        <HeroDisplayName>HATTORI</HeroDisplayName>
+        <BaseWeapon1>Sword</BaseWeapon1>
+        <BaseWeapon2>Spear</BaseWeapon2>
+        <BioName>Hattori</BioName>
+    </HeroType>
+    <HeroType HeroName="Knight">
+        <HeroID>11</HeroID>
+        <HeroDisplayName>SIR ROLAND</HeroDisplayName>
+        <BaseWeapon1>RocketLance</BaseWeapon1>
+        <BaseWeapon2>Sword</BaseWeapon2>
+        <BioName>Sir Roland</BioName>
+    </HeroType>
+    <HeroType HeroName="Steampunk">
+        <HeroID>12</HeroID>
+        <HeroDisplayName>SCARLET</HeroDisplayName>
+        <BaseWeapon1>Hammer</BaseWeapon1>
+        <BaseWeapon2>RocketLance</BaseWeapon2>
+        <BioName>Scarlet</BioName>
+    </HeroType>
+    <HeroType HeroName="Thatch">
+        <HeroID>13</HeroID>
+        <HeroDisplayName>THATCH</HeroDisplayName>
+        <BaseWeapon1>Sword</BaseWeapon1>
+        <BaseWeapon2>Pistol</BaseWeapon2>
+        <BioName>Thatch</BioName>
+    </HeroType>
+    <HeroType HeroName="Cyber">
+        <HeroID>14</HeroID>
+        <HeroDisplayName>ADA</HeroDisplayName>
+        <BaseWeapon1>Pistol</BaseWeapon1>
+        <BaseWeapon2>Spear</BaseWeapon2>
+        <BioName>Ada</BioName>
+    </HeroType>
+    <HeroType HeroName="Super">
+        <HeroID>15</HeroID>
+        <HeroDisplayName>SENTINEL</HeroDisplayName>
+        <BaseWeapon1>Hammer</BaseWeapon1>
+        <BaseWeapon2>Katar</BaseWeapon2>
+        <BioName>Sentinel</BioName>
+    </HeroType>
+    <HeroType HeroName="Highwayman">
+        <HeroID>9</HeroID>
+        <HeroDisplayName>LUCIEN</HeroDisplayName>
+        <BaseWeapon1>Katar</BaseWeapon1>
+        <BaseWeapon2>Pistol</BaseWeapon2>
+        <BioName>Lucien</BioName>
+    </HeroType>
+    <HeroType HeroName="Minotaur">
+        <HeroID>16</HeroID>
+        <HeroDisplayName>TEROS</HeroDisplayName>
+        <BaseWeapon1>Axe</BaseWeapon1>
+        <BaseWeapon2>Hammer</BaseWeapon2>
+        <BioName>Teros</BioName>
+    </HeroType>
+    <HeroType HeroName="ActualValk">
+        <HeroID>19</HeroID>
+        <HeroDisplayName>BRYNN</HeroDisplayName>
+        <BaseWeapon1>Axe</BaseWeapon1>
+        <BaseWeapon2>Spear</BaseWeapon2>
+        <BioName>Brynn</BioName>
+    </HeroType>
+    <HeroType HeroName="Cat">
+        <HeroID>20</HeroID>
+        <HeroDisplayName>ASURI</HeroDisplayName>
+        <BaseWeapon1>Katar</BaseWeapon1>
+        <BaseWeapon2>Sword</BaseWeapon2>
+        <BioName>Asuri</BioName>
+    </HeroType>
+    <HeroType HeroName="Apoc">
+        <HeroID>21</HeroID>
+        <HeroDisplayName>BARRAZA</HeroDisplayName>
+        <BaseWeapon1>Axe</BaseWeapon1>
+        <BaseWeapon2>Pistol</BaseWeapon2>
+        <BioName>Barraza</BioName>
+    </HeroType>
+    <HeroType HeroName="Elf">
+        <HeroID>18</HeroID>
+        <HeroDisplayName>EMBER</HeroDisplayName>
+        <BaseWeapon1>Bow</BaseWeapon1>
+        <BaseWeapon2>Katar</BaseWeapon2>
+        <BioName>Ember</BioName>
+    </HeroType>
+    <HeroType HeroName="Skeleton">
+        <HeroID>23</HeroID>
+        <HeroDisplayName>AZOTH</HeroDisplayName>
+        <BaseWeapon1>Bow</BaseWeapon1>
+        <BaseWeapon2>Axe</BaseWeapon2>
+        <BioName>Azoth</BioName>
+    </HeroType>
+    <HeroType HeroName="Samurai">
+        <HeroID>24</HeroID>
+        <HeroDisplayName>KOJI</HeroDisplayName>
+        <BaseWeapon1>Bow</BaseWeapon1>
+        <BaseWeapon2>Sword</BaseWeapon2>
+        <BioName>Koji</BioName>
+    </HeroType>
+    <HeroType HeroName="Dwarf">
+        <HeroID>22</HeroID>
+        <HeroDisplayName>ULGRIM</HeroDisplayName>
+        <BaseWeapon1>Axe</BaseWeapon1>
+        <BaseWeapon2>RocketLance</BaseWeapon2>
+        <BioName>Ulgrim</BioName>
+    </HeroType>
+    <HeroType HeroName="Marksman">
+        <HeroID>25</HeroID>
+        <HeroDisplayName>DIANA</HeroDisplayName>
+        <BaseWeapon1>Bow</BaseWeapon1>
+        <BaseWeapon2>Pistol</BaseWeapon2>
+        <BioName>Diana</BioName>
+    </HeroType>
+    <HeroType HeroName="Barbarian">
+        <HeroID>26</HeroID>
+        <HeroDisplayName>JHALA</HeroDisplayName>
+        <BaseWeapon1>Axe</BaseWeapon1>
+        <BaseWeapon2>Sword</BaseWeapon2>
+        <BioName>Jhala</BioName>
+    </HeroType>
+    <HeroType HeroName="Golem">
+        <HeroID>28</HeroID>
+        <HeroDisplayName>KOR</HeroDisplayName>
+        <BaseWeapon1>Fists</BaseWeapon1>
+        <BaseWeapon2>Hammer</BaseWeapon2>
+        <BioName>Kor</BioName>
+    </HeroType>
+    <HeroType HeroName="Monk">
+        <HeroID>29</HeroID>
+        <HeroDisplayName>WU SHANG</HeroDisplayName>
+        <BaseWeapon1>Fists</BaseWeapon1>
+        <BaseWeapon2>Spear</BaseWeapon2>
+        <BioName>Wu Shang</BioName>
+    </HeroType>
+    <HeroType HeroName="TechnoNinja">
+        <HeroID>30</HeroID>
+        <HeroDisplayName>VAL</HeroDisplayName>
+        <BaseWeapon1>Fists</BaseWeapon1>
+        <BaseWeapon2>Sword</BaseWeapon2>
+        <BioName>Val</BioName>
+    </HeroType>
+    <HeroType HeroName="Dragon">
+        <HeroID>31</HeroID>
+        <HeroDisplayName>RAGNIR</HeroDisplayName>
+        <BaseWeapon1>Katar</BaseWeapon1>
+        <BaseWeapon2>Axe</BaseWeapon2>
+        <BioName>Ragnir</BioName>
+    </HeroType>
+    <HeroType HeroName="Mobster">
+        <HeroID>32</HeroID>
+        <HeroDisplayName>CROSS</HeroDisplayName>
+        <BaseWeapon1>Pistol</BaseWeapon1>
+        <BaseWeapon2>Fists</BaseWeapon2>
+        <BioName>Cross</BioName>
+    </HeroType>
+    <HeroType HeroName="Egyptian">
+        <HeroID>33</HeroID>
+        <HeroDisplayName>MIRAGE</HeroDisplayName>
+        <BaseWeapon1>Scythe</BaseWeapon1>
+        <BaseWeapon2>Spear</BaseWeapon2>
+        <BioName>Mirage</BioName>
+    </HeroType>
+    <HeroType HeroName="Reaper">
+        <HeroID>34</HeroID>
+        <HeroDisplayName>NIX</HeroDisplayName>
+        <BaseWeapon1>Scythe</BaseWeapon1>
+        <BaseWeapon2>Pistol</BaseWeapon2>
+        <BioName>Nix</BioName>
+    </HeroType>
+    <HeroType HeroName="Werewolf">
+        <HeroID>35</HeroID>
+        <HeroDisplayName>MORDEX</HeroDisplayName>
+        <BaseWeapon1>Scythe</BaseWeapon1>
+        <BaseWeapon2>Fists</BaseWeapon2>
+        <BioName>Mordex</BioName>
+    </HeroType>
+    <HeroType HeroName="Ninetails">
+        <HeroID>36</HeroID>
+        <HeroDisplayName>YUMIKO</HeroDisplayName>
+        <BaseWeapon1>Bow</BaseWeapon1>
+        <BaseWeapon2>Hammer</BaseWeapon2>
+        <BioName>Yumiko</BioName>
+    </HeroType>
+    <HeroType HeroName="Spacehunter">
+        <HeroID>37</HeroID>
+        <HeroDisplayName>ARTEMIS</HeroDisplayName>
+        <BaseWeapon1>RocketLance</BaseWeapon1>
+        <BaseWeapon2>Scythe</BaseWeapon2>
+        <BioName>Artemis</BioName>
+    </HeroType>
+    <HeroType HeroName="Thief">
+        <HeroID>38</HeroID>
+        <HeroDisplayName>CASPIAN</HeroDisplayName>
+        <BaseWeapon1>Fists</BaseWeapon1>
+        <BaseWeapon2>Katar</BaseWeapon2>
+        <BioName>Caspian</BioName>
+    </HeroType>
+    <HeroType HeroName="Corsair">
+        <HeroID>39</HeroID>
+        <HeroDisplayName>SIDRA</HeroDisplayName>
+        <BaseWeapon1>Cannon</BaseWeapon1>
+        <BaseWeapon2>Sword</BaseWeapon2>
+        <BioName>Sidra</BioName>
+    </HeroType>
+    <HeroType HeroName="Brute">
+        <HeroID>40</HeroID>
+        <HeroDisplayName>XULL</HeroDisplayName>
+        <BaseWeapon1>Cannon</BaseWeapon1>
+        <BaseWeapon2>Axe</BaseWeapon2>
+        <BioName>Xull</BioName>
+    </HeroType>
+    <HeroType HeroName="Inuit">
+        <HeroID>42</HeroID>
+        <HeroDisplayName>KAYA</HeroDisplayName>
+        <BaseWeapon1>Spear</BaseWeapon1>
+        <BaseWeapon2>Bow</BaseWeapon2>
+        <BioName>Kaya</BioName>
+    </HeroType>
+    <HeroType HeroName="Soldier">
+        <HeroID>41</HeroID>
+        <HeroDisplayName>ISAIAH</HeroDisplayName>
+        <BaseWeapon1>Cannon</BaseWeapon1>
+        <BaseWeapon2>Pistol</BaseWeapon2>
+        <BioName>Isaiah</BioName>
+    </HeroType>
+    <HeroType HeroName="Shinobi">
+        <HeroID>43</HeroID>
+        <HeroDisplayName>JIRO</HeroDisplayName>
+        <BaseWeapon1>Sword</BaseWeapon1>
+        <BaseWeapon2>Scythe</BaseWeapon2>
+        <BioName>Jiro</BioName>
+    </HeroType>
+    <HeroType HeroName="Wuxia">
+        <HeroID>44</HeroID>
+        <HeroDisplayName>LIN FEI</HeroDisplayName>
+        <BaseWeapon1>Katar</BaseWeapon1>
+        <BaseWeapon2>Cannon</BaseWeapon2>
+        <BioName>Lin Fei</BioName>
+    </HeroType>
+    <HeroType HeroName="Celestial">
+        <HeroID>45</HeroID>
+        <HeroDisplayName>ZARIEL</HeroDisplayName>
+        <BaseWeapon1>Fists</BaseWeapon1>
+        <BaseWeapon2>Bow</BaseWeapon2>
+        <BioName>Zariel</BioName>
+    </HeroType>
+    <HeroType HeroName="Rayman">
+        <HeroID>46</HeroID>
+        <HeroDisplayName>RAYMAN</HeroDisplayName>
+        <BaseWeapon1>Fists</BaseWeapon1>
+        <BaseWeapon2>Axe</BaseWeapon2>
+        <BioName>Rayman</BioName>
+    </HeroType>
+    <HeroType HeroName="Elfwar">
+        <HeroID>47</HeroID>
+        <HeroDisplayName>DUSK</HeroDisplayName>
+        <BaseWeapon1>Spear</BaseWeapon1>
+        <BaseWeapon2>Orb</BaseWeapon2>
+        <BioName>Dusk</BioName>
+    </HeroType>
+    <HeroType HeroName="Spellwitch">
+        <HeroID>48</HeroID>
+        <HeroDisplayName>FAIT</HeroDisplayName>
+        <BaseWeapon1>Scythe</BaseWeapon1>
+        <BaseWeapon2>Orb</BaseWeapon2>
+        <BioName>Fait</BioName>
+    </HeroType>
+    <HeroType HeroName="Thor">
+        <HeroID>49</HeroID>
+        <HeroDisplayName>THOR</HeroDisplayName>
+        <BaseWeapon1>Hammer</BaseWeapon1>
+        <BaseWeapon2>Orb</BaseWeapon2>
+        <BioName>Thor</BioName>
+    </HeroType>
+    <HeroType HeroName="RageFighter">
+        <HeroID>50</HeroID>
+        <HeroDisplayName>PETRA</HeroDisplayName>
+        <BaseWeapon1>Fists</BaseWeapon1>
+        <BaseWeapon2>Orb</BaseWeapon2>
+        <BioName>Petra</BioName>
+    </HeroType>
+    <HeroType HeroName="ActualRobot">
+        <HeroID>51</HeroID>
+        <HeroDisplayName>VECTOR</HeroDisplayName>
+        <BaseWeapon1>RocketLance</BaseWeapon1>
+        <BaseWeapon2>Bow</BaseWeapon2>
+        <BioName>Vector</BioName>
+    </HeroType>
+</HeroTypes>
