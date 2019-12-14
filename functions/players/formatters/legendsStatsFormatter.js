@@ -81,6 +81,8 @@ module.exports = (legendsStats, legendsRanked) => {
 						losses: legendStats.games - legendStats.wins || 0
 					},
 					weapons: {
+						weapon_one: hero.BaseWeapon1._text,
+						weapon_two: hero.BaseWeapon2._text,
 						[hero.BaseWeapon1._text]: weapon_one,
 						[hero.BaseWeapon2._text]: weapon_two,
 						unarmed,
@@ -91,7 +93,7 @@ module.exports = (legendsStats, legendsRanked) => {
 				season: {
 					rating: legendRanked.rating || 750,
 					peak_rating: legendRanked.peak_rating || 750,
-					tier: legendRanked.tier || 'Tin 0',
+					tier: legendRanked.tier || 'Unranked',
 					games: {
 						total_games: legendRanked.games || 0,
 						wins: legendRanked.wins || 0,
