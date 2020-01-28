@@ -6,16 +6,14 @@ module.exports = (id, playerStats, playerRanked) => {
 		legendsStatsFormatter(
 			playerStats ? playerStats.legends : undefined,
 			playerRanked ? playerRanked.legends : undefined
-		).then(legendsStats => {
-			const generalStats = _.mergeWith(
-				{},
-				...legendsStats,
-				(obj, src) => {
-					return _.isNumber(obj) ? obj + src : undefined;
-				}
-			);
-			const weaponsStats = generalStats.overall.weapons;
-			console.log(weaponsStats);
+		).then(({ legends, weapons }) => {
+			const generalStats = _.mergeWith({}, ...legends, (obj, src) => {
+				return _.isNumber(obj) ? obj + src : undefined;
+			});
+			console.log(weapons);
+			weapons = _.mergeWith({}, ...weapons, (obj, src) => {
+				return _.isNumber(obj) ? obj + src : undefined;
+			});
 			let player = {
 				id: playerStats.brawlhalla_id,
 				name: playerStats.name || '',
@@ -61,16 +59,16 @@ module.exports = (id, playerStats, playerRanked) => {
 								losses: 0
 							}
 					  },
-				legends: legendsStats,
-				weapons: Object.values(weaponsStats).filter(
+				legends,
+				weapons: Object.values(weapons).filter(
 					w =>
 						!['Unarmed', 'Gadgets', 'Weapon Throws'].includes(
 							w.name
 						)
 				),
-				unarmed: weaponsStats.unarmed,
-				gadgets: weaponsStats.gadgets,
-				weapon_throws: weaponsStats.weapon_throws
+				unarmed: weapons.unarmed,
+				gadgets: weapons.gadgets,
+				weapon_throws: weapons.weapon_throws
 			};
 			resolve(player);
 		});
