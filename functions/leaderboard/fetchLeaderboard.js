@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const baseURI = 'https://api.brawlhalla.com/rankings';
+const { leaderboardRoute } = require('../routes');
 
 const defaultLeaderboardOptions = {
 	bracket: '1v1',
@@ -12,7 +12,7 @@ const defaultLeaderboardOptions = {
 const fetchLeaderboard = (api_key, options) => {
 	const params = { ...defaultLeaderboardOptions, ...options };
 	return axios.get(
-		`${baseURI}/${params.bracket}/${params.region}/${params.page}`,
+		`${leaderboardRoute}/${params.bracket}/${params.region}/${params.page}`,
 		{ params: { api_key, name: options.name || '' } }
 	);
 };
