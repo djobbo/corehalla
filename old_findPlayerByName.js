@@ -1,4 +1,4 @@
-const fetchLeaderboard = require('../leaderboard/fetchLeaderboard');
+const fetchLeaderboard = require('./functions/leaderboard/fetchLeaderboard');
 
 module.exports = (
 	api_key,

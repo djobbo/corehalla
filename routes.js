@@ -1,5 +1,5 @@
 const baseURI = 'https://api.brawlhalla.com';
-exports = {
+module.exports = {
 	baseURI,
 	playerRoute: `${baseURI}/player`,
 	searchBySteamIdRoute: `${baseURI}/search`,

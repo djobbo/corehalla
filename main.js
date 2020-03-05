@@ -1,23 +1,45 @@
 const axios = require('axios');
 
-const fetchLeaderboard = require('./functions/leaderboard/fetchLeaderboard');
-
-const {
-	fetchPlayerStats,
-	fetchPlayerRanked,
-	fetchPlayerFormat
-} = require('./functions/players/fetchPlayer');
+// const {
+// 	fetchPlayerStats,
+// 	fetchPlayerRanked,
+// 	fetchAllStats,
+// 	findPlayerBySteamId,
+// 	fetchPlayerFormat,
+// 	fetchLeaderboard,
+// 	fetchClanStats
+// } = require('./functions');
+// console.log(fetchPlayerStats);
 
 module.exports = api_key => {
+	const {
+		fetchPlayerStats,
+		fetchPlayerRanked,
+		fetchAllStats,
+		findPlayerBySteamId,
+		fetchPlayerFormat,
+		fetchLeaderboard,
+		fetchClanStats
+	} = require('./functions');
 	return {
-		fetchLeaderboard: (options = defaultLeaderboardOptions) =>
-			fetchLeaderboard(api_key, (options = {})),
-
-		fetchPlayerStats: brawlhalla_id =>
+		fetchPlayerStats: async brawlhalla_id =>
 			fetchPlayerStats(api_key, brawlhalla_id),
 
-		fetchPlayerRanked: brawlhalla_id =>
-			fetchPlayerRanked(api_key, brawlhalla_id)
+		fetchPlayerRanked: async brawlhalla_id =>
+			fetchPlayerRanked(api_key, brawlhalla_id),
+
+		fetchAllStats: async brawlhalla_id =>
+			fetchAllStats(api_key, brawlhalla_id),
+
+		findPlayerBySteamId: async steam_id =>
+			findPlayerBySteamId(api_key, steam_id),
+
+		fetchPlayerFormat: async brawlhalla_id =>
+			fetchPlayerFormat(api_key, brawlhalla_id),
+
+		fetchClanStats: async clan_id => fetchClanStats(api_key, clan_id),
+
+		fetchLeaderboard: async options => fetchLeaderboard(api_key, options)
 	};
 };
 

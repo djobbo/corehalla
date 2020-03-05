@@ -10,7 +10,6 @@ module.exports = (id, playerStats, playerRanked) => {
 			const generalStats = _.mergeWith({}, ...legends, (obj, src) => {
 				return _.isNumber(obj) ? obj + src : undefined;
 			});
-			console.log(weapons);
 			weapons = _.mergeWith({}, ...weapons, (obj, src) => {
 				return _.isNumber(obj) ? obj + src : undefined;
 			});

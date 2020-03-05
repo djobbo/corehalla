@@ -1,0 +1,22 @@
+{
+	"clan_id": 1,
+	"clan_name": "Blue Mammoth Games",
+	"clan_create_date": 1464206400,
+	"clan_xp": "86962",
+	"clan": [
+		{
+			"brawlhalla_id": 3,
+			"name": "[BMG] Chill Penguin X",
+			"rank": "Leader",
+			"join_date": 1464206400,
+			"xp": 6664
+		},
+		{
+			"brawlhalla_id": 2,
+			"name": "bmg | dan",
+			"rank": "Officer",
+			"join_date": 1464221047,
+			"xp": 4492
+		}
+	]
+}
