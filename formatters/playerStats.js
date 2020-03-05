@@ -1,4 +1,10 @@
 const staticLegendsData = require('../data/legends.json');
+const {
+	getGloryFromWins,
+	getGloryFromBestRating,
+	getHeroRatingSquash,
+	getPersonalRatingSquash
+} = require('./gloryCalculator');
 
 const regions = ['', '', 'US-E', 'EU', 'SEA', 'BRZ', 'AUS', 'US-W', 'JPN'];
 
@@ -78,7 +84,10 @@ module.exports = (playerStats, playerRanked) => {
 				...legendStats,
 				damageweaponone: parseInt(legendStats.damageweaponone),
 				damageweapontwo: parseInt(legendStats.damageweapontwo),
-				season: legendRanked
+				season: {
+					...legendRanked,
+					rating_squash: getHeroRatingSquash(legendRanked.rating)
+				}
 			};
 
 			acc.legends[staticLegend.name] = legendFormat;
@@ -116,9 +125,29 @@ module.exports = (playerStats, playerRanked) => {
 			weapons: {}
 		}
 	);
+
+	const season = {
+		...seasonStats,
+		rating_squash: getPersonalRatingSquash(seasonStats.rating),
+		total_wins:
+			seasonStats.wins + teamsStats.reduce((acc, t) => acc + t.wins, 0),
+
+		best_overall_rating: Math.max(
+			seasonStats.peak_rating,
+			...teamsStats.map(t => t.peak_rating),
+			...legendsRanked.map(l => l.peak_rating)
+		)
+	};
+
 	return {
 		...generalStats,
-		season: seasonStats,
+		season: {
+			...season,
+			glory_best_rating: getGloryFromBestRating(
+				season.best_overall_rating
+			),
+			glory_wins: getGloryFromWins(season.total_wins)
+		},
 		clan: clanStats,
 		legends: Object.values(legends),
 		weapons: Object.values(weapons).map(w => ({
@@ -180,7 +209,10 @@ module.exports = (playerStats, playerRanked) => {
 						: brawlhalla_id_one,
 				teammate_name: cleanString(teamname.replace('+', ' & ')),
 				region: regions[region],
-				season
+				season: {
+					...season,
+					rating_squash: getHeroRatingSquash(season.rating)
+				}
 			})
 		)
 	};

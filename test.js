@@ -66,7 +66,7 @@ const fs = require('fs');
 
 //#endregion
 
-const newform = require('./formatters/newform');
+const newform = require('./formatters/playerStats');
 
 const [stats, ranked] = [
 	require('./test-data/PlayerStats.json'),

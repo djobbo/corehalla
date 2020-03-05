@@ -23,17 +23,17 @@ const getGloryFromBestRating = rating =>
 
 const getHeroRatingSquash = rating =>
 	rating < 2000
-		? Math.floor((elo + 375) / 1.5)
-		: Math.floor(1583 + (elo - 2000) / 10);
+		? Math.floor((rating + 375) / 1.5)
+		: Math.floor(1583 + (rating - 2000) / 10);
 
-const GetPersonalRatingSquash = rating =>
+const getPersonalRatingSquash = rating =>
 	rating >= 1400
-		? Math.floor(1400 + (elo - 1400.0) / (3.0 - (3000 - elo) / 800.0))
+		? Math.floor(1400 + (rating - 1400.0) / (3.0 - (3000 - rating) / 800.0))
 		: rating;
 
 module.exports = {
 	getGloryFromWins,
 	getGloryFromBestRating,
 	getHeroRatingSquash,
-	GetPersonalRatingSquash
+	getPersonalRatingSquash
 };
