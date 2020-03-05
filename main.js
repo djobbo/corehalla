@@ -1,16 +1,5 @@
 const axios = require('axios');
 
-// const {
-// 	fetchPlayerStats,
-// 	fetchPlayerRanked,
-// 	fetchAllStats,
-// 	findPlayerBySteamId,
-// 	fetchPlayerFormat,
-// 	fetchLeaderboard,
-// 	fetchClanStats
-// } = require('./functions');
-// console.log(fetchPlayerStats);
-
 module.exports = api_key => {
 	const {
 		fetchPlayerStats,
