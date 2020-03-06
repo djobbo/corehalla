@@ -5,13 +5,13 @@ section.section-overview {
 		flex-wrap: wrap;
 
 		.main-ranked-banner {
-			margin: 0 1rem 0 0;
+			margin: 0.25rem 0.5rem 0 0;
 			transform-origin: top;
 			animation: MainBannerBounce;
 			animation-duration: 5s;
 			animation-iteration-count: infinite;
 			order: 0;
-			height: 240px;
+			height: 160px;
 		}
 
 		.ranked-overall {
@@ -30,6 +30,10 @@ section.section-overview {
 			display: none;
 		}
 
+		hr {
+			margin: 0.25rem 0;
+		}
+
 		.ranked-stats {
 			.region-icon,
 			.legend-icon {
@@ -39,6 +43,20 @@ section.section-overview {
 
 			.region-icon {
 				border-radius: 0.5rem;
+			}
+		}
+	}
+}
+
+@media (min-width: 480px) {
+	section.section-overview {
+		.ranked-overview-display {
+			.main-ranked-banner {
+				margin: 0 1rem 0 0;
+				height: 240px;
+			}
+			hr {
+				margin: 0.5rem 0;
 			}
 		}
 	}

@@ -1,9 +1,9 @@
 section.section-overall {
 	.stats-container {
 		display: flex;
+		flex-direction: column;
 		flex-wrap: wrap;
 		& > div {
-			min-width: 320px;
 			flex: 1;
 			flex-direction: column;
 			justify-content: space-between;
@@ -35,7 +35,12 @@ section.section-overall {
 				}
 
 				.games-pie-chart {
-					margin-left: 1rem;
+					margin-left: 0.5rem;
+
+					.pie-chart {
+						width: 8rem;
+						height: 8rem;
+					}
 				}
 			}
 		}
@@ -49,12 +54,20 @@ section.section-overall {
 @media (min-width: 600px) {
 	section.section-overall {
 		.stats-container {
+			flex-direction: row;
+			& > div {
+				min-width: 320px;
+			}
 			.games-stats {
 				min-width: 420px;
 
 				.games-stats-container {
 					.games-pie-chart {
 						margin-left: 2rem;
+						.pie-chart {
+							width: 12rem;
+							height: 12rem;
+						}
 					}
 				}
 			}

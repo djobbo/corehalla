@@ -150,7 +150,7 @@ header .main-nav ul li {
 }
 
 header .main-nav ul li a {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.25rem;
   display: block;
   font-size: 0.75rem;
   text-transform: uppercase;

@@ -4,3 +4,4 @@ Clans
 Players
     -> Glory & Elo Squash
     -> Legends filter by weapon
+    -> Mobile best legend overview

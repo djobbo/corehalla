@@ -1,0 +1,100 @@
+.topbar {
+  width: 100%;
+}
+
+.topbar .topbar-nav {
+  width: 100%;
+  max-width: 1200px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 0 auto;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.topbar .topbar-nav .logo {
+  height: 1.5rem;
+}
+
+.topbar .topbar-nav .logo img {
+  width: auto;
+  height: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+.topbar .topbar-nav .searchbox {
+  width: 320px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  display: none;
+}
+
+.topbar .topbar-nav .searchbox i {
+  z-index: 10;
+  width: 1.5rem;
+  height: 1.5rem;
+  opacity: 0.64;
+}
+
+.topbar .topbar-nav .searchbox input {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 8px;
+  outline: none;
+  background-color: var(--text);
+  color: var(--bg);
+  padding-left: 2.25rem;
+  margin-left: -2rem;
+  font-size: 1rem;
+}
+
+.topbar .topbar-nav .searchbox input:focus {
+  border: 2px solid var(--accent);
+}
+
+.topbar .topbar-nav nav ul {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.topbar .topbar-nav nav ul li {
+  padding: 0.5rem 0.25rem;
+}
+
+.topbar .topbar-nav nav ul li a {
+  padding: 0.5rem 0.25rem;
+  display: block;
+  font-size: 1rem;
+  border-radius: 8px;
+  font-weight: normal;
+}
+
+.topbar .topbar-nav nav ul li:hover a {
+  text-decoration: underline;
+}
+
+@media (min-width: 480px) {
+  .topbar .topbar-nav .searchbox {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+  }
+  .topbar .topbar-nav nav ul li {
+    padding: 0.5rem;
+  }
+  .topbar .topbar-nav nav ul li a {
+    padding: 0.5rem 1rem;
+  }
+}
+/*# sourceMappingURL=styles.css.map */

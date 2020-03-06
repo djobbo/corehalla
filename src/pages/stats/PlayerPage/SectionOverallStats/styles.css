@@ -2,12 +2,15 @@ section.section-overall .stats-container {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
 }
 
 section.section-overall .stats-container > div {
-  min-width: 320px;
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
@@ -56,7 +59,12 @@ section.section-overall .stats-container .games-stats .games-stats-container > d
 }
 
 section.section-overall .stats-container .games-stats .games-stats-container .games-pie-chart {
-  margin-left: 1rem;
+  margin-left: 0.5rem;
+}
+
+section.section-overall .stats-container .games-stats .games-stats-container .games-pie-chart .pie-chart {
+  width: 8rem;
+  height: 8rem;
 }
 
 section.section-overall .stats-container .misc-general-stats {
@@ -66,11 +74,24 @@ section.section-overall .stats-container .misc-general-stats {
 }
 
 @media (min-width: 600px) {
+  section.section-overall .stats-container {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+  }
+  section.section-overall .stats-container > div {
+    min-width: 320px;
+  }
   section.section-overall .stats-container .games-stats {
     min-width: 420px;
   }
   section.section-overall .stats-container .games-stats .games-stats-container .games-pie-chart {
     margin-left: 2rem;
+  }
+  section.section-overall .stats-container .games-stats .games-stats-container .games-pie-chart .pie-chart {
+    width: 12rem;
+    height: 12rem;
   }
 }
 /*# sourceMappingURL=styles.css.map */
