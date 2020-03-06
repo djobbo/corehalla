@@ -1,6 +1,6 @@
 {
-	"name": "frontend",
-	"version": "0.1.0",
+	"name": "corehalla",
+	"version": "0.0.1",
 	"private": true,
 	"dependencies": {
 		"@mdi/js": "^4.9.95",
