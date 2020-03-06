@@ -33,10 +33,6 @@ section.section-overall .stats-container > div p svg {
   margin-bottom: 0.5rem;
 }
 
-section.section-overall .stats-container .games-stats {
-  min-width: 420px;
-}
-
 section.section-overall .stats-container .games-stats .games-stats-container {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -60,12 +56,21 @@ section.section-overall .stats-container .games-stats .games-stats-container > d
 }
 
 section.section-overall .stats-container .games-stats .games-stats-container .games-pie-chart {
-  margin-left: 2rem;
+  margin-left: 1rem;
 }
 
 section.section-overall .stats-container .misc-general-stats {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+}
+
+@media (min-width: 600px) {
+  section.section-overall .stats-container .games-stats {
+    min-width: 420px;
+  }
+  section.section-overall .stats-container .games-stats .games-stats-container .games-pie-chart {
+    margin-left: 2rem;
+  }
 }
 /*# sourceMappingURL=styles.css.map */

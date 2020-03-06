@@ -23,7 +23,7 @@ section.section-overall {
 		}
 
 		.games-stats {
-			min-width: 420px;
+			// min-width: 420px;
 			.games-stats-container {
 				display: flex;
 				justify-content: space-between;
@@ -35,13 +35,29 @@ section.section-overall {
 				}
 
 				.games-pie-chart {
-					margin-left: 2rem;
+					margin-left: 1rem;
 				}
 			}
 		}
 
 		.misc-general-stats {
 			display: flex;
+		}
+	}
+}
+
+@media (min-width: 600px) {
+	section.section-overall {
+		.stats-container {
+			.games-stats {
+				min-width: 420px;
+
+				.games-stats-container {
+					.games-pie-chart {
+						margin-left: 2rem;
+					}
+				}
+			}
 		}
 	}
 }

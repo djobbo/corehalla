@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './Header/styles.css';
+
 import Icon from '@mdi/react';
 import { mdiStar, mdiAccountStarOutline } from '@mdi/js';
 
@@ -29,13 +31,13 @@ function Header({ activePage, setActivePage, playerStats }) {
 				<div className='main-info'>
 					<h1>
 						{playerStats.name}{' '}
-						<a href='/#'>
+						{/* <a href='/#'>
 							<Icon
 								path={mdiAccountStarOutline}
 								title='Add to favorites'
 								size={1}
 							/>
-						</a>
+						</a> */}
 					</h1>
 					<p>
 						Level {playerStats.level} ({playerStats.xp} xp)

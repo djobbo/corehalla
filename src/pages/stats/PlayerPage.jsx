@@ -10,7 +10,7 @@ import SectionWeapons from './PlayerPage/SectionWeapons';
 
 import Loader from '../../components/Loader';
 
-import PlayerStatsGen from '../../mockups/PlayerStats.mock';
+// import PlayerStatsGen from '../../mockups/PlayerStats.mock';
 import PlayerStats from '../../mockups/PlayerStats.json';
 
 export default ({ match }) => {

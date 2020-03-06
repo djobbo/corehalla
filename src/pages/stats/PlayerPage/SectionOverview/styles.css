@@ -5,10 +5,12 @@ section.section-overview .ranked-overview-display {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
 }
 
 section.section-overview .ranked-overview-display .main-ranked-banner {
-  margin: 0 1rem;
+  margin: 0 1rem 0 0;
   -webkit-transform-origin: top;
           transform-origin: top;
   -webkit-animation: MainBannerBounce;
@@ -17,24 +19,13 @@ section.section-overview .ranked-overview-display .main-ranked-banner {
           animation-duration: 5s;
   -webkit-animation-iteration-count: infinite;
           animation-iteration-count: infinite;
-}
-
-section.section-overview .ranked-overview-display .main-ranked-banner:hover {
-  -webkit-animation-name: MainBannerBounce;
-          animation-name: MainBannerBounce;
+  -webkit-box-ordinal-group: 1;
+      -ms-flex-order: 0;
+          order: 0;
+  height: 240px;
 }
 
 section.section-overview .ranked-overview-display .ranked-overall {
-  text-align: right;
-  -webkit-animation-name: SlideFromLeft;
-          animation-name: SlideFromLeft;
-  -webkit-animation-duration: 0.5s;
-          animation-duration: 0.5s;
-  -webkit-animation-timing-function: ease-out;
-          animation-timing-function: ease-out;
-}
-
-section.section-overview .ranked-overview-display .ranked-best-legend {
   text-align: left;
   -webkit-animation-name: SlideFromRight;
           animation-name: SlideFromRight;
@@ -42,6 +33,22 @@ section.section-overview .ranked-overview-display .ranked-best-legend {
           animation-duration: 0.5s;
   -webkit-animation-timing-function: ease-out;
           animation-timing-function: ease-out;
+  -webkit-box-ordinal-group: 2;
+      -ms-flex-order: 1;
+          order: 1;
+}
+
+section.section-overview .ranked-overview-display .ranked-best-legend {
+  -webkit-animation-name: SlideFromRight;
+          animation-name: SlideFromRight;
+  -webkit-animation-duration: 0.5s;
+          animation-duration: 0.5s;
+  -webkit-animation-timing-function: ease-out;
+          animation-timing-function: ease-out;
+  -webkit-box-ordinal-group: 3;
+      -ms-flex-order: 2;
+          order: 2;
+  display: none;
 }
 
 section.section-overview .ranked-overview-display .ranked-stats .region-icon,
@@ -52,5 +59,34 @@ section.section-overview .ranked-overview-display .ranked-stats .legend-icon {
 
 section.section-overview .ranked-overview-display .ranked-stats .region-icon {
   border-radius: 0.5rem;
+}
+
+@media (min-width: 780px) {
+  section.section-overview .ranked-overview-display .main-ranked-banner {
+    margin: 0 1rem;
+    -webkit-box-ordinal-group: 2;
+        -ms-flex-order: 1;
+            order: 1;
+  }
+  section.section-overview .ranked-overview-display .ranked-overall {
+    text-align: right;
+    -webkit-animation-name: SlideFromLeft;
+            animation-name: SlideFromLeft;
+    -webkit-box-ordinal-group: 1;
+        -ms-flex-order: 0;
+            order: 0;
+  }
+  section.section-overview .ranked-overview-display .ranked-best-legend {
+    display: block;
+    -webkit-box-ordinal-group: 3;
+        -ms-flex-order: 2;
+            order: 2;
+  }
+}
+
+@media (min-width: 900px) {
+  section.section-overview .ranked-overview-display .main-ranked-banner {
+    height: auto;
+  }
 }
 /*# sourceMappingURL=styles.css.map */

@@ -2,31 +2,32 @@ section.section-overview {
 	.ranked-overview-display {
 		display: flex;
 		justify-content: center;
+		flex-wrap: wrap;
 
 		.main-ranked-banner {
-			margin: 0 1rem;
+			margin: 0 1rem 0 0;
 			transform-origin: top;
 			animation: MainBannerBounce;
 			animation-duration: 5s;
 			animation-iteration-count: infinite;
-
-			&:hover {
-				animation-name: MainBannerBounce;
-			}
+			order: 0;
+			height: 240px;
 		}
 
 		.ranked-overall {
-			text-align: right;
-			animation-name: SlideFromLeft;
-			animation-duration: 0.5s;
-			animation-timing-function: ease-out;
-		}
-
-		.ranked-best-legend {
 			text-align: left;
 			animation-name: SlideFromRight;
 			animation-duration: 0.5s;
 			animation-timing-function: ease-out;
+			order: 1;
+		}
+
+		.ranked-best-legend {
+			animation-name: SlideFromRight;
+			animation-duration: 0.5s;
+			animation-timing-function: ease-out;
+			order: 2;
+			display: none;
 		}
 
 		.ranked-stats {
@@ -38,6 +39,38 @@ section.section-overview {
 
 			.region-icon {
 				border-radius: 0.5rem;
+			}
+		}
+	}
+}
+
+@media (min-width: 780px) {
+	section.section-overview {
+		.ranked-overview-display {
+			.main-ranked-banner {
+				margin: 0 1rem;
+				order: 1;
+			}
+
+			.ranked-overall {
+				text-align: right;
+				animation-name: SlideFromLeft;
+				order: 0;
+			}
+
+			.ranked-best-legend {
+				display: block;
+				order: 2;
+			}
+		}
+	}
+}
+
+@media (min-width: 900px) {
+	section.section-overview {
+		.ranked-overview-display {
+			.main-ranked-banner {
+				height: auto;
 			}
 		}
 	}
