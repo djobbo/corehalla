@@ -5,6 +5,8 @@ import './Header/styles.css';
 import Icon from '@mdi/react';
 import { mdiStar, mdiAccountStarOutline } from '@mdi/js';
 
+import formatTime from '../../../util/formatTime';
+
 function Header({ activePage, setActivePage, playerStats }) {
 	return (
 		<header>
@@ -42,7 +44,15 @@ function Header({ activePage, setActivePage, playerStats }) {
 					<p>
 						Level {playerStats.level} ({playerStats.xp} xp)
 					</p>
-					<p>Time spent in game: 25h 31m 58s</p>
+					<p>
+						Time spent in game:{' '}
+						{formatTime(
+							playerStats.legends.reduce(
+								(acc, l) => acc + l.matchtime,
+								0
+							)
+						)}
+					</p>
 				</div>
 			</div>
 

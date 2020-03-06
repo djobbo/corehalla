@@ -222,6 +222,9 @@ header .main-nav ul li.active a {
             flex: 0;
     padding: 0.5rem;
   }
+  header .main-nav ul li a {
+    padding: 0.5rem 1rem;
+  }
 }
 
 @media (min-width: 1200px) {
