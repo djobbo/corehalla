@@ -1,0 +1,6 @@
+Clans
+    -> Members count & % w/ bar chart
+
+Players
+    -> Glory & Elo Squash
+    -> Legends filter by weapon

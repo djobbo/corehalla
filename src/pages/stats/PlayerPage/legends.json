@@ -1,0 +1,338 @@
+[
+	{
+		"id": 3,
+		"name": "Bödvar",
+		"slug": "bodvar",
+		"weapon_one": "Hammer",
+		"weapon_two": "Sword"
+	},
+	{
+		"id": 4,
+		"name": "Cassidy",
+		"slug": "cassidy",
+		"weapon_one": "Blasters",
+		"weapon_two": "Hammer"
+	},
+	{
+		"id": 5,
+		"name": "Orion",
+		"slug": "orion",
+		"weapon_one": "Rocket Lance",
+		"weapon_two": "Spear"
+	},
+	{
+		"id": 6,
+		"name": "Lord Vraxx",
+		"slug": "lord vraxx",
+		"weapon_one": "Rocket Lance",
+		"weapon_two": "Blasters"
+	},
+	{
+		"id": 7,
+		"name": "Gnash",
+		"slug": "gnash",
+		"weapon_one": "Hammer",
+		"weapon_two": "Spear"
+	},
+	{
+		"id": 8,
+		"name": "Queen Nai",
+		"slug": "queen nai",
+		"weapon_one": "Spear",
+		"weapon_two": "Katars"
+	},
+	{
+		"id": 10,
+		"name": "Hattori",
+		"slug": "hattori",
+		"weapon_one": "Sword",
+		"weapon_two": "Spear"
+	},
+	{
+		"id": 11,
+		"name": "Sir Roland",
+		"slug": "sir roland",
+		"weapon_one": "Rocket Lance",
+		"weapon_two": "Sword"
+	},
+	{
+		"id": 12,
+		"name": "Scarlet",
+		"slug": "scarlet",
+		"weapon_one": "Hammer",
+		"weapon_two": "Rocket Lance"
+	},
+	{
+		"id": 13,
+		"name": "Thatch",
+		"slug": "thatch",
+		"weapon_one": "Sword",
+		"weapon_two": "Blasters"
+	},
+	{
+		"id": 14,
+		"name": "Ada",
+		"slug": "ada",
+		"weapon_one": "Blasters",
+		"weapon_two": "Spear"
+	},
+	{
+		"id": 15,
+		"name": "Sentinel",
+		"slug": "sentinel",
+		"weapon_one": "Hammer",
+		"weapon_two": "Katars"
+	},
+	{
+		"id": 9,
+		"name": "Lucien",
+		"slug": "lucien",
+		"weapon_one": "Katars",
+		"weapon_two": "Blasters"
+	},
+	{
+		"id": 16,
+		"name": "Teros",
+		"slug": "teros",
+		"weapon_one": "Axe",
+		"weapon_two": "Hammer"
+	},
+	{
+		"id": 19,
+		"name": "Brynn",
+		"slug": "brynn",
+		"weapon_one": "Axe",
+		"weapon_two": "Spear"
+	},
+	{
+		"id": 20,
+		"name": "Asuri",
+		"slug": "asuri",
+		"weapon_one": "Katars",
+		"weapon_two": "Sword"
+	},
+	{
+		"id": 21,
+		"name": "Barraza",
+		"slug": "barraza",
+		"weapon_one": "Axe",
+		"weapon_two": "Blasters"
+	},
+	{
+		"id": 18,
+		"name": "Ember",
+		"slug": "ember",
+		"weapon_one": "Bow",
+		"weapon_two": "Katars"
+	},
+	{
+		"id": 23,
+		"name": "Azoth",
+		"slug": "azoth",
+		"weapon_one": "Bow",
+		"weapon_two": "Axe"
+	},
+	{
+		"id": 24,
+		"name": "Koji",
+		"slug": "koji",
+		"weapon_one": "Bow",
+		"weapon_two": "Sword"
+	},
+	{
+		"id": 22,
+		"name": "Ulgrim",
+		"slug": "ulgrim",
+		"weapon_one": "Axe",
+		"weapon_two": "Rocket Lance"
+	},
+	{
+		"id": 25,
+		"name": "Diana",
+		"slug": "diana",
+		"weapon_one": "Bow",
+		"weapon_two": "Blasters"
+	},
+	{
+		"id": 26,
+		"name": "Jhala",
+		"slug": "jhala",
+		"weapon_one": "Axe",
+		"weapon_two": "Sword"
+	},
+	{
+		"id": 28,
+		"name": "Kor",
+		"slug": "kor",
+		"weapon_one": "Gauntlets",
+		"weapon_two": "Hammer"
+	},
+	{
+		"id": 29,
+		"name": "Wu Shang",
+		"slug": "wu shang",
+		"weapon_one": "Gauntlets",
+		"weapon_two": "Spear"
+	},
+	{
+		"id": 30,
+		"name": "Val",
+		"slug": "val",
+		"weapon_one": "Gauntlets",
+		"weapon_two": "Sword"
+	},
+	{
+		"id": 31,
+		"name": "Ragnir",
+		"slug": "ragnir",
+		"weapon_one": "Katars",
+		"weapon_two": "Axe"
+	},
+	{
+		"id": 32,
+		"name": "Cross",
+		"slug": "cross",
+		"weapon_one": "Blasters",
+		"weapon_two": "Gauntlets"
+	},
+	{
+		"id": 33,
+		"name": "Mirage",
+		"slug": "mirage",
+		"weapon_one": "Scythe",
+		"weapon_two": "Spear"
+	},
+	{
+		"id": 34,
+		"name": "Nix",
+		"slug": "nix",
+		"weapon_one": "Scythe",
+		"weapon_two": "Blasters"
+	},
+	{
+		"id": 35,
+		"name": "Mordex",
+		"slug": "mordex",
+		"weapon_one": "Scythe",
+		"weapon_two": "Gauntlets"
+	},
+	{
+		"id": 36,
+		"name": "Yumiko",
+		"slug": "yumiko",
+		"weapon_one": "Bow",
+		"weapon_two": "Hammer"
+	},
+	{
+		"id": 37,
+		"name": "Artemis",
+		"slug": "artemis",
+		"weapon_one": "Rocket Lance",
+		"weapon_two": "Scythe"
+	},
+	{
+		"id": 38,
+		"name": "Caspian",
+		"slug": "caspian",
+		"weapon_one": "Gauntlets",
+		"weapon_two": "Katars"
+	},
+	{
+		"id": 39,
+		"name": "Sidra",
+		"slug": "sidra",
+		"weapon_one": "Cannon",
+		"weapon_two": "Sword"
+	},
+	{
+		"id": 40,
+		"name": "Xull",
+		"slug": "xull",
+		"weapon_one": "Cannon",
+		"weapon_two": "Axe"
+	},
+	{
+		"id": 42,
+		"name": "Kaya",
+		"slug": "kaya",
+		"weapon_one": "Spear",
+		"weapon_two": "Bow"
+	},
+	{
+		"id": 41,
+		"name": "Isaiah",
+		"slug": "isaiah",
+		"weapon_one": "Cannon",
+		"weapon_two": "Blasters"
+	},
+	{
+		"id": 43,
+		"name": "Jiro",
+		"slug": "jiro",
+		"weapon_one": "Sword",
+		"weapon_two": "Scythe"
+	},
+	{
+		"id": 44,
+		"name": "Lin Fei",
+		"slug": "lin fei",
+		"weapon_one": "Katars",
+		"weapon_two": "Cannon"
+	},
+	{
+		"id": 45,
+		"name": "Zariel",
+		"slug": "zariel",
+		"weapon_one": "Gauntlets",
+		"weapon_two": "Bow"
+	},
+	{
+		"id": 46,
+		"name": "Rayman",
+		"slug": "rayman",
+		"weapon_one": "Gauntlets",
+		"weapon_two": "Axe"
+	},
+	{
+		"id": 47,
+		"name": "Dusk",
+		"slug": "dusk",
+		"weapon_one": "Spear",
+		"weapon_two": "Orb"
+	},
+	{
+		"id": 48,
+		"name": "Fait",
+		"slug": "fait",
+		"weapon_one": "Scythe",
+		"weapon_two": "Orb"
+	},
+	{
+		"id": 49,
+		"name": "Thor",
+		"slug": "thor",
+		"weapon_one": "Hammer",
+		"weapon_two": "Orb"
+	},
+	{
+		"id": 50,
+		"name": "Petra",
+		"slug": "petra",
+		"weapon_one": "Gauntlets",
+		"weapon_two": "Orb"
+	},
+	{
+		"id": 51,
+		"name": "Vector",
+		"slug": "vector",
+		"weapon_one": "Rocket Lance",
+		"weapon_two": "Bow"
+	},
+	{
+		"id": 52,
+		"name": "Volkov",
+		"slug": "volkov",
+		"weapon_one": "Axe",
+		"weapon_two": "Scythe"
+	}
+]
