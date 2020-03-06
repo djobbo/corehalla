@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './SectionOverallStats/styles.css';
+
 import BarChart from '../../../components/BarChart';
 import PieChart from '../../../components/PieChart';
 

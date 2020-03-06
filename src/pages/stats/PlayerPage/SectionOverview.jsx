@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './SectionOverview/styles.css';
+
 function SectionOverview({ season, best_legend }) {
 	return (
 		<section className='section-overview'>

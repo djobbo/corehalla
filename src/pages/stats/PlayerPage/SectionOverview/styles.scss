@@ -1,0 +1,44 @@
+section.section-overview {
+	.ranked-overview-display {
+		display: flex;
+		justify-content: center;
+
+		.main-ranked-banner {
+			margin: 0 1rem;
+			transform-origin: top;
+			animation: MainBannerBounce;
+			animation-duration: 5s;
+			animation-iteration-count: infinite;
+
+			&:hover {
+				animation-name: MainBannerBounce;
+			}
+		}
+
+		.ranked-overall {
+			text-align: right;
+			animation-name: SlideFromLeft;
+			animation-duration: 0.5s;
+			animation-timing-function: ease-out;
+		}
+
+		.ranked-best-legend {
+			text-align: left;
+			animation-name: SlideFromRight;
+			animation-duration: 0.5s;
+			animation-timing-function: ease-out;
+		}
+
+		.ranked-stats {
+			.region-icon,
+			.legend-icon {
+				width: 2rem;
+				height: 2rem;
+			}
+
+			.region-icon {
+				border-radius: 0.5rem;
+			}
+		}
+	}
+}
