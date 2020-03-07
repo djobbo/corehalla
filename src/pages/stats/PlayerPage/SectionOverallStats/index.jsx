@@ -1,9 +1,9 @@
 import React from 'react';
 
-import './SectionOverallStats/styles.css';
+import './styles.css';
 
-import BarChart from '../../../components/BarChart';
-import PieChart from '../../../components/PieChart';
+import BarChart from '../../../../components/BarChart';
+import PieChart from '../../../../components/PieChart';
 
 function SectionOverallStats({ playerStats }) {
 	return (

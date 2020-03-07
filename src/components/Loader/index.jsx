@@ -1,5 +1,5 @@
 import React from 'react';
-import './Loader/styles.css';
+import './styles.css';
 
 export default () => (
 	<div className='loader'>

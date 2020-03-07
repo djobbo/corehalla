@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-import './SectionRanked2v2/styles.css';
+import './styles.css';
 
 import Icon from '@mdi/react';
 import { mdiSortAscending, mdiSortDescending } from '@mdi/js';
 
-import Ranked2v2Team from './SectionRanked2v2/Ranked2v2Team';
+import Ranked2v2Team from './Ranked2v2Team';
 
 function SectionRanked2v2({ teams }) {
 	const [rankTierFilter, setRankTierFilter] = useState('');

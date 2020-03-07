@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './SectionOverview/styles.css';
+import './styles.css';
 
 function SectionOverview({ season, best_legend }) {
 	return (

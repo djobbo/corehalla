@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import './PlayerPage/styles.css';
+import './styles.css';
 
-import Header from './PlayerPage/Header';
-import SectionOverview from './PlayerPage/SectionOverview';
-import SectionOverallStats from './PlayerPage/SectionOverallStats';
-import SectionRanked2v2 from './PlayerPage/SectionRanked2v2';
-import SectionLegends from './PlayerPage/SectionLegends';
-import SectionWeapons from './PlayerPage/SectionWeapons';
+import Header from './Header';
+import SectionOverview from './SectionOverview';
+import SectionOverallStats from './SectionOverallStats';
+import SectionRanked2v2 from './SectionRanked2v2';
+import SectionLegends from './SectionLegends';
+import SectionWeapons from './SeectionWeapons/SectionWeapons';
 
-import Loader from '../../components/Loader';
+import Loader from '../../../components/Loader';
 
 // import PlayerStatsGen from '../../mockups/PlayerStats.mock';
-import PlayerStats from '../../mockups/PlayerStats.json';
+import PlayerStats from '../../../mockups/PlayerStats.json';
 
 export default ({ match }) => {
 	const sections = ['teams', 'legends', 'weapons'];

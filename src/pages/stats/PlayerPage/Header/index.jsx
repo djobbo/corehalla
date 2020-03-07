@@ -1,11 +1,11 @@
 import React from 'react';
 
-import './Header/styles.css';
+import './styles.css';
 
 import Icon from '@mdi/react';
 import { mdiStar, mdiAccountStarOutline } from '@mdi/js';
 
-import formatTime from '../../../util/formatTime';
+import formatTime from '../../../../util/formatTime';
 
 function Header({ activePage, setActivePage, playerStats }) {
 	return (

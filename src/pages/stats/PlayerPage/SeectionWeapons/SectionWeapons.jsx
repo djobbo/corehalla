@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Icon from '@mdi/react';
 import { mdiSortAscending, mdiSortDescending } from '@mdi/js';
 
-import formatTime from '../../../util/formatTime';
+import formatTime from '../../../../util/formatTime';
 
 function SectionWeapons({ weapons }) {
 	const [sortBy, setSortBy] = useState('');

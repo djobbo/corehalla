@@ -1,11 +1,11 @@
 import React from 'react';
 
-import './TopBar/styles.css';
+import './styles.css';
 
 import Icon from '@mdi/react';
 import { mdiMagnify, mdiDiscord } from '@mdi/js';
 
-import Logo from '../App/logo.png';
+import Logo from '../../App/logo.png';
 
 function TopBar() {
 	return (
