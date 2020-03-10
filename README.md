@@ -35,7 +35,7 @@ const bh_api = require('corehalla.js')('API_KEY');
 #### .fetchRankings(options)
 > *Uses One Brawlhalla API Call*
 
-Returns an array of rankings ordered and paginated 50 at a time.
+Retrieves an array of rankings ordered and paginated 50 at a time.
 
 **Options**
 
@@ -45,8 +45,8 @@ The options object contains 4 fields defining which section of the ranked leader
 | --- | --- | --- |
 | **`bracket`** | Either `'1v1'` or `'2v2'`. | `'1v1'` |
 | **`region`** | The region from this subset `'us-e'`, `'eu'`, `'sea'`, `'brz'`, `'aus'`, `'us-w'`, `'jpn'`.</br>For Global region, use `'all'`. | `'all'` |
-| **`page`** | The page number requested. | `1` |
-| **`player_name`** | The ingame name to query against. Name searching must start with exact match. | `''` |
+| **`page`** | The page number requested.</br>(Can either be an Integer or a String) | `1` |
+| **`player_name`** | The ingame name to query against.</br>Name searching must start with exact match. | `''` |
 
 Example:
 
@@ -54,9 +54,10 @@ Example:
 let options = {
 	bracket: '2v2',
 	region: 'eu',
-	page: 3,
+	page: 3, // Or '3'
 }
 ```
+
 **Usage**
 
 Using Promises
@@ -123,6 +124,139 @@ The above function returns JSON structured like this
 ---
 
 ### Players
+
+#### .fetchPlayerStats(brawlhalla_id)
+> *Uses One Brawlhalla API Call*
+
+Retrieves the stats of a specific player.
+
+**Brawlhalla ID**
+
+The brawlhalla ID of a player. Can either be an Integer or a String.
+
+Example:
+
+```js
+let brawlhalla_id = 4281946; // Or '4281946'
+```
+
+**Usage**
+
+Using Promises
+
+```js
+bh_api.fetchPlayerStats(brawlhalla_id)
+    .then(stats => {
+        console.log(stats); // Do stuff
+    })
+    .catch(error => console.error(error));
+```
+
+Using Async/Await
+
+```js
+async function getPlayerStats() {
+    try  {
+        const stats = await bh_api.fetchPlayerStats(brawlhalla_id);
+        console.log(stats); // Do stuff
+    }
+    catch(error) {
+        console.error(error);
+    }
+}
+```
+
+**Output**
+
+The above function returns JSON structured like this
+
+```json
+{
+    "brawlhalla_id": 2,
+    "name": "bmg | dan",
+    "xp": 191718,
+    "level": 47,
+    "xp_percentage": 0.6252398209337,
+    "games": 8,
+    "wins": 2,
+    "damagebomb": "29",
+    "damagemine": "0",
+    "damagespikeball": "0",
+    "damagesidekick": "14",
+    "hitsnowball": 0,
+    "kobomb": 0,
+    "komine": 0,
+    "kospikeball": 0,
+    "kosidekick": 0,
+    "kosnowball": 0,
+    "legends": [
+        {
+            "legend_id": 30,
+            "legend_name_key": "val",
+            "damagedealt": "317",
+            "damagetaken": "458",
+            "kos": 0,
+            "falls": 3,
+            "suicides": 0,
+            "teamkos": 0,
+            "matchtime": 155,
+            "games": 3,
+            "wins": 0,
+            "damageunarmed": "15",
+            "damagethrownitem": "1",
+            "damageweaponone": "77",
+            "damageweapontwo": "224",
+            "damagegadgets": "0",
+            "kounarmed": 0,
+            "kothrownitem": 0,
+            "koweaponone": 0,
+            "koweapontwo": 0,
+            "kogadgets": 0,
+            "timeheldweaponone": 38,
+            "timeheldweapontwo": 97,
+            "xp": 97,
+            "level": 1,
+            "xp_percentage": 0.46190476190476
+        },
+        {
+            "legend_id": 29,
+            "legend_name_key": "wu shang",
+            "damagedealt": "0",
+            "damagetaken": "0",
+            "kos": 0,
+            "falls": 0,
+            "suicides": 0,
+            "teamkos": 0,
+            "matchtime": 0,
+            "games": 0,
+            "wins": 0,
+            "damageunarmed": "0",
+            "damagethrownitem": "0",
+            "damageweaponone": "0",
+            "damageweapontwo": "0",
+            "damagegadgets": "0",
+            "kounarmed": 0,
+            "kothrownitem": 0,
+            "koweaponone": 0,
+            "koweapontwo": 0,
+            "kogadgets": 0,
+            "timeheldweaponone": 0,
+            "timeheldweapontwo": 0,
+            "xp": 260,
+            "level": 2,
+            "xp_percentage": 0.13586956521739
+        }
+    ],
+    "clan": {
+        "clan_name": "Blue Mammoth Games",
+        "clan_id": 1,
+        "clan_xp": "86962",
+        "personal_xp": 4492
+    }
+}
+```
+
+---
 
 ### Clans
 
