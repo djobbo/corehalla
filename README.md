@@ -86,7 +86,8 @@ async function getRankings() {
 
 **Output**
 
-The above function returns JSON structured like this
+<details>
+  <summary>The above function returns JSON structured like this</summary>
 
 ```json
 [
@@ -120,6 +121,8 @@ The above function returns JSON structured like this
     }
 ]
 ```
+
+</details>
 
 ---
 
@@ -167,8 +170,9 @@ async function getPlayerStats() {
 ```
 
 **Output**
+<details>
+  <summary>The above function returns JSON structured like this</summary>
 
-The above function returns JSON structured like this
 
 ```json
 {
@@ -255,6 +259,7 @@ The above function returns JSON structured like this
     }
 }
 ```
+</details>
 
 ---
 
