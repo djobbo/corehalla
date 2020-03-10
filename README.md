@@ -41,10 +41,10 @@ Returns an array of rankings ordered and paginated 50 at a time.
 
 The options object contains 4 fields defining which section of the ranked leaderboard is sent back. Some/all options can be ommited and will be assigned a default value.
 
-| PARAMETER | DESCRIPTION | DEFAULT VALUE |
+| Parameter | Description | Default Value |
 | --- | --- | --- |
 | **`bracket`** | Either `'1v1'` or `'2v2'`. | `'1v1'` |
-| **`region`** | The region from this subset `'us-e'`, `'eu'`, `'sea'`, `'brz'`, `'aus'`, `'us-w'`, `'jpn'`. For Global region, use `'all'`. | `'all'` |
+| **`region`** | The region from this subset `'us-e'`, `'eu'`, `'sea'`, `'brz'`, `'aus'`, `'us-w'`, `'jpn'`.</br>For Global region, use `'all'`. | `'all'` |
 | **`page`** | The page number requested. | `1` |
 | **`player_name`** | The ingame name to query against. Name searching must start with exact match. | `''` |
 
