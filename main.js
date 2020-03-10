@@ -1,209 +1,60 @@
 const axios = require('axios');
+const formatPlayerStats = require('./formatters/playerStats');
 
-module.exports = api_key => {
-	const {
-		fetchPlayerStats,
-		fetchPlayerRanked,
-		fetchAllStats,
-		findPlayerBySteamId,
-		fetchPlayerFormat,
-		fetchLeaderboard,
-		fetchClanStats
-	} = require('./functions');
-	return {
-		fetchPlayerStats: async brawlhalla_id =>
-			fetchPlayerStats(api_key, brawlhalla_id),
+const api = 'https://api.brawlhalla.com';
 
-		fetchPlayerRanked: async brawlhalla_id =>
-			fetchPlayerRanked(api_key, brawlhalla_id),
-
-		fetchAllStats: async brawlhalla_id =>
-			fetchAllStats(api_key, brawlhalla_id),
-
-		findPlayerBySteamId: async steam_id =>
-			findPlayerBySteamId(api_key, steam_id),
-
-		fetchPlayerFormat: async brawlhalla_id =>
-			fetchPlayerFormat(api_key, brawlhalla_id),
-
-		fetchClanStats: async clan_id => fetchClanStats(api_key, clan_id),
-
-		fetchLeaderboard: async options => fetchLeaderboard(api_key, options)
-	};
+const defaultLeaderboardOptions = {
+    bracket: '1v1',
+    region: 'all',
+    page: '1',
+    name: ''
 };
 
-// var legends_data = [];
+const fetchPlayerById = (api_key, dataType) => async brawlhalla_id =>
+    (await axios.get(`${api}/player/${brawlhalla_id}/${dataType}`, {
+        params: { api_key }
+    })).data;
 
-// this.fetchLeaderboardFormat = (
-// 	options = { bracket: '1v1', region: 'all', page: 1, player_name: '' }
-// ) => {
-// 	return new Promise((resolve, reject) => {
-// 		this.fetchLeaderboard(options)
-// 			.then(rankings => {
-// 				parser
-// 					.parseLeaderboard(rankings, options.bracket === '2v2')
-// 					.then(leaderboard => {
-// 						resolve({ options, leaderboard });
-// 					});
-// 			})
-// 			.catch(err => console.log(err));
-// 	});
-// };
+const getBHIdBySteamId = (api_key) => async steamid =>
+    (await axios.get(`${api}/search`, {
+        params: { api_key, steamid }
+    })).data;
 
-// this.fetchCashLeaderboard = () => {
-// 	return new Promise((resolve, reject) => {
-// 		var URI = 'http://www.brawlhalla.com/rankings/cash/';
-// 		rp(URI)
-// 			.then(html => {
-// 				const $ = cheerio.load(html);
-// 				const rows = $('tr').not('#rheader');
-// 				// resolve(data.map(x => parser.parse2v2TeamsStats(x.brawlhalla_id, x.name, x['2v2'])));
-// 				resolve(
-// 					new Array(rows.length).fill({}).map((x, i) => {
-// 						const row = rows.eq(i).children('td');
-// 						return {
-// 							rank: row.eq(1).text(),
-// 							name: row.eq(3).text(),
-// 							earnings: row.eq(4).text()
-// 						};
-// 					})
-// 				);
-// 			})
-// 			.catch(err => console.log(err));
-// 	});
-// };
+const fetchClanById = api_key => async clan_id =>
+    (await axios.get(`${api}/clan/${clan_id}`, {
+        params: { api_key }
+    })).data;
 
-// this.fetchPowerLeaderboard = (bracket = '') => {
-// 	return new Promise((resolve, reject) => {
-// 		var URI = `http://www.brawlhalla.com/rankings/power/${bracket}`;
-// 		rp(URI)
-// 			.then(html => {
-// 				const $ = cheerio.load(html);
-// 				const rows = $('tr').not('#rheader');
-// 				// resolve(data.map(x => parser.parse2v2TeamsStats(x.brawlhalla_id, x.name, x['2v2'])));
-// 				resolve({
-// 					bracket,
-// 					leaderboard: new Array(rows.length)
-// 						.fill({})
-// 						.map((x, i) => {
-// 							const row = rows.eq(i).children('td');
-// 							return {
-// 								rank: row.eq(1).text(),
-// 								name: row.eq(3).text(),
-// 								earnings: row.eq(4).text(),
-// 								top8: row.eq(5).text(),
-// 								top32: row.eq(6).text(),
-// 								gold_medals: row.eq(7).text(),
-// 								silver_medals: row.eq(8).text(),
-// 								bronze_medals: row.eq(9).text()
-// 							};
-// 						})
-// 				});
-// 			})
-// 			.catch(err => console.log(err));
-// 	});
-// };
+const fetchRankings = api_key => async options => {
+    const { bracket, region, page, name } = { ...defaultLeaderboardOptions, ...options };
+    return (await axios.get(`${api}/rankings/${bracket}/${region}/${page}`, {
+        params: { api_key, name }
+    })).data;
+}
 
-// this.fetchPlayerStatsFormat = brawlhalla_id => {
-// 	return new Promise((resolve, reject) => {
-// 		this.fetchPlayerStats(brawlhalla_id)
-// 			.then(player_stats => {
-// 				this.fetchPlayerRanked(brawlhalla_id)
-// 					.then(player_ranked => {
-// 						if ((legends_data = [])) {
-// 							this.fetchStaticLegendData()
-// 								.then(data => {
-// 									legends_data = data;
-// 									parser
-// 										.parsePlayerStats(
-// 											player_stats,
-// 											player_ranked,
-// 											data
-// 										)
-// 										.then(parsed_data => {
-// 											resolve(parsed_data);
-// 										})
-// 										.catch(err => console.log(err));
-// 								})
-// 								.catch(err => console.log(err));
-// 						} else {
-// 							parser
-// 								.parsePlayerStats(
-// 									player_stats,
-// 									player_ranked,
-// 									legends_data
-// 								)
-// 								.then(parsed_data => {
-// 									resolve(parsed_data);
-// 								})
-// 								.catch(err => console.log(err));
-// 						}
-// 					})
-// 					.catch(err => console.log(err));
-// 			})
-// 			.catch(err => console.log(err));
-// 	});
-// };
+const fetchLegendById = api_key => (legend = 'all') =>
+    axios.get(`${api}/legend/${legend}`, {
+        params: { api_key }
+    });
 
-// this.fetchClanStatsFormat = clan_id => {
-// 	return new Promise((resolve, reject) => {
-// 		fetchClanStats(clan_id)
-// 			.then(clan_stats => {
-// 				parser
-// 					.parseClanStats(clan_stats)
-// 					.then(parsed_data => {
-// 						resolve(parsed_data);
-// 					})
-// 					.catch(err => console.log(err));
-// 			})
-// 			.catch(err => console.log(err));
-// 	});
-// };
+module.exports = api_key => {
+    console.log(api_key);
+    const fetchPlayerStats = fetchPlayerById(api_key, 'stats');
+    const fetchPlayerRanked = fetchPlayerById(api_key, 'ranked');
+    const fetchAllStats = brawlhalla_id => Promise.all([
+        fetchPlayerStats(brawlhalla_id),
+        fetchPlayerRanked(brawlhalla_id)
+    ]);
 
-// this.search2v2Teams = (player_name, region = 'all', max = 3) => {
-// 	return new Promise((resolve, reject) => {
-// 		this.findPlayer(player_name, {
-// 			perfect_match: false,
-// 			unique: false,
-// 			region
-// 		})
-// 			.then(players => {
-// 				var playerCount = Math.min(players.length, max);
-// 				Promise.all(
-// 					Array.apply(null, { length: playerCount }).map((e, i) =>
-// 						this.fetchPlayerRanked(players[i].brawlhalla_id)
-// 					)
-// 				).then(data => {
-// 					resolve({
-// 						options: {
-// 							bracket: '2v2',
-// 							region,
-// 							page: '1',
-// 							player_name
-// 						},
-// 						leaderboard: [].concat
-// 							.apply(
-// 								[],
-// 								data.map(x =>
-// 									parser.parse2v2TeamsStats(
-// 										x.brawlhalla_id,
-// 										x.name,
-// 										x['2v2']
-// 									)
-// 								)
-// 							)
-// 							.sort(
-// 								(a, b) =>
-// 									b.rating - a.rating ||
-// 									b.peak_rating - a.peak_rating ||
-// 									b.player_two_name.localeCompare(
-// 										a.player_two_name
-// 									)
-// 							)
-// 					});
-// 				});
-// 			})
-// 			.catch(err => console.log(err));
-// 	});
-// };
-// return this;
+    return {
+        fetchPlayerStats,
+        fetchPlayerRanked,
+        fetchAllStats,
+        fetchPlayerFormat: async brawlhalla_id =>
+            formatPlayerStats(...(await fetchAllStats(brawlhalla_id))),
+        fetchClan: fetchClanById(api_key),
+        fetchRankings: fetchRankings(api_key),
+        fetchLegend: fetchLegendById(api_key),
+        getBHIdBySteamId: getBHIdBySteamId(api_key)
+    }
+};
