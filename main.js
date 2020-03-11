@@ -10,6 +10,7 @@ const defaultLeaderboardOptions = {
     name: ''
 };
 
+// TODO: Correctly handle errors
 const fetchPlayerById = (api_key, dataType) => async brawlhalla_id =>
     (await axios.get(`${api}/player/${brawlhalla_id}/${dataType}`, {
         params: { api_key }
