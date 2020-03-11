@@ -75,24 +75,13 @@ bh_api
 Using Async/Await
 
 ```js
-<<<<<<< HEAD
-async function getRankings() {
+async function getRankings(options) {
 	try {
 		const rankings = await bh_api.fetchRankings(options);
 		console.log(rankings); // Do stuff
 	} catch (error) {
 		console.error(error);
 	}
-=======
-async function getRankings(options) {
-    try  {
-        const rankings = await bh_api.fetchRankings(options);
-        console.log(rankings); // Do stuff
-    }
-    catch(error) {
-        console.error(error);
-    }
->>>>>>> c1f85fbf625f630e15feca190981bef0df01be71
 }
 ```
 
