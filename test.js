@@ -1,7 +1,6 @@
-const bh_api = require('./main')(process.env.BRAWLHALLA_API_KEY);
+const legends = require('./data/legends.json');
 const fs = require('fs');
-
-bh_api
-	.fetchPlayerFormat(4281946)
-	.then(p => fs.writeFileSync('data.json', JSON.stringify(p, null, 4)))
-	.catch(console.error);
+fs.writeFileSync(
+	'./legends.md',
+	legends.reduce((acc, l) => `${acc}  \n **${l.name}**: ${l.id}`, '')
+);
