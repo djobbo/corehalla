@@ -1,5 +1,6 @@
 const axios = require('axios');
 const formatPlayerStats = require('./formatters/playerStats');
+const formatClanStats = require('./formatters/clan');
 
 const api = 'https://api.brawlhalla.com';
 
@@ -65,6 +66,8 @@ module.exports = api_key => {
 		fetchPlayerFormat: async brawlhalla_id =>
 			formatPlayerStats(...(await fetchAllStats(brawlhalla_id))),
 		fetchClan: fetchClanById(api_key),
+		fetchClanFormat: async clan_id =>
+			formatClanStats(await fetchClanById(clan_id)),
 		fetchRankings: fetchRankings(api_key),
 		fetchLegend: fetchLegendById(api_key),
 		getBHIdBySteamId: getBHIdBySteamId(api_key)

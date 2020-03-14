@@ -1,6 +1,8 @@
-const legends = require('./data/legends.json');
+const clanFormat = require('./formatters/clan');
+
+const clanData = require('./test-data/Clan.json');
+
+console.log(clanFormat(clanData).members.officer[2]);
+
 const fs = require('fs');
-fs.writeFileSync(
-	'./legends.md',
-	legends.reduce((acc, l) => `${acc}  \n **${l.name}**: ${l.id}`, '')
-);
+fs.writeFileSync('Clan.json', JSON.stringify(clanFormat(clanData), null, 4));
