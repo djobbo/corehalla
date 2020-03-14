@@ -19,7 +19,7 @@
 		"dev": "dotenv nodemon test.js",
 		"test": "dotenv node test.js"
 	},
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Corehalla/corehalla.js.git"
