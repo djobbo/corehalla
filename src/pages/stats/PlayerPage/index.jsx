@@ -6,7 +6,8 @@ import SectionOverview from './SectionOverview';
 import SectionOverallStats from './SectionOverallStats';
 import SectionRanked2v2 from './SectionRanked2v2';
 import SectionLegends from './SectionLegends';
-import SectionWeapons from './SeectionWeapons/SectionWeapons';
+import SectionWeapons from './SectionWeapons';
+import SectionClan from './SectionClan';
 
 import Loader from '../../../components/Loader';
 
@@ -22,7 +23,6 @@ export default ({ match }) => {
 	);
 
 	const [loading, setLoading] = useState(true);
-	const [loadingFailed, setLoadingFailed] = useState(false);
 	const [playerStats, setPlayerStats] = useState({});
 
 	useEffect(() => {
@@ -34,7 +34,7 @@ export default ({ match }) => {
 	}, []);
 
 	const section = (() => {
-		if (loading) return <></>;
+		if (loading) return '';
 		switch (activePage) {
 			case 'teams':
 				return <SectionRanked2v2 teams={playerStats.teams} />;
@@ -58,6 +58,11 @@ export default ({ match }) => {
 								)[0]
 							}
 						/>
+						{playerStats.clan ? (
+							<SectionClan clan={playerStats.clan} />
+						) : (
+							''
+						)}
 						<SectionOverallStats playerStats={playerStats} />
 					</>
 				);

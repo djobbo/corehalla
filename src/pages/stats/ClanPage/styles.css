@@ -1,0 +1,7 @@
+.clan-members-container {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (minmax(240px, 1fr))[auto-fill];
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+/*# sourceMappingURL=styles.css.map */

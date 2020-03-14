@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import './styles.css';
 
@@ -12,9 +13,9 @@ function TopBar() {
 		<div className='topbar'>
 			<div className='topbar-nav'>
 				<div className='logo'>
-					<a href='/'>
+					<Link to='/'>
 						<img src={Logo} alt='Logo' />
-					</a>
+					</Link>
 				</div>
 				<div className='searchbox'>
 					<i>
@@ -25,7 +26,7 @@ function TopBar() {
 				<nav>
 					<ul>
 						<li>
-							<a href='/'>Rankings</a>
+							<Link to='/rankings'>Rankings</Link>
 						</li>
 						<li>
 							<a href='/'>

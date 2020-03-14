@@ -1,4 +1,4 @@
-function formatTime(s) {
+export default function formatTime(s) {
 	let timeLeft = s;
 
 	let h = Math.floor(timeLeft / 3600);
@@ -8,5 +8,3 @@ function formatTime(s) {
 	timeLeft -= m * 60;
 	return `${h}h ${m}m ${timeLeft}s`;
 }
-
-export default formatTime;

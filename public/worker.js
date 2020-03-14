@@ -15,12 +15,15 @@ self.addEventListener('install', event => {
 // Cache and return requests
 self.addEventListener('fetch', event => {
 	event.respondWith(
-		caches.match(event.request).then(function(response) {
-			// Cache hit - return response
-			if (response) {
-				return response;
-			}
-			return fetch(event.request);
+		caches.open('corehalla-dynamic').then(cache => {
+			return cache.match(event.request).then(
+				response =>
+					response ||
+					fetch(event.request).then(response => {
+						cache.put(event.request, response.clone());
+						return response;
+					})
+			);
 		})
 	);
 });
@@ -31,11 +34,13 @@ self.addEventListener('activate', event => {
 	event.waitUntil(
 		caches.keys().then(cacheNames => {
 			return Promise.all(
-				cacheNames.map(cacheName => {
-					if (cacheWhitelist.indexOf(cacheName) === -1) {
-						return caches.delete(cacheName);
-					}
-				})
+				cacheNames.reduce(
+					(acc, cacheName) =>
+						cacheWhitelist.indexOf(cacheName) === -1
+							? [...acc, caches.delete(cacheName)]
+							: acc,
+					[]
+				)
 			);
 		})
 	);
