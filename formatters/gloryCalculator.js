@@ -1,3 +1,5 @@
+const { rankedTiers } = require('../data/static-data');
+
 const getGloryFromWins = wins =>
 	wins <= 150
 		? 20 * wins
@@ -31,9 +33,12 @@ const getPersonalRatingSquash = rating =>
 		? Math.floor(1400 + (rating - 1400.0) / (3.0 - (3000 - rating) / 800.0))
 		: rating;
 
+const getTierFromRating = rating => rankedTiers.find((r, i) => rating >= r[1]);
+
 module.exports = {
 	getGloryFromWins,
 	getGloryFromBestRating,
 	getHeroRatingSquash,
-	getPersonalRatingSquash
+	getPersonalRatingSquash,
+	getTierFromRating
 };

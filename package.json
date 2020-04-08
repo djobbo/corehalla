@@ -17,7 +17,7 @@
 	"name": "corehalla.js",
 	"scripts": {
 		"dev": "dotenv nodemon test.js",
-		"test": "dotenv node test.js"
+		"test": "jest --coverage"
 	},
 	"version": "0.0.3",
 	"repository": {
@@ -25,6 +25,7 @@
 		"url": "https://github.com/Corehalla/corehalla.js.git"
 	},
 	"devDependencies": {
+		"jest": "^25.1.0",
 		"nodemon": "^2.0.2"
 	}
 }
