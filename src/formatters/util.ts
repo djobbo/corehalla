@@ -1,4 +1,4 @@
-exports.cleanString = str => {
+export const cleanString = (str: string) => {
 	try {
 		return decodeURIComponent(escape(str));
 	} catch (e) {

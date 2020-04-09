@@ -1,11 +1,11 @@
-const { rankedTiers } = require('../data/static-data');
+import { rankedTiers } from '../data/static-data';
 
-const getGloryFromWins = wins =>
+export const getGloryFromWins = (wins: number) =>
 	wins <= 150
 		? 20 * wins
 		: Math.floor(10 * (45 * Math.pow(Math.log10(wins * 2), 2)) + 245);
 
-const getGloryFromBestRating = rating =>
+export const getGloryFromBestRating = (rating: number) =>
 	Math.floor(
 		(() => {
 			if (rating < 1200) return 250;
@@ -23,22 +23,16 @@ const getGloryFromBestRating = rating =>
 		})()
 	);
 
-const getHeroRatingSquash = rating =>
+export const getHeroRatingSquash = (rating: number) =>
 	rating < 2000
 		? Math.floor((rating + 375) / 1.5)
 		: Math.floor(1583 + (rating - 2000) / 10);
 
-const getPersonalRatingSquash = rating =>
+export const getPersonalRatingSquash = (rating: number) =>
 	rating >= 1400
 		? Math.floor(1400 + (rating - 1400.0) / (3.0 - (3000 - rating) / 800.0))
 		: rating;
 
-const getTierFromRating = rating => rankedTiers.find((r, i) => rating >= r[1]);
-
-module.exports = {
-	getGloryFromWins,
-	getGloryFromBestRating,
-	getHeroRatingSquash,
-	getPersonalRatingSquash,
-	getTierFromRating
-};
+export const getTierFromRating = (rating: number) =>
+	rankedTiers.find((r) => rating >= r[1]) ||
+	rankedTiers[rankedTiers.length - 1];

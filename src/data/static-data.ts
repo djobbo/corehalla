@@ -1,8 +1,20 @@
-exports.staticLegendsData = require('./legends.json');
+import legends from './legends';
 
-exports.regions = ['', '', 'US-E', 'EU', 'SEA', 'BRZ', 'AUS', 'US-W', 'JPN'];
+export const staticLegendsData = legends;
 
-exports.defaultLegendStats = {
+export const regions: corehalla.RankedRegion[] = [
+	'US-E',
+	'EU',
+	'SEA',
+	'BRZ',
+	'AUS',
+	'US-W',
+	'JPN',
+];
+
+export const defaultLegendStats: corehalla.ILegendStats = {
+	legend_id: 0,
+	legend_name_key: '',
 	damagedealt: '0',
 	damagetaken: '0',
 	kos: 0,
@@ -26,18 +38,20 @@ exports.defaultLegendStats = {
 	timeheldweapontwo: 0,
 	xp: 0,
 	level: 1,
-	xp_percentage: 0
+	xp_percentage: 0,
 };
 
-exports.defaultLegendSeason = {
+export const defaultLegendSeason: corehalla.ILegendRanked = {
+	legend_id: 0,
+	legend_name_key: '',
 	rating: 750,
 	peak_rating: 750,
 	tier: 'Tin 0',
 	wins: 0,
-	games: 0
+	games: 0,
 };
 
-exports.defaultWeaponStats = {
+export const defaultWeaponStats: corehalla.IWeaponStatsFormat = {
 	level: 0,
 	xp: 0,
 	matchtime: 0,
@@ -50,11 +64,31 @@ exports.defaultWeaponStats = {
 		best_rating: 0,
 		peak_rating: 750,
 		games: 0,
-		wins: 0
-	}
+		wins: 0,
+	},
+	legends: [],
 };
 
-exports.rankedTiers = [
+export const staticWeaponsData: {
+	[k in corehalla.Weapon]: corehalla.IWeaponStatsFormat;
+} = {
+	Hammer: defaultWeaponStats,
+	Sword: defaultWeaponStats,
+	Blasters: defaultWeaponStats,
+	'Rocket Lance': defaultWeaponStats,
+	Spear: defaultWeaponStats,
+	Katars: defaultWeaponStats,
+	Axe: defaultWeaponStats,
+	Bow: defaultWeaponStats,
+	Gauntlets: defaultWeaponStats,
+	Scythe: defaultWeaponStats,
+	Cannon: defaultWeaponStats,
+	Orb: defaultWeaponStats,
+};
+
+type RankedTier = [corehalla.RankedTier, number];
+
+export const rankedTiers: RankedTier[] = [
 	['Diamond', 2000],
 	['Platinum 5', 1936],
 	['Platinum 4', 1872],
@@ -84,5 +118,5 @@ exports.rankedTiers = [
 	['Tin 3', 796],
 	['Tin 2', 758],
 	['Tin 1', 720],
-	['Tin 0', 200]
+	['Tin 0', 200],
 ];
