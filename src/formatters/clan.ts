@@ -1,10 +1,10 @@
-export function sortClanMembers(members: corehalla.IClanMember[]) {
+export function sortClanMembers(members: IClanMember[]) {
 	return members.reduce<{
 		members: {
-			Leader: corehalla.IClanMember[];
-			Officer: corehalla.IClanMember[];
-			Member: corehalla.IClanMember[];
-			Recruit: corehalla.IClanMember[];
+			Leader: IClanMember[];
+			Officer: IClanMember[];
+			Member: IClanMember[];
+			Recruit: IClanMember[];
 		};
 		xpInClan: number;
 	}>(
@@ -25,10 +25,7 @@ export function sortClanMembers(members: corehalla.IClanMember[]) {
 	);
 }
 
-export default function formatClan({
-	clan: members,
-	...clan
-}: corehalla.IClan): corehalla.IClanFormat {
+export function formatClan({ clan: members, ...clan }: IClan): IClanFormat {
 	return {
 		...clan,
 		memberCount: members.length,

@@ -1,4 +1,6 @@
 const path = require('path');
+const DeclarationBundlerPlugin = require('declaration-bundler-webpack-plugin');
+const BundleTSDec = require('./plugins/BundleTSDec');
 
 const generateConfig = (name) => ({
 	mode: 'production',
@@ -9,21 +11,25 @@ const generateConfig = (name) => ({
 		sourceMapFilename: name + '.map',
 		library: 'corehalla',
 		libraryTarget: 'umd',
-		umdNamedDefine: true,
+		globalObject: 'this',
 	},
 	devtool: 'source-map',
 	module: {
 		rules: [
 			{
 				test: /\.ts$/,
-				loader: 'awesome-typescript-loader',
+				loader: 'ts-loader',
 				exclude: /node_modules/,
-				query: {
-					declaration: false,
-				},
 			},
 		],
 	},
+	plugins: [
+		new BundleTSDec({
+			moduleName: 'corehalla',
+			output: './corehalla.d.ts',
+			globalDeclaration: true,
+		}),
+	],
 	resolve: {
 		extensions: ['.ts', '.js'],
 	},

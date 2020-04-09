@@ -16,10 +16,10 @@ import {
 	defaultWeaponStats,
 } from '../data/static-data';
 
-export default function formatPlayerStats(
-	playerStats: corehalla.IPlayerStats,
-	playerRanked: corehalla.IPlayerRanked
-): corehalla.IPlayerStatsFormat {
+export function formatPlayerStats(
+	playerStats: IPlayerStats,
+	playerRanked: IPlayerRanked
+): IPlayerStatsFormat {
 	const {
 		legends: legendsStats,
 		clan: clanStats,
@@ -55,13 +55,13 @@ export default function formatPlayerStats(
 }
 
 export function formatLegendsAndWeaponsStats(
-	staticLegendsData: corehalla.IStaticLegendData[],
-	legendsStats: corehalla.ILegendStats[],
-	legendsRanked: corehalla.ILegendRanked[]
+	staticLegendsData: IStaticLegendData[],
+	legendsStats: ILegendStats[],
+	legendsRanked: ILegendRanked[]
 ) {
 	const { legends, weapons } = staticLegendsData.reduce<{
-		legends: corehalla.ILegendStatsFormat[];
-		weapons: { [k in corehalla.Weapon]: corehalla.IWeaponStatsFormat };
+		legends: ILegendStatsFormat[];
+		weapons: { [k in Weapon]: IWeaponStatsFormat };
 	}>(
 		(acc, staticLegend) => {
 			const legendFormat = formatLegendStats(
@@ -107,8 +107,8 @@ const weaponProps: {
 
 export function addWeaponStats(
 	weaponID: 0 | 1,
-	weapons: { [k in corehalla.Weapon]: corehalla.IWeaponStatsFormat },
-	legendFormat: corehalla.ILegendStatsFormat
+	weapons: { [k in Weapon]: IWeaponStatsFormat },
+	legendFormat: ILegendStatsFormat
 ) {
 	const weaponName = legendFormat[weaponProps[weaponID].name];
 	return {
@@ -124,17 +124,17 @@ export function addWeaponStats(
 }
 
 export function formatLegendStats(
-	staticLegend: corehalla.IStaticLegendData,
+	staticLegend: IStaticLegendData,
 	{
 		legend_id: _sid,
 		legend_name_key: _slnk,
 		...legendStats
-	}: corehalla.ILegendStats = defaultLegendStats,
+	}: ILegendStats = defaultLegendStats,
 	{
 		legend_id: rid,
 		legend_name_key: _rlnk,
 		...legendRanked
-	}: corehalla.ILegendRanked = defaultLegendSeason
+	}: ILegendRanked = defaultLegendSeason
 ) {
 	return {
 		...legendStats,
@@ -149,9 +149,9 @@ export function formatLegendStats(
 }
 
 export function getSeasonStats(
-	seasonStats: corehalla.IPlayerSeason,
-	teamsStats: corehalla.I2v2Team[],
-	legendsRanked: corehalla.ILegendRanked[]
+	seasonStats: IPlayerSeason,
+	teamsStats: I2v2Team[],
+	legendsRanked: ILegendRanked[]
 ) {
 	const total_wins =
 		seasonStats.wins + teamsStats.reduce((acc, t) => acc + t.wins, 0);
@@ -173,9 +173,9 @@ export function getSeasonStats(
 }
 
 export function filterWeaponStats(
-	legendFormat: corehalla.ILegendStatsFormat,
+	legendFormat: ILegendStatsFormat,
 	weaponID: 0 | 1
-): corehalla.IWeaponLegendFormat {
+): IWeaponLegendFormat {
 	const { damage, ko, timeheld } = weaponProps[weaponID];
 	const {
 		id,
@@ -209,10 +209,10 @@ export function filterWeaponStats(
 	};
 }
 
-export function formatWeaponStats(weapons: corehalla.IWeaponStatsFormat[]) {
+export function formatWeaponStats(weapons: IWeaponStatsFormat[]) {
 	return weapons.map((w) => ({
 		...w,
-		...w.legends.reduce<corehalla.IWeaponStatsFormat>(
+		...w.legends.reduce<IWeaponStatsFormat>(
 			(acc, l) => ({
 				level: l.level + acc.level,
 				xp: l.xp + acc.xp,
@@ -242,10 +242,7 @@ export function formatWeaponStats(weapons: corehalla.IWeaponStatsFormat[]) {
 	}));
 }
 
-export function formatTeamsStats(
-	playerID: number,
-	teamsStats: corehalla.I2v2Team[]
-) {
+export function formatTeamsStats(playerID: number, teamsStats: I2v2Team[]) {
 	return teamsStats.map(
 		({
 			brawlhalla_id_one,

@@ -1,11 +1,10 @@
 import axios from 'axios';
-import formatPlayerStats from './formatters/playerStats';
-import formatClanStats from './formatters/clan';
-import formatClan from './formatters/clan';
+import { formatPlayerStats } from './formatters/playerStats';
+import { formatClan } from './formatters/clan';
 
 const api = 'https://api.brawlhalla.com';
 
-const defaultLeaderboardOptions: corehalla.IRankingsOptions = {
+const defaultLeaderboardOptions: IRankingsOptions = {
 	bracket: '1v1',
 	region: 'all',
 	page: '1',
@@ -28,7 +27,7 @@ const getBHIdBySteamId = (api_key: string) => (steamid: string) =>
 
 const fetchClanById = (api_key: string) => (clan_id: string | number) =>
 	axios
-		.get<corehalla.IClan>(`${api}/clan/${clan_id}?api_key=${api_key}`)
+		.get<IClan>(`${api}/clan/${clan_id}?api_key=${api_key}`)
 		.then(({ data }) => data);
 
 const fetchRankings = (api_key: string) => ({
@@ -36,23 +35,17 @@ const fetchRankings = (api_key: string) => ({
 	region,
 	page,
 	name,
-}: corehalla.IRankingsOptions = defaultLeaderboardOptions) =>
+}: IRankingsOptions = defaultLeaderboardOptions) =>
 	axios
-		.get<corehalla.IRanking[]>(
+		.get<IRanking[]>(
 			`${api}/rankings/${bracket}/${region}/${page}?name=${name}&api_key=${api_key}`
 		)
 		.then(({ data }) => data);
 
-export default (api_key: string) => {
-	const fetchPlayerStats = fetchPlayerById<corehalla.IPlayerStats>(
-		api_key,
-		'stats'
-	);
+const setupApiKey = (api_key: string) => {
+	const fetchPlayerStats = fetchPlayerById<IPlayerStats>(api_key, 'stats');
 
-	const fetchPlayerRanked = fetchPlayerById<corehalla.IPlayerRanked>(
-		api_key,
-		'ranked'
-	);
+	const fetchPlayerRanked = fetchPlayerById<IPlayerRanked>(api_key, 'ranked');
 
 	const fetchClan = fetchClanById(api_key);
 
@@ -77,3 +70,5 @@ export default (api_key: string) => {
 		getBHIdBySteamId: getBHIdBySteamId(api_key),
 	};
 };
+
+export default setupApiKey;

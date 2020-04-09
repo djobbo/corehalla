@@ -1,4 +1,4 @@
-const legends: corehalla.IStaticLegendData[] = [
+export const legends: IStaticLegendData[] = [
 	{
 		id: 3,
 		name: 'Bödvar',
@@ -288,5 +288,3 @@ const legends: corehalla.IStaticLegendData[] = [
 		weapon_two: 'Scythe',
 	},
 ];
-
-export default legends;

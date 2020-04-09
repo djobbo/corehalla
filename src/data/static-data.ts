@@ -1,8 +1,8 @@
-import legends from './legends';
+import { legends } from './legends';
 
 export const staticLegendsData = legends;
 
-export const regions: corehalla.RankedRegion[] = [
+export const regions: RankedRegion[] = [
 	'US-E',
 	'EU',
 	'SEA',
@@ -12,7 +12,7 @@ export const regions: corehalla.RankedRegion[] = [
 	'JPN',
 ];
 
-export const defaultLegendStats: corehalla.ILegendStats = {
+export const defaultLegendStats: ILegendStats = {
 	legend_id: 0,
 	legend_name_key: '',
 	damagedealt: '0',
@@ -41,7 +41,7 @@ export const defaultLegendStats: corehalla.ILegendStats = {
 	xp_percentage: 0,
 };
 
-export const defaultLegendSeason: corehalla.ILegendRanked = {
+export const defaultLegendSeason: ILegendRanked = {
 	legend_id: 0,
 	legend_name_key: '',
 	rating: 750,
@@ -51,7 +51,7 @@ export const defaultLegendSeason: corehalla.ILegendRanked = {
 	games: 0,
 };
 
-export const defaultWeaponStats: corehalla.IWeaponStatsFormat = {
+export const defaultWeaponStats: IWeaponStatsFormat = {
 	level: 0,
 	xp: 0,
 	matchtime: 0,
@@ -70,7 +70,7 @@ export const defaultWeaponStats: corehalla.IWeaponStatsFormat = {
 };
 
 export const staticWeaponsData: {
-	[k in corehalla.Weapon]: corehalla.IWeaponStatsFormat;
+	[k in Weapon]: IWeaponStatsFormat;
 } = {
 	Hammer: defaultWeaponStats,
 	Sword: defaultWeaponStats,
@@ -86,9 +86,9 @@ export const staticWeaponsData: {
 	Orb: defaultWeaponStats,
 };
 
-type RankedTier = [corehalla.RankedTier, number];
+type RankedTierThreshold = [RankedTier, number];
 
-export const rankedTiers: RankedTier[] = [
+export const rankedTiers: RankedTierThreshold[] = [
 	['Diamond', 2000],
 	['Platinum 5', 1936],
 	['Platinum 4', 1872],
