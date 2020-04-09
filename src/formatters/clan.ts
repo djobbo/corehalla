@@ -1,5 +1,5 @@
-const sortClanMembers = (members: corehalla.IClanMember[]) =>
-	members.reduce<{
+export function sortClanMembers(members: corehalla.IClanMember[]) {
+	return members.reduce<{
 		members: {
 			Leader: corehalla.IClanMember[];
 			Officer: corehalla.IClanMember[];
@@ -8,8 +8,8 @@ const sortClanMembers = (members: corehalla.IClanMember[]) =>
 		};
 		xpInClan: number;
 	}>(
-		(acc, { rank, ...p }) => {
-			acc.members[rank].push(p);
+		(acc, p) => {
+			acc.members[p.rank].push(p);
 			acc.xpInClan += p.xp || 0;
 			return acc;
 		},
@@ -23,11 +23,15 @@ const sortClanMembers = (members: corehalla.IClanMember[]) =>
 			xpInClan: 0,
 		}
 	);
+}
 
-const formatClan = ({ clan: members, ...clan }: corehalla.IClan) => ({
-	...clan,
-	memberCount: members.length,
-	...sortClanMembers(members),
-});
-
-export default formatClan;
+export default function formatClan({
+	clan: members,
+	...clan
+}: corehalla.IClan): corehalla.IClanFormat {
+	return {
+		...clan,
+		memberCount: members.length,
+		...sortClanMembers(members),
+	};
+}

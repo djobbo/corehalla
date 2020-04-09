@@ -1,7 +1,11 @@
+const webpack = require('webpack');
+const path = require('path');
+
 module.exports = {
+	mode: 'production',
 	entry: {
-		corehalla: './src/index.ts',
-		'corehalla.min': './src/index.ts',
+		corehalla: './src/main.ts',
+		'corehalla.min': './src/main.ts',
 	},
 	output: {
 		path: path.resolve(__dirname, '_bundles'),
@@ -14,15 +18,8 @@ module.exports = {
 		extensions: ['.ts', '.js'],
 	},
 	devtool: 'source-map',
-	plugins: [
-		new webpack.optimize.UglifyJsPlugin({
-			minimize: true,
-			sourceMap: true,
-			include: /\.min\.js$/,
-		}),
-	],
 	module: {
-		loaders: [
+		rules: [
 			{
 				test: /\.ts$/,
 				loader: 'awesome-typescript-loader',
@@ -32,5 +29,8 @@ module.exports = {
 				},
 			},
 		],
+	},
+	optimization: {
+		minimize: true,
 	},
 };

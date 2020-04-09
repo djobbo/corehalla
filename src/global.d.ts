@@ -349,4 +349,19 @@ declare namespace corehalla {
 		timeheldweapon: number;
 		season: ILegendSeasonFormat;
 	}
+
+	interface IClanFormat {
+		clan_id: number;
+		clan_name: string;
+		clan_create_date: number;
+		clan_xp: string;
+		memberCount: number;
+		members: {
+			Leader: IClanMember[];
+			Officer: IClanMember[];
+			Member: IClanMember[];
+			Recruit: IClanMember[];
+		};
+		xpInClan: number;
+	}
 }

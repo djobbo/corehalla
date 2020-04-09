@@ -16,7 +16,7 @@ import {
 	defaultWeaponStats,
 } from '../data/static-data';
 
-export function formatPlayerStats(
+export default function formatPlayerStats(
 	playerStats: corehalla.IPlayerStats,
 	playerRanked: corehalla.IPlayerRanked
 ): corehalla.IPlayerStatsFormat {
