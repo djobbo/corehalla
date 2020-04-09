@@ -14,9 +14,9 @@ function BundleTSDec({
 	this.generateCombinedDeclaration = (declarationFiles) => {
 		let declarations = Object.entries(declarationFiles).reduce(
 			(acc, [_, data]) => {
-				var lines = data.source().split('\n');
+				const lines = data.source().split('\n');
 				if (!lines) return acc;
-				var i = lines.length - 1;
+				let i = lines.length - 1;
 
 				while (i--) {
 					const line = lines[i];

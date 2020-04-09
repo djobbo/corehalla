@@ -20,9 +20,8 @@
 	"name": "corehalla.js",
 	"scripts": {
 		"test": "jest --coverage",
-		"clean": "rm -rf dist lib lib-esm",
-		"build": "npm run clean && tsc && tsc -m es6 --outDir lib-esm && webpack",
-		"build:dev": "npm run clean && webpack"
+		"clean": "rm -rf dist lib",
+		"build": "npm run clean && webpack"
 	},
 	"version": "0.0.3",
 	"repository": {
