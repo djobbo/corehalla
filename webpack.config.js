@@ -1,21 +1,15 @@
-const webpack = require('webpack');
 const path = require('path');
 
-module.exports = {
+const generateConfig = (name) => ({
 	mode: 'production',
-	entry: {
-		corehalla: './src/main.ts',
-		'corehalla.min': './src/main.ts',
-	},
+	entry: './src/main.ts',
 	output: {
-		path: path.resolve(__dirname, '_bundles'),
-		filename: '[name].js',
+		path: path.resolve(__dirname, 'dist'),
+		filename: name + '.js',
+		sourceMapFilename: name + '.map',
+		library: 'corehalla',
 		libraryTarget: 'umd',
-		library: 'Corehalla',
 		umdNamedDefine: true,
-	},
-	resolve: {
-		extensions: ['.ts', '.js'],
 	},
 	devtool: 'source-map',
 	module: {
@@ -30,7 +24,12 @@ module.exports = {
 			},
 		],
 	},
-	optimization: {
-		minimize: true,
+	resolve: {
+		extensions: ['.ts', '.js'],
 	},
-};
+	optimization: {
+		minimize: name.indexOf('min') > -1,
+	},
+});
+
+module.exports = ['corehalla', 'corehalla.min'].map(generateConfig);

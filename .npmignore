@@ -1,0 +1,11 @@
+*
+
+!dist/*
+!lib/*
+!lib-esm/*
+
+!package.json
+
+!README.md
+
+.env
