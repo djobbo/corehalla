@@ -1,47 +1,44 @@
 {
-  "author": {
-    "name": "Alfie"
-  },
-  "dependencies": {
-    "axios": "^0.19.2"
-  },
-  "description": "Brawlhalla API Wrapper for Node.js, provided by corehalla.com.",
-  "keywords": [
-    "Brawlhalla",
-    "API",
-    "Wrapper",
-    "Corehalla"
-  ],
-  "license": "ISC",
-  "main": "dist/main.js",
-  "types": "dist/main.d.ts",
-  "name": "corehalla.js",
-  "scripts": {
-    "test": "jest --coverage",
-    "clean": "rm -rf dist lib",
-    "build": "npm run clean && tsc",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
-    "lint": "tslint -p tsconfig.json"
-  },
-  "version": "0.0.3",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Corehalla/corehalla.js.git"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/plugin-proposal-pipeline-operator": "^7.8.3",
-    "@babel/preset-env": "^7.9.5",
-    "@babel/preset-typescript": "^7.9.0",
-    "@types/node": "^13.11.1",
-    "babel-loader": "^8.1.0",
-    "jest": "^25.1.0",
-    "prettier": "^2.0.4",
-    "ts-loader": "^6.2.2",
-    "tslint": "^6.1.1",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.8.3",
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11"
-  }
+    "author": {
+        "name": "Alfie"
+    },
+    "dependencies": {
+        "axios": "^0.19.2"
+    },
+    "description": "Brawlhalla API Wrapper for Node.js, provided by corehalla.com.",
+    "keywords": [
+        "Brawlhalla",
+        "API",
+        "Wrapper",
+        "Corehalla"
+    ],
+    "license": "ISC",
+    "main": "dist/main.js",
+    "types": "dist/main.d.ts",
+    "name": "corehalla.js",
+    "scripts": {
+        "test": "jest --coverage",
+        "clean": "rm -rf dist lib",
+        "build": "npm run clean && tsc",
+        "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+        "lint": "tslint -p tsconfig.json"
+    },
+    "version": "0.0.3",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Corehalla/corehalla.js.git"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.9.0",
+        "@babel/preset-env": "^7.9.5",
+        "@babel/preset-typescript": "^7.9.0",
+        "@types/node": "^13.11.1",
+        "babel-loader": "^8.1.0",
+        "jest": "^25.1.0",
+        "prettier": "^2.0.4",
+        "ts-loader": "^6.2.2",
+        "tslint": "^6.1.1",
+        "tslint-config-prettier": "^1.18.0",
+        "typescript": "^3.8.3"
+    }
 }
