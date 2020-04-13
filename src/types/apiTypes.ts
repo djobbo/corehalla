@@ -142,5 +142,6 @@ export interface IRanking {
     wins: number;
     region: RankedRegion;
     peak_rating: number;
+    twitch_name?: string;
 }
 //#endregion
