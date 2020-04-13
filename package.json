@@ -19,7 +19,7 @@
 	"scripts": {
 		"test": "jest --coverage",
 		"clean": "rm -rf dist lib",
-		"build": "npm run clean && webpack"
+		"build": "npm run clean && tsc"
 	},
 	"version": "0.0.3",
 	"repository": {
@@ -27,7 +27,12 @@
 		"url": "https://github.com/Corehalla/corehalla.js.git"
 	},
 	"devDependencies": {
+		"@babel/core": "^7.9.0",
+		"@babel/plugin-proposal-pipeline-operator": "^7.8.3",
+		"@babel/preset-env": "^7.9.5",
+		"@babel/preset-typescript": "^7.9.0",
 		"@types/node": "^13.11.1",
+		"babel-loader": "^8.1.0",
 		"jest": "^25.1.0",
 		"ts-loader": "^6.2.2",
 		"typescript": "^3.8.3",

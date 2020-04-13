@@ -2,7 +2,7 @@ const path = require('path');
 
 const generateConfig = (name) => ({
 	mode: 'production',
-	entry: './src/main.ts',
+	entry: './dist/main.js',
 	output: {
 		path: path.resolve(__dirname, 'dist'),
 		filename: name + '.js',
@@ -16,7 +16,7 @@ const generateConfig = (name) => ({
 		rules: [
 			{
 				test: /\.ts$/,
-				loader: 'ts-loader',
+				loader: 'babel-loader',
 				exclude: /node_modules/,
 			},
 		],
