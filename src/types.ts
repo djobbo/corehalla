@@ -1,4 +1,4 @@
-type RankedTier =
+export type RankedTier =
 	| 'Diamond'
 	| 'Platinum 5'
 	| 'Platinum 4'
@@ -30,7 +30,7 @@ type RankedTier =
 	| 'Tin 1'
 	| 'Tin 0';
 
-type RankedRegion =
+export type RankedRegion =
 	| 'all'
 	| 'ALL'
 	| 'us-e'
@@ -48,14 +48,14 @@ type RankedRegion =
 	| 'jpn'
 	| 'JPN';
 
-interface IRankingsOptions {
+export interface IRankingsOptions {
 	bracket?: '1v1' | '2v2';
 	region?: RankedRegion;
 	page?: string | number;
 	name?: string;
 }
 
-interface ILegendStats {
+export interface ILegendStats {
 	legend_id: number;
 	legend_name_key: string;
 	damagedealt: string;
@@ -84,14 +84,14 @@ interface ILegendStats {
 	xp_percentage: number;
 }
 
-interface IPlayerClan {
+export interface IPlayerClan {
 	clan_name: string;
 	clan_id: number;
 	clan_xp: string;
 	personal_xp: number;
 }
 
-interface IPlayerStats {
+export interface IPlayerStats {
 	brawlhalla_id: number;
 	name: string;
 	xp: number;
@@ -113,7 +113,7 @@ interface IPlayerStats {
 	clan: IPlayerClan;
 }
 
-interface ILegendRanked {
+export interface ILegendRanked {
 	legend_id: number;
 	legend_name_key: string;
 	rating: number;
@@ -123,7 +123,7 @@ interface ILegendRanked {
 	games: number;
 }
 
-interface I2v2Team {
+export interface I2v2Team {
 	brawlhalla_id_one: number;
 	brawlhalla_id_two: number;
 	rating: number;
@@ -136,7 +136,7 @@ interface I2v2Team {
 	global_rank: number;
 }
 
-interface IPlayerSeason {
+export interface IPlayerSeason {
 	rating: number;
 	peak_rating: number;
 	tier: RankedTier;
@@ -145,7 +145,7 @@ interface IPlayerSeason {
 	region: RankedRegion;
 }
 
-interface IPlayerRanked extends IPlayerSeason {
+export interface IPlayerRanked extends IPlayerSeason {
 	name: string;
 	brawlhalla_id: number;
 	global_rank: number;
@@ -154,9 +154,9 @@ interface IPlayerRanked extends IPlayerSeason {
 	'2v2': I2v2Team[];
 }
 
-type ClanRank = 'Leader' | 'Officer' | 'Member' | 'Recruit';
+export type ClanRank = 'Leader' | 'Officer' | 'Member' | 'Recruit';
 
-interface IClanMember {
+export interface IClanMember {
 	brawlhalla_id: number;
 	name: string;
 	rank: ClanRank;
@@ -164,7 +164,7 @@ interface IClanMember {
 	xp: number;
 }
 
-interface IClan {
+export interface IClan {
 	clan_id: number;
 	clan_name: string;
 	clan_create_date: number;
@@ -172,7 +172,7 @@ interface IClan {
 	clan: IClanMember[];
 }
 
-interface IRanking {
+export interface IRanking {
 	rank: string;
 	name: string;
 	brawlhalla_id: number;
@@ -187,7 +187,7 @@ interface IRanking {
 	peak_rating: number;
 }
 
-type Weapon =
+export type Weapon =
 	| 'Hammer'
 	| 'Sword'
 	| 'Blasters'
@@ -201,14 +201,14 @@ type Weapon =
 	| 'Cannon'
 	| 'Orb';
 
-interface IStaticLegendData {
+export interface IStaticLegendData {
 	id: number;
 	name: string;
 	weapon_one: Weapon;
 	weapon_two: Weapon;
 }
 
-interface IPlayerSeasonFormat {
+export interface IPlayerSeasonFormat {
 	rating: number;
 	peak_rating: number;
 	tier: RankedTier;
@@ -222,7 +222,7 @@ interface IPlayerSeasonFormat {
 	glory_wins: number;
 }
 
-interface I2v2TeamFormat {
+export interface I2v2TeamFormat {
 	teammate_id: number;
 	teammate_name: string;
 	region: RankedRegion;
@@ -236,7 +236,7 @@ interface I2v2TeamFormat {
 	};
 }
 
-interface IPlayerStatsFormat {
+export interface IPlayerStatsFormat {
 	brawlhalla_id: number;
 	name: string;
 	xp: number;
@@ -261,7 +261,7 @@ interface IPlayerStatsFormat {
 	teams: I2v2TeamFormat[];
 }
 
-interface ILegendStatsFormat {
+export interface ILegendStatsFormat {
 	id: number;
 	name: string;
 	weapon_one: Weapon;
@@ -293,7 +293,7 @@ interface ILegendStatsFormat {
 	season: ILegendSeasonFormat;
 }
 
-interface ILegendSeasonFormat {
+export interface ILegendSeasonFormat {
 	rating: number;
 	peak_rating: number;
 	tier: RankedTier;
@@ -302,12 +302,13 @@ interface ILegendSeasonFormat {
 	rating_squash: number;
 }
 
-interface ILegendWeaponFormat {
+export interface ILegendWeaponFormat {
 	name: Weapon;
 	legends: ILegendStatsFormat[];
 }
 
-interface IWeaponStatsFormat {
+export interface IWeaponStatsFormat {
+	name: Weapon | null;
 	level: number;
 	xp: number;
 	matchtime: number;
@@ -325,7 +326,7 @@ interface IWeaponStatsFormat {
 	legends: IWeaponLegendFormat[];
 }
 
-interface IWeaponLegendFormat {
+export interface IWeaponLegendFormat {
 	id: number;
 	name: string;
 	damagedealt: string;
@@ -341,7 +342,7 @@ interface IWeaponLegendFormat {
 	season: ILegendSeasonFormat;
 }
 
-interface IClanFormat {
+export interface IClanFormat {
 	clan_id: number;
 	clan_name: string;
 	clan_create_date: number;

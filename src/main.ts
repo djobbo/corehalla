@@ -2,6 +2,14 @@ import axios from 'axios';
 import { formatPlayerStats } from './formatters/playerStats';
 import { formatClan } from './formatters/clan';
 
+import {
+	IRankingsOptions,
+	IClan,
+	IRanking,
+	IPlayerStats,
+	IPlayerRanked,
+} from './types';
+
 const api = 'https://api.brawlhalla.com';
 
 const defaultLeaderboardOptions: IRankingsOptions = {
@@ -72,3 +80,4 @@ const setupApiKey = (api_key: string) => {
 };
 
 export default setupApiKey;
+export * from './types';

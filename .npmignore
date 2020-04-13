@@ -1,8 +1,6 @@
 *
 
 !dist/*
-!lib/*
-!lib-esm/*
 
 !package.json
 

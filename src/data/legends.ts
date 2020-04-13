@@ -1,3 +1,5 @@
+import { IStaticLegendData } from '../types';
+
 export const legends: IStaticLegendData[] = [
 	{
 		id: 3,

@@ -1,6 +1,21 @@
 import { cleanString } from './util';
 
 import {
+	IPlayerStats,
+	IPlayerRanked,
+	IPlayerStatsFormat,
+	IStaticLegendData,
+	ILegendStats,
+	ILegendRanked,
+	Weapon,
+	ILegendStatsFormat,
+	IWeaponStatsFormat,
+	I2v2Team,
+	IPlayerSeason,
+	IWeaponLegendFormat,
+} from '../types';
+
+import {
 	getGloryFromWins,
 	getGloryFromBestRating,
 	getHeroRatingSquash,
@@ -109,7 +124,7 @@ export function addWeaponStats(
 	weaponID: 0 | 1,
 	weapons: { [k in Weapon]: IWeaponStatsFormat },
 	legendFormat: ILegendStatsFormat
-) {
+): { [k in Weapon]: IWeaponStatsFormat } {
 	const weaponName = legendFormat[weaponProps[weaponID].name];
 	return {
 		...weapons,
@@ -214,6 +229,7 @@ export function formatWeaponStats(weapons: IWeaponStatsFormat[]) {
 		...w,
 		...w.legends.reduce<IWeaponStatsFormat>(
 			(acc, l) => ({
+				name: w.name,
 				level: l.level + acc.level,
 				xp: l.xp + acc.xp,
 				matchtime: l.matchtime + acc.matchtime,

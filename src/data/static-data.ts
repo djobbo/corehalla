@@ -1,5 +1,14 @@
 import { legends } from './legends';
 
+import {
+	RankedRegion,
+	ILegendStats,
+	ILegendRanked,
+	IWeaponStatsFormat,
+	Weapon,
+	RankedTier,
+} from '../types';
+
 export const staticLegendsData = legends;
 
 export const regions: RankedRegion[] = [
@@ -52,6 +61,7 @@ export const defaultLegendSeason: ILegendRanked = {
 };
 
 export const defaultWeaponStats: IWeaponStatsFormat = {
+	name: null,
 	level: 0,
 	xp: 0,
 	matchtime: 0,

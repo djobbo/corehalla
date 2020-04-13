@@ -1,6 +1,4 @@
 const path = require('path');
-const DeclarationBundlerPlugin = require('declaration-bundler-webpack-plugin');
-const BundleTSDec = require('./plugins/BundleTSDec');
 
 const generateConfig = (name) => ({
 	mode: 'production',
@@ -23,19 +21,16 @@ const generateConfig = (name) => ({
 			},
 		],
 	},
-	plugins: [
-		new BundleTSDec({
-			moduleName: 'corehalla',
-			output: './corehalla.d.ts',
-			globalDeclaration: true,
-		}),
-	],
+	plugins: [],
 	resolve: {
 		extensions: ['.ts', '.js'],
 	},
 	optimization: {
 		minimize: name.indexOf('min') > -1,
 	},
+	externals: {
+		axios: 'axios',
+	},
 });
 
-module.exports = ['corehalla', 'corehalla.min'].map(generateConfig);
+module.exports = ['main', 'corehalla.min'].map(generateConfig);

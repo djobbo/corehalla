@@ -3,9 +3,7 @@
 		"name": "Alfie"
 	},
 	"dependencies": {
-		"awesome-typescript-loader": "^5.2.1",
-		"axios": "^0.19.2",
-		"declaration-bundler-webpack-plugin": "^1.0.3"
+		"axios": "^0.19.2"
 	},
 	"description": "Brawlhalla API Wrapper for Node.js, provided by corehalla.com.",
 	"keywords": [
@@ -15,8 +13,8 @@
 		"Corehalla"
 	],
 	"license": "ISC",
-	"main": "dist/corehalla.js",
-	"types": "dist/corehalla.d.ts",
+	"main": "dist/main.js",
+	"types": "dist/main.d.ts",
 	"name": "corehalla.js",
 	"scripts": {
 		"test": "jest --coverage",
@@ -29,15 +27,9 @@
 		"url": "https://github.com/Corehalla/corehalla.js.git"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.9.0",
-		"@babel/preset-env": "^7.9.5",
-		"@babel/preset-typescript": "^7.9.0",
 		"@types/node": "^13.11.1",
-		"dts-bundle": "^0.7.3",
-		"expose-loader": "^0.7.5",
 		"jest": "^25.1.0",
 		"ts-loader": "^6.2.2",
-		"ts-loader-decleration": "^0.10.4",
 		"typescript": "^3.8.3",
 		"webpack": "^4.42.1",
 		"webpack-cli": "^3.3.11"

@@ -1,3 +1,5 @@
+import { IClanMember, IClan, IClanFormat } from '../types';
+
 export function sortClanMembers(members: IClanMember[]) {
 	return members.reduce<{
 		members: {
