@@ -1,6 +1,11 @@
 import axios from 'axios';
-import { formatPlayerStats } from './formatters/playerStats';
-import { formatClan } from './formatters/clan';
+
+import {
+    formatPlayerStats,
+    formatClan,
+    format1v1Rankings,
+    format2v2Rankings,
+} from './formatters';
 
 import {
     IClan,
@@ -51,16 +56,13 @@ const fetchRankings = <T>(apiKey: string, bracket: '1v1' | '2v2') => ({
         )
         .then(({ data }) => data);
 
-const fetch1v1Rankings = (apiKey: string) =>
-    fetchRankings<IRanking1v1>(apiKey, '1v1');
-
-const fetch2v2Rankings = (apiKey: string) =>
-    fetchRankings<IRanking2v2>(apiKey, '2v2');
-
 const setupApiKey = (apiKey: string) => {
     const fetchPlayerStats = fetchPlayerById<IPlayerStats>(apiKey, 'stats');
     const fetchPlayerRanked = fetchPlayerById<IPlayerRanked>(apiKey, 'ranked');
     const fetchClan = fetchClanById(apiKey);
+
+    const fetch1v1Rankings = fetchRankings<IRanking1v1>(apiKey, '1v1');
+    const fetch2v2Rankings = fetchRankings<IRanking2v2>(apiKey, '2v2');
 
     const fetchAllStats = (brawlhallaId: number) =>
         Promise.all([
@@ -83,8 +85,12 @@ const setupApiKey = (apiKey: string) => {
         fetchClanFormat: (clanId: number) => fetchClan(clanId).then(formatClan),
 
         // Rankings
-        fetch1v1Rankings: fetch1v1Rankings(apiKey),
-        fetch2v2Rankings: fetch2v2Rankings(apiKey),
+        fetch1v1Rankings,
+        fetch2v2Rankings,
+        fetch1v1RankingsFormat: (options: IRankingsOptions) =>
+            fetch1v1Rankings(options).then(format1v1Rankings),
+        fetch2v2RankingsFormat: (options: IRankingsOptions) =>
+            fetch2v2Rankings(options).then(format2v2Rankings),
 
         // Steam Search
         getBHIdBySteamId: getBHIdBySteamId(apiKey),

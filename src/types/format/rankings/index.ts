@@ -26,5 +26,5 @@ export interface IRanking2v2Format extends IRankingFormat {
         id: number;
         name: string;
         twitchName?: string;
-    };
+    }[];
 }
