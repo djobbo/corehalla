@@ -1,4 +1,4 @@
-import { IStaticLegendData } from '../types/types';
+import { IStaticLegendData } from '../types';
 
 export const legends: IStaticLegendData[] = [
     {

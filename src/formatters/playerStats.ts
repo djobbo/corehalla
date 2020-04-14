@@ -17,7 +17,7 @@ import {
     I2v2TeamFormat,
     IPlayerClan,
     IPlayerClanFormat,
-} from '../types/types';
+} from '../types';
 
 import {
     getGloryFromWins,

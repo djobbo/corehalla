@@ -4,7 +4,7 @@ import {
     IClanFormat,
     ClanRank,
     IClanMemberFormat,
-} from '../types/types';
+} from '../types';
 
 export function formatClan({
     clan: members,

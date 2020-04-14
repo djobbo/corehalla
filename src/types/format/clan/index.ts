@@ -1,4 +1,4 @@
-import { ClanRank } from '../../general';
+import { ClanRank } from '../..';
 
 //#region Clan Format
 export interface IClanFormat {

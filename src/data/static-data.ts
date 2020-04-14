@@ -7,7 +7,7 @@ import {
     IWeaponStatsFormat,
     Weapon,
     RankedTier,
-} from '../types/types';
+} from '../types';
 
 export const staticLegendsData = legends;
 

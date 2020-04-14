@@ -1,4 +1,4 @@
-import { RankedTier, RankedRegion, Weapon } from '../../general';
+import { RankedTier, RankedRegion, Weapon } from '../..';
 
 //#region Player Stats Format
 export interface IPlayerStatsFormat {

@@ -1,4 +1,4 @@
-import { RankedTier, RankedRegion, ClanRank } from './general';
+import { RankedTier, RankedRegion, ClanRank } from '.';
 
 //#region API Player Stats
 export interface IPlayerStats {
@@ -122,26 +122,30 @@ export interface IClanMember {
 //#endregion
 
 //#region API Rankings
-export interface IRankingsOptions {
-    bracket?: '1v1' | '2v2';
-    region?: RankedRegion;
-    page?: string | number;
-    name?: string;
-}
-
 export interface IRanking {
     rank: string;
-    name: string;
-    brawlhalla_id: number;
-    best_legend: number;
-    best_legend_games: number;
-    best_legend_wins: number;
     rating: number;
     tier: RankedTier;
     games: number;
     wins: number;
     region: RankedRegion;
     peak_rating: number;
+}
+
+export interface IRanking1v1 extends IRanking {
+    name: string;
+    brawlhalla_id: number;
+    best_legend: number;
+    best_legend_games: number;
+    best_legend_wins: number;
     twitch_name?: string;
+}
+
+export interface IRanking2v2 extends IRanking {
+    teamname: string;
+    brawlhalla_id_one: number;
+    brawlhalla_id_two: number;
+    twitch_name_one?: string;
+    twitch_name_two?: string;
 }
 //#endregion
