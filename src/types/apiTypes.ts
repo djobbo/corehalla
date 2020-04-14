@@ -123,7 +123,7 @@ export interface IClanMember {
 
 //#region API Rankings
 export interface IRanking {
-    rank: string;
+    rank: number;
     rating: number;
     tier: RankedTier;
     games: number;

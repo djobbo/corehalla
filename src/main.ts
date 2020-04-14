@@ -36,7 +36,7 @@ const fetchPlayerById = <T>(apiKey: string, dataType: 'ranked' | 'stats') => (
 const getBHIdBySteamId = (apiKey: string) => (steamId: string) =>
     axios
         .get<{ brawlhalla_id: number; name: string }>(
-            `${API_URL}/search?steamid=${steamId}?api_key=${apiKey}`
+            `${API_URL}/search?steamid=${steamId}&api_key=${apiKey}`
         )
         .then(({ data }) => data);
 
@@ -52,7 +52,7 @@ const fetchRankings = <T>(apiKey: string, bracket: '1v1' | '2v2') => ({
 }: IRankingsOptions) =>
     axios
         .get<T[]>(
-            `${API_URL}/rankings/${bracket}/${region}/${page}?name=${name}?api_key=${apiKey}`
+            `${API_URL}/rankings/${bracket}/${region.toLowerCase()}/${page}?name=${name}&api_key=${apiKey}`
         )
         .then(({ data }) => data);
 

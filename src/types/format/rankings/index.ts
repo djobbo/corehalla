@@ -1,7 +1,7 @@
 import { RankedTier, RankedRegion } from '../..';
 
 export interface IRankingFormat {
-    rank: string;
+    rank: number;
     rating: number;
     tier: RankedTier;
     games: number;
