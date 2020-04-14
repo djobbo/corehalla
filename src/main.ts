@@ -5,6 +5,11 @@ import {
     formatClan,
     format1v1Rankings,
     format2v2Rankings,
+    getGloryFromBestRating,
+    getGloryFromWins,
+    getHeroRatingSquash,
+    getPersonalRatingSquash,
+    getTierFromRating,
 } from './formatters';
 
 import {
@@ -99,3 +104,10 @@ const setupApiKey = (apiKey: string) => {
 
 export default setupApiKey;
 export * from './types';
+export {
+    getGloryFromBestRating,
+    getGloryFromWins,
+    getHeroRatingSquash,
+    getPersonalRatingSquash,
+    getTierFromRating,
+};
