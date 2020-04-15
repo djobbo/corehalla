@@ -28,3 +28,5 @@ export interface IRanking2v2Format extends IRankingFormat {
         twitchName?: string;
     }[];
 }
+
+export * from './powerRankings';

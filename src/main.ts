@@ -5,6 +5,7 @@ import {
     formatClan,
     format1v1Rankings,
     format2v2Rankings,
+    formatPowerRankings,
     getGloryFromBestRating,
     getGloryFromWins,
     getHeroRatingSquash,
@@ -61,6 +62,13 @@ const fetchRankings = <T>(apiKey: string, bracket: '1v1' | '2v2') => ({
         )
         .then(({ data }) => data);
 
+const fetchPowerRankings = (bracket: '1v1' | '2v2' | undefined = undefined) =>
+    axios
+        .get<string>(
+            `https://www.brawlhalla.com/rankings/power/${bracket || ''}`
+        )
+        .then(({ data }) => formatPowerRankings(data));
+
 const setupApiKey = (apiKey: string) => {
     const fetchPlayerStats = fetchPlayerById<IPlayerStats>(apiKey, 'stats');
     const fetchPlayerRanked = fetchPlayerById<IPlayerRanked>(apiKey, 'ranked');
@@ -96,6 +104,9 @@ const setupApiKey = (apiKey: string) => {
             fetch1v1Rankings(options).then(format1v1Rankings),
         fetch2v2RankingsFormat: (options: IRankingsOptions) =>
             fetch2v2Rankings(options).then(format2v2Rankings),
+
+        // Power Rankings
+        fetchPowerRankings,
 
         // Steam Search
         getBHIdBySteamId: getBHIdBySteamId(apiKey),
