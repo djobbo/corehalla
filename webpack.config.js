@@ -3,7 +3,7 @@ const autoprefixer = require('autoprefixer');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-	entry: './src/client/index.js',
+	entry: './src/client/index.tsx',
 	output: {
 		path: path.resolve(__dirname, '../build'),
 		filename: 'public/bundle.js',

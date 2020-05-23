@@ -6,3 +6,6 @@ Players
     -> Legends filter by weapon
     -> Mobile best legend overview
     -> Known aliases
+
+Horoscope
+CC Grabber

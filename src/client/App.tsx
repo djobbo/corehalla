@@ -7,7 +7,7 @@ import RankingsPage from './pages/RankingsPage';
 import PlayerStatsPage from './pages/stats/PlayerPage';
 import ClanStatsPage from './pages/stats/ClanPage';
 
-export default () => {
+const App: React.FC = () => {
 	return (
 		<Router history={history}>
 			<div className='App'>
@@ -36,3 +36,5 @@ export default () => {
 		</Router>
 	);
 };
+
+export default App;
