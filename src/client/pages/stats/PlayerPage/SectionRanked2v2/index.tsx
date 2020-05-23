@@ -7,7 +7,7 @@ import { mdiSortAscending, mdiSortDescending } from '@mdi/js';
 
 import Ranked2v2Team from './Ranked2v2Team';
 
-function SectionRanked2v2({ teams }) {
+const SectionRanked2v2 = ({ teams }) => {
 	const [rankTierFilter, setRankTierFilter] = useState('');
 	const [sortBy, setSortBy] = useState('');
 	const [sortOrder, setSortOrder] = useState(-1);
@@ -129,6 +129,6 @@ function SectionRanked2v2({ teams }) {
 			</div>
 		</section>
 	);
-}
+};
 
 export default SectionRanked2v2;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './styles.scss';
 
-import Header from './Header';
+import Header, { Page } from './Header';
 import SectionOverview from './SectionOverview';
 import SectionOverallStats from './SectionOverallStats';
 import SectionRanked2v2 from './SectionRanked2v2';
@@ -9,25 +9,25 @@ import SectionLegends from './SectionLegends';
 import SectionWeapons from './SectionWeapons';
 import SectionClan from './SectionClan';
 
+import { IPlayerStatsFormat } from 'corehalla.js';
+
 import Loader from '../../../components/Loader';
 
-// import PlayerStatsGen from '../../mockups/PlayerStats.mock';
-import PlayerStats from '../../../mockups/PlayerStats.json';
+import { PlayerStats } from '../../../mockups/Player';
 
-export default ({ match }) => {
+const PlayerPage: React.FC = () => {
 	const sections = ['teams', 'legends', 'weapons'];
 	const hash = window.location.hash.substring(1);
 
-	const [activePage, setActivePage] = useState(
-		sections.includes(hash) ? hash : 'overview'
+	const [activePage, setActivePage] = useState<Page>(
+		sections.includes(hash) ? (hash as Page) : 'overview'
 	);
 
 	const [loading, setLoading] = useState(true);
-	const [playerStats, setPlayerStats] = useState({});
+	const [playerStats, setPlayerStats] = useState<IPlayerStatsFormat>();
 
 	useEffect(() => {
 		setTimeout(() => {
-			// setPlayerStats(PlayerStatsGen());
 			setPlayerStats(PlayerStats);
 			setLoading(false);
 		}, 250);
@@ -37,7 +37,7 @@ export default ({ match }) => {
 		if (loading) return '';
 		switch (activePage) {
 			case 'teams':
-				return <SectionRanked2v2 teams={playerStats.teams} />;
+				return <SectionRanked2v2 teams={playerStats.season.teams} />;
 			case 'legends':
 				return (
 					<SectionLegends
@@ -86,3 +86,5 @@ export default ({ match }) => {
 		</div>
 	);
 };
+
+export default PlayerPage;

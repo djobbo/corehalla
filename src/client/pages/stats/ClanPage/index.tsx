@@ -4,9 +4,11 @@ import './styles.scss';
 
 import Loader from '../../../components/Loader';
 
-import ClanStats from '../../../mockups/ClanStats.json';
+import { IClanFormat } from 'corehalla.js';
 
-export default ({ match }) => {
+import { ClanStats } from '../../../mockups/ClanStats';
+
+const ClanPage: React.FC = () => {
 	const sections = ['teams', 'legends', 'weapons'];
 	const hash = window.location.hash.substring(1);
 
@@ -15,7 +17,7 @@ export default ({ match }) => {
 	);
 
 	const [loading, setLoading] = useState(true);
-	const [clanStats, setClanStats] = useState({});
+	const [clanStats, setClanStats] = useState<IClanFormat>();
 
 	useEffect(() => {
 		setTimeout(() => {
@@ -34,11 +36,9 @@ export default ({ match }) => {
 					{clanStats.name}
 					<h3>Leader</h3>
 					<div className='clan-members-container'>
-						{clanStats.members.leader.map((member) => (
-							<div className='card' key={member.brawlhalla_id}>
-								<Link
-									to={`/stats/player/${member.brawlhalla_id}`}
-								>
+						{clanStats.members.Leader.map((member) => (
+							<div className='card' key={member.id}>
+								<Link to={`/stats/player/${member.id}`}>
 									{member.name}
 								</Link>
 							</div>
@@ -46,11 +46,9 @@ export default ({ match }) => {
 					</div>
 					<h3>Officers</h3>
 					<div className='clan-members-container'>
-						{clanStats.members.officer.map((member) => (
-							<div className='card' key={member.brawlhalla_id}>
-								<Link
-									to={`/stats/player/${member.brawlhalla_id}`}
-								>
+						{clanStats.members.Officer.map((member) => (
+							<div className='card' key={member.id}>
+								<Link to={`/stats/player/${member.id}`}>
 									{member.name}
 								</Link>
 							</div>
@@ -58,11 +56,9 @@ export default ({ match }) => {
 					</div>
 					<h3>Members</h3>
 					<div className='clan-members-container'>
-						{clanStats.members.member.map((member) => (
-							<div className='card' key={member.brawlhalla_id}>
-								<Link
-									to={`/stats/player/${member.brawlhalla_id}`}
-								>
+						{clanStats.members.Member.map((member) => (
+							<div className='card' key={member.id}>
+								<Link to={`/stats/player/${member.id}`}>
 									{member.name}
 								</Link>
 							</div>
@@ -70,11 +66,9 @@ export default ({ match }) => {
 					</div>
 					<h3>Recruits</h3>
 					<div className='clan-members-container'>
-						{clanStats.members.recruit.map((member) => (
-							<div className='card' key={member.brawlhalla_id}>
-								<Link
-									to={`/stats/player/${member.brawlhalla_id}`}
-								>
+						{clanStats.members.Recruit.map((member) => (
+							<div className='card' key={member.id}>
+								<Link to={`/stats/player/${member.id}`}>
 									{member.name}
 								</Link>
 							</div>
@@ -85,3 +79,5 @@ export default ({ match }) => {
 		</div>
 	);
 };
+
+export default ClanPage;

@@ -8,7 +8,8 @@ import { mdiStar, mdiAccountStarOutline } from '@mdi/js';
 
 import formatTime from '../../../../util/formatTime';
 
-type Page = 'overview' | 'teams' | 'legends' | 'weapons';
+// TODO: Move this somewhere else
+export type Page = 'overview' | 'teams' | 'legends' | 'weapons';
 
 interface Props {
 	activePage: Page;

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { IClanFormat } from 'corehalla.js';
+import { IClanFormat, IPlayerClanFormat } from 'corehalla.js';
 
 interface Props {
-	clan: IClanFormat;
+	clan: IPlayerClanFormat;
 }
 
 const SectionOverallStats: React.FC<Props> = ({ clan }) => {

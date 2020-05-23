@@ -16,7 +16,11 @@ import {
 
 const RankingsPage: React.FC = () => {
 	const { search } = useLocation();
-	const params = useParams<{ region; bracket; page }>();
+	const params = useParams<{
+		region: string;
+		bracket: string;
+		page: string;
+	}>();
 
 	const [loading, setLoading] = useState(true);
 	const [rankings, setRankings] = useState<IRankingFormat[]>([]);
@@ -110,7 +114,7 @@ function Rankings1v1Item({
 			className='card rankings-item'
 			style={{ '--delay': `${0.015 * parseInt(i)}s` }}
 		>
-			<p className='stat stat-medium rank'>{player.rank}. </p>
+			<p className='stat stat-medium rank'>{player.rank}.</p>
 			<p>{player.region}</p>
 			<p className='stat name'>
 				<Link to={`/stats/player/${player.id}`}>{player.name}</Link>
@@ -143,7 +147,7 @@ function Rankings2v2Item({ team, i }: { team: IRanking2v2Format; i: number }) {
 			className='card rankings-item'
 			style={{ '--delay': `${0.015 * parseInt(i)}s` }}
 		>
-			<p className='stat stat-medium rank'>{team.rank}. </p>
+			<p className='stat stat-medium rank'>{team.rank}.</p>
 			<p>{team.region}</p>
 			<p className='stat name'>
 				<a href={`/stats/player/${team.players[0].id}`}>
@@ -159,7 +163,7 @@ function Rankings2v2Item({ team, i }: { team: IRanking2v2Format; i: number }) {
 			</p>
 			<p>{team.tier}</p>
 			<p>
-				{team.games} ({v.wins}W - {team.games - team.wins}L)
+				{team.games} ({team.wins}W - {team.games - team.wins}L)
 			</p>
 			<p>{((team.wins / team.games) * 100).toFixed(1)}%</p>
 			<p>{team.rating}</p>

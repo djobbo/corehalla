@@ -5,7 +5,7 @@ import { mdiSortAscending, mdiSortDescending } from '@mdi/js';
 
 import formatTime from '../../../../util/formatTime';
 
-function SectionWeapons({ weapons }) {
+const SectionWeapons = ({ weapons }) => {
 	const [sortBy, setSortBy] = useState('');
 	const [sortOrder, setSortOrder] = useState(-1);
 	return (
@@ -15,7 +15,7 @@ function SectionWeapons({ weapons }) {
 				<div>
 					<label htmlFor='sortby-select'>Sort By</label>
 					<select
-						onChange={e => setSortBy(e.target.value)}
+						onChange={(e) => setSortBy(e.target.value)}
 						name='sortby-select'
 					>
 						<option value=''>XP</option>
@@ -27,7 +27,7 @@ function SectionWeapons({ weapons }) {
 				<div>
 					<label htmlFor='sortby-select'>Order</label>
 					{sortOrder === 1 ? (
-						<button onClick={e => setSortOrder(-1)}>
+						<button onClick={(e) => setSortOrder(-1)}>
 							<Icon
 								path={mdiSortDescending}
 								title='Sort Ascending'
@@ -35,7 +35,7 @@ function SectionWeapons({ weapons }) {
 							/>
 						</button>
 					) : (
-						<button onClick={e => setSortOrder(1)}>
+						<button onClick={(e) => setSortOrder(1)}>
 							<Icon
 								path={mdiSortAscending}
 								title='Sort Descending'
@@ -105,6 +105,6 @@ function SectionWeapons({ weapons }) {
 				))}
 		</section>
 	);
-}
+};
 
 export default SectionWeapons;

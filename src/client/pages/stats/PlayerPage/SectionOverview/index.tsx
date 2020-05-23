@@ -2,7 +2,7 @@ import React from 'react';
 
 import './styles.scss';
 
-function SectionOverview({ season, best_legend }) {
+const SectionOverview = ({ season, best_legend }) => {
 	return (
 		<section className='section-overview'>
 			<h2 className='section-title'>Season Overview</h2>
@@ -46,9 +46,9 @@ function SectionOverview({ season, best_legend }) {
 			</div>
 		</section>
 	);
-}
+};
 
-function RankedStats({
+const RankedStats({
 	tier = 'Tin 0',
 	rating = '750',
 	peak_rating = '750',
@@ -57,7 +57,7 @@ function RankedStats({
 	losses = 0,
 	winrate = '0',
 	region = 'N/A',
-}) {
+}) => {
 	return (
 		<div className='ranked-stats'>
 			<p>
@@ -94,7 +94,7 @@ function RankedStats({
 	);
 }
 
-function BestLegendRankedStats({
+const BestLegendRankedStats = ({
 	legend = 'Random',
 	rating = '750',
 	peak_rating = '750',
@@ -102,7 +102,7 @@ function BestLegendRankedStats({
 	wins = 0,
 	losses = 0,
 	winrate = '0',
-}) {
+}) => {
 	return (
 		<div className='ranked-stats'>
 			<p>
