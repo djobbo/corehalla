@@ -6,7 +6,7 @@ import Loader from '../../../components/Loader';
 
 import { IClanFormat } from 'corehalla.js';
 
-import { ClanStats } from '../../../mockups/ClanStats';
+import { ClanStats } from '../../../mockups/Clan';
 
 const ClanPage: React.FC = () => {
 	const sections = ['teams', 'legends', 'weapons'];

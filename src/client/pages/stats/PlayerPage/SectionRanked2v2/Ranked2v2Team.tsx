@@ -9,7 +9,7 @@ interface Props {
 }
 
 const Ranked2v2Team: React.FC<Props> = ({ team, id }) => {
-	const winrate = parseInt((team.season.wins / team.season.games).toFixed(2));
+	const winrate = ((team.season.wins / team.season.games) * 100).toFixed(2);
 	return (
 		<div
 			className='card ranked-team'
@@ -24,7 +24,9 @@ const Ranked2v2Team: React.FC<Props> = ({ team, id }) => {
 					src={`/assets/images/icons/flags/${team.region}.png`}
 					alt={`${team.region}_icon`}
 				/>
-				{name}
+				<a href={`/stats/player/${team.teammate.id}`}>
+					{team.teammate.name}
+				</a>
 			</h3>
 			<div className='stats-container'>
 				<img
@@ -38,24 +40,24 @@ const Ranked2v2Team: React.FC<Props> = ({ team, id }) => {
 				/>
 				<div>
 					<p>
-						<span>{team.season.rating}</span>
+						<span>{team.season.rating} </span>
 						<span>Rating</span>
 					</p>
 					<p>
-						<span>{team.season.peak}</span>
+						<span>{team.season.peak} </span>
 						<span>Peak</span>
 					</p>
 					<p>
-						<span>{winrate}%</span>
+						<span>{winrate}% </span>
 						<span>Winrate</span>
 					</p>
 					<p>
-						<span>{team.season.games}</span>
+						<span>{team.season.games} </span>
 						<span>Games</span>
 					</p>
 				</div>
 			</div>
-			<BarChart amount={winrate} height='1rem' />
+			<BarChart amount={parseFloat(winrate)} height='1rem' />
 		</div>
 	);
 };

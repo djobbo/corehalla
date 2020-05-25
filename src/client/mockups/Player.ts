@@ -29,7 +29,7 @@ export const PlayerStats: IPlayerStatsFormat = {
 					id: 4346666,
 					name: 'CLED [Fr]',
 				},
-				region: 'US-W',
+				region: 'EU',
 				season: {
 					rating: 1420,
 					tier: 'Gold 1',
@@ -45,7 +45,7 @@ export const PlayerStats: IPlayerStatsFormat = {
 					id: 6202261,
 					name: 'Linox',
 				},
-				region: 'US-W',
+				region: 'EU',
 				season: {
 					rating: 1015,
 					tier: 'Bronze 3',
@@ -61,7 +61,7 @@ export const PlayerStats: IPlayerStatsFormat = {
 					id: 6304320,
 					name: 'AD',
 				},
-				region: 'US-W',
+				region: 'EU',
 				season: {
 					rating: 1176,
 					tier: 'Silver 1',
@@ -77,7 +77,7 @@ export const PlayerStats: IPlayerStatsFormat = {
 					id: 2120588,
 					name: 'Nay',
 				},
-				region: 'US-W',
+				region: 'EU',
 				season: {
 					rating: 1276,
 					tier: 'Silver 3',
@@ -93,7 +93,7 @@ export const PlayerStats: IPlayerStatsFormat = {
 					id: 2869327,
 					name: 'Rakushain',
 				},
-				region: 'US-W',
+				region: 'EU',
 				season: {
 					rating: 2215,
 					tier: 'Diamond',
@@ -109,7 +109,7 @@ export const PlayerStats: IPlayerStatsFormat = {
 					id: 1823973,
 					name: 'Yann_X / ヤン',
 				},
-				region: 'US-W',
+				region: 'EU',
 				season: {
 					rating: 2018,
 					tier: 'Diamond',
@@ -125,7 +125,7 @@ export const PlayerStats: IPlayerStatsFormat = {
 					id: 3252577,
 					name: 'Urbador',
 				},
-				region: 'US-W',
+				region: 'EU',
 				season: {
 					rating: 1834,
 					tier: 'Platinum 3',
@@ -141,7 +141,7 @@ export const PlayerStats: IPlayerStatsFormat = {
 					id: 338489,
 					name: 'orKsGP TM.',
 				},
-				region: 'US-W',
+				region: 'EU',
 				season: {
 					rating: 2037,
 					tier: 'Diamond',
@@ -157,7 +157,7 @@ export const PlayerStats: IPlayerStatsFormat = {
 					id: 1862459,
 					name: 'PKrelentless',
 				},
-				region: 'US-W',
+				region: 'EU',
 				season: {
 					rating: 1691,
 					tier: 'Platinum 1',
@@ -172,7 +172,7 @@ export const PlayerStats: IPlayerStatsFormat = {
 	clan: {
 		id: 955295,
 		name: 'Revolucien',
-		xp: '1163234',
+		xp: '1164360',
 		personalXp: 55272,
 	},
 	legends: [
