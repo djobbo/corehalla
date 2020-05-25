@@ -1,6 +1,7 @@
 const path = require('path');
 const autoprefixer = require('autoprefixer');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
 	entry: './src/client/index.tsx',
@@ -17,7 +18,7 @@ module.exports = {
 					{
 						loader: 'file-loader',
 						options: {
-							name: 'build/[path][name].[ext]',
+							name: '[path][name].[ext]',
 							publicPath: (url) => url.replace(/public/, ''),
 						},
 					},
@@ -75,6 +76,9 @@ module.exports = {
 		contentBase: path.join(__dirname, 'src/public'),
 	},
 	plugins: [
+		new CopyWebpackPlugin({
+			patterns: [{ from: 'src/public', to: '' }],
+		}),
 		new HtmlWebPackPlugin({
 			template: 'src/public/index.html',
 			filename: 'index.html',
