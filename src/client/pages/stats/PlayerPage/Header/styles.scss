@@ -1,5 +1,4 @@
 header {
-	height: 320px;
 	width: 100%;
 	background-color: var(--bg-light);
 	display: flex;
@@ -8,6 +7,7 @@ header {
 	border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
 
 	.banner-img {
+		height: 128px;
 		width: 100%;
 		max-width: 1200px;
 		overflow: hidden;
@@ -143,8 +143,6 @@ header {
 
 @media (min-width: 600px) {
 	header {
-		height: 422px;
-
 		.header-info {
 			display: flex;
 			flex-direction: row;

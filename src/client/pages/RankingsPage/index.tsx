@@ -4,8 +4,6 @@ import qs from 'qs';
 
 import './styles.scss';
 
-import { Rankings } from '../../mockups/1v1Rankings';
-
 import Loader from '../../components/Loader';
 
 import {
@@ -35,7 +33,8 @@ const RankingsPage: React.FC = () => {
 
 	useEffect(() => {
 		setLoading(true);
-		setTimeout(() => {
+		setTimeout(async () => {
+			const { Rankings } = await import('../../mockups/1v1Rankings');
 			setRankings(Rankings);
 			setLoading(false);
 		}, 250);
@@ -114,7 +113,7 @@ function Rankings1v1Item({
 			className='card rankings-item'
 			style={{ '--delay': `${0.015 * i}s` } as React.CSSProperties}
 		>
-			<p className='stat stat-medium rank'>{player.rank}.</p>
+			<p className='stat stat-small rank'>{player.rank}</p>
 			<p>{player.region}</p>
 			<p className='stat name'>
 				<Link to={`/stats/player/${player.id}`}>{player.name}</Link>
@@ -147,7 +146,7 @@ function Rankings2v2Item({ team, i }: { team: IRanking2v2Format; i: number }) {
 			className='card rankings-item'
 			style={{ '--delay': `${0.015 * i}s` } as React.CSSProperties}
 		>
-			<p className='stat stat-medium rank'>{team.rank}.</p>
+			<p className='stat stat-medium rank'>{team.rank}</p>
 			<p>{team.region}</p>
 			<p className='stat name'>
 				<a href={`/stats/player/${team.players[0].id}`}>

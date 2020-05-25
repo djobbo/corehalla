@@ -1,19 +1,14 @@
 .PlayerPage {
-	main {
-		max-width: 1200px;
-		margin: 0 auto;
+	section {
+		h2.section-title {
+			font-weight: normal;
+			margin: 1rem 0;
+			font-size: 1.5rem;
 
-		section {
-			h2.section-title {
-				font-weight: normal;
-				margin: 1rem 0;
-				font-size: 1.5rem;
-
-				&::before {
-					content: '#';
-					color: var(--accent);
-					margin-right: 0.5rem;
-				}
+			&::before {
+				content: '#';
+				color: var(--accent);
+				margin-right: 0.5rem;
 			}
 		}
 	}

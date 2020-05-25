@@ -6,8 +6,6 @@ import Loader from '../../../components/Loader';
 
 import { IClanFormat } from 'corehalla.js';
 
-import { ClanStats } from '../../../mockups/Clan';
-
 const ClanPage: React.FC = () => {
 	const sections = ['teams', 'legends', 'weapons'];
 	const hash = window.location.hash.substring(1);
@@ -20,7 +18,8 @@ const ClanPage: React.FC = () => {
 	const [clanStats, setClanStats] = useState<IClanFormat>();
 
 	useEffect(() => {
-		setTimeout(() => {
+		setTimeout(async () => {
+			const { ClanStats } = await import('../../../mockups/Clan');
 			setClanStats(ClanStats);
 			console.log(ClanStats);
 			setLoading(false);

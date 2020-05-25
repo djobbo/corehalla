@@ -13,8 +13,6 @@ import { IPlayerStatsFormat } from 'corehalla.js';
 
 import Loader from '../../../components/Loader';
 
-import { PlayerStats } from '../../../mockups/Player';
-
 const PlayerPage: React.FC = () => {
 	const sections = ['teams', 'legends', 'weapons'];
 	const hash = window.location.hash.substring(1);
@@ -27,7 +25,8 @@ const PlayerPage: React.FC = () => {
 	const [playerStats, setPlayerStats] = useState<IPlayerStatsFormat>();
 
 	useEffect(() => {
-		setTimeout(() => {
+		setTimeout(async () => {
+			const { PlayerStats } = await import('../../../mockups/Player');
 			setPlayerStats(PlayerStats);
 			setLoading(false);
 		}, 250);

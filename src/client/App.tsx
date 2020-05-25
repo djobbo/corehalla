@@ -7,6 +7,8 @@ import RankingsPage from './pages/RankingsPage';
 import PlayerStatsPage from './pages/stats/PlayerPage';
 import ClanStatsPage from './pages/stats/ClanPage';
 
+import './App/styles.scss';
+
 const App: React.FC = () => {
 	return (
 		<Router history={history}>

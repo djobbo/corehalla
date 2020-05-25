@@ -11,7 +11,8 @@
 		"react-router-dom": "^5.1.2"
 	},
 	"scripts": {
-		"start": "webpack-dev-server"
+		"start": "webpack-dev-server",
+		"build": "webpack --mode production"
 	},
 	"description": "Brawlhalla Stats & Rankings Website",
 	"main": "index.js",
