@@ -10,20 +10,20 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Checkout the repository
-            uses: actions/checkout@v2
-            - run: git checkout master
-            - name: Setup node
-            uses: actions/setup-node@v2
-            with:
-                node-version: '14'
-            - name: Install deps
-            run: npm install
-            - run: npm run build
+        - name: Checkout the repository
+        uses: actions/checkout@v2
+        - run: git checkout master
+        - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+            node-version: '14'
+        - name: Install deps
+        run: npm install
+        - run: npm run build
 
-            - name: Deploy to Firebase
-            uses: w9jds/firebase-action@master
-            with:
-                args: deploy --only hosting
-            env:
-                FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+            args: deploy --only hosting
+        env:
+            FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
