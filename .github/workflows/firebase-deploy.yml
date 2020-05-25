@@ -19,7 +19,7 @@ jobs:
             - name: Install deps
               run: npm install
             - name: Build
-              run: npm run buil
+              run: npm run build
             - name: Deploy to Firebase
               uses: w9jds/firebase-action@master
               with:
