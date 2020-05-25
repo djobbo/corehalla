@@ -12,7 +12,7 @@ jobs:
         steps:
         - name: Checkout the repository
         uses: actions/checkout@v2
-        - run: git checkout master
+        run: git checkout master
         - name: Setup node
         uses: actions/setup-node@v2
         with:
