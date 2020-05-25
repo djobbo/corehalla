@@ -138,7 +138,7 @@ export interface ILegendWeaponFormat {
 }
 
 export interface IWeaponStatsFormat {
-    name: Weapon | null;
+    name: Weapon;
     level: number;
     xp: number;
     matchtime: number;

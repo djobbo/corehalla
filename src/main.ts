@@ -69,7 +69,7 @@ const fetchPowerRankings = (bracket: '1v1' | '2v2' | undefined = undefined) =>
         )
         .then(({ data }) => formatPowerRankings(data));
 
-const setupApiKey = (apiKey: string) => {
+const createApiConnection = (apiKey: string) => {
     const fetchPlayerStats = fetchPlayerById<IPlayerStats>(apiKey, 'stats');
     const fetchPlayerRanked = fetchPlayerById<IPlayerRanked>(apiKey, 'ranked');
     const fetchClan = fetchClanById(apiKey);
@@ -113,9 +113,9 @@ const setupApiKey = (apiKey: string) => {
     };
 };
 
-export default setupApiKey;
 export * from './types';
 export {
+    createApiConnection,
     getGloryFromBestRating,
     getGloryFromWins,
     getHeroRatingSquash,

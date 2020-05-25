@@ -1,6 +1,5 @@
 import { ClanRank } from '../..';
 
-//#region Clan Format
 export interface IClanFormat {
     id: number;
     name: string;
@@ -19,4 +18,3 @@ export interface IClanMemberFormat {
     joinDate: number;
     xp: number;
 }
-//#endregion

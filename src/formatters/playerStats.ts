@@ -147,7 +147,7 @@ export function formatLegendsAndWeaponsStats(
             weapons: staticWeaponsData,
         }
     );
-    return { legends, weapons: Object.values(weapons) as IWeaponStatsFormat[] };
+    return { legends, weapons: formatWeaponStats(Object.values(weapons)) };
 }
 
 const weaponProps: {
@@ -246,7 +246,6 @@ export function formatLegendStats(
             games: legendRanked.games,
             ratingSquash: getHeroRatingSquash(legendRanked.rating),
         },
-        ...staticLegend,
     };
 }
 
@@ -305,37 +304,41 @@ export function filterWeaponStats(
     };
 }
 
-export function formatWeaponStats(weapons: IWeaponStatsFormat[]) {
-    return weapons.map((w) => ({
-        ...w,
-        ...w.legends.reduce<IWeaponStatsFormat>(
-            (acc, l) => ({
-                name: w.name,
-                level: l.level + acc.level,
-                xp: l.xp + acc.xp,
-                matchtime: l.matchtime + acc.matchtime,
-                damageDealt: l.weapon.damage + acc.damageDealt,
-                kos: l.weapon.kos + acc.kos,
-                timeHeld: l.weapon.timeHeld + acc.timeHeld,
-                season: {
-                    ratingAcc: l.season.rating + acc.season.ratingAcc,
-                    peakAcc: l.season.peak + acc.season.peakAcc,
-                    bestRating:
-                        l.season.rating > acc.season.bestRating
-                            ? l.season.rating
-                            : acc.season.bestRating,
-                    peak:
-                        l.season.peak > acc.season.peak
-                            ? l.season.peak
-                            : acc.season.peak,
-                    games: l.season.games + acc.season.games,
-                    wins: l.season.wins + acc.season.wins,
-                },
-                legends: [...acc.legends, l],
-            }),
-            defaultWeaponStats
-        ),
-    }));
+export function formatWeaponStats(
+    weapons: (IWeaponStatsFormat | undefined)[]
+): IWeaponStatsFormat[] {
+    return (weapons.filter((w) => w !== undefined) as IWeaponStatsFormat[]).map(
+        (w) => ({
+            ...w,
+            ...w.legends.reduce<IWeaponStatsFormat>(
+                (acc, l) => ({
+                    name: w.name,
+                    level: l.level + acc.level,
+                    xp: l.xp + acc.xp,
+                    matchtime: l.matchtime + acc.matchtime,
+                    damageDealt: l.weapon.damage + acc.damageDealt,
+                    kos: l.weapon.kos + acc.kos,
+                    timeHeld: l.weapon.timeHeld + acc.timeHeld,
+                    season: {
+                        ratingAcc: l.season.rating + acc.season.ratingAcc,
+                        peakAcc: l.season.peak + acc.season.peakAcc,
+                        bestRating:
+                            l.season.rating > acc.season.bestRating
+                                ? l.season.rating
+                                : acc.season.bestRating,
+                        peak:
+                            l.season.peak > acc.season.peak
+                                ? l.season.peak
+                                : acc.season.peak,
+                        games: l.season.games + acc.season.games,
+                        wins: l.season.wins + acc.season.wins,
+                    },
+                    legends: [...acc.legends, l],
+                }),
+                defaultWeaponStats
+            ),
+        })
+    );
 }
 
 export function formatTeamsStats(
@@ -356,10 +359,10 @@ export function formatTeamsStats(
             const playerNames = teamname.split('+');
 
             return {
-                playerAlias: cleanString(playerNames[+isPlayerOne]),
+                playerAlias: cleanString(playerNames[+!isPlayerOne]),
                 teammate: {
                     id: isPlayerOne ? brawlhalla_id_two : brawlhalla_id_one,
-                    name: cleanString(playerNames[+!isPlayerOne]),
+                    name: cleanString(playerNames[+isPlayerOne]),
                 },
                 region: regions[region + 2],
                 season: {

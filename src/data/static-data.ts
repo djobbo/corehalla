@@ -61,7 +61,7 @@ export const defaultLegendSeason: ILegendRanked = {
 };
 
 export const defaultWeaponStats: IWeaponStatsFormat = {
-    name: null,
+    name: 'Hammer',
     level: 0,
     xp: 0,
     matchtime: 0,
