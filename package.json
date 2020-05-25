@@ -18,6 +18,7 @@
 	"main": "index.js",
 	"devDependencies": {
 		"@babel/core": "^7.9.0",
+		"@babel/plugin-transform-runtime": "^7.9.6",
 		"@babel/preset-env": "^7.9.0",
 		"@babel/preset-react": "^7.9.4",
 		"@babel/preset-typescript": "^7.9.0",
