@@ -364,7 +364,7 @@ export function formatTeamsStats(
                     id: isPlayerOne ? brawlhalla_id_two : brawlhalla_id_one,
                     name: cleanString(playerNames[+isPlayerOne]),
                 },
-                region: regions[region + 2],
+                region: regions[region - 2],
                 season: {
                     ...season,
                     peak: peak_rating,
