@@ -4,7 +4,7 @@ import qs from 'qs';
 
 import './styles.scss';
 
-import Rankings from '../../mockups/Rankings';
+import { Rankings } from '../../mockups/1v1Rankings';
 
 import Loader from '../../components/Loader';
 
@@ -112,7 +112,7 @@ function Rankings1v1Item({
 	return (
 		<div
 			className='card rankings-item'
-			style={{ '--delay': `${0.015 * parseInt(i)}s` }}
+			style={{ '--delay': `${0.015 * i}s` } as React.CSSProperties}
 		>
 			<p className='stat stat-medium rank'>{player.rank}.</p>
 			<p>{player.region}</p>
@@ -145,7 +145,7 @@ function Rankings2v2Item({ team, i }: { team: IRanking2v2Format; i: number }) {
 	return (
 		<div
 			className='card rankings-item'
-			style={{ '--delay': `${0.015 * parseInt(i)}s` }}
+			style={{ '--delay': `${0.015 * i}s` } as React.CSSProperties}
 		>
 			<p className='stat stat-medium rank'>{team.rank}.</p>
 			<p>{team.region}</p>

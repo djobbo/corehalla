@@ -94,7 +94,11 @@ const SectionLegends: React.FC<Props> = ({ legends, weapons }) => {
 					<div
 						key={i + Math.random()}
 						className='card'
-						style={`--delay: ${0.025 * i}s`}
+						style={
+							{
+								'--delay': `${0.025 * i}s`,
+							} as React.CSSProperties
+						}
 					>
 						<img
 							src={`/assets/images/icons/legends/${l.name}.png`}

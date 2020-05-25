@@ -48,7 +48,7 @@ const SectionOverview = ({ season, best_legend }) => {
 	);
 };
 
-const RankedStats({
+const RankedStats = ({
 	tier = 'Tin 0',
 	rating = '750',
 	peak_rating = '750',
@@ -92,7 +92,7 @@ const RankedStats({
 			/>
 		</div>
 	);
-}
+};
 
 const BestLegendRankedStats = ({
 	legend = 'Random',
@@ -137,6 +137,6 @@ const BestLegendRankedStats = ({
 			/>
 		</div>
 	);
-}
+};
 
 export default SectionOverview;
