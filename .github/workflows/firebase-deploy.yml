@@ -22,7 +22,7 @@ jobs:
               run: npm run build
             - name: Install Functions Deps
               run: npm install
-              working-directory: dart_project
+              working-directory: functions
             - name: Deploy to Firebase
               uses: w9jds/firebase-action@master
               with:
