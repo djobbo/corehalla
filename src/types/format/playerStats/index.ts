@@ -9,6 +9,11 @@ export interface IPlayerStatsFormat {
     xpPercentage: number;
     games: number;
     wins: number;
+    kos: number;
+    falls: number;
+    suicides: number;
+    teamkos: number;
+    matchtime: number;
     season: IPlayerSeasonFormat;
     clan: IPlayerClanFormat;
     legends: ILegendStatsFormat[];

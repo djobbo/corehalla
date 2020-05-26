@@ -76,6 +76,22 @@ export function formatPlayerStats(
         xpPercentage: generalStats.xp_percentage,
         games: generalStats.games,
         wins: generalStats.wins,
+        ...legends.reduce<{
+            kos: number;
+            falls: number;
+            suicides: number;
+            teamkos: number;
+            matchtime: number;
+        }>(
+            (acc, l) => ({
+                kos: acc.kos + l.kos,
+                falls: acc.falls + l.falls,
+                suicides: acc.suicides + l.suicides,
+                teamkos: acc.teamkos + l.teamkos,
+                matchtime: acc.matchtime + l.matchtime,
+            }),
+            { kos: 0, falls: 0, suicides: 0, teamkos: 0, matchtime: 0 }
+        ),
         season,
         clan: formatClanStats(clanStats),
         legends,
