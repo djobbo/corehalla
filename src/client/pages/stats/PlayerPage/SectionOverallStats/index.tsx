@@ -62,22 +62,22 @@ const SectionOverallStats: React.FC<Props> = ({ playerStats }) => {
 					<h3>KOs</h3>
 					<div>
 						<p>
-							<span className='stat'>1358</span>
+							<span className='stat'>{playerStats.kos}</span>
 							<span className='stat-desc'> KOs</span>
 							<BarChart amount={25} />
 						</p>
 						<p>
-							<span className='stat'>862</span>
+							<span className='stat'>{playerStats.falls}</span>
 							<span className='stat-desc'> Falls</span>
 							<BarChart amount={80} />
 						</p>
 						<p>
-							<span className='stat'>48</span>
+							<span className='stat'>{playerStats.suicides}</span>
 							<span className='stat-desc'> Suicides</span>
 							<BarChart amount={2} />
 						</p>
 						<p>
-							<span className='stat'>16</span>
+							<span className='stat'>{playerStats.teamkos}</span>
 							<span className='stat-desc'> Team KOs</span>
 							<BarChart amount={37} />
 						</p>
