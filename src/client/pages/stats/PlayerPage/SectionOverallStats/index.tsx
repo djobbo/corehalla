@@ -87,12 +87,16 @@ const SectionOverallStats: React.FC<Props> = ({ playerStats }) => {
 					<h3>Damage</h3>
 					<div>
 						<p>
-							<span className='stat stat-medium'>258766</span>
+							<span className='stat stat-medium'>
+								{playerStats.damageDealt}
+							</span>
 							<span className='stat-desc'> Damage Dealt</span>
 							<BarChart amount={96} />
 						</p>
 						<p>
-							<span className='stat stat-medium'>188571</span>
+							<span className='stat stat-medium'>
+								{playerStats.damageTaken}
+							</span>
 							<span className='stat-desc'> Damage Taken</span>
 							<BarChart amount={89} />
 						</p>
