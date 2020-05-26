@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { RouteChildrenProps } from 'react-router-dom';
 import './styles.scss';
 
 import Header, { Page } from './Header';
@@ -13,7 +14,13 @@ import { IPlayerStatsFormat } from 'corehalla.js';
 
 import Loader from '../../../components/Loader';
 
-const PlayerPage: React.FC = () => {
+import { functions } from '../../../firebase';
+
+const fetchPlayerStats = functions().httpsCallable('fetchPlayerStats');
+
+interface Props extends RouteChildrenProps<{ id: string }> {}
+
+const PlayerPage: React.FC<Props> = ({ match }) => {
 	const sections = ['teams', 'legends', 'weapons'];
 	const hash = window.location.hash.substring(1);
 
@@ -22,14 +29,19 @@ const PlayerPage: React.FC = () => {
 	);
 
 	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(false);
 	const [playerStats, setPlayerStats] = useState<IPlayerStatsFormat>();
 
 	useEffect(() => {
-		setTimeout(async () => {
-			const { PlayerStats } = await import('../../../mockups/Player');
-			setPlayerStats(PlayerStats);
-			setLoading(false);
-		}, 250);
+		// const { PlayerStats } = await import('../../../mockups/Player');
+		fetchPlayerStats({ id: match.params.id })
+			.then((res) => {
+				setPlayerStats(res.data as IPlayerStatsFormat);
+				setLoading(false);
+			})
+			.catch((e) => {
+				setError(true);
+			});
 	}, []);
 
 	const section = (() => {
