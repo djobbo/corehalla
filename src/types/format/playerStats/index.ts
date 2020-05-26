@@ -14,6 +14,8 @@ export interface IPlayerStatsFormat {
     suicides: number;
     teamkos: number;
     matchtime: number;
+    damageDealt: number;
+    damageTaken: number;
     season: IPlayerSeasonFormat;
     clan: IPlayerClanFormat;
     legends: ILegendStatsFormat[];
@@ -91,8 +93,8 @@ export interface ILegendStatsFormat {
     xpPercentage: number;
     games: number;
     wins: number;
-    damageDealt: string;
-    damageTaken: string;
+    damageDealt: number;
+    damageTaken: number;
     kos: number;
     falls: number;
     suicides: number;
@@ -164,7 +166,7 @@ export interface IWeaponStatsFormat {
 export interface IWeaponLegendFormat {
     id: number;
     name: string;
-    damageDealt: string;
+    damageDealt: number;
     kos: number;
     matchtime: number;
     games: number;

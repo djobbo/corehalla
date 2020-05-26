@@ -82,6 +82,8 @@ export function formatPlayerStats(
             suicides: number;
             teamkos: number;
             matchtime: number;
+            damageDealt: number;
+            damageTaken: number;
         }>(
             (acc, l) => ({
                 kos: acc.kos + l.kos,
@@ -89,8 +91,18 @@ export function formatPlayerStats(
                 suicides: acc.suicides + l.suicides,
                 teamkos: acc.teamkos + l.teamkos,
                 matchtime: acc.matchtime + l.matchtime,
+                damageDealt: acc.damageDealt + l.damageDealt,
+                damageTaken: acc.damageTaken + l.damageDealt,
             }),
-            { kos: 0, falls: 0, suicides: 0, teamkos: 0, matchtime: 0 }
+            {
+                kos: 0,
+                falls: 0,
+                suicides: 0,
+                teamkos: 0,
+                matchtime: 0,
+                damageDealt: 0,
+                damageTaken: 0,
+            }
         ),
         season,
         clan: formatClanStats(clanStats),
@@ -217,8 +229,8 @@ export function formatLegendStats(
         xpPercentage: legendStats.xp_percentage,
         games: legendStats.games,
         wins: legendStats.wins,
-        damageDealt: legendStats.damagedealt,
-        damageTaken: legendStats.damagetaken,
+        damageDealt: parseInt(legendStats.damagedealt),
+        damageTaken: parseInt(legendStats.damagetaken),
         kos: legendStats.kos,
         falls: legendStats.falls,
         suicides: legendStats.suicides,
