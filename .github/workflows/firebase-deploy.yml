@@ -20,6 +20,10 @@ jobs:
               run: npm install
             - name: Build
               run: npm run build
+            - name: Checkout Functions Folder
+              run: cd functions
+            - name: Install Functions Deps
+              run: npm install
             - name: Deploy to Firebase
               uses: w9jds/firebase-action@master
               with:
