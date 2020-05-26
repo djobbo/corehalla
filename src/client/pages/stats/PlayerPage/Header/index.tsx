@@ -59,13 +59,7 @@ const Header: React.FC<Props> = ({
 						Level {playerStats.level} ({playerStats.xp} xp)
 					</p>
 					<p>
-						Time spent in game:{' '}
-						{formatTime(
-							playerStats.legends.reduce(
-								(acc, l) => acc + l.matchtime,
-								0
-							)
-						)}
+						Time spent in game: {formatTime(playerStats.matchtime)}
 					</p>
 				</div>
 			</div>
