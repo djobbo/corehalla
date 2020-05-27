@@ -2,8 +2,7 @@ import * as functions from 'firebase-functions';
 
 import { createApiConnection } from 'corehalla.js';
 
-import * as cors from 'cors';
-cors({ origin: true });
+require('cors')({ origin: true });
 
 const apiKey = functions.config().bh_api.key;
 
