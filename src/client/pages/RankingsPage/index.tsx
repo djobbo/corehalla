@@ -65,7 +65,9 @@ const RankingsPage: React.FC = () => {
 						<div>
 							<label htmlFor='filter-select'>Region</label>
 							<select
-								onChange={(e) => setRegion(e.target.value)}
+								onChange={(e) =>
+									setRegion(e.target.value as RankedRegion)
+								}
 								name='filter-selector'
 							>
 								<option value=''>Any</option>
@@ -79,7 +81,9 @@ const RankingsPage: React.FC = () => {
 						<div>
 							<label htmlFor='filter-select'>Bracket</label>
 							<select
-								onChange={(e) => setBracket(e.target.value)}
+								onChange={(e) =>
+									setBracket(e.target.value as '1v1' | '2v2')
+								}
 								name='filter-selector'
 							>
 								<option value=''>1v1</option>
