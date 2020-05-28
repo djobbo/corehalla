@@ -12,4 +12,4 @@ firebase.initializeApp({
 	measurementId: 'G-GRV4GCF2KY',
 });
 
-export const functions = firebase.functions;
+export const functions = firebase.functions();

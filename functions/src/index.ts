@@ -1,12 +1,16 @@
 import * as functions from 'firebase-functions';
 
 import { createApiConnection } from 'corehalla.js';
-
-require('cors')({ origin: true });
+import * as express from 'express';
+import * as cors from 'cors';
 
 const apiKey = functions.config().bh_api.key;
 
 const bhAPI = createApiConnection(apiKey);
+
+const app = express();
+
+app.use(cors({ origin: true }));
 
 // app.get('/rankings/:bracket?/:region?/:page?', (req, res) => {
 // 	const bracket = req.params.bracket || '1v1';
@@ -29,7 +33,25 @@ const bhAPI = createApiConnection(apiKey);
 // 	}
 // });
 
-exports.fetchPlayer = functions.https.onCall((data, context) => {
-	const id = data.id;
-	return bhAPI.fetchPlayerFormat(id);
+const router = express.Router();
+
+router.get('/', (req, res) => {
+	res.status(200).json('Corehalla API');
 });
+
+router.get('/stats/player/:id', (req, res) => {
+	const id = parseInt(req.params.id);
+	bhAPI
+		.fetchPlayerFormat(id)
+		.then((data) => {
+			res.status(200).json(data);
+		})
+		.catch((e) => {
+			console.error(e);
+			res.status(500).json('Internal server error');
+		});
+});
+
+app.use('/api', router);
+
+exports.api = functions.https.onRequest(app);

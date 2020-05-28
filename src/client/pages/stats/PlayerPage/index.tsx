@@ -14,10 +14,6 @@ import { IPlayerStatsFormat } from 'corehalla.js';
 
 import Loader from '../../../components/Loader';
 
-import { functions } from '../../../firebase';
-
-const fetchPlayerStats = functions().httpsCallable('fetchPlayerStats');
-
 interface Props extends RouteChildrenProps<{ id: string }> {}
 
 const PlayerPage: React.FC<Props> = ({ match }) => {
@@ -34,9 +30,10 @@ const PlayerPage: React.FC<Props> = ({ match }) => {
 
 	useEffect(() => {
 		// const { PlayerStats } = await import('../../../mockups/Player');
-		fetchPlayerStats({ id: match.params.id })
-			.then((res) => {
-				setPlayerStats(res.data as IPlayerStatsFormat);
+		fetch(`/api/stats/player/${match.params.id}`)
+			.then(async (res) => {
+				const data = (await res.json()) as IPlayerStatsFormat;
+				setPlayerStats(data);
 				setLoading(false);
 			})
 			.catch((e) => {

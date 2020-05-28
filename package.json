@@ -14,7 +14,8 @@
 	},
 	"scripts": {
 		"start": "webpack-dev-server",
-		"build": " rm -rf build && webpack --mode production"
+		"build": "rm -rf build && webpack --mode production",
+		"deploy": "npm run build && firebase deploy --only functions,hosting"
 	},
 	"description": "Brawlhalla Stats & Rankings Website",
 	"main": "index.js",
