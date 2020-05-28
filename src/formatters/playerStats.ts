@@ -92,7 +92,7 @@ export function formatPlayerStats(
                 teamkos: acc.teamkos + l.teamkos,
                 matchtime: acc.matchtime + l.matchtime,
                 damageDealt: acc.damageDealt + l.damageDealt,
-                damageTaken: acc.damageTaken + l.damageDealt,
+                damageTaken: acc.damageTaken + l.damageTaken,
             }),
             {
                 kos: 0,
