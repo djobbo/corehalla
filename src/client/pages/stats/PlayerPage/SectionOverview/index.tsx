@@ -1,8 +1,14 @@
 import React from 'react';
 
 import './styles.scss';
+import { IPlayerSeasonFormat, ILegendStatsFormat } from 'corehalla.js';
 
-const SectionOverview = ({ season, best_legend }) => {
+interface Props {
+	season: IPlayerSeasonFormat;
+	bestLegend: ILegendStatsFormat;
+}
+
+const SectionOverview: React.FC<Props> = ({ season, bestLegend }) => {
 	return (
 		<section className='section-overview'>
 			<h2 className='section-title'>Season Overview</h2>
@@ -11,7 +17,7 @@ const SectionOverview = ({ season, best_legend }) => {
 					<RankedStats
 						tier={season.tier}
 						rating={season.rating}
-						peak_rating={season.peak_rating}
+						peak={season.peak}
 						games={season.games}
 						wins={season.wins}
 						losses={season.games - season.wins}
@@ -28,17 +34,16 @@ const SectionOverview = ({ season, best_legend }) => {
 				/>
 				<div className='ranked-best-legend'>
 					<BestLegendRankedStats
-						legend={best_legend.name}
-						rating={best_legend.season.rating}
-						peak_rating={best_legend.season.peak_rating}
-						games={best_legend.season.games}
-						wins={best_legend.season.wins}
+						legend={bestLegend.name}
+						rating={bestLegend.season.rating}
+						peak={bestLegend.season.peak}
+						games={bestLegend.season.games}
+						wins={bestLegend.season.wins}
 						losses={
-							best_legend.season.games - best_legend.season.wins
+							bestLegend.season.games - bestLegend.season.wins
 						}
 						winrate={(
-							(best_legend.season.wins /
-								best_legend.season.games) *
+							(bestLegend.season.wins / bestLegend.season.games) *
 							100
 						).toFixed(1)}
 					/>
@@ -50,8 +55,8 @@ const SectionOverview = ({ season, best_legend }) => {
 
 const RankedStats = ({
 	tier = 'Tin 0',
-	rating = '750',
-	peak_rating = '750',
+	rating = 750,
+	peak = 750,
 	games = 0,
 	wins = 0,
 	losses = 0,
@@ -70,7 +75,7 @@ const RankedStats = ({
 			</p>
 			<p>
 				<span className='stat-desc'>Peak </span>
-				<span className='stat'>{peak_rating}</span>
+				<span className='stat'>{peak}</span>
 			</p>
 			<hr />
 			<p>
@@ -96,8 +101,8 @@ const RankedStats = ({
 
 const BestLegendRankedStats = ({
 	legend = 'Random',
-	rating = '750',
-	peak_rating = '750',
+	rating = 750,
+	peak = 750,
 	games = 0,
 	wins = 0,
 	losses = 0,
@@ -114,7 +119,7 @@ const BestLegendRankedStats = ({
 				<span className='stat-desc'> Elo</span>
 			</p>
 			<p>
-				<span className='stat'>{peak_rating}</span>
+				<span className='stat'>{peak}</span>
 				<span className='stat-desc'> Peak</span>
 			</p>
 			<hr />
