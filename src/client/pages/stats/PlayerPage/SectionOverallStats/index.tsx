@@ -12,6 +12,18 @@ interface Props {
 }
 
 const SectionOverallStats: React.FC<Props> = ({ playerStats }) => {
+	const greatestKOValue = [
+		playerStats.kos,
+		playerStats.falls,
+		playerStats.suicides,
+		playerStats.teamkos,
+	].reduce((acc, stat) => (stat > acc ? stat : acc), -1);
+
+	const greatestDamageValue =
+		playerStats.damageDealt > playerStats.damageTaken
+			? playerStats.damageDealt
+			: playerStats.damageTaken;
+
 	return (
 		<section className='section-overall'>
 			<h2 className='section-title'>Overall Stats</h2>
@@ -64,14 +76,18 @@ const SectionOverallStats: React.FC<Props> = ({ playerStats }) => {
 						<p>
 							<span className='stat'>{playerStats.kos}</span>
 							<span className='stat-desc'> KOs</span>
-							<BarChart amount={100} />
+							<BarChart
+								amount={
+									(playerStats.kos / greatestKOValue) * 100
+								}
+							/>
 						</p>
 						<p>
 							<span className='stat'>{playerStats.falls}</span>
 							<span className='stat-desc'> Falls</span>
 							<BarChart
 								amount={
-									(playerStats.falls / playerStats.kos) * 100
+									(playerStats.falls / greatestKOValue) * 100
 								}
 							/>
 						</p>
@@ -80,7 +96,7 @@ const SectionOverallStats: React.FC<Props> = ({ playerStats }) => {
 							<span className='stat-desc'> Suicides</span>
 							<BarChart
 								amount={
-									(playerStats.suicides / playerStats.kos) *
+									(playerStats.suicides / greatestKOValue) *
 									100
 								}
 							/>
@@ -90,7 +106,7 @@ const SectionOverallStats: React.FC<Props> = ({ playerStats }) => {
 							<span className='stat-desc'> Team KOs</span>
 							<BarChart
 								amount={
-									(playerStats.teamkos / playerStats.kos) *
+									(playerStats.teamkos / greatestKOValue) *
 									100
 								}
 							/>
@@ -105,7 +121,13 @@ const SectionOverallStats: React.FC<Props> = ({ playerStats }) => {
 								{playerStats.damageDealt}
 							</span>
 							<span className='stat-desc'> Damage Dealt</span>
-							<BarChart amount={100} />
+							<BarChart
+								amount={
+									(playerStats.damageDealt /
+										greatestDamageValue) *
+									100
+								}
+							/>
 						</p>
 						<p>
 							<span className='stat stat-medium'>
@@ -114,8 +136,8 @@ const SectionOverallStats: React.FC<Props> = ({ playerStats }) => {
 							<span className='stat-desc'> Damage Taken</span>
 							<BarChart
 								amount={
-									(playerStats.damageDealt /
-										playerStats.damageTaken) *
+									(playerStats.damageTaken /
+										greatestDamageValue) *
 									100
 								}
 							/>
