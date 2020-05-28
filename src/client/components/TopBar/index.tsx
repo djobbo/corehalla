@@ -1,14 +1,42 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useParams } from 'react-router-dom';
+import { history } from '../../history';
+import qs from 'qs';
 
 import './styles.scss';
 
 import Icon from '@mdi/react';
 import { mdiMagnify, mdiDiscord } from '@mdi/js';
 
+import { useDebounce } from '../../hooks/useDebounce';
+
 import Logo from '../../App/logo.png';
 
 const TopBar: React.FC = () => {
+	const { search } = useLocation();
+	const params = useParams<{
+		region: string;
+		bracket: string;
+		page: string;
+	}>();
+
+	const [playerSearch, setPlayerSearch] = useState(
+		(qs.parse(search.substring(1)).p as string) || ''
+	);
+	const [debouncedPlayerSecarch] = useDebounce(playerSearch, 1000);
+
+	useEffect(() => {
+		if (debouncedPlayerSecarch) {
+			history.push(
+				`/rankings/${params.bracket || '1v1'}/${
+					params.region || 'all'
+				}/${params.page || '1'}?p=${debouncedPlayerSecarch}`
+			);
+		} else {
+			console.log('results');
+		}
+	}, [debouncedPlayerSecarch]);
+
 	return (
 		<div className='topbar'>
 			<div className='topbar-nav'>
@@ -21,7 +49,12 @@ const TopBar: React.FC = () => {
 					<i>
 						<Icon path={mdiMagnify} title='Discord' size={1} />
 					</i>
-					<input type='text' placeholder='Search Player...' />
+					<input
+						type='text'
+						placeholder='Search Player...'
+						value={playerSearch}
+						onChange={(e) => setPlayerSearch(e.target.value)}
+					/>
 				</div>
 				<nav>
 					<ul>

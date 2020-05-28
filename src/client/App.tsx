@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router, Switch, Route, Redirect } from 'react-router-dom';
-import history from './history';
+import { history } from './history';
 
 import TopBar from './components/TopBar';
 import RankingsPage from './pages/RankingsPage';
