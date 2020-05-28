@@ -10,6 +10,7 @@ import {
 	IRankingFormat,
 	IRanking1v1Format,
 	IRanking2v2Format,
+	RankedRegion,
 } from 'corehalla.js';
 
 const RankingsPage: React.FC = () => {
@@ -21,9 +22,14 @@ const RankingsPage: React.FC = () => {
 	}>();
 
 	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(false);
 	const [rankings, setRankings] = useState<IRankingFormat[]>([]);
-	const [region, setRegion] = useState(params.region || 'all');
-	const [bracket, setBracket] = useState(params.bracket || '1v1');
+	const [region, setRegion] = useState<RankedRegion>(
+		(params.region as RankedRegion) || 'all'
+	);
+	const [bracket, setBracket] = useState<'1v1' | '2v2'>(
+		(params.bracket || '1v1') as '1v1' | '2v2'
+	);
 	const [page, setPage] = useState(parseInt(params.page, 10) || 1);
 	const [player, setPlayer] = useState(
 		(qs.parse(search.substring(1)).p as string) || ''
@@ -33,11 +39,20 @@ const RankingsPage: React.FC = () => {
 
 	useEffect(() => {
 		setLoading(true);
-		setTimeout(async () => {
-			const { Rankings } = await import('../../mockups/1v1Rankings');
-			setRankings(Rankings);
-			setLoading(false);
-		}, 250);
+		// setTimeout(async () => {
+		// 	const { Rankings } = await import('../../mockups/1v1Rankings');
+		// 	setRankings(Rankings);
+		// 	setLoading(false);
+		// }, 250);
+		fetch(`/api/rankings/${bracket}/${region}/${page}?player=${player}`)
+			.then(async (res) => {
+				const data = await res.json();
+				setRankings(data);
+				setLoading(false);
+			})
+			.catch((e) => {
+				setError(true);
+			});
 	}, [bracket, region, page, player]);
 
 	return (
