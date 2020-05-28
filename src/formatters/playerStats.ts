@@ -105,7 +105,7 @@ export function formatPlayerStats(
             }
         ),
         season,
-        clan: formatClanStats(clanStats),
+        clan: clanStats ? formatClanStats(clanStats) : undefined,
         legends,
         weapons,
         gadgets: {

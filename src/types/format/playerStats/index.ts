@@ -17,7 +17,7 @@ export interface IPlayerStatsFormat {
     damageDealt: number;
     damageTaken: number;
     season: IPlayerSeasonFormat;
-    clan: IPlayerClanFormat;
+    clan: IPlayerClanFormat | undefined;
     legends: ILegendStatsFormat[];
     weapons: IWeaponStatsFormat[];
     gadgets: {

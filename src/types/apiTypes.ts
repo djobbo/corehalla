@@ -20,7 +20,7 @@ export interface IPlayerStats {
     kosidekick: number;
     kosnowball: number;
     legends: ILegendStats[];
-    clan: IPlayerClan;
+    clan: IPlayerClan | undefined;
 }
 
 export interface ILegendStats {
