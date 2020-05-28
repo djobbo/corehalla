@@ -35,24 +35,35 @@ const RankingsPage: React.FC = () => {
 		(qs.parse(search.substring(1)).p as string) || ''
 	);
 
-	const regions = ['US-E', 'EU', 'BRZ', 'AUS', 'US-W', 'SEA', 'JPN'];
+	const regions: RankedRegion[] = [
+		'US-E',
+		'EU',
+		'BRZ',
+		'AUS',
+		'US-W',
+		'SEA',
+		'JPN',
+	];
 
 	useEffect(() => {
 		setLoading(true);
-		// setTimeout(async () => {
-		// 	const { Rankings } = await import('../../mockups/1v1Rankings');
-		// 	setRankings(Rankings);
-		// 	setLoading(false);
-		// }, 250);
-		fetch(`/api/rankings/${bracket}/${region}/${page}?player=${player}`)
-			.then(async (res) => {
-				const data = await res.json();
-				setRankings(data);
+		if (process.env.NODE_ENV === 'production') {
+			fetch(`/api/rankings/${bracket}/${region}/${page}?player=${player}`)
+				.then(async (res) => {
+					const data = await res.json();
+					setRankings(data);
+					setLoading(false);
+				})
+				.catch((e) => {
+					setError(true);
+				});
+		} else {
+			setTimeout(async () => {
+				const { Rankings } = await import('../../mockups/1v1Rankings');
+				setRankings(Rankings);
 				setLoading(false);
-			})
-			.catch((e) => {
-				setError(true);
-			});
+			}, 250);
+		}
 	}, [bracket, region, page, player]);
 
 	return (

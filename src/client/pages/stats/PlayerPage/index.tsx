@@ -29,16 +29,23 @@ const PlayerPage: React.FC<Props> = ({ match }) => {
 	const [playerStats, setPlayerStats] = useState<IPlayerStatsFormat>();
 
 	useEffect(() => {
-		// const { PlayerStats } = await import('../../../mockups/Player');
-		fetch(`/api/stats/player/${match.params.id}`)
-			.then(async (res) => {
-				const data = (await res.json()) as IPlayerStatsFormat;
-				setPlayerStats(data);
+		if (process.env.NODE_ENV === 'production') {
+			fetch(`/api/stats/player/${match.params.id}`)
+				.then(async (res) => {
+					const data = (await res.json()) as IPlayerStatsFormat;
+					setPlayerStats(data);
+					setLoading(false);
+				})
+				.catch((e) => {
+					setError(true);
+				});
+		} else {
+			setTimeout(async () => {
+				const { PlayerStats } = await import('../../../mockups/Player');
+				setPlayerStats(PlayerStats);
 				setLoading(false);
-			})
-			.catch((e) => {
-				setError(true);
-			});
+			}, 250);
+		}
 	}, []);
 
 	const section = (() => {
