@@ -24,17 +24,17 @@ const TopBar: React.FC = () => {
 		(qs.parse(search.substring(1)).p as string) || ''
 	);
 	const [debouncedPlayerSecarch] = useDebounce(playerSearch, 1000);
+	const [initialRender, setInitialRender] = useState(true);
 
 	useEffect(() => {
-		if (debouncedPlayerSecarch) {
-			history.push(
-				`/rankings/${params.bracket || '1v1'}/${
-					params.region || 'all'
-				}/${params.page || '1'}?p=${debouncedPlayerSecarch}`
-			);
+		if (debouncedPlayerSecarch && !initialRender) {
+			window.location.href = `/rankings/${params.bracket || '1v1'}/${
+				params.region || 'all'
+			}/${params.page || '1'}?p=${debouncedPlayerSecarch}`;
 		} else {
 			console.log('results');
 		}
+		setInitialRender(false);
 	}, [debouncedPlayerSecarch]);
 
 	return (
