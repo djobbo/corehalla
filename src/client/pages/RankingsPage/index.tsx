@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useRouteMatch } from 'react-router-dom';
 import qs from 'qs';
+import { history } from '../../history';
 
 import './styles.scss';
 
@@ -36,18 +37,20 @@ const RankingsPage: React.FC = () => {
 		(params.bracket || '1v1') as '1v1' | '2v2'
 	);
 	const [page, setPage] = useState(parseInt(params.page, 10) || 1);
-	const [player, setPlayer] = useState(
-		(qs.parse(search.substring(1)).p as string) || ''
-	);
+
+	console.log(qs.parse(search.substring(1)));
+	const player = (qs.parse(search.substring(1)).p as string) || '';
+
+	console.log(params, player);
 
 	const regions: RankedRegion[] = [
-		'US-E',
-		'EU',
-		'BRZ',
-		'AUS',
-		'US-W',
-		'SEA',
-		'JPN',
+		'us-e',
+		'eu',
+		'brz',
+		'aus',
+		'us-w',
+		'sea',
+		'jpn',
 	];
 
 	useEffect(() => {
@@ -69,6 +72,10 @@ const RankingsPage: React.FC = () => {
 				setLoading(false);
 			}, 250);
 		}
+	}, []);
+
+	useEffect(() => {
+		history.push(`/rankings/${bracket}/${region}/${page}?p=${player}`);
 	}, [bracket, region, page, player]);
 
 	return (
