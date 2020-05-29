@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams, useRouteMatch } from 'react-router-dom';
 import { history } from '../../history';
 import qs from 'qs';
 
@@ -14,11 +14,15 @@ import Logo from '../../App/logo.png';
 
 const TopBar: React.FC = () => {
 	const { search } = useLocation();
-	const params = useParams<{
+	const match = useRouteMatch<{
 		region: string;
 		bracket: string;
 		page: string;
-	}>();
+	}>('/rankings/:bracket/:region/:page');
+
+	const params = match
+		? match.params
+		: { bracket: '1v1', region: 'all', page: '1' };
 
 	const [playerSearch, setPlayerSearch] = useState(
 		(qs.parse(search.substring(1)).p as string) || ''
@@ -28,11 +32,11 @@ const TopBar: React.FC = () => {
 
 	useEffect(() => {
 		if (debouncedPlayerSecarch && !initialRender) {
-			window.location.href = `/rankings/${params.bracket || '1v1'}/${
-				params.region || 'all'
-			}/${params.page || '1'}?p=${debouncedPlayerSecarch}`;
-		} else {
-			console.log('results');
+			history.push(
+				`/rankings/${params.bracket || '1v1'}/${
+					params.region || 'all'
+				}/${params.page || '1'}?p=${debouncedPlayerSecarch}`
+			);
 		}
 		setInitialRender(false);
 	}, [debouncedPlayerSecarch]);
