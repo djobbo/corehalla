@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { RouteChildrenProps } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom';
 import './styles.scss';
 
 import Header, { Page } from './Header';
@@ -14,9 +14,11 @@ import { IPlayerStatsFormat } from 'corehalla.js';
 
 import Loader from '../../../components/Loader';
 
-interface Props extends RouteChildrenProps<{ id: string }> {}
+const PlayerPage: React.FC = () => {
+	const { params } = useRouteMatch<{
+		id: string;
+	}>('/stats/player/:id');
 
-const PlayerPage: React.FC<Props> = ({ match }) => {
 	const sections = ['teams', 'legends', 'weapons'];
 	const hash = window.location.hash.substring(1);
 
@@ -30,7 +32,7 @@ const PlayerPage: React.FC<Props> = ({ match }) => {
 
 	useEffect(() => {
 		if (process.env.NODE_ENV === 'production') {
-			fetch(`/api/stats/player/${match.params.id}`)
+			fetch(`/api/stats/player/${params.id}`)
 				.then(async (res) => {
 					const data = (await res.json()) as IPlayerStatsFormat;
 					setPlayerStats(data);

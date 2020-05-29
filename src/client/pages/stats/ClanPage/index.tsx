@@ -21,7 +21,6 @@ const ClanPage: React.FC = () => {
 		setTimeout(async () => {
 			const { ClanStats } = await import('../../../mockups/Clan');
 			setClanStats(ClanStats);
-			console.log(ClanStats);
 			setLoading(false);
 		}, 250);
 	}, []);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useRouteMatch } from 'react-router-dom';
 import qs from 'qs';
 
 import './styles.scss';
@@ -15,11 +15,16 @@ import {
 
 const RankingsPage: React.FC = () => {
 	const { search } = useLocation();
-	const params = useParams<{
+
+	const match = useRouteMatch<{
 		region: string;
 		bracket: string;
 		page: string;
-	}>();
+	}>('/rankings/:bracket/:region/:page');
+
+	const params = match
+		? match.params
+		: { bracket: '1v1', region: 'all', page: '1' };
 
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
