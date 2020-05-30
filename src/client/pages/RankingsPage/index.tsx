@@ -39,7 +39,9 @@ const RankingsPage: React.FC = () => {
 	const [page, setPage] = useState(parseInt(params.page, 10) || 1);
 
 	console.log(qs.parse(search.substring(1)));
-	const player = (qs.parse(search.substring(1)).p as string) || '';
+	const [player, setPlayer] = useState(
+		(qs.parse(search.substring(1)).p as string) || ''
+	);
 
 	console.log(params, player);
 

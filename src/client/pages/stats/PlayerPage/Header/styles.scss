@@ -59,6 +59,8 @@ header {
 				z-index: 10;
 				opacity: 0;
 				transition: 0.25s ease all;
+				border: none;
+				background-color: transparent;
 
 				&:hover {
 					svg {

@@ -8,6 +8,8 @@ import { mdiStar, mdiAccountStarOutline } from '@mdi/js';
 
 import formatTime from '../../../../util/formatTime';
 
+import { setFavorite } from '../../../../util/fetchFavorites';
+
 // TODO: Move this somewhere else
 export type Page = 'overview' | 'teams' | 'legends' | 'weapons';
 
@@ -32,7 +34,18 @@ const Header: React.FC<Props> = ({
 			</div>
 			<div className='header-info'>
 				<div className='profile-picture'>
-					<a className='add-to-fav-btn' href='/#'>
+					<a
+						className='add-to-fav-btn'
+						onClick={(e) =>
+							setFavorite('players', {
+								id: playerStats.id.toString(),
+								link: `/stats/player/${playerStats.id}`,
+								name: playerStats.name,
+								thumbURI:
+									'https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80',
+							})
+						}
+					>
 						<Icon
 							path={mdiStar}
 							title='Add to favorites'
