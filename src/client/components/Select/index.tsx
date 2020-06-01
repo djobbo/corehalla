@@ -11,7 +11,11 @@ interface Props<T> {
 	onChange: (value: T) => void;
 }
 
-const Select = <T extends string>({ options, value, onChange }: Props<T>) => {
+export const Select = <T extends string>({
+	options,
+	value,
+	onChange,
+}: Props<T>) => {
 	const handleOnChange = (e: React.FormEvent<HTMLSelectElement>) =>
 		onChange(e.currentTarget.value as T);
 
@@ -25,5 +29,3 @@ const Select = <T extends string>({ options, value, onChange }: Props<T>) => {
 		</select>
 	);
 };
-
-export default Select;

@@ -2,17 +2,17 @@ import React from 'react';
 import { Router, Switch, Route, Redirect } from 'react-router-dom';
 import { history } from './history';
 
-import TopBar from './components/TopBar';
-import IndexPage from './pages/IndexPage';
-import RankingsPage from './pages/RankingsPage';
-import PlayerStatsPage from './pages/stats/PlayerPage';
-import ClanStatsPage from './pages/stats/ClanPage';
+import { TopBar } from './components/TopBar';
+import { IndexPage } from './pages/IndexPage';
+import { RankingsPage } from './pages/RankingsPage';
+import { PlayerStatsPage } from './pages/stats/PlayerPage';
+import { ClanStatsPage } from './pages/stats/ClanPage';
 
 import { RankedRegion } from 'corehalla.js';
 
 import './App/styles.scss';
 
-const App: React.FC = () => {
+export const App: React.FC = () => {
 	return (
 		<Router history={history}>
 			<div className='App'>
@@ -39,5 +39,3 @@ const App: React.FC = () => {
 		</Router>
 	);
 };
-
-export default App;

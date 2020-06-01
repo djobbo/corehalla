@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import './styles.scss';
 
-import Header, { Page } from './Header';
-import SectionOverview from './SectionOverview';
-import SectionOverallStats from './SectionOverallStats';
-import SectionRanked2v2 from './SectionRanked2v2';
-import SectionLegends from './SectionLegends';
-import SectionWeapons from './SectionWeapons';
-import SectionClan from './SectionClan';
+import { Header, Page } from './Header';
+import { SectionOverview } from './SectionOverview';
+import { SectionOverallStats } from './SectionOverallStats';
+import { SectionRanked2v2 } from './SectionRanked2v2';
+import { SectionLegends } from './SectionLegends';
+import { SectionWeapons } from './SectionWeapons';
+import { SectionClan } from './SectionClan';
 
 import { IPlayerStatsFormat } from 'corehalla.js';
 
-import Loader from '../../../components/Loader';
+import { Loader } from '../../../components/Loader';
 
 const PlayerPage: React.FC = () => {
 	const { params } = useRouteMatch<{

@@ -75,7 +75,6 @@ module.exports = {
 		contentBase: path.join(__dirname, 'dist'),
 		compress: true,
 		inline: true,
-		stats: 'errors-only',
 		historyApiFallback: {
 			index: 'index.html',
 		},

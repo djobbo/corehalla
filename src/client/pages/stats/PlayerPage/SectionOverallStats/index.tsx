@@ -2,8 +2,8 @@ import React from 'react';
 
 import './styles.scss';
 
-import BarChart from '../../../../components/Charts/BarChart';
-import PieChart from '../../../../components/Charts/PieChart';
+import { BarChart } from '../../../../components/Charts/BarChart';
+import { PieChart } from '../../../../components/Charts/PieChart';
 
 import { IPlayerStatsFormat } from 'corehalla.js';
 
@@ -11,7 +11,7 @@ interface Props {
 	playerStats: IPlayerStatsFormat;
 }
 
-const SectionOverallStats: React.FC<Props> = ({ playerStats }) => {
+export const SectionOverallStats: React.FC<Props> = ({ playerStats }) => {
 	const greatestKOValue = [
 		playerStats.kos,
 		playerStats.falls,
@@ -161,5 +161,3 @@ function MiscStat({ title, value }) {
 		</p>
 	);
 }
-
-export default SectionOverallStats;

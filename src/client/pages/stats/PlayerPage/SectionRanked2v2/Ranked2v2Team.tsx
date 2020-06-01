@@ -1,5 +1,5 @@
 import React from 'react';
-import BarChart from '../../../../components/Charts/BarChart';
+import { BarChart } from '../../../../components/Charts/BarChart';
 
 import { I2v2TeamFormat } from 'corehalla.js';
 
@@ -8,7 +8,7 @@ interface Props {
 	id: number;
 }
 
-const Ranked2v2Team: React.FC<Props> = ({ team, id }) => {
+export const Ranked2v2Team: React.FC<Props> = ({ team, id }) => {
 	const winrate = ((team.season.wins / team.season.games) * 100).toFixed(2);
 	return (
 		<div
@@ -61,5 +61,3 @@ const Ranked2v2Team: React.FC<Props> = ({ team, id }) => {
 		</div>
 	);
 };
-
-export default Ranked2v2Team;

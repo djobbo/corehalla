@@ -4,9 +4,9 @@ import './styles.scss';
 
 import { fetchFavorites } from '../../util/fetchFavorites';
 
-import FavoriteCard from './FavoriteCard';
+import { FavoriteCard } from './FavoriteCard';
 
-const IndexPage: React.FC = () => {
+export const IndexPage: React.FC = () => {
 	const favs = fetchFavorites();
 	console.log('favs', favs);
 	const playerFavs = favs ? (
@@ -30,5 +30,3 @@ const IndexPage: React.FC = () => {
 		</>
 	);
 };
-
-export default IndexPage;

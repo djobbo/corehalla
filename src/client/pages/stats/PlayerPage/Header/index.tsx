@@ -19,7 +19,7 @@ interface Props {
 	playerStats: IPlayerStatsFormat;
 }
 
-const Header: React.FC<Props> = ({
+export const Header: React.FC<Props> = ({
 	activePage,
 	setActivePage,
 	playerStats,
@@ -119,5 +119,3 @@ const Header: React.FC<Props> = ({
 		</header>
 	);
 };
-
-export default Header;

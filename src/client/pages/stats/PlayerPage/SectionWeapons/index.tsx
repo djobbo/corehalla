@@ -5,7 +5,7 @@ import { mdiSortAscending, mdiSortDescending } from '@mdi/js';
 
 import formatTime from '../../../../util/formatTime';
 
-const SectionWeapons = ({ weapons }) => {
+export const SectionWeapons = ({ weapons }) => {
 	const [sortBy, setSortBy] = useState('');
 	const [sortOrder, setSortOrder] = useState(-1);
 	return (
@@ -70,7 +70,11 @@ const SectionWeapons = ({ weapons }) => {
 					<div
 						key={i + Math.random()}
 						className='card'
-						style={{ '--delay': `${0.05 * parseInt(i)}s` }}
+						style={
+							{
+								'--delay': `${0.05 * i}s`,
+							} as React.CSSProperties
+						}
 					>
 						<h3>
 							<img

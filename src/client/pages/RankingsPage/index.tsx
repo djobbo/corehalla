@@ -5,7 +5,7 @@ import { history } from '../../history';
 
 import './styles.scss';
 
-import Loader from '../../components/Loader';
+import { Loader } from '../../components/Loader';
 
 import {
 	IRankingFormat,
@@ -14,7 +14,7 @@ import {
 	RankedRegion,
 } from 'corehalla.js';
 
-const RankingsPage: React.FC = () => {
+export const RankingsPage: React.FC = () => {
 	const { search } = useLocation();
 
 	const match = useRouteMatch<{

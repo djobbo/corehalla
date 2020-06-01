@@ -1,4 +1,4 @@
-export default function formatTime(s: number) {
+export const formatTime = (s: number) => {
 	let timeLeft = s;
 
 	let h = Math.floor(timeLeft / 3600);
@@ -7,4 +7,4 @@ export default function formatTime(s: number) {
 	let m = Math.floor(timeLeft / 60);
 	timeLeft -= m * 60;
 	return `${h}h ${m}m ${timeLeft}s`;
-}
+};

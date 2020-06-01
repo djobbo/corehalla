@@ -1,3 +1,1 @@
-export default function (epoch: number) {
-	return new Date(epoch * 1000);
-}
+export const epochToDate = (epoch: number) => new Date(epoch * 1000);

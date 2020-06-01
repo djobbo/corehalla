@@ -8,7 +8,7 @@ interface Props {
 	bestLegend: ILegendStatsFormat;
 }
 
-const SectionOverview: React.FC<Props> = ({ season, bestLegend }) => {
+export const SectionOverview: React.FC<Props> = ({ season, bestLegend }) => {
 	return (
 		<section className='section-overview'>
 			<h2 className='section-title'>Season Overview</h2>
@@ -143,5 +143,3 @@ const BestLegendRankedStats = ({
 		</div>
 	);
 };
-
-export default SectionOverview;

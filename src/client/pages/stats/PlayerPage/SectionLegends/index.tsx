@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Icon from '@mdi/react';
 import { mdiSortAscending, mdiSortDescending } from '@mdi/js';
 
-import Select from '../../../../components/Select';
+import { Select } from '../../../../components/Select';
 
 import { ILegendStatsFormat, IWeaponStatsFormat, Weapon } from 'corehalla.js';
 
@@ -12,7 +12,7 @@ interface Props {
 	weapons: IWeaponStatsFormat[];
 }
 
-const SectionLegends: React.FC<Props> = ({ legends, weapons }) => {
+export const SectionLegends: React.FC<Props> = ({ legends, weapons }) => {
 	const [weaponFilter, setWeaponFilter] = useState<Weapon | ''>('');
 	const [sortBy, setSortBy] = useState('');
 	const [sortOrder, setSortOrder] = useState(-1);
@@ -114,5 +114,3 @@ const SectionLegends: React.FC<Props> = ({ legends, weapons }) => {
 		</section>
 	);
 };
-
-export default SectionLegends;

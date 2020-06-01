@@ -12,7 +12,7 @@ import { useDebounce } from '../../hooks/useDebounce';
 
 import Logo from '../../App/logo.png';
 
-const TopBar: React.FC = () => {
+export const TopBar: React.FC = () => {
 	const { search } = useLocation();
 	const match = useRouteMatch<{
 		region: string;
@@ -80,5 +80,3 @@ const TopBar: React.FC = () => {
 		</div>
 	);
 };
-
-export default TopBar;
