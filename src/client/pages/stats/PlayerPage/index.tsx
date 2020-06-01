@@ -70,7 +70,7 @@ const PlayerPage: React.FC = () => {
 						<SectionOverview
 							season={playerStats.season}
 							bestLegend={
-								[...playerStats.legends].sort(
+								playerStats.legends.sort(
 									(a, b) => b.season.rating - a.season.rating
 								)[0]
 							}

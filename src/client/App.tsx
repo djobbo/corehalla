@@ -26,9 +26,11 @@ const App: React.FC = () => {
 						<RankingsPage />
 					</Route>
 					<Route path='/stats/player/:id' exact>
+						<TopBar />
 						<PlayerStatsPage />
 					</Route>
 					<Route path='/stats/clan/:id' exact>
+						<TopBar />
 						<ClanStatsPage />
 					</Route>
 					<Route path='/test'>Corehalla</Route>

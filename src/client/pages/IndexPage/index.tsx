@@ -2,18 +2,9 @@ import React from 'react';
 
 import './styles.scss';
 
-import { fetchFavorites, IFavorite } from '../../util/fetchFavorites';
+import { fetchFavorites } from '../../util/fetchFavorites';
 
-const FavItem: React.FC<{ fav: IFavorite }> = ({ fav }) => {
-	return (
-		<div>
-			<a href={fav.link}>
-				<h2>{fav.name}</h2>
-				<img src={fav.thumbURI} alt={fav.name} />
-			</a>
-		</div>
-	);
-};
+import FavoriteCard from './FavoriteCard';
 
 const IndexPage: React.FC = () => {
 	const favs = fetchFavorites();
@@ -21,7 +12,7 @@ const IndexPage: React.FC = () => {
 	const playerFavs = favs ? (
 		<div>
 			{favs.players.map((fav) => (
-				<FavItem fav={fav} key={fav.id} />
+				<FavoriteCard fav={fav} key={fav.id} />
 			))}
 		</div>
 	) : null;
@@ -30,10 +21,11 @@ const IndexPage: React.FC = () => {
 			<h1>COREHALLA</h1>
 			<div>
 				<h2>Starred Players</h2>
-				{playerFavs}
+				<div className='favorites-container'>{playerFavs}</div>
 			</div>
 			<div>
 				<h2>Starred Clans</h2>
+				<div className='favorites-container'></div>
 			</div>
 		</>
 	);

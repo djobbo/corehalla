@@ -6,9 +6,9 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
 	entry: './src/client/index.tsx',
 	output: {
-		path: path.resolve(__dirname, 'build'),
-		filename: 'public/bundle.js',
-		publicPath: '/',
+		path: __dirname,
+		filename: './dist/js/bundle.js',
+		publicPath: '/dist/',
 	},
 	module: {
 		rules: [
@@ -72,16 +72,21 @@ module.exports = {
 	},
 	devServer: {
 		port: 31199,
-		historyApiFallback: true,
-		contentBase: path.join(__dirname, 'src/public'),
+		contentBase: path.join(__dirname, 'dist'),
+		compress: true,
+		inline: true,
+		stats: 'errors-only',
+		historyApiFallback: {
+			index: 'index.html',
+		},
 	},
 	plugins: [
 		new CopyWebpackPlugin({
-			patterns: [{ from: 'src/public', to: '' }],
+			patterns: [{ from: 'src/public', to: './dist' }],
 		}),
 		new HtmlWebPackPlugin({
 			template: 'src/public/index.html',
-			filename: 'index.html',
+			filename: 'dist/index.html',
 		}),
 	],
 };

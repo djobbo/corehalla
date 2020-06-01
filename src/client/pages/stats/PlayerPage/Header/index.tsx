@@ -41,8 +41,11 @@ const Header: React.FC<Props> = ({
 								id: playerStats.id.toString(),
 								link: `/stats/player/${playerStats.id}`,
 								name: playerStats.name,
-								thumbURI:
-									'https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80',
+								thumbURI: `/assets/images/icons/legends/${
+									playerStats.legends.sort(
+										(a, b) => b.xp - a.xp
+									)[0].name
+								}.png`,
 							})
 						}
 					>
