@@ -1,95 +1,95 @@
 section.section-overview {
-	.ranked-overview-display {
-		display: flex;
-		justify-content: center;
-		flex-wrap: wrap;
+    .ranked-overview-display {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
 
-		.main-ranked-banner {
-			margin: 0.25rem 0.5rem 0 0;
-			transform-origin: top;
-			animation: MainBannerBounce;
-			animation-duration: 5s;
-			animation-iteration-count: infinite;
-			order: 0;
-			height: 160px;
-		}
+        .main-ranked-banner {
+            margin: 0.25rem 0.5rem 0 0;
+            transform-origin: top;
+            animation: MainBannerBounce;
+            animation-duration: 5s;
+            animation-iteration-count: infinite;
+            order: 0;
+            height: 160px;
+        }
 
-		.ranked-overall {
-			text-align: left;
-			animation-name: SlideFromRight;
-			animation-duration: 0.5s;
-			animation-timing-function: ease-out;
-			order: 1;
-		}
+        .ranked-overall {
+            text-align: left;
+            animation-name: SlideFromRight;
+            animation-duration: 0.5s;
+            animation-timing-function: ease-out;
+            order: 1;
+        }
 
-		.ranked-best-legend {
-			animation-name: SlideFromRight;
-			animation-duration: 0.5s;
-			animation-timing-function: ease-out;
-			order: 2;
-			display: none;
-		}
+        .ranked-best-legend {
+            animation-name: SlideFromRight;
+            animation-duration: 0.5s;
+            animation-timing-function: ease-out;
+            order: 2;
+            display: none;
+        }
 
-		hr {
-			margin: 0.25rem 0;
-		}
+        hr {
+            margin: 0.25rem 0;
+        }
 
-		.ranked-stats {
-			.region-icon,
-			.legend-icon {
-				width: 2rem;
-				height: 2rem;
-			}
+        .ranked-stats {
+            .region-icon,
+            .legend-icon {
+                width: 2rem;
+                height: 2rem;
+            }
 
-			.region-icon {
-				border-radius: 0.5rem;
-			}
-		}
-	}
+            .region-icon {
+                border-radius: 0.5rem;
+            }
+        }
+    }
 }
 
 @media (min-width: 480px) {
-	section.section-overview {
-		.ranked-overview-display {
-			.main-ranked-banner {
-				margin: 0 1rem 0 0;
-				height: 240px;
-			}
-			hr {
-				margin: 0.5rem 0;
-			}
-		}
-	}
+    section.section-overview {
+        .ranked-overview-display {
+            .main-ranked-banner {
+                margin: 0 1rem 0 0;
+                height: 240px;
+            }
+            hr {
+                margin: 0.5rem 0;
+            }
+        }
+    }
 }
 
 @media (min-width: 780px) {
-	section.section-overview {
-		.ranked-overview-display {
-			.main-ranked-banner {
-				margin: 0 1rem;
-				order: 1;
-			}
+    section.section-overview {
+        .ranked-overview-display {
+            .main-ranked-banner {
+                margin: 0 1rem;
+                order: 1;
+            }
 
-			.ranked-overall {
-				text-align: right;
-				animation-name: SlideFromLeft;
-				order: 0;
-			}
+            .ranked-overall {
+                text-align: right;
+                animation-name: SlideFromLeft;
+                order: 0;
+            }
 
-			.ranked-best-legend {
-				display: block;
-				order: 2;
-			}
-		}
-	}
+            .ranked-best-legend {
+                display: block;
+                order: 2;
+            }
+        }
+    }
 }
 
 @media (min-width: 900px) {
-	section.section-overview {
-		.ranked-overview-display {
-			.main-ranked-banner {
-				height: auto;
-			}
-		}
-	}
+    section.section-overview {
+        .ranked-overview-display {
+            .main-ranked-banner {
+                height: auto;
+            }
+        }
+    }
 }

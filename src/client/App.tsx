@@ -11,29 +11,29 @@ import { ClanStatsPage } from './pages/stats/ClanPage';
 import './App/styles.scss';
 
 export const App: React.FC = () => {
-	return (
-		<Router history={history}>
-			<div className='App'>
-				<Switch>
-					<Route path='/' exact>
-						<TopBar />
-						<IndexPage />
-					</Route>
-					<Route path='/rankings/:bracket?/:region?/:page?'>
-						<TopBar />
-						<RankingsPage />
-					</Route>
-					<Route path='/stats/player/:id' exact>
-						<TopBar />
-						<PlayerStatsPage />
-					</Route>
-					<Route path='/stats/clan/:id' exact>
-						<TopBar />
-						<ClanStatsPage />
-					</Route>
-					<Route path='/test'>Corehalla</Route>
-				</Switch>
-			</div>
-		</Router>
-	);
+    return (
+        <Router history={history}>
+            <div className="App">
+                <Switch>
+                    <Route path="/" exact>
+                        <TopBar />
+                        <IndexPage />
+                    </Route>
+                    <Route path="/rankings/:bracket?/:region?/:page?">
+                        <TopBar />
+                        <RankingsPage />
+                    </Route>
+                    <Route path="/stats/player/:id" exact>
+                        <TopBar />
+                        <PlayerStatsPage />
+                    </Route>
+                    <Route path="/stats/clan/:id" exact>
+                        <TopBar />
+                        <ClanStatsPage />
+                    </Route>
+                    <Route path="/test">Corehalla</Route>
+                </Switch>
+            </div>
+        </Router>
+    );
 };

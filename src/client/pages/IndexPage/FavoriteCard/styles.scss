@@ -1,23 +1,23 @@
 .favorite-card {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
 
-	.name {
-		font-weight: bold;
-		margin-bottom: 0.5rem;
-	}
+    .name {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
 
-	.id {
-		margin-bottom: 1rem;
-		font-size: 0.75rem;
-	}
+    .id {
+        margin-bottom: 1rem;
+        font-size: 0.75rem;
+    }
 
-	img {
-		width: 3rem;
-		height: 3rem;
-		object-fit: contain;
-		object-position: center;
-	}
+    img {
+        width: 3rem;
+        height: 3rem;
+        object-fit: contain;
+        object-position: center;
+    }
 }

@@ -88,4 +88,5 @@ module.exports = {
 			filename: 'dist/index.html',
 		}),
 	],
+	stats: 'errors-warnings',
 };

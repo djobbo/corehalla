@@ -1,21 +1,21 @@
 .RankingsPage {
-	.rankings-container {
-		.rankings-item {
-			padding: 0.5rem 1rem;
-			display: grid;
-			grid-template-columns: 4rem 6rem auto 8rem 12rem 6rem 6rem 6rem;
-			align-items: center;
-			text-align: center;
-			margin: 0;
-			border-radius: 0;
+    .rankings-container {
+        .rankings-item {
+            padding: 0.5rem 1rem;
+            display: grid;
+            grid-template-columns: 4rem 6rem auto 8rem 12rem 6rem 6rem 6rem;
+            align-items: center;
+            text-align: center;
+            margin: 0;
+            border-radius: 0;
 
-			.rank {
-				text-align: right;
-			}
+            .rank {
+                text-align: right;
+            }
 
-			.name {
-				text-align: left;
-			}
-		}
-	}
+            .name {
+                text-align: left;
+            }
+        }
+    }
 }
