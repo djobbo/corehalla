@@ -16,7 +16,7 @@
         "start": "webpack-dev-server",
         "build": "rm -rf build && webpack --mode production",
         "deploy": "npm run build && firebase deploy --only functions,hosting",
-        "lint": "eslint 'src/**/*.{js,ts,tsx}' --fix",
+        "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix",
         "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\""
     },
     "description": "Brawlhalla Stats & Rankings Website",
