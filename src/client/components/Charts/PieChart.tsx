@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Chart } from './Chart';
+import { Chart, ChartProps } from './Chart';
 
 export const PieChart: Chart = ({
     width = '2rem',
@@ -8,7 +8,7 @@ export const PieChart: Chart = ({
     amount = 0,
     bg = 'var(--bg)',
     fg = 'var(--accent)',
-}) => {
+}: ChartProps) => {
     return (
         <svg className="pie-chart" width={width} height={height} viewBox="0 0 20 20">
             <circle r="10" cx="10" cy="10" fill={bg} />

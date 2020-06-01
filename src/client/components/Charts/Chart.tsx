@@ -1,4 +1,4 @@
-interface Props {
+export interface ChartProps {
     width?: string;
     height?: string;
     amount: number;
@@ -6,4 +6,4 @@ interface Props {
     fg?: string;
 }
 
-export type Chart = React.FC<Props>;
+export type Chart = React.FC<ChartProps>;
