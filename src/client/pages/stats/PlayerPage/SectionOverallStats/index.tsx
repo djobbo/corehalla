@@ -105,7 +105,7 @@ export const SectionOverallStats: React.FC<Props> = ({ playerStats }: Props) => 
     );
 };
 
-function MiscStat({ title, value }) {
+function MiscStat({ title, value }: { title: string; value: string }) {
     return (
         <p>
             <span>{title}</span>

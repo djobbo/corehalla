@@ -5,7 +5,11 @@ import { IFavorite } from '../../../util/fetchFavorites';
 
 import './styles.scss';
 
-export const FavoriteCard: React.FC<{ fav: IFavorite }> = ({ fav }) => {
+interface Props {
+    fav: IFavorite;
+}
+
+export const FavoriteCard: React.FC<Props> = ({ fav }: Props) => {
     return (
         <Link className="card favorite-card" to={fav.link}>
             <p className="name">{fav.name}</p>
