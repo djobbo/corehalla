@@ -8,7 +8,7 @@ interface Props {
 }
 
 // clan.xp string => number
-export const SectionClan: React.FC<Props> = ({ clan }) => {
+export const SectionClan: React.FC<Props> = ({ clan }: Props) => {
     return (
         <section className="section-overall">
             <h2 className="section-title">Clan</h2>

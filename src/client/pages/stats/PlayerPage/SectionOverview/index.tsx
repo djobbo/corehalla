@@ -8,7 +8,7 @@ interface Props {
     bestLegend: ILegendStatsFormat;
 }
 
-export const SectionOverview: React.FC<Props> = ({ season, bestLegend }) => {
+export const SectionOverview: React.FC<Props> = ({ season, bestLegend }: Props) => {
     return (
         <section className="section-overview">
             <h2 className="section-title">Season Overview</h2>

@@ -8,7 +8,7 @@ interface Props {
     id: number;
 }
 
-export const Ranked2v2Team: React.FC<Props> = ({ team, id }) => {
+export const Ranked2v2Team: React.FC<Props> = ({ team, id }: Props) => {
     const winrate = ((team.season.wins / team.season.games) * 100).toFixed(2);
     return (
         <div

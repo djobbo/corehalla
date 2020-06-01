@@ -12,7 +12,7 @@ interface Props {
     teams: I2v2TeamFormat[];
 }
 
-export const SectionRanked2v2: React.FC<Props> = ({ teams }) => {
+export const SectionRanked2v2: React.FC<Props> = ({ teams }: Props) => {
     const [rankTierFilter, setRankTierFilter] = useState('');
     const [sortBy, setSortBy] = useState('');
     const [sortOrder, setSortOrder] = useState(-1);

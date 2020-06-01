@@ -19,7 +19,7 @@ interface Props {
     playerStats: IPlayerStatsFormat;
 }
 
-export const Header: React.FC<Props> = ({ activePage, setActivePage, playerStats }) => {
+export const Header: React.FC<Props> = ({ activePage, setActivePage, playerStats }: Props) => {
     return (
         <header>
             <div className="banner-img">
