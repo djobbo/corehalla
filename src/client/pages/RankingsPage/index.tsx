@@ -21,14 +21,14 @@ export const RankingsPage: React.FC = () => {
     const params = match ? match.params : { bracket: '1v1', region: 'all', page: '1' };
 
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+    const [, setError] = useState(false);
     const [rankings, setRankings] = useState<IRankingFormat[]>([]);
     const [region, setRegion] = useState<RankedRegion>((params.region as RankedRegion) || 'all');
     const [bracket, setBracket] = useState<'1v1' | '2v2'>((params.bracket || '1v1') as '1v1' | '2v2');
-    const [page, setPage] = useState(parseInt(params.page, 10) || 1);
+    const [page] = useState(parseInt(params.page, 10) || 1);
 
     console.log(qs.parse(search.substring(1)));
-    const [player, setPlayer] = useState((qs.parse(search.substring(1)).p as string) || '');
+    const [player] = useState((qs.parse(search.substring(1)).p as string) || '');
 
     console.log(params, player);
 
@@ -43,7 +43,7 @@ export const RankingsPage: React.FC = () => {
                     setRankings(data);
                     setLoading(false);
                 })
-                .catch((e) => {
+                .catch(() => {
                     setError(true);
                 });
         } else {

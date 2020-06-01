@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useParams, useRouteMatch } from 'react-router-dom';
+import { Link, useLocation, useRouteMatch } from 'react-router-dom';
 import { history } from '../../history';
 import qs from 'qs';
 

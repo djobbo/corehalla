@@ -25,7 +25,7 @@ export const PlayerStatsPage: React.FC = () => {
     const [activePage, setActivePage] = useState<Page>(sections.includes(hash) ? (hash as Page) : 'overview');
 
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+    const [, setError] = useState(false);
     const [playerStats, setPlayerStats] = useState<IPlayerStatsFormat>();
 
     useEffect(() => {

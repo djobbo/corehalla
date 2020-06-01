@@ -10,7 +10,7 @@ export const ClanStatsPage: React.FC = () => {
     const sections = ['teams', 'legends', 'weapons'];
     const hash = window.location.hash.substring(1);
 
-    const [activePage, setActivePage] = useState(sections.includes(hash) ? hash : 'overview');
+    const [,] = useState(sections.includes(hash) ? hash : 'overview');
 
     const [loading, setLoading] = useState(true);
     const [clanStats, setClanStats] = useState<IClanFormat>();

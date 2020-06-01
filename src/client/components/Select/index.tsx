@@ -11,7 +11,7 @@ interface Props<T> {
     onChange: (value: T) => void;
 }
 
-export const Select = <T extends string>({ options, value, onChange }: Props<T>) => {
+export const Select: React.FC<Props<string>> = <T extends string>({ options, value, onChange }: Props<T>) => {
     const handleOnChange = (e: React.FormEvent<HTMLSelectElement>) => onChange(e.currentTarget.value as T);
 
     return (
