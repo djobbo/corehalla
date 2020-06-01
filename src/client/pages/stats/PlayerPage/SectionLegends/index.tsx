@@ -47,7 +47,7 @@ export const SectionLegends: React.FC<Props> = ({ legends, weapons }) => {
 				<div>
 					<label htmlFor='sortby-select'>Order</label>
 					{sortOrder === 1 ? (
-						<button onClick={(e) => setSortOrder(-1)}>
+						<button onClick={() => setSortOrder(-1)}>
 							<Icon
 								path={mdiSortDescending}
 								title='Sort Ascending'
@@ -55,7 +55,7 @@ export const SectionLegends: React.FC<Props> = ({ legends, weapons }) => {
 							/>
 						</button>
 					) : (
-						<button onClick={(e) => setSortOrder(1)}>
+						<button onClick={() => setSortOrder(1)}>
 							<Icon
 								path={mdiSortAscending}
 								title='Sort Descending'

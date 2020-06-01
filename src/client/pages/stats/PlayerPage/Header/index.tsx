@@ -4,9 +4,9 @@ import { IPlayerStatsFormat } from 'corehalla.js';
 import './styles.scss';
 
 import Icon from '@mdi/react';
-import { mdiStar, mdiAccountStarOutline } from '@mdi/js';
+import { mdiStar } from '@mdi/js';
 
-import formatTime from '../../../../util/formatTime';
+import { formatTime } from '../../../../util/formatTime';
 
 import { setFavorite } from '../../../../util/fetchFavorites';
 
@@ -36,7 +36,7 @@ export const Header: React.FC<Props> = ({
 				<div className='profile-picture'>
 					<a
 						className='add-to-fav-btn'
-						onClick={(e) =>
+						onClick={() =>
 							setFavorite('players', {
 								id: playerStats.id.toString(),
 								link: `/stats/player/${playerStats.id}`,
@@ -85,23 +85,20 @@ export const Header: React.FC<Props> = ({
 					<li className={activePage === 'overview' ? 'active' : null}>
 						<a
 							href='#overview'
-							onClick={(e) => setActivePage('overview')}
+							onClick={() => setActivePage('overview')}
 						>
 							Overview
 						</a>
 					</li>
 					<li className={activePage === 'teams' ? 'active' : null}>
-						<a
-							href='#teams'
-							onClick={(e) => setActivePage('teams')}
-						>
+						<a href='#teams' onClick={() => setActivePage('teams')}>
 							Teams
 						</a>
 					</li>
 					<li className={activePage === 'legends' ? 'active' : null}>
 						<a
 							href='#legends'
-							onClick={(e) => setActivePage('legends')}
+							onClick={() => setActivePage('legends')}
 						>
 							Legends
 						</a>
@@ -109,7 +106,7 @@ export const Header: React.FC<Props> = ({
 					<li className={activePage === 'weapons' ? 'active' : null}>
 						<a
 							href='#weapons'
-							onClick={(e) => setActivePage('weapons')}
+							onClick={() => setActivePage('weapons')}
 						>
 							Weapons
 						</a>

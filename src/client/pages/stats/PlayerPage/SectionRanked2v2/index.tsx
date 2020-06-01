@@ -5,7 +5,7 @@ import './styles.scss';
 import Icon from '@mdi/react';
 import { mdiSortAscending, mdiSortDescending } from '@mdi/js';
 
-import Ranked2v2Team from './Ranked2v2Team';
+import { Ranked2v2Team } from './Ranked2v2Team';
 import { I2v2TeamFormat } from 'corehalla.js';
 
 interface Props {
@@ -52,7 +52,7 @@ export const SectionRanked2v2: React.FC<Props> = ({ teams }) => {
 				<div>
 					<label htmlFor='sortby-select'>Order</label>
 					{sortOrder === 1 ? (
-						<button onClick={(_) => setSortOrder(-1)}>
+						<button onClick={() => setSortOrder(-1)}>
 							<Icon
 								path={mdiSortDescending}
 								title='Sort Ascending'
@@ -60,7 +60,7 @@ export const SectionRanked2v2: React.FC<Props> = ({ teams }) => {
 							/>
 						</button>
 					) : (
-						<button onClick={(_) => setSortOrder(1)}>
+						<button onClick={() => setSortOrder(1)}>
 							<Icon
 								path={mdiSortAscending}
 								title='Sort Descending'

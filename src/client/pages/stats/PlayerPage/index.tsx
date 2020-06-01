@@ -14,7 +14,7 @@ import { IPlayerStatsFormat } from 'corehalla.js';
 
 import { Loader } from '../../../components/Loader';
 
-const PlayerPage: React.FC = () => {
+export const PlayerPage: React.FC = () => {
 	const { params } = useRouteMatch<{
 		id: string;
 	}>('/stats/player/:id');
@@ -38,7 +38,7 @@ const PlayerPage: React.FC = () => {
 					setPlayerStats(data);
 					setLoading(false);
 				})
-				.catch((e) => {
+				.catch(() => {
 					setError(true);
 				});
 		} else {
@@ -103,5 +103,3 @@ const PlayerPage: React.FC = () => {
 		</div>
 	);
 };
-
-export default PlayerPage;

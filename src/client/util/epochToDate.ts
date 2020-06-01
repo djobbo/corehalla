@@ -1,1 +1,1 @@
-export const epochToDate = (epoch: number) => new Date(epoch * 1000);
+export const epochToDate = (epoch: number): Date => new Date(epoch * 1000);

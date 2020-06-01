@@ -12,14 +12,14 @@ export type LocalFavorites = {
 	clans?: IFavorite[];
 } | null;
 
-export const fetchFavorites = () => {
+export const fetchFavorites = (): LocalFavorites => {
 	const str =
 		localStorage.getItem('favStats') || '{"players": [], "clans": []}';
 	console.log(str);
 	return JSON.parse(str) as LocalFavorites;
 };
 
-export const setFavorite = (type: FavoriteType, value: IFavorite) => {
+export const setFavorite = (type: FavoriteType, value: IFavorite): void => {
 	const currentFavs = fetchFavorites();
 	const favs = {
 		...currentFavs,

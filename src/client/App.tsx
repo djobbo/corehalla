@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Switch, Route, Redirect } from 'react-router-dom';
+import { Router, Switch, Route } from 'react-router-dom';
 import { history } from './history';
 
 import { TopBar } from './components/TopBar';
@@ -7,8 +7,6 @@ import { IndexPage } from './pages/IndexPage';
 import { RankingsPage } from './pages/RankingsPage';
 import { PlayerStatsPage } from './pages/stats/PlayerPage';
 import { ClanStatsPage } from './pages/stats/ClanPage';
-
-import { RankedRegion } from 'corehalla.js';
 
 import './App/styles.scss';
 

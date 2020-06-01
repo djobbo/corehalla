@@ -38,7 +38,7 @@ module.exports = {
 			},
 			{
 				test: /\.(j|t)sx?$/,
-				use: ['babel-loader'],
+				use: ['babel-loader', 'eslint-loader'],
 				exclude: /node_modules/,
 			},
 			{
