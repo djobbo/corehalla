@@ -14,7 +14,7 @@
     },
     "scripts": {
         "start": "webpack-dev-server",
-        "build": "rm -rf build && webpack --mode production",
+        "build": "rm -rf dist && webpack --mode production",
         "deploy": "npm run build && firebase deploy --only functions,hosting",
         "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix",
         "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\""

@@ -17,7 +17,7 @@ export const IndexPage: React.FC = () => {
         </div>
     ) : null;
     return (
-        <>
+        <main>
             <h1>COREHALLA</h1>
             <div>
                 <h2>Starred Players</h2>
@@ -27,6 +27,6 @@ export const IndexPage: React.FC = () => {
                 <h2>Starred Clans</h2>
                 <div className="favorites-container"></div>
             </div>
-        </>
+        </main>
     );
 };
