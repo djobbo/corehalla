@@ -1,14 +1,5 @@
 .topbar {
     width: 100%;
-    --debounce-fill: 0%;
-    &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        height: 2px;
-        width: var(--debounce-fill);
-        background-color: var(--accent);
-    }
 
     .topbar-nav {
         width: 100%;

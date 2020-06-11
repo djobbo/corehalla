@@ -96,10 +96,10 @@ export const SectionOverallStats: React.FC<Props> = ({ playerStats }: Props) => 
                         </p>
                     </div>
                 </div>
-                <div className="misc-general-stats">
-                    <MiscStat title="Avg. DPS" value="2.3dmg/s" />
-                    <MiscStat title="Avg. Game Length" value="80.8s" />
-                </div>
+            </div>
+            <div className="misc-general-stats">
+                <MiscStat title="Avg. DPS" value="2.3dmg/s" />
+                <MiscStat title="Avg. Game Length" value="80.8s" />
             </div>
         </section>
     );
@@ -108,8 +108,8 @@ export const SectionOverallStats: React.FC<Props> = ({ playerStats }: Props) => 
 function MiscStat({ title, value }: { title: string; value: string }) {
     return (
         <p>
-            <span>{title}</span>
-            <span>{value}</span>
+            <span className="title stat-desc">{title}</span>
+            <span className="value stat-medium">{value}</span>
         </p>
     );
 }

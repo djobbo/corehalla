@@ -59,9 +59,7 @@ module.exports = {
         contentBase: 'dist',
         compress: true,
         inline: true,
-        historyApiFallback: {
-            index: 'index.html',
-        },
+        historyApiFallback: true,
         hot: true,
         publicPath: '/',
     },

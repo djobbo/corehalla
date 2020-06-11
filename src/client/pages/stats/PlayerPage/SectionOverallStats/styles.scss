@@ -44,9 +44,18 @@ section.section-overall {
                 }
             }
         }
+    }
 
-        .misc-general-stats {
-            display: flex;
+    .misc-general-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        p {
+            padding: 1rem;
+            span {
+                &.title {
+                    display: block;
+                }
+            }
         }
     }
 }
