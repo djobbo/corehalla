@@ -24,17 +24,18 @@ export const TopBar: React.FC = () => {
 
     const [playerSearch, setPlayerSearch] = useState((qs.parse(search.substring(1)).p as string) || '');
     const [debouncedPlayerSecarch] = useDebounce(playerSearch, 1000);
-    const [initialRender, setInitialRender] = useState(true);
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
 
     useEffect(() => {
-        if (debouncedPlayerSecarch && !initialRender) {
+        if (debouncedPlayerSecarch !== null && !isInitialLoad) {
+            console.log('search');
             history.push(
                 `/rankings/${params.bracket || '1v1'}/${params.region || 'all'}/${
                     params.page || '1'
                 }?p=${debouncedPlayerSecarch}`,
             );
         }
-        setInitialRender(false);
+        setIsInitialLoad(false);
     }, [debouncedPlayerSecarch]);
 
     return (

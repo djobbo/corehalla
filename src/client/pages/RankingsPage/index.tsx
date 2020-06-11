@@ -27,10 +27,7 @@ export const RankingsPage: React.FC = () => {
     const [bracket, setBracket] = useState<'1v1' | '2v2'>((params.bracket || '1v1') as '1v1' | '2v2');
     const [page] = useState(parseInt(params.page, 10) || 1);
 
-    console.log(qs.parse(search.substring(1)));
     const [player] = useState((qs.parse(search.substring(1)).p as string) || '');
-
-    console.log(params, player);
 
     const regions: RankedRegion[] = ['us-e', 'eu', 'brz', 'aus', 'us-w', 'sea', 'jpn'];
 

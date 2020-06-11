@@ -8,7 +8,6 @@ import { FavoriteCard } from './FavoriteCard';
 
 export const IndexPage: React.FC = () => {
     const favs = fetchFavorites();
-    console.log('favs', favs);
     const playerFavs = favs ? (
         <div className="favorites-container">
             {favs.players.map((fav) => (

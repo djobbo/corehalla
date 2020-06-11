@@ -14,7 +14,6 @@ export type LocalFavorites = {
 
 export const fetchFavorites = (): LocalFavorites => {
     const str = localStorage.getItem('favStats') || '{"players": [], "clans": []}';
-    console.log(str);
     return JSON.parse(str) as LocalFavorites;
 };
 
