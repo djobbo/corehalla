@@ -2,7 +2,7 @@ import React from 'react';
 import { Router, Switch, Route } from 'react-router-dom';
 import { history } from './history';
 
-import { TopBar } from './components/TopBar';
+import { Layout } from './layout';
 import { IndexPage } from './pages/IndexPage';
 import { RankingsPage } from './pages/RankingsPage';
 import { PlayerStatsPage } from './pages/stats/PlayerPage';
@@ -15,23 +15,21 @@ export const App: React.FC = () => {
         <Router history={history}>
             <div className="App">
                 <Switch>
-                    <Route path="/" exact>
-                        <TopBar />
-                        <IndexPage />
-                    </Route>
-                    <Route path="/rankings/:bracket?/:region?/:page?">
-                        <TopBar />
-                        <RankingsPage />
-                    </Route>
-                    <Route path="/stats/player/:id" exact>
-                        <TopBar />
-                        <PlayerStatsPage />
-                    </Route>
-                    <Route path="/stats/clan/:id" exact>
-                        <TopBar />
-                        <ClanStatsPage />
-                    </Route>
-                    <Route path="/test">Corehalla</Route>
+                    <Layout>
+                        <Route path="/" exact>
+                            <IndexPage />
+                        </Route>
+                        <Route path="/rankings/:bracket?/:region?/:page?">
+                            <RankingsPage />
+                        </Route>
+                        <Route path="/stats/player/:id" exact>
+                            <PlayerStatsPage />
+                        </Route>
+                        <Route path="/stats/clan/:id" exact>
+                            <ClanStatsPage />
+                        </Route>
+                        <Route path="/test">Corehalla</Route>
+                    </Layout>
                 </Switch>
             </div>
         </Router>

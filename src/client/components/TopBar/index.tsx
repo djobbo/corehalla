@@ -10,8 +10,6 @@ import { mdiMagnify, mdiDiscord } from '@mdi/js';
 
 import { useDebounce } from '../../hooks/useDebounce';
 
-import Logo from '../../App/logo.png';
-
 export const TopBar: React.FC = () => {
     const { search } = useLocation();
     const match = useRouteMatch<{
@@ -43,7 +41,7 @@ export const TopBar: React.FC = () => {
             <div className="topbar-nav">
                 <div className="logo">
                     <Link to="/">
-                        <img src={Logo} alt="Logo" />
+                        <img src="/assets/images/logo.png" alt="Logo" />
                     </Link>
                 </div>
                 <div className="searchbox">
