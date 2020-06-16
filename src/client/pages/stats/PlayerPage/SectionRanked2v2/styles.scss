@@ -1,4 +1,4 @@
-section.section-2v2 {
+section.section-2v2-teams {
     .ranked-teams {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
@@ -18,7 +18,7 @@ section.section-2v2 {
                     border-radius: 0.5rem;
                 }
             }
-            .stats-container {
+            .team-stats-container {
                 display: flex;
                 margin-bottom: 1rem;
                 align-items: center;
@@ -39,6 +39,10 @@ section.section-2v2 {
                     animation-fill-mode: forwards;
                     opacity: 0;
                 }
+            }
+            .wl {
+                margin-top: 1rem;
+                text-align: center;
             }
         }
     }

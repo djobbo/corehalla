@@ -23,7 +23,7 @@ export const Ranked2v2Team: React.FC<Props> = ({ team, id }: Props) => {
                 <img src={`/assets/images/icons/flags/${team.region}.png`} alt={`${team.region}_icon`} />
                 <a href={`/stats/player/${team.teammate.id}`}>{team.teammate.name}</a>
             </h3>
-            <div className="stats-container">
+            <div className="team-stats-container">
                 <img
                     style={
                         {
@@ -53,6 +53,9 @@ export const Ranked2v2Team: React.FC<Props> = ({ team, id }: Props) => {
                 </div>
             </div>
             <BarChart amount={parseFloat(winrate)} height="1rem" />
+            <div className="wl">
+                {team.season.wins}W - {team.season.games - team.season.wins}L
+            </div>
         </div>
     );
 };
