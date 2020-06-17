@@ -25,3 +25,12 @@ export const setFavorite = (type: FavoriteType, value: IFavorite): void => {
     };
     localStorage.setItem('favStats', JSON.stringify(favs));
 };
+
+export const removeFavorites = (type: FavoriteType, id: string): void => {
+    const currentFavs = fetchFavorites();
+    const favs = {
+        ...currentFavs,
+        [type]: [...currentFavs[type].filter((x) => x.id !== id)],
+    };
+    localStorage.setItem('favStats', JSON.stringify(favs));
+};
