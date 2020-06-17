@@ -4,6 +4,7 @@ import './styles.scss';
 
 import { BarChart } from '../../../../components/Charts/BarChart';
 import { PieChart } from '../../../../components/Charts/PieChart';
+import { MiscStat } from '../../../../components/MiscStat';
 
 import { IPlayerStatsFormat } from 'corehalla.js';
 
@@ -104,12 +105,3 @@ export const SectionOverallStats: React.FC<Props> = ({ playerStats }: Props) => 
         </section>
     );
 };
-
-function MiscStat({ title, value }: { title: string; value: string }) {
-    return (
-        <p>
-            <span className="title stat-desc">{title}</span>
-            <span className="value stat-medium">{value}</span>
-        </p>
-    );
-}
