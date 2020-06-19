@@ -18,7 +18,7 @@ export const App: React.FC = () => {
     return (
         <div className="App">
             <Layout>
-                <AnimatePresence exitBeforeEnter initial={false}>
+                <AnimatePresence exitBeforeEnter initial>
                     <Switch location={location} key={location.pathname}>
                         <Route path="/" exact>
                             <Page>
