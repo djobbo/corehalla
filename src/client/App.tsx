@@ -1,37 +1,48 @@
 import React from 'react';
-import { Router, Switch, Route } from 'react-router-dom';
-import { history } from './history';
+import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
 
 import { Layout } from './layout';
+import { Page } from './components/Page';
 import { IndexPage } from './pages/IndexPage';
 import { RankingsPage } from './pages/RankingsPage';
 import { PlayerStatsPage } from './pages/stats/PlayerPage';
 import { ClanStatsPage } from './pages/stats/ClanPage';
 
+import { AnimatePresence } from 'framer-motion';
+
 import './App/styles.scss';
 
 export const App: React.FC = () => {
+    const location = useLocation();
     return (
-        <Router history={history}>
-            <div className="App">
-                <Switch>
+        <div className="App">
+            <AnimatePresence exitBeforeEnter initial={false}>
+                <Switch location={location} key={location.pathname}>
                     <Layout>
                         <Route path="/" exact>
-                            <IndexPage />
+                            <Page>
+                                <IndexPage />
+                            </Page>
                         </Route>
                         <Route path="/rankings/:bracket?/:region?/:page?">
-                            <RankingsPage />
+                            <Page>
+                                <RankingsPage />
+                            </Page>
                         </Route>
                         <Route path="/stats/player/:id" exact>
-                            <PlayerStatsPage />
+                            <Page>
+                                <PlayerStatsPage />
+                            </Page>
                         </Route>
                         <Route path="/stats/clan/:id" exact>
-                            <ClanStatsPage />
+                            <Page>{/* <ClanStatsPage /> */}clan</Page>
                         </Route>
-                        <Route path="/test">Corehalla</Route>
+                        {/* <Route path="/">
+                            <Redirect to="/" />
+                        </Route> */}
                     </Layout>
                 </Switch>
-            </div>
-        </Router>
+            </AnimatePresence>
+        </div>
     );
 };

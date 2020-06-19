@@ -16,11 +16,13 @@ export const ClanStatsPage: React.FC = () => {
     const [clanStats, setClanStats] = useState<IClanFormat>();
 
     useEffect(() => {
-        setTimeout(async () => {
+        const timeout = setTimeout(async () => {
             const { ClanStats } = await import('../../../mockups/Clan');
             setClanStats(ClanStats);
             setLoading(false);
         }, 250);
+
+        return () => clearTimeout(timeout);
     }, []);
 
     return (

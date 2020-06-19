@@ -30,7 +30,10 @@ export const PlayerStatsPage: React.FC = () => {
 
     useEffect(() => {
         if (process.env.NODE_ENV === 'production') {
-            fetch(`/api/stats/player/${params.id}`)
+            const abortController = new AbortController();
+            const signal = abortController.signal;
+
+            fetch(`/api/stats/player/${params.id}`, { signal })
                 .then(async (res) => {
                     const data = (await res.json()) as IPlayerStatsFormat;
                     setPlayerStats(data);
@@ -39,12 +42,16 @@ export const PlayerStatsPage: React.FC = () => {
                 .catch(() => {
                     setError(true);
                 });
+
+            return () => abortController.abort();
         } else {
-            setTimeout(async () => {
+            const timeout = setTimeout(async () => {
                 const { PlayerStats } = await import('../../../mockups/Player');
                 setPlayerStats(PlayerStats);
                 setLoading(false);
             }, 250);
+
+            return () => clearTimeout(timeout);
         }
     }, []);
 
