@@ -34,7 +34,10 @@ export const RankingsPage: React.FC = () => {
     useEffect(() => {
         setLoading(true);
         if (process.env.NODE_ENV === 'production') {
-            fetch(`/api/rankings/${bracket}/${region}/${page}?player=${player}`)
+            const abortController = new AbortController();
+            const signal = abortController.signal;
+
+            fetch(`/api/rankings/${bracket}/${region}/${page}?player=${player}`, { signal })
                 .then(async (res) => {
                     const data = await res.json();
                     setRankings(data);
@@ -43,12 +46,16 @@ export const RankingsPage: React.FC = () => {
                 .catch(() => {
                     setError(true);
                 });
+
+            return () => abortController.abort();
         } else {
-            setTimeout(async () => {
+            const timeout = setTimeout(async () => {
                 const { Rankings } = await import('../../mockups/1v1Rankings');
                 setRankings(Rankings);
                 setLoading(false);
             }, 250);
+
+            return () => clearTimeout(timeout);
         }
     }, []);
 
