@@ -41,6 +41,7 @@ router.get('/rankings/:bracket?/:region?/:page?', (req, res) => {
                 res.status(200).json(data);
             })
             .catch((e) => {
+                console.error(e);
                 res.status(500).json('Failed to fetch 1v1 Rankings!');
             });
     } else if (bracket === '1v1') {
@@ -50,6 +51,7 @@ router.get('/rankings/:bracket?/:region?/:page?', (req, res) => {
                 res.status(200).json(data);
             })
             .catch((e) => {
+                console.error(e);
                 res.status(500).json('Failed to fetch 2v2 Rankings!');
             });
     } else {
