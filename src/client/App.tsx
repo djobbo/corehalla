@@ -14,11 +14,12 @@ import './App/styles.scss';
 
 export const App: React.FC = () => {
     const location = useLocation();
+    console.log(location);
     return (
         <div className="App">
-            <AnimatePresence exitBeforeEnter initial={false}>
-                <Switch location={location} key={location.pathname}>
-                    <Layout>
+            <Layout>
+                <AnimatePresence exitBeforeEnter initial={false}>
+                    <Switch location={location} key={location.pathname}>
                         <Route path="/" exact>
                             <Page>
                                 <IndexPage />
@@ -40,9 +41,9 @@ export const App: React.FC = () => {
                         {/* <Route path="/">
                             <Redirect to="/" />
                         </Route> */}
-                    </Layout>
-                </Switch>
-            </AnimatePresence>
+                    </Switch>
+                </AnimatePresence>
+            </Layout>
         </div>
     );
 };

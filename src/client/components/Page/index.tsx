@@ -8,17 +8,22 @@ interface Props {
 const pageTransition = {
     in: {
         opacity: 1,
-        y: 0,
     },
     out: {
         opacity: 0,
-        y: '-100vh',
     },
 };
 
 export const Page: React.FC<Props> = ({ children }: Props) => {
     return (
-        <motion.div initial="out" animate="in" exit="out" variants={pageTransition} className="page">
+        <motion.div
+            initial="out"
+            animate="in"
+            exit="out"
+            variants={pageTransition}
+            transition={{ duration: 0.2 }}
+            className="page"
+        >
             {children}
         </motion.div>
     );
