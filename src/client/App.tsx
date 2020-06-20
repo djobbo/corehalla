@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, CSSProperties } from 'react';
 import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
 
 import { Layout } from './layout';
@@ -10,13 +10,18 @@ import { ClanStatsPage } from './pages/stats/ClanPage';
 
 import { AnimatePresence } from 'framer-motion';
 
+import { ThemeContest, themes } from './ThemeContext';
+
 import './App/styles.scss';
 
 export const App: React.FC = () => {
     const location = useLocation();
     console.log(location);
+
+    const theme = useContext(ThemeContest);
+
     return (
-        <div className="App">
+        <div id="App" style={themes[theme] as CSSProperties}>
             <Layout>
                 <AnimatePresence exitBeforeEnter initial>
                     <Switch location={location} key={location.pathname}>

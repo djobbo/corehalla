@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, CSSProperties } from 'react';
 
 import './styles.scss';
 
@@ -120,7 +120,7 @@ export const SectionLegends: React.FC<Props> = ({ legends, weapons }: Props) => 
                             style={
                                 {
                                     '--delay': `${0.025 * i}s`,
-                                } as React.CSSProperties
+                                } as CSSProperties
                             }
                         >
                             <img
