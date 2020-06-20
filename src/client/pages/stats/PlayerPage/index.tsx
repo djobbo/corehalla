@@ -22,6 +22,9 @@ const sectionTrantision = {
     },
     out: {
         opacity: 0,
+    },
+    init: {
+        opacity: 0,
         y: '50vh',
     },
 };
@@ -77,7 +80,7 @@ export const PlayerStatsPage: React.FC = () => {
                         key="teams"
                         animate="in"
                         exit="out"
-                        initial="out"
+                        initial="init"
                         variants={sectionTrantision}
                         transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
                     >
@@ -90,7 +93,7 @@ export const PlayerStatsPage: React.FC = () => {
                         key="legends"
                         animate="in"
                         exit="out"
-                        initial="out"
+                        initial="init"
                         variants={sectionTrantision}
                         transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
                     >
@@ -103,7 +106,7 @@ export const PlayerStatsPage: React.FC = () => {
                         key="weapons"
                         animate="in"
                         exit="out"
-                        initial="out"
+                        initial="init"
                         variants={sectionTrantision}
                         transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
                     >
@@ -116,7 +119,7 @@ export const PlayerStatsPage: React.FC = () => {
                         key="overview"
                         animate="in"
                         exit="out"
-                        initial="out"
+                        initial="init"
                         variants={sectionTrantision}
                         transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
                     >
