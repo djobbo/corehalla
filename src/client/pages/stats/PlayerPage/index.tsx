@@ -13,7 +13,7 @@ import { SectionClan } from './SectionClan';
 import { IPlayerStatsFormat } from 'corehalla.js';
 
 import { Loader } from '../../../components/Loader';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export const PlayerStatsPage: React.FC = () => {
     const { params } = useRouteMatch<{
@@ -80,14 +80,14 @@ export const PlayerStatsPage: React.FC = () => {
     })();
 
     return (
-        <AnimatePresence initial>
+        <AnimatePresence exitBeforeEnter initial>
             {loading ? (
                 <Loader key="loader" />
             ) : (
-                <div className="PlayerPage" key="page">
+                <motion.div className="PlayerPage" key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
                     <Header activePage={activePage} setActivePage={setActivePage} playerStats={playerStats} />
                     <main>{section}</main>
-                </div>
+                </motion.div>
             )}
         </AnimatePresence>
     );

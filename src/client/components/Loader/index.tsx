@@ -16,7 +16,7 @@ export const Loader: React.FC = () => (
         className="loader"
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 5, opacity: 0 }}
-        transition={{ default: { duration: 0.5, loop: false, ease: 'easeInOut' } }}
+        transition={{ default: { duration: 0.8, loop: false, ease: 'easeInOut' } }}
     >
         <motion.div
             animate={{ scale: [1, 1.05, 1], opacity: [0.5, 1, 0.5] }}
