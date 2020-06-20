@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { BarChart } from '../../../../components/Charts/BarChart';
 
 import { I2v2TeamFormat } from 'corehalla.js';
@@ -16,7 +16,7 @@ export const Ranked2v2Team: React.FC<Props> = ({ team, id }: Props) => {
             style={
                 {
                     '--delay': `${0.05 * id}s`,
-                } as React.CSSProperties
+                } as CSSProperties
             }
         >
             <h3>
@@ -28,7 +28,7 @@ export const Ranked2v2Team: React.FC<Props> = ({ team, id }: Props) => {
                     style={
                         {
                             '--delay': `${0.05 * id}s`,
-                        } as React.CSSProperties
+                        } as CSSProperties
                     }
                     src={`/assets/images/icons/ranked/${team.season.tier}.png`}
                     alt={`${team.season.tier}_icon`}

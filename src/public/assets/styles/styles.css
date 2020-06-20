@@ -7,7 +7,7 @@
 
 body {
     --bg: #0f0e0e;
-    --bg-light: #161414;
+    --bg-alt: #161414;
     --text: #fff;
     --accent: #3188df;
 
@@ -22,7 +22,7 @@ body {
 
 body.light {
     --bg: #f1f1f1;
-    --bg-light: #e0e0e0;
+    --bg-alt: #e0e0e0;
     --text: #0f0e0e;
     --accent: #3188df;
 }
@@ -56,7 +56,7 @@ svg {
 }
 
 .card {
-    background-color: var(--bg-light);
+    background-color: var(--bg-alt);
     border-radius: 0.25rem;
     padding: 1rem;
     margin: 1rem;

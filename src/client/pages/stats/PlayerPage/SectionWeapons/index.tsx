@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, CSSProperties } from 'react';
 
 import Icon from '@mdi/react';
 import { mdiSortAscending, mdiSortDescending } from '@mdi/js';
@@ -61,7 +61,7 @@ export const SectionWeapons: React.FC<Props> = ({ weapons }: Props) => {
                         style={
                             {
                                 '--delay': `${0.05 * i}s`,
-                            } as React.CSSProperties
+                            } as CSSProperties
                         }
                     >
                         <h3>

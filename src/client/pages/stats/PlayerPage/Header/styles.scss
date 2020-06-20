@@ -1,6 +1,6 @@
 header {
     width: 100%;
-    background-color: var(--bg-light);
+    background-color: var(--bg-alt);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -35,9 +35,9 @@ header {
             overflow: hidden;
             border-radius: 50%;
             margin-top: -80px;
-            border: 4px solid var(--bg-light);
+            border: 4px solid var(--bg-alt);
             cursor: pointer;
-            background-color: var(--bg-light);
+            background-color: var(--bg-alt);
 
             img {
                 width: 100%;
