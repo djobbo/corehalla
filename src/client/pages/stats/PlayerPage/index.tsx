@@ -15,6 +15,17 @@ import { IPlayerStatsFormat } from 'corehalla.js';
 import { Loader } from '../../../components/Loader';
 import { AnimatePresence, motion } from 'framer-motion';
 
+const sectionTrantision = {
+    in: {
+        opacity: 1,
+        y: 0,
+    },
+    out: {
+        opacity: 0,
+        y: '50vh',
+    },
+};
+
 export const PlayerStatsPage: React.FC = () => {
     const { params } = useRouteMatch<{
         id: string;
@@ -58,23 +69,64 @@ export const PlayerStatsPage: React.FC = () => {
 
     const section = (() => {
         if (loading) return '';
+        console.log(activePage);
         switch (activePage) {
             case 'teams':
-                return <SectionRanked2v2 teams={playerStats.season.teams} />;
+                return (
+                    <motion.div
+                        key="teams"
+                        animate="in"
+                        exit="out"
+                        initial="out"
+                        variants={sectionTrantision}
+                        transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
+                    >
+                        <SectionRanked2v2 teams={playerStats.season.teams} />
+                    </motion.div>
+                );
             case 'legends':
-                return <SectionLegends legends={playerStats.legends} weapons={playerStats.weapons} />;
+                return (
+                    <motion.div
+                        key="legends"
+                        animate="in"
+                        exit="out"
+                        initial="out"
+                        variants={sectionTrantision}
+                        transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
+                    >
+                        <SectionLegends legends={playerStats.legends} weapons={playerStats.weapons} key="legends" />
+                    </motion.div>
+                );
             case 'weapons':
-                return <SectionWeapons weapons={playerStats.weapons} />;
+                return (
+                    <motion.div
+                        key="weapons"
+                        animate="in"
+                        exit="out"
+                        initial="out"
+                        variants={sectionTrantision}
+                        transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
+                    >
+                        <SectionWeapons weapons={playerStats.weapons} key="weapons" />
+                    </motion.div>
+                );
             default:
                 return (
-                    <>
+                    <motion.div
+                        key="overview"
+                        animate="in"
+                        exit="out"
+                        initial="out"
+                        variants={sectionTrantision}
+                        transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
+                    >
                         <SectionOverview
                             season={playerStats.season}
                             bestLegend={playerStats.legends.sort((a, b) => b.season.rating - a.season.rating)[0]}
                         />
                         {playerStats.clan ? <SectionClan clan={playerStats.clan} /> : ''}
                         <SectionOverallStats playerStats={playerStats} />
-                    </>
+                    </motion.div>
                 );
         }
     })();
@@ -86,7 +138,11 @@ export const PlayerStatsPage: React.FC = () => {
             ) : (
                 <motion.div className="PlayerPage" key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
                     <Header activePage={activePage} setActivePage={setActivePage} playerStats={playerStats} />
-                    <main>{section}</main>
+                    <main>
+                        <AnimatePresence exitBeforeEnter initial>
+                            {section}
+                        </AnimatePresence>
+                    </main>
                 </motion.div>
             )}
         </AnimatePresence>
