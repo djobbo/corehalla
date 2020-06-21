@@ -6,7 +6,7 @@ type Theme = {
     [k in ThemeProps]: string;
 };
 
-export const ThemeContest = createContext<ThemeType>('solarizedDark');
+export const ThemeContext = createContext<ThemeType>('solarizedDark');
 
 export const themes: { [k in ThemeType]: Theme } = {
     dark: {

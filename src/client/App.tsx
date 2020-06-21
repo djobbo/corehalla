@@ -10,7 +10,7 @@ import { ClanStatsPage } from './pages/stats/ClanPage';
 
 import { AnimatePresence } from 'framer-motion';
 
-import { ThemeContest, themes } from './ThemeContext';
+import { ThemeContext, themes } from './ThemeContext';
 
 import './App/styles.scss';
 
@@ -18,7 +18,7 @@ export const App: React.FC = () => {
     const location = useLocation();
     console.log(location);
 
-    const theme = useContext(ThemeContest);
+    const theme = useContext(ThemeContext);
 
     return (
         <div id="App" style={themes[theme] as CSSProperties}>
