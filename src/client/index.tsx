@@ -4,10 +4,14 @@ import { App } from './App';
 import { Router } from 'react-router-dom';
 import { history } from './history';
 
+import { PlayerSearchProvider } from './PlayerSearchProvider';
+
 const rootElement = document.getElementById('root');
 ReactDOM.render(
     <Router history={history}>
-        <App />
+        <PlayerSearchProvider>
+            <App />
+        </PlayerSearchProvider>
     </Router>,
     rootElement,
 );

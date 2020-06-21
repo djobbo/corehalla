@@ -1,41 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useRouteMatch } from 'react-router-dom';
-import { history } from '../../history';
-import qs from 'qs';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 import './styles.scss';
 
-import Icon from '@mdi/react';
-import { mdiMagnify, mdiDiscord } from '@mdi/js';
+import { Searchbar } from './Searchbar';
 
-import { useDebounce } from '../../hooks/useDebounce';
+import Icon from '@mdi/react';
+import { mdiDiscord } from '@mdi/js';
 
 export const TopBar: React.FC = () => {
-    const { search } = useLocation();
-    const match = useRouteMatch<{
-        region: string;
-        bracket: string;
-        page: string;
-    }>('/rankings/:bracket/:region/:page');
-
-    const params = match ? match.params : { bracket: '1v1', region: 'all', page: '1' };
-
-    const [playerSearch, setPlayerSearch] = useState((qs.parse(search.substring(1)).p as string) || '');
-    const [debouncedPlayerSecarch] = useDebounce(playerSearch, 1000);
-    const [isInitialLoad, setIsInitialLoad] = useState(true);
-
-    useEffect(() => {
-        if (debouncedPlayerSecarch !== null && !isInitialLoad) {
-            console.log('search');
-            history.push(
-                `/rankings/${params.bracket || '1v1'}/${params.region || 'all'}/${
-                    params.page || '1'
-                }?p=${debouncedPlayerSecarch}`,
-            );
-        }
-        setIsInitialLoad(false);
-    }, [debouncedPlayerSecarch]);
-
     return (
         <div className="topbar">
             <div className="topbar-nav">
@@ -44,17 +17,7 @@ export const TopBar: React.FC = () => {
                         <img src="/assets/images/logo.png" alt="Logo" />
                     </Link>
                 </div>
-                <div className="searchbox">
-                    <i>
-                        <Icon path={mdiMagnify} title="Discord" size={1} />
-                    </i>
-                    <input
-                        type="text"
-                        placeholder="Search Player..."
-                        value={playerSearch}
-                        onChange={(e) => setPlayerSearch(e.target.value)}
-                    />
-                </div>
+                <Searchbar />
                 <nav>
                     <ul>
                         <li>
