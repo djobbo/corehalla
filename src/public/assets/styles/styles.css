@@ -6,25 +6,7 @@
 }
 
 body {
-    --bg: #0f0e0e;
-    --bg-alt: #161414;
-    --text: #fff;
-    --accent: #3188df;
-
-    margin: 0;
-    padding: 0;
-    font-family: 'Montserrat', sans-serif;
-    min-height: 100vh;
-
-    background-color: var(--bg);
-    color: var(--text);
-}
-
-body.light {
-    --bg: #f1f1f1;
-    --bg-alt: #e0e0e0;
-    --text: #0f0e0e;
-    --accent: #3188df;
+    overflow: hidden;
 }
 
 a,
