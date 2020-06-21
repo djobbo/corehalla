@@ -1,14 +1,14 @@
-import { createContext } from 'react';
+import React, { createContext, useState } from 'react';
 
-type ThemeType = 'light' | 'dark' | 'solarizedDark' | 'solarizedLight';
+type ThemeMode = 'light' | 'dark' | 'solarizedDark' | 'solarizedLight';
 type ThemeProps = '--bg' | '--bg-alt' | '--text' | '--accent';
 type Theme = {
     [k in ThemeProps]: string;
 };
 
-export const ThemeContext = createContext<ThemeType>('solarizedDark');
+export const ThemeContext = createContext<{ themeMode: ThemeMode; setThemeMode: (value: ThemeMode) => void }>(null);
 
-export const themes: { [k in ThemeType]: Theme } = {
+export const themeModes: { [k in ThemeMode]: Theme } = {
     dark: {
         '--bg': '#0f0e0e',
         '--bg-alt': '#161414',
@@ -33,4 +33,14 @@ export const themes: { [k in ThemeType]: Theme } = {
         '--text': '#073642',
         '--accent': '#2aa198',
     },
+};
+
+interface Props {
+    children: React.ReactNode;
+}
+
+export const ThemeProvider: React.FC<Props> = ({ children }: Props) => {
+    const [themeMode, setThemeMode] = useState<ThemeMode>('solarizedDark');
+
+    return <ThemeContext.Provider value={{ themeMode, setThemeMode }}>{children}</ThemeContext.Provider>;
 };

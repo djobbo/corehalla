@@ -10,7 +10,7 @@ import { ClanStatsPage } from './pages/stats/ClanPage';
 
 import { AnimatePresence } from 'framer-motion';
 
-import { ThemeContext, themes } from './ThemeContext';
+import { ThemeContext, themeModes } from './ThemeProvider';
 
 import './App/styles.scss';
 
@@ -18,10 +18,10 @@ export const App: React.FC = () => {
     const location = useLocation();
     console.log(location);
 
-    const theme = useContext(ThemeContext);
+    const { themeMode } = useContext(ThemeContext);
 
     return (
-        <div id="App" style={themes[theme] as CSSProperties}>
+        <div id="App" style={themeModes[themeMode] as CSSProperties}>
             <Layout>
                 <AnimatePresence exitBeforeEnter initial>
                     <Switch location={location} key={location.pathname}>

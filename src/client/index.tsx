@@ -5,13 +5,16 @@ import { Router } from 'react-router-dom';
 import { history } from './history';
 
 import { PlayerSearchProvider } from './PlayerSearchProvider';
+import { ThemeProvider } from './ThemeProvider';
 
 const rootElement = document.getElementById('root');
 ReactDOM.render(
     <Router history={history}>
-        <PlayerSearchProvider>
-            <App />
-        </PlayerSearchProvider>
+        <ThemeProvider>
+            <PlayerSearchProvider>
+                <App />
+            </PlayerSearchProvider>
+        </ThemeProvider>
     </Router>,
     rootElement,
 );
