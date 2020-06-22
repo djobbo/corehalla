@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 import './styles.scss';
 
@@ -13,7 +13,7 @@ interface Props {
     playerStats: IPlayerStatsFormat;
 }
 
-export const SectionOverallStats: React.FC<Props> = ({ playerStats }: Props) => {
+export const SectionOverallStats: FC<Props> = ({ playerStats }: Props) => {
     const greatestKOValue = [playerStats.kos, playerStats.falls, playerStats.suicides, playerStats.teamkos].reduce(
         (acc, stat) => (stat > acc ? stat : acc),
         -1,

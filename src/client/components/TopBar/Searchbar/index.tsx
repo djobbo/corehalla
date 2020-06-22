@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, FC } from 'react';
 
 import Icon from '@mdi/react';
 import { mdiMagnify } from '@mdi/js';
 
 import { PlayerSearchContext } from '../../../PlayerSearchProvider';
 
-export const Searchbar: React.FC = () => {
+export const Searchbar: FC = () => {
     const { playerSearch, setPlayerSearch } = useContext(PlayerSearchContext);
 
     return (

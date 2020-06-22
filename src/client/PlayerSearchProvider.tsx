@@ -1,4 +1,4 @@
-import React, { useState, createContext, useEffect } from 'react';
+import React, { useState, createContext, useEffect, FC } from 'react';
 import { useLocation, useRouteMatch } from 'react-router-dom';
 import qs from 'qs';
 import { useDebounce } from './hooks/useDebounce';
@@ -15,7 +15,7 @@ interface IPlayerSearchContext {
 
 export const PlayerSearchContext = createContext<IPlayerSearchContext>(null);
 
-export const PlayerSearchProvider: React.FC<Props> = ({ children }: Props) => {
+export const PlayerSearchProvider: FC<Props> = ({ children }: Props) => {
     const { search } = useLocation();
     const match = useRouteMatch<{
         region: string;

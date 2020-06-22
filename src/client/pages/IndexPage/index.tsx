@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 import './styles.scss';
 
@@ -6,7 +6,7 @@ import { fetchFavorites } from '../../util/fetchFavorites';
 
 import { FavoriteCard } from './FavoriteCard';
 
-export const IndexPage: React.FC = () => {
+export const IndexPage: FC = () => {
     const favs = fetchFavorites();
     const playerFavs = favs ? (
         <div className="favorites-container">

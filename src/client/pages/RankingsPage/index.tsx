@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { Link, useLocation, useRouteMatch } from 'react-router-dom';
 import qs from 'qs';
 import { history } from '../../history';
@@ -10,7 +10,7 @@ import { Loader } from '../../components/Loader';
 import { IRankingFormat, IRanking1v1Format, IRanking2v2Format, RankedRegion } from 'corehalla.js';
 import { Card } from '../../components/Card';
 
-export const RankingsPage: React.FC = () => {
+export const RankingsPage: FC = () => {
     const { search } = useLocation();
 
     const match = useRouteMatch<{

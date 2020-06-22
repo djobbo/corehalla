@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { TopBar } from '../components/TopBar';
 import { Footer } from '../components/Footer';
 
@@ -6,7 +6,7 @@ interface Props {
     children: React.ReactNode;
 }
 
-export const Layout: React.FC<Props> = ({ children }: Props) => {
+export const Layout: FC<Props> = ({ children }: Props) => {
     return (
         <>
             <TopBar />

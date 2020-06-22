@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 
 import './styles.scss';
@@ -8,7 +8,7 @@ import { Searchbar } from './Searchbar';
 import Icon from '@mdi/react';
 import { mdiDiscord } from '@mdi/js';
 
-export const TopBar: React.FC = () => {
+export const TopBar: FC = () => {
     return (
         <div className="topbar">
             <div className="topbar-nav">

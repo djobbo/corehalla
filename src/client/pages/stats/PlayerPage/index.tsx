@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import './styles.scss';
 
@@ -29,7 +29,7 @@ const sectionTrantision = {
     },
 };
 
-export const PlayerStatsPage: React.FC = () => {
+export const PlayerStatsPage: FC = () => {
     const { params } = useRouteMatch<{
         id: string;
     }>('/stats/player/:id');
