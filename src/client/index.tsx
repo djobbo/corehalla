@@ -7,16 +7,19 @@ import { history } from './history';
 import { PlayerSearchProvider } from './PlayerSearchProvider';
 import { ThemeProvider } from './ThemeProvider';
 import { FavoritesProvider } from './FavoritesProvider';
+import { SidebarProvider } from './SidebarProvider';
 
 const rootElement = document.getElementById('root');
 ReactDOM.render(
     <Router history={history}>
         <ThemeProvider>
-            <FavoritesProvider>
-                <PlayerSearchProvider>
-                    <App />
-                </PlayerSearchProvider>
-            </FavoritesProvider>
+            <SidebarProvider>
+                <FavoritesProvider>
+                    <PlayerSearchProvider>
+                        <App />
+                    </PlayerSearchProvider>
+                </FavoritesProvider>
+            </SidebarProvider>
         </ThemeProvider>
     </Router>,
     rootElement,

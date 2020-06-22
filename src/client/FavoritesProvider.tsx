@@ -25,7 +25,7 @@ export const fetchFavorites = (): LocalFavorites => {
 
 export const FavoritesContext = createContext<{
     favorites: LocalFavorites;
-    setFavorites: (value: LocalFavorites) => void;
+    setFavorites: React.Dispatch<React.SetStateAction<LocalFavorites>>;
     addFavorite: (type: FavoriteType, value: IFavorite) => void;
     removeFavorite: (type: FavoriteType, value: IFavorite) => void;
 }>(null);

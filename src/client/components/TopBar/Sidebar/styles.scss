@@ -1,4 +1,6 @@
 .sidebar {
     background-color: var(--bg-alt);
-    grid-area: sidebar;
+    position: fixed;
+    width: 320px;
+    border-right: 1px solid var(--accent);
 }
