@@ -1,16 +1,16 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 
 import './styles.scss';
 
-import { fetchFavorites } from '../../util/fetchFavorites';
+import { FavoritesContext } from '../../FavoritesProvider';
 
 import { FavoriteCard } from './FavoriteCard';
 
 export const IndexPage: FC = () => {
-    const favs = fetchFavorites();
-    const playerFavs = favs ? (
+    const { favorites } = useContext(FavoritesContext);
+    const playerFavs = favorites ? (
         <div className="favorites-container">
-            {favs.players.map((fav) => (
+            {favorites.players.map((fav) => (
                 <FavoriteCard fav={fav} key={fav.id} />
             ))}
         </div>

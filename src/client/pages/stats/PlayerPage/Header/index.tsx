@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { useState, FC, useContext } from 'react';
 import { IPlayerStatsFormat } from 'corehalla.js';
 
 import './styles.scss';
@@ -8,7 +8,7 @@ import { mdiStar } from '@mdi/js';
 
 import { formatTime } from '../../../../util/formatTime';
 
-import { setFavorite } from '../../../../util/fetchFavorites';
+import { FavoritesContext } from '../../../../FavoritesProvider';
 
 import { Modal } from '../../../../components/Modal';
 
@@ -23,6 +23,7 @@ interface Props {
 
 export const Header: FC<Props> = ({ activePage, setActivePage, playerStats }: Props) => {
     const [addToFavModalActive, setAddToFavModalActive] = useState(false);
+    const { addFavorite } = useContext(FavoritesContext);
     return (
         <>
             <Modal show={addToFavModalActive}>
@@ -42,7 +43,7 @@ export const Header: FC<Props> = ({ activePage, setActivePage, playerStats }: Pr
                         <a
                             className="add-to-fav-btn"
                             onClick={() => {
-                                setFavorite('players', {
+                                addFavorite('players', {
                                     id: playerStats.id.toString(),
                                     link: `/stats/player/${playerStats.id}`,
                                     name: playerStats.name,

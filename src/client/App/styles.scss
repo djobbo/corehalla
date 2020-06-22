@@ -20,17 +20,17 @@ body {
     padding: 0;
     font-family: 'Montserrat', sans-serif;
     height: 100vh;
-    overflow: scroll;
+    overflow: hidden;
     display: grid;
     grid-template-rows: auto 1fr auto;
     grid-template-columns: minmax(auto, 320px) 1fr;
     grid-template-areas:
         'topbar topbar'
-        'sidebar content'
-        'footer footer';
+        'sidebar content';
 
     .content {
         grid-area: content;
+        overflow-y: scroll;
     }
 }
 

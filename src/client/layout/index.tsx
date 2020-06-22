@@ -12,8 +12,10 @@ export const Layout: FC<Props> = ({ children }: Props) => {
         <>
             <TopBar />
             <Sidebar />
-            <div className="content">{children}</div>
-            <Footer />
+            <div className="content">
+                {children}
+                <Footer />
+            </div>
         </>
     );
 };
