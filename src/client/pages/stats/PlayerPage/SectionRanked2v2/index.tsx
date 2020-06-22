@@ -9,6 +9,7 @@ import { Ranked2v2Team } from './Ranked2v2Team';
 import { I2v2TeamFormat } from 'corehalla.js';
 import { PieChart } from '../../../../components/Charts/PieChart';
 import { MiscStat } from '../../../../components/MiscStat';
+import { Card } from '../../../../components/Card';
 
 interface Props {
     teams: I2v2TeamFormat[];
@@ -140,7 +141,7 @@ function Ranked2v2TotalGames({
     return (
         <>
             <div className="stats-container">
-                <div className="card games-stats">
+                <Card className="games-stats">
                     <div className="games-stats-container">
                         <div>
                             <h3>Games</h3>
@@ -165,7 +166,7 @@ function Ranked2v2TotalGames({
                             <PieChart width="12rem" height="12rem" amount={(wins / games) * 100} />
                         </div>
                     </div>
-                </div>
+                </Card>
             </div>
 
             <div className="misc-general-stats">

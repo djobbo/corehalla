@@ -7,6 +7,7 @@ import { PieChart } from '../../../../components/Charts/PieChart';
 import { MiscStat } from '../../../../components/MiscStat';
 
 import { IPlayerStatsFormat } from 'corehalla.js';
+import { Card } from '../../../../components/Card';
 
 interface Props {
     playerStats: IPlayerStatsFormat;
@@ -25,7 +26,7 @@ export const SectionOverallStats: React.FC<Props> = ({ playerStats }: Props) => 
         <section className="section-overall">
             <h2 className="section-title">Overall Stats</h2>
             <div className="stats-container">
-                <div className="card games-stats">
+                <Card className="games-stats">
                     <div className="games-stats-container">
                         <div>
                             <h3>Games</h3>
@@ -56,8 +57,8 @@ export const SectionOverallStats: React.FC<Props> = ({ playerStats }: Props) => 
                             />
                         </div>
                     </div>
-                </div>
-                <div className="card kos-stats">
+                </Card>
+                <Card className="kos-stats">
                     <h3>KOs</h3>
                     <div>
                         <p>
@@ -81,8 +82,8 @@ export const SectionOverallStats: React.FC<Props> = ({ playerStats }: Props) => 
                             <BarChart amount={(playerStats.teamkos / greatestKOValue) * 100} />
                         </p>
                     </div>
-                </div>
-                <div className="card damage-stats">
+                </Card>
+                <Card className="damage-stats">
                     <h3>Damage</h3>
                     <div>
                         <p>
@@ -96,7 +97,7 @@ export const SectionOverallStats: React.FC<Props> = ({ playerStats }: Props) => 
                             <BarChart amount={(playerStats.damageTaken / greatestDamageValue) * 100} />
                         </p>
                     </div>
-                </div>
+                </Card>
             </div>
             <div className="misc-general-stats">
                 <MiscStat title="Avg. DPS" value="2.3dmg/s" />

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Card } from '../Card';
+
 import './styles.scss';
 
 interface Props {
@@ -11,7 +13,7 @@ export const Modal: React.FC<Props> = ({ show, children }: Props) => {
     return (
         show && (
             <div className="modal-container">
-                <div className="content card">{children}</div>
+                <Card className="content">{children}</Card>
             </div>
         )
     );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, CSSProperties } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useRouteMatch } from 'react-router-dom';
 import qs from 'qs';
 import { history } from '../../history';
@@ -8,6 +8,7 @@ import './styles.scss';
 import { Loader } from '../../components/Loader';
 
 import { IRankingFormat, IRanking1v1Format, IRanking2v2Format, RankedRegion } from 'corehalla.js';
+import { Card } from '../../components/Card';
 
 export const RankingsPage: React.FC = () => {
     const { search } = useLocation();
@@ -115,7 +116,7 @@ function Rankings1v1({ rankings }: { rankings: IRanking1v1Format[] }) {
 
 function Rankings1v1Item({ player, i }: { player: IRanking1v1Format; i: number }) {
     return (
-        <div className="card rankings-item" style={{ '--delay': `${0.015 * i}s` } as CSSProperties}>
+        <Card className="rankings-item" delay={0.015 * i}>
             <p className="stat stat-small rank">{player.rank}</p>
             <p>{player.region}</p>
             <p className="stat name">
@@ -129,7 +130,7 @@ function Rankings1v1Item({ player, i }: { player: IRanking1v1Format; i: number }
             <p>{((player.wins / player.games) * 100).toFixed(1)}%</p>
             <p>{player.rating}</p>
             <p>{player.peak}</p>
-        </div>
+        </Card>
     );
 }
 
@@ -145,7 +146,7 @@ function Rankings2v2({ rankings }: { rankings: IRanking2v2Format[] }) {
 
 function Rankings2v2Item({ team, i }: { team: IRanking2v2Format; i: number }) {
     return (
-        <div className="card rankings-item" style={{ '--delay': `${0.015 * i}s` } as CSSProperties}>
+        <Card className="rankings-item" delay={0.015 * i}>
             <p className="stat stat-medium rank">{team.rank}</p>
             <p>{team.region}</p>
             <p className="stat name">
@@ -163,7 +164,7 @@ function Rankings2v2Item({ team, i }: { team: IRanking2v2Format; i: number }) {
             <p>{((team.wins / team.games) * 100).toFixed(1)}%</p>
             <p>{team.rating}</p>
             <p>{team.peak}</p>
-        </div>
+        </Card>
     );
 }
 
