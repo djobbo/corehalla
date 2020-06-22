@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import './styles.scss';
@@ -6,9 +6,12 @@ import './styles.scss';
 import { Searchbar } from './Searchbar';
 
 import Icon from '@mdi/react';
-import { mdiDiscord } from '@mdi/js';
+import { mdiDiscord, mdiMenu } from '@mdi/js';
+import { SidebarContext } from '../../SidebarProvider';
 
 export const TopBar: FC = () => {
+    const { setSidebarOpen } = useContext(SidebarContext);
+
     return (
         <div className="topbar">
             <div className="topbar-nav">
@@ -16,6 +19,9 @@ export const TopBar: FC = () => {
                     <Link to="/">
                         <img src="/assets/images/logo.png" alt="Logo" />
                     </Link>
+                </div>
+                <div onClick={() => setSidebarOpen((open) => !open)}>
+                    <Icon path={mdiMenu} title="Menu" size={1} />
                 </div>
                 <Searchbar />
                 <nav>

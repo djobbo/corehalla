@@ -3,6 +3,7 @@ import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
 
 import { Layout } from './layout';
 import { Page } from './components/Page';
+import { Footer } from './components/Footer';
 import { IndexPage } from './pages/IndexPage';
 import { RankingsPage } from './pages/RankingsPage';
 import { PlayerStatsPage } from './pages/stats/PlayerPage';
@@ -28,20 +29,26 @@ export const App: FC = () => {
                         <Route path="/" exact>
                             <Page>
                                 <IndexPage />
+                                <Footer />
                             </Page>
                         </Route>
                         <Route path="/rankings/:bracket?/:region?/:page?">
                             <Page>
                                 <RankingsPage />
+                                <Footer />
                             </Page>
                         </Route>
                         <Route path="/stats/player/:id" exact>
                             <Page>
                                 <PlayerStatsPage />
+                                <Footer />
                             </Page>
                         </Route>
                         <Route path="/stats/clan/:id" exact>
-                            <Page>{/* <ClanStatsPage /> */}clan</Page>
+                            <Page>
+                                {/* <ClanStatsPage /> */}clan
+                                <Footer />
+                            </Page>
                         </Route>
                         {/* <Route path="/">
                             <Redirect to="/" />

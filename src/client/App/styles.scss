@@ -22,14 +22,13 @@ body {
     height: 100vh;
     overflow: hidden;
     display: grid;
-    grid-template-rows: auto 1fr auto;
-    grid-template-columns: minmax(auto, 320px) 1fr;
+    grid-template-rows: auto 1fr;
     grid-template-areas:
-        'topbar topbar'
-        'sidebar content';
+        'topbar'
+        'page';
 
-    .content {
-        grid-area: content;
+    .page {
+        grid-area: page;
         overflow-y: scroll;
     }
 }

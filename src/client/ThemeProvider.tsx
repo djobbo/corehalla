@@ -6,7 +6,10 @@ type Theme = {
     [k in ThemeProps]: string;
 };
 
-export const ThemeContext = createContext<{ themeMode: ThemeMode; setThemeMode: (value: ThemeMode) => void }>(null);
+export const ThemeContext = createContext<{
+    themeMode: ThemeMode;
+    setThemeMode: React.Dispatch<React.SetStateAction<ThemeMode>>;
+}>(null);
 
 export const themeModes: { [k in ThemeMode]: Theme } = {
     dark: {

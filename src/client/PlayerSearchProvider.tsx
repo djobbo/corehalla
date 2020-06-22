@@ -10,7 +10,7 @@ interface Props {
 
 interface IPlayerSearchContext {
     playerSearch: string;
-    setPlayerSearch: (value: string) => void;
+    setPlayerSearch: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const PlayerSearchContext = createContext<IPlayerSearchContext>(null);
