@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 
 import { IPlayerClanFormat } from 'corehalla.js';
@@ -8,7 +8,7 @@ interface Props {
 }
 
 // clan.xp string => number
-export const SectionClan: React.FC<Props> = ({ clan }: Props) => {
+export const SectionClan: FC<Props> = ({ clan }: Props) => {
     return (
         <section className="section-overall">
             <h2 className="section-title">Clan</h2>

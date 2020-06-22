@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 import { Card } from '../Card';
 
@@ -9,7 +9,7 @@ interface Props {
     children: React.ReactNode;
 }
 
-export const Modal: React.FC<Props> = ({ show, children }: Props) => {
+export const Modal: FC<Props> = ({ show, children }: Props) => {
     return (
         show && (
             <div className="modal-container">

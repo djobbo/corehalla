@@ -10,7 +10,7 @@ interface Props {
     fav: IFavorite;
 }
 
-export const FavoriteCard: React.FC<Props> = ({ fav }: Props) => {
+export const FavoriteCard: FC<Props> = ({ fav }: Props) => {
     return (
         <Link to={fav.link}>
             <Card className="favorite-card">

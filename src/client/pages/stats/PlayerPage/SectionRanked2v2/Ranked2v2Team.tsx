@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, FC } from 'react';
 import { BarChart } from '../../../../components/Charts/BarChart';
 
 import { I2v2TeamFormat } from 'corehalla.js';
@@ -9,7 +9,7 @@ interface Props {
     id: number;
 }
 
-export const Ranked2v2Team: React.FC<Props> = ({ team, id }: Props) => {
+export const Ranked2v2Team: FC<Props> = ({ team, id }: Props) => {
     const winrate = ((team.season.wins / team.season.games) * 100).toFixed(2);
     return (
         <Card className="ranked-team" delay={0.05 * id}>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 import { RankedRegion } from 'corehalla.js';
 
@@ -13,7 +13,7 @@ interface Props {
     region: RankedRegion | 'N/A';
 }
 
-export const RankedStats: React.FC<Props> = ({
+export const RankedStats: FC<Props> = ({
     tier = 'Tin 0',
     rating = 750,
     peak = 750,

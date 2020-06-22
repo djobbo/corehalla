@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { Link } from 'react-router-dom';
 import './styles.scss';
 
@@ -7,7 +7,7 @@ import { Loader } from '../../../components/Loader';
 import { IClanFormat } from 'corehalla.js';
 import { Card } from '../../../components/Card';
 
-export const ClanStatsPage: React.FC = () => {
+export const ClanStatsPage: FC = () => {
     const sections = ['teams', 'legends', 'weapons'];
     const hash = window.location.hash.substring(1);
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 import './styles.scss';
 import { IPlayerSeasonFormat, ILegendStatsFormat } from 'corehalla.js';
@@ -11,7 +11,7 @@ interface Props {
     bestLegend: ILegendStatsFormat;
 }
 
-export const SectionOverview: React.FC<Props> = ({ season, bestLegend }: Props) => {
+export const SectionOverview: FC<Props> = ({ season, bestLegend }: Props) => {
     return (
         <section className="section-overview">
             <h2 className="section-title">Season Overview</h2>

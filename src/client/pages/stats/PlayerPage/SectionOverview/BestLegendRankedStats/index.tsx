@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 interface Props {
     legend: string;
@@ -10,7 +10,7 @@ interface Props {
     winrate: string;
 }
 
-export const BestLegendRankedStats: React.FC<Props> = ({
+export const BestLegendRankedStats: FC<Props> = ({
     legend = 'Random',
     rating = 750,
     peak = 750,

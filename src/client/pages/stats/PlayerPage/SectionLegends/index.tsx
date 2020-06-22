@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 
 import './styles.scss';
 
@@ -15,7 +15,7 @@ interface Props {
     weapons: IWeaponStatsFormat[];
 }
 
-export const SectionLegends: React.FC<Props> = ({ legends, weapons }: Props) => {
+export const SectionLegends: FC<Props> = ({ legends, weapons }: Props) => {
     const [weaponFilter, setWeaponFilter] = useState<Weapon | ''>('');
     const [sortBy, setSortBy] = useState('');
     const [sortOrder, setSortOrder] = useState(-1);

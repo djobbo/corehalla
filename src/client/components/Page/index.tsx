@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { motion } from 'framer-motion';
 
 interface Props {
@@ -14,7 +14,7 @@ const pageTransition = {
     },
 };
 
-export const Page: React.FC<Props> = ({ children }: Props) => {
+export const Page: FC<Props> = ({ children }: Props) => {
     return (
         <motion.div
             initial="out"

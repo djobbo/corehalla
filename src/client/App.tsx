@@ -1,4 +1,4 @@
-import React, { useContext, CSSProperties } from 'react';
+import React, { useContext, CSSProperties, FC } from 'react';
 import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
 
 import { Layout } from './layout';
@@ -14,7 +14,7 @@ import { ThemeContext, themeModes } from './ThemeProvider';
 
 import './App/styles.scss';
 
-export const App: React.FC = () => {
+export const App: FC = () => {
     const location = useLocation();
     console.log(location);
 

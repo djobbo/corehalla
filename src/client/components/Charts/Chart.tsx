@@ -1,3 +1,5 @@
+import { FC } from 'react';
+
 export interface ChartProps {
     width?: string;
     height?: string;
@@ -6,4 +8,4 @@ export interface ChartProps {
     fg?: string;
 }
 
-export type Chart = React.FC<ChartProps>;
+export type Chart = FC<ChartProps>;

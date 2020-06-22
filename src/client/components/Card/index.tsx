@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, FC } from 'react';
 
 interface Props {
     className?: string;
@@ -6,7 +6,7 @@ interface Props {
     delay?: number;
 }
 
-export const Card: React.FC<Props> = ({ children, className = '', delay = 0 }: Props) => {
+export const Card: FC<Props> = ({ children, className = '', delay = 0 }: Props) => {
     return (
         <div className={`card ${className}`} style={{ '--delay': `${delay}s` } as CSSProperties}>
             {children}

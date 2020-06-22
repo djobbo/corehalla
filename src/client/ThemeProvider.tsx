@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, FC } from 'react';
 
 type ThemeMode = 'light' | 'dark' | 'solarizedDark' | 'solarizedLight';
 type ThemeProps = '--bg' | '--bg-alt' | '--text' | '--accent';
@@ -39,7 +39,7 @@ interface Props {
     children: React.ReactNode;
 }
 
-export const ThemeProvider: React.FC<Props> = ({ children }: Props) => {
+export const ThemeProvider: FC<Props> = ({ children }: Props) => {
     const [themeMode, setThemeMode] = useState<ThemeMode>('solarizedDark');
 
     return <ThemeContext.Provider value={{ themeMode, setThemeMode }}>{children}</ThemeContext.Provider>;

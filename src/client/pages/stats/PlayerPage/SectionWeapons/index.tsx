@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 
 import Icon from '@mdi/react';
 import { mdiSortAscending, mdiSortDescending } from '@mdi/js';
@@ -12,7 +12,7 @@ interface Props {
     weapons: IWeaponStatsFormat[];
 }
 
-export const SectionWeapons: React.FC<Props> = ({ weapons }: Props) => {
+export const SectionWeapons: FC<Props> = ({ weapons }: Props) => {
     const [sortBy, setSortBy] = useState('');
     const [sortOrder, setSortOrder] = useState(-1);
     return (

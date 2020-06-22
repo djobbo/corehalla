@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import './styles.scss';
 import { motion } from 'framer-motion';
 
@@ -11,7 +11,7 @@ const icon = {
     },
 };
 
-export const Loader: React.FC = () => (
+export const Loader: FC = () => (
     <div className="loader">
         <motion.div
             animate={{ scale: 1, opacity: 1 }}

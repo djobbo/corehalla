@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { IPlayerStatsFormat } from 'corehalla.js';
 
 import './styles.scss';
@@ -21,7 +21,7 @@ interface Props {
     playerStats: IPlayerStatsFormat;
 }
 
-export const Header: React.FC<Props> = ({ activePage, setActivePage, playerStats }: Props) => {
+export const Header: FC<Props> = ({ activePage, setActivePage, playerStats }: Props) => {
     const [addToFavModalActive, setAddToFavModalActive] = useState(false);
     return (
         <>

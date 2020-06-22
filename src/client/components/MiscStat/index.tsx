@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { FC } from 'react';
 interface Props {
     title: string;
     value: string;
 }
 
-export const MiscStat: React.FC<Props> = ({ title, value }: Props) => {
+export const MiscStat: FC<Props> = ({ title, value }: Props) => {
     return (
         <p>
             <span className="title stat-desc">{title}</span>
