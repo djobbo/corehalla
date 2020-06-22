@@ -1,4 +1,4 @@
-import React, { useState, CSSProperties } from 'react';
+import React, { useState } from 'react';
 
 import './styles.scss';
 
@@ -8,6 +8,7 @@ import { mdiSortAscending, mdiSortDescending } from '@mdi/js';
 import { Select } from '../../../../components/Select';
 
 import { ILegendStatsFormat, IWeaponStatsFormat, Weapon } from 'corehalla.js';
+import { Card } from '../../../../components/Card';
 
 interface Props {
     legends: ILegendStatsFormat[];
@@ -114,15 +115,7 @@ export const SectionLegends: React.FC<Props> = ({ legends, weapons }: Props) => 
                         }
                     })
                     .map((l, i) => (
-                        <div
-                            key={i + Math.random()}
-                            className="card"
-                            style={
-                                {
-                                    '--delay': `${0.025 * i}s`,
-                                } as CSSProperties
-                            }
-                        >
+                        <Card key={i + Math.random()} delay={0.025 * i}>
                             <img
                                 src={`/assets/images/icons/legends/${l.name}.png`}
                                 alt={`${l.name}`}
@@ -132,7 +125,7 @@ export const SectionLegends: React.FC<Props> = ({ legends, weapons }: Props) => 
                             />
                             {i + 1}. {l.name} - {l.season.rating} Elo ({l.season.peak} Peak) - Level {l.level} ({l.xp}{' '}
                             xp)
-                        </div>
+                        </Card>
                     ))}
             </section>
         </>

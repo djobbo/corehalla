@@ -2,6 +2,7 @@ import React, { CSSProperties } from 'react';
 import { BarChart } from '../../../../components/Charts/BarChart';
 
 import { I2v2TeamFormat } from 'corehalla.js';
+import { Card } from '../../../../components/Card';
 
 interface Props {
     team: I2v2TeamFormat;
@@ -11,14 +12,7 @@ interface Props {
 export const Ranked2v2Team: React.FC<Props> = ({ team, id }: Props) => {
     const winrate = ((team.season.wins / team.season.games) * 100).toFixed(2);
     return (
-        <div
-            className="card ranked-team"
-            style={
-                {
-                    '--delay': `${0.05 * id}s`,
-                } as CSSProperties
-            }
-        >
+        <Card className="ranked-team" delay={0.05 * id}>
             <h3>
                 <img src={`/assets/images/icons/flags/${team.region}.png`} alt={`${team.region}_icon`} />
                 <a href={`/stats/player/${team.teammate.id}`}>{team.teammate.name}</a>
@@ -56,6 +50,6 @@ export const Ranked2v2Team: React.FC<Props> = ({ team, id }: Props) => {
             <div className="wl">
                 {team.season.wins}W - {team.season.games - team.season.wins}L
             </div>
-        </div>
+        </Card>
     );
 };

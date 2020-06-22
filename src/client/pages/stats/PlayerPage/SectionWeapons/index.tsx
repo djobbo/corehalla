@@ -1,4 +1,4 @@
-import React, { useState, CSSProperties } from 'react';
+import React, { useState } from 'react';
 
 import Icon from '@mdi/react';
 import { mdiSortAscending, mdiSortDescending } from '@mdi/js';
@@ -6,6 +6,7 @@ import { mdiSortAscending, mdiSortDescending } from '@mdi/js';
 import { formatTime } from '../../../../util';
 
 import { IWeaponStatsFormat } from 'corehalla.js';
+import { Card } from '../../../../components/Card';
 
 interface Props {
     weapons: IWeaponStatsFormat[];
@@ -55,15 +56,7 @@ export const SectionWeapons: React.FC<Props> = ({ weapons }: Props) => {
                     }
                 })
                 .map((w, i) => (
-                    <div
-                        key={i + Math.random()}
-                        className="card"
-                        style={
-                            {
-                                '--delay': `${0.05 * i}s`,
-                            } as CSSProperties
-                        }
-                    >
+                    <Card key={i + Math.random()} delay={0.05 * i}>
                         <h3>
                             <img
                                 src={`/assets/images/icons/weapons/${w.name}.png`}
@@ -86,7 +79,7 @@ export const SectionWeapons: React.FC<Props> = ({ weapons }: Props) => {
                             Level {w.level} ({w.xp} xp)
                         </p>
                         <p>Time held: {formatTime(w.timeHeld)}</p>
-                    </div>
+                    </Card>
                 ))}
         </section>
     );

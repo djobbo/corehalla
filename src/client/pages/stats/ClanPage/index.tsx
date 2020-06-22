@@ -5,6 +5,7 @@ import './styles.scss';
 import { Loader } from '../../../components/Loader';
 
 import { IClanFormat } from 'corehalla.js';
+import { Card } from '../../../components/Card';
 
 export const ClanStatsPage: React.FC = () => {
     const sections = ['teams', 'legends', 'weapons'];
@@ -35,33 +36,33 @@ export const ClanStatsPage: React.FC = () => {
                     <h3>Leader</h3>
                     <div className="clan-members-container">
                         {clanStats.members.Leader.map((member) => (
-                            <div className="card" key={member.id}>
+                            <Card key={member.id}>
                                 <Link to={`/stats/player/${member.id}`}>{member.name}</Link>
-                            </div>
+                            </Card>
                         ))}
                     </div>
                     <h3>Officers</h3>
                     <div className="clan-members-container">
                         {clanStats.members.Officer.map((member) => (
-                            <div className="card" key={member.id}>
+                            <Card key={member.id}>
                                 <Link to={`/stats/player/${member.id}`}>{member.name}</Link>
-                            </div>
+                            </Card>
                         ))}
                     </div>
                     <h3>Members</h3>
                     <div className="clan-members-container">
                         {clanStats.members.Member.map((member) => (
-                            <div className="card" key={member.id}>
+                            <Card key={member.id}>
                                 <Link to={`/stats/player/${member.id}`}>{member.name}</Link>
-                            </div>
+                            </Card>
                         ))}
                     </div>
                     <h3>Recruits</h3>
                     <div className="clan-members-container">
                         {clanStats.members.Recruit.map((member) => (
-                            <div className="card" key={member.id}>
+                            <Card key={member.id}>
                                 <Link to={`/stats/player/${member.id}`}>{member.name}</Link>
-                            </div>
+                            </Card>
                         ))}
                     </div>
                 </>
