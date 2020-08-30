@@ -15,11 +15,11 @@ export const TopBar: FC = () => {
     return (
         <div className="topbar">
             <div className="topbar-nav">
-                <div className="logo">
+                {/* <div className="logo">
                     <Link to="/">
                         <img src="/assets/images/logo.png" alt="Logo" />
                     </Link>
-                </div>
+                </div> */}
                 <div onClick={() => setSidebarOpen((open) => !open)}>
                     <Icon path={mdiMenu} title="Menu" size={1} />
                 </div>
