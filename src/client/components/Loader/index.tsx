@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import './styles.scss';
 import { motion } from 'framer-motion';
 
 const icon = {

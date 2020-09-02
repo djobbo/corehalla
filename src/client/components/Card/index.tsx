@@ -1,15 +1,32 @@
-import React, { CSSProperties, FC } from 'react';
+import React, { FC } from 'react';
+import styled from 'styled-components';
+
+import { StatDesc } from '../TextStyles';
 
 interface Props {
-    className?: string;
+    title: string;
     children: React.ReactNode;
-    delay?: number;
 }
 
-export const Card: FC<Props> = ({ children, className = '', delay = 0 }: Props) => {
+const CardWrapper = styled.div`
+    background-color: var(--bg-alt);
+    border-radius: 0.25rem;
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 0.5px solid transparent;
+
+    &:hover {
+        border-color: var(--accent);
+    }
+`;
+
+const CardContent = styled.div``;
+
+export const Card: FC<Props> = ({ title, children }: Props) => {
     return (
-        <div className={`card ${className}`} style={{ '--delay': `${delay}s` } as CSSProperties}>
-            {children}
-        </div>
+        <CardWrapper>
+            <StatDesc>{title}</StatDesc>
+            <CardContent>{children}</CardContent>
+        </CardWrapper>
     );
 };
