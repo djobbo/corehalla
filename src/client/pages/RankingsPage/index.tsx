@@ -3,8 +3,6 @@ import { Link, useLocation, useRouteMatch } from 'react-router-dom';
 import qs from 'qs';
 import { history } from '../../history';
 
-import './styles.scss';
-
 import { Loader } from '../../components/Loader';
 
 import { IRankingFormat, IRanking1v1Format, IRanking2v2Format, RankedRegion } from 'corehalla.js';

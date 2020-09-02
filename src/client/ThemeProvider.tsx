@@ -43,7 +43,7 @@ interface Props {
 }
 
 export const ThemeProvider: FC<Props> = ({ children }: Props) => {
-    const [themeMode, setThemeMode] = useState<ThemeMode>('solarizedDark');
+    const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
 
     return <ThemeContext.Provider value={{ themeMode, setThemeMode }}>{children}</ThemeContext.Provider>;
 };
