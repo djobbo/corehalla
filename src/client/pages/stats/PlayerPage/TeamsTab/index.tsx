@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import styled from 'styled-components';
 
 import { I2v2TeamFormat } from 'corehalla.js';
 
@@ -10,6 +11,12 @@ import { TeamCard } from '../../../../components/TeamCard';
 interface Props {
     teams: I2v2TeamFormat[];
 }
+
+const CardsWrapper = styled.div`
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    gap: 1rem;
+`;
 
 // TODO: global/total team stats in ch.js
 export const TeamsTab: FC<Props> = ({ teams }: Props) => {
@@ -49,9 +56,11 @@ export const TeamsTab: FC<Props> = ({ teams }: Props) => {
                     </PageSection>
                     <SectionSeparator />
                     <PageSection title="teams" initFoldState={true}>
-                        {teams.map((team, i) => (
-                            <TeamCard team={team} key={i} />
-                        ))}
+                        <CardsWrapper>
+                            {teams.map((team, i) => (
+                                <TeamCard team={team} key={i} />
+                            ))}
+                        </CardsWrapper>
                     </PageSection>
                 </>
             ) : (

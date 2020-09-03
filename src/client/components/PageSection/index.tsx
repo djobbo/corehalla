@@ -24,6 +24,15 @@ const SectionTitle = styled.p`
         fill-opacity: 0.72;
         height: 0.75rem;
     }
+
+    &:hover {
+        opacity: 1;
+        color: var(--accent);
+        svg {
+            fill: var(--accent);
+            fill-opacity: 1;
+        }
+    }
 `;
 
 const PageSectionWrapper = styled.section`
@@ -38,11 +47,19 @@ const FoldSectionIcon = styled.div`
     display: flex;
     justify-content: center;
     margin-top: 1rem;
+    cursor: pointer;
 
     svg {
         fill: var(--text);
         fill-opacity: 0.72;
         height: 0.75rem;
+    }
+
+    &:hover {
+        svg {
+            fill: var(--accent);
+            fill-opacity: 1;
+        }
     }
 `;
 

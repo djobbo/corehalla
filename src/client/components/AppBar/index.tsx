@@ -1,8 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '@mdi/react';
 import { mdiArrowLeft, mdiMagnify } from '@mdi/js';
 import styled from 'styled-components';
+import { useScrollPosition } from '../../hooks/useScrollPosition';
 
 interface NavbarProps {
     title: string;
@@ -126,14 +127,32 @@ interface Props {
 
 const AppBarWrapper = styled.div`
     background-color: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 `;
 
 export const AppBar: FC<Props> = ({ title, tabs, chips }: Props) => {
+    const [hideOnScroll, setHideOnScroll] = useState(true);
+
+    useScrollPosition(
+        ({ prevPos, currPos }) => {
+            const isShow = currPos.y > prevPos.y;
+            if (isShow !== hideOnScroll) setHideOnScroll(isShow);
+        },
+        [hideOnScroll],
+        100,
+    );
+
     return (
         <AppBarWrapper>
             <Navbar title={title} />
-            {tabs && <TabsContainer tabs={tabs} />}
-            {chips && <ChipsContainer chips={chips} />}
+            {!hideOnScroll && (
+                <>
+                    {tabs && <TabsContainer tabs={tabs} />}
+                    {chips && <ChipsContainer chips={chips} />}
+                </>
+            )}
         </AppBarWrapper>
     );
 };

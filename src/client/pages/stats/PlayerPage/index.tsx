@@ -5,6 +5,7 @@ import { IPlayerStatsFormat } from 'corehalla.js';
 
 import { AppBar } from '../../../components/AppBar';
 import { Loader } from '../../../components/Loader';
+import { PageContentWrapper } from '../../../components/Page';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { OverviewTab } from './OverviewTab';
@@ -82,28 +83,30 @@ export const PlayerStatsPage: FC = () => {
                     { title: 'weapons', link: `#weapons`, active: activeTab === 'weapons' },
                 ]}
             />
-            <AnimatePresence exitBeforeEnter initial>
-                {loading ? (
-                    <Loader key="loader" />
-                ) : (
-                    <motion.div className="PlayerPage" key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
-                        <main>
-                            <AnimatePresence exitBeforeEnter initial>
-                                <motion.div
-                                    key={activeTab}
-                                    animate="in"
-                                    exit="out"
-                                    initial="init"
-                                    variants={sectionTransition}
-                                    transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
-                                >
-                                    {renderActiveTab()}
-                                </motion.div>
-                            </AnimatePresence>
-                        </main>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            <PageContentWrapper>
+                <AnimatePresence exitBeforeEnter initial>
+                    {loading ? (
+                        <Loader key="loader" />
+                    ) : (
+                        <motion.div className="PlayerPage" key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
+                            <main>
+                                <AnimatePresence exitBeforeEnter initial>
+                                    <motion.div
+                                        key={activeTab}
+                                        animate="in"
+                                        exit="out"
+                                        initial="init"
+                                        variants={sectionTransition}
+                                        transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
+                                    >
+                                        {renderActiveTab()}
+                                    </motion.div>
+                                </AnimatePresence>
+                            </main>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </PageContentWrapper>
         </>
     );
 };
