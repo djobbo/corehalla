@@ -5,7 +5,7 @@ import { IPlayerStatsFormat } from 'corehalla.js';
 
 import { AppBar } from '../../../components/AppBar';
 import { Loader } from '../../../components/Loader';
-import { PageContentWrapper } from '../../../components/Page';
+import { Page, PageContentWrapper } from '../../../components/Page';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { OverviewTab } from './OverviewTab';
@@ -73,7 +73,7 @@ export const PlayerStatsPage: FC = () => {
     };
 
     return (
-        <>
+        <Page>
             <AppBar
                 title={loading ? 'loading' : playerStats.name || 'Corehalla'}
                 tabs={[
@@ -83,7 +83,7 @@ export const PlayerStatsPage: FC = () => {
                     { title: 'weapons', link: `#weapons`, active: activeTab === 'weapons' },
                 ]}
             />
-            <PageContentWrapper>
+            <PageContentWrapper pTop="7rem">
                 <AnimatePresence exitBeforeEnter initial>
                     {loading ? (
                         <Loader key="loader" />
@@ -107,6 +107,6 @@ export const PlayerStatsPage: FC = () => {
                     )}
                 </AnimatePresence>
             </PageContentWrapper>
-        </>
+        </Page>
     );
 };

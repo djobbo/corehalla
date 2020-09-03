@@ -22,7 +22,6 @@ const SectionTitle = styled.p`
     svg {
         fill: var(--text);
         fill-opacity: 0.72;
-        height: 0.75rem;
     }
 
     &:hover {
@@ -52,7 +51,6 @@ const FoldSectionIcon = styled.div`
     svg {
         fill: var(--text);
         fill-opacity: 0.72;
-        height: 0.75rem;
     }
 
     &:hover {

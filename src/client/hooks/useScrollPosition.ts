@@ -4,7 +4,15 @@ const isBrowser = typeof window !== `undefined`;
 
 const getScrollPosition = () => (isBrowser ? { x: window.scrollX, y: window.scrollY } : { x: 0, y: 0 });
 
-export const useScrollPosition = (effect, deps, wait) => {
+interface IVector2 {
+    x: number;
+    y: number;
+}
+
+export const useScrollPosition = (
+    effect: (pos: { prevPos: IVector2; currPos: IVector2 }) => void,
+    deps: React.DependencyList,
+): void => {
     const position = useRef(getScrollPosition());
 
     let throttleTimeout = null;
@@ -18,13 +26,7 @@ export const useScrollPosition = (effect, deps, wait) => {
 
     useLayoutEffect(() => {
         const handleScroll = () => {
-            if (wait) {
-                if (throttleTimeout === null) {
-                    throttleTimeout = setTimeout(callBack, wait);
-                }
-            } else {
-                callBack();
-            }
+            callBack();
         };
 
         window.addEventListener('scroll', handleScroll);

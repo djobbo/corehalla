@@ -1,5 +1,7 @@
 import React, { useContext, CSSProperties, FC } from 'react';
 import { Switch, Route, useLocation } from 'react-router-dom';
+import styled from 'styled-components';
+
 import { Page } from './components/Page';
 
 import { IndexPage } from './pages/IndexPage';
@@ -10,6 +12,11 @@ import { AnimatePresence } from 'framer-motion';
 
 import { ThemeContext, themeModes } from './ThemeProvider';
 
+const AppWrapper = styled.div`
+    min-height: 100vh;
+    background-color: var(--bg);
+`;
+
 export const App: FC = () => {
     const location = useLocation();
 
@@ -17,7 +24,7 @@ export const App: FC = () => {
     console.log(location);
 
     return (
-        <div id="App" style={themeModes[themeMode] as CSSProperties}>
+        <AppWrapper id="App" style={themeModes[themeMode] as CSSProperties}>
             <AnimatePresence exitBeforeEnter initial>
                 <Switch location={location} key={location.pathname}>
                     <Route path="/" exact>
@@ -27,15 +34,13 @@ export const App: FC = () => {
                     </Route>
                     <Route path="/rankings/:bracket?/:region?/:page?">{/* <RankingsPage /> */}</Route>
                     <Route path="/stats/player/:id" exact>
-                        <Page>
-                            <PlayerStatsPage />
-                        </Page>
+                        <PlayerStatsPage />
                     </Route>
                     <Route path="/stats/clan/:id" exact>
                         <Page>clan</Page>
                     </Route>
                 </Switch>
             </AnimatePresence>
-        </div>
+        </AppWrapper>
     );
 };

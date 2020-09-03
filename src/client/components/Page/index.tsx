@@ -1,8 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
 interface Props {
+    title?: string;
     children: React.ReactNode;
 }
 
@@ -15,7 +16,12 @@ const pageTransition = {
     },
 };
 
-export const Page: FC<Props> = ({ children }: Props) => {
+export const Page: FC<Props> = ({ children, title }: Props) => {
+    useEffect(() => {
+        if (!title) return;
+        document.title = title;
+    }, []);
+
     return (
         <motion.div
             initial="out"
@@ -30,7 +36,11 @@ export const Page: FC<Props> = ({ children }: Props) => {
     );
 };
 
-export const PageContentWrapper = styled.div`
+export const PageContentWrapper = styled.div<{ pTop?: string }>`
     max-width: 1200px;
     margin: 0 auto;
+
+    ${({ pTop }) => `
+        padding-top: ${pTop || 0};
+    `}
 `;
