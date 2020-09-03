@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC } from 'react';
-import { Link, useParams, useRouteMatch } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 import { IPlayerStatsFormat } from 'corehalla.js';
 
@@ -8,26 +8,26 @@ import { Loader } from '../../../components/Loader';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { OverviewTab } from './OverviewTab';
-type PlayerStatsTab = 'overview' | 'teams' | 'legends' | 'weapons';
+import { LegendsTab } from './LegendsTab';
+import { TeamsTab } from './TeamsTab';
 
-const sectionTrantision = {
+type PlayerStatsTab = '#overview' | '#teams' | '#legends' | '#weapons';
+
+const sectionTransition = {
     in: {
         opacity: 1,
-        y: 0,
     },
     out: {
         opacity: 0,
     },
     init: {
         opacity: 0,
-        y: '50vh',
     },
 };
 
 export const PlayerStatsPage: FC = () => {
-    const { id: playerId, tab: activeTab } = useParams<{ id: string; tab: PlayerStatsTab }>();
-    console.log(playerId, activeTab);
-    console.log(useRouteMatch());
+    const { id: playerId } = useParams<{ id: string }>();
+    const { hash: activeTab = '#overview' } = useLocation<{ hash: PlayerStatsTab }>();
 
     const [loading, setLoading] = useState(true);
     const [, setError] = useState(false);
@@ -62,29 +62,24 @@ export const PlayerStatsPage: FC = () => {
 
     const renderActiveTab = () => {
         switch (activeTab) {
-            case 'teams':
-                return <>teams</>;
+            case '#teams':
+                return <TeamsTab {...playerStats.season} />;
+            case '#legends':
+                return <LegendsTab {...playerStats} />;
             default:
                 return <OverviewTab playerStats={playerStats} />;
         }
     };
-
-    // const currentPage = `/stats/player/${playerId}`;
 
     return (
         <>
             <AppBar
                 title={loading ? 'loading' : playerStats.name || 'Corehalla'}
                 tabs={[
-                    { title: 'overview', link: `#`, active: true },
-                    { title: 'teams', link: `#` },
-                    { title: 'legends', link: `#` },
-                    { title: 'weapons', link: `#` },
-                ]}
-                chips={[
-                    { title: 'Global', link: `#`, active: true },
-                    { title: 'US-E', link: `#` },
-                    { title: 'EU', link: `#` },
+                    { title: 'overview', link: `#`, active: activeTab === 'overview' },
+                    { title: 'teams', link: `#teams`, active: activeTab === 'teams' },
+                    { title: 'legends', link: `#legends`, active: activeTab === 'legends' },
+                    { title: 'weapons', link: `#weapons`, active: activeTab === 'weapons' },
                 ]}
             />
             <AnimatePresence exitBeforeEnter initial>
@@ -99,7 +94,7 @@ export const PlayerStatsPage: FC = () => {
                                     animate="in"
                                     exit="out"
                                     initial="init"
-                                    variants={sectionTrantision}
+                                    variants={sectionTransition}
                                     transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
                                 >
                                     {renderActiveTab()}

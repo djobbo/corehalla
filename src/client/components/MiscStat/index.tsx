@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { StatDesc, StatMedium } from '../TextStyles';
+import { StatDesc } from '../TextStyles';
 
 interface IMiscStat {
     title: string;

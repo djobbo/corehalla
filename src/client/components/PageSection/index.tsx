@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import styled from 'styled-components';
 import Icon from '@mdi/react';
-import { mdiUnfoldLessHorizontal, mdiUnfoldMoreHorizontal } from '@mdi/js';
+import { mdiChevronUp, mdiUnfoldLessHorizontal, mdiUnfoldMoreHorizontal } from '@mdi/js';
 
 interface Props {
     children: React.ReactNode;
@@ -14,6 +14,9 @@ const SectionTitle = styled.p`
     opacity: 0.72;
     display: flex;
     justify-content: space-between;
+    text-transform: uppercase;
+    align-items: center;
+    font-size: 0.75rem;
     cursor: pointer;
 
     svg {
@@ -24,11 +27,23 @@ const SectionTitle = styled.p`
 `;
 
 const PageSectionWrapper = styled.section`
-    padding: 2rem 1rem;
+    padding: 1rem;
 `;
 
 const PageSectionContent = styled.div`
-    margin-top: 2rem;
+    margin-top: 1rem;
+`;
+
+const FoldSectionIcon = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+
+    svg {
+        fill: var(--text);
+        fill-opacity: 0.72;
+        height: 0.75rem;
+    }
 `;
 
 //TODO: Change foldState variable name
@@ -46,7 +61,14 @@ export const PageSection: FC<Props> = ({ children, title, initFoldState }: Props
                 )}
             </SectionTitle>
 
-            {foldState && <PageSectionContent>{children}</PageSectionContent>}
+            {foldState && (
+                <>
+                    <PageSectionContent>{children}</PageSectionContent>
+                    <FoldSectionIcon onClick={() => setFoldState(false)}>
+                        <Icon path={mdiChevronUp} size={0.75} />
+                    </FoldSectionIcon>
+                </>
+            )}
         </PageSectionWrapper>
     );
 };

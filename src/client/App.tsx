@@ -1,5 +1,5 @@
 import React, { useContext, CSSProperties, FC } from 'react';
-import { Switch, Route, useLocation, Link, BrowserRouter as Router } from 'react-router-dom';
+import { Switch, Route, useLocation } from 'react-router-dom';
 import { Page } from './components/Page';
 
 import { IndexPage } from './pages/IndexPage';
@@ -14,20 +14,24 @@ export const App: FC = () => {
     const location = useLocation();
 
     const { themeMode } = useContext(ThemeContext);
+    console.log(location);
 
     return (
         <div id="App" style={themeModes[themeMode] as CSSProperties}>
             <AnimatePresence exitBeforeEnter initial>
                 <Switch location={location} key={location.pathname}>
                     <Route path="/" exact>
-                        <IndexPage />
-                        <Link to="/stats/player/4281946">bruh</Link>
+                        <Page>
+                            <IndexPage />
+                        </Page>
                     </Route>
                     <Route path="/rankings/:bracket?/:region?/:page?">{/* <RankingsPage /> */}</Route>
-                    <Route path="/stats/player/:id/:tab?" exact>
-                        <PlayerStatsPage />
+                    <Route path="/stats/player/:id" exact>
+                        <Page>
+                            <PlayerStatsPage />
+                        </Page>
                     </Route>
-                    <Route path="/stats/clan/:id/:tab?" exact>
+                    <Route path="/stats/clan/:id" exact>
                         <Page>clan</Page>
                     </Route>
                 </Switch>
