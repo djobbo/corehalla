@@ -1,12 +1,21 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 
-import { StatDesc } from '../TextStyles';
-
 interface Props {
-    title: string;
+    title?: string;
     children: React.ReactNode;
 }
+
+const CardTitle = styled.span`
+    color: var(--text);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    opacity: 0.48;
+    margin: 0 0.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: block;
+`;
 
 const CardWrapper = styled.div`
     background-color: var(--bg-alt);
@@ -25,7 +34,7 @@ const CardContent = styled.div``;
 export const Card: FC<Props> = ({ title, children }: Props) => {
     return (
         <CardWrapper>
-            <StatDesc>{title}</StatDesc>
+            {title && <CardTitle>{title}</CardTitle>}
             <CardContent>{children}</CardContent>
         </CardWrapper>
     );

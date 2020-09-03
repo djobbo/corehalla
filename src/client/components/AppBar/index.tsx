@@ -28,7 +28,8 @@ interface TabsProps {
 
 const Tab = styled.div<{ active?: boolean }>`
     white-space: nowrap;
-    font-size: 1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
     a {
         padding: 1rem 1.5rem;
         color: var(--text);

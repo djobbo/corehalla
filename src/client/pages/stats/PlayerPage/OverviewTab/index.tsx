@@ -17,13 +17,14 @@ export const OverviewTab: FC<Props> = ({ playerStats }: Props) => {
     const { season, clan } = playerStats;
     return (
         <>
-            <ProfileHeader title={playerStats.name} bannerURI="https://picsum.photos/1920/120" />
+            <ProfileHeader title={playerStats.name} bannerURI="https://picsum.photos/480/120" />
             <SectionSeparator />
-            <PageSection title="SeasonOverview" initFoldState={true}>
+            <PageSection title="Season Overview" initFoldState={true}>
                 <SectionSeasonOverviewContent
                     {...season}
                     losses={season.games - season.wins}
                     winrate={(season.wins / season.games) * 100}
+                    icon={`flags/${season.region}`}
                 />
             </PageSection>
             {clan && (

@@ -10,7 +10,7 @@ interface Props {
     wins: number;
     losses: number;
     winrate: number;
-    region: string;
+    icon: string;
 }
 
 const StatsContainer = styled.div``;
@@ -18,7 +18,7 @@ const StatsContainer = styled.div``;
 const RankedBanner = styled.img`
     width: 8rem;
     height: auto;
-    margin-right: 2rem;
+    margin-right: 1rem;
 `;
 
 const FlagIcon = styled.img`
@@ -41,7 +41,7 @@ export const SectionSeasonOverviewContent: FC<Props> = ({
     wins,
     losses,
     winrate,
-    region,
+    icon,
 }: Props) => {
     return (
         <SectionWrapper>
@@ -68,7 +68,7 @@ export const SectionSeasonOverviewContent: FC<Props> = ({
                     <StatDesc>winrate</StatDesc>
                     <StatSmall>{`${winrate.toFixed(2)}%`}</StatSmall>
                 </div>
-                <FlagIcon src={`/assets/images/icons/flags/${region}.png`} alt={region} />
+                <FlagIcon src={`/assets/images/icons/${icon}.png`} alt={icon} />
             </StatsContainer>
         </SectionWrapper>
     );
