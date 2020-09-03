@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
 interface Props {
@@ -28,3 +29,8 @@ export const Page: FC<Props> = ({ children }: Props) => {
         </motion.div>
     );
 };
+
+export const PageContentWrapper = styled.div`
+    max-width: 1200px;
+    margin: 0 auto;
+`;

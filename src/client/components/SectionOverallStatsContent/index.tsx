@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
 
+import styled from 'styled-components';
+
 import { GamesStatsCard } from '../GamesStatsCard';
 import { BarChartCard } from '../BarChartCard';
 import { MiscStatContainer } from '../MiscStat';
@@ -16,6 +18,12 @@ interface Props {
     wins: number;
     losses: number;
 }
+
+const CardsWrapper = styled.div`
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1rem;
+`;
 
 export const SectionOverallStatsContent: FC<Props> = ({
     kos,
@@ -34,23 +42,25 @@ export const SectionOverallStatsContent: FC<Props> = ({
 
     return (
         <>
-            <GamesStatsCard {...{ games, wins, losses }} winrate={(wins / games) * 100} />
-            <BarChartCard
-                title="kos"
-                stats={[
-                    { title: 'kos', amount: kos, max: maxKos },
-                    { title: 'falls', amount: falls, max: maxKos },
-                    { title: 'suicides', amount: suicides, max: maxKos },
-                    { title: 'team kos', amount: teamkos, max: maxKos },
-                ]}
-            />
-            <BarChartCard
-                title="damage"
-                stats={[
-                    { title: 'damage dealt', amount: damageDealt, max: maxDmg },
-                    { title: 'damage taken', amount: damageTaken, max: maxDmg },
-                ]}
-            />
+            <CardsWrapper>
+                <GamesStatsCard {...{ games, wins, losses }} winrate={(wins / games) * 100} />
+                <BarChartCard
+                    title="kos"
+                    stats={[
+                        { title: 'kos', amount: kos, max: maxKos },
+                        { title: 'falls', amount: falls, max: maxKos },
+                        { title: 'suicides', amount: suicides, max: maxKos },
+                        { title: 'team kos', amount: teamkos, max: maxKos },
+                    ]}
+                />
+                <BarChartCard
+                    title="damage"
+                    stats={[
+                        { title: 'damage dealt', amount: damageDealt, max: maxDmg },
+                        { title: 'damage taken', amount: damageTaken, max: maxDmg },
+                    ]}
+                />
+            </CardsWrapper>
             <MiscStatContainer
                 stats={[
                     { title: 'dps', value: `${(damageDealt / matchtime).toFixed(2)}dmg/s` },
