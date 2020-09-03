@@ -4,16 +4,47 @@ import Icon from '@mdi/react';
 import { mdiArrowLeft, mdiMagnify } from '@mdi/js';
 import styled from 'styled-components';
 import { useScrollPosition } from '../../hooks/useScrollPosition';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface NavbarProps {
     title: string;
 }
 
+const NavbarWrapper = styled.div`
+    color: var(--text);
+    padding: 1rem 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg);
+    z-index: 101;
+    position: relative;
+    border-bottom: 1px solid var(--bg-alt);
+
+    & > div {
+        display: flex;
+        align-items: center;
+    }
+
+    svg {
+        fill: var(--text);
+    }
+`;
+
+const NavbarTitle = styled.span`
+    font-size: 1rem;
+    margin-left: 1rem;
+`;
+
 export const Navbar: FC<NavbarProps> = ({ title }: NavbarProps) => {
     return (
-        <div>
-            <Icon path={mdiArrowLeft} size={1} /> {title} <Icon path={mdiMagnify} size={1} />
-        </div>
+        <NavbarWrapper>
+            <div>
+                <Icon path={mdiArrowLeft} size={1} />
+                <NavbarTitle>{title}</NavbarTitle>
+            </div>
+            <Icon path={mdiMagnify} size={1} />
+        </NavbarWrapper>
     );
 };
 
@@ -53,6 +84,7 @@ const TabsContainerWrapper = styled.div`
     display: flex;
     overflow-x: auto;
     border-bottom: 1px solid var(--bg-alt);
+    background-color: var(--bg);
 `;
 
 export const TabsContainer: FC<TabsProps> = ({ tabs }: TabsProps) => {
@@ -105,6 +137,7 @@ const ChipsContainerWrapper = styled.div`
     overflow-x: auto;
     padding: 0.75rem 0.5rem;
     border-bottom: 1px solid var(--bg-alt);
+    background-color: var(--bg);
 `;
 
 export const ChipsContainer: FC<ChipsContainerProps> = ({ chips }: ChipsContainerProps) => {
@@ -126,33 +159,41 @@ interface Props {
 }
 
 const AppBarWrapper = styled.div`
-    background-color: var(--bg);
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 100;
 `;
 
 export const AppBar: FC<Props> = ({ title, tabs, chips }: Props) => {
-    const [hideOnScroll, setHideOnScroll] = useState(true);
+    const [hideOnScroll, setHideOnScroll] = useState(false);
 
     useScrollPosition(
         ({ prevPos, currPos }) => {
             const isShow = currPos.y > prevPos.y;
+            console.log(prevPos, currPos);
             if (isShow !== hideOnScroll) setHideOnScroll(isShow);
         },
         [hideOnScroll],
-        100,
     );
 
     return (
         <AppBarWrapper>
             <Navbar title={title} />
-            {!hideOnScroll && (
-                <>
-                    {tabs && <TabsContainer tabs={tabs} />}
-                    {chips && <ChipsContainer chips={chips} />}
-                </>
-            )}
+            <AnimatePresence initial={false}>
+                {!hideOnScroll && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -80 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -80 }}
+                        transition={{ ease: 'linear', duration: 0.125 }}
+                    >
+                        {tabs && <TabsContainer tabs={tabs} />}
+                        {chips && <ChipsContainer chips={chips} />}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </AppBarWrapper>
     );
 };
