@@ -12,7 +12,7 @@ interface NavbarProps {
 
 const NavbarWrapper = styled.div`
     color: var(--text);
-    padding: 1rem 0.5rem;
+    padding: 1rem 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -172,7 +172,6 @@ export const AppBar: FC<Props> = ({ title, tabs, chips }: Props) => {
     useScrollPosition(
         ({ prevPos, currPos }) => {
             const isShow = currPos.y > prevPos.y;
-            console.log(prevPos, currPos);
             if (isShow !== hideOnScroll) setHideOnScroll(isShow);
         },
         [hideOnScroll],

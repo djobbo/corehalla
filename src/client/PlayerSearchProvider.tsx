@@ -31,7 +31,6 @@ export const PlayerSearchProvider: FC<Props> = ({ children }: Props) => {
 
     useEffect(() => {
         if (debouncedPlayerSecarch !== null && !isInitialLoad) {
-            console.log('search');
             history.push(
                 `/rankings/${params.bracket || '1v1'}/${params.region || 'all'}/${
                     params.page || '1'

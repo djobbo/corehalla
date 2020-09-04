@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react';
 import styled from 'styled-components';
+import { AnimatePresence, motion } from 'framer-motion';
 import Icon from '@mdi/react';
 import { mdiChevronUp, mdiUnfoldLessHorizontal, mdiUnfoldMoreHorizontal } from '@mdi/js';
 
@@ -34,7 +35,7 @@ const SectionTitle = styled.p`
     }
 `;
 
-const PageSectionWrapper = styled.section`
+const PageSectionWrapper = styled(motion.section)`
     padding: 1rem;
 `;
 
@@ -75,15 +76,21 @@ export const PageSection: FC<Props> = ({ children, title, initFoldState }: Props
                     <Icon path={mdiUnfoldMoreHorizontal} size={1} />
                 )}
             </SectionTitle>
-
-            {foldState && (
-                <>
-                    <PageSectionContent>{children}</PageSectionContent>
-                    <FoldSectionIcon onClick={() => setFoldState(false)}>
-                        <Icon path={mdiChevronUp} size={0.75} />
-                    </FoldSectionIcon>
-                </>
-            )}
+            <AnimatePresence>
+                {foldState && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0, y: -50 }}
+                        animate={{ opacity: 1, height: 'auto', y: 0 }}
+                        exit={{ opacity: 0, height: 0, y: -50 }}
+                        transition={{ duration: 0.25, ease: 'easeInOut' }}
+                    >
+                        <PageSectionContent>{children}</PageSectionContent>
+                        {/* <FoldSectionIcon onClick={() => setFoldState(false)}>
+                            <Icon path={mdiChevronUp} size={0.75} />
+                        </FoldSectionIcon> */}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </PageSectionWrapper>
     );
 };
