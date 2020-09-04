@@ -1,13 +1,14 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { Icon } from '@mdi/react';
 import { mdiHome, mdiChevronTripleUp, mdiAccountStar, mdiHistory, mdiCog } from '@mdi/js';
 import styled from 'styled-components';
 
+import { NavigationPage, NavigationContext } from '../../NavigationProvider';
+
 interface BottomNavigationTab {
-    title: string;
+    title: NavigationPage;
     link: string;
     icon: string;
-    active?: string;
 }
 
 const tabs: BottomNavigationTab[] = [
@@ -50,7 +51,7 @@ const NavigationWrapper = styled.nav`
     border-top: 1px solid var(--bg-alt);
 `;
 
-const NavigationItem = styled.a<{ active?: string }>`
+const NavigationItem = styled.a<{ active?: boolean }>`
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -76,10 +77,12 @@ const NavigationItem = styled.a<{ active?: string }>`
 `;
 
 export const BottomNavigationBar: FC = () => {
+    const { activePage } = useContext(NavigationContext);
+
     return (
         <NavigationWrapper>
-            {tabs.map(({ title, link, icon, active }, i) => (
-                <NavigationItem href={link} key={i} active={active}>
+            {tabs.map(({ title, link, icon }, i) => (
+                <NavigationItem href={link} key={i} active={activePage === title}>
                     <Icon path={icon} size={1} />
                     {title}
                 </NavigationItem>

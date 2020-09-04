@@ -8,18 +8,21 @@ import { PlayerSearchProvider } from './PlayerSearchProvider';
 import { ThemeProvider } from './ThemeProvider';
 import { FavoritesProvider } from './FavoritesProvider';
 import { SidebarProvider } from './SidebarProvider';
+import { NavigationProvider } from './NavigationProvider';
 
 const rootElement = document.getElementById('root');
 ReactDOM.render(
     <Router history={history}>
         <ThemeProvider>
-            <SidebarProvider>
-                <FavoritesProvider>
-                    <PlayerSearchProvider>
-                        <App />
-                    </PlayerSearchProvider>
-                </FavoritesProvider>
-            </SidebarProvider>
+            <NavigationProvider>
+                <SidebarProvider>
+                    <FavoritesProvider>
+                        <PlayerSearchProvider>
+                            <App />
+                        </PlayerSearchProvider>
+                    </FavoritesProvider>
+                </SidebarProvider>
+            </NavigationProvider>
         </ThemeProvider>
     </Router>,
     rootElement,
