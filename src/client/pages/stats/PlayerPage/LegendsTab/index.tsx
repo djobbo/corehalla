@@ -8,6 +8,7 @@ import { PageSection, SectionSeparator } from '../../../../components/PageSectio
 import { SectionSeasonOverviewContent } from '../../../../components/SectionSeasonOverviewContent';
 import { SectionOverallStatsContent } from '../../../../components/SectionOverallStatsContent';
 import { StatDesc, StatSmall } from '../../../../components/TextStyles';
+import { formatTime } from '../../../../util';
 
 interface Props {
     legends: ILegendStatsFormat[];
@@ -32,7 +33,7 @@ export const LegendsTab: FC<Props> = ({ legends }: Props) => {
                             </div>
                             <div>
                                 <StatDesc>Time played</StatDesc>
-                                <StatSmall>{legend.matchtime}</StatSmall>
+                                <StatSmall>{formatTime(legend.matchtime)}</StatSmall>
                             </div>
                         </LegendLevelStatsWrapper>
                         <SectionSeasonOverviewContent
