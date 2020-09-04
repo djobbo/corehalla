@@ -21,7 +21,6 @@ export const App: FC = () => {
     const location = useLocation();
 
     const { themeMode } = useContext(ThemeContext);
-    console.log(location);
 
     return (
         <AppWrapper id="App" style={themeModes[themeMode] as CSSProperties}>

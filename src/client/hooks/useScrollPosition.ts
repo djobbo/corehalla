@@ -15,13 +15,10 @@ export const useScrollPosition = (
 ): void => {
     const position = useRef(getScrollPosition());
 
-    let throttleTimeout = null;
-
     const callBack = () => {
         const currPos = getScrollPosition();
         effect({ prevPos: position.current, currPos });
         position.current = currPos;
-        throttleTimeout = null;
     };
 
     useLayoutEffect(() => {

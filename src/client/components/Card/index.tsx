@@ -21,7 +21,6 @@ const CardWrapper = styled.div`
     background-color: var(--bg-alt);
     border-radius: 0.25rem;
     padding: 1rem;
-    margin: 1rem 0;
     border: 0.5px solid transparent;
 
     &:hover {

@@ -40,7 +40,7 @@ export const PageContentWrapper = styled.div<{ pTop?: string }>`
     max-width: 1200px;
     margin: 0 auto;
 
-    ${({ pTop }) => `
+    ${({ pTop }): string => `
         padding-top: ${pTop || 0};
     `}
 `;

@@ -18,8 +18,8 @@ const tabs: BottomNavigationTab[] = [
 export const BottomNavigation: FC = () => {
     return (
         <div>
-            {tabs.map(({ title, link, icon }) => (
-                <a href={link}>
+            {tabs.map(({ title, link, icon }, i) => (
+                <a href={link} key={i}>
                     {icon}
                     {title}
                 </a>

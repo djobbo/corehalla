@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 
 import { ILegendStatsFormat } from 'corehalla.js';
 
@@ -20,7 +21,7 @@ export const LegendsTab: FC<Props> = ({ legends }: Props) => {
     return (
         <>
             {legends.map((legend, i) => (
-                <div key={i}>
+                <motion.div layout key={i}>
                     <SectionSeparator />
                     <PageSection title={legend.name}>
                         <LegendLevelStatsWrapper>
@@ -42,7 +43,7 @@ export const LegendsTab: FC<Props> = ({ legends }: Props) => {
                         />
                         <SectionOverallStatsContent {...legend} losses={legend.games - legend.wins} />
                     </PageSection>
-                </div>
+                </motion.div>
             ))}
         </>
     );
