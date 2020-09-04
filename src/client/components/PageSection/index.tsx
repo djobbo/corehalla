@@ -22,7 +22,6 @@ const SectionTitle = styled.p`
 
     svg {
         fill: var(--text);
-        fill-opacity: 0.72;
     }
 
     &:hover {
@@ -30,7 +29,6 @@ const SectionTitle = styled.p`
         color: var(--accent);
         svg {
             fill: var(--accent);
-            fill-opacity: 1;
         }
     }
 `;
@@ -85,9 +83,9 @@ export const PageSection: FC<Props> = ({ children, title, initFoldState }: Props
                         transition={{ duration: 0.25, ease: 'easeInOut' }}
                     >
                         <PageSectionContent>{children}</PageSectionContent>
-                        {/* <FoldSectionIcon onClick={() => setFoldState(false)}>
+                        <FoldSectionIcon onClick={() => setFoldState(false)}>
                             <Icon path={mdiChevronUp} size={0.75} />
-                        </FoldSectionIcon> */}
+                        </FoldSectionIcon>
                     </motion.div>
                 )}
             </AnimatePresence>
