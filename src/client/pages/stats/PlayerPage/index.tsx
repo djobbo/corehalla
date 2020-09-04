@@ -11,6 +11,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { OverviewTab } from './OverviewTab';
 import { LegendsTab } from './LegendsTab';
 import { TeamsTab } from './TeamsTab';
+import { BottomNavigationBar } from '../../../components/BottomNavigationBar';
 
 type PlayerStatsTab = '#overview' | '#teams' | '#legends' | '#weapons';
 
@@ -28,7 +29,10 @@ const sectionTransition = {
 
 export const PlayerStatsPage: FC = () => {
     const { id: playerId } = useParams<{ id: string }>();
-    const { hash: activeTab = '#overview' } = useLocation<{ hash: PlayerStatsTab }>();
+    const { hash } = useLocation<{ hash: PlayerStatsTab }>();
+    const activeTab: PlayerStatsTab = ['#teams', '#legends', '#weapons'].includes(hash)
+        ? (hash as PlayerStatsTab)
+        : '#overview';
 
     const [loading, setLoading] = useState(true);
     const [, setError] = useState(false);
@@ -77,13 +81,13 @@ export const PlayerStatsPage: FC = () => {
             <AppBar
                 title={loading ? 'loading' : playerStats.name || 'Corehalla'}
                 tabs={[
-                    { title: 'overview', link: `#`, active: activeTab === 'overview' },
-                    { title: 'teams', link: `#teams`, active: activeTab === 'teams' },
-                    { title: 'legends', link: `#legends`, active: activeTab === 'legends' },
-                    { title: 'weapons', link: `#weapons`, active: activeTab === 'weapons' },
+                    { title: 'overview', link: `#`, active: activeTab === '#overview' },
+                    { title: 'teams', link: `#teams`, active: activeTab === '#teams' },
+                    { title: 'legends', link: `#legends`, active: activeTab === '#legends' },
+                    { title: 'weapons', link: `#weapons`, active: activeTab === '#weapons' },
                 ]}
             />
-            <PageContentWrapper pTop="7rem">
+            <PageContentWrapper pTop="6.5rem">
                 <AnimatePresence exitBeforeEnter initial>
                     {loading ? (
                         <Loader key="loader" />
@@ -107,6 +111,7 @@ export const PlayerStatsPage: FC = () => {
                     )}
                 </AnimatePresence>
             </PageContentWrapper>
+            <BottomNavigationBar />
         </Page>
     );
 };

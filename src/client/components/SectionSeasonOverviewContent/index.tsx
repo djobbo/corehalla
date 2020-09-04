@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 import { StatSmall, StatMedium, StatLarge, StatDesc } from '../TextStyles';
+import { motion } from 'framer-motion';
 
 interface Props {
     tier: string;
@@ -15,7 +16,7 @@ interface Props {
 
 const StatsContainer = styled.div``;
 
-const RankedBanner = styled.img`
+const RankedBanner = styled(motion.img)`
     width: 8rem;
     height: auto;
     margin-right: 1rem;
@@ -45,7 +46,16 @@ export const SectionSeasonOverviewContent: FC<Props> = ({
 }: Props) => {
     return (
         <SectionWrapper>
-            <RankedBanner src={`/assets/images/ranked-banners/${tier}.png`} alt={tier} />
+            <RankedBanner
+                src={`/assets/images/ranked-banners/${tier}.png`}
+                alt={tier}
+                animate={{
+                    scaleX: [0.86, 0.91, 0.91, 0.86, 0.86, 0.86],
+                    scaleY: [0.86, 1, 0.82, 0.91, 0.86, 0.86],
+                }}
+                style={{ originY: 0 }}
+                transition={{ ease: 'easeInOut', repeat: Infinity, times: [0, 0.03, 0.06, 0.08, 0.1, 1], duration: 5 }}
+            />
             <StatsContainer>
                 <div>
                     <StatDesc>tier</StatDesc>
