@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 
-import { Card } from '../../components/Card';
-import { BarChart } from '../../components/Charts/BarChart';
-import { StatDesc, StatSmall } from '../../components/TextStyles';
+import { Card } from './Card';
+import { BarChart } from './Charts';
+import { StatDesc, StatSmall } from './TextStyles';
 
 interface BarChartStat {
     title: string;

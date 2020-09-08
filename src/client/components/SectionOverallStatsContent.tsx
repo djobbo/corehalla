@@ -2,9 +2,9 @@ import React, { FC } from 'react';
 
 import styled from 'styled-components';
 
-import { GamesStatsCard } from '../GamesStatsCard';
-import { BarChartCard } from '../BarChartCard';
-import { MiscStatContainer } from '../MiscStat';
+import { GamesStatsCard } from './GamesStatsCard';
+import { BarChartCard } from './BarChartCard';
+import { MiscStatContainer } from './MiscStat';
 
 interface Props {
     kos: number;

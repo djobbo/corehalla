@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Icon from '@mdi/react';
 import { mdiArrowLeft, mdiMagnify } from '@mdi/js';
 import styled from 'styled-components';
-import { useScrollPosition } from '../../hooks/useScrollPosition';
+import { useScrollPosition } from '../hooks/useScrollPosition';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface NavbarProps {

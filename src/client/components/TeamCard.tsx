@@ -2,9 +2,10 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 
 import { I2v2TeamFormat } from 'corehalla.js';
-import { StatDesc, StatSmall } from '../TextStyles';
-import { Card } from '../Card';
-import { BarChart } from '../Charts/BarChart';
+import { StatDesc, StatSmall } from './TextStyles';
+import { Card } from './Card';
+import { BarChart } from './Charts';
+
 interface Props {
     team: I2v2TeamFormat;
 }

@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import { motion } from 'framer-motion';
+import styled from 'styled-components';
 
 const icon = {
     hidden: {
@@ -10,8 +11,15 @@ const icon = {
     },
 };
 
+const LoaderWrapper = styled.div`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+`;
+
 export const Loader: FC = () => (
-    <div className="loader">
+    <LoaderWrapper>
         <motion.div
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 5, opacity: 0 }}
@@ -86,5 +94,5 @@ export const Loader: FC = () => (
                 </motion.svg>
             </motion.div>
         </motion.div>
-    </div>
+    </LoaderWrapper>
 );

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { StatSmall, StatMedium, StatLarge, StatDesc } from '../TextStyles';
+import { StatSmall, StatMedium, StatLarge, StatDesc } from './TextStyles';
 import { motion } from 'framer-motion';
 
 interface Props {

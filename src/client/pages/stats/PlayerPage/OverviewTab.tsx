@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 
 import { IPlayerStatsFormat } from 'corehalla.js';
-import { ProfileHeader } from '../../../../components/ProfileHeader';
+import { ProfileHeader } from '../../../components/ProfileHeader';
 
-import { PageSection, SectionSeparator } from '../../../../components/PageSection';
-import { SectionSeasonOverviewContent } from '../../../../components/SectionSeasonOverviewContent';
-import { SectionClanOverviewSmallContent } from '../../../../components/SectionClanOverviewSmallContent';
-import { SectionOverallStatsContent } from '../../../../components/SectionOverallStatsContent';
+import { PageSection, SectionSeparator } from '../../../components/PageSection';
+import { SectionSeasonOverviewContent } from '../../../components/SectionSeasonOverviewContent';
+import { SectionClanOverviewSmallContent } from '../../../components/SectionClanOverviewSmallContent';
+import { SectionOverallStatsContent } from '../../../components/SectionOverallStatsContent';
 
 interface Props {
     playerStats: IPlayerStatsFormat;
