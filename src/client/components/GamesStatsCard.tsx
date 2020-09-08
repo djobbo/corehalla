@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 
-import { Card } from '../../components/Card';
-import { PieChart } from '../../components/Charts/PieChart';
-import { StatLarge, StatDesc, StatSmall } from '../../components/TextStyles';
+import { Card } from './Card';
+import { PieChart } from './Charts';
+import { StatLarge, StatDesc, StatSmall } from './TextStyles';
 
 interface Props {
     games: number;

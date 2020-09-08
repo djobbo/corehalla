@@ -3,7 +3,7 @@ import { useLocation, useParams } from 'react-router-dom';
 
 import { IPlayerStatsFormat } from 'corehalla.js';
 
-import { AppBar } from '../../../components/AppBar';
+import { AppBar } from '../../../components/Appbar';
 import { Loader } from '../../../components/Loader';
 import { Page, PageContentWrapper } from '../../../components/Page';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -59,7 +59,7 @@ export const PlayerStatsPage: FC = () => {
                 const { PlayerStats } = await import('../../../mockups/Player');
                 setPlayerStats(PlayerStats);
                 setLoading(false);
-            }, 0);
+            }, 250);
 
             return () => clearTimeout(timeout);
         }

@@ -1,8 +1,8 @@
 import React, { useState, createContext, useEffect, FC } from 'react';
 import { useLocation, useRouteMatch } from 'react-router-dom';
 import qs from 'qs';
-import { useDebounce } from './hooks/useDebounce';
-import { history } from './history';
+import { useDebounce } from '../hooks/useDebounce';
+import { history } from '../history';
 
 interface Props {
     children: React.ReactNode;

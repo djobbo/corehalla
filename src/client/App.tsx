@@ -10,7 +10,7 @@ import { PlayerStatsPage } from './pages/stats/PlayerPage';
 
 import { AnimatePresence } from 'framer-motion';
 
-import { ThemeContext, themeModes } from './ThemeProvider';
+import { ThemeContext, themeModes } from './providers/ThemeProvider';
 
 const AppWrapper = styled.div`
     min-height: 100vh;

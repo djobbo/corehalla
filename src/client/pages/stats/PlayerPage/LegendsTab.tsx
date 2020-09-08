@@ -4,11 +4,11 @@ import { motion } from 'framer-motion';
 
 import { ILegendStatsFormat } from 'corehalla.js';
 
-import { PageSection, SectionSeparator } from '../../../../components/PageSection';
-import { SectionSeasonOverviewContent } from '../../../../components/SectionSeasonOverviewContent';
-import { SectionOverallStatsContent } from '../../../../components/SectionOverallStatsContent';
-import { StatDesc, StatSmall } from '../../../../components/TextStyles';
-import { formatTime } from '../../../../util';
+import { PageSection, SectionSeparator } from '../../../components/PageSection';
+import { SectionSeasonOverviewContent } from '../../../components/SectionSeasonOverviewContent';
+import { SectionOverallStatsContent } from '../../../components/SectionOverallStatsContent';
+import { StatDesc, StatSmall } from '../../../components/TextStyles';
+import { formatTime } from '../../../util';
 
 interface Props {
     legends: ILegendStatsFormat[];

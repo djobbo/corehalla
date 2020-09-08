@@ -3,10 +3,10 @@ import styled from 'styled-components';
 
 import { I2v2TeamFormat } from 'corehalla.js';
 
-import { PageSection, SectionSeparator } from '../../../../components/PageSection';
-import { MiscStatContainer } from '../../../../components/MiscStat';
-import { GamesStatsCard } from '../../../../components/GamesStatsCard';
-import { TeamCard } from '../../../../components/TeamCard';
+import { PageSection, SectionSeparator } from '../../../components/PageSection';
+import { MiscStatContainer } from '../../../components/MiscStat';
+import { GamesStatsCard } from '../../../components/GamesStatsCard';
+import { TeamCard } from '../../../components/TeamCard';
 
 interface Props {
     teams: I2v2TeamFormat[];

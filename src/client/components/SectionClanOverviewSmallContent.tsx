@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { StatSmall, StatMedium, StatDesc } from '../TextStyles';
+import { StatSmall, StatMedium, StatDesc } from './TextStyles';
 
 interface Props {
     name: string;

@@ -3,7 +3,7 @@ import { Icon } from '@mdi/react';
 import { mdiHome, mdiChevronTripleUp, mdiAccountStar, mdiHistory, mdiCog } from '@mdi/js';
 import styled from 'styled-components';
 
-import { NavigationPage, NavigationContext } from '../../NavigationProvider';
+import { NavigationPage, NavigationContext } from '../providers/NavigationProvider';
 
 interface BottomNavigationTab {
     title: NavigationPage;
