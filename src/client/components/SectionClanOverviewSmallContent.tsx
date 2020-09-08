@@ -1,5 +1,6 @@
 // Library imports
 import React, { FC } from 'react';
+import { Link } from 'react-router-dom';
 
 // Components imports
 import { StatSmall, StatMedium, StatDesc } from './TextStyles';
@@ -10,12 +11,22 @@ interface Props {
     xp: number;
     personalXp: number;
     xpPercentage: number;
+    id: string;
 }
 
-export const SectionClanOverviewSmallContent: FC<Props> = ({ name, level, xp, personalXp, xpPercentage }: Props) => {
+export const SectionClanOverviewSmallContent: FC<Props> = ({
+    name,
+    level,
+    xp,
+    personalXp,
+    xpPercentage,
+    id,
+}: Props) => {
     return (
         <div>
-            <StatMedium>{name}</StatMedium>
+            <Link to={`/stats/clan/${id}`}>
+                <StatMedium>{name}</StatMedium>
+            </Link>
             <div>
                 <StatDesc>level</StatDesc>
                 <StatSmall>{level}</StatSmall>

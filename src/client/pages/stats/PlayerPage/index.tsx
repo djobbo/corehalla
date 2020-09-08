@@ -94,7 +94,7 @@ export const PlayerStatsPage: FC = () => {
                     {loading ? (
                         <Loader key="loader" />
                     ) : (
-                        <motion.div className="PlayerPage" key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
+                        <motion.div key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
                             <main>
                                 <AnimatePresence exitBeforeEnter initial>
                                     <motion.div

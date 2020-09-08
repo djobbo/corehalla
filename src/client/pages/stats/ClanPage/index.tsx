@@ -2,7 +2,7 @@
 import React, { useState, useEffect, FC } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { IPlayerStatsFormat } from 'corehalla.js';
+import { IClanFormat } from 'corehalla.js';
 
 // Components imports
 import { AppBar } from '../../../components/AppBar';
@@ -35,7 +35,7 @@ export const ClanStatsPage: FC = () => {
 
     const [loading, setLoading] = useState(true);
     const [, setError] = useState(false);
-    const [playerStats, setPlayerStats] = useState<IPlayerStatsFormat>();
+    const [clanStats, setClanStats] = useState<IClanFormat>();
 
     useEffect(() => {
         if (process.env.NODE_ENV === 'production') {
@@ -44,8 +44,8 @@ export const ClanStatsPage: FC = () => {
 
             fetch(`/api/stats/clan/${clanId}`, { signal })
                 .then(async (res) => {
-                    const data = (await res.json()) as IPlayerStatsFormat;
-                    setPlayerStats(data);
+                    const data = (await res.json()) as IClanFormat;
+                    setClanStats(data);
                     setLoading(false);
                 })
                 .catch(() => {
@@ -55,8 +55,8 @@ export const ClanStatsPage: FC = () => {
             return () => abortController.abort();
         } else {
             const timeout = setTimeout(async () => {
-                const { PlayerStats } = await import('../../../mockups/Player');
-                setPlayerStats(PlayerStats);
+                const { ClanStats } = await import('../../../mockups/Clan');
+                setClanStats(ClanStats);
                 setLoading(false);
             }, 0);
 
@@ -76,7 +76,7 @@ export const ClanStatsPage: FC = () => {
     return (
         <Page>
             <AppBar
-                title={loading ? 'loading' : playerStats.name || 'Corehalla'}
+                title={loading ? 'loading' : 'Revoluchienne' || 'Corehalla'}
                 tabs={[
                     { title: 'overview', link: `#`, active: activeTab === '#overview' },
                     { title: 'members', link: `#members`, active: activeTab === '#members' },
@@ -87,7 +87,7 @@ export const ClanStatsPage: FC = () => {
                     {loading ? (
                         <Loader key="loader" />
                     ) : (
-                        <motion.div className="PlayerPage" key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
+                        <motion.div key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
                             <main>
                                 <AnimatePresence exitBeforeEnter initial>
                                     <motion.div

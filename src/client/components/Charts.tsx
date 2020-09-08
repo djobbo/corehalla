@@ -19,9 +19,9 @@ export const BarChart: Chart = ({
     fg = 'var(--accent)',
 }: ChartProps) => {
     return (
-        <svg className="bar-chart" width={width} height={height} viewBox="0 0 20 20" preserveAspectRatio="none">
+        <svg width={width} height={height} viewBox="0 0 20 20" preserveAspectRatio="none">
             <rect x="0" y="0" width="20" height="20" fill={bg} />
-            <rect className="fill" x="0" y="0" width={(amount / 100) * 20} height="20" fill={fg} />
+            <rect x="0" y="0" width={(amount / 100) * 20} height="20" fill={fg} />
         </svg>
     );
 };
@@ -34,7 +34,7 @@ export const PieChart: Chart = ({
     fg = 'var(--accent)',
 }: ChartProps) => {
     return (
-        <svg className="pie-chart" width={width} height={height} viewBox="0 0 20 20">
+        <svg width={width} height={height} viewBox="0 0 20 20">
             <circle r="10" cx="10" cy="10" fill={bg} />
             <circle
                 r="5"
