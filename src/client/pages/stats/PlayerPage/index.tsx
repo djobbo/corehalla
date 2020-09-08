@@ -1,5 +1,6 @@
 // Library imports
 import React, { useState, useEffect, FC } from 'react';
+import { Helmet } from 'react-helmet';
 import { useLocation, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IPlayerStatsFormat } from 'corehalla.js';
@@ -80,8 +81,13 @@ export const PlayerStatsPage: FC = () => {
 
     return (
         <Page>
+            {!loading && (
+                <Helmet>
+                    <title>{playerStats.name} Stats • Corehalla</title>
+                </Helmet>
+            )}
             <AppBar
-                title={loading ? 'loading' : playerStats.name || 'Corehalla'}
+                title={loading ? 'loading' : playerStats.name}
                 tabs={[
                     { title: 'overview', link: `#`, active: activeTab === '#overview' },
                     { title: 'teams', link: `#teams`, active: activeTab === '#teams' },
