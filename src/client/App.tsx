@@ -39,7 +39,7 @@ export const App: FC = () => {
                         <PlayerStatsPage />
                     </Route>
                     <Route path="/stats/clan/:id" exact>
-                        <Page>clan</Page>
+                        <ClanStatsPage />
                     </Route>
                 </Switch>
             </AnimatePresence>

@@ -24,14 +24,7 @@ export const Page: FC<Props> = ({ children, title }: Props) => {
     }, []);
 
     return (
-        <motion.div
-            initial="out"
-            animate="in"
-            exit="out"
-            variants={pageTransition}
-            transition={{ duration: 0.2 }}
-            className="page"
-        >
+        <motion.div initial="out" animate="in" exit="out" variants={pageTransition} transition={{ duration: 0.2 }}>
             {children}
         </motion.div>
     );

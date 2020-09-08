@@ -40,7 +40,6 @@ export const Loader: FC = () => (
                         variants={icon}
                         initial="hidden"
                         animate="visible"
-                        className="white"
                         transition={{
                             default: { duration: 2, ease: 'easeInOut' },
                         }}
@@ -52,7 +51,6 @@ export const Loader: FC = () => (
                         variants={icon}
                         initial="hidden"
                         animate="visible"
-                        className="white"
                         transition={{
                             default: { duration: 2, ease: 'easeInOut' },
                         }}
