@@ -1,17 +1,19 @@
+// Library imports
 import React, { useState, useEffect, FC } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-
+import { AnimatePresence, motion } from 'framer-motion';
 import { IPlayerStatsFormat } from 'corehalla.js';
 
-import { AppBar } from '../../../components/Appbar';
+// Components imports
+import { AppBar } from '../../../components/AppBar';
+import { BottomNavigationBar } from '../../../components/BottomNavigationBar';
 import { Loader } from '../../../components/Loader';
 import { Page, PageContentWrapper } from '../../../components/Page';
-import { AnimatePresence, motion } from 'framer-motion';
 
+// Tabs imports
 import { OverviewTab } from './OverviewTab';
-import { LegendsTab } from './LegendsTab';
 import { TeamsTab } from './TeamsTab';
-import { BottomNavigationBar } from '../../../components/BottomNavigationBar';
+import { LegendsTab } from './LegendsTab';
 
 type PlayerStatsTab = '#overview' | '#teams' | '#legends' | '#weapons';
 

@@ -1,7 +1,10 @@
+// Library imports
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { StatSmall, StatMedium, StatLarge, StatDesc } from './TextStyles';
 import { motion } from 'framer-motion';
+
+// Components imports
+import { StatSmall, StatMedium, StatLarge, StatDesc } from './TextStyles';
 
 interface Props {
     tier: string;

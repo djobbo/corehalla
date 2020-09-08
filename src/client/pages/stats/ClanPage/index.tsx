@@ -1,16 +1,18 @@
+// Library imports
 import React, { useState, useEffect, FC } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-
+import { AnimatePresence, motion } from 'framer-motion';
 import { IPlayerStatsFormat } from 'corehalla.js';
 
+// Components imports
 import { AppBar } from '../../../components/AppBar';
+import { BottomNavigationBar } from '../../../components/BottomNavigationBar';
 import { Loader } from '../../../components/Loader';
 import { Page, PageContentWrapper } from '../../../components/Page';
-import { AnimatePresence, motion } from 'framer-motion';
 
+// Tabs imports
 import { OverviewTab } from './OverviewTab';
-import { LegendsTab } from './MembersTab';
-import { BottomNavigationBar } from '../../../components/BottomNavigationBar';
+import { MembersTab } from './MembersTab';
 
 type ClanStatsTab = '#overview' | '#members';
 
@@ -29,7 +31,7 @@ const sectionTransition = {
 export const ClanStatsPage: FC = () => {
     const { id: clanId } = useParams<{ id: string }>();
     const { hash } = useLocation<{ hash: ClanStatsTab }>();
-    const activeTab: ClanStatsTab = ['#members'].includes(hash) ? (hash as PlayerStatsTab) : '#overview';
+    const activeTab: ClanStatsTab = ['#members'].includes(hash) ? (hash as ClanStatsTab) : '#overview';
 
     const [loading, setLoading] = useState(true);
     const [, setError] = useState(false);
@@ -65,9 +67,9 @@ export const ClanStatsPage: FC = () => {
     const renderActiveTab = () => {
         switch (activeTab) {
             case '#members':
-                return <MembersTab> {...clanStats} />;
+                return <MembersTab />;
             default:
-                return <OverviewTab clanStats={clanStats} />;
+                return <OverviewTab />;
         }
     };
 
@@ -77,9 +79,7 @@ export const ClanStatsPage: FC = () => {
                 title={loading ? 'loading' : playerStats.name || 'Corehalla'}
                 tabs={[
                     { title: 'overview', link: `#`, active: activeTab === '#overview' },
-                    { title: 'teams', link: `#teams`, active: activeTab === '#teams' },
-                    { title: 'legends', link: `#legends`, active: activeTab === '#legends' },
-                    { title: 'weapons', link: `#weapons`, active: activeTab === '#weapons' },
+                    { title: 'members', link: `#members`, active: activeTab === '#members' },
                 ]}
             />
             <PageContentWrapper pTop="6.5rem">

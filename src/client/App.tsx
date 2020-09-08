@@ -7,6 +7,7 @@ import { Page } from './components/Page';
 import { IndexPage } from './pages/IndexPage';
 import { RankingsPage } from './pages/RankingsPage';
 import { PlayerStatsPage } from './pages/stats/PlayerPage';
+import { ClanStatsPage } from './pages/stats/ClanPage';
 
 import { AnimatePresence } from 'framer-motion';
 
@@ -31,7 +32,9 @@ export const App: FC = () => {
                             <IndexPage />
                         </Page>
                     </Route>
-                    <Route path="/rankings/:bracket?/:region?/:page?">{/* <RankingsPage /> */}</Route>
+                    <Route path="/rankings/:bracket?/:region?/:page?">
+                        <RankingsPage />
+                    </Route>
                     <Route path="/stats/player/:id" exact>
                         <PlayerStatsPage />
                     </Route>

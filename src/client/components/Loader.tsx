@@ -1,6 +1,7 @@
+// Library imports
 import React, { FC } from 'react';
-import { motion } from 'framer-motion';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 
 const icon = {
     hidden: {

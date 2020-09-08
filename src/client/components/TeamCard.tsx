@@ -1,6 +1,8 @@
+// Library imports
 import React, { FC } from 'react';
 import styled from 'styled-components';
 
+// Components imports
 import { I2v2TeamFormat } from 'corehalla.js';
 import { StatDesc, StatSmall } from './TextStyles';
 import { Card } from './Card';
