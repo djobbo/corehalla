@@ -1,4 +1,7 @@
+// Library imports
 import React, { FC } from 'react';
+
+// Components imports
 import { StatSmall, StatMedium, StatDesc } from './TextStyles';
 
 interface Props {

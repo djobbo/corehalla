@@ -1,3 +1,4 @@
+// Library imports
 import React, { FC } from 'react';
 
 interface ChartProps {

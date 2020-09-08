@@ -1,7 +1,8 @@
+// Library imports
 import React, { FC } from 'react';
-
 import styled from 'styled-components';
 
+// Components imports
 import { GamesStatsCard } from './GamesStatsCard';
 import { BarChartCard } from './BarChartCard';
 import { MiscStatContainer } from './MiscStat';

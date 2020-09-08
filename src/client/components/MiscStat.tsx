@@ -1,5 +1,8 @@
+// Library imports
 import React, { FC } from 'react';
 import styled from 'styled-components';
+
+// Components imports
 import { StatDesc } from './TextStyles';
 
 interface IMiscStat {

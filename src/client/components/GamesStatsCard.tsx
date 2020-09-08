@@ -1,6 +1,8 @@
+// Library imports
 import React, { FC } from 'react';
 import styled from 'styled-components';
 
+// Components imports
 import { Card } from './Card';
 import { PieChart } from './Charts';
 import { StatLarge, StatDesc, StatSmall } from './TextStyles';

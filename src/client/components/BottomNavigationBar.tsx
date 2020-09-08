@@ -1,8 +1,10 @@
+// Library imports
 import React, { FC, useContext } from 'react';
+import styled from 'styled-components';
 import { Icon } from '@mdi/react';
 import { mdiHome, mdiChevronTripleUp, mdiAccountStar, mdiHistory, mdiCog } from '@mdi/js';
-import styled from 'styled-components';
 
+// Providers imports
 import { NavigationPage, NavigationContext } from '../providers/NavigationProvider';
 
 interface BottomNavigationTab {
