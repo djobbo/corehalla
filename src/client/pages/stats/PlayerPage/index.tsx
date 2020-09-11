@@ -1,9 +1,12 @@
 // Library imports
-import React, { useState, useEffect, FC } from 'react';
+import React, { FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IPlayerStatsFormat } from 'corehalla.js';
+
+// Hooks
+import { useFetchData } from '../../../hooks/useFetchData';
 
 // Components imports
 import { AppBar } from '../../../components/AppBar';
@@ -15,6 +18,7 @@ import { Page, PageContentWrapper } from '../../../components/Page';
 import { OverviewTab } from './OverviewTab';
 import { TeamsTab } from './TeamsTab';
 import { LegendsTab } from './LegendsTab';
+import { useMockData } from '../../../hooks/useMockData';
 
 type PlayerStatsTab = '#overview' | '#teams' | '#legends' | '#weapons';
 
@@ -37,36 +41,10 @@ export const PlayerStatsPage: FC = () => {
         ? (hash as PlayerStatsTab)
         : '#overview';
 
-    const [loading, setLoading] = useState(true);
-    const [, setError] = useState(false);
-    const [playerStats, setPlayerStats] = useState<IPlayerStatsFormat>();
-
-    useEffect(() => {
-        if (process.env.NODE_ENV === 'production') {
-            const abortController = new AbortController();
-            const signal = abortController.signal;
-
-            fetch(`/api/stats/player/${playerId}`, { signal })
-                .then(async (res) => {
-                    const data = (await res.json()) as IPlayerStatsFormat;
-                    setPlayerStats(data);
-                    setLoading(false);
-                })
-                .catch(() => {
-                    setError(true);
-                });
-
-            return () => abortController.abort();
-        } else {
-            const timeout = setTimeout(async () => {
-                const { PlayerStats } = await import('../../../mockups/Player');
-                setPlayerStats(PlayerStats);
-                setLoading(false);
-            }, 250);
-
-            return () => clearTimeout(timeout);
-        }
-    }, []);
+    const [playerStats, loading] =
+        process.env.NODE_ENV === 'production'
+            ? useFetchData<IPlayerStatsFormat>(`/api/stats/player/${playerId}`)
+            : useMockData<IPlayerStatsFormat>('PlayerStats', 250);
 
     const renderActiveTab = () => {
         switch (activeTab) {
