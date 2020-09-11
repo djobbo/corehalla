@@ -7,6 +7,7 @@ import { IPlayerStatsFormat } from 'corehalla.js';
 
 // Hooks
 import { useFetchData } from '../../../hooks/useFetchData';
+import { useMockData } from '../../../hooks/useMockData';
 import { useHashTabs } from '../../../hooks/useHashTabs';
 
 // Components imports
@@ -19,7 +20,6 @@ import { Page, PageContentWrapper } from '../../../components/Page';
 import { OverviewTab } from './OverviewTab';
 import { TeamsTab } from './TeamsTab';
 import { LegendsTab } from './LegendsTab';
-import { useMockData } from '../../../hooks/useMockData';
 
 type PlayerStatsTab = '#overview' | '#teams' | '#legends' | '#weapons';
 
@@ -36,10 +36,11 @@ const sectionTransition = {
 };
 
 export const PlayerStatsPage: FC = () => {
+    // Fetch Player ID
     const { id: playerId } = useParams<{ id: string }>();
-
-    const [activeTab] = useHashTabs<PlayerStatsTab>(['#teams', '#legends', '#weapons', '#overview'], '#overview');
-
+    // Initialize Tabs
+    const [activeTab] = useHashTabs<PlayerStatsTab>(['#overview', '#teams', '#legends', '#weapons'], '#overview');
+    // Fetch Player Stats
     const [playerStats, loading] =
         process.env.NODE_ENV === 'production'
             ? useFetchData<IPlayerStatsFormat>(`/api/stats/player/${playerId}`)
