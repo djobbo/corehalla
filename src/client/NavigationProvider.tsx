@@ -2,6 +2,14 @@ import React, { createContext, useState, FC } from 'react';
 
 export type NavigationPage = 'Home' | 'Rankings' | 'Favorites' | 'History' | 'Settings';
 
+export const pageURIs: { [k in NavigationPage]: string } = {
+    Home: '/',
+    Rankings: '/rankings',
+    Favorites: '/favorites',
+    History: '/history',
+    Settings: '/settings',
+};
+
 export const NavigationContext = createContext<{
     activePage: NavigationPage;
     setActivePage: React.Dispatch<React.SetStateAction<string>>;
