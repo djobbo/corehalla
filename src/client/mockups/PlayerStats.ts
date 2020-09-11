@@ -1,6 +1,6 @@
 import { IPlayerStatsFormat } from 'corehalla.js';
 
-export const PlayerStats: IPlayerStatsFormat = {
+const PlayerStats: IPlayerStatsFormat = {
     id: 4281946,
     name: 'Yann_D /',
     xp: 3760837,
@@ -5189,3 +5189,5 @@ export const PlayerStats: IPlayerStatsFormat = {
         },
     },
 };
+
+export default PlayerStats;

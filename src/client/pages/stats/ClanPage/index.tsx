@@ -55,7 +55,7 @@ export const ClanStatsPage: FC = () => {
             return () => abortController.abort();
         } else {
             const timeout = setTimeout(async () => {
-                const { ClanStats } = await import('../../../mockups/Clan');
+                const { ClanStats } = await import('../../../mockups/ClanStats');
                 setClanStats(ClanStats);
                 setLoading(false);
             }, 0);
