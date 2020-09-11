@@ -1,12 +1,13 @@
 // Library imports
 import React, { FC } from 'react';
 import { Helmet } from 'react-helmet';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IPlayerStatsFormat } from 'corehalla.js';
 
 // Hooks
 import { useFetchData } from '../../../hooks/useFetchData';
+import { useHashTabs } from '../../../hooks/useHashTabs';
 
 // Components imports
 import { AppBar } from '../../../components/AppBar';
@@ -36,10 +37,8 @@ const sectionTransition = {
 
 export const PlayerStatsPage: FC = () => {
     const { id: playerId } = useParams<{ id: string }>();
-    const { hash } = useLocation<{ hash: PlayerStatsTab }>();
-    const activeTab: PlayerStatsTab = ['#teams', '#legends', '#weapons'].includes(hash)
-        ? (hash as PlayerStatsTab)
-        : '#overview';
+
+    const [activeTab] = useHashTabs<PlayerStatsTab>(['#teams', '#legends', '#weapons', '#overview'], '#overview');
 
     const [playerStats, loading] =
         process.env.NODE_ENV === 'production'
