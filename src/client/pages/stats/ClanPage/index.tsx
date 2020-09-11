@@ -1,8 +1,13 @@
 // Library imports
-import React, { useState, useEffect, FC } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import React, { FC } from 'react';
+import { useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IClanFormat } from 'corehalla.js';
+
+// Hooks
+import { useFetchData } from '../../../hooks/useFetchData';
+import { useMockData } from '../../../hooks/useMockData';
+import { useHashTabs } from '../../../hooks/useHashTabs';
 
 // Components imports
 import { AppBar } from '../../../components/AppBar';
@@ -29,40 +34,15 @@ const sectionTransition = {
 };
 
 export const ClanStatsPage: FC = () => {
+    // Fetch Clan ID
     const { id: clanId } = useParams<{ id: string }>();
-    const { hash } = useLocation<{ hash: ClanStatsTab }>();
-    const activeTab: ClanStatsTab = ['#members'].includes(hash) ? (hash as ClanStatsTab) : '#overview';
-
-    const [loading, setLoading] = useState(true);
-    const [, setError] = useState(false);
-    const [clanStats, setClanStats] = useState<IClanFormat>();
-
-    useEffect(() => {
-        if (process.env.NODE_ENV === 'production') {
-            const abortController = new AbortController();
-            const signal = abortController.signal;
-
-            fetch(`/api/stats/clan/${clanId}`, { signal })
-                .then(async (res) => {
-                    const data = (await res.json()) as IClanFormat;
-                    setClanStats(data);
-                    setLoading(false);
-                })
-                .catch(() => {
-                    setError(true);
-                });
-
-            return () => abortController.abort();
-        } else {
-            const timeout = setTimeout(async () => {
-                const { ClanStats } = await import('../../../mockups/ClanStats');
-                setClanStats(ClanStats);
-                setLoading(false);
-            }, 0);
-
-            return () => clearTimeout(timeout);
-        }
-    }, []);
+    // Initialize Tabs
+    const [activeTab] = useHashTabs<ClanStatsTab>(['#overview', '#members'], '#overview');
+    // Fetch Clan Stats
+    const [clanStats, loading] =
+        process.env.NODE_ENV === 'production'
+            ? useFetchData<IClanFormat>(`/api/stats/clan/${clanId}`)
+            : useMockData<IClanFormat>('ClanStats', 250);
 
     const renderActiveTab = () => {
         switch (activeTab) {
