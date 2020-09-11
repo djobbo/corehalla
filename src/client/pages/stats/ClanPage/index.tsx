@@ -1,71 +1,92 @@
-import React, { useState, useEffect, FC } from 'react';
-import { Link } from 'react-router-dom';
-
-import { Loader } from '../../../components/Loader';
-
+// Library imports
+import React, { FC } from 'react';
+import { useParams } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { IClanFormat } from 'corehalla.js';
-import { Card } from '../../../components/Card';
+
+// Hooks
+import { useFetchData } from '../../../hooks/useFetchData';
+import { useMockData } from '../../../hooks/useMockData';
+import { useHashTabs } from '../../../hooks/useHashTabs';
+
+// Components imports
+import { AppBar } from '../../../components/AppBar';
+import { BottomNavigationBar } from '../../../components/BottomNavigationBar';
+import { Loader } from '../../../components/Loader';
+import { Page, PageContentWrapper } from '../../../components/Page';
+
+// Tabs imports
+import { OverviewTab } from './OverviewTab';
+import { MembersTab } from './MembersTab';
+
+type ClanStatsTab = '#overview' | '#members';
+
+const sectionTransition = {
+    in: {
+        opacity: 1,
+    },
+    out: {
+        opacity: 0,
+    },
+    init: {
+        opacity: 0,
+    },
+};
 
 export const ClanStatsPage: FC = () => {
-    const sections = ['teams', 'legends', 'weapons'];
-    const hash = window.location.hash.substring(1);
+    // Fetch Clan ID
+    const { id: clanId } = useParams<{ id: string }>();
+    // Initialize Tabs
+    const [activeTab] = useHashTabs<ClanStatsTab>(['#overview', '#members'], '#overview');
+    // Fetch Clan Stats
+    const [clanStats, loading] =
+        process.env.NODE_ENV === 'production'
+            ? useFetchData<IClanFormat>(`/api/stats/clan/${clanId}`)
+            : useMockData<IClanFormat>('ClanStats', 250);
 
-    const [,] = useState(sections.includes(hash) ? hash : 'overview');
-
-    const [loading, setLoading] = useState(true);
-    const [clanStats, setClanStats] = useState<IClanFormat>();
-
-    useEffect(() => {
-        const timeout = setTimeout(async () => {
-            const { ClanStats } = await import('../../../mockups/Clan');
-            setClanStats(ClanStats);
-            setLoading(false);
-        }, 250);
-
-        return () => clearTimeout(timeout);
-    }, []);
+    const renderActiveTab = () => {
+        switch (activeTab) {
+            case '#members':
+                return <MembersTab clanStats={clanStats} />;
+            default:
+                return <OverviewTab clanStats={clanStats} />;
+        }
+    };
 
     return (
-        <div className="PlayerPage">
-            {loading ? (
-                <Loader />
-            ) : (
-                <>
-                    {clanStats.name}
-                    <h3>Leader</h3>
-                    <div className="clan-members-container">
-                        {clanStats.members.Leader.map((member) => (
-                            <Card key={member.id}>
-                                <Link to={`/stats/player/${member.id}`}>{member.name}</Link>
-                            </Card>
-                        ))}
-                    </div>
-                    <h3>Officers</h3>
-                    <div className="clan-members-container">
-                        {clanStats.members.Officer.map((member) => (
-                            <Card key={member.id}>
-                                <Link to={`/stats/player/${member.id}`}>{member.name}</Link>
-                            </Card>
-                        ))}
-                    </div>
-                    <h3>Members</h3>
-                    <div className="clan-members-container">
-                        {clanStats.members.Member.map((member) => (
-                            <Card key={member.id}>
-                                <Link to={`/stats/player/${member.id}`}>{member.name}</Link>
-                            </Card>
-                        ))}
-                    </div>
-                    <h3>Recruits</h3>
-                    <div className="clan-members-container">
-                        {clanStats.members.Recruit.map((member) => (
-                            <Card key={member.id}>
-                                <Link to={`/stats/player/${member.id}`}>{member.name}</Link>
-                            </Card>
-                        ))}
-                    </div>
-                </>
-            )}
-        </div>
+        <Page>
+            <AppBar
+                title={loading ? 'loading' : clanStats.name || 'Corehalla'}
+                tabs={[
+                    { title: 'overview', link: `#`, active: activeTab === '#overview' },
+                    { title: 'members', link: `#members`, active: activeTab === '#members' },
+                ]}
+            />
+            <PageContentWrapper pTop="6.5rem">
+                <AnimatePresence exitBeforeEnter initial>
+                    {loading ? (
+                        <Loader key="loader" />
+                    ) : (
+                        <motion.div key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
+                            <main>
+                                <AnimatePresence exitBeforeEnter initial>
+                                    <motion.div
+                                        key={activeTab}
+                                        animate="in"
+                                        exit="out"
+                                        initial="init"
+                                        variants={sectionTransition}
+                                        transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
+                                    >
+                                        {renderActiveTab()}
+                                    </motion.div>
+                                </AnimatePresence>
+                            </main>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </PageContentWrapper>
+            <BottomNavigationBar />
+        </Page>
     );
 };
