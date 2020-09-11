@@ -40,7 +40,9 @@ export const Navbar: FC<NavbarProps> = ({ title }: NavbarProps) => {
     return (
         <NavbarWrapper>
             <div>
-                <Icon path={mdiArrowLeft} size={1} />
+                <Link to="/">
+                    <Icon path={mdiArrowLeft} size={1} />
+                </Link>
                 <NavbarTitle>{title}</NavbarTitle>
             </div>
             <Icon path={mdiMagnify} size={1} />
@@ -115,6 +117,7 @@ const Chip = styled.div<{ active?: boolean }>`
     border-radius: 2rem;
     border: 1px solid var(--text);
     background-color: var(--bg-alt);
+    opacity: 0.48;
     a {
         padding: 0.25rem 1rem;
         display: block;
@@ -125,6 +128,7 @@ const Chip = styled.div<{ active?: boolean }>`
         active &&
         `
         background-color: var(--text);
+        opacity: 1;
         a {
             color: var(--bg);
         }

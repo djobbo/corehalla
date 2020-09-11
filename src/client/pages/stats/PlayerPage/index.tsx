@@ -86,6 +86,14 @@ export const PlayerStatsPage: FC = () => {
                     { title: 'legends', link: `#legends`, active: activeTab === '#legends' },
                     { title: 'weapons', link: `#weapons`, active: activeTab === '#weapons' },
                 ]}
+                chips={
+                    activeTab === '#legends' && [
+                        { title: 'All', link: '', active: true },
+                        { title: 'Hammer', link: '' },
+                        { title: 'Sword', link: '' },
+                        { title: 'Blasters', link: '' },
+                    ]
+                }
             />
             <PageContentWrapper pTop="6.5rem">
                 <AnimatePresence exitBeforeEnter initial>
