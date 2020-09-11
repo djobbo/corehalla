@@ -3,7 +3,13 @@ import { useRef, useLayoutEffect } from 'react';
 
 const isBrowser = typeof window !== `undefined`;
 
-const getScrollPosition = () => (isBrowser ? { x: window.scrollX, y: window.scrollY } : { x: 0, y: 0 });
+const getScrollPosition = () =>
+    isBrowser
+        ? {
+              x: window.scrollX,
+              y: window.scrollY,
+          }
+        : { x: 0, y: 0 };
 
 interface IVector2 {
     x: number;
@@ -23,12 +29,8 @@ export const useScrollPosition = (
     };
 
     useLayoutEffect(() => {
-        const handleScroll = () => {
-            callBack();
-        };
+        window.addEventListener('scroll', callBack);
 
-        window.addEventListener('scroll', handleScroll);
-
-        return () => window.removeEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', callBack);
     }, deps);
 };
