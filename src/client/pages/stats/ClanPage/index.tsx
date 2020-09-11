@@ -47,16 +47,16 @@ export const ClanStatsPage: FC = () => {
     const renderActiveTab = () => {
         switch (activeTab) {
             case '#members':
-                return <MembersTab />;
+                return <MembersTab clanStats={clanStats} />;
             default:
-                return <OverviewTab />;
+                return <OverviewTab clanStats={clanStats} />;
         }
     };
 
     return (
         <Page>
             <AppBar
-                title={loading ? 'loading' : 'Revoluchienne' || 'Corehalla'}
+                title={loading ? 'loading' : clanStats.name || 'Corehalla'}
                 tabs={[
                     { title: 'overview', link: `#`, active: activeTab === '#overview' },
                     { title: 'members', link: `#members`, active: activeTab === '#members' },

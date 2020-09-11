@@ -11,7 +11,7 @@ interface Props {
     xp: number;
     personalXp: number;
     xpPercentage: number;
-    id: string;
+    id: string | number; // TODO: ch.js
 }
 
 export const SectionClanOverviewSmallContent: FC<Props> = ({

@@ -1,6 +1,15 @@
 // Library imports
 import React, { FC } from 'react';
+import { IClanFormat } from 'corehalla.js';
 
-export const MembersTab: FC = () => {
-    return <h1>Members</h1>;
+interface Props {
+    clanStats: IClanFormat;
+}
+
+export const MembersTab: FC<Props> = ({}: Props) => {
+    return (
+        <>
+            <h1>Members</h1>
+        </>
+    );
 };
