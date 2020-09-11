@@ -1,6 +1,6 @@
 import { IRanking1v1Format } from 'corehalla.js';
 
-export const Rankings: IRanking1v1Format[] = [
+const Rankings: IRanking1v1Format[] = [
     {
         rank: 245,
         name: 'Rakushain Fanboy',
@@ -242,3 +242,5 @@ export const Rankings: IRanking1v1Format[] = [
         },
     },
 ];
+
+export default Rankings;

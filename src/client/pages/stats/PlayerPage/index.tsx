@@ -1,17 +1,25 @@
-import React, { useState, useEffect, FC } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
-
+// Library imports
+import React, { FC } from 'react';
+import { Helmet } from 'react-helmet';
+import { useParams } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { IPlayerStatsFormat } from 'corehalla.js';
 
+// Hooks
+import { useFetchData } from '../../../hooks/useFetchData';
+import { useMockData } from '../../../hooks/useMockData';
+import { useHashTabs } from '../../../hooks/useHashTabs';
+
+// Components imports
 import { AppBar } from '../../../components/AppBar';
+import { BottomNavigationBar } from '../../../components/BottomNavigationBar';
 import { Loader } from '../../../components/Loader';
 import { Page, PageContentWrapper } from '../../../components/Page';
-import { AnimatePresence, motion } from 'framer-motion';
 
+// Tabs imports
 import { OverviewTab } from './OverviewTab';
-import { LegendsTab } from './LegendsTab';
 import { TeamsTab } from './TeamsTab';
-import { BottomNavigationBar } from '../../../components/BottomNavigationBar';
+import { LegendsTab } from './LegendsTab';
 
 type PlayerStatsTab = '#overview' | '#teams' | '#legends' | '#weapons';
 
@@ -28,42 +36,15 @@ const sectionTransition = {
 };
 
 export const PlayerStatsPage: FC = () => {
+    // Fetch Player ID
     const { id: playerId } = useParams<{ id: string }>();
-    const { hash } = useLocation<{ hash: PlayerStatsTab }>();
-    const activeTab: PlayerStatsTab = ['#teams', '#legends', '#weapons'].includes(hash)
-        ? (hash as PlayerStatsTab)
-        : '#overview';
-
-    const [loading, setLoading] = useState(true);
-    const [, setError] = useState(false);
-    const [playerStats, setPlayerStats] = useState<IPlayerStatsFormat>();
-
-    useEffect(() => {
-        if (process.env.NODE_ENV === 'production') {
-            const abortController = new AbortController();
-            const signal = abortController.signal;
-
-            fetch(`/api/stats/player/${playerId}`, { signal })
-                .then(async (res) => {
-                    const data = (await res.json()) as IPlayerStatsFormat;
-                    setPlayerStats(data);
-                    setLoading(false);
-                })
-                .catch(() => {
-                    setError(true);
-                });
-
-            return () => abortController.abort();
-        } else {
-            const timeout = setTimeout(async () => {
-                const { PlayerStats } = await import('../../../mockups/Player');
-                setPlayerStats(PlayerStats);
-                setLoading(false);
-            }, 0);
-
-            return () => clearTimeout(timeout);
-        }
-    }, []);
+    // Initialize Tabs
+    const [activeTab] = useHashTabs<PlayerStatsTab>(['#overview', '#teams', '#legends', '#weapons'], '#overview');
+    // Fetch Player Stats
+    const [playerStats, loading] =
+        process.env.NODE_ENV === 'production'
+            ? useFetchData<IPlayerStatsFormat>(`/api/stats/player/${playerId}`)
+            : useMockData<IPlayerStatsFormat>('PlayerStats', 250);
 
     const renderActiveTab = () => {
         switch (activeTab) {
@@ -78,8 +59,13 @@ export const PlayerStatsPage: FC = () => {
 
     return (
         <Page>
+            {!loading && (
+                <Helmet>
+                    <title>{playerStats.name} Stats • Corehalla</title>
+                </Helmet>
+            )}
             <AppBar
-                title={loading ? 'loading' : playerStats.name || 'Corehalla'}
+                title={loading ? 'loading' : playerStats.name}
                 tabs={[
                     { title: 'overview', link: `#`, active: activeTab === '#overview' },
                     { title: 'teams', link: `#teams`, active: activeTab === '#teams' },
@@ -100,7 +86,7 @@ export const PlayerStatsPage: FC = () => {
                     {loading ? (
                         <Loader key="loader" />
                     ) : (
-                        <motion.div className="PlayerPage" key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
+                        <motion.div key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
                             <main>
                                 <AnimatePresence exitBeforeEnter initial>
                                     <motion.div
