@@ -106,7 +106,7 @@ export const TabsContainer: FC<TabsProps> = ({ tabs }: TabsProps) => {
 
 interface IChip {
     title: string;
-    link: string;
+    action: () => void;
     active?: boolean;
 }
 
@@ -150,9 +150,17 @@ const ChipsContainerWrapper = styled.div`
 export const ChipsContainer: FC<ChipsContainerProps> = ({ chips }: ChipsContainerProps) => {
     return (
         <ChipsContainerWrapper>
-            {chips.map(({ title, link, active }, i) => (
+            {chips.map(({ title, action, active }, i) => (
                 <Chip key={i} active={active}>
-                    <Link to={link}>{title}</Link>
+                    <a
+                        href="#"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            action();
+                        }}
+                    >
+                        {title}
+                    </a>
                 </Chip>
             ))}
         </ChipsContainerWrapper>
@@ -187,7 +195,7 @@ export const AppBar: FC<Props> = ({ title, tabs, chips }: Props) => {
     return (
         <AppBarWrapper>
             <Navbar title={title} />
-            <AnimatePresence initial={false}>
+            <AnimatePresence>
                 {!hideOnScroll && (
                     <motion.div
                         initial={{ opacity: 0, y: -80 }}
