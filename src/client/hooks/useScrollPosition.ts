@@ -3,29 +3,18 @@ import { useRef, useLayoutEffect } from 'react';
 
 const isBrowser = typeof window !== `undefined`;
 
-const getScrollPosition = () =>
-    isBrowser
-        ? {
-              x: window.scrollX,
-              y: window.scrollY,
-          }
-        : { x: 0, y: 0 };
-
-interface IVector2 {
-    x: number;
-    y: number;
-}
+const getScrollPosition = () => (isBrowser ? window.scrollY : 0);
 
 export const useScrollPosition = (
-    effect: (pos: { prevPos: IVector2; currPos: IVector2 }) => void,
+    effect: (pos: { prevScrollPos: number; currScrollPos: number }) => void,
     deps: React.DependencyList,
 ): void => {
     const position = useRef(getScrollPosition());
 
     const callBack = () => {
-        const currPos = getScrollPosition();
-        effect({ prevPos: position.current, currPos });
-        position.current = currPos;
+        const currScrollPos = getScrollPosition();
+        effect({ prevScrollPos: position.current, currScrollPos });
+        position.current = currScrollPos;
     };
 
     useLayoutEffect(() => {
