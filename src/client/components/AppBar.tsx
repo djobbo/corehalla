@@ -1,5 +1,5 @@
 // Library imports
-import React, { FC, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -190,8 +190,8 @@ export const AppBar: FC<Props> = ({ title, tabs, chips }: Props) => {
     const [hideOnScroll, setHideOnScroll] = useState(false);
 
     useScrollPosition(
-        ({ prevPos, currPos }) => {
-            const isShow = currPos.y > prevPos.y;
+        ({ currScrollPos, prevScrollPos }) => {
+            const isShow = currScrollPos > prevScrollPos;
             if (isShow !== hideOnScroll) setHideOnScroll(isShow);
         },
         [hideOnScroll],
