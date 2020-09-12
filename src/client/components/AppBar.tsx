@@ -106,7 +106,8 @@ export const TabsContainer: FC<TabsProps> = ({ tabs }: TabsProps) => {
 
 interface IChip {
     title: string;
-    action: () => void;
+    action?: () => void;
+    link?: string;
     active?: boolean;
 }
 
@@ -150,17 +151,21 @@ const ChipsContainerWrapper = styled.div`
 export const ChipsContainer: FC<ChipsContainerProps> = ({ chips }: ChipsContainerProps) => {
     return (
         <ChipsContainerWrapper>
-            {chips.map(({ title, action, active }, i) => (
+            {chips.map(({ title, action, active, link }, i) => (
                 <Chip key={i} active={active}>
-                    <a
-                        href="#"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            action();
-                        }}
+                    <Link
+                        to={link || '#'}
+                        onClick={
+                            action
+                                ? (e) => {
+                                      e.preventDefault();
+                                      action();
+                                  }
+                                : null
+                        }
                     >
                         {title}
-                    </a>
+                    </Link>
                 </Chip>
             ))}
         </ChipsContainerWrapper>
