@@ -19,7 +19,7 @@ export const useFetchData = <T>(url: string): [T, boolean, boolean] => {
             });
 
         return () => abortController.abort();
-    }, []);
+    }, [url]);
 
     return [data, isLoading, isError];
 };
