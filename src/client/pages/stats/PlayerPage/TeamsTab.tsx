@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import styled from 'styled-components';
 
 import { I2v2TeamFormat } from 'corehalla.js';
@@ -7,6 +7,8 @@ import { PageSection, SectionSeparator } from '../../../components/PageSection';
 import { MiscStatContainer } from '../../../components/MiscStat';
 import { GamesStatsCard } from '../../../components/GamesStatsCard';
 import { TeamCard } from '../../../components/TeamCard';
+import { Select } from '../../../components/Select';
+import { motion } from 'framer-motion';
 
 interface Props {
     teams: I2v2TeamFormat[];
@@ -18,8 +20,29 @@ const CardsWrapper = styled.div`
     gap: 1rem;
 `;
 
+type TeamsSort = 'default' | 'peak' | 'games' | 'winrate' | 'wins' | 'losses';
+
+const getSortedProp = (state: TeamsSort, teamStats: I2v2TeamFormat) => {
+    switch (state) {
+        case 'peak':
+            return teamStats.season.peak;
+        case 'games':
+            return teamStats.season.games;
+        case 'wins':
+            return teamStats.season.wins;
+        case 'losses':
+            return teamStats.season.games - teamStats.season.wins; // TODO: ch.js
+        case 'winrate':
+            return teamStats.season.games <= 0 ? 0 : teamStats.season.wins / teamStats.season.games; // TODO: ch.js
+        default:
+            return teamStats.season.rating;
+    }
+};
+
 // TODO: global/total team stats in ch.js
 export const TeamsTab: FC<Props> = ({ teams }: Props) => {
+    const [sort, setSort] = useState<TeamsSort>('default');
+
     const totalTeamsStats = teams.reduce(
         (acc, team) => ({
             games: acc.games + team.season.games,
@@ -55,11 +78,27 @@ export const TeamsTab: FC<Props> = ({ teams }: Props) => {
                         <MiscStatContainer stats={[]} />
                     </PageSection>
                     <SectionSeparator />
+                    <Select<TeamsSort>
+                        action={setSort}
+                        title="Sort by"
+                        options={[
+                            { name: 'Rating', value: 'default' },
+                            { name: 'Peak Rating', value: 'peak' },
+                            { name: 'Games', value: 'games' },
+                            { name: 'Wins', value: 'wins' },
+                            { name: 'Losses', value: 'losses' },
+                            { name: 'Winrate', value: 'winrate' },
+                        ]}
+                    />
                     <PageSection title="teams" initFoldState={true}>
                         <CardsWrapper>
-                            {teams.map((team, i) => (
-                                <TeamCard team={team} key={i} />
-                            ))}
+                            {teams
+                                .sort((a, b) => (getSortedProp(sort, a) < getSortedProp(sort, b) ? 1 : -1))
+                                .map((team) => (
+                                    <motion.div layout key={team.teammate.id}>
+                                        <TeamCard team={team} />
+                                    </motion.div>
+                                ))}
                         </CardsWrapper>
                     </PageSection>
                 </>

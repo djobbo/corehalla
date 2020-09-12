@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 // Library imports
 import React, { FC } from 'react';
 import styled from 'styled-components';
@@ -18,7 +19,7 @@ const CardTitle = styled.span`
     display: block;
 `;
 
-const CardWrapper = styled.div`
+const CardWrapper = styled(motion.div)`
     background-color: var(--bg-alt);
     border-radius: 0.25rem;
     padding: 1rem;
