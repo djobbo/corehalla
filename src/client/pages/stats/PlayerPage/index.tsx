@@ -1,9 +1,9 @@
 // Library imports
-import React, { FC } from 'react';
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { IPlayerStatsFormat } from 'corehalla.js';
+import { IPlayerStatsFormat, Weapon } from 'corehalla.js';
 
 // Hooks
 import { useFetchData } from '../../../hooks/useFetchData';
@@ -46,12 +46,24 @@ export const PlayerStatsPage: FC = () => {
             ? useFetchData<IPlayerStatsFormat>(`/api/stats/player/${playerId}`)
             : useMockData<IPlayerStatsFormat>('PlayerStats', 250);
 
+    const [activeWeapon, setActiveWeapon] = useState<Weapon | 'all'>('all');
+
     const renderActiveTab = () => {
         switch (activeTab) {
             case '#teams':
                 return <TeamsTab {...playerStats.season} />;
             case '#legends':
-                return <LegendsTab {...playerStats} />;
+                return (
+                    <LegendsTab
+                        legends={
+                            activeWeapon === 'all'
+                                ? playerStats.legends
+                                : playerStats.legends.filter((l) =>
+                                      [l.weapons.weaponOne.name, l.weapons.weaponTwo.name].includes(activeWeapon),
+                                  )
+                        }
+                    />
+                );
             default:
                 return <OverviewTab playerStats={playerStats} />;
         }
@@ -74,14 +86,76 @@ export const PlayerStatsPage: FC = () => {
                 ]}
                 chips={
                     activeTab === '#legends' && [
-                        { title: 'All', link: '', active: true },
-                        { title: 'Hammer', link: '' },
-                        { title: 'Sword', link: '' },
-                        { title: 'Blasters', link: '' },
+                        {
+                            title: 'All',
+                            action: () => setActiveWeapon('all'),
+                            active: activeWeapon === 'all',
+                        },
+                        {
+                            title: 'Hammer',
+                            action: () => setActiveWeapon('Hammer'),
+                            active: activeWeapon === 'Hammer',
+                        },
+                        {
+                            title: 'Sword',
+                            action: () => setActiveWeapon('Sword'),
+                            active: activeWeapon === 'Sword',
+                        },
+                        {
+                            title: 'Blasters',
+                            action: () => setActiveWeapon('Blasters'),
+                            active: activeWeapon === 'Blasters',
+                        },
+
+                        {
+                            title: 'Rocket Lance',
+                            action: () => setActiveWeapon('Rocket Lance'),
+                            active: activeWeapon === 'Rocket Lance',
+                        },
+                        {
+                            title: 'Spear',
+                            action: () => setActiveWeapon('Spear'),
+                            active: activeWeapon === 'Spear',
+                        },
+                        {
+                            title: 'Katars',
+                            action: () => setActiveWeapon('Katars'),
+                            active: activeWeapon === 'Katars',
+                        },
+                        {
+                            title: 'Axe',
+                            action: () => setActiveWeapon('Axe'),
+                            active: activeWeapon === 'Axe',
+                        },
+                        {
+                            title: 'Bow',
+                            action: () => setActiveWeapon('Bow'),
+                            active: activeWeapon === 'Bow',
+                        },
+                        {
+                            title: 'Gauntlets',
+                            action: () => setActiveWeapon('Gauntlets'),
+                            active: activeWeapon === 'Gauntlets',
+                        },
+                        {
+                            title: 'Scythe',
+                            action: () => setActiveWeapon('Scythe'),
+                            active: activeWeapon === 'Scythe',
+                        },
+                        {
+                            title: 'Cannon',
+                            action: () => setActiveWeapon('Cannon'),
+                            active: activeWeapon === 'Cannon',
+                        },
+                        {
+                            title: 'Orb',
+                            action: () => setActiveWeapon('Orb'),
+                            active: activeWeapon === 'Orb',
+                        },
                     ]
                 }
             />
-            <PageContentWrapper pTop="6.5rem">
+            <PageContentWrapper pTop={activeTab === '#legends' ? '10rem' : '6.5rem'} pBtm="3.5rem">
                 <AnimatePresence exitBeforeEnter initial>
                     {loading ? (
                         <Loader key="loader" />

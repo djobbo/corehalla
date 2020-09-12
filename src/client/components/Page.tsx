@@ -30,11 +30,12 @@ export const Page: FC<Props> = ({ children, title }: Props) => {
     );
 };
 
-export const PageContentWrapper = styled.div<{ pTop?: string }>`
+export const PageContentWrapper = styled.div<{ pTop?: string; pBtm?: string }>`
     max-width: 1200px;
     margin: 0 auto;
 
-    ${({ pTop }): string => `
+    ${({ pTop, pBtm }): string => `
         padding-top: ${pTop || 0};
+        padding-bottom: ${pBtm || 0};
     `}
 `;
