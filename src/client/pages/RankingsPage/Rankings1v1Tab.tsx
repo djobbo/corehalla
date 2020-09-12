@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { SectionSeparator } from '../../components/PageSection';
 
 // Components imports
-import { RankingsItem } from '../../components/RankingsItem';
+import { RankingsItem1v1 } from '../../components/RankingsItem';
 
 interface Props {
     rankings: IRanking1v1Format[];
@@ -22,7 +22,7 @@ export const Rankings1v1Tab: FC<Props> = ({ rankings }: Props) => {
             {rankings.map((player, i) => (
                 <motion.div layout key={player.id}>
                     <SectionSeparator />
-                    <RankingsItem key={i} player={player} />
+                    <RankingsItem1v1 key={i} player={player} />
                 </motion.div>
             ))}
         </Wrapper>
