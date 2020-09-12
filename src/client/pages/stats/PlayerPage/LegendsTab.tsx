@@ -1,4 +1,4 @@
-import React, { FC, useReducer, useState } from 'react';
+import React, { FC, useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
@@ -82,7 +82,7 @@ export const LegendsTab: FC<Props> = ({ legends }: Props) => {
         <>
             <Select<LegendSort>
                 action={setSort}
-                title="Sort by..."
+                title="Sort by"
                 options={[
                     { name: 'Level', value: 'default' },
                     { name: 'Time Played', value: 'matchtime' },
