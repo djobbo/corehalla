@@ -55,6 +55,7 @@ module.exports = {
         extensions: ['.js', '.jsx', '.ts', '.tsx', '.scss', '.html', '.md', '.json'],
     },
     devServer: {
+        host: '192.168.1.11',
         port: 31199,
         contentBase: 'dist',
         compress: true,

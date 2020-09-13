@@ -5,14 +5,18 @@
     border: none;
 }
 
+html,
 body {
-    overflow: hidden;
+    font-family: 'Montserrat', sans-serif;
+}
+
+#App {
+    background-color: var(--bg);
 }
 
 a,
 a:visited {
     text-decoration: none;
-    color: var(--text);
 }
 
 ul {
@@ -23,6 +27,7 @@ svg {
     display: inline-block;
 }
 
+/* 
 ::-webkit-scrollbar {
     background-color: var(--bg);
 }
@@ -35,46 +40,4 @@ svg {
     background-color: var(--text);
     border: 0.25rem solid var(--bg);
     border-radius: 0.5rem;
-}
-
-.card {
-    background-color: var(--bg-alt);
-    border-radius: 0.25rem;
-    padding: 1rem;
-    margin: 1rem;
-    border: 0.5px solid transparent;
-    animation: flyFromBottom;
-    animation-duration: 0.4s;
-    animation-delay: var(--delay);
-    animation-iteration-count: 1;
-    animation-fill-mode: forwards;
-    opacity: 0;
-}
-
-.card:hover {
-    border-color: rgba(255, 255, 255, 0.05);
-}
-
-.stat-desc {
-    font-size: 0.75rem;
-    opacity: 0.64;
-    text-transform: uppercase;
-}
-
-.stat {
-    text-transform: uppercase;
-    font-size: 1rem;
-    font-weight: bold;
-}
-
-.stat-large {
-    font-size: 2rem;
-}
-
-.stat-medium {
-    font-size: 1.5rem;
-}
-
-hr {
-    margin: 0.5rem 0;
-}
+} */
