@@ -1,5 +1,5 @@
 // Library imports
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -17,7 +17,9 @@ import { Page, PageContentWrapper } from '../../components/Page';
 
 // Tabs imports
 import { Rankings1v1Tab } from './Rankings1v1Tab';
-import { Rankings2v2Tab } from './Rankings2v2Tab';
+// import { Rankings2v2Tab } from './Rankings2v2Tab';
+
+import { NavigationContext } from '../../providers/NavigationProvider';
 
 type Bracket = '1v1' | '2v2' | 'power1v1' | 'power2v2';
 
@@ -34,6 +36,9 @@ const sectionTransition = {
 };
 
 export const RankingsPage: FC = () => {
+    const { setActivePage } = useContext(NavigationContext);
+    setActivePage('Rankings');
+
     // Fetch Player ID
     const { bracket = '1v1', region = 'all', page = '1' } = useParams<{
         bracket: string;
@@ -44,13 +49,13 @@ export const RankingsPage: FC = () => {
     // Fetch Player Stats
     const [rankings, loading] =
         process.env.NODE_ENV === 'production'
-            ? useFetchData<IRanking1v1Format[]>(`/api/rankings/${bracket}/${region}/${page}`)
+            ? useFetchData<IRanking1v1Format[]>(`/api/rankings/1v1/${region}/${page}`)
             : useMockData<IRanking1v1Format[]>('1v1Rankings', 250);
 
     const renderActiveTab = () => {
         switch (bracket) {
-            case '2v2':
-                return <Rankings2v2Tab />;
+            // case '2v2':
+            //     return <Rankings2v2Tab rankings={rankings} />;
             default:
                 return <Rankings1v1Tab rankings={rankings} />;
         }

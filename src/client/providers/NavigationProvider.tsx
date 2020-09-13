@@ -12,7 +12,7 @@ export const pageURIs: { [k in NavigationPage]: string } = {
 
 export const NavigationContext = createContext<{
     activePage: NavigationPage;
-    setActivePage: React.Dispatch<React.SetStateAction<string>>;
+    setActivePage: React.Dispatch<React.SetStateAction<NavigationPage>>;
 }>(null);
 
 interface Props {
