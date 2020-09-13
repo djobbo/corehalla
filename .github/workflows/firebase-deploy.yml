@@ -1,4 +1,4 @@
-name: Deploy to Firebase
+name: Build and Deploy to Firebase
 
 on:
     push:
@@ -6,23 +6,33 @@ on:
             - master
 
 jobs:
-    deploy_to_firebase_hosting:
+    build:
+        name: Build
         runs-on: ubuntu-latest
-
         steps:
-            - name: Checkout
-              uses: actions/checkout@v2
-            - name: Node Setup
-              uses: actions/setup-node@v1
-              with:
-                  node-version: '12'
-            - name: Install deps
+            - name: Checkout Repo
+              uses: actions/checkout@master
+            - name: Install Dependencies
               run: npm install
             - name: Build
               run: npm run build
-            - name: Install Functions Deps
-              run: npm install
-              working-directory: functions
+            - name: Archive Production Artifact
+              uses: actions/upload-artifact@master
+              with:
+                  name: dist
+                  path: dist
+    deploy:
+        name: Deploy
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@master
+            - name: Download Artifact
+              uses: actions/download-artifact@master
+              with:
+                  name: dist
+                  path: dist
             - name: Deploy to Firebase
               uses: w9jds/firebase-action@master
               with:
