@@ -1,153 +1,185 @@
-import React, { useState, useEffect, FC } from 'react';
-import { useRouteMatch } from 'react-router-dom';
-import './styles.scss';
-
-import { Header, Page } from './Header';
-import { SectionOverview } from './SectionOverview';
-import { SectionOverallStats } from './SectionOverallStats';
-import { SectionRanked2v2 } from './SectionRanked2v2';
-import { SectionLegends } from './SectionLegends';
-import { SectionWeapons } from './SectionWeapons';
-import { SectionClan } from './SectionClan';
-
-import { IPlayerStatsFormat } from 'corehalla.js';
-
-import { Loader } from '../../../components/Loader';
+// Library imports
+import React, { FC, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import { IPlayerStatsFormat, Weapon } from 'corehalla.js';
 
-const sectionTrantision = {
+// Hooks
+import { useFetchData } from '../../../hooks/useFetchData';
+import { useMockData } from '../../../hooks/useMockData';
+import { useHashTabs } from '../../../hooks/useHashTabs';
+
+// Components imports
+import { AppBar } from '../../../components/AppBar';
+import { BottomNavigationBar } from '../../../components/BottomNavigationBar';
+import { Loader } from '../../../components/Loader';
+import { Page, PageContentWrapper } from '../../../components/Page';
+
+// Tabs imports
+import { OverviewTab } from './OverviewTab';
+import { TeamsTab } from './TeamsTab';
+import { LegendsTab } from './LegendsTab';
+
+type PlayerStatsTab = '#overview' | '#teams' | '#legends' | '#weapons';
+
+const sectionTransition = {
     in: {
         opacity: 1,
-        y: 0,
     },
     out: {
         opacity: 0,
     },
     init: {
         opacity: 0,
-        y: '50vh',
     },
 };
 
 export const PlayerStatsPage: FC = () => {
-    const { params } = useRouteMatch<{
-        id: string;
-    }>('/stats/player/:id');
+    // Fetch Player ID
+    const { id: playerId } = useParams<{ id: string }>();
+    // Initialize Tabs
+    const [activeTab] = useHashTabs<PlayerStatsTab>(['#overview', '#teams', '#legends', '#weapons'], '#overview');
+    // Fetch Player Stats
+    const [playerStats, loading] =
+        process.env.NODE_ENV === 'production'
+            ? useFetchData<IPlayerStatsFormat>(`/api/stats/player/${playerId}`)
+            : useMockData<IPlayerStatsFormat>('PlayerStats', 250);
 
-    const sections = ['teams', 'legends', 'weapons'];
-    const hash = window.location.hash.substring(1);
+    const [activeWeapon, setActiveWeapon] = useState<Weapon | 'all'>('all');
 
-    const [activePage, setActivePage] = useState<Page>(sections.includes(hash) ? (hash as Page) : 'overview');
-
-    const [loading, setLoading] = useState(true);
-    const [, setError] = useState(false);
-    const [playerStats, setPlayerStats] = useState<IPlayerStatsFormat>();
-
-    useEffect(() => {
-        if (process.env.NODE_ENV === 'production') {
-            const abortController = new AbortController();
-            const signal = abortController.signal;
-
-            fetch(`/api/stats/player/${params.id}`, { signal })
-                .then(async (res) => {
-                    const data = (await res.json()) as IPlayerStatsFormat;
-                    setPlayerStats(data);
-                    setLoading(false);
-                })
-                .catch(() => {
-                    setError(true);
-                });
-
-            return () => abortController.abort();
-        } else {
-            const timeout = setTimeout(async () => {
-                const { PlayerStats } = await import('../../../mockups/Player');
-                setPlayerStats(PlayerStats);
-                setLoading(false);
-            }, 1500);
-
-            return () => clearTimeout(timeout);
-        }
-    }, []);
-
-    const section = (() => {
-        if (loading) return '';
-        console.log(activePage);
-        switch (activePage) {
-            case 'teams':
+    const renderActiveTab = () => {
+        switch (activeTab) {
+            case '#teams':
+                return <TeamsTab {...playerStats.season} />;
+            case '#legends':
                 return (
-                    <motion.div
-                        key="teams"
-                        animate="in"
-                        exit="out"
-                        initial="init"
-                        variants={sectionTrantision}
-                        transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
-                    >
-                        <SectionRanked2v2 teams={playerStats.season.teams} />
-                    </motion.div>
-                );
-            case 'legends':
-                return (
-                    <motion.div
-                        key="legends"
-                        animate="in"
-                        exit="out"
-                        initial="init"
-                        variants={sectionTrantision}
-                        transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
-                    >
-                        <SectionLegends legends={playerStats.legends} weapons={playerStats.weapons} key="legends" />
-                    </motion.div>
-                );
-            case 'weapons':
-                return (
-                    <motion.div
-                        key="weapons"
-                        animate="in"
-                        exit="out"
-                        initial="init"
-                        variants={sectionTrantision}
-                        transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
-                    >
-                        <SectionWeapons weapons={playerStats.weapons} key="weapons" />
-                    </motion.div>
+                    <LegendsTab
+                        legends={
+                            activeWeapon === 'all'
+                                ? playerStats.legends
+                                : playerStats.legends.filter((l) =>
+                                      [l.weapons.weaponOne.name, l.weapons.weaponTwo.name].includes(activeWeapon),
+                                  )
+                        }
+                    />
                 );
             default:
-                return (
-                    <motion.div
-                        key="overview"
-                        animate="in"
-                        exit="out"
-                        initial="init"
-                        variants={sectionTrantision}
-                        transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
-                    >
-                        <SectionOverview
-                            season={playerStats.season}
-                            bestLegend={playerStats.legends.sort((a, b) => b.season.rating - a.season.rating)[0]}
-                        />
-                        {playerStats.clan ? <SectionClan clan={playerStats.clan} /> : ''}
-                        <SectionOverallStats playerStats={playerStats} />
-                    </motion.div>
-                );
+                return <OverviewTab playerStats={playerStats} />;
         }
-    })();
+    };
 
     return (
-        <AnimatePresence exitBeforeEnter initial>
-            {loading ? (
-                <Loader key="loader" />
-            ) : (
-                <motion.div className="PlayerPage" key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
-                    <Header activePage={activePage} setActivePage={setActivePage} playerStats={playerStats} />
-                    <main>
-                        <AnimatePresence exitBeforeEnter initial>
-                            {section}
-                        </AnimatePresence>
-                    </main>
-                </motion.div>
+        <Page>
+            {!loading && (
+                <Helmet>
+                    <title>{playerStats.name} Stats • Corehalla</title>
+                </Helmet>
             )}
-        </AnimatePresence>
+            <AppBar
+                title={loading ? 'loading' : playerStats.name}
+                tabs={[
+                    { title: 'overview', link: `#`, active: activeTab === '#overview' },
+                    { title: 'teams', link: `#teams`, active: activeTab === '#teams' },
+                    { title: 'legends', link: `#legends`, active: activeTab === '#legends' },
+                    { title: 'weapons', link: `#weapons`, active: activeTab === '#weapons' },
+                ]}
+                chips={
+                    activeTab === '#legends' && [
+                        {
+                            title: 'All',
+                            action: () => setActiveWeapon('all'),
+                            active: activeWeapon === 'all',
+                        },
+                        {
+                            title: 'Hammer',
+                            action: () => setActiveWeapon('Hammer'),
+                            active: activeWeapon === 'Hammer',
+                        },
+                        {
+                            title: 'Sword',
+                            action: () => setActiveWeapon('Sword'),
+                            active: activeWeapon === 'Sword',
+                        },
+                        {
+                            title: 'Blasters',
+                            action: () => setActiveWeapon('Blasters'),
+                            active: activeWeapon === 'Blasters',
+                        },
+
+                        {
+                            title: 'Rocket Lance',
+                            action: () => setActiveWeapon('Rocket Lance'),
+                            active: activeWeapon === 'Rocket Lance',
+                        },
+                        {
+                            title: 'Spear',
+                            action: () => setActiveWeapon('Spear'),
+                            active: activeWeapon === 'Spear',
+                        },
+                        {
+                            title: 'Katars',
+                            action: () => setActiveWeapon('Katars'),
+                            active: activeWeapon === 'Katars',
+                        },
+                        {
+                            title: 'Axe',
+                            action: () => setActiveWeapon('Axe'),
+                            active: activeWeapon === 'Axe',
+                        },
+                        {
+                            title: 'Bow',
+                            action: () => setActiveWeapon('Bow'),
+                            active: activeWeapon === 'Bow',
+                        },
+                        {
+                            title: 'Gauntlets',
+                            action: () => setActiveWeapon('Gauntlets'),
+                            active: activeWeapon === 'Gauntlets',
+                        },
+                        {
+                            title: 'Scythe',
+                            action: () => setActiveWeapon('Scythe'),
+                            active: activeWeapon === 'Scythe',
+                        },
+                        {
+                            title: 'Cannon',
+                            action: () => setActiveWeapon('Cannon'),
+                            active: activeWeapon === 'Cannon',
+                        },
+                        {
+                            title: 'Orb',
+                            action: () => setActiveWeapon('Orb'),
+                            active: activeWeapon === 'Orb',
+                        },
+                    ]
+                }
+            />
+            <PageContentWrapper pTop={activeTab === '#legends' ? '10rem' : '6.5rem'} pBtm="3.5rem">
+                <AnimatePresence exitBeforeEnter initial>
+                    {loading ? (
+                        <Loader key="loader" />
+                    ) : (
+                        <motion.div key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
+                            <main>
+                                <AnimatePresence exitBeforeEnter initial>
+                                    <motion.div
+                                        key={activeTab}
+                                        animate="in"
+                                        exit="out"
+                                        initial="init"
+                                        variants={sectionTransition}
+                                        transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
+                                    >
+                                        {renderActiveTab()}
+                                    </motion.div>
+                                </AnimatePresence>
+                            </main>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </PageContentWrapper>
+            <BottomNavigationBar />
+        </Page>
     );
 };
