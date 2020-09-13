@@ -6,6 +6,7 @@ import { mdiHome, mdiChevronTripleUp, mdiAccountStar, mdiHistory, mdiCog } from 
 
 // Providers imports
 import { NavigationPage, NavigationContext } from '../providers/NavigationProvider';
+import { Link } from 'react-router-dom';
 
 interface BottomNavigationTab {
     title: NavigationPage;
@@ -21,7 +22,7 @@ const tabs: BottomNavigationTab[] = [
     },
     {
         title: 'Rankings',
-        link: '/',
+        link: '/rankings',
         icon: mdiChevronTripleUp,
     },
     {
@@ -53,7 +54,7 @@ const NavigationWrapper = styled.nav`
     border-top: 1px solid var(--bg-alt);
 `;
 
-const NavigationItem = styled.a<{ active?: boolean }>`
+const NavigationItem = styled(Link)<{ active?: boolean }>`
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -84,7 +85,7 @@ export const BottomNavigationBar: FC = () => {
     return (
         <NavigationWrapper>
             {tabs.map(({ title, link, icon }, i) => (
-                <NavigationItem href={link} key={i} active={activePage === title}>
+                <NavigationItem to={link} key={i} active={activePage === title}>
                     <Icon path={icon} size={1} />
                     {title}
                 </NavigationItem>
