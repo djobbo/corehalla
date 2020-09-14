@@ -1,9 +1,10 @@
 // Library imports
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IRanking1v1Format, RankedRegion } from 'corehalla.js';
+import qs from 'qs';
 
 // Hooks
 import { useFetchData } from '../../hooks/useFetchData';
@@ -39,17 +40,19 @@ export const RankingsPage: FC = () => {
     const { setActivePage } = useContext(NavigationContext);
     setActivePage('Rankings');
 
-    // Fetch Player ID
+    // Fetch Rankings Options
     const { bracket = '1v1', region = 'all', page = '1' } = useParams<{
         bracket: string;
         region: RankedRegion;
         page: string;
     }>();
+    const { search } = useLocation();
+    const playerSearch = qs.parse(search.substring(1)).p || '';
 
     // Fetch Player Stats
     const [rankings, loading] =
         process.env.NODE_ENV === 'production'
-            ? useFetchData<IRanking1v1Format[]>(`/api/rankings/1v1/${region}/${page}`)
+            ? useFetchData<IRanking1v1Format[]>(`/api/rankings/1v1/${region}/${page}?p=${playerSearch}`)
             : useMockData<IRanking1v1Format[]>('1v1Rankings', 250);
 
     const renderActiveTab = () => {

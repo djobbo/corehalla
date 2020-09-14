@@ -1,5 +1,5 @@
 // Library imports
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,6 +8,9 @@ import { mdiArrowLeft, mdiMagnify } from '@mdi/js';
 
 // Custom Hooks imports
 import { useScrollPosition } from '../hooks/useScrollPosition';
+
+// Components imports
+import { SearchBar } from './SearchBar';
 
 interface NavbarProps {
     title: string;
@@ -40,15 +43,31 @@ const NavbarTitle = styled.span`
 `;
 
 export const Navbar: FC<NavbarProps> = ({ title }: NavbarProps) => {
+    const [showSearch, setShowSearch] = useState(false);
+
     return (
         <NavbarWrapper>
-            <div>
-                <Link to="/">
-                    <Icon path={mdiArrowLeft} size={1} />
-                </Link>
-                <NavbarTitle>{title}</NavbarTitle>
-            </div>
-            <Icon path={mdiMagnify} size={1} />
+            {showSearch ? (
+                <SearchBar />
+            ) : (
+                <>
+                    <div>
+                        <Link to="/">
+                            <Icon path={mdiArrowLeft} size={1} />
+                        </Link>
+                        <NavbarTitle>{title}</NavbarTitle>
+                    </div>
+                    <a
+                        href="#"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            setShowSearch(true);
+                        }}
+                    >
+                        <Icon path={mdiMagnify} size={1} />
+                    </a>
+                </>
+            )}
         </NavbarWrapper>
     );
 };

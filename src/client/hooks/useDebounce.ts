@@ -1,9 +1,8 @@
 // Library imports
 import { useState, useEffect } from 'react';
 
-export const useDebounce = <T>(value: T, delay: number): [T] => {
-    const [debouncedValue, setDebouncedValue] = useState(value);
-
+export const useDebounce = <T extends string>(callback: (value: T) => void, delay: number, value: T): void => {
+    const [debouncedValue, setDebouncedValue] = useState<T | null>(null);
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedValue(value);
@@ -12,7 +11,11 @@ export const useDebounce = <T>(value: T, delay: number): [T] => {
         return () => {
             clearTimeout(handler);
         };
-    }, [value]);
+    }, [value, delay]);
 
-    return [debouncedValue];
+    useEffect(() => {
+        if (!debouncedValue) return;
+        callback(debouncedValue);
+        setDebouncedValue(null);
+    }, [debouncedValue, callback]);
 };
