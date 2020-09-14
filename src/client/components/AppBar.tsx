@@ -16,25 +16,28 @@ interface NavbarProps {
     title: string;
 }
 
-const NavbarWrapper = styled.div`
-    color: var(--text);
-    padding: 1rem 1rem;
+const NavbarWrapper = styled.div<{ showSearch?: boolean }>`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--bg);
     z-index: 101;
     position: relative;
     border-bottom: 1px solid var(--bg-alt);
+    height: 3rem;
 
     & > div {
         display: flex;
         align-items: center;
     }
 
-    svg {
-        fill: var(--text);
-    }
+    ${({ showSearch }) => `
+    padding: ${showSearch ? '0 1rem 0 0' : '1rem'};
+        background-color: var(${showSearch ? '--text' : '--bg'});
+        color: var(${showSearch ? '--bg' : '--text'});
+        svg {
+            fill: var(${showSearch ? '--bg' : '--text'});
+        }
+    `}
 `;
 
 const NavbarTitle = styled.span`
@@ -46,9 +49,9 @@ export const Navbar: FC<NavbarProps> = ({ title }: NavbarProps) => {
     const [showSearch, setShowSearch] = useState(false);
 
     return (
-        <NavbarWrapper>
+        <NavbarWrapper showSearch={showSearch}>
             {showSearch ? (
-                <SearchBar />
+                <SearchBar setShowSearch={setShowSearch} />
             ) : (
                 <>
                     <div>

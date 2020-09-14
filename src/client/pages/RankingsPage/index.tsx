@@ -69,12 +69,18 @@ export const RankingsPage: FC = () => {
             {!loading && (
                 <Helmet>
                     <title>
-                        {region} {bracket} - Page {page} • Corehalla
+                        {bracket} Rankings - {region.toUpperCase()} - Page {page} • Corehalla
                     </title>
                 </Helmet>
             )}
             <AppBar
-                title={loading ? 'loading' : `${region.toUpperCase()} ${bracket} - Page ${page}`}
+                title={
+                    loading
+                        ? 'loading'
+                        : `${
+                              region.toUpperCase() === 'ALL' ? '' : `${region.toUpperCase()} `
+                          }${bracket} Rankings - Page ${page}`
+                }
                 tabs={[
                     { title: '1v1', link: `/rankings/1v1/${region}/1`, active: bracket === '1v1' },
                     { title: '2v2', link: `/rankings/2v2/${region}/1`, active: bracket === '2v2' },
