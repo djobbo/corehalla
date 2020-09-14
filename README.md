@@ -11,5 +11,5 @@
 
 ### Activity
 
-![Commits](https://img.shields.io/github/commit-activity/y/Corehalla/Corehalla)
+![Commits](https://img.shields.io/github/commit-activity/m/Corehalla/Corehalla)
 ![Last Commit](https://img.shields.io/github/last-commit/Corehalla/Corehalla)
