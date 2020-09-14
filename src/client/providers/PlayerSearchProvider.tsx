@@ -1,8 +1,8 @@
-import React, { useState, createContext, useEffect, FC } from 'react';
-import { useLocation, useRouteMatch } from 'react-router-dom';
-import qs from 'qs';
+import React, { useState, createContext, FC } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 import { useDebounce } from '../hooks/useDebounce';
 import { history } from '../history';
+import { RankedRegion } from 'corehalla.js';
 
 interface Props {
     children: React.ReactNode;
@@ -16,29 +16,21 @@ interface IPlayerSearchContext {
 export const PlayerSearchContext = createContext<IPlayerSearchContext>(null);
 
 export const PlayerSearchProvider: FC<Props> = ({ children }: Props) => {
-    const { search } = useLocation();
-    const match = useRouteMatch<{
-        region: string;
+    const { bracket = '1v1', region = 'all', page = '1' } = useParams<{
         bracket: string;
+        region: RankedRegion;
         page: string;
-    }>('/rankings/:bracket/:region/:page');
+    }>();
 
-    const params = match ? match.params : { bracket: '1v1', region: 'all', page: '1' };
+    const [playerSearch, setPlayerSearch] = useState('');
 
-    const [playerSearch, setPlayerSearch] = useState((qs.parse(search.substring(1)).p as string) || '');
-    const [debouncedPlayerSecarch] = useDebounce(playerSearch, 1000);
-    const [isInitialLoad, setIsInitialLoad] = useState(true);
-
-    useEffect(() => {
-        if (debouncedPlayerSecarch !== null && !isInitialLoad) {
-            history.push(
-                `/rankings/${params.bracket || '1v1'}/${params.region || 'all'}/${
-                    params.page || '1'
-                }?p=${debouncedPlayerSecarch}`,
-            );
-        }
-        setIsInitialLoad(false);
-    }, [debouncedPlayerSecarch]);
+    useDebounce(
+        (debouncedSearch) => {
+            history.push(`/rankings/${bracket || '1v1'}/${region || 'all'}/${page || '1'}?p=${debouncedSearch}`);
+        },
+        500,
+        playerSearch,
+    );
 
     return (
         <PlayerSearchContext.Provider value={{ playerSearch, setPlayerSearch }}>

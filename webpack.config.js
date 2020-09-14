@@ -2,6 +2,7 @@ const path = require('path');
 const autoprefixer = require('autoprefixer');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
     entry: './src/client/index.tsx',
@@ -55,7 +56,7 @@ module.exports = {
         extensions: ['.js', '.jsx', '.ts', '.tsx', '.scss', '.html', '.md', '.json'],
     },
     devServer: {
-        host: '192.168.1.11',
+        host: process.env.HOST || 'localhost',
         port: 31199,
         contentBase: 'dist',
         compress: true,
@@ -65,6 +66,7 @@ module.exports = {
         publicPath: '/',
     },
     plugins: [
+        new Dotenv(),
         new CopyWebpackPlugin({
             patterns: [{ from: 'src/public', to: './' }],
         }),
