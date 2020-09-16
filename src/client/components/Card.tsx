@@ -25,9 +25,11 @@ const CardWrapper = styled(motion.div)`
     border: 0.5px solid transparent;
     display: flex;
     flex-direction: column;
+    transition: 0.1s ease-in all;
 
     &:hover {
         border-color: var(--accent);
+        box-shadow: 0 0 2rem var(--bg);
     }
 `;
 
