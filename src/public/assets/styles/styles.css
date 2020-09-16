@@ -11,7 +11,7 @@ body {
 }
 
 #App {
-    background-color: var(--bg);
+    background-color: var(--bg-1);
 }
 
 a,

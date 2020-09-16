@@ -12,18 +12,19 @@ const CardTitle = styled.span`
     color: var(--text);
     font-size: 0.75rem;
     text-transform: uppercase;
-    opacity: 0.48;
     margin: 0 0.125rem;
     font-weight: 600;
     margin-bottom: 1rem;
-    display: block;
+    border-radius: 0.125rem;
 `;
 
 const CardWrapper = styled(motion.div)`
-    background-color: var(--bg-alt);
+    background-color: var(--bg-2);
     border-radius: 0.25rem;
     padding: 1rem;
     border: 0.5px solid transparent;
+    display: flex;
+    flex-direction: column;
 
     &:hover {
         border-color: var(--accent);

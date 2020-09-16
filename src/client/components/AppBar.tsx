@@ -22,7 +22,7 @@ const NavbarWrapper = styled.div<{ showSearch?: boolean }>`
     align-items: center;
     z-index: 101;
     position: relative;
-    border-bottom: 1px solid var(--bg-alt);
+    border-bottom: 1px solid var(--bg-1);
     height: 3rem;
 
     & > div {
@@ -90,10 +90,12 @@ const Tab = styled.div<{ active?: boolean }>`
     font-size: 0.75rem;
     text-transform: uppercase;
     a {
-        padding: 1rem 1.5rem;
+        height: 100%;
         color: var(--text);
         opacity: 0.48;
-        display: block;
+        display: flex;
+        align-items: center;
+        padding: 0 1.5rem;
     }
 
     ${({ active }) =>
@@ -110,8 +112,9 @@ const Tab = styled.div<{ active?: boolean }>`
 const TabsContainerWrapper = styled.div`
     display: flex;
     overflow-x: auto;
-    border-bottom: 1px solid var(--bg-alt);
+    border-bottom: 1px solid var(--bg-1);
     background-color: var(--bg);
+    height: 3rem;
 `;
 
 export const TabsContainer: FC<TabsProps> = ({ tabs }: TabsProps) => {
@@ -141,9 +144,8 @@ const Chip = styled.div<{ active?: boolean }>`
     white-space: nowrap;
     margin: 0 0.5rem;
     border-radius: 2rem;
-    border: 1px solid var(--text);
-    background-color: var(--bg-alt);
-    opacity: 0.48;
+    border: 1px solid var(--bg-3);
+    background-color: var(--bg-1);
     a {
         padding: 0.25rem 1rem;
         display: block;
@@ -153,7 +155,8 @@ const Chip = styled.div<{ active?: boolean }>`
     ${({ active }) =>
         active &&
         `
-        background-color: var(--text);
+        background-color: var(--accent);
+        border-color: var(--accent);
         opacity: 1;
         a {
             color: var(--bg);
@@ -164,10 +167,11 @@ const Chip = styled.div<{ active?: boolean }>`
 const ChipsContainerWrapper = styled.div`
     font-size: 1rem;
     display: flex;
+    align-items: center;
     overflow-x: auto;
-    padding: 0.75rem 0.5rem;
-    border-bottom: 1px solid var(--bg-alt);
+    border-bottom: 1px solid var(--bg-1);
     background-color: var(--bg);
+    height: 3rem;
 `;
 
 export const ChipsContainer: FC<ChipsContainerProps> = ({ chips }: ChipsContainerProps) => {

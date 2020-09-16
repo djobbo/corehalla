@@ -95,5 +95,5 @@ export const PageSection: FC<Props> = ({ children, title, initFoldState }: Props
 };
 
 export const SectionSeparator = styled.hr`
-    border-bottom: 1px solid var(--bg-alt);
+    border-bottom: 1px solid var(--bg-2);
 `;

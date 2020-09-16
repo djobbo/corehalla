@@ -130,7 +130,7 @@ export const RankingsPage: FC = () => {
                     },
                 ]}
             />
-            <PageContentWrapper pTop="10rem" pBtm="3.5rem">
+            <PageContentWrapper pTop="9rem" pBtm="3rem">
                 <AnimatePresence exitBeforeEnter initial>
                     {loading ? (
                         <Loader key="loader" />
