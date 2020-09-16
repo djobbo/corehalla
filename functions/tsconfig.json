@@ -8,8 +8,7 @@
     "sourceMap": true,
     "strict": true,
     "target": "es2017",
-    "types": [],
-    "esModuleInterop": true
+    "types": []
   },
   "compileOnSave": true,
   "include": [
