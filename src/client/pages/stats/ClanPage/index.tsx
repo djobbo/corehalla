@@ -62,7 +62,7 @@ export const ClanStatsPage: FC = () => {
                     { title: 'members', link: `#members`, active: activeTab === '#members' },
                 ]}
             />
-            <PageContentWrapper pTop="6.5rem">
+            <PageContentWrapper pTop="6rem">
                 <AnimatePresence exitBeforeEnter initial>
                     {loading ? (
                         <Loader key="loader" />

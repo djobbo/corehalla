@@ -55,12 +55,7 @@ export const RankingsItem1v1: FC<Props1v1> = ({ player }: Props1v1) => {
                 </div>
             </StatsWrapper>
             <BarChartWrapper>
-                <BarChart
-                    width="100%"
-                    amount={(player.wins / player.games) * 100}
-                    height="0.25rem"
-                    bg="var(--bg-alt)"
-                />
+                <BarChart width="100%" amount={(player.wins / player.games) * 100} height="0.25rem" bg="var(--bg-1)" />
                 <StatDesc>{((player.wins / player.games) * 100).toFixed(2)}%</StatDesc>
             </BarChartWrapper>
         </Wrapper>
@@ -99,7 +94,7 @@ export const RankingsItem2v2: FC<Props2v2> = ({ team }: Props2v2) => {
                 </div>
             </StatsWrapper>
             <BarChartWrapper>
-                <BarChart width="100%" amount={(team.wins / team.games) * 100} height="0.25rem" bg="var(--bg-alt)" />
+                <BarChart width="100%" amount={(team.wins / team.games) * 100} height="0.25rem" bg="var(--bg-1)" />
                 <StatDesc>{((team.wins / team.games) * 100).toFixed(2)}%</StatDesc>
             </BarChartWrapper>
         </Wrapper>

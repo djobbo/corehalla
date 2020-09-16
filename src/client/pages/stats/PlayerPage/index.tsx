@@ -155,7 +155,7 @@ export const PlayerStatsPage: FC = () => {
                     ]
                 }
             />
-            <PageContentWrapper pTop={activeTab === '#legends' ? '10rem' : '6.5rem'} pBtm="3.5rem">
+            <PageContentWrapper pTop={activeTab === '#legends' ? '9rem' : '6rem'} pBtm="3rem">
                 <AnimatePresence exitBeforeEnter initial>
                     {loading ? (
                         <Loader key="loader" />

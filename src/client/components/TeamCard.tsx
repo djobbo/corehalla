@@ -1,6 +1,7 @@
 // Library imports
 import React, { FC } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 // Components imports
 import { I2v2TeamFormat } from 'corehalla.js';
@@ -12,12 +13,19 @@ interface Props {
     team: I2v2TeamFormat;
 }
 
-const TeammateName = styled.h3`
+const TeammateName = styled(Link)`
     font-size: 1rem;
     color: var(--text);
     display: flex;
     align-items: center;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.125rem;
+    font-weight: bold;
+
+    &:hover {
+        background-color: var(--bg-1);
+    }
 `;
 
 const RegionIcon = styled.img`
@@ -49,7 +57,7 @@ const WinLossContainer = styled.div`
 export const TeamCard: FC<Props> = ({ team }: Props) => {
     return (
         <Card>
-            <TeammateName>
+            <TeammateName to={`/stats/player/${team.teammate.id}`}>
                 <RegionIcon src={`/assets/images/icons/flags/${team.region}.png`} alt={team.region} />
                 {team.teammate.name}
             </TeammateName>

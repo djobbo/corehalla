@@ -45,13 +45,13 @@ const tabs: BottomNavigationTab[] = [
 const NavigationWrapper = styled.nav`
     display: flex;
     justify-content: stretch;
+    height: 3rem;
     position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: var(--bg);
-    padding: 0.5rem 0;
-    border-top: 1px solid var(--bg-alt);
+    border-top: 1px solid var(--bg-1);
 `;
 
 const NavigationItem = styled(Link)<{ active?: boolean }>`
