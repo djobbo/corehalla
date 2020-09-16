@@ -7,7 +7,7 @@ on:
 
 jobs:
     deploy-hosting:
-        name: Deploy
+        name: Deploy Hosting
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Repo
@@ -21,7 +21,7 @@ jobs:
               env:
                   FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
     deploy-functions:
-        name: Deploy
+        name: Deploy Functions
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Repo
