@@ -23,7 +23,15 @@ const StatsWrapper = styled.div`
 `;
 
 const Wrapper = styled.div`
-    margin: 0.5rem 0;
+    padding: 0.25rem 0.5rem;
+    margin: 0.25rem 0;
+    transition: 0.1s ease-in all;
+
+    &:hover {
+        background-color: var(--bg-2);
+        border-radius: 0.25rem;
+        box-shadow: 0 0 2rem var(--bg);
+    }
 `;
 
 interface Props1v1 {

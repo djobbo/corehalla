@@ -8,3 +8,5 @@
 .env
 
 .firebase
+
+**/*.log
