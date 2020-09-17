@@ -27,7 +27,7 @@ const tabs: BottomNavigationTab[] = [
     },
     {
         title: 'Favorites',
-        link: '/',
+        link: '/favorites',
         icon: mdiAccountStar,
     },
     {

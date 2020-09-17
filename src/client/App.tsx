@@ -8,6 +8,7 @@ import { IndexPage } from './pages/IndexPage';
 import { RankingsPage } from './pages/RankingsPage';
 import { PlayerStatsPage } from './pages/stats/PlayerPage';
 import { ClanStatsPage } from './pages/stats/ClanPage';
+import { FavoritesPage } from './pages/FavoritesPage';
 
 import { AnimatePresence } from 'framer-motion';
 
@@ -40,6 +41,9 @@ export const App: FC = () => {
                     </Route>
                     <Route path="/stats/clan/:id" exact>
                         <ClanStatsPage />
+                    </Route>
+                    <Route path="/favorites" exact>
+                        <FavoritesPage />
                     </Route>
                 </Switch>
             </AnimatePresence>

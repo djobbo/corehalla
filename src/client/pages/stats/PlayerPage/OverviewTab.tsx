@@ -17,7 +17,18 @@ export const OverviewTab: FC<Props> = ({ playerStats }: Props) => {
     const { season, clan } = playerStats;
     return (
         <>
-            <ProfileHeader title={playerStats.name} bannerURI="https://picsum.photos/480/120" />
+            <ProfileHeader
+                title={playerStats.name}
+                bannerURI="https://picsum.photos/480/120"
+                favorite={{
+                    name: playerStats.name,
+                    id: playerStats.id.toString(), // TODO: id is a number?
+                    type: 'player',
+                    thumbURI: `/assets/images/icons/legends/${
+                        playerStats.legends.sort((a, b) => b.season.rating - a.season.rating)[0].name
+                    }.png`,
+                }}
+            />
             <SectionSeparator />
             <PageSection title="Season Overview" initFoldState={true}>
                 <SectionSeasonOverviewContent
