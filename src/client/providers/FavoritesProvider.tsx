@@ -4,49 +4,57 @@ interface Props {
     children: React.ReactNode;
 }
 
+export type ProfileType = 'player' | 'clan'; // TODO: Put this somewhere else
+
 export interface IFavorite {
     id: string;
-    link: string;
     name: string;
     thumbURI: string;
+    type: ProfileType;
 }
 
-export type FavoriteType = 'players' | 'clans';
-
-export type LocalFavorites = {
-    players?: IFavorite[];
-    clans?: IFavorite[];
-} | null;
-
-export const fetchFavorites = (): LocalFavorites => {
-    const str = localStorage.getItem('favStats') || '{"players": [], "clans": []}';
-    return JSON.parse(str) as LocalFavorites;
+const fetchFavorites = (): IFavorite[] => {
+    const str = localStorage.getItem('favoritesStats') || '[]';
+    return JSON.parse(str);
 };
 
 export const FavoritesContext = createContext<{
-    favorites: LocalFavorites;
-    setFavorites: React.Dispatch<React.SetStateAction<LocalFavorites>>;
-    addFavorite: (type: FavoriteType, value: IFavorite) => void;
-    removeFavorite: (type: FavoriteType, value: IFavorite) => void;
+    favorites: IFavorite[];
+    isFavorite: (value: IFavorite) => boolean;
+    addFavorite: (value: IFavorite) => void;
+    removeFavorite: (value: IFavorite) => void;
 }>(null);
 
 export const FavoritesProvider: FC<Props> = ({ children }: Props) => {
-    const [favorites, setFavorites] = useState<LocalFavorites>(fetchFavorites());
+    const [favorites, setFavorites] = useState<IFavorite[]>(fetchFavorites());
 
-    const addFavorite = (type: FavoriteType, value: IFavorite): void => {
-        setFavorites({ ...favorites, [type]: [...favorites[type].filter((x) => x.id !== value.id), value] });
+    const isFavorite = (newFav: IFavorite): boolean => {
+        const index = favorites.findIndex((x) => x.type === newFav.type && x.id === newFav.id);
+        return index > -1;
     };
 
-    const removeFavorite = (type: FavoriteType, value: IFavorite): void => {
-        setFavorites({ ...favorites, [type]: favorites[type].filter((x) => x.id !== value.id) });
+    const addFavorite = (newFav: IFavorite): void => {
+        const index = favorites.findIndex((x) => x.type === newFav.type && x.id === newFav.id);
+        if (index < 0) setFavorites([...favorites, newFav]);
+        else
+            setFavorites((oldFavs) => {
+                oldFavs[index] = newFav;
+                return oldFavs;
+            });
+    };
+
+    const removeFavorite = (favToBeRemoved: IFavorite): void => {
+        setFavorites((oldFavs) =>
+            oldFavs.filter((x) => !(x.type === favToBeRemoved.type && x.id === favToBeRemoved.id)),
+        );
     };
 
     useEffect(() => {
-        localStorage.setItem('favStats', JSON.stringify(favorites));
+        localStorage.setItem('favoritesStats', JSON.stringify(favorites));
     }, [favorites]);
 
     return (
-        <FavoritesContext.Provider value={{ favorites, setFavorites, addFavorite, removeFavorite }}>
+        <FavoritesContext.Provider value={{ favorites, addFavorite, removeFavorite, isFavorite }}>
             {children}
         </FavoritesContext.Provider>
     );
