@@ -13,7 +13,7 @@ import { useScrollPosition } from '../hooks/useScrollPosition';
 import { SearchBar } from './SearchBar';
 
 interface NavbarProps {
-    title: string;
+    title?: string;
 }
 
 const NavbarWrapper = styled.div<{ showSearch?: boolean }>`
@@ -45,6 +45,10 @@ const NavbarTitle = styled.span`
     margin-left: 1rem;
 `;
 
+const NavbarTitleLogo = styled.img`
+    height: 1.5rem;
+`;
+
 export const Navbar: FC<NavbarProps> = ({ title }: NavbarProps) => {
     const [showSearch, setShowSearch] = useState(false);
 
@@ -54,12 +58,18 @@ export const Navbar: FC<NavbarProps> = ({ title }: NavbarProps) => {
                 <SearchBar setShowSearch={setShowSearch} />
             ) : (
                 <>
-                    <div>
+                    {title ? (
+                        <div>
+                            <Link to="/">
+                                <Icon path={mdiArrowLeft} size={1} />
+                            </Link>
+                            <NavbarTitle>{title}</NavbarTitle>{' '}
+                        </div>
+                    ) : (
                         <Link to="/">
-                            <Icon path={mdiArrowLeft} size={1} />
+                            <NavbarTitleLogo src="/assets/images/logo.png" alt="corehalla logo" />
                         </Link>
-                        <NavbarTitle>{title}</NavbarTitle>
-                    </div>
+                    )}
                     <a
                         href="#"
                         onClick={(e) => {
@@ -199,7 +209,7 @@ export const ChipsContainer: FC<ChipsContainerProps> = ({ chips }: ChipsContaine
 };
 
 interface Props {
-    title: string;
+    title?: string;
     tabs?: ITab[];
     chips?: IChip[];
 }
