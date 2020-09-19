@@ -60,7 +60,8 @@ export type Weapon =
     | 'Gauntlets'
     | 'Scythe'
     | 'Cannon'
-    | 'Orb';
+    | 'Orb'
+    | 'Greatsword';
 
 export type ClanRank = 'Leader' | 'Officer' | 'Member' | 'Recruit';
 
