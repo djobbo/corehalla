@@ -1,5 +1,5 @@
 // Library imports
-import React, { FC, useContext, SetStateAction, Dispatch } from 'react';
+import React, { FC, useContext, SetStateAction, Dispatch, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { Icon } from '@mdi/react';
 import { mdiClose } from '@mdi/js';
@@ -29,10 +29,16 @@ const SearchInput = styled.input`
 
 export const SearchBar: FC<Props> = ({ setShowSearch }: Props) => {
     const { setPlayerSearch } = useContext(PlayerSearchContext);
+    const inputRef = useRef<HTMLInputElement>();
+
+    useEffect(() => {
+        inputRef.current.focus();
+    }, []);
 
     return (
         <Wrapper>
             <SearchInput
+                ref={inputRef}
                 type="text"
                 onChange={(e) => {
                     setPlayerSearch(e.target.value);
