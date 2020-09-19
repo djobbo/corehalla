@@ -289,4 +289,16 @@ export const legends: IStaticLegendData[] = [
         weapon_one: 'Axe',
         weapon_two: 'Scythe',
     },
+    {
+        id: 53,
+        name: 'Onyx',
+        weapon_one: 'Gauntlets',
+        weapon_two: 'Cannon',
+    },
+    {
+        id: 54,
+        name: 'Jaeyun',
+        weapon_one: 'Sword',
+        weapon_two: 'Greatsword',
+    },
 ];
