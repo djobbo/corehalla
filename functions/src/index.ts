@@ -22,6 +22,6 @@ router.get('/**', (req, res) => {
     res.status(404).json('Not Found!');
 });
 
-app.use('/api', router);
+app.use('/', router);
 
 exports.api = functions.https.onRequest(app);
