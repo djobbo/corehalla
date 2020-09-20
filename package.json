@@ -22,7 +22,7 @@
         "build": "npm run lint && npm run format && npm run clean && tsc",
         "format": "prettier --write \"src/**/*.ts\"",
         "lint": "tslint -p tsconfig.json",
-        "publish": "npm run build && npm publish"
+        "publish-to-npm": "npm run build && npm publish"
     },
     "version": "0.0.14",
     "repository": {
