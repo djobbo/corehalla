@@ -53,7 +53,7 @@ export const RankingsPage: FC = () => {
     const [rankings, loading] =
         process.env.NODE_ENV === 'production'
             ? useFetchData<IRanking1v1Format[]>(`/api/rankings/1v1/${region}/${page}?p=${playerSearch}`)
-            : useMockData<IRanking1v1Format[]>('1v1Rankings', 250);
+            : useMockData<IRanking1v1Format[]>('1v1Rankings', 0);
 
     const renderActiveTab = () => {
         switch (bracket) {

@@ -42,7 +42,7 @@ export const ClanStatsPage: FC = () => {
     const [clanStats, loading] =
         process.env.NODE_ENV === 'production'
             ? useFetchData<IClanFormat>(`/api/stats/clan/${clanId}`)
-            : useMockData<IClanFormat>('ClanStats', 250);
+            : useMockData<IClanFormat>('ClanStats', 0);
 
     const renderActiveTab = () => {
         switch (activeTab) {
