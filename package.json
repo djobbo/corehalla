@@ -24,7 +24,7 @@
         "lint": "tslint -p tsconfig.json",
         "publish-to-npm": "npm run build && npm publish"
     },
-    "version": "0.0.14",
+    "version": "0.0.15",
     "repository": {
         "type": "git",
         "url": "https://github.com/Corehalla/corehalla.js.git"
