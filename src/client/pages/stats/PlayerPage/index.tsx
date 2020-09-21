@@ -35,7 +35,7 @@ const sectionTransition = {
     },
 };
 
-export const PlayerStatsPage: FC = () => {
+export const PlayerPage: FC = () => {
     // Fetch Player ID
     const { id: playerId } = useParams<{ id: string }>();
     // Initialize Tabs

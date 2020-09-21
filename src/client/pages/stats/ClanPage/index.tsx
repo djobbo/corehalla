@@ -33,7 +33,7 @@ const sectionTransition = {
     },
 };
 
-export const ClanStatsPage: FC = () => {
+export const ClanPage: FC = () => {
     // Fetch Clan ID
     const { id: clanId } = useParams<{ id: string }>();
     // Initialize Tabs
