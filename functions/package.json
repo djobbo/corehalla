@@ -13,7 +13,7 @@
   },
   "main": "lib/index.js",
   "dependencies": {
-    "corehalla.js": "0.0.14",
+    "corehalla.js": "0.0.15",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "firebase-admin": "^8.10.0",
