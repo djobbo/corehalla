@@ -51,6 +51,7 @@ const StatsContainer = styled.div`
 const WinLossContainer = styled.div`
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-top: 0.75rem;
 `;
 
@@ -77,13 +78,15 @@ export const TeamCard: FC<Props> = ({ team }: Props) => {
                         <StatDesc>winrate</StatDesc>
                     </div>
                     <div>
-                        <StatSmall>{team.season.games}</StatSmall>
-                        <StatDesc>games</StatDesc>
+                        <StatSmall>{team.season.ratingSquash}</StatSmall>
+                        <StatDesc>elo squash</StatDesc>
                     </div>
                 </div>
             </StatsContainer>
             <BarChart width="100%" height="1rem" amount={(team.season.wins / team.season.games) * 100} />
             <WinLossContainer>
+                <StatSmall>{team.season.games}</StatSmall>
+                <StatDesc>games</StatDesc>
                 <StatSmall>
                     {team.season.wins}W-{team.season.games - team.season.wins}L
                 </StatSmall>

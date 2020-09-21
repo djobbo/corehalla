@@ -14,27 +14,28 @@ interface Props {
     wins: number;
     losses: number;
     winrate: number;
-    icon: string;
+    ratingSquash: number;
 }
 
 const StatsContainer = styled.div``;
 
 const RankedBanner = styled(motion.img)`
     width: 8rem;
-    height: auto;
+    object-fit: contain;
     margin-right: 1rem;
-`;
-
-const FlagIcon = styled.img`
-    width: 2rem;
-    height: 2rem;
-    border-radius: 0.75rem;
+    margin-top: 0.5rem;
 `;
 
 const SectionWrapper = styled.div`
     display: flex;
     justify-content: center;
     overflow-x: auto;
+`;
+
+const StatsSeparator = styled.hr`
+    border-bottom: 1px solid var(--bg-2);
+    margin: 0.25rem;
+    width: 100%;
 `;
 
 export const SectionSeasonOverviewContent: FC<Props> = ({
@@ -45,7 +46,7 @@ export const SectionSeasonOverviewContent: FC<Props> = ({
     wins,
     losses,
     winrate,
-    icon,
+    ratingSquash,
 }: Props) => {
     return (
         <SectionWrapper>
@@ -72,6 +73,7 @@ export const SectionSeasonOverviewContent: FC<Props> = ({
                     <StatDesc>peak</StatDesc>
                     <StatSmall>{peak}</StatSmall>
                 </div>
+                <StatsSeparator />
                 <div>
                     <StatSmall>{games}</StatSmall>
                     <StatDesc>games</StatDesc>
@@ -81,7 +83,11 @@ export const SectionSeasonOverviewContent: FC<Props> = ({
                     <StatDesc>winrate</StatDesc>
                     <StatSmall>{`${winrate.toFixed(2)}%`}</StatSmall>
                 </div>
-                <FlagIcon src={`/assets/images/icons/${icon}.png`} alt={icon} />
+                <StatsSeparator />
+                <div>
+                    <StatDesc>elo squash</StatDesc>
+                    <StatSmall>{ratingSquash}</StatSmall>
+                </div>
             </StatsContainer>
         </SectionWrapper>
     );
