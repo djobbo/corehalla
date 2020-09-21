@@ -44,7 +44,7 @@ export const PlayerStatsPage: FC = () => {
     const [playerStats, loading] =
         process.env.NODE_ENV === 'production'
             ? useFetchData<IPlayerStatsFormat>(`/api/stats/player/${playerId}`)
-            : useMockData<IPlayerStatsFormat>('PlayerStats', 250);
+            : useMockData<IPlayerStatsFormat>('PlayerStats', 0);
 
     const [activeWeapon, setActiveWeapon] = useState<Weapon | 'all'>('all');
 
