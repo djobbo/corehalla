@@ -1,25 +1,10 @@
 import { legends } from './legends';
 
-import {
-    RankedRegion,
-    ILegendStats,
-    ILegendRanked,
-    IWeaponStatsFormat,
-    Weapon,
-    RankedTier,
-} from '../types';
+import { RankedRegion, ILegendStats, ILegendRanked, IWeaponStatsFormat, Weapon, RankedTier } from '../types';
 
 export const staticLegendsData = legends;
 
-export const regions: RankedRegion[] = [
-    'US-E',
-    'EU',
-    'SEA',
-    'BRZ',
-    'AUS',
-    'US-W',
-    'JPN',
-];
+export const regions: RankedRegion[] = ['US-E', 'EU', 'SEA', 'BRZ', 'AUS', 'US-W', 'JPN'];
 
 export const defaultLegendStats: ILegendStats = {
     legend_id: 0,
@@ -79,15 +64,13 @@ export const defaultWeaponStats: IWeaponStatsFormat = {
     legends: [],
 };
 
-export const staticWeaponsData = staticLegendsData.reduce<
-    { [k in Weapon]?: IWeaponStatsFormat }
->(
+export const staticWeaponsData = staticLegendsData.reduce<{ [k in Weapon]?: IWeaponStatsFormat }>(
     (acc, { weapon_one, weapon_two }) => ({
         ...acc,
         [weapon_one]: defaultWeaponStats,
         [weapon_two]: defaultWeaponStats,
     }),
-    {}
+    {},
 );
 
 type RankedTierThreshold = [RankedTier, number];
