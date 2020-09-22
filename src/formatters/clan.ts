@@ -1,18 +1,6 @@
-import {
-    IClanMember,
-    IClan,
-    IClanFormat,
-    ClanRank,
-    IClanMemberFormat,
-} from '../types';
+import { IClanMember, IClan, IClanFormat, ClanRank, IClanMemberFormat } from '../types';
 
-export function formatClan({
-    clan: members,
-    clan_id,
-    clan_name,
-    clan_create_date,
-    clan_xp,
-}: IClan): IClanFormat {
+export function formatClan({ clan: members, clan_id, clan_name, clan_create_date, clan_xp }: IClan): IClanFormat {
     return {
         id: clan_id,
         name: clan_name,
@@ -25,17 +13,16 @@ export function formatClan({
 
 export function sortClanMembers(members: IClanMember[]) {
     return members.reduce<{
-        members: {
-            [k in ClanRank]: IClanMemberFormat[];
-        };
+        members: IClanMemberFormat[];
         xpInClan: number;
     }>(
         (acc, { rank, brawlhalla_id, name, join_date, xp }) => {
-            acc.members[rank] = [
-                ...acc.members[rank],
+            acc.members = [
+                ...acc.members,
                 {
                     id: brawlhalla_id,
                     name,
+                    rank,
                     joinDate: join_date,
                     xp,
                 },
@@ -44,8 +31,8 @@ export function sortClanMembers(members: IClanMember[]) {
             return acc;
         },
         {
-            members: {Leader:[], Officer: [], Member: [], Recruit: []},
+            members: [],
             xpInClan: 0,
-        }
+        },
     );
 }
