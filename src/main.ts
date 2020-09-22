@@ -1,4 +1,4 @@
-import axios from 'axios';
+import fetch from 'cross-fetch';
 
 import {
     formatPlayerStats,
@@ -24,25 +24,27 @@ export interface IRankingsOptions {
 }
 
 const fetchPlayerById = <T>(apiKey: string, dataType: 'ranked' | 'stats') => (brawlhallaId: number) =>
-    axios.get<T>(`${API_URL}/player/${brawlhallaId}/${dataType}?api_key=${apiKey}`).then(({ data }) => data);
+    fetch(`${API_URL}/player/${brawlhallaId}/${dataType}?api_key=${apiKey}`).then(
+        async (res) => (await res.json()) as T,
+    );
 
 const getBHIdBySteamId = (apiKey: string) => (steamId: string) =>
-    axios
-        .get<{ brawlhalla_id: number; name: string }>(`${API_URL}/search?steamid=${steamId}&api_key=${apiKey}`)
-        .then(({ data }) => data);
+    fetch(`${API_URL}/search?steamid=${steamId}&api_key=${apiKey}`).then(
+        async (res) => (await res.json()) as { brawlhalla_id: number; name: string },
+    );
 
 const fetchClanById = (apiKey: string) => (clanId: number) =>
-    axios.get<IClan>(`${API_URL}/clan/${clanId}?api_key=${apiKey}`).then(({ data }) => data);
+    fetch(`${API_URL}/clan/${clanId}?api_key=${apiKey}`).then(async (res) => (await res.json()) as IClan);
 
 const fetchRankings = <T>(apiKey: string, bracket: '1v1' | '2v2') => ({ region, page, name }: IRankingsOptions) =>
-    axios
-        .get<T[]>(`${API_URL}/rankings/${bracket}/${region.toLowerCase()}/${page}?name=${name}&api_key=${apiKey}`)
-        .then(({ data }) => data);
+    fetch(`${API_URL}/rankings/${bracket}/${region.toLowerCase()}/${page}?name=${name}&api_key=${apiKey}`).then(
+        async (res) => (await res.json()) as T[],
+    );
 
 const fetchPowerRankings = (bracket: '1v1' | '2v2' | undefined = undefined) =>
-    axios
-        .get<string>(`https://www.brawlhalla.com/rankings/power/${bracket || ''}`)
-        .then(({ data }) => formatPowerRankings(data));
+    fetch(`https://www.brawlhalla.com/rankings/power/${bracket || ''}`).then(async (res) =>
+        formatPowerRankings((await res.json()) as string),
+    );
 
 const createApiConnection = (apiKey: string) => {
     const fetchPlayerStats = fetchPlayerById<IPlayerStats>(apiKey, 'stats');
