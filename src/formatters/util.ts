@@ -1,6 +1,6 @@
 export const cleanString = (str: string) => {
     try {
-        return decodeURIComponent(escape(str));
+        return decodeURIComponent(str);
     } catch (e) {
         return str;
     }
