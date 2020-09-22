@@ -2,7 +2,7 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const config = {
-    target: 'web',
+    target: 'node',
     entry: {
         index: './src/main.ts',
     },
