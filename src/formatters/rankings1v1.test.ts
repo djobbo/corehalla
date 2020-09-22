@@ -43,6 +43,7 @@ test('Correct 1v1 Ranking Format', () => {
     expect(ranking1v1Format.region).toBe('EU');
     expect(ranking1v1Format.rating).toBe(2697);
     expect(ranking1v1Format.peak).toBe(2804);
+    expect(ranking1v1Format.twitchName).toBeUndefined();
 
     const bestLegend = ranking1v1Format.bestLegend;
     expect(bestLegend).toBeDefined();
@@ -56,18 +57,3 @@ test('Correct 1v1 Rankings Format', () => {
     expect(rankings1v1Format).toBeDefined();
     expect(rankings1v1Format.length).toBe(2);
 });
-
-// name,
-//     id,
-//     rating,
-//     tier,
-//     games,
-//     wins,
-//     region,
-//     peak,
-//     bestLegend: {
-//         id: best_legend,
-//         games: best_legend_games,
-//         wins: best_legend_wins,
-//     },
-//     twitchName,
