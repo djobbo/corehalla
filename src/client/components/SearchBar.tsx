@@ -51,7 +51,7 @@ export const SearchBar: FC<Props> = ({ setShowSearch }: Props) => {
                     setShowSearch(false);
                 }}
             >
-                <Icon path={mdiClose} size={1} />
+                <Icon path={mdiClose} size={1} color="var(--bg)" />
             </a>
         </Wrapper>
     );
