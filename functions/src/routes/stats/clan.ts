@@ -5,7 +5,7 @@ const router = express.Router();
 
 const apiCacheControl = `public, max-age=180, s-maxage=240`;
 
-router.get('/stats/clan/:id', (req, res) => {
+router.get('/:id', (req, res) => {
     const id = parseInt(req.params.id);
     res.set('Cache-Control', apiCacheControl);
     bhAPI

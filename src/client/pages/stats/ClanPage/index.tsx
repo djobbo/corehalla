@@ -1,5 +1,6 @@
 // Library imports
 import React, { FC } from 'react';
+import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IClanFormat } from 'corehalla.js';
@@ -55,6 +56,11 @@ export const ClanPage: FC = () => {
 
     return (
         <Page>
+            {!loading && (
+                <Helmet>
+                    <title>{clanStats.name} Stats • Corehalla</title>
+                </Helmet>
+            )}
             <AppBar
                 title={loading ? 'loading' : clanStats.name || 'Corehalla'}
                 tabs={[
