@@ -1,7 +1,7 @@
 import { IClanFormat } from 'corehalla.js';
 
 const ClanStats: IClanFormat = {
-    id: 123,
+    id: 1600782112,
     xp: '10',
     xpInClan: 8,
     name: 'BRUH',
@@ -10,54 +10,54 @@ const ClanStats: IClanFormat = {
             id: 4,
             name: 'Alfie',
             xp: 10,
-            joinDate: 123,
+            joinDate: 1600782112,
             rank: 'Leader',
         },
         {
             id: 42,
             name: 'Alfie',
             xp: 10,
-            joinDate: 123,
+            joinDate: 1600782112,
             rank: 'Officer',
         },
         {
             id: 428,
             name: 'Alfie',
             xp: 10,
-            joinDate: 123,
+            joinDate: 1600782112,
             rank: 'Officer',
         },
         {
             id: 4281,
             name: 'Alfie',
             xp: 10,
-            joinDate: 123,
+            joinDate: 1600782112,
             rank: 'Member',
         },
         {
             id: 428,
             name: 'Alfie',
             xp: 10,
-            joinDate: 123,
+            joinDate: 1600782112,
             rank: 'Member',
         },
         {
             id: 4281,
             name: 'Alfie',
             xp: 10,
-            joinDate: 123,
+            joinDate: 1600782112,
             rank: 'Member',
         },
         {
             id: 4281,
             name: 'Alfie',
             xp: 10,
-            joinDate: 123,
+            joinDate: 1600782112,
             rank: 'Recruit',
         },
     ],
     memberCount: 7,
-    creationDate: 123,
+    creationDate: 1600782112,
 };
 
 export default ClanStats;

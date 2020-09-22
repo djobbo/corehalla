@@ -2,14 +2,18 @@
 import React, { FC } from 'react';
 import { IClanFormat } from 'corehalla.js';
 
+import { RankingsItemClan } from '../../../components/RankingsItem';
+
 interface Props {
     clanStats: IClanFormat;
 }
 
-export const MembersTab: FC<Props> = ({}: Props) => {
+export const MembersTab: FC<Props> = ({ clanStats: { members, xp } }: Props) => {
     return (
         <>
-            <h1>Members</h1>
+            {members.map((member) => (
+                <RankingsItemClan player={member} clanXP={parseInt(xp)} key={member.id} />
+            ))}
         </>
     );
 };

@@ -1,11 +1,13 @@
 // Library imports
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { IRanking1v1Format, IRanking2v2Format } from 'corehalla.js';
+import { IClanMember, IClanMemberFormat, IRanking1v1Format, IRanking2v2Format } from 'corehalla.js';
 
 import { StatLarge, StatDesc, StatSmall, StatMedium } from './TextStyles';
 import { BarChart } from './Charts';
 import { Link } from 'react-router-dom';
+
+import { epochToDate, formatDate } from '../util';
 
 const BarChartWrapper = styled.div`
     display: flex;
@@ -34,6 +36,10 @@ const Wrapper = styled.div`
     }
 `;
 
+const LargeStatWrapper = styled.div`
+    text-align: right;
+`;
+
 interface Props1v1 {
     player: IRanking1v1Format;
 }
@@ -54,13 +60,13 @@ export const RankingsItem1v1: FC<Props1v1> = ({ player }: Props1v1) => {
                         </StatSmall>
                     </p>
                 </div>
-                <div>
+                <LargeStatWrapper>
                     <StatLarge>{player.rating}</StatLarge>
                     <p>
                         <StatSmall>{player.peak}</StatSmall>
                         <StatDesc>peak</StatDesc>
                     </p>
-                </div>
+                </LargeStatWrapper>
             </StatsWrapper>
             <BarChartWrapper>
                 <BarChart width="100%" amount={(player.wins / player.games) * 100} height="0.25rem" bg="var(--bg-1)" />
@@ -93,17 +99,51 @@ export const RankingsItem2v2: FC<Props2v2> = ({ team }: Props2v2) => {
                         </StatSmall>
                     </p>
                 </div>
-                <div>
+                <LargeStatWrapper>
                     <StatLarge>{team.rating}</StatLarge>
                     <p>
                         <StatSmall>{team.peak}</StatSmall>
                         <StatDesc>peak</StatDesc>
                     </p>
-                </div>
+                </LargeStatWrapper>
             </StatsWrapper>
             <BarChartWrapper>
                 <BarChart width="100%" amount={(team.wins / team.games) * 100} height="0.25rem" bg="var(--bg-1)" />
                 <StatDesc>{((team.wins / team.games) * 100).toFixed(2)}%</StatDesc>
+            </BarChartWrapper>
+        </Wrapper>
+    );
+};
+
+interface PropsClan {
+    player: IClanMemberFormat;
+    clanXP: number;
+}
+
+export const RankingsItemClan: FC<PropsClan> = ({ player, clanXP }: PropsClan) => {
+    return (
+        <Wrapper>
+            <StatsWrapper>
+                <div>
+                    <Link to={`/stats/player/${player.id}`}>
+                        <StatMedium>{player.name}</StatMedium>
+                    </Link>
+                    <p>
+                        <StatDesc>Member since </StatDesc>
+                        <StatSmall>{formatDate(epochToDate(player.joinDate))}</StatSmall>
+                    </p>
+                </div>
+                <LargeStatWrapper>
+                    <StatLarge>{player.xp}</StatLarge>
+                    <StatDesc>xp</StatDesc>
+                    <p>
+                        <StatSmall>{player.rank}</StatSmall>
+                    </p>
+                </LargeStatWrapper>
+            </StatsWrapper>
+            <BarChartWrapper>
+                <BarChart width="100%" amount={(player.xp / clanXP) * 100} height="0.25rem" bg="var(--bg-1)" />
+                <StatDesc>{((player.xp / clanXP) * 100).toFixed(2)}%</StatDesc>
             </BarChartWrapper>
         </Wrapper>
     );
