@@ -7,7 +7,7 @@ export interface IClanFormat {
     xp: string;
     memberCount: number;
     members: {
-        [k in ClanRank]?: IClanMemberFormat[];
+        [k in ClanRank]: IClanMemberFormat[];
     };
     xpInClan: number;
 }
