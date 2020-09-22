@@ -7,7 +7,7 @@ const testStrings = [
     ['search+query%20%28correct%29', 'search+query (correct)'],
 ];
 
-test('Correct Clan Format', () => {
+test('String Clean Correctly', () => {
     testStrings.forEach(([base, decoded]) => {
         expect(cleanString(base)).toBe(decoded);
     });
