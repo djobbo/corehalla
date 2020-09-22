@@ -1,9 +1,23 @@
-*
+# source code
+src
+index.html
 
-!dist/**/*
+# compiler
+tsconfig.json
+webpack.config.js
 
-!package.json
+# tests
+test
+jest.config.js
+setupJest.ts
+coverage
 
-!README.md
+#  lint
+.eslintrc.js
+.prettierrc
 
-.env
+# IDE - VSCode
+.vscode
+
+# git
+.git

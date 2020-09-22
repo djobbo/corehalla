@@ -26,7 +26,7 @@ export function formatClan({
 export function sortClanMembers(members: IClanMember[]) {
     return members.reduce<{
         members: {
-            [k in ClanRank]?: IClanMemberFormat[];
+            [k in ClanRank]: IClanMemberFormat[];
         };
         xpInClan: number;
     }>(
@@ -44,7 +44,7 @@ export function sortClanMembers(members: IClanMember[]) {
             return acc;
         },
         {
-            members: {},
+            members: {Leader:[], Officer: [], Member: [], Recruit: []},
             xpInClan: 0,
         }
     );

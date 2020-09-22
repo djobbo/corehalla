@@ -1,4 +1,4 @@
-import { RankedTier, RankedRegion, ClanRank } from '.';
+import { RankedTier, RankedRegion, ClanRank } from './';
 
 //#region API Player Stats
 export interface IPlayerStats {
