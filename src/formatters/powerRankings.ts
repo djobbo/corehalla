@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import { IPowerRankingsFormat } from '../types';
 
 export function formatPowerRankings(html: string): IPowerRankingsFormat[] {
