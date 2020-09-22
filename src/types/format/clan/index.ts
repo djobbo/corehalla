@@ -6,15 +6,14 @@ export interface IClanFormat {
     creationDate: number;
     xp: string;
     memberCount: number;
-    members: {
-        [k in ClanRank]: IClanMemberFormat[];
-    };
+    members: IClanMemberFormat[];
     xpInClan: number;
 }
 
 export interface IClanMemberFormat {
     id: number;
     name: string;
+    rank: ClanRank;
     joinDate: number;
     xp: number;
 }
