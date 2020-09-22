@@ -68,7 +68,7 @@ export const PageSection: FC<Props> = ({ children, title, initFoldState }: Props
     return (
         <PageSectionWrapper>
             <SectionTitle onClick={() => setFoldState((oldState) => !oldState)}>
-                {title}{' '}
+                {title}
                 {foldState ? (
                     <Icon path={mdiUnfoldLessHorizontal} size={1} />
                 ) : (
@@ -85,7 +85,7 @@ export const PageSection: FC<Props> = ({ children, title, initFoldState }: Props
                     >
                         <PageSectionContent>{children}</PageSectionContent>
                         <FoldSectionIcon onClick={() => setFoldState(false)}>
-                            <Icon path={mdiChevronUp} size={0.75} />
+                            <Icon path={mdiChevronUp} size={0.75} color="var(--text)" />
                         </FoldSectionIcon>
                     </motion.div>
                 )}

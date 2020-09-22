@@ -34,9 +34,6 @@ const NavbarWrapper = styled.div<{ showSearch?: boolean }>`
     padding: ${showSearch ? '0 1rem 0 0' : '1rem'};
         background-color: var(${showSearch ? '--text' : '--bg'});
         color: var(${showSearch ? '--bg' : '--text'});
-        svg {
-            fill: var(${showSearch ? '--bg' : '--text'});
-        }
     `}
 `;
 
@@ -61,9 +58,9 @@ export const Navbar: FC<NavbarProps> = ({ title }: NavbarProps) => {
                     {title ? (
                         <div>
                             <Link to="/">
-                                <Icon path={mdiArrowLeft} size={1} />
+                                <Icon path={mdiArrowLeft} size={1} color="var(--text)" />
                             </Link>
-                            <NavbarTitle>{title}</NavbarTitle>{' '}
+                            <NavbarTitle>{title}</NavbarTitle>
                         </div>
                     ) : (
                         <Link to="/">
@@ -77,7 +74,7 @@ export const Navbar: FC<NavbarProps> = ({ title }: NavbarProps) => {
                             setShowSearch(true);
                         }}
                     >
-                        <Icon path={mdiMagnify} size={1} />
+                        <Icon path={mdiMagnify} size={1} color="var(--text)" />
                     </a>
                 </>
             )}

@@ -28,7 +28,7 @@ export const PlayerSearchProvider: FC<Props> = ({ children }: Props) => {
         (debouncedSearch) => {
             history.push(`/rankings/${bracket || '1v1'}/${region || 'all'}/${page || '1'}?p=${debouncedSearch}`);
         },
-        500,
+        1000,
         playerSearch,
     );
 
