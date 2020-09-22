@@ -13,14 +13,7 @@ import {
     getTierFromRating,
 } from './formatters';
 
-import {
-    IClan,
-    IRanking1v1,
-    IRanking2v2,
-    IPlayerStats,
-    IPlayerRanked,
-    RankedRegion,
-} from './types';
+import { IClan, IRanking1v1, IRanking2v2, IPlayerStats, IPlayerRanked, RankedRegion } from './types';
 
 const API_URL = 'https://api.brawlhalla.com';
 
@@ -30,43 +23,25 @@ export interface IRankingsOptions {
     name: string;
 }
 
-const fetchPlayerById = <T>(apiKey: string, dataType: 'ranked' | 'stats') => (
-    brawlhallaId: number
-) =>
-    axios
-        .get<T>(
-            `${API_URL}/player/${brawlhallaId}/${dataType}?api_key=${apiKey}`
-        )
-        .then(({ data }) => data);
+const fetchPlayerById = <T>(apiKey: string, dataType: 'ranked' | 'stats') => (brawlhallaId: number) =>
+    axios.get<T>(`${API_URL}/player/${brawlhallaId}/${dataType}?api_key=${apiKey}`).then(({ data }) => data);
 
 const getBHIdBySteamId = (apiKey: string) => (steamId: string) =>
     axios
-        .get<{ brawlhalla_id: number; name: string }>(
-            `${API_URL}/search?steamid=${steamId}&api_key=${apiKey}`
-        )
+        .get<{ brawlhalla_id: number; name: string }>(`${API_URL}/search?steamid=${steamId}&api_key=${apiKey}`)
         .then(({ data }) => data);
 
 const fetchClanById = (apiKey: string) => (clanId: number) =>
-    axios
-        .get<IClan>(`${API_URL}/clan/${clanId}?api_key=${apiKey}`)
-        .then(({ data }) => data);
+    axios.get<IClan>(`${API_URL}/clan/${clanId}?api_key=${apiKey}`).then(({ data }) => data);
 
-const fetchRankings = <T>(apiKey: string, bracket: '1v1' | '2v2') => ({
-    region,
-    page,
-    name,
-}: IRankingsOptions) =>
+const fetchRankings = <T>(apiKey: string, bracket: '1v1' | '2v2') => ({ region, page, name }: IRankingsOptions) =>
     axios
-        .get<T[]>(
-            `${API_URL}/rankings/${bracket}/${region.toLowerCase()}/${page}?name=${name}&api_key=${apiKey}`
-        )
+        .get<T[]>(`${API_URL}/rankings/${bracket}/${region.toLowerCase()}/${page}?name=${name}&api_key=${apiKey}`)
         .then(({ data }) => data);
 
 const fetchPowerRankings = (bracket: '1v1' | '2v2' | undefined = undefined) =>
     axios
-        .get<string>(
-            `https://www.brawlhalla.com/rankings/power/${bracket || ''}`
-        )
+        .get<string>(`https://www.brawlhalla.com/rankings/power/${bracket || ''}`)
         .then(({ data }) => formatPowerRankings(data));
 
 const createApiConnection = (apiKey: string) => {
@@ -78,10 +53,7 @@ const createApiConnection = (apiKey: string) => {
     const fetch2v2Rankings = fetchRankings<IRanking2v2>(apiKey, '2v2');
 
     const fetchAllStats = (brawlhallaId: number) =>
-        Promise.all([
-            fetchPlayerStats(brawlhallaId),
-            fetchPlayerRanked(brawlhallaId),
-        ]);
+        Promise.all([fetchPlayerStats(brawlhallaId), fetchPlayerRanked(brawlhallaId)]);
 
     return {
         // Player Stats/Ranked
@@ -89,9 +61,7 @@ const createApiConnection = (apiKey: string) => {
         fetchPlayerRanked,
         fetchAllStats,
         fetchPlayerFormat: (brawlhallaId: number) =>
-            fetchAllStats(brawlhallaId).then((stats) =>
-                formatPlayerStats(...stats)
-            ),
+            fetchAllStats(brawlhallaId).then((stats) => formatPlayerStats(...stats)),
 
         // Clan Stats
         fetchClan,
@@ -100,10 +70,8 @@ const createApiConnection = (apiKey: string) => {
         // Rankings
         fetch1v1Rankings,
         fetch2v2Rankings,
-        fetch1v1RankingsFormat: (options: IRankingsOptions) =>
-            fetch1v1Rankings(options).then(format1v1Rankings),
-        fetch2v2RankingsFormat: (options: IRankingsOptions) =>
-            fetch2v2Rankings(options).then(format2v2Rankings),
+        fetch1v1RankingsFormat: (options: IRankingsOptions) => fetch1v1Rankings(options).then(format1v1Rankings),
+        fetch2v2RankingsFormat: (options: IRankingsOptions) => fetch2v2Rankings(options).then(format2v2Rankings),
 
         // Power Rankings
         fetchPowerRankings,

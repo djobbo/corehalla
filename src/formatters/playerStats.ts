@@ -35,15 +35,8 @@ import {
     defaultWeaponStats,
 } from '../data/static-data';
 
-export function formatPlayerStats(
-    playerStats: IPlayerStats,
-    playerRanked: IPlayerRanked
-): IPlayerStatsFormat {
-    const {
-        legends: legendsStats,
-        clan: clanStats,
-        ...generalStats
-    } = playerStats || { legends: [], clan: {} };
+export function formatPlayerStats(playerStats: IPlayerStats, playerRanked: IPlayerRanked): IPlayerStatsFormat {
+    const { legends: legendsStats, clan: clanStats, ...generalStats } = playerStats || { legends: [], clan: {} };
 
     const {
         legends: legendsRanked,
@@ -55,18 +48,9 @@ export function formatPlayerStats(
         ...seasonStats
     } = playerRanked || { legends: [], '2v2': [] };
 
-    const { legends, weapons } = formatLegendsAndWeaponsStats(
-        staticLegendsData,
-        legendsStats,
-        legendsRanked
-    );
+    const { legends, weapons } = formatLegendsAndWeaponsStats(staticLegendsData, legendsStats, legendsRanked);
 
-    const season = getSeasonStats(
-        _prid,
-        seasonStats,
-        teamsStats,
-        legendsRanked
-    );
+    const season = getSeasonStats(_prid, seasonStats, teamsStats, legendsRanked);
 
     return {
         id: generalStats.brawlhalla_id,
@@ -102,7 +86,7 @@ export function formatPlayerStats(
                 matchtime: 0,
                 damageDealt: 0,
                 damageTaken: 0,
-            }
+            },
         ),
         season,
         clan: clanStats ? formatClanStats(clanStats) : undefined,
@@ -133,12 +117,7 @@ export function formatPlayerStats(
     };
 }
 
-export function formatClanStats({
-    clan_id,
-    clan_name,
-    clan_xp,
-    personal_xp,
-}: IPlayerClan): IPlayerClanFormat {
+export function formatClanStats({ clan_id, clan_name, clan_xp, personal_xp }: IPlayerClan): IPlayerClanFormat {
     return {
         id: clan_id,
         name: cleanString(clan_name),
@@ -150,7 +129,7 @@ export function formatClanStats({
 export function formatLegendsAndWeaponsStats(
     staticLegends: IStaticLegendData[],
     legendsStats: ILegendStats[],
-    legendsRanked: ILegendRanked[]
+    legendsRanked: ILegendRanked[],
 ) {
     const { legends, weapons } = staticLegends.reduce<{
         legends: ILegendStatsFormat[];
@@ -160,7 +139,7 @@ export function formatLegendsAndWeaponsStats(
             const legendFormat = formatLegendStats(
                 staticLegend,
                 legendsStats.find((l) => l.legend_id === staticLegend.id),
-                legendsRanked.find((l) => l.legend_id === staticLegend.id)
+                legendsRanked.find((l) => l.legend_id === staticLegend.id),
             );
 
             acc.legends = [...acc.legends, legendFormat];
@@ -173,7 +152,7 @@ export function formatLegendsAndWeaponsStats(
         {
             legends: [],
             weapons: staticWeaponsData,
-        }
+        },
     );
     return { legends, weapons: formatWeaponStats(Object.values(weapons)) };
 }
@@ -201,17 +180,14 @@ const weaponProps: {
 export function addWeaponStats(
     weaponID: 0 | 1,
     weapons: { [k in Weapon]?: IWeaponStatsFormat },
-    legendFormat: ILegendStatsFormat
+    legendFormat: ILegendStatsFormat,
 ) {
     const weaponName = legendFormat.weapons[weaponProps[weaponID].name].name;
     return {
         ...weapons,
         [weaponName]: {
             name: weaponName,
-            legends: [
-                ...(weapons[weaponName] || { legends: [] }).legends,
-                filterWeaponStats(legendFormat, weaponID),
-            ],
+            legends: [...(weapons[weaponName] || { legends: [] }).legends, filterWeaponStats(legendFormat, weaponID)],
         },
     };
 }
@@ -219,7 +195,7 @@ export function addWeaponStats(
 export function formatLegendStats(
     staticLegend: IStaticLegendData,
     legendStats: ILegendStats = defaultLegendStats,
-    legendRanked: ILegendRanked = defaultLegendSeason
+    legendRanked: ILegendRanked = defaultLegendSeason,
 ): ILegendStatsFormat {
     return {
         id: staticLegend.id,
@@ -252,10 +228,7 @@ export function formatLegendStats(
             unarmed: {
                 damage: parseInt(legendStats.damageunarmed, 10),
                 kos: legendStats.kounarmed,
-                timeHeld:
-                    legendStats.matchtime -
-                    (legendStats.timeheldweaponone +
-                        legendStats.timeheldweapontwo),
+                timeHeld: legendStats.matchtime - (legendStats.timeheldweaponone + legendStats.timeheldweapontwo),
             },
             throws: {
                 damage: parseInt(legendStats.damagethrownitem, 10),
@@ -281,14 +254,14 @@ export function getSeasonStats(
     playerID: number,
     { peak_rating, wins, ...season }: IPlayerSeason,
     teamsStats: I2v2Team[],
-    legendsRanked: ILegendRanked[]
+    legendsRanked: ILegendRanked[],
 ): IPlayerSeasonFormat {
     const totalWins = wins + teamsStats.reduce((acc, t) => acc + t.wins, 0);
 
     const bestOverallRating = Math.max(
         peak_rating,
         ...teamsStats.map((t) => t.peak_rating),
-        ...legendsRanked.map((l) => l.peak_rating)
+        ...legendsRanked.map((l) => l.peak_rating),
     );
 
     return {
@@ -306,13 +279,8 @@ export function getSeasonStats(
     };
 }
 
-export function filterWeaponStats(
-    legendFormat: ILegendStatsFormat,
-    weaponID: 0 | 1
-): IWeaponLegendFormat {
-    const { damage, kos, timeHeld } = legendFormat.weapons[
-        weaponID === 0 ? 'weaponOne' : 'weaponTwo'
-    ];
+export function filterWeaponStats(legendFormat: ILegendStatsFormat, weaponID: 0 | 1): IWeaponLegendFormat {
+    const { damage, kos, timeHeld } = legendFormat.weapons[weaponID === 0 ? 'weaponOne' : 'weaponTwo'];
     return {
         id: legendFormat.id,
         name: legendFormat.name,
@@ -332,58 +300,37 @@ export function filterWeaponStats(
     };
 }
 
-export function formatWeaponStats(
-    weapons: (IWeaponStatsFormat | undefined)[]
-): IWeaponStatsFormat[] {
-    return (weapons.filter((w) => w !== undefined) as IWeaponStatsFormat[]).map(
-        (w) => ({
-            ...w,
-            ...w.legends.reduce<IWeaponStatsFormat>(
-                (acc, l) => ({
-                    name: w.name,
-                    level: l.level + acc.level,
-                    xp: l.xp + acc.xp,
-                    matchtime: l.matchtime + acc.matchtime,
-                    damageDealt: l.weapon.damage + acc.damageDealt,
-                    kos: l.weapon.kos + acc.kos,
-                    timeHeld: l.weapon.timeHeld + acc.timeHeld,
-                    season: {
-                        ratingAcc: l.season.rating + acc.season.ratingAcc,
-                        peakAcc: l.season.peak + acc.season.peakAcc,
-                        bestRating:
-                            l.season.rating > acc.season.bestRating
-                                ? l.season.rating
-                                : acc.season.bestRating,
-                        peak:
-                            l.season.peak > acc.season.peak
-                                ? l.season.peak
-                                : acc.season.peak,
-                        games: l.season.games + acc.season.games,
-                        wins: l.season.wins + acc.season.wins,
-                    },
-                    legends: [...acc.legends, l],
-                }),
-                defaultWeaponStats
-            ),
-        })
-    );
+export function formatWeaponStats(weapons: (IWeaponStatsFormat | undefined)[]): IWeaponStatsFormat[] {
+    return (weapons.filter((w) => w !== undefined) as IWeaponStatsFormat[]).map((w) => ({
+        ...w,
+        ...w.legends.reduce<IWeaponStatsFormat>(
+            (acc, l) => ({
+                name: w.name,
+                level: l.level + acc.level,
+                xp: l.xp + acc.xp,
+                matchtime: l.matchtime + acc.matchtime,
+                damageDealt: l.weapon.damage + acc.damageDealt,
+                kos: l.weapon.kos + acc.kos,
+                timeHeld: l.weapon.timeHeld + acc.timeHeld,
+                season: {
+                    ratingAcc: l.season.rating + acc.season.ratingAcc,
+                    peakAcc: l.season.peak + acc.season.peakAcc,
+                    bestRating: l.season.rating > acc.season.bestRating ? l.season.rating : acc.season.bestRating,
+                    peak: l.season.peak > acc.season.peak ? l.season.peak : acc.season.peak,
+                    games: l.season.games + acc.season.games,
+                    wins: l.season.wins + acc.season.wins,
+                },
+                legends: [...acc.legends, l],
+            }),
+            defaultWeaponStats,
+        ),
+    }));
 }
 
-export function formatTeamsStats(
-    playerID: number,
-    teamsStats: I2v2Team[]
-): I2v2TeamFormat[] {
+export function formatTeamsStats(playerID: number, teamsStats: I2v2Team[]): I2v2TeamFormat[] {
     return teamsStats
         .map<I2v2TeamFormat>(
-            ({
-                brawlhalla_id_one,
-                brawlhalla_id_two,
-                teamname,
-                region,
-                global_rank: _tgr,
-                peak_rating,
-                ...season
-            }) => {
+            ({ brawlhalla_id_one, brawlhalla_id_two, teamname, region, global_rank: _tgr, peak_rating, ...season }) => {
                 const isPlayerOne = brawlhalla_id_one === playerID;
                 const playerNames = teamname.split('+');
 
@@ -400,13 +347,10 @@ export function formatTeamsStats(
                         ratingSquash: getHeroRatingSquash(season.rating),
                     },
                 };
-            }
+            },
         )
         .reduce<I2v2TeamFormat[]>(
-            (acc, x) =>
-                acc.find((y) => y.teammate.id === x.teammate.id)
-                    ? acc
-                    : [...acc, x],
-            []
+            (acc, x) => (acc.find((y) => y.teammate.id === x.teammate.id) ? acc : [...acc, x]),
+            [],
         );
 }
