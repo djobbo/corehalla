@@ -1,23 +1,15 @@
-# source code
-src
-index.html
+node_modules/
 
-# compiler
+src/
+
+.babelrc
+.eslintrc
+.prettierrc
 tsconfig.json
-webpack.config.js
 
-# tests
-test
+.gitignore
+
 jest.config.js
 setupJest.ts
-coverage
 
-#  lint
-.eslintrc.js
-.prettierrc
-
-# IDE - VSCode
-.vscode
-
-# git
-.git
+webpack.config.js
