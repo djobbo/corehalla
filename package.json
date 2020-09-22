@@ -42,7 +42,7 @@
         "autoprefixer": "^10.0.0",
         "babel-loader": "^8.1.0",
         "copy-webpack-plugin": "^6.1.1",
-        "corehalla.js": "0.0.15",
+        "corehalla.js": "0.0.17",
         "css-loader": "^4.3.0",
         "eslint": "^7.9.0",
         "eslint-config-prettier": "^6.11.0",
