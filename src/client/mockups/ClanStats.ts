@@ -5,58 +5,57 @@ const ClanStats: IClanFormat = {
     xp: '10',
     xpInClan: 8,
     name: 'BRUH',
-    members: {
-        Leader: [
-            {
-                id: 4281946,
-                name: 'Alfie',
-                xp: 10,
-                joinDate: 123,
-            },
-        ],
-        Officer: [
-            {
-                id: 4281946,
-                name: 'Alfie',
-                xp: 10,
-                joinDate: 123,
-            },
-            {
-                id: 4281946,
-                name: 'Alfie',
-                xp: 10,
-                joinDate: 123,
-            },
-        ],
-        Member: [
-            {
-                id: 4281946,
-                name: 'Alfie',
-                xp: 10,
-                joinDate: 123,
-            },
-        ],
-        Recruit: [
-            {
-                id: 4281946,
-                name: 'Alfie',
-                xp: 10,
-                joinDate: 123,
-            },
-            {
-                id: 4281946,
-                name: 'Alfie',
-                xp: 10,
-                joinDate: 123,
-            },
-            {
-                id: 4281946,
-                name: 'Alfie',
-                xp: 10,
-                joinDate: 123,
-            },
-        ],
-    },
+    members: [
+        {
+            id: 4,
+            name: 'Alfie',
+            xp: 10,
+            joinDate: 123,
+            rank: 'Leader',
+        },
+        {
+            id: 42,
+            name: 'Alfie',
+            xp: 10,
+            joinDate: 123,
+            rank: 'Officer',
+        },
+        {
+            id: 428,
+            name: 'Alfie',
+            xp: 10,
+            joinDate: 123,
+            rank: 'Officer',
+        },
+        {
+            id: 4281,
+            name: 'Alfie',
+            xp: 10,
+            joinDate: 123,
+            rank: 'Member',
+        },
+        {
+            id: 428,
+            name: 'Alfie',
+            xp: 10,
+            joinDate: 123,
+            rank: 'Member',
+        },
+        {
+            id: 4281,
+            name: 'Alfie',
+            xp: 10,
+            joinDate: 123,
+            rank: 'Member',
+        },
+        {
+            id: 4281,
+            name: 'Alfie',
+            xp: 10,
+            joinDate: 123,
+            rank: 'Recruit',
+        },
+    ],
     memberCount: 7,
     creationDate: 123,
 };

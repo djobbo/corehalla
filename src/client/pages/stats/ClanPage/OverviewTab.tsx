@@ -1,6 +1,6 @@
 // Library imports
-import React, { FC } from 'react';
-import { IClanFormat } from 'corehalla.js';
+import React, { FC, useState } from 'react';
+import { IClanFormat, IClanMemberFormat } from 'corehalla.js';
 
 // Components
 import { BarChartCard } from '../../../components/BarChartCard';
@@ -12,9 +12,23 @@ interface Props {
 }
 
 export const OverviewTab: FC<Props> = ({ clanStats }: Props) => {
+    const [clanmates] = useState<[IClanMemberFormat[], IClanMemberFormat[], IClanMemberFormat[]]>([
+        clanStats.members.filter((x) => x.rank === 'Officer'),
+        clanStats.members.filter((x) => x.rank === 'Member'),
+        clanStats.members.filter((x) => x.rank === 'Recruit'),
+    ]);
     return (
         <>
-            <ProfileHeader title={clanStats.name} bannerURI="https://picsum.photos/480/120" />
+            <ProfileHeader
+                title={clanStats.name}
+                bannerURI="https://picsum.photos/480/120"
+                favorite={{
+                    id: clanStats.id.toString(),
+                    name: clanStats.name,
+                    thumbURI: '/assets/images/logo.png',
+                    type: 'clan',
+                }}
+            />
             <SectionSeparator />
             <BarChartCard
                 title="members"
@@ -26,17 +40,17 @@ export const OverviewTab: FC<Props> = ({ clanStats }: Props) => {
                     },
                     {
                         title: 'Officers',
-                        amount: clanStats.members.Officer.length,
+                        amount: clanmates[0].length,
                         max: clanStats.memberCount,
                     },
                     {
                         title: 'Members',
-                        amount: clanStats.members.Member.length,
+                        amount: clanmates[1].length,
                         max: clanStats.memberCount,
                     },
                     {
                         title: 'Recruits',
-                        amount: clanStats.members.Recruit.length,
+                        amount: clanmates[2].length,
                         max: clanStats.memberCount,
                     },
                 ]}
