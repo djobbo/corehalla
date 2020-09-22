@@ -49,5 +49,8 @@
         "typescript": "^4.0.3",
         "webpack": "^4.44.2",
         "webpack-cli": "^3.3.12"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/"
     }
 }
