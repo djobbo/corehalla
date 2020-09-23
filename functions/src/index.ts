@@ -9,19 +9,10 @@ const app = express();
 
 app.use(cors({ origin: true }));
 
-const router = express.Router();
-
-router.get('/', (req, res) => {
-    res.status(200).json('Corehalla API');
+app.use('/api/rankings', rankingsRouter);
+app.use('/api/stats', statsRouter);
+app.get('/api', (req, res) => {
+    res.send('Corehalla API');
 });
-
-router.get('/rankings', rankingsRouter);
-router.get('/stats', statsRouter);
-
-router.get('/**', (req, res) => {
-    res.status(404).json('Not Found!');
-});
-
-app.use('/', router);
 
 exports.api = functions.https.onRequest(app);

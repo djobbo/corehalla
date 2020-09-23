@@ -1,92 +1,71 @@
 // Library imports
 import React, { FC } from 'react';
+import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
-import { IClanFormat } from 'corehalla.js';
+import { ClanRank, IClanFormat } from 'corehalla.js';
 
 // Hooks
 import { useFetchData } from '../../../hooks/useFetchData';
 import { useMockData } from '../../../hooks/useMockData';
-import { useHashTabs } from '../../../hooks/useHashTabs';
 
-// Components imports
-import { AppBar } from '../../../components/AppBar';
-import { BottomNavigationBar } from '../../../components/BottomNavigationBar';
-import { Loader } from '../../../components/Loader';
-import { Page, PageContentWrapper } from '../../../components/Page';
+// Layout imports
+import { MainLayout } from '../../../layout';
 
 // Tabs imports
 import { OverviewTab } from './OverviewTab';
 import { MembersTab } from './MembersTab';
 
-type ClanStatsTab = '#overview' | '#members';
+type ClanStatsTab = 'overview' | 'members';
 
-const sectionTransition = {
-    in: {
-        opacity: 1,
-    },
-    out: {
-        opacity: 0,
-    },
-    init: {
-        opacity: 0,
-    },
-};
-
-export const ClanStatsPage: FC = () => {
+export const ClanPage: FC = () => {
     // Fetch Clan ID
     const { id: clanId } = useParams<{ id: string }>();
-    // Initialize Tabs
-    const [activeTab] = useHashTabs<ClanStatsTab>(['#overview', '#members'], '#overview');
+
     // Fetch Clan Stats
     const [clanStats, loading] =
         process.env.NODE_ENV === 'production'
             ? useFetchData<IClanFormat>(`/api/stats/clan/${clanId}`)
-            : useMockData<IClanFormat>('ClanStats', 250);
+            : useMockData<IClanFormat>('ClanStats', 0);
 
-    const renderActiveTab = () => {
-        switch (activeTab) {
-            case '#members':
-                return <MembersTab clanStats={clanStats} />;
-            default:
-                return <OverviewTab clanStats={clanStats} />;
-        }
-    };
+    const renderOverviewTab = () => <OverviewTab clanStats={clanStats} />;
+
+    const renderMembersTab = (activeRank: ClanRank | 'all') => (
+        <MembersTab
+            members={activeRank === 'all' ? clanStats.members : clanStats.members.filter((m) => m.rank === activeRank)}
+            clanXP={parseInt(clanStats.xp)} // TODO: parse xp in ch.js
+        />
+    );
 
     return (
-        <Page>
-            <AppBar
+        <>
+            {!loading && (
+                <Helmet>
+                    <title>{clanStats.name} Stats • Corehalla</title>
+                </Helmet>
+            )}
+            <MainLayout<ClanStatsTab, ClanRank | 'all'>
                 title={loading ? 'loading' : clanStats.name || 'Corehalla'}
-                tabs={[
-                    { title: 'overview', link: `#`, active: activeTab === '#overview' },
-                    { title: 'members', link: `#members`, active: activeTab === '#members' },
-                ]}
-            />
-            <PageContentWrapper pTop="6rem">
-                <AnimatePresence exitBeforeEnter initial>
-                    {loading ? (
-                        <Loader key="loader" />
-                    ) : (
-                        <motion.div key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
-                            <main>
-                                <AnimatePresence exitBeforeEnter initial>
-                                    <motion.div
-                                        key={activeTab}
-                                        animate="in"
-                                        exit="out"
-                                        initial="init"
-                                        variants={sectionTransition}
-                                        transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
-                                    >
-                                        {renderActiveTab()}
-                                    </motion.div>
-                                </AnimatePresence>
-                            </main>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </PageContentWrapper>
-            <BottomNavigationBar />
-        </Page>
+                tabs={{
+                    overview: {
+                        render: renderOverviewTab,
+                        displayName: 'Overview',
+                    },
+                    members: {
+                        render: renderMembersTab,
+                        displayName: 'Members',
+                        chips: [
+                            { chipName: 'all', displayName: 'All' },
+                            { chipName: 'Leader', displayName: 'Leader' },
+                            { chipName: 'Officer', displayName: 'Officers' },
+                            { chipName: 'Member', displayName: 'Members' },
+                            { chipName: 'Recruit', displayName: 'Recruits' },
+                        ],
+                        defaultChip: 'all',
+                    },
+                }}
+                defaultTab="overview"
+                loading={loading}
+            ></MainLayout>
+        </>
     );
 };

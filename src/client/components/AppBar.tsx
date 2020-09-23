@@ -34,9 +34,6 @@ const NavbarWrapper = styled.div<{ showSearch?: boolean }>`
     padding: ${showSearch ? '0 1rem 0 0' : '1rem'};
         background-color: var(${showSearch ? '--text' : '--bg'});
         color: var(${showSearch ? '--bg' : '--text'});
-        svg {
-            fill: var(${showSearch ? '--bg' : '--text'});
-        }
     `}
 `;
 
@@ -61,9 +58,9 @@ export const Navbar: FC<NavbarProps> = ({ title }: NavbarProps) => {
                     {title ? (
                         <div>
                             <Link to="/">
-                                <Icon path={mdiArrowLeft} size={1} />
+                                <Icon path={mdiArrowLeft} size={1} color="var(--text)" />
                             </Link>
-                            <NavbarTitle>{title}</NavbarTitle>{' '}
+                            <NavbarTitle>{title}</NavbarTitle>
                         </div>
                     ) : (
                         <Link to="/">
@@ -77,7 +74,7 @@ export const Navbar: FC<NavbarProps> = ({ title }: NavbarProps) => {
                             setShowSearch(true);
                         }}
                     >
-                        <Icon path={mdiMagnify} size={1} />
+                        <Icon path={mdiMagnify} size={1} color="var(--text)" />
                     </a>
                 </>
             )}
@@ -85,14 +82,14 @@ export const Navbar: FC<NavbarProps> = ({ title }: NavbarProps) => {
     );
 };
 
-interface ITab {
-    title: string;
+interface ITab<T extends string> {
+    displayName: T;
     link: string;
     active?: boolean;
 }
 
-interface TabsProps {
-    tabs: ITab[];
+interface TabsProps<T extends string> {
+    tabs: ITab<T>[];
 }
 
 const Tab = styled.div<{ active?: boolean }>`
@@ -101,8 +98,7 @@ const Tab = styled.div<{ active?: boolean }>`
     text-transform: uppercase;
     a {
         height: 100%;
-        color: var(--text);
-        opacity: 0.48;
+        color: var(--text-2);
         display: flex;
         align-items: center;
         padding: 0 1.5rem;
@@ -112,7 +108,6 @@ const Tab = styled.div<{ active?: boolean }>`
         active &&
         `
         a {
-            opacity: 1;
             color: var(--accent);
             border-bottom:1px solid var(--accent);
         }
@@ -127,34 +122,33 @@ const TabsContainerWrapper = styled.div`
     height: 3rem;
 `;
 
-export const TabsContainer: FC<TabsProps> = ({ tabs }: TabsProps) => {
+export function TabsContainer<T extends string>({ tabs }: TabsProps<T>): React.ReactElement<TabsProps<T>> {
     return (
         <TabsContainerWrapper>
-            {tabs.map(({ title, link, active }, i) => (
+            {tabs.map(({ displayName, link, active }, i) => (
                 <Tab key={i} active={active}>
-                    <Link to={link}>{title}</Link>
+                    <Link to={link}>{displayName}</Link>
                 </Tab>
             ))}
         </TabsContainerWrapper>
     );
-};
+}
 
-interface IChip {
-    title: string;
+interface IChip<T extends string> {
+    displayName: T;
     action?: () => void;
-    link?: string;
     active?: boolean;
 }
 
-interface ChipsContainerProps {
-    chips: IChip[];
+interface ChipsContainerProps<T extends string> {
+    chips: IChip<T>[];
 }
 
 const Chip = styled.div<{ active?: boolean }>`
     white-space: nowrap;
     margin: 0 0.5rem;
     border-radius: 2rem;
-    border: 1px solid var(--bg-3);
+    border: 1px solid var(--bg-2);
     background-color: var(--bg-1);
     a {
         padding: 0.25rem 1rem;
@@ -167,7 +161,6 @@ const Chip = styled.div<{ active?: boolean }>`
         `
         background-color: var(--accent);
         border-color: var(--accent);
-        opacity: 1;
         a {
             color: var(--bg);
         }
@@ -184,13 +177,15 @@ const ChipsContainerWrapper = styled.div`
     height: 3rem;
 `;
 
-export const ChipsContainer: FC<ChipsContainerProps> = ({ chips }: ChipsContainerProps) => {
+export function ChipsContainer<T extends string>({
+    chips,
+}: ChipsContainerProps<T>): React.ReactElement<ChipsContainerProps<T>> {
     return (
         <ChipsContainerWrapper>
-            {chips.map(({ title, action, active, link }, i) => (
+            {chips.map(({ displayName, action, active }, i) => (
                 <Chip key={i} active={active}>
                     <Link
-                        to={link || '#'}
+                        to="#"
                         onClick={
                             action
                                 ? (e) => {
@@ -200,18 +195,18 @@ export const ChipsContainer: FC<ChipsContainerProps> = ({ chips }: ChipsContaine
                                 : null
                         }
                     >
-                        {title}
+                        {displayName}
                     </Link>
                 </Chip>
             ))}
         </ChipsContainerWrapper>
     );
-};
+}
 
-interface Props {
+export interface AppBarProps<T extends string, U extends string> {
     title?: string;
-    tabs?: ITab[];
-    chips?: IChip[];
+    tabs?: ITab<T>[];
+    chips?: IChip<U>[];
 }
 
 const AppBarWrapper = styled.div`
@@ -222,7 +217,11 @@ const AppBarWrapper = styled.div`
     z-index: 100;
 `;
 
-export const AppBar: FC<Props> = ({ title, tabs, chips }: Props) => {
+export function AppBar<T extends string, U extends string>({
+    title,
+    tabs,
+    chips,
+}: AppBarProps<T, U>): React.ReactElement<AppBarProps<T, U>> {
     const [hideOnScroll, setHideOnScroll] = useState(false);
 
     useScrollPosition(
@@ -250,4 +249,4 @@ export const AppBar: FC<Props> = ({ title, tabs, chips }: Props) => {
             </AnimatePresence>
         </AppBarWrapper>
     );
-};
+}

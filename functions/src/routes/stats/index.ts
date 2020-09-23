@@ -5,7 +5,10 @@ import { router as clanStatsRouter } from './clan';
 
 const router = express.Router();
 
-router.get('/player', playerStatsRouter);
-router.get('/clan', clanStatsRouter);
+router.use('/player', playerStatsRouter);
+router.use('/clan', clanStatsRouter);
 
+router.get('/', (req, res) => {
+    res.send('Stats');
+});
 export { router };

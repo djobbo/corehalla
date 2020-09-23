@@ -1,2 +1,2 @@
-export * from './epochToDate';
-export * from './formatTime';
+export * from './time';
+export * from './devices';

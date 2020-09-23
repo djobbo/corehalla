@@ -1,5 +1,5 @@
 import React, { useState, createContext, FC } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useDebounce } from '../hooks/useDebounce';
 import { history } from '../history';
 import { RankedRegion } from 'corehalla.js';
@@ -28,7 +28,7 @@ export const PlayerSearchProvider: FC<Props> = ({ children }: Props) => {
         (debouncedSearch) => {
             history.push(`/rankings/${bracket || '1v1'}/${region || 'all'}/${page || '1'}?p=${debouncedSearch}`);
         },
-        500,
+        1000,
         playerSearch,
     );
 
