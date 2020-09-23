@@ -15,7 +15,7 @@ export const BarChart: Chart = ({
     width = '100%',
     height = '0.25rem',
     amount = 0,
-    bg = 'var(--bg)',
+    bg = 'var(--bg-2)',
     fg = 'var(--accent)',
 }: ChartProps) => {
     return (
@@ -30,7 +30,7 @@ export const PieChart: Chart = ({
     width = '2rem',
     height = '2rem',
     amount = 0,
-    bg = 'var(--bg)',
+    bg = 'var(--bg-2)',
     fg = 'var(--accent)',
 }: ChartProps) => {
     return (

@@ -22,9 +22,9 @@ interface Props {
 
 const CardsWrapper = styled.div`
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-    gap: 1rem;
-    margin: 1rem 0;
+    grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+    gap: 2rem;
+    margin: 1rem;
 `;
 
 export const SectionOverallStatsContent: FC<Props> = ({

@@ -16,8 +16,10 @@ interface Props {
 
 const Alias = styled.p`
     &::before {
+        color: var(--accent);
         content: '■ ';
     }
+    margin: 0.25rem 0;
 `;
 
 //TODO: Add losses in ch.js to avoid losses={season.games - season.wins} && losses={playerStats.games - playerStats.wins}
@@ -58,6 +60,7 @@ export const OverviewTab: FC<Props> = ({ playerStats }: Props) => {
                         </Alias>
                     ))}
             </PageSection>
+            <SectionSeparator />
             <PageSection title="Glory" initFoldState>
                 <p>
                     <StatDesc>estimated glory:</StatDesc>

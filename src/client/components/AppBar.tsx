@@ -98,8 +98,7 @@ const Tab = styled.div<{ active?: boolean }>`
     text-transform: uppercase;
     a {
         height: 100%;
-        color: var(--text);
-        opacity: 0.48;
+        color: var(--text-2);
         display: flex;
         align-items: center;
         padding: 0 1.5rem;
@@ -109,7 +108,6 @@ const Tab = styled.div<{ active?: boolean }>`
         active &&
         `
         a {
-            opacity: 1;
             color: var(--accent);
             border-bottom:1px solid var(--accent);
         }
@@ -151,7 +149,7 @@ const Chip = styled.div<{ active?: boolean }>`
     white-space: nowrap;
     margin: 0 0.5rem;
     border-radius: 2rem;
-    border: 1px solid var(--bg-3);
+    border: 1px solid var(--bg-2);
     background-color: var(--bg-1);
     a {
         padding: 0.25rem 1rem;
@@ -164,7 +162,6 @@ const Chip = styled.div<{ active?: boolean }>`
         `
         background-color: var(--accent);
         border-color: var(--accent);
-        opacity: 1;
         a {
             color: var(--bg);
         }
