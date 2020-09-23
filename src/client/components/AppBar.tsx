@@ -83,7 +83,7 @@ export const Navbar: FC<NavbarProps> = ({ title }: NavbarProps) => {
 };
 
 interface ITab<T extends string> {
-    title: T;
+    displayName: T;
     link: string;
     active?: boolean;
 }
@@ -125,22 +125,22 @@ const TabsContainerWrapper = styled.div`
 export function TabsContainer<T extends string>({ tabs }: TabsProps<T>): React.ReactElement<TabsProps<T>> {
     return (
         <TabsContainerWrapper>
-            {tabs.map(({ title, link, active }, i) => (
+            {tabs.map(({ displayName, link, active }, i) => (
                 <Tab key={i} active={active}>
-                    <Link to={link}>{title}</Link>
+                    <Link to={link}>{displayName}</Link>
                 </Tab>
             ))}
         </TabsContainerWrapper>
     );
 }
 
-interface IChip<T extends 'all'> {
-    title: T;
+interface IChip<T extends string> {
+    displayName: T;
     action?: () => void;
     active?: boolean;
 }
 
-interface ChipsContainerProps<T extends 'all'> {
+interface ChipsContainerProps<T extends string> {
     chips: IChip<T>[];
 }
 
@@ -177,12 +177,12 @@ const ChipsContainerWrapper = styled.div`
     height: 3rem;
 `;
 
-export function ChipsContainer<T extends 'all'>({
+export function ChipsContainer<T extends string>({
     chips,
 }: ChipsContainerProps<T>): React.ReactElement<ChipsContainerProps<T>> {
     return (
         <ChipsContainerWrapper>
-            {chips.map(({ title, action, active }, i) => (
+            {chips.map(({ displayName, action, active }, i) => (
                 <Chip key={i} active={active}>
                     <Link
                         to="#"
@@ -195,7 +195,7 @@ export function ChipsContainer<T extends 'all'>({
                                 : null
                         }
                     >
-                        {title}
+                        {displayName}
                     </Link>
                 </Chip>
             ))}
@@ -203,7 +203,7 @@ export function ChipsContainer<T extends 'all'>({
     );
 }
 
-export interface AppBarProps<T extends string, U extends 'all'> {
+export interface AppBarProps<T extends string, U extends string> {
     title?: string;
     tabs?: ITab<T>[];
     chips?: IChip<U>[];
@@ -217,7 +217,7 @@ const AppBarWrapper = styled.div`
     z-index: 100;
 `;
 
-export function AppBar<T extends string, U extends 'all'>({
+export function AppBar<T extends string, U extends string>({
     title,
     tabs,
     chips,

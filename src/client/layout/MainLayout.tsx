@@ -1,12 +1,12 @@
 // Library imports
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 // Hooks
 import { useHashTabs } from '../hooks/useHashTabs';
 
 // Components imports
-import { AppBar, AppBarProps } from '../components/AppBar';
+import { AppBar } from '../components/AppBar';
 import { BottomNavigationBar } from '../components/BottomNavigationBar';
 import { Loader } from '../components/Loader';
 import { Page, PageContentWrapper } from '../components/Page';
@@ -23,37 +23,57 @@ const sectionTransition = {
     },
 };
 
-interface Props<T extends string, U extends 'all'> extends AppBarProps<T, U> {
-    tabComponents?: { [k in T]: FC };
-    defaultTab: T;
-    loading: boolean;
+interface ITab<T> {
+    render: (activeChip: T) => React.ReactElement;
+    displayName: string;
+    chips?: {
+        chipName: T;
+        displayName: string;
+    }[];
+    defaultChip?: T;
 }
 
-export function MainLayout<T extends string, U extends 'all'>({
+interface Props<T extends string, U extends string> {
+    tabs: {
+        [k in T]: ITab<U>;
+    };
+    title: string;
+    defaultTab?: T;
+    loading?: boolean;
+}
+
+export function MainLayout<T extends string, U extends string>({
     tabs,
-    chips,
-    tabComponents,
     title,
     loading,
     defaultTab,
 }: Props<T, U>): React.ReactElement<Props<T, U>> {
     // Initialize Tabs
-    const [activeTab] = tabs
-        ? useHashTabs<T>(
-              tabs.map((tab) => tab.title),
-              defaultTab || tabs[0].title || ('' as T),
-          )
-        : ['' as T];
+    const [activeTab] = tabs ? useHashTabs<T>(Object.keys(tabs) as T[], defaultTab || null) : null;
 
-    const [activeChip, setActiveChip] = useState<U>('all');
+    // Initialize Chips
+    const [activeChip, setActiveChip] = useState<U>(null);
 
-    const renderActiveTab = () => tabComponents[activeTab];
+    const renderActiveTab = () => {
+        if (!activeTab) return null;
+        const currentChips = tabs[activeTab]?.chips;
+        if (currentChips && !activeChip) setActiveChip(tabs[activeTab].defaultChip);
+        return tabs[activeTab].render(activeChip);
+    };
 
     return (
         <>
             <AppBar
-                tabs={tabs}
-                chips={chips?.map((chip) => ({ ...chip, active: chip.title === activeChip }))}
+                tabs={(Object.entries(tabs) as [T, ITab<U>][]).map(([tabName, { displayName }]) => ({
+                    displayName,
+                    link: `#${tabName}`,
+                    active: activeTab === tabName,
+                }))}
+                chips={tabs[activeTab]?.chips?.map(({ chipName, displayName }) => ({
+                    displayName,
+                    active: activeChip === chipName,
+                    action: () => setActiveChip(chipName),
+                }))}
                 title={title}
             />
             <Page>
