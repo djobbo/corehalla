@@ -1,6 +1,8 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 
+import { formatTime } from '../../../util';
+
 import { IPlayerStatsFormat } from 'corehalla.js';
 import { ProfileHeader } from '../../../components/ProfileHeader';
 
@@ -38,7 +40,19 @@ export const OverviewTab: FC<Props> = ({ playerStats }: Props) => {
                         playerStats.legends.sort((a, b) => b.season.rating - a.season.rating)[0].name
                     }.png`,
                 }}
-            />
+            >
+                <div>
+                    <p>
+                        <StatDesc>level</StatDesc>
+                        <StatSmall>{playerStats.level}</StatSmall>
+                        <StatDesc>({playerStats.xp} xp)</StatDesc>
+                    </p>
+                    <p>
+                        <StatDesc>time spent in game</StatDesc>
+                        <StatSmall>{formatTime(playerStats.matchtime)}</StatSmall>
+                    </p>
+                </div>
+            </ProfileHeader>
             <SectionSeparator />
             <PageSection title="Season Overview" initFoldState>
                 <SectionSeasonOverviewContent
