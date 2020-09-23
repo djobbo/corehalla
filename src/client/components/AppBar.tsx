@@ -82,14 +82,14 @@ export const Navbar: FC<NavbarProps> = ({ title }: NavbarProps) => {
     );
 };
 
-interface ITab {
-    title: string;
+export interface ITab<T extends string> {
+    title: T;
     link: string;
     active?: boolean;
 }
 
-interface TabsProps {
-    tabs: ITab[];
+export interface TabsProps<T extends string> {
+    tabs: ITab<T>[];
 }
 
 const Tab = styled.div<{ active?: boolean }>`
@@ -122,7 +122,7 @@ const TabsContainerWrapper = styled.div`
     height: 3rem;
 `;
 
-export const TabsContainer: FC<TabsProps> = ({ tabs }: TabsProps) => {
+export function TabsContainer<T extends string>({ tabs }: TabsProps<T>): React.ReactElement<TabsProps<T>> {
     return (
         <TabsContainerWrapper>
             {tabs.map(({ title, link, active }, i) => (
@@ -132,17 +132,17 @@ export const TabsContainer: FC<TabsProps> = ({ tabs }: TabsProps) => {
             ))}
         </TabsContainerWrapper>
     );
-};
+}
 
-interface IChip {
-    title: string;
+export interface IChip<T extends string> {
+    title: T;
     action?: () => void;
     link?: string;
     active?: boolean;
 }
 
-interface ChipsContainerProps {
-    chips: IChip[];
+export interface ChipsContainerProps<T extends string> {
+    chips: IChip<T>[];
 }
 
 const Chip = styled.div<{ active?: boolean }>`
@@ -178,7 +178,9 @@ const ChipsContainerWrapper = styled.div`
     height: 3rem;
 `;
 
-export const ChipsContainer: FC<ChipsContainerProps> = ({ chips }: ChipsContainerProps) => {
+export function ChipsContainer<T extends string>({
+    chips,
+}: ChipsContainerProps<T>): React.ReactElement<ChipsContainerProps<T>> {
     return (
         <ChipsContainerWrapper>
             {chips.map(({ title, action, active, link }, i) => (
@@ -200,12 +202,12 @@ export const ChipsContainer: FC<ChipsContainerProps> = ({ chips }: ChipsContaine
             ))}
         </ChipsContainerWrapper>
     );
-};
+}
 
-interface Props {
+interface Props<T extends string, U extends string> {
     title?: string;
-    tabs?: ITab[];
-    chips?: IChip[];
+    tabs?: ITab<T>[];
+    chips?: IChip<U>[];
 }
 
 const AppBarWrapper = styled.div`
@@ -216,7 +218,11 @@ const AppBarWrapper = styled.div`
     z-index: 100;
 `;
 
-export const AppBar: FC<Props> = ({ title, tabs, chips }: Props) => {
+export function AppBar<T extends string, U extends string>({
+    title,
+    tabs,
+    chips,
+}: Props<T, U>): React.ReactElement<Props<T, U>> {
     const [hideOnScroll, setHideOnScroll] = useState(false);
 
     useScrollPosition(
@@ -244,4 +250,4 @@ export const AppBar: FC<Props> = ({ title, tabs, chips }: Props) => {
             </AnimatePresence>
         </AppBarWrapper>
     );
-};
+}
