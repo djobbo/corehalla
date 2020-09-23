@@ -130,30 +130,28 @@ export const RankingsPage: FC = () => {
                     },
                 ]}
             />
-            <PageContentWrapper pTop="9rem" pBtm="3rem">
-                <AnimatePresence exitBeforeEnter initial>
-                    {loading ? (
-                        <Loader key="loader" />
-                    ) : (
-                        <motion.div key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
-                            <main>
-                                <AnimatePresence exitBeforeEnter initial>
-                                    <motion.div
-                                        key={bracket}
-                                        animate="in"
-                                        exit="out"
-                                        initial="init"
-                                        variants={sectionTransition}
-                                        transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
-                                    >
-                                        {renderActiveTab()}
-                                    </motion.div>
-                                </AnimatePresence>
-                            </main>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </PageContentWrapper>
+            <AnimatePresence exitBeforeEnter initial>
+                {loading ? (
+                    <Loader key="loader" />
+                ) : (
+                    <motion.div key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
+                        <main>
+                            <AnimatePresence exitBeforeEnter initial>
+                                <motion.div
+                                    key={bracket}
+                                    animate="in"
+                                    exit="out"
+                                    initial="init"
+                                    variants={sectionTransition}
+                                    transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
+                                >
+                                    {renderActiveTab()}
+                                </motion.div>
+                            </AnimatePresence>
+                        </main>
+                    </motion.div>
+                )}
+            </AnimatePresence>
             <BottomNavigationBar />
         </Page>
     );
