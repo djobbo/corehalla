@@ -25,10 +25,10 @@ const sectionTransition = {
 
 interface ITab<T> {
     render: (activeChip: T) => React.ReactElement;
-    displayName: string;
+    displayName?: string;
     chips?: {
         chipName: T;
-        displayName: string;
+        displayName?: string;
     }[];
     defaultChip?: T;
 }
@@ -65,12 +65,12 @@ export function MainLayout<T extends string, U extends string>({
         <>
             <AppBar
                 tabs={(Object.entries(tabs) as [T, ITab<U>][]).map(([tabName, { displayName }]) => ({
-                    displayName,
+                    displayName: displayName || tabName,
                     link: `#${tabName}`,
                     active: activeTab === tabName,
                 }))}
                 chips={tabs[activeTab]?.chips?.map(({ chipName, displayName }) => ({
-                    displayName,
+                    displayName: displayName || chipName,
                     active: activeChip === chipName,
                     action: () => setActiveChip(chipName),
                 }))}
