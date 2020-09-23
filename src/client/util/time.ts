@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const formatTime = (s: number): string => {
     let timeLeft = s;
 
@@ -8,3 +10,5 @@ export const formatTime = (s: number): string => {
     timeLeft -= m * 60;
     return `${h}h ${m}m ${timeLeft}s`;
 };
+
+export const formatEpoch = (epoch: number) => dayjs.unix(epoch).format('DD MMM YYYY - hh:mma');

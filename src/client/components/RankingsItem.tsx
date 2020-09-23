@@ -7,7 +7,7 @@ import { StatLarge, StatDesc, StatSmall, StatMedium } from './TextStyles';
 import { BarChart } from './Charts';
 import { Link } from 'react-router-dom';
 
-import { epochToDate, formatDate } from '../util';
+import { formatEpoch } from '../util';
 
 const BarChartWrapper = styled.div`
     display: flex;
@@ -130,7 +130,7 @@ export const RankingsItemClan: FC<PropsClan> = ({ player, clanXP }: PropsClan) =
                     </Link>
                     <p>
                         <StatDesc>Member since </StatDesc>
-                        <StatSmall>{formatDate(epochToDate(player.joinDate))}</StatSmall>
+                        <StatSmall>{formatEpoch(player.joinDate)}</StatSmall>
                     </p>
                 </div>
                 <LargeStatWrapper>
