@@ -77,7 +77,10 @@ export function MainLayout<T extends string, U extends string>({
                 title={title}
             />
             <Page>
-                <PageContentWrapper>
+                <PageContentWrapper
+                    pTop={`${tabs ? 6 + (tabs[activeTab] && tabs[activeTab].chips ? 3 : 0) : 3}rem`}
+                    pBtm="3rem"
+                >
                     <AnimatePresence exitBeforeEnter initial>
                         {loading ? (
                             <Loader key="loader" />
