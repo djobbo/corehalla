@@ -1,17 +1,12 @@
 // Library imports
 import React, { FC, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ClanRank, IClanFormat } from 'corehalla.js';
 
 // Hooks
-import { useFetchData } from '../hooks/useFetchData';
-import { useMockData } from '../hooks/useMockData';
 import { useHashTabs } from '../hooks/useHashTabs';
 
 // Components imports
-import { AppBar, TabsProps, ChipsContainerProps } from '../components/AppBar';
+import { AppBar, AppBarProps } from '../components/AppBar';
 import { BottomNavigationBar } from '../components/BottomNavigationBar';
 import { Loader } from '../components/Loader';
 import { Page, PageContentWrapper } from '../components/Page';
@@ -28,110 +23,66 @@ const sectionTransition = {
     },
 };
 
-interface Props<T> extends TabsProps, ChipsContainerProps {}
+interface Props<T extends string, U extends 'all'> extends AppBarProps<T, U> {
+    tabComponents?: { [k in T]: FC };
+    defaultTab: T;
+    loading: boolean;
+}
 
-export function MainLayout<T>({}): React.ReactElement<Props<T>> {
-    // Fetch Clan ID
-    const { id: clanId } = useParams<{ id: string }>();
+export function MainLayout<T extends string, U extends 'all'>({
+    tabs,
+    chips,
+    tabComponents,
+    title,
+    loading,
+    defaultTab,
+}: Props<T, U>): React.ReactElement<Props<T, U>> {
     // Initialize Tabs
-    const [activeTab] = useHashTabs<ClanStatsTab>(['#overview', '#members'], '#overview');
+    const [activeTab] = tabs
+        ? useHashTabs<T>(
+              tabs.map((tab) => tab.title),
+              defaultTab || tabs[0].title || ('' as T),
+          )
+        : ['' as T];
 
-    const [activeRank, setActiveRank] = useState<ClanRank | 'all'>('all');
+    const [activeChip, setActiveChip] = useState<U>('all');
 
-    // Fetch Clan Stats
-    const [clanStats, loading] =
-        process.env.NODE_ENV === 'production'
-            ? useFetchData<IClanFormat>(`/api/stats/clan/${clanId}`)
-            : useMockData<IClanFormat>('ClanStats', 0);
-
-    const renderActiveTab = () => {
-        switch (activeTab) {
-            case '#members':
-                return (
-                    <MembersTab
-                        members={
-                            activeRank === 'all'
-                                ? clanStats.members
-                                : clanStats.members.filter((m) => m.rank === activeRank)
-                        }
-                        clanXP={parseInt(clanStats.xp)} // TODO: parse xp in ch.js
-                    />
-                );
-            default:
-                return <OverviewTab clanStats={clanStats} />;
-        }
-    };
+    const renderActiveTab = () => tabComponents[activeTab];
 
     return (
-        <Page>
-            {!loading && (
-                <Helmet>
-                    <title>{clanStats.name} Stats • Corehalla</title>
-                </Helmet>
-            )}
+        <>
             <AppBar
-                title={loading ? 'loading' : clanStats.name || 'Corehalla'}
-                tabs={[
-                    { title: 'overview', link: `#`, active: activeTab === '#overview' },
-                    { title: 'members', link: `#members`, active: activeTab === '#members' },
-                ]}
-                chips={
-                    activeTab === '#members'
-                        ? [
-                              {
-                                  title: 'All',
-                                  action: () => setActiveRank('all'),
-                                  active: activeRank === 'all',
-                              },
-                              {
-                                  title: 'Leader',
-                                  action: () => setActiveRank('Leader'),
-                                  active: activeRank === 'Leader',
-                              },
-                              {
-                                  title: 'Officers',
-                                  action: () => setActiveRank('Officer'),
-                                  active: activeRank === 'Officer',
-                              },
-                              {
-                                  title: 'Members',
-                                  action: () => setActiveRank('Member'),
-                                  active: activeRank === 'Member',
-                              },
-                              {
-                                  title: 'Recruits',
-                                  action: () => setActiveRank('Recruit'),
-                                  active: activeRank === 'Recruit',
-                              },
-                          ]
-                        : undefined
-                }
+                tabs={tabs}
+                chips={chips?.map((chip) => ({ ...chip, active: chip.title === activeChip }))}
+                title={title}
             />
-            <PageContentWrapper>
-                <AnimatePresence exitBeforeEnter initial>
-                    {loading ? (
-                        <Loader key="loader" />
-                    ) : (
-                        <motion.div key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
-                            <main>
-                                <AnimatePresence exitBeforeEnter initial>
-                                    <motion.div
-                                        key={activeTab}
-                                        animate="in"
-                                        exit="out"
-                                        initial="init"
-                                        variants={sectionTransition}
-                                        transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
-                                    >
-                                        {renderActiveTab()}
-                                    </motion.div>
-                                </AnimatePresence>
-                            </main>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </PageContentWrapper>
+            <Page>
+                <PageContentWrapper>
+                    <AnimatePresence exitBeforeEnter initial>
+                        {loading ? (
+                            <Loader key="loader" />
+                        ) : (
+                            <motion.div key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
+                                <main>
+                                    <AnimatePresence exitBeforeEnter initial>
+                                        <motion.div
+                                            key={activeTab}
+                                            animate="in"
+                                            exit="out"
+                                            initial="init"
+                                            variants={sectionTransition}
+                                            transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
+                                        >
+                                            {renderActiveTab()}
+                                        </motion.div>
+                                    </AnimatePresence>
+                                </main>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </PageContentWrapper>
+            </Page>
             <BottomNavigationBar />
-        </Page>
+        </>
     );
 }

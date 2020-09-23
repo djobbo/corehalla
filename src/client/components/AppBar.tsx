@@ -82,13 +82,13 @@ export const Navbar: FC<NavbarProps> = ({ title }: NavbarProps) => {
     );
 };
 
-export interface ITab<T extends string> {
+interface ITab<T extends string> {
     title: T;
     link: string;
     active?: boolean;
 }
 
-export interface TabsProps<T extends string> {
+interface TabsProps<T extends string> {
     tabs: ITab<T>[];
 }
 
@@ -134,14 +134,13 @@ export function TabsContainer<T extends string>({ tabs }: TabsProps<T>): React.R
     );
 }
 
-export interface IChip<T extends string> {
+interface IChip<T extends 'all'> {
     title: T;
     action?: () => void;
-    link?: string;
     active?: boolean;
 }
 
-export interface ChipsContainerProps<T extends string> {
+interface ChipsContainerProps<T extends 'all'> {
     chips: IChip<T>[];
 }
 
@@ -178,15 +177,15 @@ const ChipsContainerWrapper = styled.div`
     height: 3rem;
 `;
 
-export function ChipsContainer<T extends string>({
+export function ChipsContainer<T extends 'all'>({
     chips,
 }: ChipsContainerProps<T>): React.ReactElement<ChipsContainerProps<T>> {
     return (
         <ChipsContainerWrapper>
-            {chips.map(({ title, action, active, link }, i) => (
+            {chips.map(({ title, action, active }, i) => (
                 <Chip key={i} active={active}>
                     <Link
-                        to={link || '#'}
+                        to="#"
                         onClick={
                             action
                                 ? (e) => {
@@ -204,7 +203,7 @@ export function ChipsContainer<T extends string>({
     );
 }
 
-interface Props<T extends string, U extends string> {
+export interface AppBarProps<T extends string, U extends 'all'> {
     title?: string;
     tabs?: ITab<T>[];
     chips?: IChip<U>[];
@@ -218,11 +217,11 @@ const AppBarWrapper = styled.div`
     z-index: 100;
 `;
 
-export function AppBar<T extends string, U extends string>({
+export function AppBar<T extends string, U extends 'all'>({
     title,
     tabs,
     chips,
-}: Props<T, U>): React.ReactElement<Props<T, U>> {
+}: AppBarProps<T, U>): React.ReactElement<AppBarProps<T, U>> {
     const [hideOnScroll, setHideOnScroll] = useState(false);
 
     useScrollPosition(
