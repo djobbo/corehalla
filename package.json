@@ -6,6 +6,7 @@
         "@mdi/js": "^5.6.55",
         "@mdi/react": "^1.4.0",
         "@types/qs": "^6.9.5",
+        "dayjs": "^1.8.36",
         "dotenv-webpack": "^3.0.0",
         "firebase": "^7.21.0",
         "framer-motion": "^2.6.15",
