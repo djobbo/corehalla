@@ -1,9 +1,9 @@
 // Library imports
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { IClanFormat } from 'corehalla.js';
+import { ClanRank, IClanFormat } from 'corehalla.js';
 
 // Hooks
 import { useFetchData } from '../../../hooks/useFetchData';
@@ -39,6 +39,9 @@ export const ClanPage: FC = () => {
     const { id: clanId } = useParams<{ id: string }>();
     // Initialize Tabs
     const [activeTab] = useHashTabs<ClanStatsTab>(['#overview', '#members'], '#overview');
+
+    const [activeRank, setActiveRank] = useState<ClanRank | 'all'>('all');
+
     // Fetch Clan Stats
     const [clanStats, loading] =
         process.env.NODE_ENV === 'production'
@@ -48,7 +51,16 @@ export const ClanPage: FC = () => {
     const renderActiveTab = () => {
         switch (activeTab) {
             case '#members':
-                return <MembersTab clanStats={clanStats} />;
+                return (
+                    <MembersTab
+                        members={
+                            activeRank === 'all'
+                                ? clanStats.members
+                                : clanStats.members.filter((m) => m.rank === activeRank)
+                        }
+                        clanXP={parseInt(clanStats.xp)} // TODO: parse xp in ch.js
+                    />
+                );
             default:
                 return <OverviewTab clanStats={clanStats} />;
         }
@@ -67,8 +79,39 @@ export const ClanPage: FC = () => {
                     { title: 'overview', link: `#`, active: activeTab === '#overview' },
                     { title: 'members', link: `#members`, active: activeTab === '#members' },
                 ]}
+                chips={
+                    activeTab === '#members'
+                        ? [
+                              {
+                                  title: 'All',
+                                  action: () => setActiveRank('all'),
+                                  active: activeRank === 'all',
+                              },
+                              {
+                                  title: 'Leader',
+                                  action: () => setActiveRank('Leader'),
+                                  active: activeRank === 'Leader',
+                              },
+                              {
+                                  title: 'Officers',
+                                  action: () => setActiveRank('Officer'),
+                                  active: activeRank === 'Officer',
+                              },
+                              {
+                                  title: 'Members',
+                                  action: () => setActiveRank('Member'),
+                                  active: activeRank === 'Member',
+                              },
+                              {
+                                  title: 'Recruits',
+                                  action: () => setActiveRank('Recruit'),
+                                  active: activeRank === 'Recruit',
+                              },
+                          ]
+                        : undefined
+                }
             />
-            <PageContentWrapper pTop="6rem">
+            <PageContentWrapper pTop={activeTab === '#members' ? '9rem' : '6rem'} pBtm="3rem">
                 <AnimatePresence exitBeforeEnter initial>
                     {loading ? (
                         <Loader key="loader" />
