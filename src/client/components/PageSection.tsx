@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 import Icon from '@mdi/react';
 import { mdiChevronUp, mdiUnfoldLessHorizontal, mdiUnfoldMoreHorizontal } from '@mdi/js';
+import { Link } from 'react-router-dom';
 
 interface Props {
     children: React.ReactNode;
@@ -11,7 +12,7 @@ interface Props {
     initFoldState?: boolean;
 }
 
-const SectionTitle = styled.p`
+const SectionTitle = styled(Link)`
     color: var(--text);
     opacity: 0.72;
     display: flex;
@@ -67,8 +68,14 @@ export const PageSection: FC<Props> = ({ children, title, initFoldState }: Props
     const [foldState, setFoldState] = useState(initFoldState ?? false);
     return (
         <PageSectionWrapper>
-            <SectionTitle onClick={() => setFoldState((oldState) => !oldState)}>
-                {title}{' '}
+            <SectionTitle
+                to="#"
+                onClick={(e) => {
+                    e.preventDefault();
+                    setFoldState((oldState) => !oldState);
+                }}
+            >
+                {title}
                 {foldState ? (
                     <Icon path={mdiUnfoldLessHorizontal} size={1} />
                 ) : (
