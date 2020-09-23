@@ -1,6 +1,6 @@
 // Library imports
 import React, { FC, useState } from 'react';
-import { IClanFormat, IClanMemberFormat } from 'corehalla.js';
+import { IClanMemberFormat } from 'corehalla.js';
 
 import { RankingsItemClan } from '../../../components/RankingsItem';
 import { Select } from '../../../components/Select';

@@ -1,5 +1,5 @@
 import React, { useState, createContext, FC } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useDebounce } from '../hooks/useDebounce';
 import { history } from '../history';
 import { RankedRegion } from 'corehalla.js';

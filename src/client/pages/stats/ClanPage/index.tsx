@@ -3,7 +3,7 @@ import React, { FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ClanRank, IClanFormat, IClanMemberFormat } from 'corehalla.js';
+import { ClanRank, IClanFormat } from 'corehalla.js';
 
 // Hooks
 import { useFetchData } from '../../../hooks/useFetchData';
