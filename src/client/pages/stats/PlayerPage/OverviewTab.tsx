@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import styled from 'styled-components';
 
 import { IPlayerStatsFormat } from 'corehalla.js';
 import { ProfileHeader } from '../../../components/ProfileHeader';
@@ -12,6 +13,12 @@ import { StatDesc, StatMedium, StatSmall } from '../../../components/TextStyles'
 interface Props {
     playerStats: IPlayerStatsFormat;
 }
+
+const Alias = styled.p`
+    &::before {
+        content: '■ ';
+    }
+`;
 
 //TODO: Add losses in ch.js to avoid losses={season.games - season.wins} && losses={playerStats.games - playerStats.wins}
 export const OverviewTab: FC<Props> = ({ playerStats }: Props) => {
@@ -39,19 +46,31 @@ export const OverviewTab: FC<Props> = ({ playerStats }: Props) => {
                 />
             </PageSection>
             <SectionSeparator />
+            <PageSection title="Aliases" initFoldState>
+                {season.teams
+                    .reduce<string[]>(
+                        (acc, { playerAlias }) => (acc.find((x) => x === playerAlias) ? acc : [...acc, playerAlias]),
+                        [playerStats.name],
+                    )
+                    .map((alias) => (
+                        <Alias key={alias}>
+                            <StatSmall>{alias}</StatSmall>
+                        </Alias>
+                    ))}
+            </PageSection>
             <PageSection title="Glory" initFoldState>
-                <div>
+                <p>
                     <StatDesc>estimated glory:</StatDesc>
                     <StatMedium>{season.glory.wins + season.glory.bestRating}</StatMedium>
-                </div>
-                <div>
+                </p>
+                <p>
                     <StatDesc>from wins:</StatDesc>
                     <StatSmall>{season.glory.wins}</StatSmall>
-                </div>
-                <div>
+                </p>
+                <p>
                     <StatDesc>from best rating:</StatDesc>
                     <StatSmall>{season.glory.bestRating}</StatSmall>
-                </div>
+                </p>
             </PageSection>
             {clan && (
                 <>
