@@ -31,8 +31,9 @@ import { FavoritesPage } from './pages/FavoritesPage';
 import { ThemeContext, themeModes } from './providers/ThemeProvider';
 
 const AppWrapper = styled.div`
-    min-height: 100vh;
-    background-color: var(--bg);
+    height: 100%;
+    min-height: 100%;
+    background-color: var(--bg-1);
 `;
 
 export const App: FC = () => {

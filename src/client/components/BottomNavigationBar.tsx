@@ -46,12 +46,13 @@ const NavigationWrapper = styled.nav`
     display: flex;
     justify-content: stretch;
     height: 3rem;
+    background-color: var(--bg);
+    border-top: 1px solid var(--bg-1);
     position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--bg);
-    border-top: 1px solid var(--bg-1);
+    height: 3rem;
 `;
 
 const NavigationItem = styled(Link)<{ active?: boolean }>`

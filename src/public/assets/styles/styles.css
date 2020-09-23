@@ -8,10 +8,7 @@
 html,
 body {
     font-family: 'Rubik', sans-serif;
-}
-
-#App {
-    background-color: var(--bg-1);
+    height: 100%;
 }
 
 a,

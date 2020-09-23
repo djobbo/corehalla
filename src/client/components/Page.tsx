@@ -24,18 +24,25 @@ export const Page: FC<Props> = ({ children, title }: Props) => {
     }, []);
 
     return (
-        <motion.div initial="out" animate="in" exit="out" variants={pageTransition} transition={{ duration: 0.2 }}>
-            {children}
-        </motion.div>
+        <PageContentWrapper
+            initial="out"
+            animate="in"
+            exit="out"
+            variants={pageTransition}
+            transition={{ duration: 0.2 }}
+        >
+            <div>{children}</div>
+        </PageContentWrapper>
     );
 };
 
-export const PageContentWrapper = styled.div<{ pTop?: string; pBtm?: string }>`
-    max-width: 1200px;
-    margin: 0 auto;
-
-    ${({ pTop, pBtm }): string => `
-        padding-top: ${pTop || 0};
-        padding-bottom: ${pBtm || 0};
-    `}
+const PageContentWrapper = styled(motion.div)`
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    & > div {
+        margin: 0 auto;
+        max-width: 1200px;
+        width: 100%;
+    }
 `;

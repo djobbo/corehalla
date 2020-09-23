@@ -1,5 +1,5 @@
 // Library imports
-import React, { Children, FC, PropsWithChildren, useContext } from 'react';
+import React, { FC, PropsWithChildren, useContext } from 'react';
 import styled from 'styled-components';
 import { FavoritesContext, IFavorite } from '../providers/FavoritesProvider';
 

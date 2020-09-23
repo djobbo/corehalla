@@ -210,11 +210,8 @@ export interface AppBarProps<T extends string, U extends string> {
 }
 
 const AppBarWrapper = styled.div`
-    position: fixed;
+    position: sticky;
     top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
 `;
 
 export function AppBar<T extends string, U extends string>({
@@ -238,6 +235,7 @@ export function AppBar<T extends string, U extends string>({
             <AnimatePresence>
                 {!hideOnScroll && (
                     <motion.div
+                        initial={{ opacity: 0, y: -80 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -80 }}
                         transition={{ ease: 'linear', duration: 0.125 }}

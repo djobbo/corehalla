@@ -1,5 +1,5 @@
 // Library imports
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 // Hooks
@@ -9,7 +9,9 @@ import { useHashTabs } from '../hooks/useHashTabs';
 import { AppBar } from '../components/AppBar';
 import { BottomNavigationBar } from '../components/BottomNavigationBar';
 import { Loader } from '../components/Loader';
-import { Page, PageContentWrapper } from '../components/Page';
+import { Page } from '../components/Page';
+import styled from 'styled-components';
+import { useScrollPosition } from '../hooks/useScrollPosition';
 
 const sectionTransition = {
     in: {
@@ -42,6 +44,8 @@ interface Props<T extends string, U extends string> {
     loading?: boolean;
 }
 
+const Wrapper = styled.div``;
+
 export function MainLayout<T extends string, U extends string>({
     tabs,
     title,
@@ -62,7 +66,7 @@ export function MainLayout<T extends string, U extends string>({
     };
 
     return (
-        <>
+        <Wrapper>
             <AppBar
                 tabs={(Object.entries(tabs) as [T, ITab<U>][]).map(([tabName, { displayName }]) => ({
                     displayName: displayName || tabName,
@@ -77,35 +81,30 @@ export function MainLayout<T extends string, U extends string>({
                 title={title}
             />
             <Page>
-                <PageContentWrapper
-                    pTop={`${tabs ? 6 + (tabs[activeTab] && tabs[activeTab].chips ? 3 : 0) : 3}rem`}
-                    pBtm="3rem"
-                >
-                    <AnimatePresence exitBeforeEnter initial>
-                        {loading ? (
-                            <Loader key="loader" />
-                        ) : (
-                            <motion.div key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
-                                <main>
-                                    <AnimatePresence exitBeforeEnter initial>
-                                        <motion.div
-                                            key={activeTab}
-                                            animate="in"
-                                            exit="out"
-                                            initial="init"
-                                            variants={sectionTransition}
-                                            transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
-                                        >
-                                            {renderActiveTab()}
-                                        </motion.div>
-                                    </AnimatePresence>
-                                </main>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </PageContentWrapper>
+                <AnimatePresence exitBeforeEnter initial>
+                    {loading ? (
+                        <Loader key="loader" />
+                    ) : (
+                        <motion.div key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
+                            <main>
+                                <AnimatePresence exitBeforeEnter initial>
+                                    <motion.div
+                                        key={activeTab}
+                                        animate="in"
+                                        exit="out"
+                                        initial="init"
+                                        variants={sectionTransition}
+                                        transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
+                                    >
+                                        {renderActiveTab()}
+                                    </motion.div>
+                                </AnimatePresence>
+                            </main>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </Page>
             <BottomNavigationBar />
-        </>
+        </Wrapper>
     );
 }
