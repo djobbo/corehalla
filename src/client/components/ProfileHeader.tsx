@@ -1,5 +1,5 @@
 // Library imports
-import React, { FC, useContext } from 'react';
+import React, { Children, FC, PropsWithChildren, useContext } from 'react';
 import styled from 'styled-components';
 import { FavoritesContext, IFavorite } from '../providers/FavoritesProvider';
 
@@ -35,7 +35,16 @@ const AddToFavoritesBtn = styled.a<{ isFav?: boolean }>`
     `}
 `;
 
-export const ProfileHeader: FC<Props> = ({ bannerURI, title, favorite }: Props) => {
+const DescriptionContainer = styled.div`
+    margin: 1rem 0;
+`;
+
+export const ProfileHeader: FC<PropsWithChildren<Props>> = ({
+    bannerURI,
+    title,
+    favorite,
+    children,
+}: PropsWithChildren<Props>) => {
     const { isFavorite, addFavorite, removeFavorite } = useContext(FavoritesContext);
 
     return (
@@ -63,6 +72,7 @@ export const ProfileHeader: FC<Props> = ({ bannerURI, title, favorite }: Props) 
                     Add Favorite
                 </AddToFavoritesBtn>
             )}
+            <DescriptionContainer>{children}</DescriptionContainer>
         </div>
     );
 };
