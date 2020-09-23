@@ -1,7 +1,7 @@
 // Library imports
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { IClanMember, IClanMemberFormat, IRanking1v1Format, IRanking2v2Format } from 'corehalla.js';
+import { IClanMemberFormat, IRanking1v1Format, IRanking2v2Format } from 'corehalla.js';
 
 import { StatLarge, StatDesc, StatSmall, StatMedium } from './TextStyles';
 import { BarChart } from './Charts';

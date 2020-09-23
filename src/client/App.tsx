@@ -1,6 +1,6 @@
 import React, { useContext, CSSProperties, FC } from 'react';
 import { Switch, Route, useLocation } from 'react-router-dom';
-import loadable from '@loadable/component';
+// TODO: import loadable from '@loadable/component';
 import styled from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
 

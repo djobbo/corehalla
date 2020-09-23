@@ -11,4 +11,4 @@ export const formatTime = (s: number): string => {
     return `${h}h ${m}m ${timeLeft}s`;
 };
 
-export const formatEpoch = (epoch: number) => dayjs.unix(epoch).format('DD MMM YYYY - hh:mma');
+export const formatEpoch = (epoch: number): string => dayjs.unix(epoch).format('DD MMM YYYY - hh:mma');
