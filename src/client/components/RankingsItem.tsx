@@ -27,13 +27,6 @@ const StatsWrapper = styled.div`
 const Wrapper = styled.div`
     padding: 0.25rem 0.5rem;
     margin: 0.25rem 0;
-    transition: 0.1s ease-in all;
-
-    &:hover {
-        background-color: var(--bg-2);
-        border-radius: 0.25rem;
-        box-shadow: 0 0 2rem var(--bg);
-    }
 `;
 
 const LargeStatWrapper = styled.div`
@@ -50,7 +43,9 @@ export const RankingsItem1v1: FC<Props1v1> = ({ player }: Props1v1) => {
             <StatsWrapper>
                 <div>
                     <Link to={`/stats/player/${player.id}`}>
-                        <StatMedium>{player.name}</StatMedium>
+                        <StatMedium>
+                            {player.rank} - {player.name}
+                        </StatMedium>
                     </Link>
                     <p>
                         <StatSmall>{player.games}</StatSmall>
@@ -69,7 +64,7 @@ export const RankingsItem1v1: FC<Props1v1> = ({ player }: Props1v1) => {
                 </LargeStatWrapper>
             </StatsWrapper>
             <BarChartWrapper>
-                <BarChart width="100%" amount={(player.wins / player.games) * 100} height="0.25rem" bg="var(--bg-1)" />
+                <BarChart width="100%" amount={(player.wins / player.games) * 100} height="0.25rem" bg="var(--bg)" />
                 <StatDesc>{((player.wins / player.games) * 100).toFixed(2)}%</StatDesc>
             </BarChartWrapper>
         </Wrapper>
@@ -108,7 +103,7 @@ export const RankingsItem2v2: FC<Props2v2> = ({ team }: Props2v2) => {
                 </LargeStatWrapper>
             </StatsWrapper>
             <BarChartWrapper>
-                <BarChart width="100%" amount={(team.wins / team.games) * 100} height="0.25rem" bg="var(--bg-1)" />
+                <BarChart width="100%" amount={(team.wins / team.games) * 100} height="0.25rem" bg="var(--bg)" />
                 <StatDesc>{((team.wins / team.games) * 100).toFixed(2)}%</StatDesc>
             </BarChartWrapper>
         </Wrapper>
@@ -142,7 +137,7 @@ export const RankingsItemClan: FC<PropsClan> = ({ player, clanXP }: PropsClan) =
                 </LargeStatWrapper>
             </StatsWrapper>
             <BarChartWrapper>
-                <BarChart width="100%" amount={(player.xp / clanXP) * 100} height="0.25rem" bg="var(--bg-1)" />
+                <BarChart width="100%" amount={(player.xp / clanXP) * 100} height="0.25rem" bg="var(--bg)" />
                 <StatDesc>{((player.xp / clanXP) * 100).toFixed(2)}%</StatDesc>
             </BarChartWrapper>
         </Wrapper>
