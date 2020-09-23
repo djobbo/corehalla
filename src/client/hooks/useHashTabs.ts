@@ -3,10 +3,12 @@ import { useLocation } from 'react-router-dom';
 
 export const useHashTabs = <T extends string>(tabs: T[], defaultTab: T): [T] => {
     const { hash } = useLocation<{ hash: T }>();
-    const [activeTab, setActiveTab] = useState<T>(defaultTab);
+    const tabName = hash.substring(1) as T;
+    const [activeTab, setActiveTab] = useState<T>(tabs.includes(tabName) ? tabName : defaultTab);
 
     useEffect(() => {
-        const currentTab: T = tabs.includes(hash as T) ? (hash as T) : defaultTab;
+        const tabName = hash.substring(1) as T;
+        const currentTab: T = tabs.includes(tabName) ? tabName : defaultTab;
         setActiveTab(currentTab);
     }, [hash]);
 
