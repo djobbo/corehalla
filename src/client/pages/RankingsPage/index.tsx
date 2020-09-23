@@ -1,5 +1,5 @@
 // Library imports
-import React, { FC, useContext, useEffect } from 'react';
+import React, { FC, useContext } from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -42,7 +42,7 @@ export const RankingsPage: FC = () => {
 
     // Fetch Rankings Options
     const { bracket = '1v1', region = 'all', page = '1' } = useParams<{
-        bracket: string;
+        bracket: Bracket;
         region: RankedRegion;
         page: string;
     }>();
@@ -53,7 +53,7 @@ export const RankingsPage: FC = () => {
     const [rankings, loading] =
         process.env.NODE_ENV === 'production'
             ? useFetchData<IRanking1v1Format[]>(`/api/rankings/1v1/${region}/${page}?p=${playerSearch}`)
-            : useMockData<IRanking1v1Format[]>('1v1Rankings', 250);
+            : useMockData<IRanking1v1Format[]>('1v1Rankings', 0);
 
     const renderActiveTab = () => {
         switch (bracket) {

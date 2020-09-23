@@ -5,11 +5,12 @@
         {
             "src": "assets/favicon.png",
             "sizes": "512x512 256x256 128x128 64x64 32x32 24x24 8x8",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any maskable"
         }
     ],
     "start_url": ".",
     "display": "standalone",
-    "theme_color": "#000000",
-    "background_color": "#ffffff"
+    "theme_color": "#212121",
+    "background_color": "#212121"
 }

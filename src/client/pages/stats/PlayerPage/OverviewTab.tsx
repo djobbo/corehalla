@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import styled from 'styled-components';
 
 import { IPlayerStatsFormat } from 'corehalla.js';
 import { ProfileHeader } from '../../../components/ProfileHeader';
@@ -7,10 +8,19 @@ import { PageSection, SectionSeparator } from '../../../components/PageSection';
 import { SectionSeasonOverviewContent } from '../../../components/SectionSeasonOverviewContent';
 import { SectionClanOverviewSmallContent } from '../../../components/SectionClanOverviewSmallContent';
 import { SectionOverallStatsContent } from '../../../components/SectionOverallStatsContent';
+import { StatDesc, StatMedium, StatSmall } from '../../../components/TextStyles';
 
 interface Props {
     playerStats: IPlayerStatsFormat;
 }
+
+const Alias = styled.p`
+    &::before {
+        color: var(--accent);
+        content: '■ ';
+    }
+    margin: 0.25rem 0;
+`;
 
 //TODO: Add losses in ch.js to avoid losses={season.games - season.wins} && losses={playerStats.games - playerStats.wins}
 export const OverviewTab: FC<Props> = ({ playerStats }: Props) => {
@@ -30,18 +40,45 @@ export const OverviewTab: FC<Props> = ({ playerStats }: Props) => {
                 }}
             />
             <SectionSeparator />
-            <PageSection title="Season Overview" initFoldState={true}>
+            <PageSection title="Season Overview" initFoldState>
                 <SectionSeasonOverviewContent
                     {...season}
                     losses={season.games - season.wins}
                     winrate={(season.wins / season.games) * 100}
-                    icon={`flags/${season.region}`}
                 />
+            </PageSection>
+            <SectionSeparator />
+            <PageSection title="Aliases" initFoldState>
+                {season.teams
+                    .reduce<string[]>(
+                        (acc, { playerAlias }) => (acc.find((x) => x === playerAlias) ? acc : [...acc, playerAlias]),
+                        [playerStats.name],
+                    )
+                    .map((alias) => (
+                        <Alias key={alias}>
+                            <StatSmall>{alias}</StatSmall>
+                        </Alias>
+                    ))}
+            </PageSection>
+            <SectionSeparator />
+            <PageSection title="Glory" initFoldState>
+                <p>
+                    <StatDesc>estimated glory:</StatDesc>
+                    <StatMedium>{season.glory.wins + season.glory.bestRating}</StatMedium>
+                </p>
+                <p>
+                    <StatDesc>from wins:</StatDesc>
+                    <StatSmall>{season.glory.wins}</StatSmall>
+                </p>
+                <p>
+                    <StatDesc>from best rating:</StatDesc>
+                    <StatSmall>{season.glory.bestRating}</StatSmall>
+                </p>
             </PageSection>
             {clan && (
                 <>
                     <SectionSeparator />
-                    <PageSection title="Clan" initFoldState={true}>
+                    <PageSection title="Clan" initFoldState>
                         <SectionClanOverviewSmallContent
                             {...clan}
                             xp={parseInt(clan.xp)}
@@ -52,7 +89,7 @@ export const OverviewTab: FC<Props> = ({ playerStats }: Props) => {
                 </>
             )}
             <SectionSeparator />
-            <PageSection title="Overall Stats" initFoldState={true}>
+            <PageSection title="Overall Stats" initFoldState>
                 <SectionOverallStatsContent {...playerStats} losses={playerStats.games - playerStats.wins} />
             </PageSection>
         </>

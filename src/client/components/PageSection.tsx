@@ -13,8 +13,7 @@ interface Props {
 }
 
 const SectionTitle = styled(Link)`
-    color: var(--text);
-    opacity: 0.72;
+    color: var(--text-2);
     display: flex;
     justify-content: space-between;
     text-transform: uppercase;
@@ -23,11 +22,10 @@ const SectionTitle = styled(Link)`
     cursor: pointer;
 
     svg {
-        fill: var(--text);
+        fill: var(--text-2);
     }
 
     &:hover {
-        opacity: 1;
         color: var(--accent);
         svg {
             fill: var(--accent);
@@ -50,14 +48,12 @@ const FoldSectionIcon = styled.div`
     cursor: pointer;
 
     svg {
-        fill: var(--text);
-        fill-opacity: 0.72;
+        fill: var(--text-2);
     }
 
     &:hover {
         svg {
             fill: var(--accent);
-            fill-opacity: 1;
         }
     }
 `;
@@ -92,7 +88,7 @@ export const PageSection: FC<Props> = ({ children, title, initFoldState }: Props
                     >
                         <PageSectionContent>{children}</PageSectionContent>
                         <FoldSectionIcon onClick={() => setFoldState(false)}>
-                            <Icon path={mdiChevronUp} size={0.75} />
+                            <Icon path={mdiChevronUp} size={0.75} color="var(--text)" />
                         </FoldSectionIcon>
                     </motion.div>
                 )}

@@ -28,6 +28,14 @@ type LegendSort =
 
 const LegendLevelStatsWrapper = styled.div`
     margin-bottom: 1rem;
+    display: flex;
+`;
+
+const LegendIcon = styled.img`
+    width: 2rem;
+    height: 2rem;
+    margin-right: 0.5rem;
+    border-radius: 0.75rem;
 `;
 
 const getSortedProp = (state: LegendSort, legendStats: ILegendStatsFormat) => {
@@ -102,21 +110,23 @@ export const LegendsTab: FC<Props> = ({ legends }: Props) => {
                             <SectionSeparator />
                             <PageSection title={`${i + 1}. ${legend.name} ${`• ${getSortedDisplay(sort, legend)}`}`}>
                                 <LegendLevelStatsWrapper>
+                                    <LegendIcon src={`/assets/images/icons/legends/${legend.name}.png`} />
                                     <div>
-                                        <StatDesc>Level</StatDesc>
-                                        <StatSmall>{legend.level}</StatSmall>
-                                        <StatDesc>({legend.xp}xp)</StatDesc>
-                                    </div>
-                                    <div>
-                                        <StatDesc>Time played</StatDesc>
-                                        <StatSmall>{formatTime(legend.matchtime)}</StatSmall>
+                                        <div>
+                                            <StatDesc>Level</StatDesc>
+                                            <StatSmall>{legend.level}</StatSmall>
+                                            <StatDesc>({legend.xp}xp)</StatDesc>
+                                        </div>
+                                        <div>
+                                            <StatDesc>Time played</StatDesc>
+                                            <StatSmall>{formatTime(legend.matchtime)}</StatSmall>
+                                        </div>
                                     </div>
                                 </LegendLevelStatsWrapper>
                                 <SectionSeasonOverviewContent
                                     {...legend.season}
                                     losses={legend.season.games - legend.season.wins}
                                     winrate={(legend.season.wins / legend.season.games) * 100}
-                                    icon={`legends/${legend.name}`}
                                 />
                                 <SectionOverallStatsContent {...legend} losses={legend.games - legend.wins} />
                             </PageSection>

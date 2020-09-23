@@ -13,14 +13,16 @@
   },
   "main": "lib/index.js",
   "dependencies": {
-    "corehalla.js": "0.0.14",
+    "corehalla.js": "^0.1.1",
     "cors": "^2.8.5",
-    "firebase-admin": "^8.10.0",
-    "firebase-functions": "^3.6.1"
+    "express": "^4.17.1",
+    "firebase-admin": "^9.2.0",
+    "firebase-functions": "^3.11.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.7",
-    "typescript": "^3.8.0"
+    "@types/express": "^4.17.8",
+    "typescript": "^4.0.3"
   },
   "private": true
 }
