@@ -31,7 +31,7 @@ const AddToFavoritesBtn = styled.a<{ isFav?: boolean }>`
     ${({ isFav }) =>
         isFav &&
         `
-        color: var(--bg-3);
+        color: var(--text-2);
     `}
 `;
 

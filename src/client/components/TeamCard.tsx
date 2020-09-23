@@ -24,7 +24,7 @@ const TeammateName = styled(Link)`
     font-weight: bold;
 
     &:hover {
-        background-color: var(--bg-1);
+        color: var(--accent);
     }
 `;
 

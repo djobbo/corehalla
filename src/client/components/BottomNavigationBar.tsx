@@ -60,21 +60,20 @@ const NavigationItem = styled(Link)<{ active?: boolean }>`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    opacity: 0.48;
-    color: var(--text);
+    color: var(--text-2);
     font-size: 0.75rem;
 
     svg {
-        fill: var(--text);
+        fill: var(--text-2);
     }
 
     ${({ active }) =>
         active &&
         `
-        opacity: 1;
+    color: var(--text);
     
         svg {
-            fill-opacity: 1
+            fill: var(--text)
         }
     `}
 `;

@@ -17,7 +17,8 @@ interface Props {
 const CardsWrapper = styled.div`
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-    gap: 1rem;
+    gap: 2rem;
+    margin: 0 1rem;
 `;
 
 type TeamsSort = 'default' | 'peak' | 'games' | 'winrate' | 'wins' | 'losses';

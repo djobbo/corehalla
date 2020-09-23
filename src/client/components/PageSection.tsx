@@ -12,8 +12,7 @@ interface Props {
 }
 
 const SectionTitle = styled.p`
-    color: var(--text);
-    opacity: 0.72;
+    color: var(--text-2);
     display: flex;
     justify-content: space-between;
     text-transform: uppercase;
@@ -22,11 +21,10 @@ const SectionTitle = styled.p`
     cursor: pointer;
 
     svg {
-        fill: var(--text);
+        fill: var(--text-2);
     }
 
     &:hover {
-        opacity: 1;
         color: var(--accent);
         svg {
             fill: var(--accent);
@@ -49,14 +47,12 @@ const FoldSectionIcon = styled.div`
     cursor: pointer;
 
     svg {
-        fill: var(--text);
-        fill-opacity: 0.72;
+        fill: var(--text-2);
     }
 
     &:hover {
         svg {
             fill: var(--accent);
-            fill-opacity: 1;
         }
     }
 `;
