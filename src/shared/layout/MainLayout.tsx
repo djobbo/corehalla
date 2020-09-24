@@ -33,11 +33,12 @@ interface ITab<T> {
         displayName?: string;
     }[];
     defaultChip?: T;
+    link?: string;
 }
 
 interface Props<T extends string, U extends string> {
     tabs: {
-        [k in T]: ITab<U>;
+        [k in T]?: ITab<U>;
     };
     title: string;
     defaultTab?: T;
@@ -59,8 +60,9 @@ export function MainLayout<T extends string, U extends string>({
     const [activeChip, setActiveChip] = useState<U>(null);
 
     const renderActiveTab = () => {
-        if (!activeTab) return null;
-        const currentChips = tabs[activeTab]?.chips;
+        if (!activeTab || !tabs[activeTab]) return null;
+
+        const currentChips = tabs[activeTab].chips;
         if (currentChips && !activeChip) setActiveChip(tabs[activeTab].defaultChip);
         return tabs[activeTab].render(activeChip);
     };
@@ -68,9 +70,9 @@ export function MainLayout<T extends string, U extends string>({
     return (
         <Wrapper>
             <AppBar
-                tabs={(Object.entries(tabs) as [T, ITab<U>][]).map(([tabName, { displayName }]) => ({
+                tabs={(Object.entries(tabs) as [T, ITab<U>][]).map(([tabName, { displayName, link }]) => ({
                     displayName: displayName || tabName,
-                    link: `#${tabName}`,
+                    link: link || `#${tabName}`,
                     active: activeTab === tabName,
                 }))}
                 chips={tabs[activeTab]?.chips?.map(({ chipName, displayName }) => ({
