@@ -67,45 +67,47 @@ export function MainLayout<T extends string, U extends string>({
     };
 
     return (
-        <Wrapper>
-            <AppBar
-                tabs={(Object.entries(tabs) as [T, ITab<U>][]).map(([tabName, { displayName, link }]) => ({
-                    displayName: displayName || tabName,
-                    link: link || `#${tabName}`,
-                    active: activeTab === tabName,
-                }))}
-                chips={tabs[activeTab]?.chips?.map(({ chipName, displayName }) => ({
-                    displayName: displayName || chipName,
-                    active: activeChip === chipName,
-                    action: () => setActiveChip(chipName),
-                }))}
-                title={title}
-            />
-            <Page>
-                <AnimatePresence exitBeforeEnter initial>
-                    {loading ? (
-                        <Loader key="loader" />
-                    ) : (
-                        <motion.div key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
-                            <main>
-                                <AnimatePresence exitBeforeEnter initial>
-                                    <motion.div
-                                        key={activeTab}
-                                        animate="in"
-                                        exit="out"
-                                        initial="init"
-                                        variants={sectionTransition}
-                                        transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
-                                    >
-                                        {renderActiveTab()}
-                                    </motion.div>
-                                </AnimatePresence>
-                            </main>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </Page>
+        <>
+            <Wrapper>
+                <AppBar
+                    tabs={(Object.entries(tabs) as [T, ITab<U>][]).map(([tabName, { displayName, link }]) => ({
+                        displayName: displayName || tabName,
+                        link: link || `#${tabName}`,
+                        active: activeTab === tabName,
+                    }))}
+                    chips={tabs[activeTab]?.chips?.map(({ chipName, displayName }) => ({
+                        displayName: displayName || chipName,
+                        active: activeChip === chipName,
+                        action: () => setActiveChip(chipName),
+                    }))}
+                    title={title}
+                />
+                <Page>
+                    <AnimatePresence exitBeforeEnter initial>
+                        {loading ? (
+                            <Loader key="loader" />
+                        ) : (
+                            <motion.div key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
+                                <main>
+                                    <AnimatePresence exitBeforeEnter initial>
+                                        <motion.div
+                                            key={activeTab}
+                                            animate="in"
+                                            exit="out"
+                                            initial="init"
+                                            variants={sectionTransition}
+                                            transition={{ default: { duration: 0.25, ease: 'easeInOut' } }}
+                                        >
+                                            {renderActiveTab()}
+                                        </motion.div>
+                                    </AnimatePresence>
+                                </main>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </Page>
+            </Wrapper>
             <BottomNavigationBar />
-        </Wrapper>
+        </>
     );
 }
