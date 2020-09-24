@@ -6,15 +6,15 @@ const commonConfig = require('./common.config');
 
 module.exports = {
     ...commonConfig,
-    entry: '../src/client/index.tsx',
+    entry: './src/client/index.tsx',
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, '../dist'),
         filename: 'assets/js/bundle.js',
         publicPath: '/',
     },
     plugins: [
         new CopyWebpackPlugin({
-            patterns: [{ from: 'src/public', to: './' }],
+            patterns: [{ from: './src/client/public', to: './' }],
         }),
         new HtmlWebPackPlugin({
             template: 'src/client/index.ejs',
