@@ -1,14 +1,14 @@
-/node_modules
+# Node modules
+node_modules/
 
-/coverage
-
-/build
-/dist
-
-.env
-
-.firebase
-
+# Firebase logs
+.firebase/
 **/*.log
 
-.runtimeconfig.json
+# Build directories
+functions/
+dist/
+
+# Environment variables
+**/*.env
+**/*.runtimeconfig.json

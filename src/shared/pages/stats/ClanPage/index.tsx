@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 import { ClanRank, IClanFormat } from 'corehalla.js';
+import loadable from '@loadable/component';
 
 // Hooks
 import { useFetchData } from '../../../hooks/useFetchData';
@@ -12,8 +13,12 @@ import { useMockData } from '../../../hooks/useMockData';
 import { MainLayout } from '../../../layout';
 
 // Tabs imports
-import { OverviewTab } from './OverviewTab';
-import { MembersTab } from './MembersTab';
+const OverviewTab = loadable(() => import('./OverviewTab'), {
+    resolveComponent: (mod) => mod.OverviewTab,
+});
+const MembersTab = loadable(() => import('./MembersTab'), {
+    resolveComponent: (mod) => mod.MembersTab,
+});
 
 type ClanStatsTab = 'overview' | 'members';
 
