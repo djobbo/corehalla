@@ -11,4 +11,8 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.tsx', '.json'],
     },
+    watchOptions: {
+        aggregateTimeout: 600,
+        ignored: /node_modules/,
+    },
 };

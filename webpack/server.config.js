@@ -6,9 +6,9 @@ const commonConfig = require('./common.config');
 
 module.exports = {
     ...commonConfig,
-    entry: '../src/server/index.ts',
+    entry: './src/server/index.ts',
     output: {
-        path: path.resolve(__dirname, 'functions'),
+        path: path.resolve(__dirname, '../functions'),
         filename: 'functions.js',
     },
 };
