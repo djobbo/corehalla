@@ -23,4 +23,14 @@ module.exports = {
             inject: 'body',
         }),
     ],
+    devServer: {
+        host: process.env.HOST || 'localhost',
+        port: 31199,
+        contentBase: 'dist',
+        compress: true,
+        inline: true,
+        historyApiFallback: true,
+        hot: true,
+        publicPath: '/',
+    },
 };
