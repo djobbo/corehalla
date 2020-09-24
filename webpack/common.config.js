@@ -2,14 +2,14 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
+                test: /\.(j|t)sx?$/,
                 use: ['babel-loader', 'eslint-loader'],
                 exclude: /node_modules/,
             },
         ],
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.json'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     },
     watchOptions: {
         aggregateTimeout: 600,
