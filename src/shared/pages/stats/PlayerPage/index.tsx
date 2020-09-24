@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 import { IPlayerStatsFormat, Weapon } from 'corehalla.js';
+import loadable from '@loadable/component';
 
 // Hooks
 import { useFetchData } from '../../../hooks/useFetchData';
@@ -12,9 +13,15 @@ import { useMockData } from '../../../hooks/useMockData';
 import { MainLayout } from '../../../layout';
 
 // Tabs imports
-import { OverviewTab } from './OverviewTab';
-import { TeamsTab } from './TeamsTab';
-import { LegendsTab } from './LegendsTab';
+const OverviewTab = loadable(() => import('./OverviewTab'), {
+    resolveComponent: (mod) => mod.OverviewTab,
+});
+const TeamsTab = loadable(() => import('./TeamsTab'), {
+    resolveComponent: (mod) => mod.TeamsTab,
+});
+const LegendsTab = loadable(() => import('./LegendsTab'), {
+    resolveComponent: (mod) => mod.LegendsTab,
+});
 
 type PlayerStatsTab = 'overview' | 'teams' | 'legends' | 'weapons';
 

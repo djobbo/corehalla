@@ -2,6 +2,7 @@
     "name": "corehalla",
     "version": "0.0.1",
     "dependencies": {
+        "@loadable/component": "^5.13.2",
         "@mdi/js": "^5.6.55",
         "@mdi/react": "^1.4.0",
         "corehalla.js": "^0.1.1",
@@ -20,14 +21,17 @@
         "styled-components": "^5.2.0"
     },
     "scripts": {
-        "start": "webpack --mode=development --watch --progress",
+        "start": "webpack-dev-server --mode=development",
+        "start:client": "webpack-dev-server --mode=development --config=\"./webpack/client.config.js\"",
+        "start:server": "webpack-dev-server --mode=development --config=\"./webpack/server.config.js\"",
         "build": "webpack --mode=production",
-        "prepublishOnly": "webpack --mode=production",
+        "build:client": "webpack --mode=production --config=\"./webpack/client.config.js\"",
+        "build:server": "webpack --mode=production --config=\"./webpack/server.config.js\"",
         "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
         "format": "prettier --write \"src/**/*.ts\"",
         "test": "jest --watch --verbose",
         "test:cov": "jest --coverage",
-        "start:dev": "webpack-dev-server --mode=development --config=\"./webpack/client.config.js\""
+        "dev": "npm run start:client"
     },
     "description": "Brawlhalla Stats & Rankings Website",
     "main": "index.js",
