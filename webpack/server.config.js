@@ -24,5 +24,5 @@ module.exports = {
     },
     target: 'node',
     externals: [nodeExternals()],
-    plugins: [new GeneratePackageJsonPlugin(basePackageValues, versionsPackageFilename)],
+    plugins: [...commonConfig.plugins, new GeneratePackageJsonPlugin(basePackageValues, versionsPackageFilename)],
 };
