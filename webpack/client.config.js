@@ -32,5 +32,6 @@ module.exports = {
         historyApiFallback: true,
         hot: true,
         publicPath: '/',
+        stats: 'minimal',
     },
 };

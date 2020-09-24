@@ -1,5 +1,5 @@
 // Library imports
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 // Hooks
@@ -11,7 +11,6 @@ import { BottomNavigationBar } from '../components/BottomNavigationBar';
 import { Loader } from '../components/Loader';
 import { Page } from '../components/Page';
 import styled from 'styled-components';
-import { useScrollPosition } from '../hooks/useScrollPosition';
 
 const sectionTransition = {
     in: {

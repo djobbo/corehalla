@@ -7,10 +7,11 @@
             "jsx": true
         }
     },
-    "extends": ["plugin:prettier/recommended"],
+    "extends": ["plugin:react/recommended", "plugin:prettier/recommended"],
     "settings": {
         "react": {
             "version": "detect"
         }
-    }
+    },
+    "plugins": ["@babel"]
 }
