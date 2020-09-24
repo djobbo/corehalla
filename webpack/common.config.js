@@ -15,4 +15,5 @@ module.exports = {
         aggregateTimeout: 600,
         ignored: /node_modules/,
     },
+    stats: 'errors-warnings',
 };
