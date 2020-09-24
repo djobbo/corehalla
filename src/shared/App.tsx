@@ -6,28 +6,17 @@ import { AnimatePresence } from 'framer-motion';
 
 import { Page } from './components/Page';
 
-const IndexPage = loadable(() => import('./pages/IndexPage'), {
-    resolveComponent: (mod) => mod.IndexPage,
-});
-const RankingsPage = loadable(() => import('./pages/RankingsPage'), {
-    resolveComponent: (mod) => mod.RankingsPage,
-});
-const PlayerPage = loadable(() => import('./pages/stats/PlayerPage'), {
-    resolveComponent: (mod) => mod.PlayerPage,
-});
-const ClanPage = loadable(() => import('./pages/stats/ClanPage'), {
-    resolveComponent: (mod) => mod.ClanPage,
-});
-const FavoritesPage = loadable(() => import('./pages/FavoritesPage'), {
-    resolveComponent: (mod) => mod.FavoritesPage,
-});
+import { IndexPage } from './pages/IndexPage';
+import { RankingsPage } from './pages/RankingsPage';
+import { PlayerPage } from './pages/stats/PlayerPage';
+import { ClanPage } from './pages/stats/ClanPage';
+import { FavoritesPage } from './pages/FavoritesPage';
 
 import { ThemeContext, themeModes } from './providers/ThemeProvider';
 
 const AppWrapper = styled.div`
     height: 100%;
     min-height: 100%;
-    background-color: var(--bg-1);
 `;
 
 export const App: FC = () => {

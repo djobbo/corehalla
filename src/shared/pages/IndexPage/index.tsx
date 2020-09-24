@@ -9,6 +9,7 @@ import { LandingLayout } from '../../layout';
 import { PlayerSearchContext } from '../../providers/PlayerSearchProvider';
 import { devices } from '../../util/devices';
 import { useScrollPosition } from '../../hooks/useScrollPosition';
+import { Link } from 'react-router-dom';
 
 const LandingNavbar = styled.nav<{ hasScrolled: boolean }>`
     position: fixed;
@@ -54,25 +55,39 @@ const LandingTitle = styled.h1`
     font-size: 3rem;
     color: var(--text);
     font-weight: normal;
+    margin-bottom: 1rem;
+    max-width: 540px;
+`;
+
+const LandingDescription = styled.p`
+    color: var(--text-2);
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+    @media ${devices.desktop} {
+        max-width: 540px;
+    }
     margin-bottom: 2rem;
 `;
 
 const LandingContentWrapper = styled.div`
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    flex-direction: column;
-    position: absolute;
-    top: 0;
-    left: 0;
+    justify-content: flex-start;
+    align-items: center;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     padding: 0 3rem;
     z-index: 10;
+    max-width: 1200px;
 
     @media ${devices.desktop} {
-        align-items: center;
+        align-items: space-between;
     }
+`;
+
+const LandingImg = styled.img`
+    width: 50%;
+    height: auto;
+    margin-left: 2rem;
 `;
 
 const SearchInput = styled.input`
@@ -85,7 +100,7 @@ const SearchInput = styled.input`
     font-size: 1rem;
 `;
 
-const NavCTA = styled.a`
+const NavCTA = styled(Link)`
     padding: 0.25rem 0.75rem;
     background-color: var(--accent);
     color: var(--text);
@@ -137,20 +152,29 @@ export const IndexPage: FC = () => {
             <LandingNavbar hasScrolled={hasScrolled}>
                 <MainLogo src="/assets/images/logo.png" alt="" />
                 <ul>
-                    <a href="#">Home</a>
-                    <a href="#">Rankings</a>
-                    <a href="#">Favorites</a>
-                    <NavCTA href="#">Login</NavCTA>
+                    <Link to="/">Home</Link>
+                    <Link to="/rankings">Rankings</Link>
+                    <Link to="/favorites">Favorites</Link>
+                    <NavCTA to="#">Login</NavCTA>
                 </ul>
             </LandingNavbar>
             {/* <ScrollIndicator>lol</ScrollIndicator> */}
             <LandingContentWrapper>
-                <LandingTitle>Stats, Rankings & soon™ Wiki</LandingTitle>
-                <SearchInput
-                    type="text"
-                    onChange={(e) => setPlayerSearch(e.target.value)}
-                    placeholder="Search Player..."
-                />
+                <div>
+                    <LandingTitle>Stats, to the core.</LandingTitle>
+                    <LandingDescription>
+                        Corehalla is a statistics website for the game Brawlhalla.
+                        <br />
+                        Designed to be as intuitive as possible, it gives players all the information they need
+                        regarding the ranked leaderboard, power rankings and specific players & clans stats.
+                    </LandingDescription>
+                    <SearchInput
+                        type="text"
+                        onChange={(e) => setPlayerSearch(e.target.value)}
+                        placeholder="Search Player..."
+                    />
+                </div>
+                <LandingImg src="/assets/images/Nix Landing.png" alt="" />
             </LandingContentWrapper>
 
             <MainContent>

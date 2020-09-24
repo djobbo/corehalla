@@ -20,26 +20,7 @@ interface ITab<T> {
 
 interface Props {}
 
-const Wrapper = styled.div<{ backgroundURL?: string }>`
-    &::before {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        content: '';
-        object-fit: cover;
-        object-position: center;
-
-        ${({ backgroundURL }) =>
-            backgroundURL &&
-            `
-            background-image: url('${backgroundURL}');
-            opacity: 0.2;
-            filter: blur(2px);
-        `}
-    }
-`;
+const Wrapper = styled.div<{ backgroundURL?: string }>``;
 
 export const LandingLayout: FC<PropsWithChildren<Props>> = ({ children }: PropsWithChildren<Props>) => {
     return (
