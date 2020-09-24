@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from '../shared/App';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { history } from '../shared/src/history';
+import { history } from '../shared/history';
 
 import { PlayerSearchProvider } from '../shared/providers/PlayerSearchProvider';
 import { ThemeProvider } from '../shared/providers/ThemeProvider';
