@@ -7,6 +7,7 @@ import { mdiHome, mdiChevronTripleUp, mdiAccountStar, mdiHistory, mdiCog } from 
 // Providers imports
 import { NavigationPage, NavigationContext } from '../providers/NavigationProvider';
 import { Link } from 'react-router-dom';
+import { devices } from '../util/devices';
 
 interface BottomNavigationTab {
     title: NavigationPage;
@@ -53,6 +54,10 @@ const NavigationWrapper = styled.nav`
     right: 0;
     bottom: 0;
     height: 3rem;
+
+    @media ${devices.desktop} {
+        display: none;
+    }
 `;
 
 const NavigationItem = styled(Link)<{ active?: boolean }>`
