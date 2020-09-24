@@ -6,6 +6,7 @@ const commonConfig = require('./common.config');
 
 module.exports = {
     ...commonConfig,
+    target: 'web',
     entry: './src/client/index.tsx',
     output: {
         path: path.resolve(__dirname, '../dist'),
