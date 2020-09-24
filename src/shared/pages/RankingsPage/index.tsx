@@ -2,7 +2,7 @@
 import React, { FC, useContext, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation, useParams } from 'react-router-dom';
-import { ClanRank, IClanFormat, IRanking1v1Format, RankedRegion } from 'corehalla.js';
+import { IRanking1v1Format, RankedRegion } from 'corehalla.js';
 import loadable from '@loadable/component';
 
 // Hooks
