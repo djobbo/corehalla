@@ -8,9 +8,6 @@ const basePackageValues = {
     name: 'functions',
     version: '1.0.0',
     main: './functions.js',
-    engines: {
-        node: '<= 6.9.1',
-    },
 };
 
 const versionsPackageFilename = path.resolve(__dirname, '../package.json');
@@ -24,5 +21,5 @@ module.exports = {
     },
     target: 'node',
     externals: [nodeExternals()],
-    plugins: [...commonConfig.plugins, new GeneratePackageJsonPlugin(basePackageValues, versionsPackageFilename)],
+    plugins: [new GeneratePackageJsonPlugin(basePackageValues, versionsPackageFilename)],
 };

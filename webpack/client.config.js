@@ -14,7 +14,6 @@ module.exports = {
         publicPath: '/',
     },
     plugins: [
-        ...commonConfig.plugins,
         new CopyWebpackPlugin({
             patterns: [{ from: './src/client/public', to: './' }],
         }),

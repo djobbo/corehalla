@@ -1,5 +1,3 @@
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-
 module.exports = {
     module: {
         rules: [
@@ -17,9 +15,4 @@ module.exports = {
         aggregateTimeout: 600,
         ignored: /node_modules/,
     },
-    plugins: [
-        new CleanWebpackPlugin({
-            verbose: true,
-        }),
-    ],
 };
