@@ -21,12 +21,11 @@
         "styled-components": "^5.2.0"
     },
     "scripts": {
-        "start": "webpack-dev-server --mode=development",
-        "start:client": "webpack-dev-server --mode=development --config=\"./webpack/client.config.js\"",
-        "start:server": "webpack --mode=development --config=\"./webpack/server.dev.config.js\" --watch",
+        "start:client": "webpack-dev-server --config=\"./webpack/client.dev.config.js\"",
+        "start:server": "webpack --config=\"./webpack/server.dev.config.js\" --watch",
         "build": "npm run build:client && npm run build:server",
-        "build:client": "rm -rf dist && webpack --mode=production --config=\"./webpack/client.config.js\"",
-        "build:server": "rm -rf functions && webpack --mode=production --config=\"./webpack/server.config.js\"",
+        "build:client": "rm -rf dist && webpack --config=\"./webpack/client.prod.config.js\"",
+        "build:server": "rm -rf functions && webpack --config=\"./webpack/server.prod.config.js\"",
         "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
         "format": "prettier --write \"src/**/*.ts\"",
         "test": "jest --watch --verbose",
@@ -35,7 +34,8 @@
         "dev:s": "npm run start:server",
         "deploy": "npm run build && firebase deploy --only hosting,functions",
         "deploy:client": "npm run build:client && firebase deploy --only hosting",
-        "deploy:server": "npm run build:server && firebase deploy --only functions"
+        "deploy:server": "npm run build:server && firebase deploy --only functions",
+        "emul": "firebase functions:config:get > functions/.runtimeconfig.json && firebase emulators:start --only functions,hosting"
     },
     "description": "Brawlhalla Stats & Rankings Website",
     "main": "index.js",
@@ -57,6 +57,7 @@
         "clean-webpack-plugin": "^3.0.0",
         "copy-webpack-plugin": "^6.1.1",
         "dotenv": "^8.2.0",
+        "dotenv-webpack": "^3.0.0",
         "eslint": "^7.9.0",
         "eslint-config-prettier": "^6.11.0",
         "eslint-loader": "^4.0.2",
