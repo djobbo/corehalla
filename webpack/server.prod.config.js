@@ -2,7 +2,7 @@ const path = require('path');
 var GeneratePackageJsonPlugin = require('generate-package-json-webpack-plugin');
 var nodeExternals = require('webpack-node-externals');
 
-const commonConfig = require('./common.config');
+const commonServerConfig = require('./server.common.config');
 
 const basePackageValues = {
     name: 'functions',
@@ -13,7 +13,8 @@ const basePackageValues = {
 const versionsPackageFilename = path.resolve(__dirname, '../package.json');
 
 module.exports = {
-    ...commonConfig,
+    ...commonServerConfig,
+    mode: 'production',
     entry: './src/server/index.ts',
     output: {
         path: path.resolve(__dirname, '../functions'),

@@ -1,5 +1,6 @@
 // Library imports
-import { useRef, useLayoutEffect } from 'react';
+import { useRef } from 'react';
+import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
 const isBrowser = typeof window !== `undefined`;
 
@@ -17,7 +18,7 @@ export const useScrollPosition = (
         position.current = currScrollPos;
     };
 
-    useLayoutEffect(() => {
+    useIsomorphicLayoutEffect(() => {
         window.addEventListener('scroll', callBack);
 
         return () => window.removeEventListener('scroll', callBack);
