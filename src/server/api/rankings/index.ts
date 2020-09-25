@@ -43,7 +43,7 @@ router.get('/2v2/:region?/:page?', (req, res, next) => {
         })
         .catch((e) => {
             console.error(e);
-            req.context = { errors: ['Failed to fetch 1v1 Rankings!'], data: null };
+            req.context = { errors: ['Failed to fetch 2v2 Rankings!'], data: null };
             next();
         });
 });

@@ -16,6 +16,6 @@ interface Props {
 
 export const SSRProvider: FC<PropsWithChildren<Props>> = ({ children, context }: PropsWithChildren<Props>) => {
     const [ssrContext, setSSRContext] = useState<ISSRContext>(context);
-
+    console.log('HELLO', ssrContext);
     return <SSRContext.Provider value={{ ssrContext, setSSRContext }}>{children}</SSRContext.Provider>;
 };
