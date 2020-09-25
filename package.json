@@ -23,7 +23,7 @@
     "scripts": {
         "start": "webpack-dev-server --mode=development",
         "start:client": "webpack-dev-server --mode=development --config=\"./webpack/client.config.js\"",
-        "start:server": "webpack-dev-server --mode=development --config=\"./webpack/server.config.js\"",
+        "start:server": "webpack --mode=development --config=\"./webpack/server.dev.config.js\" --watch",
         "build": "npm run build:client && npm run build:server",
         "build:client": "rm -rf dist && webpack --mode=production --config=\"./webpack/client.config.js\"",
         "build:server": "rm -rf functions && webpack --mode=production --config=\"./webpack/server.config.js\"",
@@ -32,6 +32,7 @@
         "test": "jest --watch --verbose",
         "test:cov": "jest --coverage",
         "dev": "npm run start:client",
+        "dev:s": "npm run start:server",
         "deploy": "npm run build && firebase deploy --only hosting,functions",
         "deploy:client": "npm run build:client && firebase deploy --only hosting",
         "deploy:server": "npm run build:server && firebase deploy --only functions"
@@ -63,6 +64,7 @@
         "generate-package-json-webpack-plugin": "^1.1.2",
         "html-webpack-plugin": "^4.5.0",
         "prettier": "^2.1.2",
+        "start-server-webpack-plugin": "^2.2.5",
         "typescript": "^4.0.3",
         "webpack": "^4.44.2",
         "webpack-cli": "^3.3.12",

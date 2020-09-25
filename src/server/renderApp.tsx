@@ -1,6 +1,9 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import { StaticRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
+
+const history = createMemoryHistory();
 
 import { SharedApp } from '../shared';
 
@@ -10,9 +13,9 @@ export const renderApp = (req, res) => {
     res.set('Cache-Control', apiCacheControl);
 
     const html = renderToString(
-        <StaticRouter location={req.url}>
+        <Router history={history}>
             <SharedApp />
-        </StaticRouter>,
+        </Router>,
     );
     res.send(html);
 };
