@@ -107,9 +107,7 @@ const NavCTA = styled(Link)`
     border-radius: 2rem;
 `;
 
-const MainContent = styled.div`
-    margin-top: 100vh;
-`;
+const MainContent = styled.div``;
 
 const BlipsContainer = styled.div`
     display: grid;
