@@ -130,11 +130,22 @@ const TabsContainerWrapper = styled.div`
 `;
 
 export function TabsContainer<T extends string>({ tabs }: TabsProps<T>): React.ReactElement<TabsProps<T>> {
+    const history = useHistory();
+
     return (
         <TabsContainerWrapper>
             {tabs.map(({ displayName, link, active }, i) => (
                 <Tab key={i} active={active}>
-                    <Link to={link}>{displayName}</Link>
+                    <Link
+                        to="#"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            console.log(history);
+                            history.replace(`${history.location.pathname}${link}`);
+                        }}
+                    >
+                        {displayName}
+                    </Link>
                 </Tab>
             ))}
         </TabsContainerWrapper>
