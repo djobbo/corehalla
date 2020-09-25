@@ -22,10 +22,10 @@ const AppWrapper = styled.div`
 export const App: FC = () => {
     const location = useLocation();
 
-    const { themeMode } = useContext(ThemeContext);
+    const { getThemeCSS } = useContext(ThemeContext);
 
     return (
-        <AppWrapper id="App" style={themeModes[themeMode] as CSSProperties}>
+        <AppWrapper id="App" style={getThemeCSS()}>
             <AnimatePresence exitBeforeEnter initial>
                 <Switch location={location} key={location.pathname}>
                     <Route path="/" exact>

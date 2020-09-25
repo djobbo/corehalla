@@ -148,7 +148,9 @@ export const IndexPage: FC = () => {
                 <title>Index • Corehalla</title>
             </Helmet>
             <LandingNavbar hasScrolled={hasScrolled}>
-                <MainLogo src="/assets/images/logo.png" alt="" />
+                <Link to="/">
+                    <MainLogo src="/assets/images/logo.png" alt="" />
+                </Link>
                 <ul>
                     <Link to="/">Home</Link>
                     <Link to="/rankings">Rankings</Link>
