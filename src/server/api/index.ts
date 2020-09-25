@@ -8,7 +8,7 @@ const router = express.Router();
 router.use('/rankings', rankingsRouter);
 router.use('/stats', statsRouter);
 router.get('/', (req, res) => {
-    res.send('Corehalla app');
+    res.send('Corehalla API');
 });
 
 export { router };

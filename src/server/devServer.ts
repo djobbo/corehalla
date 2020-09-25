@@ -1,7 +1,13 @@
-import { app } from './app';
+require('dotenv').config();
+import * as express from 'express';
+
+import { router as apiRouter } from './api';
 
 const PORT = process.env.PORT || 5000;
+const app = express();
+
+app.use('/api', apiRouter);
 
 app.listen(PORT, () => {
-    console.log(`App listening on port: ${PORT}.`);
+    console.log(`App listening on http://localhost:${PORT}.`);
 });
