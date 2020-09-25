@@ -5,15 +5,19 @@ const router = express.Router();
 
 const apiCacheControl = `public, max-age=180, s-maxage=240`;
 
-router.get('/:id', (req, res) => {
+router.get('/:id', (req, res, next) => {
     const id = parseInt(req.params.id);
     res.set('Cache-Control', apiCacheControl);
     bhAPI
         .fetchClanFormat(id)
-        .then((data) => res.status(200).json(data))
+        .then((data) => {
+            req.context = { errors: [], data };
+            next();
+        })
         .catch((e) => {
             console.error(e);
-            res.status(500).json('Internal server error');
+            req.context = { errors: ['Failed to fetch 1v1 Rankings!'], data: null };
+            next();
         });
 });
 
