@@ -8,6 +8,7 @@ node_modules/
 # Build directories
 functions/
 dist/
+devServer/
 
 # Environment variables
 **/*.env

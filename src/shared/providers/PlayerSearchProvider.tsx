@@ -1,7 +1,8 @@
 import React, { useState, createContext, FC } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDebounce } from '../hooks/useDebounce';
-import { history } from '../history';
+import { useHistory } from 'react-router-dom';
+
 import { RankedRegion } from 'corehalla.js';
 
 interface Props {
@@ -23,6 +24,8 @@ export const PlayerSearchProvider: FC<Props> = ({ children }: Props) => {
     }>();
 
     const [playerSearch, setPlayerSearch] = useState('');
+
+    const history = useHistory();
 
     useDebounce(
         (debouncedSearch) => {
