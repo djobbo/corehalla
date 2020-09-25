@@ -1,11 +1,10 @@
 import React from 'react';
-import { renderToString } from 'react-dom/server';
-import { Router } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
-
-const history = createMemoryHistory();
+import { renderToNodeStream, renderToString } from 'react-dom/server';
+import { StaticRouter as Router } from 'react-router-dom';
+import { Request, Response } from 'express';
 
 import { SharedApp } from '../shared';
+import { SSRProvider } from '../shared/providers/SSRProvider';
 
 const htmlWrapper = `
 <!DOCTYPE html>
@@ -43,16 +42,14 @@ const htmlWrapper = `
 </html>
 `;
 
-const apiCacheControl = `public, max-age=180, s-maxage=240`;
-
-export const renderApp = (req, res) => {
-    res.set('Cache-Control', apiCacheControl);
-
+export const renderApp = async (req: Request, res: Response) => {
     const html = htmlWrapper.replace(
         '<!-- ### App ### -->',
         renderToString(
-            <Router history={history}>
-                <SharedApp />
+            <Router location={req.url}>
+                <SSRProvider context={req.context}>
+                    <SharedApp />
+                </SSRProvider>
             </Router>,
         ),
     );

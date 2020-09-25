@@ -7,8 +7,4 @@ const router = express.Router();
 
 router.use('/player', playerStatsRouter);
 router.use('/clan', clanStatsRouter);
-
-router.get('/', (req, res) => {
-    res.send('Stats');
-});
 export { router };

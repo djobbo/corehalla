@@ -6,7 +6,7 @@ const router = express.Router();
 
 const apiCacheControl = `public, max-age=180, s-maxage=240`;
 
-router.get('/1v1/:region?/:page?', (req, res) => {
+router.get('/1v1/:region?/:page?', (req, res, next) => {
     const region = (req.params.region || 'ALL') as RankedRegion;
     const page = req.params.page || 1;
 
@@ -17,15 +17,17 @@ router.get('/1v1/:region?/:page?', (req, res) => {
     bhAPI
         .fetch1v1RankingsFormat({ region, page, name })
         .then((data) => {
-            res.status(200).json(data);
+            req.context = { errors: [], data };
+            next();
         })
         .catch((e) => {
             console.error(e);
-            res.status(500).json('Failed to fetch 2v2 Rankings!');
+            req.context = { errors: ['Failed to fetch 1v1 Rankings!'], data: null };
+            next();
         });
 });
 
-router.get('/2v2/:region?/:page?', (req, res) => {
+router.get('/2v2/:region?/:page?', (req, res, next) => {
     const region = (req.params.region || 'ALL') as RankedRegion;
     const page = req.params.page || 1;
 
@@ -36,11 +38,13 @@ router.get('/2v2/:region?/:page?', (req, res) => {
     bhAPI
         .fetch2v2RankingsFormat({ region, page, name })
         .then((data) => {
-            res.status(200).json(data);
+            req.context = { errors: [], data };
+            next();
         })
         .catch((e) => {
             console.error(e);
-            res.status(500).json('Failed to fetch 1v1 Rankings!');
+            req.context = { errors: ['Failed to fetch 1v1 Rankings!'], data: null };
+            next();
         });
 });
 
