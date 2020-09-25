@@ -1,6 +1,6 @@
 // Library imports
 import React, { FC, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '@mdi/react';
@@ -48,6 +48,7 @@ const NavbarTitleLogo = styled.img`
 
 export const Navbar: FC<NavbarProps> = ({ title }: NavbarProps) => {
     const [showSearch, setShowSearch] = useState(false);
+    const history = useHistory();
 
     return (
         <NavbarWrapper showSearch={showSearch}>
@@ -57,7 +58,13 @@ export const Navbar: FC<NavbarProps> = ({ title }: NavbarProps) => {
                 <>
                     {title ? (
                         <div>
-                            <Link to="/">
+                            <Link
+                                to="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    history.goBack();
+                                }}
+                            >
                                 <Icon path={mdiArrowLeft} size={1} color="var(--text)" />
                             </Link>
                             <NavbarTitle>{title}</NavbarTitle>
