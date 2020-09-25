@@ -4,17 +4,14 @@ import * as functions from 'firebase-functions';
 import * as express from 'express';
 import * as cors from 'cors';
 
-import { router as rankingsRouter } from './routes/rankings';
-import { router as statsRouter } from './routes/stats';
+import { renderApp } from './renderApp';
+import { router as apiRouter } from './api';
 
 const app = express();
 
 app.use(cors({ origin: true }));
 
-app.use('/api/rankings', rankingsRouter);
-app.use('/api/stats', statsRouter);
-app.get('/api', (req, res) => {
-    res.send('Corehalla API');
-});
+app.use('/api', apiRouter);
+app.get('**', renderApp);
 
-exports.api = functions.https.onRequest(app);
+exports.app = functions.https.onRequest(app);
