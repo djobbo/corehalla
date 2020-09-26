@@ -1,0 +1,19 @@
+{
+	"name": "corehalla-wiki",
+	"version": "0.0.1",
+	"description": "Brawlhalla Wiki",
+	"main": "index.js",
+	"authors": {
+		"name": "Alfie",
+		"email": "corehallabusiness@gmail.com"
+	},
+	"repository": "https://github.com/Corehalla/Corehalla/Brawlhalla Wiki",
+	"scripts": {
+		"dev": "vuepress dev src",
+		"build": "vuepress build src"
+	},
+	"license": "MIT",
+	"devDependencies": {
+		"vuepress": "^1.5.3"
+	}
+}
