@@ -41,7 +41,9 @@ const fetchRankings = <T>(apiKey: string, bracket: '1v1' | '2v2') => ({ region, 
         async (res) => (await res.json()) as T[],
     );
 
-const fetchPowerRankings = (bracket: '1v1' | '2v2' | undefined = undefined) =>
+const fetchPowerRankings = (
+    bracket: '1v1' | '2v2' | undefined = undefined, // Can't be undefined anymore
+) =>
     fetch(`https://www.brawlhalla.com/rankings/power/${bracket || ''}`).then(async (res) =>
         formatPowerRankings((await res.json()) as string),
     );
