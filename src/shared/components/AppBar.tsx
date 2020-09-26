@@ -232,6 +232,14 @@ const AppBarWrapper = styled.div`
     top: 0;
 `;
 
+const ExtrasContainer = styled.div`
+    position: absolute;
+    top: 3rem;
+    left: 0;
+    right: 0;
+    height: auto;
+`;
+
 export function AppBar<T extends string, U extends string>({
     title,
     tabs,
@@ -250,19 +258,21 @@ export function AppBar<T extends string, U extends string>({
     return (
         <AppBarWrapper>
             <Navbar title={title} />
-            <AnimatePresence>
-                {!hideOnScroll && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -80 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -80 }}
-                        transition={{ ease: 'linear', duration: 0.125 }}
-                    >
-                        {tabs && <TabsContainer tabs={tabs} />}
-                        {chips && <ChipsContainer chips={chips} />}
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            <ExtrasContainer>
+                <AnimatePresence>
+                    {!hideOnScroll && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -80 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -80 }}
+                            transition={{ ease: 'linear', duration: 0.125 }}
+                        >
+                            {tabs && <TabsContainer tabs={tabs} />}
+                            {chips && <ChipsContainer chips={chips} />}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </ExtrasContainer>
         </AppBarWrapper>
     );
 }
