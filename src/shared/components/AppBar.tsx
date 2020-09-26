@@ -239,6 +239,7 @@ const ExtrasContainer = styled.div`
     left: 0;
     right: 0;
     height: auto;
+    z-index: 9;
 `;
 
 const extrasContainerVariants: Variants = {

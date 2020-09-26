@@ -66,7 +66,7 @@ const getSortedDisplay = (state: LegendSort, legendStats: ILegendStatsFormat) =>
         case 'rating':
             return `${legendStats.season.rating} elo`;
         case 'peak':
-            return `${legendStats.season.rating} peak elo`;
+            return `${legendStats.season.peak} peak elo`;
         case 'games':
             return `${legendStats.games} games`;
         case 'winrate':
