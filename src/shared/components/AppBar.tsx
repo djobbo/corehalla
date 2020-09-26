@@ -2,7 +2,7 @@
 import React, { FC, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { Icon } from '@mdi/react';
 import { mdiArrowLeft, mdiMagnify } from '@mdi/js';
 
@@ -230,15 +230,28 @@ export interface AppBarProps<T extends string, U extends string> {
 const AppBarWrapper = styled.div`
     position: sticky;
     top: 0;
+    z-index: 10;
 `;
 
 const ExtrasContainer = styled.div`
-    position: absolute;
+    position: sticky;
     top: 3rem;
     left: 0;
     right: 0;
     height: auto;
 `;
+
+const extrasContainerVariants: Variants = {
+    in: {
+        opacity: 1,
+        y: 0,
+        transition: { ease: 'linear', duration: 0.125 },
+    },
+    out: {
+        opacity: 0,
+        y: -80,
+    },
+};
 
 export function AppBar<T extends string, U extends string>({
     title,
@@ -255,24 +268,19 @@ export function AppBar<T extends string, U extends string>({
         [hideOnScroll],
     );
 
+    console.log(hideOnScroll);
+
     return (
-        <AppBarWrapper>
-            <Navbar title={title} />
+        <>
+            <AppBarWrapper>
+                <Navbar title={title} />
+            </AppBarWrapper>
             <ExtrasContainer>
-                <AnimatePresence>
-                    {!hideOnScroll && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -80 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -80 }}
-                            transition={{ ease: 'linear', duration: 0.125 }}
-                        >
-                            {tabs && <TabsContainer tabs={tabs} />}
-                            {chips && <ChipsContainer chips={chips} />}
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                <motion.div animate={hideOnScroll ? 'out' : 'in'} variants={extrasContainerVariants}>
+                    {tabs && <TabsContainer tabs={tabs} />}
+                    {chips && <ChipsContainer chips={chips} />}
+                </motion.div>
             </ExtrasContainer>
-        </AppBarWrapper>
+        </>
     );
 }
