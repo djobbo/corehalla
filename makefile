@@ -1,0 +1,2 @@
+make:
+	npm run deploy
