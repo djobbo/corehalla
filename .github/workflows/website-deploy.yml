@@ -8,6 +8,9 @@ on:
 jobs:
     deploy:
         name: Deploy Hosting && Functions
+        defaults:
+            run:
+                working-directory: website
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Repo
