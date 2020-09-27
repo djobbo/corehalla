@@ -1,3 +1,0 @@
----
-legend_name: 'Bödvar'
----

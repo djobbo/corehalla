@@ -1,6 +1,5 @@
 ---
 title: Welcome to the Unofficial Brawlhalla Wiki
-footer: Made by Alfie with ❤️
 ---
 
 # {{ $frontmatter.title }}
