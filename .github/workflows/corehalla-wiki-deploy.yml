@@ -23,32 +23,20 @@ jobs:
               uses: actions/upload-artifact@v2
               with:
                   name: dist
-                  path: ./web/wiki/docs/.vuepress/dist
-
-            - name: Archive Firebase Settings
-              uses: actions/upload-artifact@v2
-              with:
-                  name: firebase.json
-                  path: ./web/wiki/firebase.json
-
-            - name: Archive Firebase Project Settings
-              uses: actions/upload-artifact@v2
-              with:
-                  name: .firebaserc
-                  path: ./web/wiki/.firebaserc
+                  path: |
+                      ./web/wiki/docs/.vuepress/dist
+                      ./web/wiki/firebase.json
+                      ./web/wiki/.firebaserc
 
     deploy:
-        name: Corehalla Web - Deploy
+        name: Corehalla Wiki - Deploy
         needs: build
         runs-on: ubuntu-latest
         steps:
             - name: Download Production Artifact
               uses: actions/download-artifact@v2
               with:
-                  name: |
-                      dist
-                      .firebaserc
-                      firebase.json
+                  name: dist
 
             - name: Deploy to Firebase
               uses: w9jds/firebase-action@master
