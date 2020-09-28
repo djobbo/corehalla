@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "corehalla-neue"
+  },
+  "targets": {
+    "corehalla-neue": {
+      "hosting": {
+        "corehalla": [
+          "corehalla-neue"
+        ],
+        "wiki": [
+          "corehalla-wiki"
+        ]
+      }
+    }
+  }
+}

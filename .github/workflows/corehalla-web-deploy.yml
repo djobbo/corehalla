@@ -8,10 +8,10 @@ on:
 jobs:
     deploy:
         name: Deploy Hosting && Functions
+        runs-on: ubuntu-latest
         defaults:
             run:
                 working-directory: web/corehalla
-        runs-on: ubuntu-latest
         steps:
             - name: Checkout Repo
               uses: actions/checkout@master
