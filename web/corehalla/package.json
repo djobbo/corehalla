@@ -23,9 +23,10 @@
     "scripts": {
         "start:client": "webpack-dev-server --config=\"./webpack/client.dev.config.js\"",
         "start:server": "webpack --config=\"./webpack/server.dev.config.js\" --watch",
+        "prebuild": "npm run lint && npm run format",
         "build": "npm run build:client && npm run build:server",
-        "build:client": "rm -rf dist && webpack --config=\"./webpack/client.prod.config.js\"",
-        "build:server": "rm -rf functions && webpack --config=\"./webpack/server.prod.config.js\"",
+        "build:client": "npm run prebuild && rm -rf dist && webpack --config=\"./webpack/client.prod.config.js\"",
+        "build:server": "npm run prebuild && rm -rf functions && webpack --config=\"./webpack/server.prod.config.js\"",
         "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
         "format": "prettier --write \"src/**/*.ts\"",
         "test": "jest --watch --verbose",
