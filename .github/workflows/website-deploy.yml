@@ -10,7 +10,7 @@ jobs:
         name: Deploy Hosting && Functions
         defaults:
             run:
-                working-directory: website
+                working-directory: web/corehalla
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Repo
