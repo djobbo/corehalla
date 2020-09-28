@@ -16,3 +16,21 @@
 
 ![Issues](https://img.shields.io/github/issues/Corehalla/Corehalla)
 ![Pull Requests](https://img.shields.io/github/issues-pr/Corehalla/Corehalla)
+
+## Monorepo Structure
+
+```
+🌲Corehalla Monorepo
+ ┣ 🤖bots
+ ┃  ┗ 📂discord
+ ┃     ┣ 📂corehalla
+ ┃     ┗ 📂manager
+ ┣ 🧩extensions
+ ┃  ┗ 📂chrome
+ ┃     ┗ 📂corehalla
+ ┣ 📦packages
+ ┃  ┗ 📂corehalla.js
+ ┗ 🌐web
+    ┣ 📂corehalla
+    ┗ 📂wiki
+```
