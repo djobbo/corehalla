@@ -1,4 +1,4 @@
-name: Corehalla Web
+name: Corehalla Wiki
 on:
     push:
         branches:
@@ -6,7 +6,7 @@ on:
 
 jobs:
     build:
-        name: Corehalla Web - Build
+        name: Corehalla Wiki - Build
         runs-on: ubuntu-latest
         defaults:
             run:
@@ -31,6 +31,12 @@ jobs:
                   name: firebase.json
                   path: ./web/wiki/firebase.json
 
+            - name: Archive Firebase Project Settings
+              uses: actions/upload-artifact@v2
+              with:
+                  name: .firebaserc
+                  path: ./web/wiki/.firebaserc
+
     deploy:
         name: Corehalla Web - Deploy
         needs: build
@@ -39,11 +45,10 @@ jobs:
             - name: Download Production Artifact
               uses: actions/download-artifact@v2
               with:
-                  name: dist
-            - name: Download Firebase Settings
-              uses: actions/download-artifact@v2
-              with:
-                  name: firebase.json
+                  name: |
+                      dist
+                      .firebaserc
+                      firebase.json
 
             - name: Deploy to Firebase
               uses: w9jds/firebase-action@master
