@@ -1,0 +1,6 @@
+{
+	"name": "Corehalla",
+	"version": "0.0.1",
+	"description": "Find Brawlhalla stats from Steam profile!",
+	"manifest_version": 2
+}
