@@ -21,7 +21,7 @@ export const Rankings1v1Tab: FC<Props> = ({ rankings }: Props) => {
         <Wrapper>
             {rankings.map((player, i) => (
                 <motion.div layout key={player.id}>
-                    <SectionSeparator />
+                    {i !== 0 && <SectionSeparator />}
                     <RankingsItem1v1 key={i} player={player} />
                 </motion.div>
             ))}

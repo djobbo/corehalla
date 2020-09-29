@@ -9,7 +9,7 @@ import { FavoritesContext } from '../../providers/FavoritesProvider';
 // Components imports
 import { Page } from '../../components/Page';
 import { AppBar } from '../../components/AppBar';
-import { BottomNavigationBar } from '../../components/BottomNavigationBar';
+import { SideNav } from '../../components/SideNav';
 
 export const FavoritesPage: FC = () => {
     const { favorites } = useContext(FavoritesContext);
@@ -32,7 +32,7 @@ export const FavoritesPage: FC = () => {
                     </main>
                 </motion.div>
             </AnimatePresence>
-            <BottomNavigationBar />
+            <SideNav />
         </Page>
     );
 };

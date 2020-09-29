@@ -4,6 +4,7 @@ import { IClanMemberFormat } from 'corehalla.js';
 
 import { RankingsItemClan } from '../../../components/RankingsItem';
 import { Select } from '../../../components/Select';
+import { SectionSeparator } from '../../../components/PageSection';
 
 interface Props {
     members: IClanMemberFormat[];
@@ -36,8 +37,11 @@ export const MembersTab: FC<Props> = ({ members, clanXP }: Props) => {
             />
             {members
                 .sort((a, b) => (getSortedProp(sort, a) < getSortedProp(sort, b) ? 1 : -1))
-                .map((member) => (
-                    <RankingsItemClan player={member} clanXP={clanXP} key={member.id} />
+                .map((member, i) => (
+                    <>
+                        {i !== 0 && <SectionSeparator />}
+                        <RankingsItemClan player={member} clanXP={clanXP} key={member.id} />
+                    </>
                 ))}
         </>
     );

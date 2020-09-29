@@ -25,7 +25,7 @@ export const OverviewTab: FC<Props> = ({ clanStats }: Props) => {
                 favorite={{
                     id: clanStats.id.toString(),
                     name: clanStats.name,
-                    thumbURI: '/assets/images/logo.png',
+                    thumbURI: '/assets/favicon.png',
                     type: 'clan',
                 }}
             />

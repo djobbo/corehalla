@@ -23,7 +23,7 @@ const NavbarWrapper = styled.div<{ showSearch?: boolean }>`
     z-index: 101;
     position: relative;
     border-bottom: 1px solid var(--bg-1);
-    height: 3rem;
+    height: 2rem;
 
     & > div {
         display: flex;
@@ -140,7 +140,6 @@ export function TabsContainer<T extends string>({ tabs }: TabsProps<T>): React.R
                         to="#"
                         onClick={(e) => {
                             e.preventDefault();
-                            console.log(history);
                             history.replace(`${history.location.pathname}${link}`);
                         }}
                     >
@@ -235,7 +234,7 @@ const AppBarWrapper = styled.div`
 
 const ExtrasContainer = styled.div`
     position: sticky;
-    top: 3rem;
+    top: 2rem;
     left: 0;
     right: 0;
     height: auto;
@@ -268,8 +267,6 @@ export function AppBar<T extends string, U extends string>({
         },
         [hideOnScroll],
     );
-
-    console.log(hideOnScroll);
 
     return (
         <>

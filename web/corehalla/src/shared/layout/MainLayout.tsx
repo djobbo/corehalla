@@ -7,7 +7,7 @@ import { useHashTabs } from '../hooks/useHashTabs';
 
 // Components imports
 import { AppBar } from '../components/AppBar';
-import { BottomNavigationBar } from '../components/BottomNavigationBar';
+import { SideNav } from '../components/SideNav';
 import { Loader } from '../components/Loader';
 import { Page } from '../components/Page';
 import styled from 'styled-components';
@@ -107,7 +107,7 @@ export function MainLayout<T extends string, U extends string>({
                     </AnimatePresence>
                 </Page>
             </Wrapper>
-            <BottomNavigationBar />
+            <SideNav />
         </>
     );
 }
