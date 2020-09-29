@@ -5,6 +5,10 @@
         "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "dist/index.html"],
         "rewrites": [
             {
+                "source": "/api/**",
+                "function": "app"
+            },
+            {
                 "source": "**",
                 "destination": "/index.html"
             }
