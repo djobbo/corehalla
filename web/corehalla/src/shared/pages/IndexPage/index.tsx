@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 const LandingNavbar = styled.nav<{ hasScrolled: boolean }>`
     position: fixed;
     top: 0;
-    left: 0;
+    left: 4rem;
     right: 0;
     display: flex;
     justify-content: center;

@@ -62,10 +62,6 @@ const NavigationWrapper = styled.nav`
     z-index: 100;
     gap: 0.5rem;
     padding-top: 0.5rem;
-
-    /* @media ${devices.desktop} {
-        display: none;
-    } */
 `;
 
 const NavigationItem = styled(Link)<{ active?: boolean }>`
