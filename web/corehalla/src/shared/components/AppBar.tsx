@@ -136,13 +136,7 @@ export function TabsContainer<T extends string>({ tabs }: TabsProps<T>): React.R
         <TabsContainerWrapper>
             {tabs.map(({ displayName, link, active }, i) => (
                 <Tab key={i} active={active}>
-                    <Link
-                        to="#"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            history.replace(`${history.location.pathname}${link}`);
-                        }}
-                    >
+                    <Link to={({ pathname }) => `${pathname}${link}`} replace>
                         {displayName}
                     </Link>
                 </Tab>

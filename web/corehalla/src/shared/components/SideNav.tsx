@@ -3,18 +3,18 @@ import React, { FC, useContext } from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 import { Icon } from '@mdi/react';
-import { mdiHome, mdiChevronTripleUp, mdiAccountStar, mdiHistory, mdiCog } from '@mdi/js';
+import { mdiHome, mdiChevronTripleUp, mdiAccountStar, mdiCog, mdiHistory } from '@mdi/js';
 
 // Providers imports
-import { NavigationPage, NavigationContext } from '../providers/NavigationProvider';
 import { Link, useLocation } from 'react-router-dom';
 import { devices } from '../util/devices';
 import { FavoritesContext } from '../providers/FavoritesProvider';
 
 interface BottomNavigationTab {
-    title: NavigationPage;
+    title: string;
     link: string;
     icon: string;
+    exact?: boolean;
 }
 
 const tabs: BottomNavigationTab[] = [
@@ -22,6 +22,7 @@ const tabs: BottomNavigationTab[] = [
         title: 'Home',
         link: '/',
         icon: mdiHome,
+        exact: true,
     },
     {
         title: 'Rankings',
@@ -33,16 +34,16 @@ const tabs: BottomNavigationTab[] = [
         link: '/favorites',
         icon: mdiAccountStar,
     },
-    {
-        title: 'History',
-        link: '/',
-        icon: mdiHistory,
-    },
-    {
-        title: 'Settings',
-        link: '/',
-        icon: mdiCog,
-    },
+    // {
+    //     title: 'History',
+    //     link: '/history',
+    //     icon: mdiHistory,
+    // },
+    // {
+    //     title: 'Settings',
+    //     link: '/settings',
+    //     icon: mdiCog,
+    // },
 ];
 
 const NavigationWrapper = styled.nav`
@@ -110,15 +111,14 @@ const NavSeparator = styled.hr`
 `;
 
 export const SideNav: FC = () => {
-    const { activePage } = useContext(NavigationContext);
     const { favorites } = useContext(FavoritesContext);
     const { pathname } = useLocation();
 
     if (typeof document === 'undefined') return null;
     return createPortal(
         <NavigationWrapper>
-            {tabs.map(({ title, link, icon }, i) => (
-                <NavigationItem to={link} key={i} active={activePage === title}>
+            {tabs.map(({ title, link, icon, exact }, i) => (
+                <NavigationItem to={link} key={i} active={exact ? pathname === link : pathname.startsWith(link)}>
                     <Icon path={icon} size={1} />
                 </NavigationItem>
             ))}
