@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "jsx": "react",
+        "lib": ["ESNext", "DOM"],
+        "esModuleInterop": true
+    },
+    "compileOnSave": true,
+    "include": ["src"]
+}

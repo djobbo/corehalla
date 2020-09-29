@@ -3,13 +3,13 @@ import { CSSProperties } from 'styled-components';
 
 type ThemeMode = 'light' | 'dark' | 'solarizedDark' | 'solarizedLight';
 type ThemeProps = 'bg' | 'bg-1' | 'bg-2' | 'text-2' | 'text' | 'accent';
-type Theme = {
+export type Theme = {
     [k in ThemeProps]: string;
 };
 
 export const ThemeContext = createContext<{
     getTheme: () => Theme;
-    getThemeCSS: () => CSSProperties;
+    getThemeStr: () => string;
     setThemeMode: React.Dispatch<React.SetStateAction<ThemeMode>>;
 }>(null);
 
@@ -56,14 +56,8 @@ export const ThemeProvider: FC<Props> = ({ children }: Props) => {
     const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
 
     const getTheme = () => themeModes[themeMode];
-    const getThemeCSS = () =>
-        Object.entries(themeModes[themeMode]).reduce(
-            (acc, [key, value]) => ({
-                ...acc,
-                [`--${key}`]: value,
-            }),
-            {},
-        ) as CSSProperties;
+    const getThemeStr = () =>
+        Object.entries(themeModes[themeMode]).reduce<string>((acc, [key, value]) => `${acc} --${key}: ${value};`, '');
 
-    return <ThemeContext.Provider value={{ getTheme, getThemeCSS, setThemeMode }}>{children}</ThemeContext.Provider>;
+    return <ThemeContext.Provider value={{ getTheme, getThemeStr, setThemeMode }}>{children}</ThemeContext.Provider>;
 };

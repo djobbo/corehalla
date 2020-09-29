@@ -3,7 +3,7 @@ import React, { FC, PropsWithChildren } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 // Components imports
-import { BottomNavigationBar } from '../components/BottomNavigationBar';
+import { SideNav } from '../components/SideNav';
 import { Page } from '../components/Page';
 import styled from 'styled-components';
 
@@ -34,7 +34,7 @@ export const LandingLayout: FC<PropsWithChildren<Props>> = ({ children }: PropsW
                     </AnimatePresence>
                 </Page>
             </Wrapper>
-            <BottomNavigationBar />
+            <SideNav />
         </>
     );
 };
