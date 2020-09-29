@@ -6,7 +6,7 @@
         "rewrites": [
             {
                 "source": "**",
-                "function": "app"
+                "destination": "/index.html"
             }
         ],
         "cleanUrls": true,

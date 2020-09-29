@@ -14,7 +14,7 @@ export interface IFavorite {
 }
 
 const fetchFavorites = (): IFavorite[] => {
-    const str = localStorage.getItem('favoritesStats') || '[]';
+    const str = localStorage?.getItem('favoritesStats') || '[]';
     return JSON.parse(str);
 };
 
@@ -26,7 +26,7 @@ export const FavoritesContext = createContext<{
 }>(null);
 
 export const FavoritesProvider: FC<Props> = ({ children }: Props) => {
-    const [favorites, setFavorites] = useState<IFavorite[]>(localStorage ? fetchFavorites() : []);
+    const [favorites, setFavorites] = useState<IFavorite[]>(fetchFavorites());
 
     const isFavorite = (newFav: IFavorite): boolean => {
         const localFavorites = fetchFavorites();
