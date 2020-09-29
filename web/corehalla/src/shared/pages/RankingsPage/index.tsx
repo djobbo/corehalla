@@ -11,7 +11,6 @@ import { useMockData } from '../../hooks/useMockData';
 
 // Layout imports
 import { MainLayout } from '../../layout';
-import { NavigationContext } from '../../providers/NavigationProvider';
 import qs from 'qs';
 
 // Tabs imports
@@ -25,8 +24,6 @@ const Rankings1v1Tab = loadable(() => import('./Rankings1v1Tab'), {
 type Bracket = '1v1' | '2v2' | 'power1v1' | 'power2v2';
 
 export const RankingsPage: FC = () => {
-    const { setActivePage } = useContext(NavigationContext);
-
     useEffect(() => {
         setActivePage('Rankings');
     }, []);

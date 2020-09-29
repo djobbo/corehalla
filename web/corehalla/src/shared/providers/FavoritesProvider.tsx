@@ -26,27 +26,27 @@ export const FavoritesContext = createContext<{
 }>(null);
 
 export const FavoritesProvider: FC<Props> = ({ children }: Props) => {
-    const [favorites, setFavorites] = useState<IFavorite[]>(fetchFavorites());
+    const [favorites, setFavorites] = useState<IFavorite[]>(localStorage ? fetchFavorites() : []);
 
     const isFavorite = (newFav: IFavorite): boolean => {
-        const index = favorites.findIndex((x) => x.type === newFav.type && x.id === newFav.id);
+        const localFavorites = fetchFavorites();
+        const index = localFavorites.findIndex((x) => x.type === newFav.type && x.id === newFav.id);
         return index > -1;
     };
 
     const addFavorite = (newFav: IFavorite): void => {
-        const index = favorites.findIndex((x) => x.type === newFav.type && x.id === newFav.id);
-        if (index < 0) setFavorites([...favorites, newFav]);
-        else
-            setFavorites((oldFavs) => {
-                oldFavs[index] = newFav;
-                return oldFavs;
-            });
+        const localFavorites = fetchFavorites();
+        const index = localFavorites.findIndex((x) => x.type === newFav.type && x.id === newFav.id);
+        if (index < 0) setFavorites([...localFavorites, newFav]);
+        else {
+            localFavorites[index] = newFav;
+            setFavorites(localFavorites);
+        }
     };
 
     const removeFavorite = (favToBeRemoved: IFavorite): void => {
-        setFavorites((oldFavs) =>
-            oldFavs.filter((x) => !(x.type === favToBeRemoved.type && x.id === favToBeRemoved.id)),
-        );
+        const localFavorites = fetchFavorites();
+        setFavorites(localFavorites.filter((x) => !(x.type === favToBeRemoved.type && x.id === favToBeRemoved.id)));
     };
 
     useEffect(() => {
