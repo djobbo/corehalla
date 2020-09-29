@@ -69,6 +69,7 @@ const NavigationWrapper = styled.nav`
 
 const NavigationItem = styled(Link)<{ active?: boolean }>`
     width: 3rem;
+    min-height: 3rem;
     height: 3rem;
     display: flex;
     flex-direction: column;
