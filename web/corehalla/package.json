@@ -20,6 +20,10 @@
         "react-router-dom": "^5.2.0",
         "styled-components": "^5.2.0"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Corehalla/Corehalla.git"
+    },
     "scripts": {
         "start:client": "webpack-dev-server --config=\"./webpack/client.dev.config.js\"",
         "start:server": "webpack --config=\"./webpack/server.dev.config.js\" --watch",
@@ -73,10 +77,6 @@
         "webpack-cli": "^3.3.12",
         "webpack-dev-server": "^3.11.0",
         "webpack-node-externals": "^2.5.2"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/Corehalla/Corehalla.git"
     },
     "keywords": [
         "Brawlhalla",
