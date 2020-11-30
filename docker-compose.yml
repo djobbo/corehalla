@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+    server:
+        build:
+            context: server
+            dockerfile: Dockerfile.dev
+        volumes:
+            - ./static:/usr/src/static
+        image: ch-server
+        ports:
+            - '80:80'
+
+    app:
+        build:
+            context: app
+            dockerfile: Dockerfile.dev
+        image: ch-app
+        environment:
+            - NODE_ENV=development
+        volumes:
+            - ./app:/usr/src/app
+        ports:
+            - '3000:3000'
