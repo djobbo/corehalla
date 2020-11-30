@@ -1,0 +1,18 @@
+{
+    "include": ["src"],
+    "compilerOptions": {
+        "module": "esnext",
+        "target": "es5",
+        "moduleResolution": "node",
+        "jsx": "react",
+        "baseUrl": "./",
+        "paths": {
+            "corehalla": ["../@types"]
+        },
+        "outDir": "./dist/",
+        "forceConsistentCasingInFileNames": true,
+        "allowSyntheticDefaultImports": true,
+        "importsNotUsedAsValues": "error",
+        "noImplicitAny": false
+    }
+}

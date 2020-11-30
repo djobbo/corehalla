@@ -1,0 +1,7 @@
+# Node modules
+node_modules/
+
+# Environment variables
+**/*.env
+**/*.env.*
+**/*.runtimeconfig.json
