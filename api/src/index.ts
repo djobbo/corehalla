@@ -11,4 +11,6 @@ app.get('/', (req, res) => {
 	'Corehalla API';
 });
 
-app.listen(8080, () => `API Listening on port 8080`);
+app.listen(8080, () => {
+	console.log(`API Listening on port 8080`);
+});
