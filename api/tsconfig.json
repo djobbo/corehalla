@@ -1,19 +1,19 @@
 {
 	"include": ["src"],
 	"compilerOptions": {
-		"module": "esnext",
+		"module": "commonjs",
 		"target": "esnext",
 		"moduleResolution": "node",
+		"outDir": "./dist",
 		"baseUrl": "./",
 		"paths": {
 			"corehalla": ["../@types"]
 		},
-		"noEmit": true,
 		"strict": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"resolveJsonModule": true,
 		"allowSyntheticDefaultImports": true,
-		"importsNotUsedAsValues": "error"
+		"importsNotUsedAsValues": "error",
+		"noImplicitAny": false
 	}
 }

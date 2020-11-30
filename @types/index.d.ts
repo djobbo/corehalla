@@ -1,6 +1,6 @@
-export * from './apiTypes';
-export * from './clan';
-export * from './general';
-export * from './player';
-export * from './powerRankings';
-export * from './rankings';
+export type * from './apiTypes';
+export type * from './clan';
+export type * from './general';
+export type * from './player';
+export type * from './powerRankings';
+export type * from './rankings';

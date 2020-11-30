@@ -1,4 +1,4 @@
-import fetch from 'cross-fetch';
+import axios from 'axios';
 
 import {
 	formatPlayerStats,
@@ -6,12 +6,16 @@ import {
 	format1v1Rankings,
 	format2v2Rankings,
 	formatPowerRankings,
-	getGloryFromBestRating,
-	getGloryFromWins,
-	getHeroRatingSquash,
-	getPersonalRatingSquash,
-	getTierFromRating,
 } from './formatters';
+
+import type {
+	IClan,
+	IPlayerRanked,
+	IPlayerStats,
+	IRanking1v1,
+	IRanking2v2,
+	RankedRegion,
+} from 'corehalla';
 
 const API_URL = 'https://api.brawlhalla.com';
 
@@ -24,36 +28,43 @@ export interface IRankingsOptions {
 const fetchPlayerById = <T>(apiKey: string, dataType: 'ranked' | 'stats') => (
 	brawlhallaId: number
 ) =>
-	fetch(
-		`${API_URL}/player/${brawlhallaId}/${dataType}?api_key=${apiKey}`
-	).then(async (res) => (await res.json()) as T);
+	axios
+		.get<T>(
+			`${API_URL}/player/${brawlhallaId}/${dataType}?api_key=${apiKey}`
+		)
+		.then(async (res) => res.data);
 
 const getBHIdBySteamId = (apiKey: string) => (steamId: string) =>
-	fetch(`${API_URL}/search?steamid=${steamId}&api_key=${apiKey}`).then(
-		async (res) =>
-			(await res.json()) as { brawlhalla_id: number; name: string }
-	);
+	axios
+		.get<{ brawlhalla_id: number; name: string }>(
+			`${API_URL}/search?steamid=${steamId}&api_key=${apiKey}`
+		)
+		.then(async (res) => res.data);
 
 const fetchClanById = (apiKey: string) => (clanId: number) =>
-	fetch(`${API_URL}/clan/${clanId}?api_key=${apiKey}`).then(
-		async (res) => (await res.json()) as IClan
-	);
+	axios
+		.get<IClan>(`${API_URL}/clan/${clanId}?api_key=${apiKey}`)
+		.then(async (res) => res.data);
 
 const fetchRankings = <T>(apiKey: string, bracket: '1v1' | '2v2') => ({
 	region,
 	page,
 	name,
 }: IRankingsOptions) =>
-	fetch(
-		`${API_URL}/rankings/${bracket}/${region.toLowerCase()}/${page}?name=${name}&api_key=${apiKey}`
-	).then(async (res) => (await res.json()) as T[]);
+	axios
+		.get<T[]>(
+			`${API_URL}/rankings/${bracket}/${region.toLowerCase()}/${page}?name=${name}&api_key=${apiKey}`
+		)
+		.then(async (res) => res.data);
 
 const fetchPowerRankings = (
 	bracket: '1v1' | '2v2' | undefined = undefined // Can't be undefined anymore
 ) =>
-	fetch(
-		`https://www.brawlhalla.com/rankings/power/${bracket || ''}`
-	).then(async (res) => formatPowerRankings((await res.json()) as string));
+	axios
+		.get<string>(
+			`https://www.brawlhalla.com/rankings/power/${bracket || ''}`
+		)
+		.then(async (res) => formatPowerRankings(res.data));
 
 const createApiConnection = (apiKey: string) => {
 	const fetchPlayerStats = fetchPlayerById<IPlayerStats>(apiKey, 'stats');
@@ -99,11 +110,4 @@ const createApiConnection = (apiKey: string) => {
 	};
 };
 
-export const bhAPI = {
-	createApiConnection,
-	getGloryFromBestRating,
-	getGloryFromWins,
-	getHeroRatingSquash,
-	getPersonalRatingSquash,
-	getTierFromRating,
-};
+export const bhAPI = createApiConnection(process.env.BH_API_KEY || '');
