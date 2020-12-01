@@ -109,7 +109,7 @@ export const LegendsTab: FC<Props> = ({ legends }: Props) => {
                             <SectionSeparator />
                             <PageSection title={`${i + 1}. ${legend.name} ${`• ${getSortedDisplay(sort, legend)}`}`}>
                                 <LegendLevelStatsWrapper>
-                                    <LegendIcon src={`/assets/images/icons/legends/${legend.name}.png`} />
+                                    <LegendIcon src={`/cdn/images/icons/legends/${legend.name}.png`} />
                                     <div>
                                         <div>
                                             <StatDesc>Level</StatDesc>

@@ -149,7 +149,7 @@ export const IndexPage: FC = () => {
             </Helmet>
             <LandingNavbar hasScrolled={hasScrolled}>
                 <Link to="/">
-                    <MainLogo src="/assets/images/logo.png" alt="" />
+                    <MainLogo src="/cdn/images/logo.png" alt="" />
                 </Link>
                 <ul>
                     <Link to="/">Home</Link>
@@ -174,7 +174,7 @@ export const IndexPage: FC = () => {
                         placeholder="Search Player..."
                     />
                 </div>
-                <LandingImg src="/assets/images/Nix Landing.png" alt="" />
+                <LandingImg src="/cdn/images/Nix Landing.png" alt="" />
             </LandingContentWrapper>
 
             <MainContent>

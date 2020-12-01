@@ -9,7 +9,6 @@ html,
 body {
     font-family: 'Rubik', sans-serif;
     height: 100%;
-    /* background-image: url(/assets/images/backgrounds/Background.jpg); */
     background-repeat: repeat;
     background-size: contain;
 }
