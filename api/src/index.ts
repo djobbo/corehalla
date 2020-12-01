@@ -13,9 +13,6 @@ app.use('/stats', statsRouter);
 app.get('/', (req, res) => {
 	res.status(200).send('Corehalla API');
 });
-app.get('/api', (req, res) => {
-	res.status(200).send('Corehalla');
-});
 
 app.listen(PORT, HOST, () => {
 	console.log(`API Listening on port 8080`);

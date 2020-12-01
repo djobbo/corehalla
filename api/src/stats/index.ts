@@ -7,4 +7,5 @@ const router = express.Router();
 
 router.use('/player', playerStatsRouter);
 router.use('/clan', clanStatsRouter);
+
 export { router };
