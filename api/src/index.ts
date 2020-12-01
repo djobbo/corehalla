@@ -5,12 +5,18 @@ import { router as statsRouter } from './stats';
 
 const app = express();
 
+const PORT = 8080;
+const HOST = '0.0.0.0';
+
 app.use('/rankings', rankingsRouter);
 app.use('/stats', statsRouter);
 app.get('/', (req, res) => {
-	'Corehalla API';
+	res.status(200).send('Corehalla API');
+});
+app.get('/api', (req, res) => {
+	res.status(200).send('Corehalla');
 });
 
-app.listen(8080, () => {
+app.listen(PORT, HOST, () => {
 	console.log(`API Listening on port 8080`);
 });
