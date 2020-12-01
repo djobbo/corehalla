@@ -3,7 +3,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
-    mode: 'development',
     entry: {
         app: path.join(__dirname, 'src', 'index.tsx'),
     },
