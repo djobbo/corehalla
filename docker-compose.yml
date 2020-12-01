@@ -3,10 +3,11 @@ version: '3.8'
 services:
     server:
         build:
-            context: server
-            dockerfile: Dockerfile.dev
+            context: .
+            dockerfile: ./server/Dockerfile
         volumes:
             - ./static:/usr/src/static
+            - app-dist:/usr/src/app
         image: ch-server
         ports:
             - '80:80'
@@ -17,20 +18,19 @@ services:
 
     api:
         build:
-            context: api
-            dockerfile: Dockerfile.dev
+            context: .
+            dockerfile: ./api/Dockerfile
         image: ch-api
-        volumes:
-            - ./api:/usr/src/api
-            - ./@types:/usr/src/@types
         restart: always
 
     app:
         build:
-            context: app
-            dockerfile: Dockerfile.dev
-        image: ch-app
+            context: .
+            dockerfile: ./app/Dockerfile
         volumes:
-            - ./app:/usr/src/app
-            - ./@types:/usr/src/@types
+            - app-dist:/usr/src/app/dist
+        image: ch-app
         restart: always
+
+volumes:
+    app-dist:
