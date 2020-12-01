@@ -12,11 +12,11 @@ jobs:
               uses: appleboy/ssh-action@master
               with:
                   host: ${{ secrets.CH_PROD_HOST }}
-                  host: ${{ secrets.CH_PROD_USERNAME }}
+                  username: ${{ secrets.CH_PROD_USERNAME }}
                   key: ${{ secrets.CH_PROD_PRIVATE_KEY }}
                   port: 22
                   script: |
-                    cd ~/corehalla
-                    git pull origin master
-                    git status
-                    docker-compose -f docker-compose.dev.yml up -d --build
+                      cd ~/corehalla
+                      git pull origin master
+                      git status
+                      docker-compose -f docker-compose.dev.yml up -d --build
