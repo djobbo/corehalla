@@ -10,6 +10,7 @@ services:
         image: ch-server
         ports:
             - '80:80'
+            - '443:443'
 
     api:
         build:
@@ -19,8 +20,7 @@ services:
         volumes:
             - ./api:/usr/src/api
             - ./@types:/usr/src/@types
-        ports:
-            - '8080:8080'
+        restart: always
 
     app:
         build:
@@ -30,5 +30,4 @@ services:
         volumes:
             - ./app:/usr/src/app
             - ./@types:/usr/src/@types
-        ports:
-            - '3000:3000'
+        restart: always
