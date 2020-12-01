@@ -44,6 +44,7 @@ module.exports = {
         port: 3000,
         historyApiFallback: true,
         hot: true,
-        publicPath: '/dist',
+        contentBase: path.join(__dirname, 'dist'),
+        publicPath: '/',
     },
 };

@@ -59,11 +59,11 @@ export const TeamCard: FC<Props> = ({ team }: Props) => {
     return (
         <Card>
             <TeammateName to={`/stats/player/${team.teammate.id}`}>
-                <RegionIcon src={`/assets/images/icons/flags/${team.region}.png`} alt={team.region} />
+                <RegionIcon src={`/cdn/images/icons/flags/${team.region}.png`} alt={team.region} />
                 {team.teammate.name}
             </TeammateName>
             <StatsContainer>
-                <RankedIcon src={`/assets/images/icons/ranked/${team.season.tier}.png`} alt={team.region} />
+                <RankedIcon src={`/cdn/images/icons/ranked/${team.season.tier}.png`} alt={team.region} />
                 <div>
                     <div>
                         <StatSmall>{team.season.rating}</StatSmall>

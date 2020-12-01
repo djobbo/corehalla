@@ -25,7 +25,7 @@ const Wrapper = styled.div<{ backgroundURL?: string }>``;
 export const LandingLayout: FC<PropsWithChildren<Props>> = ({ children }: PropsWithChildren<Props>) => {
     return (
         <>
-            <Wrapper backgroundURL="/assets/images/backgrounds/Ulgrim.png">
+            <Wrapper backgroundURL="/cdn/images/backgrounds/Ulgrim.png">
                 <Page>
                     <AnimatePresence exitBeforeEnter initial>
                         <motion.div key="page" animate={{ opacity: 1 }} initial={{ opacity: 0 }}>

@@ -17,8 +17,9 @@ import { FavoritesPage } from './pages/FavoritesPage';
 import { ThemeContext, Theme } from './providers/ThemeProvider';
 
 const GlobalStyle = createGlobalStyle<{ theme: string }>`
-  body {
+  :root {
     ${({ theme }) => theme}
+    background-image: url('/cdn/images/backgrounds/Background.jpg');
   }
 `;
 

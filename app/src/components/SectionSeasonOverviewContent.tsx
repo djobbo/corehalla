@@ -51,7 +51,7 @@ export const SectionSeasonOverviewContent: FC<Props> = ({
     return (
         <SectionWrapper>
             <RankedBanner
-                src={`/assets/images/ranked-banners/${tier}.png`}
+                src={`/cdn/images/ranked-banners/${tier}.png`}
                 alt={tier}
                 animate={{
                     scaleX: [0.86, 0.91, 0.91, 0.86, 0.86, 0.86],
