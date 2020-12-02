@@ -13,7 +13,6 @@ services:
             - '443:443'
         depends_on:
             - api
-            - app
 
     api:
         build:
