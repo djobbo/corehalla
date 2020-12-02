@@ -3,13 +3,6 @@ on:
     push:
         branches: [master]
 
-env:
-    HOST: ${{ secrets.CH_PROD_HOST }}
-    PORT: ${{ secrets.CH_PROD_PORT }}
-    USERNAME: ${{ secrets.CH_PROD_USERNAME }}
-    PRIVATE_KEY: ${{ secrets.CH_PROD_PRIVATE_KEY }}
-    TEST: T_E_S_T
-
 jobs:
     deploy:
         name: Deploy
@@ -17,5 +10,23 @@ jobs:
         steps:
             - uses: actions/checkout@master
             - name: Build App
-              run:
-                  sh ./deploy_prod.sh $HOST $PORT $USERNAME "$PRIVATE_KEY" $TEST
+              run: sh ./build_prod.sh
+            - name: Deploy to production server
+              uses: appleboy/scp-action@master
+              with:
+                  host: ${{ secrets.CH_PROD_HOST }}
+                  username: ${{ secrets.CH_PROD_USERNAME }}
+                  port: ${{ secrets.CH_PROD_PORT }}
+                  key: ${{ secrets.CH_PROD_PRIVATE_KEY }}
+                  source: 'tests/*.txt,!tests/a.txt'
+                  target: 'test'
+            - name: Docker Compose
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.CH_PROD_HOST }}
+                  username: ${{ secrets.CH_PROD_USERNAME }}
+                  port: ${{ secrets.CH_PROD_PORT }}
+                  key: ${{ secrets.CH_PROD_PRIVATE_KEY }}
+                  script: |
+                      cd ~/Corehalla
+                      docker-compose up -d --build
