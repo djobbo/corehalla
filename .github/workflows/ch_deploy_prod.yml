@@ -18,8 +18,8 @@ jobs:
                   username: ${{ secrets.CH_PROD_USERNAME }}
                   port: ${{ secrets.CH_PROD_PORT }}
                   key: ${{ secrets.CH_PROD_PRIVATE_KEY }}
-                  source: 'tests/*.txt,!tests/a.txt'
-                  target: 'test'
+                  source: 'dist'
+                  target: '~/corehalla'
             - name: Docker Compose
               uses: appleboy/ssh-action@master
               with:
@@ -28,5 +28,5 @@ jobs:
                   port: ${{ secrets.CH_PROD_PORT }}
                   key: ${{ secrets.CH_PROD_PRIVATE_KEY }}
                   script: |
-                      cd ~/Corehalla
+                      cd ~/corehalla
                       docker-compose up -d --build
