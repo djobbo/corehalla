@@ -19,7 +19,7 @@ jobs:
                   port: ${{ secrets.CH_PROD_PORT }}
                   key: ${{ secrets.CH_PROD_PRIVATE_KEY }}
                   source: 'dist'
-                  target: '~/corehalla'
+                  target: 'corehalla'
             - name: Docker Compose
               uses: appleboy/ssh-action@master
               with:
