@@ -17,4 +17,5 @@ jobs:
         steps:
             - uses: actions/checkout@master
             - name: Build App
-              run: sh ./deploy_prod.sh $HOST $PORT $USERNAME $PRIVATE_KEY $TEST
+              run:
+                  sh ./deploy_prod.sh $HOST $PORT $USERNAME "$PRIVATE_KEY" $TEST
