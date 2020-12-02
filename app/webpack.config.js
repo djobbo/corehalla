@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
-module.exports = {
+const common = {
     entry: {
         app: path.join(__dirname, 'src', 'index.tsx'),
     },
@@ -27,17 +27,32 @@ module.exports = {
             },
         ],
     },
-    output: {
-        filename: '[name].js',
-        path: path.resolve(__dirname, 'dist'),
-        pathinfo: false,
-    },
     plugins: [
         new ForkTsCheckerWebpackPlugin(),
         new HtmlWebpackPlugin({
             template: path.join(__dirname, 'src', 'index.html'),
         }),
     ],
+};
+
+const prodConfig = {
+    ...common,
+    mode: 'production',
+    output: {
+        filename: '[name].js',
+        path: path.resolve(__dirname, '..', 'static', 'dist', 'app'),
+        pathinfo: false,
+    },
+};
+
+const devConfig = {
+    ...common,
+    mode: 'development',
+    output: {
+        filename: '[name].js',
+        path: path.resolve(__dirname, 'dist'),
+        pathinfo: false,
+    },
     devServer: {
         host: '0.0.0.0',
         port: 3000,
@@ -46,4 +61,9 @@ module.exports = {
         contentBase: path.join(__dirname, 'dist'),
         publicPath: '/',
     },
+};
+
+module.exports = (env) => {
+    console.log(env);
+    return env && env.NODE_ENV === 'production' ? prodConfig : devConfig;
 };

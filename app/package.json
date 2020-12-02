@@ -20,7 +20,7 @@
     },
     "scripts": {
         "dev": "webpack serve",
-        "build": "webpack --mode=production",
+        "build": "webpack --env NODE_ENV=production",
         "format": "prettier --write \"src/**/*.{js,jsx}\"",
         "lint": "prettier --check \"src/**/*.{js,jsx}\"",
         "test": "web-test-runner \"src/**/*.test.jsx\""
