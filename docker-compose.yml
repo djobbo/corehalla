@@ -21,6 +21,5 @@ services:
             dockerfile: ./api/Dockerfile
         volumes:
             - ./api:/usr/src/api
-            - ./@types:/usr/src/@types
         image: ch-api
         restart: always
