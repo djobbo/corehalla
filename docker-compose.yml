@@ -13,10 +13,14 @@ services:
             - '443:443'
         depends_on:
             - api
+        restart: always
 
     api:
         build:
             context: .
             dockerfile: ./api/Dockerfile
+        volumes:
+            - ./api:/usr/src/api
+            - ./@types:/usr/src/@types
         image: ch-api
         restart: always

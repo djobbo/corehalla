@@ -2,12 +2,8 @@ FROM node:latest
 
 WORKDIR /usr/src/api
 
-COPY ./api/package.json .
-COPY ./api/yarn.lock .
-
 RUN yarn
 
-COPY ./@types ..
-COPY ./api .
+EXPOSE 8080
 
 CMD ["yarn", "run", "serve"]
