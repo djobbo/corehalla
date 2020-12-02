@@ -14,11 +14,12 @@ services:
         depends_on:
             - api
             - app
+        restart: always
 
     api:
         build:
             context: api
-            dockerfile: Dockerfile.dev
+            dockerfile: Dockerfile
         image: ch-dev-api
         volumes:
             - ./api:/usr/src/api
