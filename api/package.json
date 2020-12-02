@@ -4,7 +4,9 @@
 	"main": "dist/index.js",
 	"license": "MIT",
 	"scripts": {
-		"serve": "tsc && node ."
+		"dev": "tsc && node .",
+		"build": "tsc",
+		"serve": "node ."
 	},
 	"dependencies": {
 		"axios": "^0.21.0",
