@@ -3,6 +3,12 @@ on:
     push:
         branches: [master]
 
+env:
+    HOST: ${{ secrets.CH_PROD_HOST }}
+    PORT: ${{ secrets.CH_PROD_PORT }}
+    USERNAME: ${{ secrets.CH_PROD_USERNAME }}
+    PRIVATE_KEY: ${{ secrets.CH_PROD_PRIVATE_KEY }}
+
 jobs:
     deploy:
         name: Deploy
@@ -10,9 +16,5 @@ jobs:
         steps:
             - uses: actions/checkout@master
             - name: Build App
-              run: sh ./deploy_prod.sh
-              env:
-                  HOST: ${{ secrets.CH_PROD_HOST }}
-                  PORT: ${{ secrets.CH_PROD_PORT }}
-                  USERNAME: ${{ secrets.CH_PROD_USERNAME }}
-                  PRIVATE_KEY: ${{ secrets.CH_PROD_PRIVATE_KEY }}
+              run:
+                  sh ./deploy_prod.sh ${HOST} ${PORT} ${USERNAME} ${PRIVATE_KEY}
