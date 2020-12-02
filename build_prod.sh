@@ -1,20 +1,5 @@
 #!/bin/bash
 
-HOST="$1"
-PORT="$2"
-USERNAME="$3"
-KEY="$4"
-TEST="$5"
-
-echo "test: ${TEST}"
-
-TEMP=$(mktemp /tmp/temporary-file.XXXXXXXX)
-echo "${KEY}" > ${TEMP}
-
-ADDR="${USERNAME}@${HOST}"
-
-scp -i ${TEMP} -P ${PORT} -r dist ${ADDR}:~/corehalla
-
 rm -rf dist
 mkdir dist
 mkdir dist/api
@@ -47,13 +32,3 @@ cp api/yarn.lock dist/api/yarn.lock
 # --- DOCKER --- #
 cp .dockerignore dist/.dockerignore
 cp docker-compose.yml dist/docker-compose.yml
-
-# --- COPY DIST FOLDER VIA SSH --- #
-scp -i ${TEMP} -P ${PORT} -r dist ${ADDR}:~/corehalla
-
-ssh -i ${TEMP} -p ${PORT} ${ADDR} "
-    cd ~/corehalla
-    docker-compose up -d --build
-"
-
-exit
