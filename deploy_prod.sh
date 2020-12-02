@@ -1,9 +1,12 @@
 #!/bin/bash
 
-# HOST="$1"
-# PORT="$2"
-# USERNAME="$3"
-# KEY="$4"
+HOST="$1"
+PORT="$2"
+USERNAME="$3"
+KEY="$4"
+TEST="$5"
+
+echo "test: ${TEST}"
 
 TEMP=$(mktemp /tmp/temporary-file.XXXXXXXX)
 echo "${KEY}" > ${TEMP}
