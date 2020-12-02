@@ -10,7 +10,7 @@ jobs:
         steps:
             - uses: actions/checkout@master
             - name: Build App
-                run: sh ./deploy_prod "$HOST" "$PORT" "$USERNAME" "$PRIVATE_KEY"
+                run: sh ./deploy_prod.sh $HOST $PORT $USERNAME $PRIVATE_KEY
                 env:
                     HOST: ${{ secrets.CH_PROD_HOST }}
                     PORT: ${{ secrets.CH_PROD_PORT }}
