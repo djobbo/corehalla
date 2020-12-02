@@ -7,7 +7,6 @@ services:
             dockerfile: ./server/Dockerfile
         volumes:
             - ./static:/usr/src/static
-            - app-dist:/usr/src/app
         image: ch-server
         ports:
             - '80:80'
@@ -22,15 +21,3 @@ services:
             dockerfile: ./api/Dockerfile
         image: ch-api
         restart: always
-
-    app:
-        build:
-            context: .
-            dockerfile: ./app/Dockerfile
-        volumes:
-            - app-dist:/usr/src/app/dist
-        image: ch-app
-        restart: always
-
-volumes:
-    app-dist:
