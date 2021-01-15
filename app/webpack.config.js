@@ -56,6 +56,7 @@ const devConfig = {
     devServer: {
         host: '0.0.0.0',
         port: 3000,
+        public: 'localhost',
         historyApiFallback: true,
         hot: true,
         contentBase: path.join(__dirname, 'dist'),

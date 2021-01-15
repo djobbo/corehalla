@@ -12,18 +12,7 @@ services:
             - '80:80'
             - '443:443'
         depends_on:
-            - api
             - app
-        restart: always
-
-    api:
-        build:
-            context: api
-            dockerfile: Dockerfile
-        image: ch-dev-api
-        volumes:
-            - ./api:/usr/src/api
-            - ./@types:/usr/src/@types
         restart: always
 
     app:

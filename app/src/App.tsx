@@ -19,7 +19,11 @@ import { ThemeContext, Theme } from './providers/ThemeProvider';
 const GlobalStyle = createGlobalStyle<{ theme: string }>`
   :root {
     ${({ theme }) => theme}
-    background-image: url('/cdn/images/backgrounds/Background.jpg');
+    /* background-image: url('/cdn/images/backgrounds/Background.jpg'); */
+  }
+
+  body {
+      background-color: var(--bg)
   }
 `;
 
