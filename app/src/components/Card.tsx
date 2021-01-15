@@ -19,14 +19,25 @@ const CardTitle = styled.span`
 `;
 
 const CardWrapper = styled(motion.div)`
-    background-color: var(--bg-1);
-    border-radius: 0.25rem;
+    /* background-color: var(--bg-1); */
     padding: 1rem;
     border: 0.5px solid transparent;
     display: flex;
     flex-direction: column;
     transition: 0.1s ease-in all;
-    border-color: var(--bg-2);
+    /* border-color: var(--bg-2); */
+
+    &::before {
+        content: '';
+        background-color: var(--bg-1);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 0.25rem;
+        backdrop-filter: blur(8px);
+    }
 
     &:hover {
         border-color: var(--accent);
