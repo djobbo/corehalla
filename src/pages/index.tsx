@@ -8,9 +8,7 @@ import { Layout } from '../components/Layout';
 import { Button } from '../components/Button';
 
 export default function Home() {
-	const { addCollision, collisions, setCollisions } = useContext(
-		MapNodesContext
-	);
+	const { addCollision, mapData, setMapData } = useContext(MapNodesContext);
 
 	function getRandomCol(): Collision {
 		return {
@@ -32,9 +30,7 @@ export default function Home() {
 					<Button onClick={() => addCollision(getRandomCol())}>
 						Add Collision
 					</Button>
-					<Button
-						onClick={() => console.log(createMapXML(collisions))}
-					>
+					<Button onClick={() => console.log(createMapXML(mapData))}>
 						Generate XML
 					</Button>
 				</div>
@@ -45,7 +41,7 @@ export default function Home() {
 					onChange={async (e) => {
 						if (e.target.files.length <= 0) return;
 						const file = e.target.files[0];
-						setCollisions(parseMapXML(await file.text()));
+						setMapData(parseMapXML(await file.text()));
 					}}
 				/>
 			</div>

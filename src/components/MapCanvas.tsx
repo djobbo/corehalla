@@ -6,11 +6,12 @@ import { KonvaEventObject } from 'konva/types/Node';
 
 export function MapCanvas() {
 	const {
-		collisions,
-		setCollisions,
+		mapData,
+		setMapData,
 		selectedCollision,
 		selectCollision,
 		deselectCollision,
+		updateCollision,
 	} = useContext(MapNodesContext);
 
 	const [{ stageScale, stageX, stageY }, setStageTransform] = useState({
@@ -72,17 +73,10 @@ export function MapCanvas() {
 			setFreezeDrag({ x: !xDirMostChanged, y: xDirMostChanged });
 		else setFreezeDrag({ x: false, y: false });
 
-		setCollisions(
-			collisions.map((col) =>
-				col.id === selectedCollision.id
-					? {
-							...col,
-							[`x${handleId}`]: pos.x,
-							[`y${handleId}`]: pos.y,
-					  }
-					: col
-			)
-		);
+		updateCollision(selectedCollision.id, () => ({
+			[`x${handleId}`]: pos.x,
+			[`y${handleId}`]: pos.y,
+		}));
 	};
 
 	const handleColDrag = (e: KonvaEventObject<DragEvent>) => {
@@ -98,19 +92,12 @@ export function MapCanvas() {
 			setFreezeDrag({ x: !xDirMostChanged, y: xDirMostChanged });
 		else setFreezeDrag({ x: false, y: false });
 
-		setCollisions(
-			collisions.map((col) =>
-				col.id === id
-					? {
-							...col,
-							x1: pos.x,
-							y1: pos.y,
-							x2: pos.x + col.x2 - col.x1,
-							y2: pos.y + col.y2 - col.y1,
-					  }
-					: col
-			)
-		);
+		updateCollision(id, (col) => ({
+			x1: pos.x,
+			y1: pos.y,
+			x2: pos.x + col.x2 - col.x1,
+			y2: pos.y + col.y2 - col.y1,
+		}));
 	};
 
 	const freezeDragFn = (pos: { x: number; y: number }) => ({
@@ -134,7 +121,7 @@ export function MapCanvas() {
 				}}
 			>
 				<Layer>
-					{collisions.map((col) => (
+					{mapData.collisions.map((col) => (
 						<Line
 							key={col.id}
 							id={col.id}

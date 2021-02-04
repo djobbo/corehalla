@@ -32,9 +32,9 @@ export function CollisionSettings() {
 								value={col[coord]}
 								type='number'
 								onChange={(e) =>
-									updateCollision(col.id, {
+									updateCollision(col.id, () => ({
 										[coord]: parseInt(e.target.value),
-									})
+									}))
 								}
 							/>
 						</div>
@@ -52,7 +52,9 @@ export function CollisionSettings() {
 						className={`px-4 py-1 focus:outline-none flex-1 ${
 							col.type === type ? 'bg-purple-500' : ''
 						}`}
-						onClick={() => updateCollision(col.id, { type })}
+						onClick={() =>
+							updateCollision(col.id, () => ({ type }))
+						}
 					>
 						{type}
 					</Button>

@@ -1,13 +1,9 @@
-export function parseMapXML(mapXML: string): Collision[] {
+export function parseMapXML(mapXML: string): MapData {
 	console.log(mapXML);
 	const parser = new DOMParser();
 	const dom = parser.parseFromString(mapXML, 'text/xml');
 
-	console.log(
-		dom.documentElement.nodeName == 'parsererror'
-			? 'error while parsing'
-			: dom
-	);
+	const levelDesc = dom.getElementsByTagName(`LevelDesc`)[0];
 
 	let collisions: Collision[] = [];
 
@@ -36,7 +32,16 @@ export function parseMapXML(mapXML: string): Collision[] {
 		}
 	});
 
-	console.log(collisions);
+	const mapData: MapData = {
+		assetDir: levelDesc.getAttribute('AssetDir'),
+		background: levelDesc.getAttribute('Background'),
+		levelName: levelDesc.getAttribute('LevelName'),
+		spawns: [],
+		platforms: [],
+		collisions,
+	};
 
-	return collisions;
+	console.log(mapData);
+
+	return mapData;
 }

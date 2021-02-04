@@ -1,3 +1,19 @@
+interface MapData {
+	assetDir: string;
+	background: string;
+	levelName: string;
+	collisions: Collision[];
+	platforms: Platform[];
+	spawns: Spawn[];
+}
+
+interface CameraBounds {
+	x: number;
+	y: number;
+	w: number;
+	h: number;
+}
+
 interface MapNode {
 	id: string;
 	isDragging: boolean;

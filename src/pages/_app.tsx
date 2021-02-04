@@ -6,7 +6,7 @@ import { MapNodesProvider } from '../providers/MapNodesProvider';
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
 		<MapNodesProvider>
-			<Component {...pageProps} />;
+			<Component {...pageProps} />
 		</MapNodesProvider>
 	);
 }
