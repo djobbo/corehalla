@@ -17,6 +17,12 @@ export function MapCanvas() {
 		stageY: 0,
 	});
 
+	const [freezeDragPos, setFreezeDragPos] = useState<{
+		x: number;
+		y: number;
+	}>({ x: null, y: null });
+	const [freezeDrag, setFreezeDrag] = useState({ x: false, y: false });
+
 	const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
 		e.evt.preventDefault();
 
@@ -44,12 +50,26 @@ export function MapCanvas() {
 		});
 	};
 
+	const handleDragStart = (e: KonvaEventObject<DragEvent>) => {
+		setFreezeDragPos(e.target.position());
+		console.log(e.target.position());
+	};
+
 	const handleDrag = (
 		e: KonvaEventObject<DragEvent>,
 		handleId: '1' | '2'
 	) => {
 		if (!selectedCollision) return;
 		const pos = e.target.position();
+
+		const xDirMostChanged =
+			Math.abs(pos.x - freezeDragPos.x) >=
+			Math.abs(pos.y - freezeDragPos.y);
+
+		if (e.evt.shiftKey)
+			setFreezeDrag({ x: !xDirMostChanged, y: xDirMostChanged });
+		else setFreezeDrag({ x: false, y: false });
+
 		setCollisions(
 			collisions.map((col) =>
 				col.id === selectedCollision.id
@@ -67,6 +87,15 @@ export function MapCanvas() {
 		const id = e.target.id();
 		const pos = e.target.position();
 		selectCollision(id);
+
+		const xDirMostChanged =
+			Math.abs(pos.x - freezeDragPos.x) >=
+			Math.abs(pos.y - freezeDragPos.y);
+
+		if (e.evt.shiftKey)
+			setFreezeDrag({ x: !xDirMostChanged, y: xDirMostChanged });
+		else setFreezeDrag({ x: false, y: false });
+
 		setCollisions(
 			collisions.map((col) =>
 				col.id === id
@@ -81,6 +110,11 @@ export function MapCanvas() {
 			)
 		);
 	};
+
+	const freezeDragFn = (pos: { x: number; y: number }) => ({
+		x: freezeDrag.x ? freezeDragPos.x : pos.x,
+		y: freezeDrag.y ? freezeDragPos.y : pos.y,
+	});
 
 	return (
 		typeof window !== 'undefined' && (
@@ -109,6 +143,8 @@ export function MapCanvas() {
 							onClick={(e) => selectCollision(e.target.id())}
 							draggable
 							onDragMove={handleColDrag}
+							onDragStart={handleDragStart}
+							dragBoundFunc={freezeDragFn}
 						/>
 					))}
 				</Layer>
@@ -122,7 +158,8 @@ export function MapCanvas() {
 								fill='green'
 								draggable
 								onDragMove={(e) => handleDrag(e, '1')}
-								// onDragEnd={handleDragEnd}
+								onDragStart={handleDragStart}
+								dragBoundFunc={freezeDragFn}
 							/>
 							<Circle
 								x={selectedCollision.x2}
@@ -131,6 +168,8 @@ export function MapCanvas() {
 								fill='green'
 								draggable
 								onDragMove={(e) => handleDrag(e, '2')}
+								onDragStart={handleDragStart}
+								dragBoundFunc={freezeDragFn}
 							/>
 						</>
 					)}
