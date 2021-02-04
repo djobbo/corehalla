@@ -1,8 +1,9 @@
 import styles from '../styles/MapCanvas.module.scss';
-import { Stage, Layer, Line, Circle } from 'react-konva';
+import { Stage, Layer, Line, Circle, Group } from 'react-konva';
 import { useContext, useState } from 'react';
 import { MapNodesContext } from '../providers/MapNodesProvider';
 import { KonvaEventObject } from 'konva/types/Node';
+import { URLImage } from './URLImage';
 
 export function MapCanvas() {
 	const {
@@ -105,6 +106,30 @@ export function MapCanvas() {
 		y: freezeDrag.y ? freezeDragPos.y : pos.y,
 	});
 
+	const drawPlatform = (platform: Platform) => {
+		return (
+			<>
+				{platform.assetName && (
+					<URLImage
+						url={`/mapArt/${mapData.assetDir}/${platform.assetName}`}
+						{...platform}
+					/>
+				)}
+				<Group
+					x={platform.x}
+					y={platform.y}
+					width={platform.w}
+					height={platform.h}
+					scaleX={platform.scaleX}
+					scaleY={platform.scaleY}
+					rotation={platform.rotation}
+				>
+					{platform.children?.map(drawPlatform)}
+				</Group>
+			</>
+		);
+	};
+
 	return (
 		typeof window !== 'undefined' && (
 			<Stage
@@ -138,7 +163,25 @@ export function MapCanvas() {
 						stroke={'red'}
 						strokeWidth={10}
 					/>
+					<Line
+						x={mapData.spawnBotBounds.x}
+						y={mapData.spawnBotBounds.y}
+						points={[
+							0,
+							0,
+							mapData.spawnBotBounds.w,
+							0,
+							mapData.spawnBotBounds.w,
+							mapData.spawnBotBounds.h,
+							0,
+							mapData.spawnBotBounds.h,
+						]}
+						closed
+						stroke={'lime'}
+						strokeWidth={10}
+					/>
 				</Layer>
+				<Layer>{mapData.platforms.map(drawPlatform)}</Layer>
 				<Layer>
 					{mapData.collisions.map((col) => (
 						<Line
@@ -150,7 +193,7 @@ export function MapCanvas() {
 							stroke={
 								col.type === 'Hard'
 									? 'rgba(40, 10, 75, 1)'
-									: 'rgba(76, 29, 149, 0.35)'
+									: 'rgba(76, 29, 149, 1)'
 							}
 							strokeWidth={10}
 							onClick={(e) => selectCollision(e.target.id())}

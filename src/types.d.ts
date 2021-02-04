@@ -2,13 +2,14 @@ interface MapData {
 	assetDir: string;
 	background: string;
 	levelName: string;
-	cameraBounds: CameraBounds;
+	cameraBounds: Bounds;
+	spawnBotBounds: Bounds;
 	collisions: Collision[];
 	platforms: Platform[];
 	spawns: Spawn[];
 }
 
-interface CameraBounds {
+interface Bounds {
 	x: number;
 	y: number;
 	w: number;
@@ -20,13 +21,13 @@ interface MapNode {
 	isDragging: boolean;
 }
 
-interface Platform extends MapNode {
+interface Platform extends MapNode, Bounds {
+	assetName?: string;
 	instanceName: string;
-	assetName: string;
-	x: number;
-	y: number;
-	w: number;
-	h: number;
+	scaleX?: number;
+	scaleY?: number;
+	rotation?: number;
+	children?: Platform[];
 }
 
 interface Collision extends MapNode {

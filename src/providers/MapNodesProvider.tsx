@@ -10,6 +10,8 @@ const defaultMapData: MapData = {
 	assetDir: 'Brawlhaven',
 	background: 'BG_Brawlhaven.jpg',
 	levelName: 'Brawlhaven',
+	cameraBounds: { x: -1000, y: -1000, w: -1000, h: -1000 },
+	spawnBotBounds: { x: -1000, y: -1000, w: -1000, h: -1000 },
 	collisions: [],
 	platforms: [],
 	spawns: [],
