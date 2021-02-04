@@ -1,9 +1,6 @@
 import { Fragment, useContext } from 'react';
 import { MapNodesContext } from '../providers/MapNodesProvider';
-import InputGroup from 'react-bootstrap/InputGroup';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import ToggleButton from 'react-bootstrap/ToggleButton';
-import FormControl from 'react-bootstrap/FormControl';
+import { Button } from './Button';
 
 export function CollisionSettings() {
 	const { selectedCollision: col, updateCollision } = useContext(
@@ -11,24 +8,27 @@ export function CollisionSettings() {
 	);
 
 	return col ? (
-		<div>
-			<InputGroup className='mb-3'>
-				<InputGroup.Prepend>
-					<InputGroup.Text id='basic-addon1'>
-						{col.id}
-					</InputGroup.Text>
-				</InputGroup.Prepend>
-			</InputGroup>
-			<InputGroup className='mb-3'>
+		<div className='flex flex-col border-b border-gray-400 mx-2 mb-8 pb-8'>
+			<div>
+				<p className='text-md text-gray-600 font-bold mx-2 mt-4 uppercase'>
+					Selected Collision
+				</p>
+				<p className='text-xl text-gray-600 font-bold mx-2 mb-4'>
+					ID:{col.id}
+				</p>
+			</div>
+			<div className='mb-1 inline-flex flex-col'>
 				{['x1', 'y1', 'x2', 'y2'].map(
 					(coord: 'x1' | 'y1' | 'x2' | 'y2') => (
-						<Fragment key={coord}>
-							<InputGroup.Prepend>
-								<InputGroup.Text>
-									{coord.toUpperCase()}
-								</InputGroup.Text>
-							</InputGroup.Prepend>
-							<FormControl
+						<div
+							className='inline-flex border border-gray-300 rounded-sm mx-2 mb-1'
+							key={coord}
+						>
+							<p className='bg-gray-200 py-2 px-3 mr-2'>
+								{coord.toUpperCase()}
+							</p>
+							<input
+								className='flex-1 focus:outline-none'
 								value={col[coord]}
 								type='number'
 								onChange={(e) =>
@@ -37,30 +37,27 @@ export function CollisionSettings() {
 									})
 								}
 							/>
-						</Fragment>
+						</div>
 					)
 				)}
-			</InputGroup>
-			<InputGroup className='mb-3'>
-				<InputGroup.Prepend>
-					<InputGroup.Text>Collision Type</InputGroup.Text>
-				</InputGroup.Prepend>
-				<ButtonGroup toggle>
-					{['Hard', 'Soft'].map((type: 'Hard' | 'Soft') => (
-						<ToggleButton
-							key={type}
-							type='radio'
-							variant='secondary'
-							name='radio'
-							value={type}
-							checked={col.type === type}
-							onChange={() => updateCollision(col.id, { type })}
-						>
-							{type}
-						</ToggleButton>
-					))}
-				</ButtonGroup>
-			</InputGroup>
+			</div>
+			<div className='inline-flex border border-gray-300 rounded-sm mx-2'>
+				<p className='bg-gray-200 py-2 px-3'>Collision Type</p>
+
+				{['Hard', 'Soft'].map((type: 'Hard' | 'Soft') => (
+					<Button
+						key={type}
+						name='radio'
+						value={type}
+						className={`px-4 py-1 focus:outline-none flex-1 ${
+							col.type === type ? 'bg-purple-500' : ''
+						}`}
+						onClick={() => updateCollision(col.id, { type })}
+					>
+						{type}
+					</Button>
+				))}
+			</div>
 		</div>
 	) : null;
 }

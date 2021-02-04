@@ -2,9 +2,10 @@ import { useContext } from 'react';
 import { CollisionSettings } from '../components/CollisionSettings';
 import { MapCanvas } from '../components/MapCanvas';
 import { MapNodesContext } from '../providers/MapNodesProvider';
-import Button from 'react-bootstrap/Button';
 import { createMapXML } from '../util/createMapXML';
 import { parseMapXML } from '../util/parseMapXML';
+import { Layout } from '../components/Layout';
+import { Button } from '../components/Button';
 
 export default function Home() {
 	const { addCollision, collisions, setCollisions } = useContext(
@@ -24,24 +25,31 @@ export default function Home() {
 	}
 
 	return (
-		<div>
-			<Button onClick={() => addCollision(getRandomCol())}>
-				Add Collision
-			</Button>
-			<Button onClick={() => console.log(createMapXML(collisions))}>
-				Generate XML
-			</Button>
-			<input
-				type='file'
-				name='mapFile'
-				onChange={async (e) => {
-					if (e.target.files.length <= 0) return;
-					const file = e.target.files[0];
-					setCollisions(parseMapXML(await file.text()));
-				}}
-			/>
-			<CollisionSettings />
+		<Layout>
+			<div className='w-80 absolute top-0 left-0 bottom-0 z-50 bg-gray-100'>
+				<CollisionSettings />
+				<div className='flex flex-col'>
+					<Button onClick={() => addCollision(getRandomCol())}>
+						Add Collision
+					</Button>
+					<Button
+						onClick={() => console.log(createMapXML(collisions))}
+					>
+						Generate XML
+					</Button>
+				</div>
+				<input
+					className='mx-2'
+					type='file'
+					name='mapFile'
+					onChange={async (e) => {
+						if (e.target.files.length <= 0) return;
+						const file = e.target.files[0];
+						setCollisions(parseMapXML(await file.text()));
+					}}
+				/>
+			</div>
 			<MapCanvas />
-		</div>
+		</Layout>
 	);
 }

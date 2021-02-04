@@ -1,3 +1,4 @@
+import styles from '../styles/MapCanvas.module.scss';
 import { Stage, Layer, Line, Circle } from 'react-konva';
 import { useContext, useState } from 'react';
 import { MapNodesContext } from '../providers/MapNodesProvider';
@@ -9,6 +10,7 @@ export function MapCanvas() {
 		setCollisions,
 		selectedCollision,
 		selectCollision,
+		deselectCollision,
 	} = useContext(MapNodesContext);
 
 	const [{ stageScale, stageX, stageY }, setStageTransform] = useState({
@@ -127,6 +129,9 @@ export function MapCanvas() {
 				x={stageX}
 				y={stageY}
 				draggable
+				onClick={(e) => {
+					if (e.target === e.target.getStage()) deselectCollision();
+				}}
 			>
 				<Layer>
 					{collisions.map((col) => (
@@ -138,13 +143,29 @@ export function MapCanvas() {
 							points={[0, 0, col.x2 - col.x1, col.y2 - col.y1]}
 							tension={0.5}
 							closed
-							stroke={col.type === 'Hard' ? 'black' : 'gray'}
+							stroke={
+								col.type === 'Hard'
+									? 'rgba(40, 10, 75, 1)'
+									: 'rgba(76, 29, 149, 0.35)'
+							}
 							strokeWidth={10}
 							onClick={(e) => selectCollision(e.target.id())}
 							draggable
 							onDragMove={handleColDrag}
 							onDragStart={handleDragStart}
 							dragBoundFunc={freezeDragFn}
+							onMouseEnter={(e) => {
+								const container = e.target
+									.getStage()
+									.container();
+								container.style.cursor = 'move';
+							}}
+							onMouseLeave={(e) => {
+								const container = e.target
+									.getStage()
+									.container();
+								container.style.cursor = 'default';
+							}}
 						/>
 					))}
 				</Layer>
@@ -155,21 +176,45 @@ export function MapCanvas() {
 								x={selectedCollision.x1}
 								y={selectedCollision.y1}
 								radius={25}
-								fill='green'
+								fill='rgba(239, 68, 68)'
 								draggable
 								onDragMove={(e) => handleDrag(e, '1')}
 								onDragStart={handleDragStart}
 								dragBoundFunc={freezeDragFn}
+								onMouseEnter={(e) => {
+									const container = e.target
+										.getStage()
+										.container();
+									container.style.cursor = 'move';
+								}}
+								onMouseLeave={(e) => {
+									const container = e.target
+										.getStage()
+										.container();
+									container.style.cursor = 'default';
+								}}
 							/>
 							<Circle
 								x={selectedCollision.x2}
 								y={selectedCollision.y2}
 								radius={25}
-								fill='green'
+								fill='rgba(239, 68, 68)'
 								draggable
 								onDragMove={(e) => handleDrag(e, '2')}
 								onDragStart={handleDragStart}
 								dragBoundFunc={freezeDragFn}
+								onMouseEnter={(e) => {
+									const container = e.target
+										.getStage()
+										.container();
+									container.style.cursor = 'move';
+								}}
+								onMouseLeave={(e) => {
+									const container = e.target
+										.getStage()
+										.container();
+									container.style.cursor = 'default';
+								}}
 							/>
 						</>
 					)}

@@ -6,18 +6,6 @@ import React, {
 	useEffect,
 } from 'react';
 
-const initialCollisions: Collision[] = [
-	{
-		id: '1',
-		type: 'Hard',
-		x1: 500,
-		y1: 500,
-		x2: 100,
-		y2: 250,
-		isDragging: false,
-	},
-];
-
 export const MapNodesContext = createContext<{
 	collisions: Collision[];
 	setCollisions: Dispatch<React.SetStateAction<Collision[]>>;
@@ -25,6 +13,7 @@ export const MapNodesContext = createContext<{
 	selectedCollision?: Collision;
 	selectCollision: (id: string) => void;
 	updateCollision: (id: string, col: Partial<Collision>) => void;
+	deselectCollision: () => void;
 }>({
 	collisions: [],
 	setCollisions: () => {},
@@ -32,14 +21,13 @@ export const MapNodesContext = createContext<{
 	selectedCollision: undefined,
 	selectCollision: () => {},
 	updateCollision: () => {},
+	deselectCollision: () => {},
 });
 
 interface Props {}
 
 export function MapNodesProvider({ children }: PropsWithChildren<Props>) {
-	const [collisions, setCollisions] = useState<Collision[]>(
-		initialCollisions
-	);
+	const [collisions, setCollisions] = useState<Collision[]>([]);
 
 	const [selectedCollision, setSelectedCollision] = useState<
 		Collision | undefined
@@ -58,6 +46,10 @@ export function MapNodesProvider({ children }: PropsWithChildren<Props>) {
 		);
 	};
 
+	const deselectCollision = () => {
+		setSelectedCollision(null);
+	};
+
 	useEffect(() => {
 		if (!selectedCollision) return;
 		setSelectedCollision(
@@ -74,6 +66,7 @@ export function MapNodesProvider({ children }: PropsWithChildren<Props>) {
 				selectedCollision,
 				selectCollision,
 				updateCollision,
+				deselectCollision,
 			}}
 		>
 			{children}
