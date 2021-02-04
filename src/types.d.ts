@@ -7,6 +7,7 @@ interface MapData {
 	collisions: Collision[];
 	platforms: Platform[];
 	spawns: Spawn[];
+	themes: string[];
 }
 
 interface Bounds {
@@ -28,6 +29,7 @@ interface Platform extends MapNode, Bounds {
 	scaleY?: number;
 	rotation?: number;
 	children?: Platform[];
+	themes: string[];
 }
 
 interface Collision extends MapNode {

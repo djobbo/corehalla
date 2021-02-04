@@ -14,6 +14,7 @@ export function parseMapXML(mapXML: string): MapData {
 		spawns: [],
 		platforms: [],
 		collisions: [],
+		themes: [],
 	};
 
 	for (let node of levelDesc.children) {
@@ -31,43 +32,18 @@ export function parseMapXML(mapXML: string): MapData {
 				mapData.spawnBotBounds = parseBounds(node);
 				break;
 			case 'Platform':
-				mapData.platforms = [...mapData.platforms, parsePlatform(node)];
-				break;
+				const p = parsePlatform(node);
+				mapData.platforms = [...mapData.platforms, p[0]];
+				mapData.themes = [...mapData.themes, ...p[1]];
 			default:
 				break;
 		}
 	}
 
-	// let platforms: Platform[] = [];
-
-	// for (let platform of dom.getElementsByTagName('Platform')) {
-	// 	const assetName =
-	// 		platform.getAttribute('AssetName') ||
-	// 		platform.parentElement.getAttribute('AssetName');
-	// 	if (!assetName) continue;
-
-	// 	// TODO: better recursion
-	// 	platforms.push({
-	// 		assetName: assetName,
-	// 		id: Math.random().toString(),
-	// 		instanceName: '',
-	// 		isDragging: false,
-	// 		x:
-	// 			(parseFloat(platform.getAttribute('X')) || 0) +
-	// 			(parseFloat(platform.parentElement.getAttribute('X')) || 0),
-	// 		y:
-	// 			(parseFloat(platform.getAttribute('Y')) || 0) +
-	// 			(parseFloat(platform.parentElement.getAttribute('Y')) || 0),
-	// 		w:
-	// 			(parseFloat(platform.getAttribute('W')) || 0) +
-	// 			(parseFloat(platform.parentElement.getAttribute('W')) || 0),
-	// 		h:
-	// 			(parseFloat(platform.getAttribute('H')) || 0) +
-	// 			(parseFloat(platform.parentElement.getAttribute('H')) || 0),
-	// 	});
-	// }
-
-	console.log(mapData);
+	mapData.themes = [...new Set(mapData.themes)]
+		.map((t) => t.split(','))
+		.flat();
+	console.log('Themes', mapData.themes);
 
 	return mapData;
 }
@@ -104,7 +80,9 @@ function parseCollision(col: Element, colType: 'Hard' | 'Soft'): Collision {
 	};
 }
 
-function parsePlatform(platform: Element, parent?: Platform): Platform {
+function parsePlatform(platform: Element): [Platform, string[]] {
+	let themes: string[] = platform.getAttribute('Theme')?.split(',') ?? [];
+
 	let outPlatform: Platform = {
 		id: Math.random().toString(),
 		isDragging: false,
@@ -121,13 +99,16 @@ function parsePlatform(platform: Element, parent?: Platform): Platform {
 			parseFloat(platform.getAttribute('ScaleY') ?? '1') *
 			parseFloat(platform.getAttribute('Scale') ?? '1'),
 		rotation: parseFloat(platform.getAttribute('Rotation') ?? '0'),
+		themes,
 	};
 
 	let childPlatforms: Platform[] = [];
 
 	for (let child of platform.children) {
-		childPlatforms = [...childPlatforms, parsePlatform(child, outPlatform)];
+		const p = parsePlatform(child);
+		childPlatforms = [...childPlatforms, p[0]];
+		themes = [...themes, ...p[1]];
 	}
 
-	return { ...outPlatform, children: childPlatforms };
+	return [{ ...outPlatform, children: childPlatforms }, themes];
 }

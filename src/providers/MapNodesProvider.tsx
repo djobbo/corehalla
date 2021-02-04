@@ -15,6 +15,7 @@ const defaultMapData: MapData = {
 	collisions: [],
 	platforms: [],
 	spawns: [],
+	themes: [],
 };
 
 export const MapNodesContext = createContext<{
@@ -28,6 +29,8 @@ export const MapNodesContext = createContext<{
 		col: (c: Collision) => Partial<Collision>
 	) => void;
 	deselectCollision: () => void;
+	theme: string;
+	setTheme: Dispatch<React.SetStateAction<string>>;
 }>({
 	mapData: defaultMapData,
 	setMapData: () => {},
@@ -36,12 +39,15 @@ export const MapNodesContext = createContext<{
 	selectCollision: () => {},
 	updateCollision: () => {},
 	deselectCollision: () => {},
+	theme: '',
+	setTheme: () => {},
 });
 
 interface Props {}
 
 export function MapNodesProvider({ children }: PropsWithChildren<Props>) {
 	const [mapData, setMapData] = useState<MapData>(defaultMapData);
+	const [theme, setTheme] = useState('');
 
 	const [selectedCollision, setSelectedCollision] = useState<
 		Collision | undefined
@@ -90,6 +96,8 @@ export function MapNodesProvider({ children }: PropsWithChildren<Props>) {
 				selectCollision,
 				updateCollision,
 				deselectCollision,
+				theme,
+				setTheme,
 			}}
 		>
 			{children}

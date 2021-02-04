@@ -8,7 +8,9 @@ import { Layout } from '../components/Layout';
 import { Button } from '../components/Button';
 
 export default function Home() {
-	const { addCollision, mapData, setMapData } = useContext(MapNodesContext);
+	const { addCollision, mapData, setMapData, setTheme } = useContext(
+		MapNodesContext
+	);
 
 	function getRandomCol(): Collision {
 		return {
@@ -44,6 +46,18 @@ export default function Home() {
 						setMapData(parseMapXML(await file.text()));
 					}}
 				/>
+				<select
+					onChange={(e) => {
+						setTheme(e.target.value);
+					}}
+				>
+					<option value=''>None</option>
+					{mapData.themes.map((theme) => (
+						<option value={theme} key={theme}>
+							{theme}
+						</option>
+					))}
+				</select>
 			</div>
 			<MapCanvas />
 		</Layout>

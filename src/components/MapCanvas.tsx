@@ -1,6 +1,6 @@
 import styles from '../styles/MapCanvas.module.scss';
 import { Stage, Layer, Line, Circle, Group } from 'react-konva';
-import { useContext, useState } from 'react';
+import { Fragment, useContext, useState } from 'react';
 import { MapNodesContext } from '../providers/MapNodesProvider';
 import { KonvaEventObject } from 'konva/types/Node';
 import { URLImage } from './URLImage';
@@ -8,11 +8,11 @@ import { URLImage } from './URLImage';
 export function MapCanvas() {
 	const {
 		mapData,
-		setMapData,
 		selectedCollision,
 		selectCollision,
 		deselectCollision,
 		updateCollision,
+		theme,
 	} = useContext(MapNodesContext);
 
 	const [{ stageScale, stageX, stageY }, setStageTransform] = useState({
@@ -108,25 +108,28 @@ export function MapCanvas() {
 
 	const drawPlatform = (platform: Platform) => {
 		return (
-			<>
-				{platform.assetName && (
-					<URLImage
-						url={`/mapArt/${mapData.assetDir}/${platform.assetName}`}
-						{...platform}
-					/>
-				)}
-				<Group
-					x={platform.x}
-					y={platform.y}
-					width={platform.w}
-					height={platform.h}
-					scaleX={platform.scaleX}
-					scaleY={platform.scaleY}
-					rotation={platform.rotation}
-				>
-					{platform.children?.map(drawPlatform)}
-				</Group>
-			</>
+			(platform.themes.length <= 0 ||
+				[...platform.themes].includes(theme)) && (
+				<Fragment key={platform.id}>
+					{platform.assetName && (
+						<URLImage
+							url={`/mapArt/${mapData.assetDir}/${platform.assetName}`}
+							{...platform}
+						/>
+					)}
+					<Group
+						x={platform.x}
+						y={platform.y}
+						width={platform.w}
+						height={platform.h}
+						scaleX={platform.scaleX}
+						scaleY={platform.scaleY}
+						rotation={platform.rotation}
+					>
+						{platform.children?.map(drawPlatform)}
+					</Group>
+				</Fragment>
+			)
 		);
 	};
 
