@@ -2,6 +2,7 @@ interface MapData {
 	assetDir: string;
 	background: string;
 	levelName: string;
+	cameraBounds: CameraBounds;
 	collisions: Collision[];
 	platforms: Platform[];
 	spawns: Spawn[];

@@ -32,10 +32,18 @@ export function parseMapXML(mapXML: string): MapData {
 		}
 	});
 
+	const cameraBounds = dom.getElementsByTagName(`CameraBounds`)[0];
+
 	const mapData: MapData = {
 		assetDir: levelDesc.getAttribute('AssetDir'),
 		background: levelDesc.getAttribute('Background'),
 		levelName: levelDesc.getAttribute('LevelName'),
+		cameraBounds: {
+			x: parseFloat(cameraBounds.getAttribute('X')),
+			y: parseFloat(cameraBounds.getAttribute('Y')),
+			w: parseFloat(cameraBounds.getAttribute('W')),
+			h: parseFloat(cameraBounds.getAttribute('H')),
+		},
 		spawns: [],
 		platforms: [],
 		collisions,

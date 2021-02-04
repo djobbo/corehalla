@@ -121,6 +121,25 @@ export function MapCanvas() {
 				}}
 			>
 				<Layer>
+					<Line
+						x={mapData.cameraBounds.x}
+						y={mapData.cameraBounds.y}
+						points={[
+							0,
+							0,
+							mapData.cameraBounds.w,
+							0,
+							mapData.cameraBounds.w,
+							mapData.cameraBounds.h,
+							0,
+							mapData.cameraBounds.h,
+						]}
+						closed
+						stroke={'red'}
+						strokeWidth={10}
+					/>
+				</Layer>
+				<Layer>
 					{mapData.collisions.map((col) => (
 						<Line
 							key={col.id}
@@ -128,8 +147,6 @@ export function MapCanvas() {
 							x={col.x1}
 							y={col.y1}
 							points={[0, 0, col.x2 - col.x1, col.y2 - col.y1]}
-							tension={0.5}
-							closed
 							stroke={
 								col.type === 'Hard'
 									? 'rgba(40, 10, 75, 1)'
