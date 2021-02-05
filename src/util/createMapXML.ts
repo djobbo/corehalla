@@ -1,4 +1,4 @@
-export function createMapXML(mapData: MapData) {
+export function createMapXML(mapData: LevelDesc) {
 	let outStr =
 		'<LevelDesc AssetDir="Enigma" Background="BG_Steam.jpg" LevelName="SmallEnigma">\n';
 	outStr += '    <CameraBounds H="2772" W="4928" X="-1364" Y="278.15"/>\n';

@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { CollisionSettings } from '../components/CollisionSettings';
 import { MapCanvas } from '../components/MapCanvas';
 import { MapNodesContext } from '../providers/MapNodesProvider';
@@ -8,9 +8,14 @@ import { Layout } from '../components/Layout';
 import { Button } from '../components/Button';
 
 export default function Home() {
-	const { addCollision, mapData, setMapData, setTheme } = useContext(
-		MapNodesContext
-	);
+	const {
+		addCollision,
+		mapData,
+		setMapData,
+		setTheme,
+		currentFrame,
+		setCurrentFrame,
+	} = useContext(MapNodesContext);
 
 	function getRandomCol(): Collision {
 		return {
@@ -23,6 +28,12 @@ export default function Home() {
 			y2: Math.round(Math.random() * 250 + 250),
 		};
 	}
+
+	// useEffect(() => {
+	// 	setInterval(() => {
+	// 		setCurrentFrame((frame) => frame + 1);
+	// 	}, (1 * 1000) / 60);
+	// }, []);
 
 	return (
 		<Layout>
@@ -58,6 +69,14 @@ export default function Home() {
 						</option>
 					))}
 				</select>
+				<input
+					type='number'
+					value={currentFrame}
+					onChange={(e) => {
+						const f = parseInt(e.target.value);
+						setCurrentFrame(f >= 0 ? f : 0);
+					}}
+				/>
 			</div>
 			<MapCanvas />
 		</Layout>

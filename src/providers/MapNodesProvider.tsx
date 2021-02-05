@@ -6,7 +6,7 @@ import React, {
 	useEffect,
 } from 'react';
 
-const defaultMapData: MapData = {
+const defaultMapData: LevelDesc = {
 	assetDir: 'Brawlhaven',
 	background: 'BG_Brawlhaven.jpg',
 	levelName: 'Brawlhaven',
@@ -14,13 +14,16 @@ const defaultMapData: MapData = {
 	spawnBotBounds: { x: -1000, y: -1000, w: -1000, h: -1000 },
 	collisions: [],
 	platforms: [],
+	movingPlatforms: [],
+	dynamicCollisions: [],
 	spawns: [],
 	themes: [],
+	animations: [],
 };
 
 export const MapNodesContext = createContext<{
-	mapData: MapData;
-	setMapData: Dispatch<React.SetStateAction<MapData>>;
+	mapData: LevelDesc;
+	setMapData: Dispatch<React.SetStateAction<LevelDesc>>;
 	addCollision: (col: Collision) => void;
 	selectedCollision?: Collision;
 	selectCollision: (id: string) => void;
@@ -31,6 +34,8 @@ export const MapNodesContext = createContext<{
 	deselectCollision: () => void;
 	theme: string;
 	setTheme: Dispatch<React.SetStateAction<string>>;
+	currentFrame: number;
+	setCurrentFrame: Dispatch<React.SetStateAction<number>>;
 }>({
 	mapData: defaultMapData,
 	setMapData: () => {},
@@ -41,13 +46,16 @@ export const MapNodesContext = createContext<{
 	deselectCollision: () => {},
 	theme: '',
 	setTheme: () => {},
+	currentFrame: 0,
+	setCurrentFrame: () => {},
 });
 
 interface Props {}
 
 export function MapNodesProvider({ children }: PropsWithChildren<Props>) {
-	const [mapData, setMapData] = useState<MapData>(defaultMapData);
+	const [mapData, setMapData] = useState<LevelDesc>(defaultMapData);
 	const [theme, setTheme] = useState('');
+	const [currentFrame, setCurrentFrame] = useState(0);
 
 	const [selectedCollision, setSelectedCollision] = useState<
 		Collision | undefined
@@ -56,11 +64,13 @@ export function MapNodesProvider({ children }: PropsWithChildren<Props>) {
 	const addCollision = (col: Collision) =>
 		setMapData((mapData) => ({
 			...mapData,
-			collisions: [...mapData.collisions, col],
+			hardCollisions: [...mapData.collisions, col],
 		}));
 
 	const selectCollision = (id: string) => {
-		setSelectedCollision(mapData.collisions.find((col) => col.id === id));
+		setSelectedCollision(
+			[...mapData.collisions].find((col) => col.id === id)
+		);
 	};
 
 	const updateCollision = (
@@ -98,6 +108,8 @@ export function MapNodesProvider({ children }: PropsWithChildren<Props>) {
 				deselectCollision,
 				theme,
 				setTheme,
+				currentFrame,
+				setCurrentFrame,
 			}}
 		>
 			{children}

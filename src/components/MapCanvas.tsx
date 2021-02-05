@@ -4,6 +4,7 @@ import { Fragment, useContext, useState } from 'react';
 import { MapNodesContext } from '../providers/MapNodesProvider';
 import { KonvaEventObject } from 'konva/types/Node';
 import { URLImage } from './URLImage';
+import { getAnimationPos } from '../util/getAnimationPos';
 
 export function MapCanvas() {
 	const {
@@ -13,10 +14,11 @@ export function MapCanvas() {
 		deselectCollision,
 		updateCollision,
 		theme,
+		currentFrame,
 	} = useContext(MapNodesContext);
 
 	const [{ stageScale, stageX, stageY }, setStageTransform] = useState({
-		stageScale: 1,
+		stageScale: 0.6,
 		stageX: 0,
 		stageY: 0,
 	});
@@ -30,7 +32,7 @@ export function MapCanvas() {
 	const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
 		e.evt.preventDefault();
 
-		const scaleBy = 1.05;
+		const scaleBy = 1.15;
 		const stage = e.target.getStage();
 		const oldScale = stage.scaleX();
 		const mousePointTo = {
@@ -126,10 +128,43 @@ export function MapCanvas() {
 						scaleY={platform.scaleY}
 						rotation={platform.rotation}
 					>
-						{platform.children?.map(drawPlatform)}
+						{[...platform.platforms, ...platform.assets].map(
+							drawPlatform
+						)}
 					</Group>
 				</Fragment>
 			)
+		);
+	};
+
+	const drawCollision = (col: Collision) => {
+		return (
+			<Line
+				key={col.id}
+				id={col.id}
+				x={col.x1}
+				y={col.y1}
+				points={[0, 0, col.x2 - col.x1, col.y2 - col.y1]}
+				stroke={
+					col.type === 'Hard'
+						? 'rgba(40, 10, 75, 1)'
+						: 'rgba(76, 29, 149, 1)'
+				}
+				strokeWidth={10}
+				onClick={(e) => selectCollision(e.target.id())}
+				draggable
+				onDragMove={handleColDrag}
+				onDragStart={handleDragStart}
+				dragBoundFunc={freezeDragFn}
+				onMouseEnter={(e) => {
+					const container = e.target.getStage().container();
+					container.style.cursor = 'move';
+				}}
+				onMouseLeave={(e) => {
+					const container = e.target.getStage().container();
+					container.style.cursor = 'default';
+				}}
+			/>
 		);
 	};
 
@@ -186,38 +221,37 @@ export function MapCanvas() {
 				</Layer>
 				<Layer>{mapData.platforms.map(drawPlatform)}</Layer>
 				<Layer>
-					{mapData.collisions.map((col) => (
-						<Line
-							key={col.id}
-							id={col.id}
-							x={col.x1}
-							y={col.y1}
-							points={[0, 0, col.x2 - col.x1, col.y2 - col.y1]}
-							stroke={
-								col.type === 'Hard'
-									? 'rgba(40, 10, 75, 1)'
-									: 'rgba(76, 29, 149, 1)'
-							}
-							strokeWidth={10}
-							onClick={(e) => selectCollision(e.target.id())}
-							draggable
-							onDragMove={handleColDrag}
-							onDragStart={handleDragStart}
-							dragBoundFunc={freezeDragFn}
-							onMouseEnter={(e) => {
-								const container = e.target
-									.getStage()
-									.container();
-								container.style.cursor = 'move';
-							}}
-							onMouseLeave={(e) => {
-								const container = e.target
-									.getStage()
-									.container();
-								container.style.cursor = 'default';
-							}}
-						/>
-					))}
+					{mapData.movingPlatforms.map((plat) => {
+						const anim = mapData.animations.find(
+							(a) => a.platId === plat.platId
+						);
+						if (!anim) return null;
+
+						const pos = getAnimationPos(anim, currentFrame);
+						console.log(pos);
+						return (
+							<Group x={pos.x} y={pos.y}>
+								{drawPlatform(plat)}
+							</Group>
+						);
+					})}
+				</Layer>
+				<Layer>{mapData.collisions.map(drawCollision)}</Layer>
+				<Layer>
+					{mapData.dynamicCollisions.map((col) => {
+						const anim = mapData.animations.find(
+							(a) => a.platId === col.platId
+						);
+						if (!anim) return null;
+
+						const pos = getAnimationPos(anim, currentFrame);
+
+						return (
+							<Group x={pos.x + col.x} y={pos.y + col.y}>
+								{col.collisions.map(drawCollision)}
+							</Group>
+						);
+					})}
 				</Layer>
 				<Layer>
 					{selectedCollision && (
