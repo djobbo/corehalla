@@ -36,6 +36,10 @@ export const MapNodesContext = createContext<{
 	setTheme: Dispatch<React.SetStateAction<string>>;
 	currentFrame: number;
 	setCurrentFrame: Dispatch<React.SetStateAction<number>>;
+	showCollisions: boolean;
+	setShowCollisions: Dispatch<React.SetStateAction<boolean>>;
+	showMapBounds: boolean;
+	setShowMapBounds: Dispatch<React.SetStateAction<boolean>>;
 }>({
 	mapData: defaultMapData,
 	setMapData: () => {},
@@ -48,6 +52,10 @@ export const MapNodesContext = createContext<{
 	setTheme: () => {},
 	currentFrame: 0,
 	setCurrentFrame: () => {},
+	showCollisions: true,
+	setShowCollisions: () => {},
+	showMapBounds: true,
+	setShowMapBounds: () => {},
 });
 
 interface Props {}
@@ -56,6 +64,8 @@ export function MapNodesProvider({ children }: PropsWithChildren<Props>) {
 	const [mapData, setMapData] = useState<LevelDesc>(defaultMapData);
 	const [theme, setTheme] = useState('');
 	const [currentFrame, setCurrentFrame] = useState(0);
+	const [showCollisions, setShowCollisions] = useState(true);
+	const [showMapBounds, setShowMapBounds] = useState(true);
 
 	const [selectedCollision, setSelectedCollision] = useState<
 		Collision | undefined
@@ -110,6 +120,10 @@ export function MapNodesProvider({ children }: PropsWithChildren<Props>) {
 				setTheme,
 				currentFrame,
 				setCurrentFrame,
+				showCollisions,
+				setShowCollisions,
+				showMapBounds,
+				setShowMapBounds,
 			}}
 		>
 			{children}

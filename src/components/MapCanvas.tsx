@@ -15,6 +15,8 @@ export function MapCanvas() {
 		updateCollision,
 		theme,
 		currentFrame,
+		showCollisions,
+		showMapBounds,
 	} = useContext(MapNodesContext);
 
 	const [{ stageScale, stageX, stageY }, setStageTransform] = useState({
@@ -183,42 +185,44 @@ export function MapCanvas() {
 					if (e.target === e.target.getStage()) deselectCollision();
 				}}
 			>
-				<Layer>
-					<Line
-						x={mapData.cameraBounds.x}
-						y={mapData.cameraBounds.y}
-						points={[
-							0,
-							0,
-							mapData.cameraBounds.w,
-							0,
-							mapData.cameraBounds.w,
-							mapData.cameraBounds.h,
-							0,
-							mapData.cameraBounds.h,
-						]}
-						closed
-						stroke={'red'}
-						strokeWidth={10}
-					/>
-					<Line
-						x={mapData.spawnBotBounds.x}
-						y={mapData.spawnBotBounds.y}
-						points={[
-							0,
-							0,
-							mapData.spawnBotBounds.w,
-							0,
-							mapData.spawnBotBounds.w,
-							mapData.spawnBotBounds.h,
-							0,
-							mapData.spawnBotBounds.h,
-						]}
-						closed
-						stroke={'lime'}
-						strokeWidth={10}
-					/>
-				</Layer>
+				{showMapBounds && (
+					<Layer>
+						<Line
+							x={mapData.cameraBounds.x}
+							y={mapData.cameraBounds.y}
+							points={[
+								0,
+								0,
+								mapData.cameraBounds.w,
+								0,
+								mapData.cameraBounds.w,
+								mapData.cameraBounds.h,
+								0,
+								mapData.cameraBounds.h,
+							]}
+							closed
+							stroke={'red'}
+							strokeWidth={10}
+						/>
+						<Line
+							x={mapData.spawnBotBounds.x}
+							y={mapData.spawnBotBounds.y}
+							points={[
+								0,
+								0,
+								mapData.spawnBotBounds.w,
+								0,
+								mapData.spawnBotBounds.w,
+								mapData.spawnBotBounds.h,
+								0,
+								mapData.spawnBotBounds.h,
+							]}
+							closed
+							stroke={'lime'}
+							strokeWidth={10}
+						/>
+					</Layer>
+				)}
 				<Layer>{mapData.platforms.map(drawPlatform)}</Layer>
 				<Layer>
 					{mapData.movingPlatforms.map((plat) => {
@@ -236,23 +240,27 @@ export function MapCanvas() {
 						);
 					})}
 				</Layer>
-				<Layer>{mapData.collisions.map(drawCollision)}</Layer>
-				<Layer>
-					{mapData.dynamicCollisions.map((col) => {
-						const anim = mapData.animations.find(
-							(a) => a.platId === col.platId
-						);
-						if (!anim) return null;
+				{showCollisions && (
+					<>
+						<Layer>{mapData.collisions.map(drawCollision)}</Layer>
+						<Layer>
+							{mapData.dynamicCollisions.map((col) => {
+								const anim = mapData.animations.find(
+									(a) => a.platId === col.platId
+								);
+								if (!anim) return null;
 
-						const pos = getAnimationPos(anim, currentFrame);
+								const pos = getAnimationPos(anim, currentFrame);
 
-						return (
-							<Group x={pos.x + col.x} y={pos.y + col.y}>
-								{col.collisions.map(drawCollision)}
-							</Group>
-						);
-					})}
-				</Layer>
+								return (
+									<Group x={pos.x + col.x} y={pos.y + col.y}>
+										{col.collisions.map(drawCollision)}
+									</Group>
+								);
+							})}
+						</Layer>
+					</>
+				)}
 				<Layer>
 					{selectedCollision && (
 						<>

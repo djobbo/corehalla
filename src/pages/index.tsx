@@ -16,6 +16,10 @@ export default function Home() {
 		setTheme,
 		currentFrame,
 		setCurrentFrame,
+		showCollisions,
+		setShowCollisions,
+		showMapBounds,
+		setShowMapBounds,
 	} = useContext(MapNodesContext);
 
 	const [timeFlow, setTimeFlow] = useState(0);
@@ -95,6 +99,22 @@ export default function Home() {
 						setTimeFlow(isNaN(flow) ? 0 : flow);
 					}}
 				/>
+				<label>
+					Show Collisions
+					<input
+						type='checkbox'
+						checked={showCollisions}
+						onChange={(e) => setShowCollisions(e.target.checked)}
+					/>
+				</label>
+				<label>
+					Show Map Bounds
+					<input
+						type='checkbox'
+						checked={showMapBounds}
+						onChange={(e) => setShowMapBounds(e.target.checked)}
+					/>
+				</label>
 			</div>
 			<MapCanvas />
 		</Layout>
