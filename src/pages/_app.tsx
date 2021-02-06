@@ -1,4 +1,5 @@
 import '../styles/globals.scss';
+import '../styles/code.scss';
 
 import type { AppProps } from 'next/app';
 import { MapNodesProvider } from '../providers/MapNodesProvider';

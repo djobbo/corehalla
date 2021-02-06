@@ -23,6 +23,7 @@ export function MapCanvas() {
 		showMapBounds,
 		stageTransform: { stageScale, stageX, stageY },
 		setStageTransform,
+		updateStageTransform,
 	} = useContext(EditorStateContext);
 
 	const [freezeDragPos, setFreezeDragPos] = useState<{
@@ -61,6 +62,11 @@ export function MapCanvas() {
 	const handleDragStart = (e: KonvaEventObject<DragEvent>) => {
 		setFreezeDragPos(e.target.position());
 		console.log(e.target.position());
+	};
+
+	const handleStageDrag = (e: KonvaEventObject<DragEvent>) => {
+		const { x, y } = e.target.position();
+		updateStageTransform({ stageX: x, stageY: y });
 	};
 
 	const handleDrag = (
@@ -173,7 +179,6 @@ export function MapCanvas() {
 	return (
 		typeof window !== 'undefined' && (
 			<Stage
-				className={styles.editor}
 				style={{
 					backgroundImage: `url(/mapArt/Backgrounds/${mapData.background})`,
 				}}
@@ -188,6 +193,7 @@ export function MapCanvas() {
 				onClick={(e) => {
 					if (e.target === e.target.getStage()) deselectCollision();
 				}}
+				onDragEnd={handleStageDrag}
 			>
 				{showMapBounds && (
 					<Layer>

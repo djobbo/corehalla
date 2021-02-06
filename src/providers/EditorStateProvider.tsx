@@ -3,6 +3,7 @@ import React, {
 	useState,
 	PropsWithChildren,
 	Dispatch,
+	useEffect,
 } from 'react';
 import useInterval from '../hooks/useInterval';
 
@@ -25,6 +26,7 @@ export const EditorStateContext = createContext<{
 	setStageTransform: Dispatch<React.SetStateAction<IStageTransform>>;
 	timeFlow: number;
 	setTimeFlow: Dispatch<React.SetStateAction<number>>;
+	updateStageTransform: (transform: Partial<IStageTransform>) => void;
 }>({
 	theme: '',
 	setTheme: () => {},
@@ -38,6 +40,7 @@ export const EditorStateContext = createContext<{
 	setStageTransform: () => {},
 	timeFlow: 0,
 	setTimeFlow: () => {},
+	updateStageTransform: () => {},
 });
 
 interface Props {}
@@ -53,6 +56,14 @@ export function EditorStateProvider({ children }: PropsWithChildren<Props>) {
 		stageX: 0,
 		stageY: 0,
 	});
+
+	const updateStageTransform = (transform: Partial<IStageTransform>) => {
+		setStageTransform((tr) => ({ ...tr, ...transform }));
+	};
+
+	useEffect(() => {
+		console.log(stageTransform);
+	}, [stageTransform]);
 
 	const [timeFlow, setTimeFlow] = useState(0);
 
@@ -78,6 +89,7 @@ export function EditorStateProvider({ children }: PropsWithChildren<Props>) {
 				setStageTransform,
 				timeFlow,
 				setTimeFlow,
+				updateStageTransform,
 			}}
 		>
 			{children}

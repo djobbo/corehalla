@@ -21,7 +21,7 @@ export function PropertiesPanel() {
 		setShowMapBounds,
 		timeFlow,
 		setTimeFlow,
-		theme,
+		theme: currentTheme,
 	} = useContext(EditorStateContext);
 
 	function getRandomCol(): Collision {
@@ -39,18 +39,12 @@ export function PropertiesPanel() {
 	return (
 		<div className={styles.container}>
 			<CollisionSettings />
-			<button
+			{/* <button
 				className={btnStyles.button}
 				onClick={() => addCollision(getRandomCol())}
 			>
 				Add Collision
-			</button>
-			<button
-				className={btnStyles.button}
-				onClick={() => console.log(createMapXML(mapData))}
-			>
-				Generate XML
-			</button>
+			</button> */}
 			<input
 				type='file'
 				name='mapFile'
@@ -64,13 +58,12 @@ export function PropertiesPanel() {
 				onChange={(e) => {
 					setTheme(e.target.value);
 				}}
+				value={currentTheme}
 			>
-				<option value='' selected={theme === ''}>
-					None
-				</option>
-				{mapData.themes.map((th) => (
-					<option value={th} key={th} selected={th === theme}>
-						{th}
+				<option value=''>None</option>
+				{mapData.themes.map((theme) => (
+					<option value={theme} key={theme}>
+						{theme}
 					</option>
 				))}
 			</select>

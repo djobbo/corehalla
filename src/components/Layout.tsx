@@ -3,6 +3,7 @@ import { PropsWithChildren } from 'react';
 import { Header } from './Header';
 import { SideNav } from './SideNav';
 import { PropertiesPanel } from './PropertiesPanel';
+import { Timeline } from './Timeline';
 
 interface Props {}
 
@@ -13,6 +14,7 @@ export function Layout({ children }: PropsWithChildren<Props>) {
 			<SideNav />
 			<PropertiesPanel />
 			<div className={styles.editor}>{children}</div>
+			<Timeline />
 		</div>
 	);
 }
