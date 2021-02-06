@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "highlight.js": "^10.5.0",
     "konva": "^7.2.2",
     "next": "10.0.6",
     "react": "17.0.1",

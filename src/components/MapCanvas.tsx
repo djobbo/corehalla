@@ -16,15 +16,14 @@ export function MapCanvas() {
 		updateCollision,
 	} = useContext(MapNodesContext);
 
-	const { currentFrame, theme, showCollisions, showMapBounds } = useContext(
-		EditorStateContext
-	);
-
-	const [{ stageScale, stageX, stageY }, setStageTransform] = useState({
-		stageScale: 0.6,
-		stageX: 0,
-		stageY: 0,
-	});
+	const {
+		currentFrame,
+		theme,
+		showCollisions,
+		showMapBounds,
+		stageTransform: { stageScale, stageX, stageY },
+		setStageTransform,
+	} = useContext(EditorStateContext);
 
 	const [freezeDragPos, setFreezeDragPos] = useState<{
 		x: number;

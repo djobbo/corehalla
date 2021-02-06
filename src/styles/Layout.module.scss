@@ -1,6 +1,12 @@
 #App {
 	display: grid;
-	grid-template-columns: 4rem 20rem 1fr;
+	grid-template-columns: 3rem 20rem 1fr;
 	grid-template-rows: 2.5rem 1fr 8rem;
 	grid-template-areas: 'header header header' 'sidenav properties editor' 'sidenav properties timeline';
+	width: 100vw;
+	height: 100vh;
+
+	.editor {
+		grid-area: editor;
+	}
 }

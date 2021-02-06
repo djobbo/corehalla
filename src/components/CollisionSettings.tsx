@@ -1,6 +1,6 @@
-import { Fragment, useContext } from 'react';
+import btnStyles from '../styles/Button.module.scss';
+import { useContext } from 'react';
 import { MapNodesContext } from '../providers/MapNodesProvider';
-import { Button } from './Button';
 
 export function CollisionSettings() {
 	const { selectedCollision: col, updateCollision } = useContext(
@@ -35,16 +35,17 @@ export function CollisionSettings() {
 				<p>Collision Type</p>
 
 				{['Hard', 'Soft'].map((type: 'Hard' | 'Soft') => (
-					<Button
+					<button
 						key={type}
 						name='radio'
 						value={type}
+						className={btnStyles.button}
 						onClick={() =>
 							updateCollision(col.id, () => ({ type }))
 						}
 					>
 						{type}
-					</Button>
+					</button>
 				))}
 			</div>
 		</div>

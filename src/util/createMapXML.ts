@@ -1,8 +1,7 @@
 export function createMapXML(mapData: LevelDesc) {
-	let outStr =
-		'<LevelDesc AssetDir="Enigma" Background="BG_Steam.jpg" LevelName="SmallEnigma">\n';
-	outStr += '    <CameraBounds H="2772" W="4928" X="-1364" Y="278.15"/>\n';
-	outStr += '    <SpawnBotBounds H="1850" W="2680" X="-110" Y="560"/>\n';
+	let outStr = `<LevelDesc AssetDir="${mapData.assetDir}" Background="${mapData.background}" LevelName="${mapData.levelName}">\n`;
+	outStr += `    <CameraBounds H="${mapData.cameraBounds.h}" W="${mapData.cameraBounds.w}" X="${mapData.cameraBounds.x}" Y="${mapData.cameraBounds.y}"/>\n`;
+	outStr += `    <SpawnBotBounds H="${mapData.spawnBotBounds.h}" W="${mapData.spawnBotBounds.w}" X="${mapData.spawnBotBounds.x}" Y="${mapData.spawnBotBounds.y}"/>\n`;
 
 	mapData.collisions.forEach((col) => {
 		outStr += `    <${col.type}Collision ${

@@ -1,3 +1,4 @@
+import btnStyles from '../styles/Button.module.scss';
 import React, { useContext, useState } from 'react';
 import useInterval from '../hooks/useInterval';
 import { EditorStateContext } from '../providers/EditorStateProvider';
@@ -5,7 +6,6 @@ import { MapNodesContext } from '../providers/MapNodesProvider';
 import styles from '../styles/PropertiesPanel.module.scss';
 import { createMapXML } from '../util/createMapXML';
 import { parseMapXML } from '../util/parseMapXML';
-import { Button } from './Button';
 import { CollisionSettings } from './CollisionSettings';
 
 export function PropertiesPanel() {
@@ -19,16 +19,10 @@ export function PropertiesPanel() {
 		setShowCollisions,
 		showMapBounds,
 		setShowMapBounds,
+		timeFlow,
+		setTimeFlow,
+		theme,
 	} = useContext(EditorStateContext);
-
-	const [timeFlow, setTimeFlow] = useState(0);
-
-	useInterval(
-		() => {
-			setCurrentFrame((frame) => frame + timeFlow / 60);
-		},
-		timeFlow === 0 ? null : 1000 / 60
-	);
 
 	function getRandomCol(): Collision {
 		return {
@@ -45,14 +39,18 @@ export function PropertiesPanel() {
 	return (
 		<div className={styles.container}>
 			<CollisionSettings />
-			<div>
-				<Button onClick={() => addCollision(getRandomCol())}>
-					Add Collision
-				</Button>
-				<Button onClick={() => console.log(createMapXML(mapData))}>
-					Generate XML
-				</Button>
-			</div>
+			<button
+				className={btnStyles.button}
+				onClick={() => addCollision(getRandomCol())}
+			>
+				Add Collision
+			</button>
+			<button
+				className={btnStyles.button}
+				onClick={() => console.log(createMapXML(mapData))}
+			>
+				Generate XML
+			</button>
 			<input
 				type='file'
 				name='mapFile'
@@ -67,10 +65,12 @@ export function PropertiesPanel() {
 					setTheme(e.target.value);
 				}}
 			>
-				<option value=''>None</option>
-				{mapData.themes.map((theme) => (
-					<option value={theme} key={theme}>
-						{theme}
+				<option value='' selected={theme === ''}>
+					None
+				</option>
+				{mapData.themes.map((th) => (
+					<option value={th} key={th} selected={th === theme}>
+						{th}
 					</option>
 				))}
 			</select>
