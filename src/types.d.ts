@@ -44,14 +44,21 @@ interface PlatformAnimation {
 	numFrames: number;
 	x: number;
 	y: number;
-	keyframes: PlatformKeyframe[];
+	keyframes: (PlatformKeyframe | PlatformPhase)[];
 	slowMult: number;
 }
 
 interface PlatformKeyframe {
+	type: 'Keyframe';
 	frameNum: number;
 	x: number;
 	y: number;
+}
+
+interface PlatformPhase {
+	type: 'Phase';
+	frameNum: number;
+	keyFrames: PlatformKeyframe[];
 }
 
 type CollisionType = 'Hard' | 'Soft';

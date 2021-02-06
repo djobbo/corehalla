@@ -228,7 +228,7 @@ export function MapCanvas() {
 						if (!anim) return null;
 
 						const pos = getAnimationPos(anim, currentFrame);
-						console.log(pos);
+						// console.log(plat.platId, pos);
 						return (
 							<Group x={pos.x} y={pos.y}>
 								{drawPlatform(plat)}

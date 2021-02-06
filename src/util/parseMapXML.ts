@@ -201,18 +201,20 @@ function parseAnimation(
 	baseX = 0,
 	baseY = 0
 ): PlatformAnimation {
-	let keyframes: PlatformKeyframe[] = [];
+	let keyframes: (PlatformKeyframe | PlatformPhase)[] = [];
 
 	for (let child of anim.children) {
 		if (child.tagName === 'KeyFrame') {
-			const key = parseKeyframe(child, baseX, baseY);
+			const key = parseKeyframe(child);
 			keyframes.push(key);
+		} else if (child.tagName === 'Phase') {
+			keyframes.push(parsePhase(child));
 		}
 	}
 
 	return {
 		platId,
-		numFrames: parseInt(anim.getAttribute('NumFrames') ?? '0'),
+		numFrames: parseInt(anim.getAttribute('NumFrames') ?? '60'),
 		keyframes,
 		x: baseX,
 		y: baseY,
@@ -220,10 +222,27 @@ function parseAnimation(
 	};
 }
 
-function parseKeyframe(key: Element, baseX = 0, baseY = 0): PlatformKeyframe {
+function parseKeyframe(key: Element): PlatformKeyframe {
 	return {
 		frameNum: parseInt(key.getAttribute('FrameNum')),
+		type: 'Keyframe',
 		x: parseFloat(key.getAttribute('X') ?? '0'),
 		y: parseFloat(key.getAttribute('Y') ?? '0'),
 	};
+}
+
+function parsePhase(phase: Element): PlatformPhase {
+	let outPhase: PlatformPhase = {
+		type: 'Phase',
+		frameNum: parseInt(phase.getAttribute('StartFrame')),
+		keyFrames: [],
+	};
+
+	for (let child of phase.children) {
+		if (child.tagName === 'KeyFrame') {
+			outPhase.keyFrames.push(parseKeyframe(child));
+		}
+	}
+
+	return outPhase;
 }

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { CollisionSettings } from '../components/CollisionSettings';
 import { MapCanvas } from '../components/MapCanvas';
 import { MapNodesContext } from '../providers/MapNodesProvider';
@@ -6,6 +6,7 @@ import { createMapXML } from '../util/createMapXML';
 import { parseMapXML } from '../util/parseMapXML';
 import { Layout } from '../components/Layout';
 import { Button } from '../components/Button';
+import useInterval from '../hooks/useInterval';
 
 export default function Home() {
 	const {
@@ -16,6 +17,8 @@ export default function Home() {
 		currentFrame,
 		setCurrentFrame,
 	} = useContext(MapNodesContext);
+
+	const [timeFlow, setTimeFlow] = useState(0);
 
 	function getRandomCol(): Collision {
 		return {
@@ -34,6 +37,13 @@ export default function Home() {
 	// 		setCurrentFrame((frame) => frame + 1);
 	// 	}, (1 * 1000) / 60);
 	// }, []);
+
+	useInterval(
+		() => {
+			setCurrentFrame((frame) => frame + timeFlow / 60);
+		},
+		timeFlow === 0 ? null : 1000 / 60
+	);
 
 	return (
 		<Layout>
@@ -71,10 +81,18 @@ export default function Home() {
 				</select>
 				<input
 					type='number'
-					value={currentFrame}
+					value={Math.round(currentFrame)}
 					onChange={(e) => {
 						const f = parseInt(e.target.value);
 						setCurrentFrame(f >= 0 ? f : 0);
+					}}
+				/>
+				<input
+					type='number'
+					value={timeFlow}
+					onChange={(e) => {
+						const flow = parseInt(e.target.value);
+						setTimeFlow(isNaN(flow) ? 0 : flow);
 					}}
 				/>
 			</div>
