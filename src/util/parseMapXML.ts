@@ -1,5 +1,3 @@
-import { parse } from 'postcss';
-
 export function parseMapXML(mapXML: string): LevelDesc {
 	console.log(mapXML);
 	const parser = new DOMParser();
@@ -20,6 +18,8 @@ export function parseMapXML(mapXML: string): LevelDesc {
 		dynamicCollisions: [],
 		themes: [],
 		animations: [],
+		numFrames: parseInt(levelDesc.getAttribute('NumFrames') ?? '-1'),
+		slowMult: parseFloat(levelDesc.getAttribute('SlowMult') ?? '1'),
 	};
 
 	for (let node of levelDesc.children) {
@@ -214,7 +214,7 @@ function parseAnimation(
 
 	return {
 		platId,
-		numFrames: parseInt(anim.getAttribute('NumFrames') ?? '60'),
+		numFrames: parseInt(anim.getAttribute('NumFrames') ?? '0'),
 		keyframes,
 		x: baseX,
 		y: baseY,

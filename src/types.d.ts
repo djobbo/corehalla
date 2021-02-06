@@ -11,6 +11,8 @@ interface LevelDesc {
 	spawns: Spawn[];
 	themes: string[];
 	animations: PlatformAnimation[];
+	numFrames: number;
+	slowMult: number;
 }
 
 interface Bounds {

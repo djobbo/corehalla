@@ -5,6 +5,7 @@ import { MapNodesContext } from '../providers/MapNodesProvider';
 import { KonvaEventObject } from 'konva/types/Node';
 import { URLImage } from './URLImage';
 import { getAnimationPos } from '../util/getAnimationPos';
+import { EditorStateContext } from '../providers/EditorStateProvider';
 
 export function MapCanvas() {
 	const {
@@ -13,11 +14,11 @@ export function MapCanvas() {
 		selectCollision,
 		deselectCollision,
 		updateCollision,
-		theme,
-		currentFrame,
-		showCollisions,
-		showMapBounds,
 	} = useContext(MapNodesContext);
+
+	const { currentFrame, theme, showCollisions, showMapBounds } = useContext(
+		EditorStateContext
+	);
 
 	const [{ stageScale, stageX, stageY }, setStageTransform] = useState({
 		stageScale: 0.6,
@@ -173,6 +174,10 @@ export function MapCanvas() {
 	return (
 		typeof window !== 'undefined' && (
 			<Stage
+				className={styles.editor}
+				style={{
+					backgroundImage: `url(/mapArt/Backgrounds/${mapData.background})`,
+				}}
 				width={window.innerWidth}
 				height={window.innerHeight}
 				onWheel={handleWheel}
@@ -231,7 +236,11 @@ export function MapCanvas() {
 						);
 						if (!anim) return null;
 
-						const pos = getAnimationPos(anim, currentFrame);
+						const pos = getAnimationPos(
+							anim,
+							currentFrame,
+							mapData
+						);
 						// console.log(plat.platId, pos);
 						return (
 							<Group x={pos.x} y={pos.y}>
@@ -250,7 +259,11 @@ export function MapCanvas() {
 								);
 								if (!anim) return null;
 
-								const pos = getAnimationPos(anim, currentFrame);
+								const pos = getAnimationPos(
+									anim,
+									currentFrame,
+									mapData
+								);
 
 								return (
 									<Group x={pos.x + col.x} y={pos.y + col.y}>

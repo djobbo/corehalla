@@ -2,12 +2,15 @@ import '../styles/globals.scss';
 
 import type { AppProps } from 'next/app';
 import { MapNodesProvider } from '../providers/MapNodesProvider';
+import { EditorStateProvider } from '../providers/EditorStateProvider';
 
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
-		<MapNodesProvider>
-			<Component {...pageProps} />
-		</MapNodesProvider>
+		<EditorStateProvider>
+			<MapNodesProvider>
+				<Component {...pageProps} />
+			</MapNodesProvider>
+		</EditorStateProvider>
 	);
 }
 
