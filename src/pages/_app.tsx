@@ -4,14 +4,16 @@ import '../styles/code.scss';
 import type { AppProps } from 'next/app';
 import { MapNodesProvider } from '../providers/MapNodesProvider';
 import { EditorStateProvider } from '../providers/EditorStateProvider';
-import { AnimateSharedLayout } from 'framer-motion';
+import { AnimatePresence, AnimateSharedLayout } from 'framer-motion';
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps, router }: AppProps) {
 	return (
 		<AnimateSharedLayout>
 			<EditorStateProvider>
 				<MapNodesProvider>
-					<Component {...pageProps} />
+					<AnimatePresence exitBeforeEnter>
+						<Component {...pageProps} key={router.route} />
+					</AnimatePresence>
 				</MapNodesProvider>
 			</EditorStateProvider>
 		</AnimateSharedLayout>

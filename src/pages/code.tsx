@@ -6,6 +6,7 @@ import { createMapXML } from '../util/createMapXML';
 import hljs from 'highlight.js';
 import xmlhl from 'highlight.js/lib/languages/xml';
 import { MapCanvas } from '../components/MapCanvas';
+import { motion } from 'framer-motion';
 
 hljs.registerLanguage('xml', xmlhl);
 
@@ -19,11 +20,20 @@ export default function Code() {
 
 	return (
 		<Layout>
-			<div className={styles.container}>
+			<motion.div
+				className={styles.container}
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				exit={{ opacity: 0 }}
+				transition={{ duration: 0.1 }}
+			>
 				<pre>
-					<code dangerouslySetInnerHTML={{ __html: mapXML }}></code>
+					<code
+						className='hljs'
+						dangerouslySetInnerHTML={{ __html: mapXML }}
+					></code>
 				</pre>
-			</div>
+			</motion.div>
 			<div className={styles.floatingMapCanvas}>
 				<MapCanvas floating />
 			</div>
