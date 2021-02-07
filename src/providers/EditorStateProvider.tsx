@@ -20,6 +20,8 @@ export const EditorStateContext = createContext<{
 	timeFlow: number;
 	setTimeFlow: Dispatch<React.SetStateAction<number>>;
 	updateStageTransform: (transform: Partial<IStageTransform>) => void;
+	loadedNewMap: boolean;
+	setLoadedNewMap: Dispatch<React.SetStateAction<boolean>>;
 }>({
 	theme: '',
 	setTheme: () => {},
@@ -34,6 +36,8 @@ export const EditorStateContext = createContext<{
 	timeFlow: 0,
 	setTimeFlow: () => {},
 	updateStageTransform: () => {},
+	loadedNewMap: false,
+	setLoadedNewMap: () => {},
 });
 
 interface Props {}
@@ -43,6 +47,7 @@ export function EditorStateProvider({ children }: PropsWithChildren<Props>) {
 	const [currentFrame, setCurrentFrame] = useState(0);
 	const [showCollisions, setShowCollisions] = useState(true);
 	const [showMapBounds, setShowMapBounds] = useState(true);
+	const [currentFileName, setCurrentFileName] = useState(false);
 
 	const [stageTransform, setStageTransform] = useState<IStageTransform>({
 		stageScale: 0.6,
@@ -79,6 +84,8 @@ export function EditorStateProvider({ children }: PropsWithChildren<Props>) {
 				timeFlow,
 				setTimeFlow,
 				updateStageTransform,
+				loadedNewMap: currentFileName,
+				setLoadedNewMap: setCurrentFileName,
 			}}
 		>
 			{children}

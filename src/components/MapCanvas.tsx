@@ -1,11 +1,13 @@
 import styles from '../styles/MapCanvas.module.scss';
 import { Stage, Layer, Line, Circle, Group } from 'react-konva';
-import { Fragment, useContext, useEffect, useState } from 'react';
+import { Fragment, useContext, useEffect, useRef, useState } from 'react';
 import { MapNodesContext } from '../providers/MapNodesProvider';
 import { KonvaEventObject } from 'konva/types/Node';
 import { URLImage } from './URLImage';
 import { getAnimationPos } from '../util/getAnimationPos';
 import { EditorStateContext } from '../providers/EditorStateProvider';
+import { motion } from 'framer-motion';
+import { useRouter } from 'next/router';
 
 interface Props {
 	floating?: boolean;
@@ -28,6 +30,9 @@ export function MapCanvas({ floating }: Props) {
 		stageTransform: { stageScale, stageX, stageY },
 		setStageTransform,
 		updateStageTransform,
+		setTimeFlow,
+		loadedNewMap,
+		setLoadedNewMap,
 	} = useContext(EditorStateContext);
 
 	const [freezeDragPos, setFreezeDragPos] = useState<{
@@ -40,6 +45,15 @@ export function MapCanvas({ floating }: Props) {
 		floatingStageTransform,
 		setFloatingStageTransform,
 	] = useState<IStageTransform>({ stageScale: 1, stageX: 0, stageY: 0 });
+
+	const [{ canvasW, canvasH }, setCanvasDimensions] = useState({
+		canvasW: 0,
+		canvasH: 0,
+	});
+
+	const containerRef = useRef<HTMLDivElement>(null);
+
+	const router = useRouter();
 
 	const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
 		e.evt.preventDefault();
@@ -186,7 +200,7 @@ export function MapCanvas({ floating }: Props) {
 	};
 
 	const getDefaultStageTransform = (maxWidth: number) => {
-		const newScale = maxWidth / mapData.cameraBounds.w;
+		const newScale = maxWidth / mapData.cameraBounds.w || stageScale;
 		return {
 			stageScale: newScale,
 			stageX: -mapData.cameraBounds.x * newScale,
@@ -195,28 +209,52 @@ export function MapCanvas({ floating }: Props) {
 	};
 
 	// TODO: correct map zoom
-	// useEffect(() => {
-	// 	setStageTransform(getDefaultStageTransform(window.innerWidth));
-	// }, [mapData.cameraBounds]);
+	useEffect(() => {
+		if (loadedNewMap) {
+			setStageTransform(getDefaultStageTransform(canvasW));
+			setLoadedNewMap(false);
+		} else console.log('bruh');
+	}, [loadedNewMap]);
 
 	useEffect(() => {
 		setFloatingStageTransform(getDefaultStageTransform(16 * 16));
+		//TODO: \/ THIS \/
+		if (floating) setTimeFlow(0);
 	}, [floating]);
+
+	const updateCanvasSize = () => {
+		if (!containerRef || !containerRef.current) return;
+		const { offsetWidth, offsetHeight } = containerRef.current;
+		console.log(offsetWidth, offsetHeight);
+		setCanvasDimensions({
+			canvasW: offsetWidth,
+			canvasH: offsetHeight,
+		});
+	};
+
+	useEffect(() => {
+		window.addEventListener('resize', updateCanvasSize);
+		updateCanvasSize();
+	}, []);
 
 	return (
 		typeof window !== 'undefined' && (
-			<div
+			<motion.div
 				className={`${styles.container} ${
 					floating ? styles.floating : ''
 				}`}
+				layoutId='mapCanvas'
+				ref={containerRef}
 			>
+				<img
+					src={`/mapArt/Backgrounds/${mapData.background}`}
+					alt='BG'
+					className={styles.backgroundImg}
+				/>
 				<Stage
-					style={{
-						backgroundImage: `url(/mapArt/Backgrounds/${mapData.background})`,
-					}}
-					width={window.innerWidth}
-					height={window.innerHeight}
-					onWheel={handleWheel}
+					width={canvasW}
+					height={canvasH}
+					onWheel={!floating && handleWheel}
 					scaleX={
 						floating
 							? floatingStageTransform.stageScale
@@ -229,8 +267,13 @@ export function MapCanvas({ floating }: Props) {
 					}
 					x={floating ? floatingStageTransform.stageX : stageX}
 					y={floating ? floatingStageTransform.stageY : stageY}
-					draggable
+					draggable={!floating}
 					onClick={(e) => {
+						if (floating) {
+							router.push('/');
+							return;
+						}
+
 						if (e.target === e.target.getStage())
 							deselectCollision();
 					}}
@@ -274,6 +317,7 @@ export function MapCanvas({ floating }: Props) {
 							/>
 						</Layer>
 					)}
+					{/* TODO: Some themed platforms show behind regular platforms */}
 					<Layer>{mapData.platforms.map(drawPlatform)}</Layer>
 					<Layer>
 						{mapData.movingPlatforms.map((plat) => {
@@ -376,7 +420,7 @@ export function MapCanvas({ floating }: Props) {
 						)}
 					</Layer>
 				</Stage>
-			</div>
+			</motion.div>
 		)
 	);
 }

@@ -16,6 +16,7 @@ export function PropertiesPanel() {
 		showMapBounds,
 		setShowMapBounds,
 		theme: currentTheme,
+		setLoadedNewMap,
 	} = useContext(EditorStateContext);
 
 	// function getRandomCol(): Collision {
@@ -48,6 +49,7 @@ export function PropertiesPanel() {
 					if (e.target.files.length <= 0) return;
 					const file = e.target.files[0];
 					setMapData(parseMapXML(await file.text()));
+					setLoadedNewMap(true);
 				}}
 			/>
 			<select
