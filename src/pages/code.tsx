@@ -5,6 +5,7 @@ import { MapNodesContext } from '../providers/MapNodesProvider';
 import { createMapXML } from '../util/createMapXML';
 import hljs from 'highlight.js';
 import xmlhl from 'highlight.js/lib/languages/xml';
+import { MapCanvas } from '../components/MapCanvas';
 
 hljs.registerLanguage('xml', xmlhl);
 
@@ -22,6 +23,9 @@ export default function Code() {
 				<pre>
 					<code dangerouslySetInnerHTML={{ __html: mapXML }}></code>
 				</pre>
+			</div>
+			<div className={styles.floatingMapCanvas}>
+				<MapCanvas floating />
 			</div>
 		</Layout>
 	);

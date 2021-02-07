@@ -1,40 +1,34 @@
-import btnStyles from '../styles/Button.module.scss';
+import formStyles from '../styles/Forms.module.scss';
 import React, { useContext, useState } from 'react';
-import useInterval from '../hooks/useInterval';
 import { EditorStateContext } from '../providers/EditorStateProvider';
 import { MapNodesContext } from '../providers/MapNodesProvider';
 import styles from '../styles/PropertiesPanel.module.scss';
-import { createMapXML } from '../util/createMapXML';
 import { parseMapXML } from '../util/parseMapXML';
 import { CollisionSettings } from './CollisionSettings';
 
 export function PropertiesPanel() {
-	const { addCollision, mapData, setMapData } = useContext(MapNodesContext);
+	const { mapData, setMapData } = useContext(MapNodesContext);
 
 	const {
 		setTheme,
-		currentFrame,
-		setCurrentFrame,
 		showCollisions,
 		setShowCollisions,
 		showMapBounds,
 		setShowMapBounds,
-		timeFlow,
-		setTimeFlow,
 		theme: currentTheme,
 	} = useContext(EditorStateContext);
 
-	function getRandomCol(): Collision {
-		return {
-			id: Math.random().toString(),
-			type: 'Hard',
-			isDragging: false,
-			x1: Math.round(Math.random() * 250 + 250),
-			x2: Math.round(Math.random() * 250 + 250),
-			y1: Math.round(Math.random() * 250 + 250),
-			y2: Math.round(Math.random() * 250 + 250),
-		};
-	}
+	// function getRandomCol(): Collision {
+	// 	return {
+	// 		id: Math.random().toString(),
+	// 		type: 'Hard',
+	// 		isDragging: false,
+	// 		x1: Math.round(Math.random() * 250 + 250),
+	// 		x2: Math.round(Math.random() * 250 + 250),
+	// 		y1: Math.round(Math.random() * 250 + 250),
+	// 		y2: Math.round(Math.random() * 250 + 250),
+	// 	};
+	// }
 
 	return (
 		<div className={styles.container}>
@@ -46,6 +40,8 @@ export function PropertiesPanel() {
 				Add Collision
 			</button> */}
 			<input
+				className={formStyles.input}
+				style={{ cursor: 'pointer' }}
 				type='file'
 				name='mapFile'
 				onChange={async (e) => {
@@ -55,6 +51,7 @@ export function PropertiesPanel() {
 				}}
 			/>
 			<select
+				className={formStyles.input}
 				onChange={(e) => {
 					setTheme(e.target.value);
 				}}
@@ -67,23 +64,7 @@ export function PropertiesPanel() {
 					</option>
 				))}
 			</select>
-			<input
-				type='number'
-				value={Math.round(currentFrame)}
-				onChange={(e) => {
-					const f = parseInt(e.target.value);
-					setCurrentFrame(f >= 0 ? f : 0);
-				}}
-			/>
-			<input
-				type='number'
-				value={timeFlow}
-				onChange={(e) => {
-					const flow = parseInt(e.target.value);
-					setTimeFlow(isNaN(flow) ? 0 : flow);
-				}}
-			/>
-			<label>
+			<label className={formStyles.label}>
 				Show Collisions
 				<input
 					type='checkbox'
@@ -91,7 +72,7 @@ export function PropertiesPanel() {
 					onChange={(e) => setShowCollisions(e.target.checked)}
 				/>
 			</label>
-			<label>
+			<label className={formStyles.label}>
 				Show Map Bounds
 				<input
 					type='checkbox'

@@ -3,15 +3,8 @@ import React, {
 	useState,
 	PropsWithChildren,
 	Dispatch,
-	useEffect,
 } from 'react';
 import useInterval from '../hooks/useInterval';
-
-interface IStageTransform {
-	stageScale: number;
-	stageX: number;
-	stageY: number;
-}
 
 export const EditorStateContext = createContext<{
 	theme: string;
@@ -60,10 +53,6 @@ export function EditorStateProvider({ children }: PropsWithChildren<Props>) {
 	const updateStageTransform = (transform: Partial<IStageTransform>) => {
 		setStageTransform((tr) => ({ ...tr, ...transform }));
 	};
-
-	useEffect(() => {
-		console.log(stageTransform);
-	}, [stageTransform]);
 
 	const [timeFlow, setTimeFlow] = useState(0);
 

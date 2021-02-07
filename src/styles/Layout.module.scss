@@ -1,3 +1,5 @@
+@import './theme.scss';
+
 #App {
 	display: grid;
 	grid-template-columns: 3rem 20rem 1fr;
@@ -5,9 +7,11 @@
 	grid-template-areas: 'header header header' 'sidenav properties editor' 'sidenav properties timeline';
 	width: 100vw;
 	height: 100vh;
+	background-color: $gray-1;
 
 	.editor {
 		grid-area: editor;
 		overflow: hidden;
+		padding: 1rem;
 	}
 }

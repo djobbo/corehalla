@@ -1,3 +1,9 @@
+interface IStageTransform {
+	stageScale: number;
+	stageX: number;
+	stageY: number;
+}
+
 interface LevelDesc {
 	assetDir: string;
 	background: string;

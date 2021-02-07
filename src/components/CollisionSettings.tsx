@@ -1,4 +1,4 @@
-import btnStyles from '../styles/Button.module.scss';
+import formStyles from '../styles/Forms.module.scss';
 import { useContext } from 'react';
 import { MapNodesContext } from '../providers/MapNodesProvider';
 
@@ -39,7 +39,7 @@ export function CollisionSettings() {
 						key={type}
 						name='radio'
 						value={type}
-						className={btnStyles.button}
+						className={formStyles.button}
 						onClick={() =>
 							updateCollision(col.id, () => ({ type }))
 						}

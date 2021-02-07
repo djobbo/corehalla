@@ -1,13 +1,17 @@
 import styles from '../styles/MapCanvas.module.scss';
 import { Stage, Layer, Line, Circle, Group } from 'react-konva';
-import { Fragment, useContext, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import { MapNodesContext } from '../providers/MapNodesProvider';
 import { KonvaEventObject } from 'konva/types/Node';
 import { URLImage } from './URLImage';
 import { getAnimationPos } from '../util/getAnimationPos';
 import { EditorStateContext } from '../providers/EditorStateProvider';
 
-export function MapCanvas() {
+interface Props {
+	floating?: boolean;
+}
+
+export function MapCanvas({ floating }: Props) {
 	const {
 		mapData,
 		selectedCollision,
@@ -31,6 +35,11 @@ export function MapCanvas() {
 		y: number;
 	}>({ x: null, y: null });
 	const [freezeDrag, setFreezeDrag] = useState({ x: false, y: false });
+
+	const [
+		floatingStageTransform,
+		setFloatingStageTransform,
+	] = useState<IStageTransform>({ stageScale: 1, stageX: 0, stageY: 0 });
 
 	const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
 		e.evt.preventDefault();
@@ -176,160 +185,198 @@ export function MapCanvas() {
 		);
 	};
 
+	const getDefaultStageTransform = (maxWidth: number) => {
+		const newScale = maxWidth / mapData.cameraBounds.w;
+		return {
+			stageScale: newScale,
+			stageX: -mapData.cameraBounds.x * newScale,
+			stageY: -mapData.cameraBounds.y * newScale,
+		};
+	};
+
+	// TODO: correct map zoom
+	// useEffect(() => {
+	// 	setStageTransform(getDefaultStageTransform(window.innerWidth));
+	// }, [mapData.cameraBounds]);
+
+	useEffect(() => {
+		setFloatingStageTransform(getDefaultStageTransform(16 * 16));
+	}, [floating]);
+
 	return (
 		typeof window !== 'undefined' && (
-			<Stage
-				style={{
-					backgroundImage: `url(/mapArt/Backgrounds/${mapData.background})`,
-				}}
-				width={window.innerWidth}
-				height={window.innerHeight}
-				onWheel={handleWheel}
-				scaleX={stageScale}
-				scaleY={stageScale}
-				x={stageX}
-				y={stageY}
-				draggable
-				onClick={(e) => {
-					if (e.target === e.target.getStage()) deselectCollision();
-				}}
-				onDragEnd={handleStageDrag}
+			<div
+				className={`${styles.container} ${
+					floating ? styles.floating : ''
+				}`}
 			>
-				{showMapBounds && (
-					<Layer>
-						<Line
-							x={mapData.cameraBounds.x}
-							y={mapData.cameraBounds.y}
-							points={[
-								0,
-								0,
-								mapData.cameraBounds.w,
-								0,
-								mapData.cameraBounds.w,
-								mapData.cameraBounds.h,
-								0,
-								mapData.cameraBounds.h,
-							]}
-							closed
-							stroke={'red'}
-							strokeWidth={10}
-						/>
-						<Line
-							x={mapData.spawnBotBounds.x}
-							y={mapData.spawnBotBounds.y}
-							points={[
-								0,
-								0,
-								mapData.spawnBotBounds.w,
-								0,
-								mapData.spawnBotBounds.w,
-								mapData.spawnBotBounds.h,
-								0,
-								mapData.spawnBotBounds.h,
-							]}
-							closed
-							stroke={'lime'}
-							strokeWidth={10}
-						/>
-					</Layer>
-				)}
-				<Layer>{mapData.platforms.map(drawPlatform)}</Layer>
-				<Layer>
-					{mapData.movingPlatforms.map((plat) => {
-						const anim = mapData.animations.find(
-							(a) => a.platId === plat.platId
-						);
-						if (!anim) return null;
-
-						const pos = getAnimationPos(
-							anim,
-							currentFrame,
-							mapData
-						);
-						// console.log(plat.platId, pos);
-						return (
-							<Group x={pos.x} y={pos.y}>
-								{drawPlatform(plat)}
-							</Group>
-						);
-					})}
-				</Layer>
-				{showCollisions && (
-					<>
-						<Layer>{mapData.collisions.map(drawCollision)}</Layer>
+				<Stage
+					style={{
+						backgroundImage: `url(/mapArt/Backgrounds/${mapData.background})`,
+					}}
+					width={window.innerWidth}
+					height={window.innerHeight}
+					onWheel={handleWheel}
+					scaleX={
+						floating
+							? floatingStageTransform.stageScale
+							: stageScale
+					}
+					scaleY={
+						floating
+							? floatingStageTransform.stageScale
+							: stageScale
+					}
+					x={floating ? floatingStageTransform.stageX : stageX}
+					y={floating ? floatingStageTransform.stageY : stageY}
+					draggable
+					onClick={(e) => {
+						if (e.target === e.target.getStage())
+							deselectCollision();
+					}}
+					onDragEnd={handleStageDrag}
+				>
+					{showMapBounds && !floating && (
 						<Layer>
-							{mapData.dynamicCollisions.map((col) => {
-								const anim = mapData.animations.find(
-									(a) => a.platId === col.platId
-								);
-								if (!anim) return null;
-
-								const pos = getAnimationPos(
-									anim,
-									currentFrame,
-									mapData
-								);
-
-								return (
-									<Group x={pos.x + col.x} y={pos.y + col.y}>
-										{col.collisions.map(drawCollision)}
-									</Group>
-								);
-							})}
+							<Line
+								x={mapData.cameraBounds.x}
+								y={mapData.cameraBounds.y}
+								points={[
+									0,
+									0,
+									mapData.cameraBounds.w,
+									0,
+									mapData.cameraBounds.w,
+									mapData.cameraBounds.h,
+									0,
+									mapData.cameraBounds.h,
+								]}
+								closed
+								stroke={'red'}
+								strokeWidth={10}
+							/>
+							<Line
+								x={mapData.spawnBotBounds.x}
+								y={mapData.spawnBotBounds.y}
+								points={[
+									0,
+									0,
+									mapData.spawnBotBounds.w,
+									0,
+									mapData.spawnBotBounds.w,
+									mapData.spawnBotBounds.h,
+									0,
+									mapData.spawnBotBounds.h,
+								]}
+								closed
+								stroke={'lime'}
+								strokeWidth={10}
+							/>
 						</Layer>
-					</>
-				)}
-				<Layer>
-					{selectedCollision && (
+					)}
+					<Layer>{mapData.platforms.map(drawPlatform)}</Layer>
+					<Layer>
+						{mapData.movingPlatforms.map((plat) => {
+							const anim = mapData.animations.find(
+								(a) => a.platId === plat.platId
+							);
+							if (!anim) return null;
+
+							const pos = getAnimationPos(
+								anim,
+								currentFrame,
+								mapData
+							);
+							// console.log(plat.platId, pos);
+							return (
+								<Group x={pos.x} y={pos.y}>
+									{drawPlatform(plat)}
+								</Group>
+							);
+						})}
+					</Layer>
+					{showCollisions && !floating && (
 						<>
-							<Circle
-								x={selectedCollision.x1}
-								y={selectedCollision.y1}
-								radius={25}
-								fill='rgba(239, 68, 68)'
-								draggable
-								onDragMove={(e) => handleDrag(e, '1')}
-								onDragStart={handleDragStart}
-								dragBoundFunc={freezeDragFn}
-								onMouseEnter={(e) => {
-									const container = e.target
-										.getStage()
-										.container();
-									container.style.cursor = 'move';
-								}}
-								onMouseLeave={(e) => {
-									const container = e.target
-										.getStage()
-										.container();
-									container.style.cursor = 'default';
-								}}
-							/>
-							<Circle
-								x={selectedCollision.x2}
-								y={selectedCollision.y2}
-								radius={25}
-								fill='rgba(239, 68, 68)'
-								draggable
-								onDragMove={(e) => handleDrag(e, '2')}
-								onDragStart={handleDragStart}
-								dragBoundFunc={freezeDragFn}
-								onMouseEnter={(e) => {
-									const container = e.target
-										.getStage()
-										.container();
-									container.style.cursor = 'move';
-								}}
-								onMouseLeave={(e) => {
-									const container = e.target
-										.getStage()
-										.container();
-									container.style.cursor = 'default';
-								}}
-							/>
+							<Layer>
+								{mapData.collisions.map(drawCollision)}
+							</Layer>
+							<Layer>
+								{mapData.dynamicCollisions.map((col) => {
+									const anim = mapData.animations.find(
+										(a) => a.platId === col.platId
+									);
+									if (!anim) return null;
+
+									const pos = getAnimationPos(
+										anim,
+										currentFrame,
+										mapData
+									);
+
+									return (
+										<Group
+											x={pos.x + col.x}
+											y={pos.y + col.y}
+										>
+											{col.collisions.map(drawCollision)}
+										</Group>
+									);
+								})}
+							</Layer>
 						</>
 					)}
-				</Layer>
-			</Stage>
+					<Layer>
+						{selectedCollision && (
+							<>
+								<Circle
+									x={selectedCollision.x1}
+									y={selectedCollision.y1}
+									radius={25}
+									fill='rgba(239, 68, 68)'
+									draggable
+									onDragMove={(e) => handleDrag(e, '1')}
+									onDragStart={handleDragStart}
+									dragBoundFunc={freezeDragFn}
+									onMouseEnter={(e) => {
+										const container = e.target
+											.getStage()
+											.container();
+										container.style.cursor = 'move';
+									}}
+									onMouseLeave={(e) => {
+										const container = e.target
+											.getStage()
+											.container();
+										container.style.cursor = 'default';
+									}}
+								/>
+								<Circle
+									x={selectedCollision.x2}
+									y={selectedCollision.y2}
+									radius={25}
+									fill='rgba(239, 68, 68)'
+									draggable
+									onDragMove={(e) => handleDrag(e, '2')}
+									onDragStart={handleDragStart}
+									dragBoundFunc={freezeDragFn}
+									onMouseEnter={(e) => {
+										const container = e.target
+											.getStage()
+											.container();
+										container.style.cursor = 'move';
+									}}
+									onMouseLeave={(e) => {
+										const container = e.target
+											.getStage()
+											.container();
+										container.style.cursor = 'default';
+									}}
+								/>
+							</>
+						)}
+					</Layer>
+				</Stage>
+			</div>
 		)
 	);
 }
