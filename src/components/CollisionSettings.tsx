@@ -2,17 +2,15 @@ import formStyles from '../styles/Forms.module.scss';
 import { useContext } from 'react';
 import { MapNodesContext } from '../providers/MapNodesProvider';
 
-export function CollisionSettings() {
-	const { selectedCollision: col, updateCollision } = useContext(
-		MapNodesContext
-	);
+interface Props {
+	col: Collision;
+}
+
+export function CollisionSettings({ col }: Props) {
+	const { updateCollision } = useContext(MapNodesContext);
 
 	return col ? (
 		<div>
-			<div>
-				<p>Selected Collision</p>
-				<p>ID:{col.id}</p>
-			</div>
 			<div>
 				{['x1', 'y1', 'x2', 'y2'].map(
 					(coord: 'x1' | 'y1' | 'x2' | 'y2') => (
@@ -39,7 +37,9 @@ export function CollisionSettings() {
 						key={type}
 						name='radio'
 						value={type}
-						className={formStyles.button}
+						className={`${formStyles.button} ${
+							col.type === type ? formStyles.selected : ''
+						}`}
 						onClick={() =>
 							updateCollision(col.id, () => ({ type }))
 						}

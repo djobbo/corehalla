@@ -5,6 +5,7 @@ import { MapNodesContext } from '../providers/MapNodesProvider';
 import styles from '../styles/PropertiesPanel.module.scss';
 import { parseMapXML } from '../util/parseMapXML';
 import { CollisionSettings } from './CollisionSettings';
+import { TreeView } from './TreeView';
 
 export function PropertiesPanel() {
 	const { mapData, setMapData } = useContext(MapNodesContext);
@@ -82,6 +83,7 @@ export function PropertiesPanel() {
 					onChange={(e) => setShowMapBounds(e.target.checked)}
 				/>
 			</label>
+			<TreeView />
 		</div>
 	);
 }

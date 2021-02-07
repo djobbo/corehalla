@@ -1,0 +1,14 @@
+@import './theme.scss';
+
+.container {
+	.treeNode {
+		cursor: pointer;
+		&:hover {
+			background-color: $gray-0;
+		}
+	}
+
+	.treeNodeContainer {
+		margin-left: 1rem;
+	}
+}

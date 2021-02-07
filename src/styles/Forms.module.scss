@@ -1,12 +1,17 @@
 @import './theme.scss';
 
 .button {
-	background-color: $accent;
+	background-color: $gray-1;
 	color: $light;
 	padding: 0.75rem 1rem;
 	border-radius: 0.25rem;
 	font-size: 1rem;
 	cursor: pointer;
+	outline: none;
+
+	&.selected {
+		background-color: $accent;
+	}
 }
 
 .input {
