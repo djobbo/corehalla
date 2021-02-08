@@ -34,9 +34,7 @@ export default function Code() {
 					></code>
 				</pre>
 			</motion.div>
-			<div className={styles.floatingMapCanvas}>
-				<MapCanvas floating />
-			</div>
+			<MapCanvas floating />
 		</Layout>
 	);
 }

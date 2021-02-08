@@ -27,7 +27,8 @@ export function Timeline() {
 						type='number'
 						value={Math.round(currentFrame)}
 						onChange={(e) => {
-							setCurrentFrame(parseInt(e.target.value));
+							const frame = parseInt(e.target.value);
+							setCurrentFrame(isNaN(frame) ? 0 : frame);
 						}}
 					/>
 				</div>
