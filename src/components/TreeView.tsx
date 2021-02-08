@@ -1,27 +1,7 @@
-import {
-	DetailedHTMLProps,
-	HTMLAttributes,
-	PropsWithChildren,
-	useContext,
-	useState,
-} from 'react';
+import { PropsWithChildren, useContext, useState } from 'react';
 import { MapNodesContext } from '../providers/MapNodesProvider';
 import styles from '../styles/TreeView.module.scss';
 import { CollisionSettings } from './CollisionSettings';
-
-// function TreeNode({
-// 	children,
-// 	onClick,
-// }: DetailedHTMLProps<
-// 	HTMLAttributes<HTMLParagraphElement>,
-// 	HTMLParagraphElement
-// >) {
-// 	return (
-// 		<p onClick={onClick} className={styles.treeNode}>
-// 			{children}
-// 		</p>
-// 	);
-// }
 
 function TreeNode({
 	children,

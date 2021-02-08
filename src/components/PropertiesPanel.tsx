@@ -34,7 +34,6 @@ export function PropertiesPanel() {
 
 	return (
 		<div className={styles.container}>
-			<CollisionSettings />
 			{/* <button
 				className={btnStyles.button}
 				onClick={() => addCollision(getRandomCol())}
