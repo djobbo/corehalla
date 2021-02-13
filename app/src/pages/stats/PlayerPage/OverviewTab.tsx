@@ -36,7 +36,7 @@ export const OverviewTab: FC<Props> = ({ playerStats }: Props) => {
                     name: playerStats.name,
                     id: playerStats.id.toString(), // TODO: id is a number?
                     type: 'player',
-                    thumbURI: `/assets/images/icons/legends/${
+                    thumbURI: `/images/icons/legends/${
                         playerStats.legends.sort((a, b) => b.season.rating - a.season.rating)[0].name
                     }.png`,
                 }}

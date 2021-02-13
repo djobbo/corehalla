@@ -1,0 +1,32 @@
+.container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	z-index: 101;
+	position: relative;
+	border-bottom: 1px solid var(--bg-1);
+	height: 2rem;
+	padding: 1rem;
+	background-color: var(--bg);
+	color: var(--text);
+
+	& > div {
+		display: flex;
+		align-items: center;
+	}
+
+	&.showSearch {
+		padding: 0 1rem 0 0;
+		background-color: var(--text);
+		color: var(--bg);
+	}
+
+	.title {
+		font-size: 1rem;
+		margin-left: 1rem;
+	}
+
+	.logo {
+		height: 1.5rem;
+	}
+}

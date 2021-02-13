@@ -14,6 +14,6 @@
 		"forceConsistentCasingInFileNames": true,
 		"allowSyntheticDefaultImports": true,
 		"importsNotUsedAsValues": "error",
-		"noImplicitAny": false
+		"noImplicitAny": true
 	}
 }

@@ -9,6 +9,7 @@
 		"serve": "node ."
 	},
 	"dependencies": {
+		"@types/node": "^14.14.25",
 		"axios": "^0.21.0",
 		"express": "^4.17.1"
 	},

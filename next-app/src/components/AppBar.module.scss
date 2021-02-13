@@ -1,0 +1,14 @@
+.container {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+
+	.extras {
+		position: sticky;
+		top: 2rem;
+		left: 0;
+		right: 0;
+		height: auto;
+		z-index: 9;
+	}
+}

@@ -70,7 +70,7 @@ export const Navbar: FC<NavbarProps> = ({ title }: NavbarProps) => {
                         </div>
                     ) : (
                         <Link to="/">
-                            <NavbarTitleLogo src="/cdn/images/logo.png" alt="corehalla logo" />
+                            <NavbarTitleLogo src="/images/logo.png" alt="corehalla logo" />
                         </Link>
                     )}
                     <a

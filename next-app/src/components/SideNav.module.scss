@@ -1,0 +1,57 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: stretch;
+	background-color: var(--bg);
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	width: 4rem;
+	z-index: 100;
+	gap: 0.5rem;
+	padding-top: 0.5rem;
+
+	.navItem {
+		width: 3rem;
+		min-height: 3rem;
+		height: 3rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		color: var(--text-2);
+		font-size: 0.75rem;
+		border: 1px solid var(--bg-1);
+		border-radius: 1rem;
+		padding: 0.25rem;
+
+		svg {
+			fill: var(--text-2);
+		}
+
+		img {
+			width: 100%;
+			height: 1.5rem;
+			object-fit: contain;
+			object-position: center;
+		}
+
+		&.active {
+			border-color: var(--accent);
+			color: var(--text);
+
+			svg {
+				fill: var(--text);
+			}
+		}
+	}
+
+	.separator {
+		border-bottom: 1px solid var(--text-2);
+		width: 1.5rem;
+	}
+}

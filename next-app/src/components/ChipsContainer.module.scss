@@ -1,0 +1,31 @@
+.container {
+	font-size: 1rem;
+	display: flex;
+	align-items: center;
+	overflow-x: auto;
+	border-bottom: 1px solid var(--bg-1);
+	background-color: var(--bg);
+	height: 3rem;
+
+	.chip {
+		white-space: nowrap;
+		margin: 0 0.5rem;
+		border-radius: 2rem;
+		border: 1px solid var(--bg-2);
+		background-color: var(--bg-1);
+
+		a {
+			padding: 0.25rem 1rem;
+			display: block;
+			color: var(--text);
+		}
+
+		&.active {
+			background-color: var(--accent);
+			border-color: var(--accent);
+			a {
+				color: var(--bg);
+			}
+		}
+	}
+}

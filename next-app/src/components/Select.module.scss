@@ -1,0 +1,22 @@
+.container {
+	margin: 1rem 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	.title {
+		color: var(--text);
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		margin: 0 0.125rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.options {
+		background-color: #fff;
+		padding: 0.5rem 1rem;
+		border-radius: 0.25rem;
+		font-size: 0.75rem;
+		text-transform: uppercase;
+	}
+}

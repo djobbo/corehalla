@@ -1,0 +1,29 @@
+.container {
+	.bannerImg {
+		width: 100%;
+		height: 6rem;
+		object-fit: cover;
+		object-position: center;
+	}
+
+	.title {
+		color: var(--text);
+		font-size: 1.5rem;
+		font-weight: 600;
+		display: block;
+	}
+
+	.addToFavBtn {
+		text-transform: uppercase;
+		color: var(--accent);
+		font-weight: bold;
+
+		&.isFav {
+			color: var(--text-2);
+		}
+	}
+
+	.description {
+		margin: 1rem 0;
+	}
+}
