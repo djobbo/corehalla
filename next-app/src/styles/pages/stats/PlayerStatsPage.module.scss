@@ -1,0 +1,27 @@
+.alias {
+	margin: 0.25rem 0;
+
+	&::before {
+		color: var(--accent);
+		content: '■ ';
+	}
+}
+
+.teamsContainer {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+	gap: 2rem;
+	margin: 0 1rem;
+}
+
+.legendLevelStats {
+	margin-bottom: 1rem;
+	display: flex;
+
+	.legendIcon {
+		width: 2rem;
+		height: 2rem;
+		margin-right: 0.5rem;
+		border-radius: 0.75rem;
+	}
+}

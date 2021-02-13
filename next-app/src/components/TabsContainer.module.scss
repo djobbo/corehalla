@@ -1,0 +1,28 @@
+.container {
+	display: flex;
+	overflow-x: auto;
+	border-bottom: 1px solid var(--bg-1);
+	background-color: var(--bg);
+	height: 3rem;
+
+	.tab {
+		white-space: nowrap;
+		font-size: 0.75rem;
+		text-transform: uppercase;
+
+		a {
+			height: 100%;
+			color: var(--text-2);
+			display: flex;
+			align-items: center;
+			padding: 0 1.5rem;
+		}
+
+		&.active {
+			a {
+				color: var(--accent);
+				border-bottom: 1px solid var(--accent);
+			}
+		}
+	}
+}

@@ -1,0 +1,19 @@
+.container {
+	display: flex;
+	justify-content: center;
+	overflow-x: auto;
+	.stats {
+		.rankedBanner {
+			width: 8rem;
+			object-fit: contain;
+			margin-right: 1rem;
+			margin-top: 0.5rem;
+		}
+
+		.separator {
+			border-bottom: 1px solid var(--bg-2);
+			margin: 0.25rem;
+			width: 100%;
+		}
+	}
+}

@@ -1,0 +1,50 @@
+.container {
+	padding: 1rem;
+
+	.title {
+		color: var(--text-2);
+		display: flex;
+		justify-content: space-between;
+		text-transform: uppercase;
+		align-items: center;
+		font-size: 0.75rem;
+		cursor: pointer;
+
+		svg {
+			fill: var(--text-2);
+			height: 1rem;
+		}
+
+		&:hover {
+			color: var(--accent);
+			svg {
+				fill: var(--accent);
+			}
+		}
+	}
+	.content {
+		margin-top: 1rem;
+	}
+
+	.icon {
+		display: flex;
+		justify-content: center;
+		margin-top: 1rem;
+		cursor: pointer;
+
+		svg {
+			fill: var(--text-2);
+			width: 1rem;
+		}
+
+		&:hover {
+			svg {
+				fill: var(--accent);
+			}
+		}
+	}
+}
+
+.separator {
+	border-bottom: 1px solid var(--bg-2);
+}

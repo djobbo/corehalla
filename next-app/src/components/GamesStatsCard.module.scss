@@ -1,0 +1,10 @@
+.container {
+	display: flex;
+	justify-content: space-between;
+
+	.stats {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+}

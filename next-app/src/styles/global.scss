@@ -1,0 +1,43 @@
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+html,
+body {
+	font-family: 'Rubik', sans-serif;
+	height: 100%;
+	background-repeat: repeat;
+	background-size: contain;
+	background-image: url('/images/backgrounds/Background.jpg');
+}
+
+a,
+a:visited {
+	text-decoration: none;
+}
+
+ul {
+	list-style: none;
+}
+
+svg {
+	display: inline-block;
+}
+
+#App {
+	height: 100%;
+	min-height: 100%;
+	margin-left: 4rem;
+}
+
+:root {
+	--bg: #212121;
+	--bg-1: #282828;
+	--bg-2: #373737;
+	--text-2: #ababab;
+	--text: #f1f1f1;
+	--accent: #ff732f;
+}
