@@ -67,14 +67,14 @@ export default function PlayerStatsPage({ playerStats }: Props) {
 
 export const getServerSideProps: GetServerSideProps<
 	Props,
-	{ playerID: string }
-> = async ({ params: { playerID } }) => {
+	{ id: string }
+> = async ({ params: { id } }) => {
 	let playerStats: IPlayerStatsFormat;
 
 	if (process.env.NODE_ENV === 'production') {
 		playerStats = await fetchPlayerFormat(
 			process.env.BH_API_KEY,
-			parseInt(playerID)
+			parseInt(id)
 		);
 	} else {
 		playerStats = MockPlayerStats;

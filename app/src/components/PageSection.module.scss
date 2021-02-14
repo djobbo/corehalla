@@ -1,8 +1,10 @@
+@import '@styles/theme.scss';
+
 .container {
 	padding: 1rem;
 
 	.title {
-		color: var(--text-2);
+		color: $text-2;
 		display: flex;
 		justify-content: space-between;
 		text-transform: uppercase;
@@ -11,14 +13,14 @@
 		cursor: pointer;
 
 		svg {
-			fill: var(--text-2);
+			fill: $text-2;
 			height: 1rem;
 		}
 
 		&:hover {
-			color: var(--accent);
+			color: $accent;
 			svg {
-				fill: var(--accent);
+				fill: $accent;
 			}
 		}
 	}
@@ -33,18 +35,18 @@
 		cursor: pointer;
 
 		svg {
-			fill: var(--text-2);
+			fill: $text-2;
 			width: 1rem;
 		}
 
 		&:hover {
 			svg {
-				fill: var(--accent);
+				fill: $accent;
 			}
 		}
 	}
 }
 
 .separator {
-	border-bottom: 1px solid var(--bg-2);
+	border-bottom: 1px solid $bg;
 }

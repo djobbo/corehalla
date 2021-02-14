@@ -1,8 +1,10 @@
+@import '@styles/theme.scss';
+
 .container {
 	display: flex;
 	overflow-x: auto;
-	border-bottom: 1px solid var(--bg-1);
-	background-color: var(--bg);
+	border-bottom: 1px solid $bg-1;
+	background-color: $bg;
 	height: 3rem;
 
 	.tab {
@@ -12,7 +14,7 @@
 
 		a {
 			height: 100%;
-			color: var(--text-2);
+			color: $text-2;
 			display: flex;
 			align-items: center;
 			padding: 0 1.5rem;
@@ -20,8 +22,8 @@
 
 		&.active {
 			a {
-				color: var(--accent);
-				border-bottom: 1px solid var(--accent);
+				color: $accent;
+				border-bottom: 1px solid $accent;
 			}
 		}
 	}

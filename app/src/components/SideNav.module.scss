@@ -1,9 +1,11 @@
+@import '@styles/theme.scss';
+
 .container {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: stretch;
-	background-color: var(--bg);
+	background-color: $bg;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -23,14 +25,14 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		color: var(--text-2);
+		color: $text-2;
 		font-size: 0.75rem;
-		border: 1px solid var(--bg-1);
+		border: 1px solid $bg-1;
 		border-radius: 1rem;
 		padding: 0.25rem;
 
 		svg {
-			fill: var(--text-2);
+			fill: $text-2;
 		}
 
 		img {
@@ -41,17 +43,17 @@
 		}
 
 		&.active {
-			border-color: var(--accent);
-			color: var(--text);
+			border-color: $accent;
+			color: $text;
 
 			svg {
-				fill: var(--text);
+				fill: $text;
 			}
 		}
 	}
 
 	.separator {
-		border-bottom: 1px solid var(--text-2);
+		border-bottom: 1px solid $text-2;
 		width: 1.5rem;
 	}
 }

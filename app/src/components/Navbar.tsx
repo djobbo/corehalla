@@ -32,6 +32,7 @@ export const Navbar: FC<Props> = ({ title }: Props) => {
 									e.preventDefault();
 									router.back();
 								}}
+								className={styles.icon}
 							>
 								{GoBackIcon}
 							</a>
@@ -39,7 +40,6 @@ export const Navbar: FC<Props> = ({ title }: Props) => {
 						</div>
 					) : (
 						<Link href='/'>
-							{/* TODO: add width & height to every single Image */}
 							<a>
 								<img
 									className={styles.logo}
@@ -55,6 +55,7 @@ export const Navbar: FC<Props> = ({ title }: Props) => {
 							e.preventDefault();
 							setShowSearch(true);
 						}}
+						className={styles.icon}
 					>
 						{SearchIcon}
 					</a>

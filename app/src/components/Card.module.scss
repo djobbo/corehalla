@@ -1,32 +1,22 @@
+@import '@styles/theme.scss';
+
 .container {
-	background-color: var(--bg-1);
+	background-color: $bg-1;
 	padding: 1rem;
 	border: 0.5px solid transparent;
 	display: flex;
 	flex-direction: column;
 	transition: 0.1s ease-in all;
-	border-color: var(--bg-2);
+	border-color: $bg;
 	border-radius: 0.5rem;
 
-	// &::before {
-	// 	content: '';
-	// 	background-color: var(--bg-1);
-	// 	position: absolute;
-	// 	top: 0;
-	// 	left: 0;
-	// 	right: 0;
-	// 	bottom: 0;
-	// 	border-radius: 0.25rem;
-	// 	backdrop-filter: blur(8px);
-	// }
-
 	&:hover {
-		border-color: var(--accent);
-		box-shadow: 0 0 2rem var(--bg);
+		border-color: $accent;
+		box-shadow: $card-shadow;
 	}
 
 	.title {
-		color: var(--text-2);
+		color: $text-2;
 		font-size: 0.75rem;
 		text-transform: uppercase;
 		margin: 0 0.125rem;

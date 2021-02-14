@@ -1,31 +1,45 @@
+@import '@styles/theme.scss';
+
 .container {
 	font-size: 1rem;
 	display: flex;
 	align-items: center;
 	overflow-x: auto;
-	border-bottom: 1px solid var(--bg-1);
-	background-color: var(--bg);
+	border-bottom: 1px solid $bg-1;
+	background-color: $bg;
 	height: 3rem;
+	max-width: 1200px;
+	margin: 1rem auto 0 auto;
+	border-radius: 0.5rem;
+	justify-content: flex-start;
+	box-shadow: $card-shadow;
 
 	.chip {
 		white-space: nowrap;
 		margin: 0 0.5rem;
-		border-radius: 2rem;
-		border: 1px solid var(--bg-2);
-		background-color: var(--bg-1);
+		padding: 0.125rem 0.25rem;
+		border-radius: 0.5rem;
+		background-color: $bg-1;
 
 		a {
 			padding: 0.25rem 1rem;
 			display: block;
-			color: var(--text);
+			color: $text;
 		}
 
 		&.active {
-			background-color: var(--accent);
-			border-color: var(--accent);
+			background-color: $accent;
+			border-color: $accent;
 			a {
-				color: var(--bg);
+				color: $bg;
 			}
 		}
 	}
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+
+	-ms-overflow-style: none;
+	scrollbar-width: none;
 }

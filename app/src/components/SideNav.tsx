@@ -47,7 +47,7 @@ const tabs: BottomNavigationTab[] = [
 
 export function SideNav() {
 	const { favorites } = useContext(FavoritesContext);
-	const { pathname } = useRouter();
+	const { pathname, query } = useRouter();
 
 	if (typeof document === 'undefined') return null;
 	return (
@@ -71,7 +71,8 @@ export function SideNav() {
 				<Link href={`/stats/${type}/${id}`} key={`${type}/${id}`}>
 					<a
 						className={`${styles.navItem} ${
-							pathname === '/stats/${type}/${id}'
+							pathname.startsWith(`/stats/${type}`) &&
+							query.id === id
 								? styles.active
 								: ''
 						}`}
