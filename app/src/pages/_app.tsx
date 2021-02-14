@@ -8,28 +8,47 @@ import { PlayerSearchProvider } from '@providers/PlayerSearchProvider';
 import { ThemeProvider } from '@providers/ThemeProvider';
 
 import { ThemeContext, Theme } from '@providers/ThemeProvider';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Head from 'next/head';
+import { Router, useRouter } from 'next/router';
+import { Loader } from '@components/Loader';
+import { Background } from '@components/Background';
 
-// const GlobalStyle = createGlobalStyle<{ theme: string }>`
-//   :root {
-//     ${({ theme }) => theme}
-//     /* background-image: url('/images/backgrounds/Background.jpg'); */
-//   }
-
-//   body {
-//       background-color: $bg;
-//   }
-// `; TODO: Find another way to apply theme (NEXT.JS THEMES)
+// Router.events.on('routeChangeStart', (url) => {
+// 	console.log(`Loading: ${url}`);
+// 	NProgress.start();
+// });
+// Router.events.on('routeChangeComplete', () => NProgress.done());
+// Router.events.on('routeChangeError', () => NProgress.done());
 
 export default function MyApp({ Component, pageProps }: AppProps) {
 	// const { getThemeStr } = useContext(ThemeContext);
+
+	const router = useRouter();
+	const [pageLoading, setPageLoading] = useState(false);
+	useEffect(() => {
+		const handleStart = () => {
+			setPageLoading(true);
+		};
+		const handleComplete = () => {
+			setPageLoading(false);
+		};
+
+		router.events.on('routeChangeStart', handleStart);
+		router.events.on('routeChangeComplete', handleComplete);
+		router.events.on('routeChangeError', handleComplete);
+	}, [router]);
+
+	useEffect(() => {
+		console.log(pageLoading);
+	}, [pageLoading]);
 
 	return (
 		<>
 			<Head>
 				<link rel='icon' type='image/png' href='/images/favicon.png' />
 			</Head>
+			<Background />
 			<ThemeProvider>
 				<FavoritesProvider>
 					<PlayerSearchProvider>
@@ -43,6 +62,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 					</PlayerSearchProvider>
 				</FavoritesProvider>
 			</ThemeProvider>
+			{pageLoading && <Loader />}
 		</>
 	);
 }

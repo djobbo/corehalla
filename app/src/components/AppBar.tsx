@@ -1,10 +1,7 @@
 import styles from './AppBar.module.scss';
 // Library imports
-import { useState, ReactElement } from 'react';
-import { motion, Variants } from 'framer-motion';
-
-// Custom Hooks imports
-import { useScrollPosition } from '@hooks/useScrollPosition';
+import { useState } from 'react';
+import { motion, useViewportScroll, Variants } from 'framer-motion';
 
 // Components imports
 import { IChip, ChipsContainer } from './ChipsContainer';
@@ -34,29 +31,31 @@ export function AppBar<T extends string, U extends string>({
 	tabs,
 	chips,
 }: Props<T, U>) {
+	const { scrollY } = useViewportScroll();
 	const [hideOnScroll, setHideOnScroll] = useState(false);
 
-	useScrollPosition(
-		({ currScrollPos, prevScrollPos }) => {
-			const isShow = currScrollPos > prevScrollPos;
-			if (isShow !== hideOnScroll) setHideOnScroll(isShow);
-		},
-		[hideOnScroll]
-	);
+	scrollY.onChange(() => {
+		const isShow = scrollY.getVelocity() > 0;
+		if (isShow !== hideOnScroll) setHideOnScroll(isShow);
+	});
 
 	return (
 		<>
 			<div className={styles.container}>
 				<Navbar title={title} />
-			</div>
-			<div className={styles.extras}>
-				<motion.div
-					animate={hideOnScroll ? 'out' : 'in'}
-					variants={extrasContainerVariants}
+				<div
+					className={`${styles.extras} ${
+						hideOnScroll ? styles.hidden : ''
+					}`}
 				>
-					{tabs && <TabsContainer tabs={tabs} />}
-					{chips && <ChipsContainer chips={chips} />}
-				</motion.div>
+					<motion.div
+						animate={hideOnScroll ? 'out' : 'in'}
+						variants={extrasContainerVariants}
+					>
+						{tabs && <TabsContainer tabs={tabs} />}
+						{chips && <ChipsContainer chips={chips} />}
+					</motion.div>
+				</div>
 			</div>
 		</>
 	);

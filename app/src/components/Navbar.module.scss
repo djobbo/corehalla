@@ -11,6 +11,7 @@
 	padding: 1rem;
 	background-color: $bg;
 	color: $text;
+	pointer-events: initial;
 
 	& > div {
 		display: flex;

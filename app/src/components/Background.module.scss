@@ -1,0 +1,26 @@
+@import '@styles/theme.scss';
+
+.container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: auto;
+	z-index: 1;
+	#bg {
+		fill: $bg;
+		opacity: 0.32;
+	}
+
+	#bg1 {
+		fill: $accent;
+		opacity: 0.08;
+	}
+
+	#bg_accent {
+		fill: none;
+		stroke: $accent;
+		stroke-width: 1px;
+		opacity: 0.32;
+	}
+}

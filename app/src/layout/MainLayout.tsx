@@ -1,3 +1,4 @@
+import styles from '@styles/Layout.module.scss';
 // Library imports
 import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 
@@ -67,7 +68,7 @@ export function MainLayout<
 					title={title}
 				/>
 				<Page>
-					<main>
+					<main className={styles.container}>
 						{(Object.entries(tabs) as [
 							Tab,
 							ITab<keyof Tabs[Tab]['chips'] & string>

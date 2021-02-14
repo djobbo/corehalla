@@ -1,11 +1,15 @@
 @import '@styles/theme.scss';
 
 .container {
+	padding-top: 1rem;
 	.bannerImg {
 		width: 100%;
 		height: 6rem;
 		object-fit: cover;
 		object-position: center;
+		margin-bottom: 1rem;
+		border-radius: 0.5rem;
+		box-shadow: $card-shadow;
 	}
 
 	.title {
