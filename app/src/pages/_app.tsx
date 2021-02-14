@@ -18,7 +18,7 @@ import Head from 'next/head';
 //   }
 
 //   body {
-//       background-color: var(--bg);
+//       background-color: $bg;
 //   }
 // `; TODO: Find another way to apply theme (NEXT.JS THEMES)
 

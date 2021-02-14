@@ -1,8 +1,10 @@
+@import '@styles/theme.scss';
+
 .alias {
 	margin: 0.25rem 0;
 
 	&::before {
-		color: var(--accent);
+		color: $accent;
 		content: '■ ';
 	}
 }

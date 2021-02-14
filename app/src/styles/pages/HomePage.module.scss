@@ -1,3 +1,4 @@
+@import '@styles/theme.scss';
 @import '@styles/devices.scss';
 
 .landingNavbar {
@@ -16,14 +17,14 @@
 	}
 
 	&.hasScrolled {
-		background-color: var(--bg);
+		background-color: $bg;
 		padding: 0.5rem 2rem;
 	}
 
 	.navCTA {
 		padding: 0.25rem 0.75rem;
-		background-color: var(--accent);
-		color: var(--text);
+		background-color: $accent;
+		color: $text;
 		border-radius: 2rem;
 	}
 
@@ -40,7 +41,7 @@
 
 			& > a {
 				margin-left: 2rem;
-				color: var(--text);
+				color: $text;
 			}
 		}
 	}
@@ -62,14 +63,14 @@
 
 	.title {
 		font-size: 3rem;
-		color: var(--text);
+		color: $text;
 		font-weight: normal;
 		margin-bottom: 1rem;
 		max-width: 540px;
 	}
 
 	.desc {
-		color: var(--text-2);
+		color: $text-2;
 		font-size: 1.125rem;
 		line-height: 1.5rem;
 		margin-bottom: 2rem;
@@ -80,8 +81,8 @@
 	}
 
 	.searchInput {
-		background-color: var(--text);
-		color: var(--bg);
+		background-color: $text;
+		color: $bg;
 		border-radius: 1rem;
 		height: 2rem;
 		outline: none;

@@ -18,7 +18,7 @@ import { useScrollPosition } from '@hooks/useScrollPosition';
 //     text-align: center;
 //     padding: 2rem;
 //     margin: 1rem;
-//     border: 1px solid var(--text-2);
+//     border: 1px solid $text-2;
 // `;
 
 export default function HomePage() {

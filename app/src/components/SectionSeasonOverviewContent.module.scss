@@ -1,3 +1,5 @@
+@import '@styles/theme.scss';
+
 .container {
 	display: flex;
 	justify-content: center;
@@ -11,7 +13,7 @@
 		}
 
 		.separator {
-			border-bottom: 1px solid var(--bg-2);
+			border-bottom: 1px solid $bg;
 			margin: 0.25rem;
 			width: 100%;
 		}

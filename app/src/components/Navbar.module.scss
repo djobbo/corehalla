@@ -1,14 +1,16 @@
+@import '@styles/theme.scss';
+
 .container {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	z-index: 101;
 	position: relative;
-	border-bottom: 1px solid var(--bg-1);
+	border-bottom: 1px solid $bg-1;
 	height: 2rem;
 	padding: 1rem;
-	background-color: var(--bg);
-	color: var(--text);
+	background-color: $bg;
+	color: $text;
 
 	& > div {
 		display: flex;
@@ -17,8 +19,8 @@
 
 	&.showSearch {
 		padding: 0 1rem 0 0;
-		background-color: var(--text);
-		color: var(--bg);
+		background-color: $text;
+		color: $bg;
 	}
 
 	.title {
@@ -28,5 +30,17 @@
 
 	.logo {
 		height: 1.5rem;
+	}
+
+	.icon {
+		width: 1rem;
+		height: 1rem;
+		color: $text;
+
+		svg {
+			fill: none;
+			stroke-width: 0.5rem;
+			border: currentColor;
+		}
 	}
 }

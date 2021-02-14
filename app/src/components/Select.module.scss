@@ -1,3 +1,5 @@
+@import '@styles/theme.scss';
+
 .container {
 	margin: 1rem 0;
 	display: flex;
@@ -5,7 +7,7 @@
 	align-items: center;
 
 	.title {
-		color: var(--text);
+		color: $text;
 		font-size: 0.75rem;
 		text-transform: uppercase;
 		margin: 0 0.125rem;
@@ -13,10 +15,13 @@
 	}
 
 	.options {
-		background-color: #fff;
+		background-color: $bg;
 		padding: 0.5rem 1rem;
 		border-radius: 0.25rem;
 		font-size: 0.75rem;
 		text-transform: uppercase;
+		box-shadow: $card-shadow;
+		color: $text;
+		cursor: pointer;
 	}
 }

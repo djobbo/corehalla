@@ -1,6 +1,8 @@
+@import '@styles/theme.scss';
+
 .teammateName {
 	font-size: 1rem;
-	color: var(--text);
+	color: $text;
 	display: flex;
 	align-items: center;
 	margin-bottom: 0.5rem;
@@ -9,7 +11,7 @@
 	font-weight: bold;
 
 	&:hover {
-		color: var(--accent);
+		color: $accent;
 	}
 
 	.regionIcon {
