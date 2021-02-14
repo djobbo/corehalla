@@ -11,6 +11,7 @@
 	align-items: center;
 	padding: 2rem;
 	transition: 0.25s all ease;
+	z-index: 50;
 
 	& > ul {
 		display: none;
@@ -47,64 +48,85 @@
 	}
 }
 
-.landingContent {
+.landingSections {
+	position: relative;
 	display: flex;
-	justify-content: flex-start;
-	align-items: center;
-	width: 100%;
-	height: 100vh;
-	padding: 0 3rem;
-	z-index: 10;
-	max-width: 1200px;
+	flex-direction: column;
+	gap: 8rem;
 
-	@media only screen and (min-width: $size_desktop) {
-		align-items: space-between;
-	}
-
-	.title {
-		font-size: 3rem;
-		color: $text;
-		font-weight: normal;
-		margin-bottom: 1rem;
-		max-width: 540px;
-	}
-
-	.desc {
-		color: $text-2;
-		font-size: 1.125rem;
-		line-height: 1.5rem;
-		margin-bottom: 2rem;
+	.landingContent {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		width: 100%;
+		height: 100vh;
+		padding: 0 3rem;
+		z-index: 10;
+		max-width: 1200px;
+		gap: 2rem;
 
 		@media only screen and (min-width: $size_desktop) {
-			max-width: 540px;
+			align-items: space-between;
+		}
+
+		.text {
+			flex: 1;
+			.title {
+				font-size: 3rem;
+				color: $text;
+				font-weight: normal;
+				margin-bottom: 1rem;
+				max-width: 540px;
+			}
+
+			.desc {
+				color: $text-2;
+				font-size: 1.125rem;
+				line-height: 1.5rem;
+				margin-bottom: 2rem;
+
+				@media only screen and (min-width: $size_desktop) {
+					max-width: 540px;
+				}
+			}
+
+			.searchInput {
+				background-color: $text;
+				color: $bg;
+				border-radius: 1rem;
+				height: 2rem;
+				outline: none;
+				padding: 0 1rem;
+				font-size: 1rem;
+			}
+		}
+
+		.landingImg {
+			flex: 1;
+			img {
+				width: 100%;
+				max-height: 24rem;
+				object-fit: contain;
+			}
+		}
+
+		&.right {
+			flex-direction: row-reverse;
 		}
 	}
 
-	.searchInput {
-		background-color: $text;
-		color: $bg;
-		border-radius: 1rem;
-		height: 2rem;
-		outline: none;
-		padding: 0 1rem;
-		font-size: 1rem;
-	}
+	.mainContent {
+		.blips {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+			justify-items: center;
+			padding: 2rem;
+			gap: 4rem;
+			color: $text-2;
 
-	.landingImg {
-		margin-left: 2rem;
-	}
-}
-
-.mainContent {
-	.blips {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
-		justify-items: center;
-		padding: 2rem;
-		gap: 4rem;
-
-		.blip {
-			max-width: 8rem;
+			.blip {
+				max-width: 8rem;
+			}
 		}
 	}
 }

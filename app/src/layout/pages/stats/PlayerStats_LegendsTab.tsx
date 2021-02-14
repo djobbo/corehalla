@@ -9,10 +9,6 @@ import { SectionOverallStatsContent } from '@components/SectionOverallStatsConte
 import { SectionSeasonOverviewContent } from '@components/SectionSeasonOverviewContent';
 import { StatDesc, StatSmall } from '@components/TextStyles';
 
-interface Props {
-	playerStats: IPlayerStatsFormat;
-}
-
 type LegendSort =
 	| 'default'
 	| 'level'

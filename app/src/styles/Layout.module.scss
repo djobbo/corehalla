@@ -1,0 +1,9 @@
+@import '@styles/devices.scss';
+
+.main {
+	padding: 0 1rem;
+
+	@media only screen and (min-width: $size_desktop) {
+		padding: 0;
+	}
+}

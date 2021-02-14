@@ -1,3 +1,4 @@
+@import '@styles/devices.scss';
 @import '@styles/theme.scss';
 
 .container {
@@ -6,6 +7,11 @@
 	border-bottom: 1px solid $bg-1;
 	background-color: $bg;
 	height: 3rem;
+	justify-content: flex-start;
+
+	@media only screen and (min-width: $size_desktop) {
+		justify-content: center;
+	}
 
 	.tab {
 		white-space: nowrap;
@@ -27,4 +33,11 @@
 			}
 		}
 	}
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+
+	-ms-overflow-style: none;
+	scrollbar-width: none;
 }
