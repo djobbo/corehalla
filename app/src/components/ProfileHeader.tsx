@@ -1,78 +1,62 @@
+import styles from './ProfileHeader.module.scss';
 // Library imports
-import React, { FC, PropsWithChildren, useContext } from 'react';
-import styled from 'styled-components';
+import { PropsWithChildren, useContext, useEffect, useState } from 'react';
 import { FavoritesContext, IFavorite } from '../providers/FavoritesProvider';
 
 interface Props {
-    bannerURI: string;
-    title: string;
-    favorite: IFavorite;
+	bannerURI: string;
+	title: string;
+	favorite: IFavorite;
 }
 
-const BannerImg = styled.img`
-    width: 100%;
-    height: 6rem;
-    object-fit: cover;
-    object-position: center;
-`;
+export function ProfileHeader({
+	bannerURI,
+	title,
+	favorite,
+	children,
+}: PropsWithChildren<Props>) {
+	const { isFavorite, addFavorite, removeFavorite, updatedAt } = useContext(
+		FavoritesContext
+	);
+	const [isFav, setIsFav] = useState(isFavorite(favorite));
 
-const Title = styled.h1`
-    color: var(--text);
-    font-size: 1.5rem;
-    font-weight: 600;
-    display: block;
-`;
+	useEffect(() => {
+		setIsFav(isFavorite(favorite));
+	}, [updatedAt]);
 
-const AddToFavoritesBtn = styled.a<{ isFav?: boolean }>`
-    text-transform: uppercase;
-    color: var(--accent);
-    font-weight: bold;
+	return (
+		<div className={styles.container}>
+			<img
+				className={styles.bannerImg}
+				src={bannerURI}
+				alt={`${title}_banner`}
+			/>
+			<h1 className={styles.title}>{title}</h1>
 
-    ${({ isFav }) =>
-        isFav &&
-        `
-        color: var(--text-2);
-    `}
-`;
-
-const DescriptionContainer = styled.div`
-    margin: 1rem 0;
-`;
-
-export const ProfileHeader: FC<PropsWithChildren<Props>> = ({
-    bannerURI,
-    title,
-    favorite,
-    children,
-}: PropsWithChildren<Props>) => {
-    const { isFavorite, addFavorite, removeFavorite } = useContext(FavoritesContext);
-
-    return (
-        <div>
-            <BannerImg src={bannerURI} alt={`${title}_banner`} />
-            <Title>{title}</Title>
-
-            {isFavorite(favorite) ? (
-                <AddToFavoritesBtn
-                    href="#"
-                    onClick={() => {
-                        removeFavorite(favorite);
-                    }}
-                    isFav={true}
-                >
-                    Remove Favorite
-                </AddToFavoritesBtn>
-            ) : (
-                <AddToFavoritesBtn
-                    href="#"
-                    onClick={() => {
-                        addFavorite(favorite);
-                    }}
-                >
-                    Add Favorite
-                </AddToFavoritesBtn>
-            )}
-            <DescriptionContainer>{children}</DescriptionContainer>
-        </div>
-    );
-};
+			{isFav ? (
+				<a
+					className={`${styles.addToFavBtn} ${styles.isFav}`}
+					href='#'
+					onClick={(e) => {
+						e.preventDefault();
+						removeFavorite(favorite);
+					}}
+				>
+					Remove Favorite
+				</a>
+			) : (
+				<a
+					className={styles.addToFavBtn}
+					href='#'
+					onClick={(e) => {
+						e.preventDefault();
+						addFavorite(favorite);
+					}}
+				>
+					Add Favorite
+				</a>
+			)}
+			<div className={styles.description}>{children}</div>
+		</div>
+	);
+}

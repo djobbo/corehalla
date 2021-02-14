@@ -1,44 +1,42 @@
 import React, { useState, createContext, FC } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { useDebounce } from '../hooks/useDebounce';
 import type { RankedRegion } from 'corehalla';
 
 interface Props {
-    children: React.ReactNode;
+	children: React.ReactNode;
 }
 
 interface IPlayerSearchContext {
-    playerSearch: string;
-    setPlayerSearch: React.Dispatch<React.SetStateAction<string>>;
+	playerSearch: string;
+	setPlayerSearch: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const PlayerSearchContext = createContext<IPlayerSearchContext>({
-    playerSearch: '',
-    setPlayerSearch: () => {},
+	playerSearch: '',
+	setPlayerSearch: () => {},
 });
 
 export const PlayerSearchProvider: FC<Props> = ({ children }: Props) => {
-    const { bracket = '1v1', region = 'all', page = '1' } = useParams<{
-        bracket: string;
-        region: RankedRegion;
-        page: string;
-    }>();
+	const router = useRouter();
+	const { bracket = '1v1', region = 'all', page = '1' } = router.query;
 
-    const [playerSearch, setPlayerSearch] = useState('');
+	const [playerSearch, setPlayerSearch] = useState('');
 
-    const history = useHistory();
+	useDebounce(
+		(debouncedSearch) => {
+			router.push({
+				pathname: `/rankings/${bracket}/${region}/${page}`,
+				search: `?p=${debouncedSearch}`,
+			});
+		},
+		1000,
+		playerSearch
+	);
 
-    useDebounce(
-        (debouncedSearch) => {
-            history.push(`/rankings/${bracket || '1v1'}/${region || 'all'}/${page || '1'}?p=${debouncedSearch}`);
-        },
-        1000,
-        playerSearch,
-    );
-
-    return (
-        <PlayerSearchContext.Provider value={{ playerSearch, setPlayerSearch }}>
-            {children}
-        </PlayerSearchContext.Provider>
-    );
+	return (
+		<PlayerSearchContext.Provider value={{ playerSearch, setPlayerSearch }}>
+			{children}
+		</PlayerSearchContext.Provider>
+	);
 };
