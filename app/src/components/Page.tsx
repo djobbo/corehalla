@@ -1,48 +1,40 @@
+import styles from './Page.module.scss';
 // Library imports
-import React, { FC, useEffect, ReactNode } from 'react';
-import styled from 'styled-components';
+import { useEffect, ReactNode } from 'react';
 import { motion } from 'framer-motion';
 
 interface Props {
-    title?: string;
-    children: ReactNode;
+	title?: string;
+	children: ReactNode;
 }
 
 const pageTransition = {
-    in: {
-        opacity: 1,
-    },
-    out: {
-        opacity: 0,
-    },
+	in: {
+		opacity: 1,
+	},
+	out: {
+		opacity: 0,
+	},
 };
 
-export const Page: FC<Props> = ({ children, title }: Props) => {
-    useEffect(() => {
-        if (!title) return;
-        document.title = title;
-    }, []);
+// TODO: Remove this file
 
-    return (
-        <PageContentWrapper
-            initial="out"
-            animate="in"
-            exit="out"
-            variants={pageTransition}
-            transition={{ duration: 0.2 }}
-        >
-            <div>{children}</div>
-        </PageContentWrapper>
-    );
-};
+export function Page({ children, title }: Props) {
+	useEffect(() => {
+		if (!title) return;
+		document.title = title;
+	}, []);
 
-const PageContentWrapper = styled(motion.div)`
-    width: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    & > div {
-        margin: 0 auto;
-        max-width: 1200px;
-        width: 100%;
-    }
-`;
+	return (
+		<motion.div
+			className={styles.container}
+			initial='out'
+			animate='in'
+			exit='out'
+			variants={pageTransition}
+			transition={{ duration: 0.2 }}
+		>
+			<div>{children}</div>
+		</motion.div>
+	);
+}
