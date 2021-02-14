@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { StatSmall, StatDesc } from '@components/TextStyles';
 
 // Components imports
-import { LandingLayout } from '@layout';
+import { LandingLayout } from '@layout/LandingLayout';
 import { PlayerSearchContext } from '@providers/PlayerSearchProvider';
 import { useScrollPosition } from '@hooks/useScrollPosition';
 

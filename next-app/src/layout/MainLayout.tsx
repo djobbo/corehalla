@@ -1,5 +1,5 @@
 // Library imports
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 
 // Components imports
 import { AppBar } from '@components/AppBar';
@@ -9,9 +9,10 @@ import { useTabs } from '@hooks/useTabs';
 
 interface ITab<Chip extends string> {
 	displayName?: string;
-	chips: { [k in Chip]: string };
+	chips?: { [k in Chip]: string };
 	defaultChip?: Chip;
 	link?: string;
+	component: (active: boolean, activeChip?: Chip) => ReactNode;
 }
 
 interface Props<
@@ -21,18 +22,12 @@ interface Props<
 	tabs: Tabs;
 	title: string;
 	loading?: boolean;
-	onActiveChipChanged?: (chip: keyof Tabs[Tab]['chips'] & string) => void;
 }
 
 export function MainLayout<
 	Tabs extends { [k in Tab]: ITab<keyof Tabs[k]['chips'] & string> },
 	Tab extends keyof Tabs & string
->({
-	tabs,
-	title,
-	children,
-	onActiveChipChanged,
-}: PropsWithChildren<Props<Tabs, Tab>>) {
+>({ tabs, title }: PropsWithChildren<Props<Tabs, Tab>>) {
 	const [activeTab] = useTabs(
 		Object.keys(tabs) as Tab[],
 		Object.keys(tabs)[0] as Tab
@@ -43,8 +38,8 @@ export function MainLayout<
 	);
 
 	useEffect(() => {
-		onActiveChipChanged?.(activeChip);
-	}, [activeChip]);
+		setActiveChip(tabs[activeTab].defaultChip ?? null);
+	}, [activeTab]);
 
 	return (
 		<>
@@ -58,18 +53,28 @@ export function MainLayout<
 						link: link || `#${tabName}`,
 						active: activeTab === tabName,
 					}))}
-					chips={(Object.entries(tabs[activeTab]?.chips) as [
-						keyof Tabs[Tab]['chips'] & string,
-						string
-					][])?.map(([chipName, displayName]) => ({
-						displayName: displayName || chipName,
-						active: activeChip === chipName,
-						action: () => setActiveChip(chipName),
-					}))}
+					chips={
+						tabs[activeTab]?.chips &&
+						(Object.entries(tabs[activeTab]?.chips) as [
+							keyof Tabs[Tab]['chips'] & string,
+							string
+						][])?.map(([chipName, displayName]) => ({
+							displayName: displayName || chipName,
+							active: activeChip === chipName,
+							action: () => setActiveChip(chipName),
+						}))
+					}
 					title={title}
 				/>
 				<Page>
-					<main>{children}</main>
+					<main>
+						{(Object.entries(tabs) as [
+							Tab,
+							ITab<keyof Tabs[Tab]['chips'] & string>
+						][]).map(([tabName, { component }]) =>
+							component(tabName === activeTab, activeChip)
+						)}
+					</main>
 				</Page>
 			</div>
 			<SideNav />

@@ -1,11 +1,6 @@
 import styles from '@styles/pages/stats/PlayerStatsPage.module.scss';
 import Head from 'next/head';
-import { GetServerSideProps } from 'next';
 import type { I2v2TeamFormat, IPlayerStatsFormat } from 'corehalla';
-import {
-	PlayerStatsLayout,
-	getPlayerStatsProps,
-} from '@layout/pages/stats/PlayerStatsLayout';
 import { SectionSeparator, PageSection } from '@components/PageSection';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
@@ -39,7 +34,9 @@ const getSortedProp = (state: TeamsSort, teamStats: I2v2TeamFormat) => {
 	}
 };
 
-export default function PlayerPage({ playerStats }: Props) {
+export const TeamsTab = (playerStats: IPlayerStatsFormat) => (
+	active: boolean
+) => {
 	const {
 		season: { teams },
 	} = playerStats;
@@ -72,70 +69,59 @@ export default function PlayerPage({ playerStats }: Props) {
 			winrateAcc: 0,
 		}
 	);
-	return (
+	return active ? (
 		<>
-			<Head>
-				<title>{playerStats.name} Stats • Corehalla</title>
-			</Head>
-			<PlayerStatsLayout playerStats={playerStats} activeTab='teams'>
-				{teams.length > 0 ? (
-					<>
-						<PageSection title='2v2 overview' initFoldState={true}>
-							<GamesStatsCard
-								{...totalTeamsStats}
-								losses={
-									totalTeamsStats.games - totalTeamsStats.wins
-								}
-								winrate={
-									(totalTeamsStats.winrateAcc /
-										teams.length) *
-									100
-								}
-							/>
-							<MiscStats stats={[]} />
-						</PageSection>
-						<SectionSeparator />
-						<Select<TeamsSort>
-							action={setSort}
-							title='Sort by'
-							options={[
-								{ name: 'Rating', value: 'default' },
-								{ name: 'Peak Rating', value: 'peak' },
-								{ name: 'Games', value: 'games' },
-								{ name: 'Wins', value: 'wins' },
-								{ name: 'Losses', value: 'losses' },
-								{ name: 'Winrate', value: 'winrate' },
-							]}
+			{teams.length > 0 ? (
+				<>
+					<PageSection title='2v2 overview' initFoldState={true}>
+						<GamesStatsCard
+							{...totalTeamsStats}
+							losses={
+								totalTeamsStats.games - totalTeamsStats.wins
+							}
+							winrate={
+								(totalTeamsStats.winrateAcc / teams.length) *
+								100
+							}
 						/>
-						<PageSection title='teams' initFoldState={true}>
-							<div className={styles.teamsContainer}>
-								{teams
-									.sort((a, b) =>
-										getSortedProp(sort, a) <
-										getSortedProp(sort, b)
-											? 1
-											: -1
-									)
-									.map((team) => (
-										<motion.div
-											layout
-											key={team.teammate.id}
-										>
-											<TeamCard team={team} />
-										</motion.div>
-									))}
-							</div>
-						</PageSection>
-					</>
-				) : (
-					`No teams`
-				)}
-			</PlayerStatsLayout>
+						<MiscStats stats={[]} />
+					</PageSection>
+					<SectionSeparator />
+					<Select<TeamsSort>
+						action={setSort}
+						title='Sort by'
+						options={[
+							{ name: 'Rating', value: 'default' },
+							{ name: 'Peak Rating', value: 'peak' },
+							{ name: 'Games', value: 'games' },
+							{ name: 'Wins', value: 'wins' },
+							{ name: 'Losses', value: 'losses' },
+							{ name: 'Winrate', value: 'winrate' },
+						]}
+					/>
+					<PageSection title='teams' initFoldState={true}>
+						<div className={styles.teamsContainer}>
+							{teams
+								.sort((a, b) =>
+									getSortedProp(sort, a) <
+									getSortedProp(sort, b)
+										? 1
+										: -1
+								)
+								.map((team) => (
+									<motion.div
+										layoutId={`team_${team.teammate.id}`}
+										key={team.teammate.id}
+									>
+										<TeamCard team={team} />
+									</motion.div>
+								))}
+						</div>
+					</PageSection>
+				</>
+			) : (
+				`No teams`
+			)}
 		</>
-	);
-}
-
-export const getServerSideProps: GetServerSideProps<
-	Props,
-	{ playerID }
-> = getPlayerStatsProps('teams');
+	) : null;
+};

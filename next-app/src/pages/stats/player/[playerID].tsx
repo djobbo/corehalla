@@ -1,32 +1,18 @@
 import Head from 'next/head';
-import type { IPlayerStatsFormat, Weapon } from 'corehalla';
-
-import { MainLayout } from '@layout';
-
 import { GetServerSideProps } from 'next';
+import type { IPlayerStatsFormat } from 'corehalla';
+import { OverviewTab } from '@layout/pages/stats/PlayerStats_OverviewTab';
+import { MainLayout } from '@layout/MainLayout';
+import { LegendsTab } from '@layout/pages/stats/PlayerStats_LegendsTab';
+import { TeamsTab } from '@layout/pages/stats/PlayerStats_TeamsTab';
 import { fetchPlayerFormat } from '@api';
 import { MockPlayerStats } from '@api/mocks/PlayerStats';
-import { PropsWithChildren } from 'react';
 
-export type PlayerStatsTab = 'overview' | 'teams' | 'legends' | 'weapons';
-
-export interface IPlayerStatsTabs {
-	overview: null;
-	teams: null;
-	legends: Weapon | 'all';
-	weapons: null;
-}
-
-export interface PlayerStatsProps<T extends PlayerStatsTab> {
+interface Props {
 	playerStats: IPlayerStatsFormat;
-	onActiveChipChanged?: (chip: IPlayerStatsTabs[T]) => void;
 }
 
-export function PlayerStatsLayout<XD extends PlayerStatsTab>({
-	playerStats,
-	children,
-	onActiveChipChanged,
-}: PropsWithChildren<PlayerStatsProps<XD>>) {
+export default function PlayerStatsPage({ playerStats }: Props) {
 	return (
 		<>
 			<Head>
@@ -38,12 +24,12 @@ export function PlayerStatsLayout<XD extends PlayerStatsTab>({
 					overview: {
 						displayName: 'Overview',
 						link: `/stats/player/${playerStats.id}`,
-						chips: {},
+						component: OverviewTab(playerStats),
 					},
 					teams: {
 						displayName: 'Teams',
-						link: `/stats/player/${playerStats.id}/teams`,
-						chips: {},
+						link: `/stats/player/${playerStats.id}?tab=teams`,
+						component: TeamsTab(playerStats),
 					},
 					legends: {
 						displayName: 'Legends',
@@ -64,26 +50,24 @@ export function PlayerStatsLayout<XD extends PlayerStatsTab>({
 							Greatsword: null,
 						},
 						defaultChip: 'all',
-						link: `/stats/player/${playerStats.id}/legends`,
+						link: `/stats/player/${playerStats.id}?tab=legends`,
+						component: LegendsTab(playerStats),
 					},
-					weapons: {
-						displayName: 'Weapons',
-						link: `/stats/player/${playerStats.id}/weapons`,
-						chips: {},
-					},
+					// TODO: Add Weapons Tab
+					// weapons: {
+					// 	displayName: 'Weapons',
+					// 	link: `/stats/player/${playerStats.id}?tab=weapons`,
+					// 	component: OverviewTab(playerStats),
+					// },
 				}}
-				// onActiveChipChanged={(e) => {}}
-				onActiveChipChanged={onActiveChipChanged}
-			>
-				{children}
-			</MainLayout>
+			/>
 		</>
 	);
 }
 
-export const getPlayerStatsProps: GetServerSideProps<
-	PlayerStatsProps<PlayerStatsTab>,
-	{ playerID }
+export const getServerSideProps: GetServerSideProps<
+	Props,
+	{ playerID: string }
 > = async ({ params: { playerID } }) => {
 	let playerStats: IPlayerStatsFormat;
 
