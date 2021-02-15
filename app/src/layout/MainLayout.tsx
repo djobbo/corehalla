@@ -7,6 +7,7 @@ import { AppBar } from '@components/AppBar';
 import { SideNav } from '@components/SideNav';
 import { Page } from '@components/Page';
 import { useTabs } from '@hooks/useTabs';
+import { SideNavLayout } from './SideNavLayout';
 
 interface ITab<Chip extends string, Sort extends string> {
 	displayName: string;
@@ -55,56 +56,47 @@ export function MainLayout<
 	}, [activeTab]);
 
 	return (
-		<>
-			<div>
-				<AppBar
-					tabs={(Object.entries(tabs) as [
-						TabName,
-						ITab<Tabs[TabName][0], Tabs[TabName][1]>
-					][]).map(([tabName, { displayName, link }]) => ({
-						displayName: displayName || tabName,
-						link: link || `#${tabName}`,
-						active: activeTab === tabName,
-					}))}
-					chips={
-						tabs[activeTab]?.chips &&
-						(Object.entries(tabs[activeTab]?.chips) as [
-							Tabs[TabName][0],
-							string
-						][])?.map(([chipName, displayName]) => ({
-							displayName: displayName || chipName,
-							active: activeChip === chipName,
-							action: () => setActiveChip(chipName),
-						}))
-					}
-					sort={
-						tabs[activeTab].sortOptions
-							? {
-									options: Object.entries(
-										tabs[activeTab].sortOptions
-									) as [Tabs[TabName][1] & string, string][],
-									action: setActiveSort,
-							  }
-							: null
-					}
-					title={title}
-				/>
-				<Page>
-					<main className={styles.container}>
-						{(Object.entries(tabs) as [
-							TabName,
-							ITab<Tabs[TabName][0], Tabs[TabName][1]>
-						][]).map(([tabName, { component }]) =>
-							component(
-								tabName === activeTab,
-								activeChip,
-								activeSort
-							)
-						)}
-					</main>
-				</Page>
-			</div>
-			<SideNav />
-		</>
+		<SideNavLayout>
+			<AppBar
+				tabs={(Object.entries(tabs) as [
+					TabName,
+					ITab<Tabs[TabName][0], Tabs[TabName][1]>
+				][]).map(([tabName, { displayName, link }]) => ({
+					displayName: displayName || tabName,
+					link: link || `#${tabName}`,
+					active: activeTab === tabName,
+				}))}
+				chips={
+					tabs[activeTab]?.chips &&
+					(Object.entries(tabs[activeTab]?.chips) as [
+						Tabs[TabName][0],
+						string
+					][])?.map(([chipName, displayName]) => ({
+						displayName: displayName || chipName,
+						active: activeChip === chipName,
+						action: () => setActiveChip(chipName),
+					}))
+				}
+				sort={
+					tabs[activeTab].sortOptions
+						? {
+								options: Object.entries(
+									tabs[activeTab].sortOptions
+								) as [Tabs[TabName][1] & string, string][],
+								action: setActiveSort,
+						  }
+						: null
+				}
+				title={title}
+			/>
+			<main className={styles.container}>
+				{(Object.entries(tabs) as [
+					TabName,
+					ITab<Tabs[TabName][0], Tabs[TabName][1]>
+				][]).map(([tabName, { component }]) =>
+					component(tabName === activeTab, activeChip, activeSort)
+				)}
+			</main>
+		</SideNavLayout>
 	);
 }

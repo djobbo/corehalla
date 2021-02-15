@@ -32,7 +32,10 @@
 		padding: 0.25rem;
 
 		svg {
-			fill: $text-2;
+			fill: none;
+			stroke: $text-2;
+			stroke-width: 0.125rem;
+			width: 2rem;
 		}
 
 		img {
@@ -47,7 +50,7 @@
 			color: $text;
 
 			svg {
-				fill: $text;
+				stroke: $text;
 			}
 		}
 	}
