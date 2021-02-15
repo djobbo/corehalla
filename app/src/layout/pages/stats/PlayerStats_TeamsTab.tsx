@@ -71,47 +71,50 @@ export const TeamsTab = (playerStats: IPlayerStatsFormat) => (
 			winrateAcc: 0,
 		}
 	);
-	return active ? (
-		<>
-			{teams.length > 0 ? (
-				<>
-					<PageSection title='2v2 overview' initFoldState={true}>
-						<GamesStatsCard
-							{...totalTeamsStats}
-							losses={
-								totalTeamsStats.games - totalTeamsStats.wins
-							}
-							winrate={
-								(totalTeamsStats.winrateAcc / teams.length) *
-								100
-							}
-						/>
-						<MiscStats stats={[]} />
-					</PageSection>
-					<SectionSeparator />
-					<PageSection title='teams' initFoldState={true}>
-						<div className={styles.teamsContainer}>
-							{teams
-								.sort((a, b) =>
-									getSortedProp(sort, a) <
-									getSortedProp(sort, b)
-										? 1
-										: -1
-								)
-								.map((team) => (
-									<motion.div
-										layoutId={`team_${team.teammate.id}`}
-										key={team.teammate.id}
-									>
-										<TeamCard team={team} />
-									</motion.div>
-								))}
-						</div>
-					</PageSection>
-				</>
-			) : (
-				`No teams`
-			)}
-		</>
-	) : null;
+	return (
+		active && (
+			<>
+				{teams.length > 0 ? (
+					<>
+						<PageSection title='2v2 overview' initFoldState={true}>
+							<GamesStatsCard
+								{...totalTeamsStats}
+								losses={
+									totalTeamsStats.games - totalTeamsStats.wins
+								}
+								winrate={
+									(totalTeamsStats.winrateAcc /
+										teams.length) *
+									100
+								}
+							/>
+							<MiscStats stats={[]} />
+						</PageSection>
+						<SectionSeparator />
+						<PageSection title='teams' initFoldState={true}>
+							<div className={styles.teamsContainer}>
+								{teams
+									.sort((a, b) =>
+										getSortedProp(sort, a) <
+										getSortedProp(sort, b)
+											? 1
+											: -1
+									)
+									.map((team) => (
+										<motion.div
+											layoutId={`team_${team.teammate.id}`}
+											key={team.teammate.id}
+										>
+											<TeamCard team={team} />
+										</motion.div>
+									))}
+							</div>
+						</PageSection>
+					</>
+				) : (
+					`No teams`
+				)}
+			</>
+		)
+	);
 };

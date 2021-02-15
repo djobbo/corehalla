@@ -1,7 +1,6 @@
 import React, { useState, createContext, FC } from 'react';
 import { useRouter } from 'next/router';
 import { useDebounce } from '../hooks/useDebounce';
-import type { RankedRegion } from 'corehalla';
 
 interface Props {
 	children: React.ReactNode;

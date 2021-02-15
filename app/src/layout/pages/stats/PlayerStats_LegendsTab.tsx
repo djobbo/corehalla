@@ -92,9 +92,10 @@ export const LegendsTab = (playerStats: IPlayerStatsFormat) => (
 					].includes(activeWeapon)
 			  );
 
-	return active ? (
-		<>
-			{/* <Select<LegendSort>
+	return (
+		active && (
+			<>
+				{/* <Select<LegendSort>
 				action={setSort}
 				title='Sort by'
 				options={[
@@ -108,57 +109,61 @@ export const LegendsTab = (playerStats: IPlayerStatsFormat) => (
 					{ name: 'Ranked Winrate', value: 'ranked winrate' },
 				]}
 			/> */}
-			{legends
-				.sort((a, b) =>
-					getSortedProp(sort, a) < getSortedProp(sort, b) ? 1 : -1
-				)
-				.map((legend, i) => (
-					<motion.div
-						layoutId={`legend_${legend.id}`}
-						key={legend.id}
-					>
-						<SectionSeparator />
-						<PageSection
-							title={`${i + 1}. ${
-								legend.name
-							} ${`• ${getSortedDisplay(sort, legend)}`}`}
+				{legends
+					.sort((a, b) =>
+						getSortedProp(sort, a) < getSortedProp(sort, b) ? 1 : -1
+					)
+					.map((legend, i) => (
+						<motion.div
+							layoutId={`legend_${legend.id}`}
+							key={legend.id}
 						>
-							<div className={styles.legendLevelStats}>
-								<img
-									className={styles.legendIcon}
-									src={`/images/icons/legends/${legend.name}.png`}
-								/>
-								<div>
+							<SectionSeparator />
+							<PageSection
+								title={`${i + 1}. ${
+									legend.name
+								} ${`• ${getSortedDisplay(sort, legend)}`}`}
+							>
+								<div className={styles.legendLevelStats}>
+									<img
+										className={styles.legendIcon}
+										src={`/images/icons/legends/${legend.name}.png`}
+									/>
 									<div>
-										<StatDesc>Level</StatDesc>
-										<StatSmall>{legend.level}</StatSmall>
-										<StatDesc>({legend.xp}xp)</StatDesc>
-									</div>
-									<div>
-										<StatDesc>Time played</StatDesc>
-										<StatSmall>
-											{formatTime(legend.matchtime)}
-										</StatSmall>
+										<div>
+											<StatDesc>Level</StatDesc>
+											<StatSmall>
+												{legend.level}
+											</StatSmall>
+											<StatDesc>({legend.xp}xp)</StatDesc>
+										</div>
+										<div>
+											<StatDesc>Time played</StatDesc>
+											<StatSmall>
+												{formatTime(legend.matchtime)}
+											</StatSmall>
+										</div>
 									</div>
 								</div>
-							</div>
-							<SectionSeasonOverviewContent
-								{...legend.season}
-								losses={
-									legend.season.games - legend.season.wins
-								}
-								winrate={
-									(legend.season.wins / legend.season.games) *
-									100
-								}
-							/>
-							<SectionOverallStatsContent
-								{...legend}
-								losses={legend.games - legend.wins}
-							/>
-						</PageSection>
-					</motion.div>
-				))}
-		</>
-	) : null;
+								<SectionSeasonOverviewContent
+									{...legend.season}
+									losses={
+										legend.season.games - legend.season.wins
+									}
+									winrate={
+										(legend.season.wins /
+											legend.season.games) *
+										100
+									}
+								/>
+								<SectionOverallStatsContent
+									{...legend}
+									losses={legend.games - legend.wins}
+								/>
+							</PageSection>
+						</motion.div>
+					))}
+			</>
+		)
+	);
 };

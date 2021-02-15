@@ -12,14 +12,16 @@ export interface Props {
 }
 
 export const Rankings1v1Tab = ({ rankings }: Props) => (active: boolean) => {
-	return active ? (
-		<div className={styles.container}>
-			{rankings.map((player, i) => (
-				<motion.div layout key={player.id}>
-					{i !== 0 && <SectionSeparator />}
-					<RankingsItem1v1 key={i} player={player} />
-				</motion.div>
-			))}
-		</div>
-	) : null;
+	return (
+		active && (
+			<div className={styles.container}>
+				{rankings.map((player, i) => (
+					<motion.div layout key={player.id}>
+						{i !== 0 && <SectionSeparator />}
+						<RankingsItem1v1 key={i} player={player} />
+					</motion.div>
+				))}
+			</div>
+		)
+	);
 };

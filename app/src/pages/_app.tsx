@@ -13,6 +13,7 @@ import Head from 'next/head';
 import { Router, useRouter } from 'next/router';
 import { Loader } from '@components/Loader';
 import { Background } from '@components/Background';
+import { SideNavProvider } from '@providers/SideNavProvider';
 
 // Router.events.on('routeChangeStart', (url) => {
 // 	console.log(`Loading: ${url}`);
@@ -49,16 +50,19 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 				<link rel='icon' type='image/png' href='/images/favicon.png' />
 			</Head>
 			<Background />
+
 			<ThemeProvider>
 				<FavoritesProvider>
 					<PlayerSearchProvider>
-						<AnimateSharedLayout>
-							<div id='App'>
-								<AnimatePresence exitBeforeEnter initial>
-									<Component {...pageProps} />
-								</AnimatePresence>
-							</div>
-						</AnimateSharedLayout>
+						<SideNavProvider>
+							<AnimateSharedLayout>
+								<div id='App'>
+									<AnimatePresence exitBeforeEnter initial>
+										<Component {...pageProps} />
+									</AnimatePresence>
+								</div>
+							</AnimateSharedLayout>
+						</SideNavProvider>
 					</PlayerSearchProvider>
 				</FavoritesProvider>
 			</ThemeProvider>

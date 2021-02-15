@@ -1,9 +1,10 @@
 import styles from './Navbar.module.scss';
-import { GoBackIcon, SearchIcon } from '@components/Icons';
+import { MenuIcon, SearchIcon } from '@components/Icons';
 import { useRouter } from 'next/router';
-import { FC, useState } from 'react';
+import { FC, useContext, useState } from 'react';
 import Link from 'next/link';
 import { SearchBar } from '@components/SearchBar';
+import { SideNavContext } from '@providers/SideNavProvider';
 
 interface Props {
 	title?: string;
@@ -12,7 +13,7 @@ interface Props {
 export const Navbar: FC<Props> = ({ title }: Props) => {
 	const [showSearch, setShowSearch] = useState(false);
 
-	const router = useRouter();
+	const { setSideNavOpen } = useContext(SideNavContext);
 
 	return (
 		<div
@@ -30,11 +31,11 @@ export const Navbar: FC<Props> = ({ title }: Props) => {
 								href='#'
 								onClick={(e) => {
 									e.preventDefault();
-									router.back();
+									setSideNavOpen((open) => !open);
 								}}
 								className={styles.icon}
 							>
-								{GoBackIcon}
+								{MenuIcon}
 							</a>
 							<span className={styles.title}>{title}</span>
 						</div>

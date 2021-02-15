@@ -1,9 +1,20 @@
 @import '@styles/devices.scss';
 
-.main {
+.container {
 	padding: 0 1rem;
+	max-width: 1200px;
+	margin: 0 auto;
 
 	@media only screen and (min-width: $size_desktop) {
 		padding: 0;
+	}
+}
+
+.sideNavLayout {
+	position: relative;
+	transition: 0.15s margin linear;
+
+	&.sideNavOpen {
+		margin-left: 4rem;
 	}
 }
