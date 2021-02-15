@@ -1,10 +1,13 @@
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
-import type { IPlayerStatsFormat } from 'corehalla';
+import type { IPlayerStatsFormat, Weapon } from 'corehalla';
 import { OverviewTab } from '@layout/pages/stats/PlayerStats_OverviewTab';
 import { MainLayout } from '@layout/MainLayout';
-import { LegendsTab } from '@layout/pages/stats/PlayerStats_LegendsTab';
-import { TeamsTab } from '@layout/pages/stats/PlayerStats_TeamsTab';
+import {
+	LegendSort,
+	LegendsTab,
+} from '@layout/pages/stats/PlayerStats_LegendsTab';
+import { TeamsSort, TeamsTab } from '@layout/pages/stats/PlayerStats_TeamsTab';
 import { fetchPlayerFormat } from '@api';
 import { MockPlayerStats } from '@api/mocks/PlayerStats';
 
@@ -12,24 +15,48 @@ interface Props {
 	playerStats: IPlayerStatsFormat;
 }
 
+type PlayerStatsTabs = 'overview' | 'teams' | 'legends';
+
 export default function PlayerStatsPage({ playerStats }: Props) {
 	return (
 		<>
 			<Head>
 				<title>{playerStats.name} Stats • Corehalla</title>
 			</Head>
-			<MainLayout
+			<MainLayout<
+				PlayerStatsTabs,
+				{
+					overview: [null, null];
+					teams: [null, TeamsSort];
+					legends: [Weapon | 'all', LegendSort];
+				}
+			>
 				title={`${playerStats.name}'s Stats` ?? 'Corehalla'}
 				tabs={{
 					overview: {
 						displayName: 'Overview',
 						link: `/stats/player/${playerStats.id}`,
 						component: OverviewTab(playerStats),
+						chips: null,
+						defaultChip: null,
+						sortOptions: null,
+						defaultSort: null,
 					},
 					teams: {
 						displayName: 'Teams',
 						link: `/stats/player/${playerStats.id}?tab=teams`,
 						component: TeamsTab(playerStats),
+						chips: null,
+						defaultChip: null,
+						sortOptions: {
+							rating: 'Rating',
+							peak: 'Peak Rating',
+							games: 'Games',
+							wins: 'Wins',
+							losses: 'Losses',
+							winrate: 'Winrate',
+						},
+						defaultSort: 'rating',
 					},
 					legends: {
 						displayName: 'Legends',
@@ -51,6 +78,17 @@ export default function PlayerStatsPage({ playerStats }: Props) {
 						},
 						defaultChip: 'all',
 						link: `/stats/player/${playerStats.id}?tab=legends`,
+						sortOptions: {
+							level: 'Level',
+							matchtime: 'Time Played',
+							rating: 'Rating',
+							peak: 'Peak Rating',
+							games: 'Games',
+							winrate: 'Winrate',
+							'ranked games': 'Ranked Games',
+							'ranked winrate': 'Ranked Winrate',
+						},
+						defaultSort: 'level',
 						component: LegendsTab(playerStats),
 					},
 					// TODO: Add Weapons Tab

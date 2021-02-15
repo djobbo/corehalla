@@ -17,7 +17,7 @@ export const OverviewTab = (playerStats: IPlayerStatsFormat) => (
 		<>
 			<ProfileHeader
 				title={playerStats.name}
-				bannerURI='https://picsum.photos/480/120'
+				bannerURI='/images/backgrounds/Orion.jpg'
 				favorite={{
 					name: playerStats.name,
 					id: playerStats.id.toString(), // TODO: id is a number?

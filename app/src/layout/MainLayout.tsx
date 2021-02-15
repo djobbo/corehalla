@@ -8,34 +8,46 @@ import { SideNav } from '@components/SideNav';
 import { Page } from '@components/Page';
 import { useTabs } from '@hooks/useTabs';
 
-interface ITab<Chip extends string> {
-	displayName?: string;
-	chips?: { [k in Chip]: string };
-	defaultChip?: Chip;
-	link?: string;
-	component: (active: boolean, activeChip?: Chip) => ReactNode;
+interface ITab<Chip extends string, Sort extends string> {
+	displayName: string;
+	link: string;
+	component: (
+		active: boolean,
+		activeChip: Chip,
+		activeSort: Sort
+	) => ReactNode;
+	chips: { [k in Chip]: string } | null;
+	defaultChip: Chip;
+	sortOptions: { [k in Sort]: string } | null;
+	defaultSort: Sort;
 }
 
 interface Props<
-	Tabs extends { [k in Tab]: ITab<keyof Tabs[k]['chips'] & string> },
-	Tab extends keyof Tabs
+	TabName extends string,
+	Tabs extends { [k in TabName]: [Chips: string, SortOptions: string] }
 > {
-	tabs: Tabs;
+	tabs: {
+		[k in TabName]: ITab<Tabs[k][0], Tabs[k][1]>;
+	};
 	title: string;
 	loading?: boolean;
 }
 
 export function MainLayout<
-	Tabs extends { [k in Tab]: ITab<keyof Tabs[k]['chips'] & string> },
-	Tab extends keyof Tabs & string
->({ tabs, title }: PropsWithChildren<Props<Tabs, Tab>>) {
+	TabName extends string,
+	Tabs extends { [k in TabName]: [Chips: string, SortOptions: string] }
+>({ tabs, title }: PropsWithChildren<Props<TabName, Tabs>>) {
 	const [activeTab] = useTabs(
-		Object.keys(tabs) as Tab[],
-		Object.keys(tabs)[0] as Tab
+		Object.keys(tabs) as TabName[],
+		Object.keys(tabs)[0] as TabName
 	);
 
 	const [activeChip, setActiveChip] = useState(
 		tabs[activeTab].defaultChip ?? null
+	);
+
+	const [activeSort, setActiveSort] = useState(
+		tabs[activeTab].defaultSort ?? null
 	);
 
 	useEffect(() => {
@@ -47,8 +59,8 @@ export function MainLayout<
 			<div>
 				<AppBar
 					tabs={(Object.entries(tabs) as [
-						Tab,
-						ITab<keyof Tabs[Tab]['chips'] & string>
+						TabName,
+						ITab<Tabs[TabName][0], Tabs[TabName][1]>
 					][]).map(([tabName, { displayName, link }]) => ({
 						displayName: displayName || tabName,
 						link: link || `#${tabName}`,
@@ -57,7 +69,7 @@ export function MainLayout<
 					chips={
 						tabs[activeTab]?.chips &&
 						(Object.entries(tabs[activeTab]?.chips) as [
-							keyof Tabs[Tab]['chips'] & string,
+							Tabs[TabName][0],
 							string
 						][])?.map(([chipName, displayName]) => ({
 							displayName: displayName || chipName,
@@ -65,15 +77,29 @@ export function MainLayout<
 							action: () => setActiveChip(chipName),
 						}))
 					}
+					sort={
+						tabs[activeTab].sortOptions
+							? {
+									options: Object.entries(
+										tabs[activeTab].sortOptions
+									) as [Tabs[TabName][1] & string, string][],
+									action: setActiveSort,
+							  }
+							: null
+					}
 					title={title}
 				/>
 				<Page>
 					<main className={styles.container}>
 						{(Object.entries(tabs) as [
-							Tab,
-							ITab<keyof Tabs[Tab]['chips'] & string>
+							TabName,
+							ITab<Tabs[TabName][0], Tabs[TabName][1]>
 						][]).map(([tabName, { component }]) =>
-							component(tabName === activeTab, activeChip)
+							component(
+								tabName === activeTab,
+								activeChip,
+								activeSort
+							)
 						)}
 					</main>
 				</Page>

@@ -9,11 +9,13 @@ import { MiscStats } from '@components/MiscStats';
 import { Select } from '@components/Select';
 import { TeamCard } from '@components/TeamCard';
 
-interface Props {
-	playerStats: IPlayerStatsFormat;
-}
-
-type TeamsSort = 'default' | 'peak' | 'games' | 'winrate' | 'wins' | 'losses';
+export type TeamsSort =
+	| 'rating'
+	| 'peak'
+	| 'games'
+	| 'winrate'
+	| 'wins'
+	| 'losses';
 
 const getSortedProp = (state: TeamsSort, teamStats: I2v2TeamFormat) => {
 	switch (state) {
@@ -35,13 +37,13 @@ const getSortedProp = (state: TeamsSort, teamStats: I2v2TeamFormat) => {
 };
 
 export const TeamsTab = (playerStats: IPlayerStatsFormat) => (
-	active: boolean
+	active: boolean,
+	_,
+	sort: TeamsSort // TODO: arglist => {}:TabsProps
 ) => {
 	const {
 		season: { teams },
 	} = playerStats;
-
-	const [sort, setSort] = useState<TeamsSort>('default');
 
 	const totalTeamsStats = teams.reduce(
 		(acc, team) => ({
@@ -87,18 +89,6 @@ export const TeamsTab = (playerStats: IPlayerStatsFormat) => (
 						<MiscStats stats={[]} />
 					</PageSection>
 					<SectionSeparator />
-					<Select<TeamsSort>
-						action={setSort}
-						title='Sort by'
-						options={[
-							{ name: 'Rating', value: 'default' },
-							{ name: 'Peak Rating', value: 'peak' },
-							{ name: 'Games', value: 'games' },
-							{ name: 'Wins', value: 'wins' },
-							{ name: 'Losses', value: 'losses' },
-							{ name: 'Winrate', value: 'winrate' },
-						]}
-					/>
 					<PageSection title='teams' initFoldState={true}>
 						<div className={styles.teamsContainer}>
 							{teams
