@@ -2,16 +2,22 @@ import styles from './AppBar.module.scss';
 // Library imports
 import { useState } from 'react';
 import { motion, useViewportScroll, Variants } from 'framer-motion';
+import { Select } from '@components/Select';
 
 // Components imports
 import { IChip, ChipsContainer } from './ChipsContainer';
 import { ITab, TabsContainer } from './TabsContainer';
 import { Navbar } from './Navbar';
 
-export interface Props<T extends string, U extends string> {
+export interface Props<
+	Tabs extends string,
+	Chips extends string,
+	Sort extends string
+> {
 	title?: string;
-	tabs?: ITab<T>[];
-	chips?: IChip<U>[];
+	tabs?: ITab<Tabs>[];
+	chips?: IChip<Chips>[];
+	sort?: { options: [Sort, string][]; action: (selected: Sort) => void };
 }
 
 const extrasContainerVariants: Variants = {
@@ -26,11 +32,11 @@ const extrasContainerVariants: Variants = {
 	},
 };
 
-export function AppBar<T extends string, U extends string>({
-	title,
-	tabs,
-	chips,
-}: Props<T, U>) {
+export function AppBar<
+	Tabs extends string,
+	Chips extends string,
+	Sort extends string
+>({ title, tabs, chips, sort }: Props<Tabs, Chips, Sort>) {
 	const { scrollY } = useViewportScroll();
 	const [hideOnScroll, setHideOnScroll] = useState(false);
 
@@ -53,7 +59,22 @@ export function AppBar<T extends string, U extends string>({
 						variants={extrasContainerVariants}
 					>
 						{tabs && <TabsContainer tabs={tabs} />}
-						{chips && <ChipsContainer chips={chips} />}
+						{(chips || sort) && (
+							<div className={styles.chipsBar}>
+								<div className={styles.content}>
+									{chips && <ChipsContainer chips={chips} />}
+									{sort && (
+										<motion.div layoutId='AppbarSelect'>
+											<Select<Sort>
+												action={sort.action}
+												title='Sort by'
+												options={sort.options}
+											/>
+										</motion.div>
+									)}
+								</div>
+							</div>
+						)}
 					</motion.div>
 				</div>
 			</div>

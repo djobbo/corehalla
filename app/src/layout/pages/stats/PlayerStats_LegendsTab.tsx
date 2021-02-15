@@ -9,8 +9,7 @@ import { SectionOverallStatsContent } from '@components/SectionOverallStatsConte
 import { SectionSeasonOverviewContent } from '@components/SectionSeasonOverviewContent';
 import { StatDesc, StatSmall } from '@components/TextStyles';
 
-type LegendSort =
-	| 'default'
+export type LegendSort =
 	| 'level'
 	| 'matchtime'
 	| 'rating'
@@ -80,7 +79,8 @@ const getSortedDisplay = (
 
 export const LegendsTab = (playerStats: IPlayerStatsFormat) => (
 	active: boolean,
-	activeWeapon: Weapon | 'all'
+	activeWeapon: Weapon | 'all',
+	sort: LegendSort
 ) => {
 	const legends =
 		activeWeapon === 'all'
@@ -92,11 +92,9 @@ export const LegendsTab = (playerStats: IPlayerStatsFormat) => (
 					].includes(activeWeapon)
 			  );
 
-	const [sort, setSort] = useState<LegendSort>('default');
-
 	return active ? (
 		<>
-			<Select<LegendSort>
+			{/* <Select<LegendSort>
 				action={setSort}
 				title='Sort by'
 				options={[
@@ -109,7 +107,7 @@ export const LegendsTab = (playerStats: IPlayerStatsFormat) => (
 					{ name: 'Ranked Games', value: 'ranked games' },
 					{ name: 'Ranked Winrate', value: 'ranked winrate' },
 				]}
-			/>
+			/> */}
 			{legends
 				.sort((a, b) =>
 					getSortedProp(sort, a) < getSortedProp(sort, b) ? 1 : -1
