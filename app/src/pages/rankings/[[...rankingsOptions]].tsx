@@ -26,17 +26,6 @@ export interface IRankingsTabs {
 	power2v2: null;
 }
 
-const regionChips = {
-	all: 'Global',
-	'US-E': null,
-	EU: null,
-	SEA: null,
-	BRZ: null,
-	AUS: null,
-	'US-W': null,
-	JPN: null,
-};
-
 export default function RankingsPage({
 	rankings,
 	bracket,
@@ -51,7 +40,24 @@ export default function RankingsPage({
 					{region}-{bracket} Rankings | Page {page} • Corehalla
 				</title>
 			</Head>
-			<MainLayout
+			<MainLayout<
+				'1v1',
+				{
+					'1v1': [
+						(
+							| 'all'
+							| 'US-E'
+							| 'EU'
+							| 'SEA'
+							| 'BRZ'
+							| 'AUS'
+							| 'US-W'
+							| 'JPN'
+						),
+						null
+					];
+				}
+			>
 				title={
 					`${region}-${bracket} Rankings | Page ${page} • Corehalla` ??
 					'Corehalla'
@@ -59,7 +65,16 @@ export default function RankingsPage({
 				tabs={{
 					'1v1': {
 						displayName: '1v1',
-						chips: regionChips,
+						chips: {
+							all: 'Global',
+							'US-E': null,
+							EU: null,
+							SEA: null,
+							BRZ: null,
+							AUS: null,
+							'US-W': null,
+							JPN: null,
+						},
 						defaultChip: 'all',
 						link: `/rankings/${bracket}/${region}/${page}${
 							playerSearch ? `?p=${playerSearch}` : ''
@@ -70,6 +85,8 @@ export default function RankingsPage({
 							playerSearch,
 							rankings,
 						}),
+						sortOptions: null,
+						defaultSort: null,
 					},
 				}}
 			/>
