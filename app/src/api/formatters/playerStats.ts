@@ -43,7 +43,7 @@ export function formatPlayerStats(
 		legends: legendsStats,
 		clan: clanStats,
 		...generalStats
-	} = playerStats || { legends: [], clan: {} };
+	} = playerStats;
 
 	const {
 		legends: legendsRanked,
@@ -53,7 +53,7 @@ export function formatPlayerStats(
 		global_rank: _prgr,
 		region_rank: _prrr,
 		...seasonStats
-	} = playerRanked || { legends: [], '2v2': [] }; //TODO: FIX LOL
+	} = playerRanked;
 
 	const { legends, weapons } = formatLegendsAndWeaponsStats(
 		staticLegendsData,

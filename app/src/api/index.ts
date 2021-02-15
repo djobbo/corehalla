@@ -74,7 +74,9 @@ const fetchAllStats = (apiKey: string, brawlhallaId: number) =>
 
 export const fetchPlayerFormat = (apiKey: string, brawlhallaId: number) =>
 	fetchAllStats(apiKey, brawlhallaId).then((stats) =>
-		formatPlayerStats(...stats)
+		stats.some((x) => typeof x.brawlhalla_id === undefined) //TODO: Better {} check
+			? null
+			: formatPlayerStats(...stats)
 	);
 
 export const fetchClanFormat = (apiKey: string, clanId: number) =>
