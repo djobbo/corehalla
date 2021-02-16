@@ -12,9 +12,9 @@
 
 .sideNavLayout {
 	position: relative;
-	transition: 0.15s margin linear;
+	transition: 0.15s transform linear;
 
 	&.sideNavOpen {
-		margin-left: 4rem;
+		transform: translateX(4rem);
 	}
 }

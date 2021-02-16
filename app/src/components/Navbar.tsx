@@ -1,10 +1,10 @@
 import styles from './Navbar.module.scss';
-import { MenuIcon, SearchIcon } from '@components/Icons';
+import { GoBackIcon, SearchIcon } from '@components/Icons';
 import { useRouter } from 'next/router';
-import { FC, useContext, useState } from 'react';
+import { FC, useState } from 'react';
 import Link from 'next/link';
 import { SearchBar } from '@components/SearchBar';
-import { SideNavContext } from '@providers/SideNavProvider';
+import { motion } from 'framer-motion';
 
 interface Props {
 	title?: string;
@@ -13,7 +13,7 @@ interface Props {
 export const Navbar: FC<Props> = ({ title }: Props) => {
 	const [showSearch, setShowSearch] = useState(false);
 
-	const { setSideNavOpen } = useContext(SideNavContext);
+	const router = useRouter();
 
 	return (
 		<div
@@ -27,16 +27,17 @@ export const Navbar: FC<Props> = ({ title }: Props) => {
 				<>
 					{title ? (
 						<div>
-							<a
+							<motion.a
 								href='#'
 								onClick={(e) => {
 									e.preventDefault();
-									setSideNavOpen((open) => !open);
+									router.back();
 								}}
 								className={styles.icon}
+								initial={{ rotate: -90 }}
 							>
-								{MenuIcon}
-							</a>
+								{GoBackIcon}
+							</motion.a>
 							<span className={styles.title}>{title}</span>
 						</div>
 					) : (

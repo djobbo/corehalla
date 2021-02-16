@@ -10,8 +10,6 @@
 	top: 0;
 	left: 0;
 	bottom: 0;
-	overflow-x: hidden;
-	overflow-y: auto;
 	width: 4rem;
 	z-index: 100;
 	gap: 0.5rem;
@@ -58,5 +56,36 @@
 	.separator {
 		border-bottom: 1px solid $text-2;
 		width: 1.5rem;
+	}
+
+	.handle {
+		position: absolute;
+		bottom: 2rem;
+		right: -2rem;
+		width: 2rem;
+		height: 4rem;
+		background-color: $accent;
+		border-radius: 0 0.5rem 0.5rem 0;
+		box-shadow: $card-shadow;
+		cursor: pointer;
+		z-index: -1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		&:hover {
+			background-color: $text;
+
+			svg {
+				stroke: $bg;
+			}
+		}
+
+		svg {
+			width: 1rem;
+			height: 1rem;
+			stroke: $text;
+			stroke-width: 0.5rem;
+		}
 	}
 }
