@@ -14,6 +14,7 @@ interface Props {
 	losses: number;
 	winrate: number;
 	ratingSquash: number;
+	region?: string;
 }
 
 export function SectionSeasonOverviewContent({
@@ -25,6 +26,7 @@ export function SectionSeasonOverviewContent({
 	losses,
 	winrate,
 	ratingSquash,
+	region,
 }: Props) {
 	return (
 		<div className={styles.container}>
@@ -72,6 +74,15 @@ export function SectionSeasonOverviewContent({
 					<StatDesc>elo squash</StatDesc>
 					<StatSmall>{ratingSquash}</StatSmall>
 				</div>
+				{region && (
+					<img
+						className={styles.regionIcon}
+						src={`/images/icons/flags/${region}.png`}
+						alt='Region Flag'
+						width='32px'
+						height='32px'
+					/>
+				)}
 			</div>
 		</div>
 	);

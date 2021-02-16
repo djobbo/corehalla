@@ -17,11 +17,18 @@ export function Loader() {
 				animate={{ scale: 1, opacity: 1 }}
 				exit={{ scale: 5, opacity: 0 }}
 				transition={{
-					default: { duration: 0.8, loop: false, ease: 'easeInOut' },
+					default: {
+						duration: 0.8,
+						loop: false,
+						ease: 'easeInOut',
+					},
 				}}
 			>
 				<motion.div
-					animate={{ scale: [1, 1.05, 1], opacity: [0.5, 1, 0.5] }}
+					animate={{
+						scale: [1, 1.05, 1],
+						// opacity: [0.75, 1, 0.75],
+					}}
 					transition={{
 						default: {
 							duration: 3,
@@ -34,8 +41,8 @@ export function Loader() {
 					<motion.svg
 						xmlns='http://www.w3.org/2000/svg'
 						viewBox='0 0 448 436.48'
-						width='64px'
-						height='64px'
+						width='128px'
+						height='128px'
 					>
 						<motion.path
 							d='M445,987.05l14.69,14.69a23.87,23.87,0,0,1,.12,33.72l-.34.34a23.87,23.87,0,0,1-33.72-.12l-29.22-29.22-34.2-34.2a176,176,0,0,0-64.26-311.2A23.82,23.82,0,0,1,280,637.87v-.16a23.92,23.92,0,0,1,29.59-23.25C407.43,638.47,480,726.76,480,832a223,223,0,0,1-38,124.87A23.86,23.86,0,0,0,445,987.05Z'
@@ -79,7 +86,10 @@ export function Loader() {
 								initial='hidden'
 								animate='visible'
 								transition={{
-									default: { duration: 2, ease: 'easeInOut' },
+									default: {
+										duration: 2,
+										ease: 'easeInOut',
+									},
 								}}
 							/>
 							<motion.path
@@ -90,7 +100,10 @@ export function Loader() {
 								initial='hidden'
 								animate='visible'
 								transition={{
-									default: { duration: 2, ease: 'easeInOut' },
+									default: {
+										duration: 2,
+										ease: 'easeInOut',
+									},
 								}}
 							/>
 						</motion.g>

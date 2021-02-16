@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-import { HomeIcon, FavoriteIcon, RankingsIcon } from './Icons';
+import { HomeIcon, FavoriteIcon, RankingsIcon, GoBackIcon } from './Icons';
 
 // Providers imports
 import { FavoritesContext } from '../providers/FavoritesProvider';
@@ -51,55 +51,59 @@ export function SideNav() {
 	const { favorites } = useContext(FavoritesContext);
 	const { pathname, query } = useRouter();
 
-	const { sideNavOpen } = useContext(SideNavContext);
+	const { sideNavOpen, setSideNavOpen } = useContext(SideNavContext);
 
 	if (typeof document === 'undefined') return null;
 	return (
-		<AnimatePresence>
-			{sideNavOpen && (
-				<motion.div
-					className={styles.container}
-					initial={{ x: -100 }}
-					animate={{ x: 0 }}
-					exit={{ x: -100 }}
-					transition={{ ease: 'linear', duration: 0.15 }}
-					layoutId='sidenav'
+		<motion.div
+			className={styles.container}
+			animate={{ marginLeft: sideNavOpen ? '0rem' : '-4rem' }}
+			exit={{ marginLeft: '-4rem' }}
+			transition={{ ease: 'linear', duration: 0.15 }}
+			layoutId='sidenav'
+		>
+			{tabs.map(({ title, link, icon, exact }, i) => (
+				<Link href={link} key={i}>
+					<a
+						className={`${styles.navItem} ${
+							pathname === link ||
+							(!exact && pathname.startsWith(link))
+								? styles.active
+								: ''
+						}`}
+					>
+						{icon}
+					</a>
+				</Link>
+			))}
+			<hr className={styles.separator} />
+			{favorites.map(({ id, type, name, thumbURI }) => (
+				<Link href={`/stats/${type}/${id}`} key={`${type}/${id}`}>
+					<a
+						className={`${styles.navItem} ${
+							pathname.startsWith(`/stats/${type}`) &&
+							query.id === id
+								? styles.active
+								: ''
+						}`}
+					>
+						<img src={thumbURI} alt={name} />
+						<span>{name.substr(0, 3).toUpperCase()}</span>
+					</a>
+				</Link>
+			))}
+
+			<div
+				className={styles.handle}
+				onClick={() => setSideNavOpen((open) => !open)}
+			>
+				<motion.span
+					initial={{ rotate: -90 }}
+					animate={{ rotate: sideNavOpen ? -90 : 90 }}
 				>
-					{tabs.map(({ title, link, icon, exact }, i) => (
-						<Link href={link} key={i}>
-							<a
-								className={`${styles.navItem} ${
-									pathname === link ||
-									(!exact && pathname.startsWith(link))
-										? styles.active
-										: ''
-								}`}
-							>
-								{icon}
-							</a>
-						</Link>
-					))}
-					<hr className={styles.separator} />
-					{favorites.map(({ id, type, name, thumbURI }) => (
-						<Link
-							href={`/stats/${type}/${id}`}
-							key={`${type}/${id}`}
-						>
-							<a
-								className={`${styles.navItem} ${
-									pathname.startsWith(`/stats/${type}`) &&
-									query.id === id
-										? styles.active
-										: ''
-								}`}
-							>
-								<img src={thumbURI} alt={name} />
-								<span>{name.substr(0, 3).toUpperCase()}</span>
-							</a>
-						</Link>
-					))}
-				</motion.div>
-			)}
-		</AnimatePresence>
+					{GoBackIcon}
+				</motion.span>
+			</div>
+		</motion.div>
 	);
 }
