@@ -2,7 +2,7 @@
 @import '@styles/devices.scss';
 
 .landingNavbar {
-	position: fixed;
+	position: sticky;
 	top: 0;
 	left: 0;
 	right: 0;
@@ -12,18 +12,16 @@
 	padding: 2rem;
 	transition: 0.25s all ease;
 	z-index: 50;
-
-	&.sideNavOpen {
-		margin-left: 4rem;
-	}
+	border-bottom: 1px solid transparent;
 
 	& > ul {
 		display: none;
 	}
 
 	&.hasScrolled {
-		background-color: $bg;
-		padding: 0.5rem 2rem;
+		background-color: $bg-1;
+		padding: 1rem 2rem;
+		border-bottom: 1px solid rgba($text-2, 0.16);
 	}
 
 	.navCTA {
@@ -56,7 +54,7 @@
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	gap: 8rem;
+	gap: 2rem;
 	margin-top: 8rem;
 
 	.landingContent {
@@ -67,6 +65,7 @@
 		width: 100%;
 		height: 75vh;
 		min-height: 32rem;
+		max-height: 42rem;
 		padding: 0 3rem;
 		z-index: 10;
 		max-width: 1200px;
@@ -80,11 +79,24 @@
 		.text {
 			flex: 1;
 			.title {
-				font-size: 3rem;
+				font-size: 2rem;
 				color: $text;
 				font-weight: normal;
 				margin-bottom: 1rem;
 				max-width: 540px;
+				color: $accent;
+				text-transform: uppercase;
+
+				.bold {
+					font-size: 3rem;
+					color: $text;
+					font-weight: bold;
+					display: block;
+
+					@media only screen and (min-width: $size_desktop) {
+						font-size: 5rem;
+					}
+				}
 			}
 
 			.desc {
@@ -115,7 +127,7 @@
 				width: 100%;
 				max-height: 32rem;
 				object-fit: contain;
-				filter: drop-shadow(0px 0px 16px rgba($text, 0.16));
+				filter: drop-shadow(0px 0px 16px rgba($text, 0.08));
 			}
 		}
 

@@ -5,7 +5,7 @@ import { Mock1v1Rankings } from '@api/mocks/1v1Rankings';
 import { LegendsTab } from '@layout/pages/stats/PlayerStats_LegendsTab';
 import { OverviewTab } from '@layout/pages/stats/PlayerStats_OverviewTab';
 import { TeamsTab } from '@layout/pages/stats/PlayerStats_TeamsTab';
-import { MainLayout } from '@layout/MainLayout';
+import { TabLayout } from '@layout/TabLayout';
 import Head from 'next/head';
 import { Rankings1v1Tab } from '@layout/pages/rankings/Rankings_1v1Tab';
 
@@ -40,7 +40,7 @@ export default function RankingsPage({
 					{region}-{bracket} Rankings | Page {page} • Corehalla
 				</title>
 			</Head>
-			<MainLayout<
+			<TabLayout<
 				'1v1',
 				{
 					'1v1': [

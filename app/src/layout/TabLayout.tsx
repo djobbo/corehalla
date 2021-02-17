@@ -4,10 +4,8 @@ import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 
 // Components imports
 import { AppBar } from '@components/AppBar';
-import { SideNav } from '@components/SideNav';
-import { Page } from '@components/Page';
 import { useTabs } from '@hooks/useTabs';
-import { SideNavLayout } from './SideNavLayout';
+import { Layout } from './Layout';
 
 interface ITab<Chip extends string, Sort extends string> {
 	displayName: string;
@@ -34,7 +32,7 @@ interface Props<
 	loading?: boolean;
 }
 
-export function MainLayout<
+export function TabLayout<
 	TabName extends string,
 	Tabs extends { [k in TabName]: [Chips: string, SortOptions: string] }
 >({ tabs, title }: PropsWithChildren<Props<TabName, Tabs>>) {
@@ -56,7 +54,7 @@ export function MainLayout<
 	}, [activeTab]);
 
 	return (
-		<SideNavLayout>
+		<Layout>
 			<AppBar
 				tabs={(Object.entries(tabs) as [
 					TabName,
@@ -97,6 +95,6 @@ export function MainLayout<
 					component(tabName === activeTab, activeChip, activeSort)
 				)}
 			</main>
-		</SideNavLayout>
+		</Layout>
 	);
 }
