@@ -59,7 +59,6 @@ export function SideNav() {
 			className={`${styles.container} ${
 				sideNavOpen ? '' : styles.closed
 			}`}
-			layoutId='sidenav'
 		>
 			{tabs.map(({ title, link, icon, exact }, i) => (
 				<Link href={link} key={i}>
