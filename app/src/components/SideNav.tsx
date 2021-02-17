@@ -55,11 +55,10 @@ export function SideNav() {
 
 	if (typeof document === 'undefined') return null;
 	return (
-		<motion.div
-			className={styles.container}
-			animate={{ marginLeft: sideNavOpen ? '0rem' : '-4rem' }}
-			exit={{ marginLeft: '-4rem' }}
-			transition={{ ease: 'linear', duration: 0.15 }}
+		<div
+			className={`${styles.container} ${
+				sideNavOpen ? '' : styles.closed
+			}`}
 			layoutId='sidenav'
 		>
 			{tabs.map(({ title, link, icon, exact }, i) => (
@@ -104,6 +103,6 @@ export function SideNav() {
 					{GoBackIcon}
 				</motion.span>
 			</div>
-		</motion.div>
+		</div>
 	);
 }

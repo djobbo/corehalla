@@ -7,16 +7,13 @@ import Link from 'next/link';
 import { FavoritesContext } from '@providers/FavoritesProvider';
 
 // Components imports
-import { Page } from '@components/Page';
-import { AppBar } from '@components/AppBar';
-import { SideNav } from '@components/SideNav';
-import { MainLayout } from '@layout/MainLayout';
+import { TabLayout } from '@layout/TabLayout';
 
 export default function FavoritesPage() {
 	const { favorites } = useContext(FavoritesContext);
 
 	return (
-		<MainLayout<
+		<TabLayout<
 			'players' | 'clans',
 			{ players: [null, null]; clans: [null, null] }
 		>

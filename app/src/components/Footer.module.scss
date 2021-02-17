@@ -1,0 +1,59 @@
+@import '@styles/theme.scss';
+
+.footer {
+	background-color: $bg-1;
+
+	.section {
+		border-top: 1px solid rgba($text-2, 0.16);
+
+		.container {
+			padding: 4rem 2rem;
+			display: grid;
+			margin: 0 auto;
+			grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+			justify-content: center;
+			gap: 2rem;
+
+			.category {
+				.title {
+					color: $accent;
+					text-transform: uppercase;
+					font-size: 1rem;
+					font-weight: bold;
+					margin-bottom: 1rem;
+				}
+
+				.logo {
+					width: auto;
+					height: 1.5rem;
+				}
+
+				.content {
+					color: $text-2;
+					line-height: 1.5rem;
+
+					&.socials {
+						display: flex;
+						gap: 1rem;
+
+						svg {
+							width: 2rem;
+							height: 2rem;
+							fill: $text-2;
+
+							&:hover {
+								fill: $accent;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		.copyright {
+			padding: 2rem;
+			text-align: center;
+			color: $text-2;
+		}
+	}
+}

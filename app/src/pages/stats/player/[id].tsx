@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import type { IPlayerStatsFormat, Weapon } from 'corehalla';
 import { OverviewTab } from '@layout/pages/stats/PlayerStats_OverviewTab';
-import { MainLayout } from '@layout/MainLayout';
+import { TabLayout } from '@layout/TabLayout';
 import {
 	LegendSort,
 	LegendsTab,
@@ -23,7 +23,7 @@ export default function PlayerStatsPage({ playerStats }: Props) {
 			<Head>
 				<title>{playerStats.name} Stats • Corehalla</title>
 			</Head>
-			<MainLayout<
+			<TabLayout<
 				PlayerStatsTabs,
 				{
 					overview: [null, null];

@@ -1,0 +1,18 @@
+@import '@styles/theme.scss';
+
+.article {
+	.title {
+		font-size: 4rem;
+		padding: 4rem 2rem;
+		color: $text;
+		max-width: 1200px;
+		margin: 0 auto;
+
+		.subtitle {
+			display: block;
+			font-size: 1rem;
+			font-weight: normal;
+			color: $text-2;
+		}
+	}
+}

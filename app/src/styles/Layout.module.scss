@@ -1,20 +1,23 @@
 @import '@styles/devices.scss';
 
+.mainGrid {
+	display: grid;
+	grid-template-rows: 1fr auto;
+	min-height: 100vh;
+	position: relative;
+	transition: 0.15s all linear;
+	padding-left: 4rem;
+
+	@media only screen and (max-width: $size_desktop) {
+		padding-left: 0;
+		&.sideNavOpen {
+			transform: translateX(4rem);
+		}
+	}
+}
+
 .container {
 	padding: 0 1rem;
 	max-width: 1200px;
 	margin: 0 auto;
-
-	// @media only screen and (min-width: $size_desktop) {
-	// 	padding: 0 0.5rem;
-	// }
-}
-
-.sideNavLayout {
-	position: relative;
-	transition: 0.15s transform linear;
-
-	&.sideNavOpen {
-		transform: translateX(4rem);
-	}
 }

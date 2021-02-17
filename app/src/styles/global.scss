@@ -17,18 +17,25 @@ body {
 
 	background-color: $bg-1;
 	opacity: 1;
-	background-image: radial-gradient(
-			$bg 1.4000000000000001px,
-			transparent 1.4000000000000001px
-		),
-		radial-gradient($bg 1.4000000000000001px, $bg-1 1.4000000000000001px);
+	background-image: radial-gradient($bg 1.4px, transparent 1.4px),
+		radial-gradient($bg 1.4px, $bg-1 1.4px);
 	background-size: 56px 56px;
 	background-position: 0 0, 28px 28px;
+	scroll-behavior: smooth;
 }
 
 a,
 a:visited {
+	color: $accent;
 	text-decoration: none;
+
+	&:hover {
+		color: $text;
+	}
+
+	img {
+		vertical-align: middle;
+	}
 }
 
 ul {
@@ -41,10 +48,7 @@ svg {
 
 #App {
 	position: relative;
-	height: 100%;
-	min-height: 100%;
 	z-index: 10;
-	overflow-x: hidden;
 }
 
 :root {

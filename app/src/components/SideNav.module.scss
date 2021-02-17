@@ -1,4 +1,5 @@
 @import '@styles/theme.scss';
+@import '@styles/devices.scss';
 
 .container {
 	display: flex;
@@ -14,6 +15,13 @@
 	z-index: 100;
 	gap: 0.5rem;
 	padding-top: 0.5rem;
+	transition: 0.15s all linear;
+
+	@media only screen and (max-width: $size_desktop) {
+		&.closed {
+			margin-left: -4rem;
+		}
+	}
 
 	.navItem {
 		width: 3rem;
@@ -86,6 +94,10 @@
 			height: 1rem;
 			stroke: $text;
 			stroke-width: 0.5rem;
+		}
+
+		@media only screen and (min-width: $size_desktop) {
+			display: none;
 		}
 	}
 }
