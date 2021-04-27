@@ -1,0 +1,57 @@
+@import './theme.scss';
+
+.button,
+.radio {
+	background-color: $gray-1;
+	color: $light;
+	padding: 0.75rem 1rem;
+	border-radius: 0.25rem;
+	font-size: 1rem;
+	cursor: pointer;
+	outline: none;
+
+	&.selected {
+		background-color: $accent;
+	}
+}
+
+.radio {
+	&.left {
+		border-radius: 0.25rem 0 0 0.25rem;
+	}
+	&.right {
+		border-radius: 0 0.25rem 0.25rem 0;
+	}
+}
+
+.input {
+	background-color: $gray-1;
+	padding: 0.5rem 0.75rem;
+	border-radius: 0.25rem;
+	color: $light;
+	font-size: 1rem;
+	width: 100%;
+	border: 1px solid $gray-2;
+}
+
+.label,
+.inlineLabel {
+	color: $light;
+	width: 100%;
+}
+
+.inlineLabel {
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+	white-space: nowrap;
+}
+
+.formContainer {
+	padding: 1rem 0.5rem 2rem 0.5rem;
+	margin: 0 -0.5rem 2rem -0.5rem;
+	display: flex;
+	flex-direction: column;
+	border-bottom: 1px solid $gray-0;
+	gap: 1rem;
+}
