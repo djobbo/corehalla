@@ -9,7 +9,8 @@
         "bootstrap": "make bootstrap",
         "codesandbox:build": "make build-no-bundle",
         "test": "jest",
-        "tsc": "tsc"
+        "tsc": "tsc",
+        "lint": "eslint --fix"
     },
     "devDependencies": {
         "@types/jest": "^26.0.23",
