@@ -24,5 +24,17 @@
         "prettier": "^2.2.1",
         "ts-jest": "^26.5.5",
         "typescript": "^4.2.4"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "*.{ts,js,tsx,jsx}": [
+            "eslint --fix",
+            "jest --coverage --findRelatedTests",
+            "git add"
+        ]
     }
 }
