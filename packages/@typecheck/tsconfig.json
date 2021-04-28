@@ -3,13 +3,10 @@
         "module": "commonjs",
         "noImplicitReturns": true,
         "noUnusedLocals": true,
-        "outDir": "dist",
         "sourceMap": true,
         "strict": true,
         "target": "es2017",
-        "resolveJsonModule": true
-    },
-    "compileOnSave": true,
-    "include": ["src"],
-    "exclude": ["dist", "node_modules", "**/*.spec.ts", "**/*.test.ts"]
+        "resolveJsonModule": true,
+        "declaration": true
+    }
 }

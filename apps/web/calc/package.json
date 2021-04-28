@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "build": "rollup -c",
+        "build": "lerna run dist && rollup -c",
         "dev": "rollup -c -w",
         "start": "sirv public --no-clear",
         "validate": "svelte-check"

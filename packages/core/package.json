@@ -6,11 +6,14 @@
     "scripts": {
         "build": "tsc",
         "dist": "tsc",
-        "dist:watch": "tsc -w"
+        "dist:watch": "tsc -w",
+        "lint": "eslint"
     },
     "devDependencies": {
         "@corehalla/types": "0.1.0",
-        "typescript": "^4.2.4"
+        "typescript": "^4.2.4",
+        "@config/lint": "1.0.0",
+        "@config/typecheck": "1.0.0"
     },
     "dependencies": {
         "axios": "^0.21.1",

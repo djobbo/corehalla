@@ -22,6 +22,11 @@
 	$: squashHero = getHeroRatingSquash(heroRating);
 </script>
 
+<svelte:head>
+	<title>New Season Glory & ELO Calculator • Corehalla</title>
+	<link rel="icon" type="image/png" href="/favicon.png" />
+</svelte:head>
+
 <main>
 	<h1>New Season Glory & ELO Calculator</h1>
 	<div class="form-group">

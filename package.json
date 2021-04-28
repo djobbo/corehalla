@@ -5,8 +5,11 @@
         "apps/**/*"
     ],
     "scripts": {
-        "dist": "lerna run dist",
-        "watch": "lerna run --parallel dist:watch"
+        "dist": "lerna run --scope @corehalla/* dist",
+        "lint": "lerna run lint",
+        "build": "lerna run build",
+        "watch": "lerna run --scope @corehalla/* dist:watch",
+        "test": "lerna run test"
     },
     "devDependencies": {
         "@types/jest": "^26.0.23",
