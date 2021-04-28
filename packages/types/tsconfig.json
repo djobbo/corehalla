@@ -1,8 +1,8 @@
 {
-    "extends": "../tsconfig.json",
+    "extends": "@config/typecheck/tsconfig.json",
     "compilerOptions": {
         "outDir": "dist"
     },
     "include": ["src"],
-    "exclude": ["**/*.spec.ts"]
+    "exclude": ["dist", "node_modules", "**/*.spec.ts", "**/*.test.ts"]
 }
