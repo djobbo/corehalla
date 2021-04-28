@@ -3,10 +3,7 @@ import { GetServerSideProps } from 'next';
 import type { IPlayerStatsFormat, Weapon } from '@corehalla/types';
 import { OverviewTab } from '~layout/pages/stats/PlayerStats_OverviewTab';
 import { TabLayout } from '~layout/TabLayout';
-import {
-    LegendSort,
-    LegendsTab,
-} from '~layout/pages/stats/PlayerStats_LegendsTab';
+import { LegendSort, LegendsTab } from '~layout/pages/stats/PlayerStats_LegendsTab';
 import { TeamsSort, TeamsTab } from '~layout/pages/stats/PlayerStats_TeamsTab';
 import { fetchPlayerFormat } from '@corehalla/core';
 import { MockPlayerStats } from '@corehalla/mocks';
@@ -17,7 +14,7 @@ interface Props {
 
 type PlayerStatsTabs = 'overview' | 'teams' | 'legends';
 
-export default function PlayerStatsPage({ playerStats }: Props) {
+export default function PlayerStatsPage({ playerStats }: Props): JSX.Element {
     return (
         <>
             <Head>
@@ -103,17 +100,11 @@ export default function PlayerStatsPage({ playerStats }: Props) {
     );
 }
 
-export const getServerSideProps: GetServerSideProps<
-    Props,
-    { id: string }
-> = async ({ params: { id } }) => {
+export const getServerSideProps: GetServerSideProps<Props, { id: string }> = async ({ params: { id } }) => {
     let playerStats: IPlayerStatsFormat;
 
     if (process.env.NODE_ENV === 'production') {
-        playerStats = await fetchPlayerFormat(
-            process.env.BH_API_KEY,
-            parseInt(id),
-        );
+        playerStats = await fetchPlayerFormat(process.env.BH_API_KEY, parseInt(id));
     } else {
         playerStats = MockPlayerStats;
     }

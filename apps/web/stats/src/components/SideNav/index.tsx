@@ -1,6 +1,5 @@
 import styles from './index.module.scss';
 // Library imports
-import { useContext } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -9,7 +8,7 @@ import { HomeIcon, FavoriteIcon, RankingsIcon, GoBackIcon } from '@Icons';
 // Providers imports
 import { useFavoritesContext } from '~providers/FavoritesProvider';
 import { useSideNavContext } from '~providers/SideNavProvider';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface BottomNavigationTab {
     title: string;
@@ -47,7 +46,7 @@ const tabs: BottomNavigationTab[] = [
     // },
 ];
 
-export function SideNav() {
+export function SideNav(): JSX.Element {
     const { favorites } = useFavoritesContext();
     const { pathname, query } = useRouter();
 
@@ -55,19 +54,12 @@ export function SideNav() {
 
     if (typeof document === 'undefined') return null;
     return (
-        <div
-            className={`${styles.container} ${
-                sideNavOpen ? '' : styles.closed
-            }`}
-        >
-            {tabs.map(({ title, link, icon, exact }, i) => (
+        <div className={`${styles.container} ${sideNavOpen ? '' : styles.closed}`}>
+            {tabs.map(({ link, icon, exact }, i) => (
                 <Link href={link} key={i}>
                     <a
                         className={`${styles.navItem} ${
-                            pathname === link ||
-                            (!exact && pathname.startsWith(link))
-                                ? styles.active
-                                : ''
+                            pathname === link || (!exact && pathname.startsWith(link)) ? styles.active : ''
                         }`}
                     >
                         {icon}
@@ -79,10 +71,7 @@ export function SideNav() {
                 <Link href={`/stats/${type}/${id}`} key={`${type}/${id}`}>
                     <a
                         className={`${styles.navItem} ${
-                            pathname.startsWith(`/stats/${type}`) &&
-                            query.id === id
-                                ? styles.active
-                                : ''
+                            pathname.startsWith(`/stats/${type}`) && query.id === id ? styles.active : ''
                         }`}
                     >
                         <img src={thumbURI} alt={name} />
@@ -91,14 +80,8 @@ export function SideNav() {
                 </Link>
             ))}
 
-            <div
-                className={styles.handle}
-                onClick={() => setSideNavOpen((open) => !open)}
-            >
-                <motion.span
-                    initial={{ rotate: -90 }}
-                    animate={{ rotate: sideNavOpen ? -90 : 90 }}
-                >
+            <div className={styles.handle} onClick={() => setSideNavOpen((open) => !open)}>
+                <motion.span initial={{ rotate: -90 }} animate={{ rotate: sideNavOpen ? -90 : 90 }}>
                     {GoBackIcon}
                 </motion.span>
             </div>

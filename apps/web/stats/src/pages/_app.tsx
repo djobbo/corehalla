@@ -7,10 +7,9 @@ import { FavoritesProvider } from '~providers/FavoritesProvider';
 import { PlayerSearchProvider } from '~providers/PlayerSearchProvider';
 import { ThemeProvider } from '~providers/ThemeProvider';
 
-import { ThemeContext, Theme } from '~providers/ThemeProvider';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Router, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { Loader } from '@Loader';
 import { Background } from '@Background';
 import { SideNavProvider } from '~providers/SideNavProvider';
@@ -22,51 +21,51 @@ import { SideNavProvider } from '~providers/SideNavProvider';
 // Router.events.on('routeChangeComplete', () => NProgress.done());
 // Router.events.on('routeChangeError', () => NProgress.done());
 
-export default function MyApp({ Component, pageProps }: AppProps) {
-	// const { getThemeStr } = useContext(ThemeContext);
+export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
+    // const { getThemeStr } = useContext(ThemeContext);
 
-	const router = useRouter();
-	const [pageLoading, setPageLoading] = useState(false);
-	useEffect(() => {
-		const handleStart = () => {
-			setPageLoading(true);
-		};
-		const handleComplete = () => {
-			setPageLoading(false);
-		};
+    const router = useRouter();
+    const [pageLoading, setPageLoading] = useState(false);
+    useEffect(() => {
+        const handleStart = () => {
+            setPageLoading(true);
+        };
+        const handleComplete = () => {
+            setPageLoading(false);
+        };
 
-		router.events.on('routeChangeStart', handleStart);
-		router.events.on('routeChangeComplete', handleComplete);
-		router.events.on('routeChangeError', handleComplete);
-	}, [router]);
+        router.events.on('routeChangeStart', handleStart);
+        router.events.on('routeChangeComplete', handleComplete);
+        router.events.on('routeChangeError', handleComplete);
+    }, [router]);
 
-	useEffect(() => {
-		console.log(pageLoading);
-	}, [pageLoading]);
+    useEffect(() => {
+        console.log(pageLoading);
+    }, [pageLoading]);
 
-	return (
-		<>
-			<Head>
-				<link rel='icon' type='image/png' href='/images/favicon.png' />
-			</Head>
-			<Background />
+    return (
+        <>
+            <Head>
+                <link rel="icon" type="image/png" href="/images/favicon.png" />
+            </Head>
+            <Background />
 
-			<ThemeProvider>
-				<FavoritesProvider>
-					<PlayerSearchProvider>
-						<SideNavProvider>
-							<AnimateSharedLayout>
-								<div id='App'>
-									<AnimatePresence exitBeforeEnter initial>
-										<Component {...pageProps} />
-									</AnimatePresence>
-								</div>
-							</AnimateSharedLayout>
-						</SideNavProvider>
-					</PlayerSearchProvider>
-				</FavoritesProvider>
-			</ThemeProvider>
-			{pageLoading && <Loader />}
-		</>
-	);
+            <ThemeProvider>
+                <FavoritesProvider>
+                    <PlayerSearchProvider>
+                        <SideNavProvider>
+                            <AnimateSharedLayout>
+                                <div id="App">
+                                    <AnimatePresence exitBeforeEnter initial>
+                                        <Component {...pageProps} />
+                                    </AnimatePresence>
+                                </div>
+                            </AnimateSharedLayout>
+                        </SideNavProvider>
+                    </PlayerSearchProvider>
+                </FavoritesProvider>
+            </ThemeProvider>
+            {pageLoading && <Loader />}
+        </>
+    );
 }
