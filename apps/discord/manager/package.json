@@ -1,5 +1,5 @@
 {
-    "name": "corehalla-discord-manager",
+    "name": "@discord/manager",
     "version": "0.0.1",
     "description": "Corehalla Discord Server Manager",
     "main": "dist/index.js",

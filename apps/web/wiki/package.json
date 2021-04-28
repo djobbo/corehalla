@@ -1,5 +1,5 @@
 {
-    "name": "corehalla-wiki",
+    "name": "@web/wiki",
     "version": "0.0.1",
     "description": "Brawlhalla Wiki",
     "main": "index.js",

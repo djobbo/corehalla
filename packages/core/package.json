@@ -1,17 +1,19 @@
 {
-	"name": "@corehalla/core",
-	"version": "1.0.0",
-	"main": "dist/index.js",
-	"license": "MIT",
-	"scripts": {
-		"build": "tsc"
-	},
-	"devDependencies": {
-		"@corehalla/types": "1.0.0",
-		"typescript": "^4.2.4"
-	},
-	"dependencies": {
-		"axios": "^0.21.1",
-		"@corehalla/formatters": "1.0.0"
-	}
+    "name": "@corehalla/core",
+    "version": "0.1.0",
+    "main": "dist/index.js",
+    "license": "MIT",
+    "scripts": {
+        "build": "tsc",
+        "dist": "tsc",
+        "dist:watch": "tsc -w"
+    },
+    "devDependencies": {
+        "@corehalla/types": "0.1.0",
+        "typescript": "^4.2.4"
+    },
+    "dependencies": {
+        "axios": "^0.21.1",
+        "@corehalla/formatters": "0.1.0"
+    }
 }
