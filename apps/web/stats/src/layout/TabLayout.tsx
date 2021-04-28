@@ -1,10 +1,10 @@
-import styles from '@styles/Layout.module.scss';
+import styles from '~styles/Layout.module.scss';
 // Library imports
 import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 
 // Components imports
-import { AppBar } from '@components/AppBar';
-import { useTabs } from '@hooks/useTabs';
+import { AppBar } from '@AppBar';
+import { useTabs } from '~hooks/useTabs';
 import { Layout } from './Layout';
 
 interface ITab<Chip extends string, Sort extends string> {

@@ -1,4 +1,4 @@
-import { createContext, useState, FC, useEffect } from 'react';
+import { createContext, useState, FC, useEffect, useContext } from 'react';
 
 interface Props {
 	children: React.ReactNode;
@@ -22,7 +22,7 @@ const fetchFavorites = (): IFavorite[] => {
 	return JSON.parse(str);
 };
 
-export const FavoritesContext = createContext<{
+const FavoritesContext = createContext<{
 	favorites: IFavorite[];
 	isFavorite: (value: IFavorite) => boolean;
 	addFavorite: (value: IFavorite) => void;
@@ -35,6 +35,8 @@ export const FavoritesContext = createContext<{
 	removeFavorite: () => {},
 	updatedAt: -1,
 });
+
+export const useFavoritesContext = () => useContext(FavoritesContext);
 
 export const FavoritesProvider: FC<Props> = ({ children }: Props) => {
 	const [favorites, setFavorites] = useState<IFavorite[]>(fetchFavorites());

@@ -1,14 +1,16 @@
-import { useState, createContext, PropsWithChildren } from 'react';
+import { useState, createContext, PropsWithChildren, useContext } from 'react';
 
 interface ISideNavContext {
 	sideNavOpen: boolean;
 	setSideNavOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const SideNavContext = createContext<ISideNavContext>({
+const SideNavContext = createContext<ISideNavContext>({
 	sideNavOpen: false,
 	setSideNavOpen: () => {},
 });
+
+export const useSideNavContext = () => useContext(SideNavContext);
 
 export function SideNavProvider({ children }: PropsWithChildren<{}>) {
 	const [sideNavOpen, setSideNavOpen] = useState(false);

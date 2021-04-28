@@ -1,0 +1,103 @@
+@import '~styles/theme.scss';
+@import '~styles/devices.scss';
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: stretch;
+	background-color: $bg;
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 4rem;
+	z-index: 100;
+	gap: 0.5rem;
+	padding-top: 0.5rem;
+	transition: 0.15s all linear;
+
+	@media only screen and (max-width: $size_desktop) {
+		&.closed {
+			margin-left: -4rem;
+		}
+	}
+
+	.navItem {
+		width: 3rem;
+		min-height: 3rem;
+		height: 3rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		color: $text-2;
+		font-size: 0.75rem;
+		border: 1px solid $bg-1;
+		border-radius: 1rem;
+		padding: 0.25rem;
+
+		svg {
+			fill: none;
+			stroke: $text-2;
+			stroke-width: 0.125rem;
+			width: 2rem;
+		}
+
+		img {
+			width: 100%;
+			height: 1.5rem;
+			object-fit: contain;
+			object-position: center;
+		}
+
+		&.active {
+			border-color: $accent;
+			color: $text;
+
+			svg {
+				stroke: $text;
+			}
+		}
+	}
+
+	.separator {
+		border-bottom: 1px solid $text-2;
+		width: 1.5rem;
+	}
+
+	.handle {
+		position: absolute;
+		bottom: 2rem;
+		right: -2rem;
+		width: 2rem;
+		height: 4rem;
+		background-color: $accent;
+		border-radius: 0 0.5rem 0.5rem 0;
+		box-shadow: $card-shadow;
+		cursor: pointer;
+		z-index: -1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		&:hover {
+			background-color: $text;
+
+			svg {
+				stroke: $bg;
+			}
+		}
+
+		svg {
+			width: 1rem;
+			height: 1rem;
+			stroke: $text;
+			stroke-width: 0.5rem;
+		}
+
+		@media only screen and (min-width: $size_desktop) {
+			display: none;
+		}
+	}
+}

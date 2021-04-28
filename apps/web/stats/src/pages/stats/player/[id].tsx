@@ -1,13 +1,13 @@
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import type { IPlayerStatsFormat, Weapon } from 'corehalla';
-import { OverviewTab } from '@layout/pages/stats/PlayerStats_OverviewTab';
-import { TabLayout } from '@layout/TabLayout';
+import { OverviewTab } from '~layou/pages/stats/PlayerStats_OverviewTab';
+import { TabLayout } from '~layou/TabLayout';
 import {
 	LegendSort,
 	LegendsTab,
-} from '@layout/pages/stats/PlayerStats_LegendsTab';
-import { TeamsSort, TeamsTab } from '@layout/pages/stats/PlayerStats_TeamsTab';
+} from '~layou/pages/stats/PlayerStats_LegendsTab';
+import { TeamsSort, TeamsTab } from '~layou/pages/stats/PlayerStats_TeamsTab';
 import { fetchPlayerFormat } from '@api';
 import { MockPlayerStats } from '@api/mocks/PlayerStats';
 

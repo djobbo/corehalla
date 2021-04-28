@@ -1,8 +1,8 @@
-import styles from '@styles/pages/RankingsPage.module.scss';
-import type { IRanking1v1Format, RankedRegion } from 'corehalla';
+import styles from '~styles/pages/RankingsPage.module.scss';
+import type { IRanking1v1Format, RankedRegion } from '@corehalla/types';
 import { motion } from 'framer-motion';
-import { SectionSeparator } from '@components/PageSection';
-import { RankingsItem1v1 } from '@components/RankingsItem';
+import { SectionSeparator } from '@PageSection';
+import { RankingsItem1v1 } from '@RankingsItem';
 
 export interface Props {
 	region: RankedRegion;
