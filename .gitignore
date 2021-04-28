@@ -8,3 +8,5 @@ dist
 .firebase
 
 **/*.log
+
+coverage
