@@ -1,0 +1,17 @@
+{
+	"name": "@corehalla/core",
+	"version": "1.0.0",
+	"main": "dist/index.js",
+	"license": "MIT",
+	"scripts": {
+		"build": "tsc"
+	},
+	"devDependencies": {
+		"@corehalla/formatters": "1.0.0",
+		"@corehalla/types": "1.0.0",
+		"typescript": "^4.2.4"
+	},
+	"dependencies": {
+		"axios": "^0.21.1"
+	}
+}
