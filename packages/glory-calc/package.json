@@ -1,0 +1,13 @@
+{
+	"name": "@corehalla/glory-calc",
+	"version": "1.0.0",
+	"main": "dist/index.js",
+	"license": "MIT",
+	"scripts": {
+		"build": "tsc"
+	},
+	"devDependencies": {
+		"@corehalla/static": "1.0.0",
+		"typescript": "^4.2.4"
+	}
+}

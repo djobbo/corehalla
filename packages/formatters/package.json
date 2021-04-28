@@ -1,0 +1,15 @@
+{
+	"name": "@corehalla/formatters",
+	"version": "1.0.0",
+	"main": "dist/index.js",
+	"license": "MIT",
+	"scripts": {
+		"build": "tsc"
+	},
+	"devDependencies": {
+		"@corehalla/glory-calc": "1.0.0",
+		"@corehalla/static": "1.0.0",
+		"@corehalla/types": "1.0.0",
+		"typescript": "^4.2.4"
+	}
+}
