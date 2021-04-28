@@ -1,13 +1,13 @@
-import styles from '@styles/pages/stats/PlayerStatsPage.module.scss';
+import styles from '~styles/pages/stats/PlayerStatsPage.module.scss';
 import Head from 'next/head';
-import type { I2v2TeamFormat, IPlayerStatsFormat } from 'corehalla';
-import { SectionSeparator, PageSection } from '@components/PageSection';
+import type { I2v2TeamFormat, IPlayerStatsFormat } from '@corehalla/types';
+import { SectionSeparator, PageSection } from '@PageSection';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { GamesStatsCard } from '@components/GamesStatsCard';
-import { MiscStats } from '@components/MiscStats';
-import { Select } from '@components/Select';
-import { TeamCard } from '@components/TeamCard';
+import { GamesStatsCard } from '@GamesStatsCard';
+import { MiscStats } from '@MiscStats';
+import { Select } from '@Select';
+import { TeamCard } from '~components/TeamCard';
 
 export type TeamsSort =
 	| 'rating'

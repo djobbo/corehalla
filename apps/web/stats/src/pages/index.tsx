@@ -1,22 +1,22 @@
-import styles from '@styles/pages/HomePage.module.scss';
-import layoutStyles from '@styles/Layout.module.scss';
+import styles from '~styles/pages/HomePage.module.scss';
+import layoutStyles from '~styles/Layout.module.scss';
 // Library imports
 import { useContext, useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
-import { StatSmall, StatDesc } from '@components/TextStyles';
+import { StatSmall, StatDesc } from '@TextStyles';
 
 // Components imports
-import { PlayerSearchContext } from '@providers/PlayerSearchProvider';
+import { usePlayerSearchContext } from '~providers/PlayerSearchProvider';
 import { useViewportScroll } from 'framer-motion';
-import { Layout } from '@layout/Layout';
-import { SideNavContext } from '@providers/SideNavProvider';
+import { Layout } from '~layout/Layout';
+import { useSideNavContext } from '~providers/SideNavProvider';
 
 export default function HomePage() {
 	const { scrollY } = useViewportScroll();
-	const { setPlayerSearch } = useContext(PlayerSearchContext);
+	const { setPlayerSearch } = usePlayerSearchContext();
 	const [hasScrolled, setHasScrolled] = useState(scrollY.get() > 0);
-	const { sideNavOpen } = useContext(SideNavContext);
+	const { sideNavOpen } = useSideNavContext();
 
 	scrollY.onChange(() => {
 		setHasScrolled(scrollY.get() > 0);

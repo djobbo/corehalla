@@ -1,4 +1,4 @@
-import React, { useState, createContext, FC } from 'react';
+import React, { useState, createContext, FC, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { useDebounce } from '../hooks/useDebounce';
 
@@ -11,10 +11,12 @@ interface IPlayerSearchContext {
 	setPlayerSearch: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const PlayerSearchContext = createContext<IPlayerSearchContext>({
+const PlayerSearchContext = createContext<IPlayerSearchContext>({
 	playerSearch: '',
 	setPlayerSearch: () => {},
 });
+
+export const usePlayerSearchContext = () => useContext(PlayerSearchContext);
 
 export const PlayerSearchProvider: FC<Props> = ({ children }: Props) => {
 	const router = useRouter();

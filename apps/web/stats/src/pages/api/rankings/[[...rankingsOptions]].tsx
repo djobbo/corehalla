@@ -1,7 +1,7 @@
-import { fetch1v1RankingsFormat } from '@api';
+import { fetch1v1RankingsFormat } from '@corehalla/core';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { RankedRegion } from 'corehalla';
-import { Mock1v1Rankings } from '@api/mocks/1v1Rankings';
+import { RankedRegion } from '@corehalla/types';
+import { Mock1v1Rankings } from '@corehalla/mocks';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	const [bracket, region, page] =

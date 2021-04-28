@@ -1,0 +1,43 @@
+@import '~styles/devices.scss';
+@import '~styles/theme.scss';
+
+.container {
+	display: flex;
+	overflow-x: auto;
+	border-bottom: 1px solid $bg-1;
+	background-color: $bg;
+	height: 3rem;
+	justify-content: flex-start;
+
+	@media only screen and (min-width: $size_desktop) {
+		justify-content: center;
+	}
+
+	.tab {
+		white-space: nowrap;
+		font-size: 0.75rem;
+		text-transform: uppercase;
+
+		a {
+			height: 100%;
+			color: $text-2;
+			display: flex;
+			align-items: center;
+			padding: 0 1.5rem;
+		}
+
+		&.active {
+			a {
+				color: $accent;
+				border-bottom: 1px solid $accent;
+			}
+		}
+	}
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}

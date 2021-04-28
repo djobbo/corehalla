@@ -1,0 +1,35 @@
+@import '~styles/theme.scss';
+
+.container {
+	pointer-events: none;
+	position: sticky;
+	top: 0;
+	z-index: 50;
+
+	.extras {
+		pointer-events: initial;
+		&.hidden {
+			pointer-events: none;
+		}
+
+		.chipsBar {
+			padding-top: 1rem;
+			padding-bottom: 1rem;
+			background: rgba($bg-1, 0.2);
+			background: linear-gradient(
+				0deg,
+				rgba($bg-1, 0) 0%,
+				rgba($bg-1, 1) 100%
+			);
+
+			.content {
+				display: flex;
+				max-width: 1200px;
+				align-items: center;
+				margin: 0 auto;
+				gap: 2rem;
+				justify-content: center;
+			}
+		}
+	}
+}

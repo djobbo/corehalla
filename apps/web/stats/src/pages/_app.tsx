@@ -1,19 +1,19 @@
 import type { AppProps } from 'next/app';
 import { AnimatePresence, AnimateSharedLayout } from 'framer-motion';
 
-import '../styles/global.scss';
+import '~styles/global.scss';
 
-import { FavoritesProvider } from '@providers/FavoritesProvider';
-import { PlayerSearchProvider } from '@providers/PlayerSearchProvider';
-import { ThemeProvider } from '@providers/ThemeProvider';
+import { FavoritesProvider } from '~providers/FavoritesProvider';
+import { PlayerSearchProvider } from '~providers/PlayerSearchProvider';
+import { ThemeProvider } from '~providers/ThemeProvider';
 
-import { ThemeContext, Theme } from '@providers/ThemeProvider';
+import { ThemeContext, Theme } from '~providers/ThemeProvider';
 import { useContext, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Router, useRouter } from 'next/router';
-import { Loader } from '@components/Loader';
-import { Background } from '@components/Background';
-import { SideNavProvider } from '@providers/SideNavProvider';
+import { Loader } from '@Loader';
+import { Background } from '@Background';
+import { SideNavProvider } from '~providers/SideNavProvider';
 
 // Router.events.on('routeChangeStart', (url) => {
 // 	console.log(`Loading: ${url}`);

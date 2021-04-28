@@ -1,4 +1,4 @@
-import React, { createContext, useState, FC } from 'react';
+import React, { createContext, useState, FC, useContext } from 'react';
 
 type ThemeMode = 'light' | 'dark' | 'solarizedDark' | 'solarizedLight';
 type ThemeProps = 'bg' | 'bg-1' | 'bg-2' | 'text-2' | 'text' | 'accent';
@@ -50,6 +50,8 @@ export const ThemeContext = createContext<{
 	getThemeStr: () => '',
 	setThemeMode: () => {},
 });
+
+export const useThemeContext = () => useContext(ThemeContext);
 
 interface Props {
 	children: React.ReactNode;

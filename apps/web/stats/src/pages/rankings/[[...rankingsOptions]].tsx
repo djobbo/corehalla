@@ -1,13 +1,10 @@
 import { GetServerSideProps } from 'next';
-import type { IRanking1v1Format, RankedRegion } from 'corehalla';
-import { fetch1v1RankingsFormat } from '@api';
-import { Mock1v1Rankings } from '@api/mocks/1v1Rankings';
-import { LegendsTab } from '@layout/pages/stats/PlayerStats_LegendsTab';
-import { OverviewTab } from '@layout/pages/stats/PlayerStats_OverviewTab';
-import { TeamsTab } from '@layout/pages/stats/PlayerStats_TeamsTab';
-import { TabLayout } from '@layout/TabLayout';
+import type { IRanking1v1Format, RankedRegion } from '@corehalla/types';
+import { fetch1v1RankingsFormat } from '@corehalla/core';
+import { Mock1v1Rankings } from '@corehalla/mocks';
+import { TabLayout } from '~layout/TabLayout';
 import Head from 'next/head';
-import { Rankings1v1Tab } from '@layout/pages/rankings/Rankings_1v1Tab';
+import { Rankings1v1Tab } from '~layout/pages/rankings/Rankings_1v1Tab';
 
 export interface Props {
 	bracket: Bracket;

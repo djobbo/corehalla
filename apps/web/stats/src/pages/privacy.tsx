@@ -1,4 +1,4 @@
-import { ArticleLayout } from '@layout/ArticleLayout';
+import { ArticleLayout } from '~layout/ArticleLayout';
 
 export default function PrivacyPage() {
 	return (

@@ -1,4 +1,4 @@
-import styles from '@styles/Article.module.scss';
+import styles from '~styles/Article.module.scss';
 import { Layout } from './Layout';
 
 interface Props {

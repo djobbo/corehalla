@@ -4,13 +4,13 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Head from 'next/head';
 import Link from 'next/link';
 
-import { FavoritesContext } from '@providers/FavoritesProvider';
+import { useFavoritesContext } from '~providers/FavoritesProvider';
 
 // Components imports
-import { TabLayout } from '@layout/TabLayout';
+import { TabLayout } from '~layout/TabLayout';
 
 export default function FavoritesPage() {
-	const { favorites } = useContext(FavoritesContext);
+	const { favorites } = useFavoritesContext();
 
 	return (
 		<TabLayout<

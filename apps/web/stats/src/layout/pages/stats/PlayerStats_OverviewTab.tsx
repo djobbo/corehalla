@@ -1,12 +1,12 @@
-import styles from '@styles/pages/stats/PlayerStatsPage.module.scss';
-import { SectionSeparator, PageSection } from '@components/PageSection';
-import { ProfileHeader } from '@components/ProfileHeader';
-import { SectionClanOverviewSmallContent } from '@components/SectionClanOverviewSmallContent';
-import { SectionOverallStatsContent } from '@components/SectionOverallStatsContent';
-import { SectionSeasonOverviewContent } from '@components/SectionSeasonOverviewContent';
-import { StatDesc, StatSmall, StatMedium } from '@components/TextStyles';
-import { formatTime } from '@util';
-import { IPlayerStatsFormat } from 'corehalla';
+import styles from '~styles/pages/stats/PlayerStatsPage.module.scss';
+import { SectionSeparator, PageSection } from '@PageSection';
+import { ProfileHeader } from '@ProfileHeader';
+import { SectionClanOverviewSmallContent } from '@SectionClanOverviewSmallContent';
+import { SectionOverallStatsContent } from '@SectionOverallStatsContent';
+import { SectionSeasonOverviewContent } from '@SectionSeasonOverviewContent';
+import { StatDesc, StatSmall, StatMedium } from '@TextStyles';
+import { formatTime } from '~util';
+import { IPlayerStatsFormat } from '@corehalla/types';
 
 export const OverviewTab = (playerStats: IPlayerStatsFormat) => (
 	active: boolean

@@ -1,13 +1,17 @@
-import styles from '@styles/pages/stats/PlayerStatsPage.module.scss';
-import { ILegendStatsFormat, IPlayerStatsFormat, Weapon } from 'corehalla';
-import { SectionSeparator, PageSection } from '@components/PageSection';
+import styles from '~styles/pages/stats/PlayerStatsPage.module.scss';
+import {
+	ILegendStatsFormat,
+	IPlayerStatsFormat,
+	Weapon,
+} from '@corehalla/types';
+import { SectionSeparator, PageSection } from '@PageSection';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { Select } from '@components/Select';
-import { formatTime } from '@util';
-import { SectionOverallStatsContent } from '@components/SectionOverallStatsContent';
-import { SectionSeasonOverviewContent } from '@components/SectionSeasonOverviewContent';
-import { StatDesc, StatSmall } from '@components/TextStyles';
+import { Select } from '@Select';
+import { formatTime } from '~util';
+import { SectionOverallStatsContent } from '@SectionOverallStatsContent';
+import { SectionSeasonOverviewContent } from '@SectionSeasonOverviewContent';
+import { StatDesc, StatSmall } from '@TextStyles';
 
 export type LegendSort =
 	| 'level'
