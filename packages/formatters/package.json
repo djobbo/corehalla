@@ -1,17 +1,19 @@
 {
-	"name": "@corehalla/formatters",
-	"version": "1.0.0",
-	"main": "dist/index.js",
-	"license": "MIT",
-	"scripts": {
-		"build": "tsc"
-	},
-	"devDependencies": {
-		"@corehalla/types": "1.0.0",
-		"typescript": "^4.2.4"
-	},
-	"dependencies": {
-		"@corehalla/static": "1.0.0",
-		"@corehalla/glory-calc": "1.0.0"
-	}
+    "name": "@corehalla/formatters",
+    "version": "0.1.0",
+    "main": "dist/index.js",
+    "license": "MIT",
+    "scripts": {
+        "build": "tsc",
+        "dist": "tsc",
+        "dist:watch": "tsc -w"
+    },
+    "devDependencies": {
+        "@corehalla/types": "0.1.0",
+        "typescript": "^4.2.4"
+    },
+    "dependencies": {
+        "@corehalla/static": "0.1.0",
+        "@corehalla/glory-calc": "0.1.0"
+    }
 }

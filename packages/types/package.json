@@ -1,12 +1,14 @@
 {
-	"name": "@corehalla/types",
-	"version": "1.0.0",
-	"main": "dist/index.js",
-	"license": "MIT",
-	"scripts": {
-		"build": "tsc"
-	},
-	"devDependencies": {
-		"typescript": "^4.2.4"
-	}
+    "name": "@corehalla/types",
+    "version": "0.1.0",
+    "main": "dist/index.js",
+    "license": "MIT",
+    "scripts": {
+        "build": "tsc",
+        "dist": "tsc",
+        "dist:watch": "tsc -w"
+    },
+    "devDependencies": {
+        "typescript": "^4.2.4"
+    }
 }
