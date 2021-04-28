@@ -1,9 +1,9 @@
 import {
     getGloryFromWins,
     getGloryFromBestRating,
-    getHeroRatingSquash,
-    getPersonalRatingSquash,
-    getTierFromRating,
+    // getHeroRatingSquash,
+    // getPersonalRatingSquash,
+    // getTierFromRating,
 } from '.';
 
 describe('@corehalla/glory-calc', (): void => {

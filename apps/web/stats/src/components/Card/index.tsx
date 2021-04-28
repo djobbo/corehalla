@@ -3,14 +3,14 @@ import { motion } from 'framer-motion';
 import { PropsWithChildren } from 'react';
 
 interface Props {
-	title?: string;
+    title?: string;
 }
 
-export function Card({ title, children }: PropsWithChildren<Props>) {
-	return (
-		<motion.div className={styles.container}>
-			{title && <span className={styles.title}>{title}</span>}
-			<div>{children}</div>
-		</motion.div>
-	);
+export function Card({ title, children }: PropsWithChildren<Props>): JSX.Element {
+    return (
+        <motion.div className={styles.container}>
+            {title && <span className={styles.title}>{title}</span>}
+            <div>{children}</div>
+        </motion.div>
+    );
 }

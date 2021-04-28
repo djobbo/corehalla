@@ -1,23 +1,23 @@
-import { useState, createContext, PropsWithChildren, useContext } from 'react';
+import { useState, createContext, useContext, ReactNode } from 'react';
 
 interface ISideNavContext {
-	sideNavOpen: boolean;
-	setSideNavOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    sideNavOpen: boolean;
+    setSideNavOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SideNavContext = createContext<ISideNavContext>({
-	sideNavOpen: false,
-	setSideNavOpen: () => {},
+    sideNavOpen: false,
+    setSideNavOpen: () => ({}),
 });
 
-export const useSideNavContext = () => useContext(SideNavContext);
+export const useSideNavContext = (): ISideNavContext => useContext(SideNavContext);
 
-export function SideNavProvider({ children }: PropsWithChildren<{}>) {
-	const [sideNavOpen, setSideNavOpen] = useState(false);
+interface Props {
+    children: ReactNode;
+}
 
-	return (
-		<SideNavContext.Provider value={{ sideNavOpen, setSideNavOpen }}>
-			{children}
-		</SideNavContext.Provider>
-	);
+export function SideNavProvider({ children }: Props): JSX.Element {
+    const [sideNavOpen, setSideNavOpen] = useState(false);
+
+    return <SideNavContext.Provider value={{ sideNavOpen, setSideNavOpen }}>{children}</SideNavContext.Provider>;
 }

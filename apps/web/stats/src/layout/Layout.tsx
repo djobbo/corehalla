@@ -2,18 +2,18 @@ import { Footer } from '@Footer';
 import { SideNav } from '@SideNav';
 import { useSideNavContext } from '~providers/SideNavProvider';
 import styles from '~styles/Layout.module.scss';
-import { PropsWithChildren, useContext } from 'react';
+import { ReactNode } from 'react';
 
-export function Layout({ children }: PropsWithChildren<{}>) {
+interface Props {
+    children: ReactNode;
+}
+
+export function Layout({ children }: Props): JSX.Element {
     const { sideNavOpen } = useSideNavContext();
 
     return (
         <>
-            <div
-                className={`${styles.mainGrid} ${
-                    sideNavOpen ? styles.sideNavOpen : ''
-                }`}
-            >
+            <div className={`${styles.mainGrid} ${sideNavOpen ? styles.sideNavOpen : ''}`}>
                 <div>{children}</div>
                 <Footer />
             </div>

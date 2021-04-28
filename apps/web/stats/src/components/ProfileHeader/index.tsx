@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 // Library imports
-import { PropsWithChildren, useContext, useEffect, useState } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { useFavoritesContext, IFavorite } from '~providers/FavoritesProvider';
 
 interface Props {
@@ -9,18 +9,8 @@ interface Props {
     favorite: IFavorite;
 }
 
-export function ProfileHeader({
-    bannerURI,
-    title,
-    favorite,
-    children,
-}: PropsWithChildren<Props>) {
-    const {
-        isFavorite,
-        addFavorite,
-        removeFavorite,
-        updatedAt,
-    } = useFavoritesContext();
+export function ProfileHeader({ bannerURI, title, favorite, children }: PropsWithChildren<Props>): JSX.Element {
+    const { isFavorite, addFavorite, removeFavorite, updatedAt } = useFavoritesContext();
     const [isFav, setIsFav] = useState(isFavorite(favorite));
 
     useEffect(() => {
@@ -29,11 +19,7 @@ export function ProfileHeader({
 
     return (
         <div className={styles.container}>
-            <img
-                className={styles.bannerImg}
-                src={bannerURI}
-                alt={`${title}_banner`}
-            />
+            <img className={styles.bannerImg} src={bannerURI} alt={`${title}_banner`} />
             <h1 className={styles.title}>{title}</h1>
 
             {isFav ? (

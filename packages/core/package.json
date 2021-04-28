@@ -12,7 +12,6 @@
     "devDependencies": {
         "@corehalla/types": "0.1.0",
         "typescript": "^4.2.4",
-        "@config/lint": "1.0.0",
         "@config/typecheck": "1.0.0"
     },
     "dependencies": {

@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 // Library imports
-import { useContext, SetStateAction, Dispatch, useRef, useEffect } from 'react';
+import { SetStateAction, Dispatch, useRef, useEffect } from 'react';
 
 // Context imports
 import { usePlayerSearchContext } from '~providers/PlayerSearchProvider';
@@ -10,7 +10,7 @@ interface Props {
     setShowSearch: Dispatch<SetStateAction<boolean>>;
 }
 
-export function SearchBar({ setShowSearch }: Props) {
+export function SearchBar({ setShowSearch }: Props): JSX.Element {
     const { setPlayerSearch } = usePlayerSearchContext();
     const inputRef = useRef<HTMLInputElement>();
 

@@ -1,72 +1,63 @@
 // Library imports
-import React, { FC, useContext } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import Head from 'next/head';
-import Link from 'next/link';
 
 import { useFavoritesContext } from '~providers/FavoritesProvider';
 
 // Components imports
 import { TabLayout } from '~layout/TabLayout';
 
-export default function FavoritesPage() {
-	const { favorites } = useFavoritesContext();
+export default function FavoritesPage(): JSX.Element {
+    const { favorites } = useFavoritesContext();
 
-	return (
-		<TabLayout<
-			'players' | 'clans',
-			{ players: [null, null]; clans: [null, null] }
-		>
-			title='Favorites • Corehalla'
-			tabs={{
-				players: {
-					displayName: 'Players',
-					component: (active) =>
-						active &&
-						favorites
-							.filter((fav) => fav.type === 'player')
-							.map((fav) => <p>{fav.name}</p>),
-					chips: null,
-					defaultChip: null,
-					sortOptions: null,
-					defaultSort: null,
-					link: '/favorites',
-				},
-				clans: {
-					displayName: 'Clans',
-					component: (active) => active && 'Clans',
-					chips: null,
-					defaultChip: null,
-					sortOptions: null,
-					defaultSort: null,
-					link: '/favorites?tab=clans',
-				},
-			}}
-		/>
-		// 	<Head>
-		// 		<title>Favorites • Corehalla</title>
-		// 	</Head>
-		// 	<AppBar title='Favorites' />
-		// 	<AnimatePresence exitBeforeEnter initial>
-		// 		<motion.div
-		// 			key='page'
-		// 			animate={{ opacity: 1 }}
-		// 			initial={{ opacity: 0 }}
-		// 		>
-		// 			<main>
-		// 				{favorites.map((fav) => (
-		// 					<Link
-		// 						key={fav.id}
-		// 						href={`/stats/${fav.type}/${fav.id}`}
-		// 					>
-		// 						{fav.name}
-		// 						<img src={fav.thumbURI} alt={fav.name} />
-		// 					</Link>
-		// 				))}
-		// 			</main>
-		// 		</motion.div>
-		// 	</AnimatePresence>
-		// 	<SideNav />
-		// </MainLayout>
-	);
+    return (
+        <TabLayout<'players' | 'clans', { players: [null, null]; clans: [null, null] }>
+            title="Favorites • Corehalla"
+            tabs={{
+                players: {
+                    displayName: 'Players',
+                    component: (active) =>
+                        active &&
+                        favorites.filter((fav) => fav.type === 'player').map((fav, i) => <p key={i}>{fav.name}</p>),
+                    chips: null,
+                    defaultChip: null,
+                    sortOptions: null,
+                    defaultSort: null,
+                    link: '/favorites',
+                },
+                clans: {
+                    displayName: 'Clans',
+                    component: (active) => active && 'Clans',
+                    chips: null,
+                    defaultChip: null,
+                    sortOptions: null,
+                    defaultSort: null,
+                    link: '/favorites?tab=clans',
+                },
+            }}
+        />
+        // 	<Head>
+        // 		<title>Favorites • Corehalla</title>
+        // 	</Head>
+        // 	<AppBar title='Favorites' />
+        // 	<AnimatePresence exitBeforeEnter initial>
+        // 		<motion.div
+        // 			key='page'
+        // 			animate={{ opacity: 1 }}
+        // 			initial={{ opacity: 0 }}
+        // 		>
+        // 			<main>
+        // 				{favorites.map((fav) => (
+        // 					<Link
+        // 						key={fav.id}
+        // 						href={`/stats/${fav.type}/${fav.id}`}
+        // 					>
+        // 						{fav.name}
+        // 						<img src={fav.thumbURI} alt={fav.name} />
+        // 					</Link>
+        // 				))}
+        // 			</main>
+        // 		</motion.div>
+        // 	</AnimatePresence>
+        // 	<SideNav />
+        // </MainLayout>
+    );
 }

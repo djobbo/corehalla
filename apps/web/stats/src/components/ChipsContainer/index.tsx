@@ -10,14 +10,11 @@ export interface Props<T extends string> {
     chips: IChip<T>[];
 }
 
-export function ChipsContainer<T extends string>({ chips }: Props<T>) {
+export function ChipsContainer<T extends string>({ chips }: Props<T>): JSX.Element {
     return (
         <div className={styles.container}>
             {chips.map(({ displayName, action, active }, i) => (
-                <div
-                    className={`${styles.chip} ${active ? styles.active : ''}`}
-                    key={i}
-                >
+                <div className={`${styles.chip} ${active ? styles.active : ''}`} key={i}>
                     <a
                         href="#"
                         onClick={
