@@ -6,8 +6,6 @@
         "apps/discord/*"
     ],
     "scripts": {
-        "bootstrap": "make bootstrap",
-        "codesandbox:build": "make build-no-bundle",
         "test": "jest",
         "tsc": "tsc",
         "lint": "eslint --fix"
