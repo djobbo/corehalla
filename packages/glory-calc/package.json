@@ -6,7 +6,10 @@
     "scripts": {
         "build": "tsc",
         "dist": "tsc",
-        "dist:watch": "tsc -w"
+        "dist:watch": "tsc -w",
+        "eslint": "eslint '*/**/*.{js,jsx,ts,tsx}' --fix --ignore-path .eslintignore",
+        "typecheck": "tsc --noemit",
+        "test": "jest"
     },
     "devDependencies": {
         "typescript": "^4.2.4"

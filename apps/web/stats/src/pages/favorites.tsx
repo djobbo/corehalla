@@ -8,15 +8,26 @@ import { TabLayout } from '~layout/TabLayout';
 export default function FavoritesPage(): JSX.Element {
     const { favorites } = useFavoritesContext();
 
+    const playersTabComponent = (active: boolean) =>
+        active && (
+            <>
+                {favorites
+                    .filter((fav) => fav.type === 'player')
+                    .map((fav, i) => (
+                        <p key={i}>{fav.name}</p>
+                    ))}
+            </>
+        );
+
+    const clansTabComponent = (active: boolean) => active && 'Clans';
+
     return (
         <TabLayout<'players' | 'clans', { players: [null, null]; clans: [null, null] }>
             title="Favorites • Corehalla"
             tabs={{
                 players: {
                     displayName: 'Players',
-                    component: (active) =>
-                        active &&
-                        favorites.filter((fav) => fav.type === 'player').map((fav, i) => <p key={i}>{fav.name}</p>),
+                    component: playersTabComponent,
                     chips: null,
                     defaultChip: null,
                     sortOptions: null,
@@ -25,7 +36,7 @@ export default function FavoritesPage(): JSX.Element {
                 },
                 clans: {
                     displayName: 'Clans',
-                    component: (active) => active && 'Clans',
+                    component: clansTabComponent,
                     chips: null,
                     defaultChip: null,
                     sortOptions: null,

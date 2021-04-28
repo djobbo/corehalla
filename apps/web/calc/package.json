@@ -6,7 +6,9 @@
         "build": "lerna run dist && rollup -c",
         "dev": "rollup -c -w",
         "start": "sirv public --no-clear",
-        "validate": "svelte-check"
+        "validate": "svelte-check",
+        "eslint": "eslint '*/**/*.{js,jsx,ts,tsx}' --fix --ignore-path .eslintignore",
+        "typecheck": "tsc --noemit"
     },
     "devDependencies": {
         "@rollup/plugin-commonjs": "^18.0.0",
