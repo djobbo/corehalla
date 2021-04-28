@@ -18,7 +18,7 @@
 	"license": "MIT",
 	"devDependencies": {
 		"glob": "^7.1.6",
-		"markdown-it": "^11.0.1",
+		"markdown-it": "^12.0.6",
 		"markdown-it-meta": "0.0.1",
 		"vuepress": "^1.5.3"
 	}
