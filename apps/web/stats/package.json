@@ -5,7 +5,9 @@
     "scripts": {
         "dev": "next dev",
         "build": "lerna run dist && next build",
-        "start": "next start"
+        "start": "next start",
+        "eslint": "eslint '*/**/*.{js,jsx,ts,tsx}' --fix --ignore-path .eslintignore",
+        "typecheck": "tsc --noemit"
     },
     "dependencies": {
         "@corehalla/core": "0.1.0",

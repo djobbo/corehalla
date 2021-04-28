@@ -4,9 +4,7 @@
     "description": "Corehalla Discord Server Manager",
     "main": "dist/index.js",
     "private": true,
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
+    "scripts": {},
     "author": "Alfie",
     "license": "ISC",
     "dependencies": {

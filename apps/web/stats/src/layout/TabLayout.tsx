@@ -1,6 +1,6 @@
 import styles from '~styles/Layout.module.scss';
 // Library imports
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 
 // Components imports
 import { AppBar } from '@AppBar';
@@ -11,7 +11,7 @@ export type ITabComponent<Chip extends string, Sort extends string> = (
     active: boolean,
     activeChip: Chip,
     activeSort: Sort,
-) => JSX.Element;
+) => ReactNode;
 
 interface ITab<Chip extends string, Sort extends string> {
     displayName: string;

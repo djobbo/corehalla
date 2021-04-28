@@ -6,12 +6,12 @@
     ],
     "scripts": {
         "dist": "lerna run --scope @corehalla/* dist",
-        "lint:packages": "lerna --scope @corehalla/* exec eslint '*/**/*.{js,jsx,ts,tsx}' -- --fix --ignore-path .eslintignore",
-        "lint:web": "lerna --scope @web/stats exec eslint '*/**/*.{js,jsx,ts,tsx}' -- --fix --ignore-path .eslintignore",
-        "lint": "yarn lint:packages && yarn lint:web",
+        "eslint": "lerna run --parallel eslint",
         "build": "lerna run build",
         "watch": "lerna run --scope @corehalla/* dist:watch",
-        "test": "lerna run test"
+        "test": "lerna run --parallel test",
+        "typecheck": "lerna run --parallel typecheck",
+        "lint": "yarn dist && yarn eslint && yarn typecheck && yarn test"
     },
     "devDependencies": {
         "@types/jest": "^26.0.23",
