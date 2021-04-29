@@ -1,21 +1,23 @@
 import styles from '../styles/Layout.module.scss';
-import { PropsWithChildren } from 'react';
+import { ReactNode } from 'react';
 import { Header } from './Header';
 import { SideNav } from './SideNav';
 import { PropertiesPanel } from './PropertiesPanel';
 import { Timeline } from './Timeline';
-import { Resizable } from './Resizable';
+// import { Resizable } from './Resizable';
 
-interface Props {}
+interface Props {
+    children: ReactNode;
+}
 
-export function Layout({ children }: PropsWithChildren<Props>) {
-	return (
-		<div id={styles.App}>
-			<Header />
-			<SideNav />
-			<PropertiesPanel />
-			<div className={styles.editor}>{children}</div>
-			<Timeline />
-		</div>
-	);
+export function Layout({ children }: Props): JSX.Element {
+    return (
+        <div id={styles.App}>
+            <Header />
+            <SideNav />
+            <PropertiesPanel />
+            <div className={styles.editor}>{children}</div>
+            <Timeline />
+        </div>
+    );
 }

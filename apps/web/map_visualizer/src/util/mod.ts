@@ -1,3 +1,3 @@
-export function mod(n: number, m: number) {
-	return ((n % m) + m) % m;
+export function mod(n: number, m: number): number {
+    return ((n % m) + m) % m;
 }
