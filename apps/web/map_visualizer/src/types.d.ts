@@ -33,19 +33,25 @@ interface MapNode {
     isDragging: boolean;
 }
 
-interface Platform extends MapNode, Bounds {
+interface PlatformBase extends MapNode, Bounds {
     assetName?: string;
     instanceName: string;
     scaleX?: number;
     scaleY?: number;
     rotation?: number;
-    platforms: Platform[];
-    assets: Asset[];
     themes: string[];
     platId: string;
 }
 
-type Asset = Omit<Platform, 'assets' | 'platforms'>;
+interface Platform extends PlatformBase {
+    type: 'platform';
+    platforms: Platform[];
+    assets: Asset[];
+}
+
+interface Asset extends PlatformBase {
+    type: 'asset';
+}
 
 interface PlatformAnimation {
     platId: string;

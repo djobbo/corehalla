@@ -11,6 +11,7 @@ import { usePlayerSearchContext } from '~providers/PlayerSearchProvider';
 import { useViewportScroll } from 'framer-motion';
 import { Layout } from '~layout/Layout';
 import { useSideNavContext } from '~providers/SideNavProvider';
+import { DiscordIcon } from '~components/SocialIcons';
 
 export default function HomePage(): JSX.Element {
     const { scrollY } = useViewportScroll();
@@ -47,8 +48,8 @@ export default function HomePage(): JSX.Element {
                         </Link>
                     </ul>
                 </div>
-                <main className={layoutStyles.container}>
-                    <div className={styles.landingSections}>
+                <div className={styles.landingSections}>
+                    <div className={layoutStyles.container}>
                         <div className={styles.landingContent}>
                             <div className={styles.text}>
                                 <h1 className={styles.title}>
@@ -69,7 +70,12 @@ export default function HomePage(): JSX.Element {
                                 <img src="/images/Brynn_BP3_Landing.gif" alt="" width="50%" height="auto" />
                             </div>
                         </div>
-                        <div className={styles.mainContent}>
+                    </div>
+                    <div className={styles.mainContent}>
+                        <div className={layoutStyles.container}>
+                            <img src="/images/Landing_Preview.png" className={styles.landingPreview} />
+                        </div>
+                        <div className={layoutStyles.container}>
                             <div className={styles.blips}>
                                 <div className={styles.blip}>
                                     <StatSmall>Rankings</StatSmall>
@@ -97,23 +103,24 @@ export default function HomePage(): JSX.Element {
                                 </div>
                             </div>
                         </div>
-                        <div className={`${styles.landingContent} ${styles.right}`}>
+                    </div>
+                    <div className={layoutStyles.container}>
+                        <div className={`${styles.landingContent} ${styles.right} ${styles.card}`}>
                             <div className={styles.text}>
                                 <h1 className={styles.title}>Join the community</h1>
-                                <p className={styles.desc}>XD</p>
-                                <input
-                                    className={styles.searchInput}
-                                    type="text"
-                                    onChange={(e) => setPlayerSearch(e.target.value)}
-                                    placeholder="Search Clan..."
-                                />
+                                <p className={styles.desc}>Salut jac</p>
+                                <Link href="https://discord.corehalla.com">
+                                    <a target="_blank" className={styles.landingBtn}>
+                                        {DiscordIcon} Join our Discord
+                                    </a>
+                                </Link>
                             </div>
                             <div className={styles.landingImg}>
                                 <img src="/images/Nix Landing.png" alt="" width="50%" height="auto" />
                             </div>
                         </div>
                     </div>
-                </main>
+                </div>
             </Layout>
         </>
     );

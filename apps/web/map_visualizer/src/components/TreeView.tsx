@@ -5,7 +5,6 @@ import { CollisionSettings } from './CollisionSettings';
 
 function TreeNode({ children, title, onClick }: PropsWithChildren<{ title: string; onClick?: () => void }>) {
     const [isVisible, setIsVisible] = useState(false);
-    console.log('onclick', onClick);
 
     return (
         <>

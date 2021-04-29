@@ -1,5 +1,5 @@
 import styles from '../styles/MapCanvas.module.scss';
-import { Stage, Layer, Line, Circle, Group } from 'react-konva';
+import { Stage, Layer, Line, Group } from 'react-konva';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { useMapNodesContext } from '../providers/MapNodesProvider';
 import { KonvaEventObject } from 'konva/types/Node';
@@ -13,27 +13,37 @@ interface Props {
     floating?: boolean;
 }
 
-export function MapCanvas({ floating }: Props): JSX.Element {
-    const { mapData, selectedCollision, selectCollision, deselectCollision, updateCollision } = useMapNodesContext();
-
-    const {
-        currentFrame,
-        theme,
-        showCollisions,
-        showMapBounds,
-        stageTransform: { stageScale, stageX, stageY },
-        setStageTransform,
-        updateStageTransform,
-        setTimeFlow,
-        loadedNewMap,
-        setLoadedNewMap,
-    } = useEditorStateContext();
-
+const useDrag = () => {
     const [freezeDragPos, setFreezeDragPos] = useState<{
         x: number;
         y: number;
     }>({ x: null, y: null });
     const [freezeDrag, setFreezeDrag] = useState({ x: false, y: false });
+
+    const handleDragStart = (e: KonvaEventObject<DragEvent>) => {
+        setFreezeDragPos(e.target.position());
+        console.log(e.target.position());
+    };
+
+    const freezeDragFn = (pos: { x: number; y: number }) => ({
+        x: freezeDrag.x ? freezeDragPos.x : pos.x,
+        y: freezeDrag.y ? freezeDragPos.y : pos.y,
+    });
+
+    return { freezeDragPos, freezeDrag, setFreezeDrag, freezeDragFn, handleDragStart };
+};
+
+const useCanvasActions = (floating: boolean) => {
+    const {
+        setStageTransform,
+        updateStageTransform,
+        stageTransform: { stageScale },
+        loadedNewMap,
+        setLoadedNewMap,
+        setTimeFlow,
+    } = useEditorStateContext();
+
+    const { mapData } = useMapNodesContext();
 
     const [floatingStageTransform, setFloatingStageTransform] = useState<IStageTransform>({
         stageScale: 1,
@@ -41,14 +51,12 @@ export function MapCanvas({ floating }: Props): JSX.Element {
         stageY: 0,
     });
 
-    const [{ canvasW, canvasH }, setCanvasDimensions] = useState({
+    const [canvasDimensions, setCanvasDimensions] = useState({
         canvasW: 0,
         canvasH: 0,
     });
 
     const containerRef = useRef<HTMLDivElement>(null);
-
-    const router = useRouter();
 
     const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
         e.evt.preventDefault();
@@ -72,102 +80,9 @@ export function MapCanvas({ floating }: Props): JSX.Element {
         });
     };
 
-    const handleDragStart = (e: KonvaEventObject<DragEvent>) => {
-        setFreezeDragPos(e.target.position());
-        console.log(e.target.position());
-    };
-
     const handleStageDrag = (e: KonvaEventObject<DragEvent>) => {
         const { x, y } = e.target.position();
         updateStageTransform({ stageX: x, stageY: y });
-    };
-
-    const handleDrag = (e: KonvaEventObject<DragEvent>, handleId: '1' | '2') => {
-        if (!selectedCollision) return;
-        const pos = e.target.position();
-
-        const xDirMostChanged = Math.abs(pos.x - freezeDragPos.x) >= Math.abs(pos.y - freezeDragPos.y);
-
-        if (e.evt.shiftKey) setFreezeDrag({ x: !xDirMostChanged, y: xDirMostChanged });
-        else setFreezeDrag({ x: false, y: false });
-
-        updateCollision(selectedCollision.id, () => ({
-            [`x${handleId}`]: pos.x,
-            [`y${handleId}`]: pos.y,
-        }));
-    };
-
-    const handleColDrag = (e: KonvaEventObject<DragEvent>) => {
-        const id = e.target.id();
-        const pos = e.target.position();
-        selectCollision(id);
-
-        const xDirMostChanged = Math.abs(pos.x - freezeDragPos.x) >= Math.abs(pos.y - freezeDragPos.y);
-
-        if (e.evt.shiftKey) setFreezeDrag({ x: !xDirMostChanged, y: xDirMostChanged });
-        else setFreezeDrag({ x: false, y: false });
-
-        updateCollision(id, (col) => ({
-            x1: pos.x,
-            y1: pos.y,
-            x2: pos.x + col.x2 - col.x1,
-            y2: pos.y + col.y2 - col.y1,
-        }));
-    };
-
-    const freezeDragFn = (pos: { x: number; y: number }) => ({
-        x: freezeDrag.x ? freezeDragPos.x : pos.x,
-        y: freezeDrag.y ? freezeDragPos.y : pos.y,
-    });
-
-    const drawPlatform = (platform: Platform) => {
-        return (
-            (platform.themes.length <= 0 || [...platform.themes].includes(theme)) && (
-                <Fragment key={platform.id}>
-                    {platform.assetName && (
-                        <URLImage url={`/mapArt/${mapData.assetDir}/${platform.assetName}`} {...platform} />
-                    )}
-                    <Group
-                        x={platform.x}
-                        y={platform.y}
-                        width={platform.w}
-                        height={platform.h}
-                        scaleX={platform.scaleX}
-                        scaleY={platform.scaleY}
-                        rotation={platform.rotation}
-                    >
-                        {[...platform.platforms, ...platform.assets].map(drawPlatform)}
-                    </Group>
-                </Fragment>
-            )
-        );
-    };
-
-    const drawCollision = (col: Collision) => {
-        return (
-            <Line
-                key={col.id}
-                id={col.id}
-                x={col.x1}
-                y={col.y1}
-                points={[0, 0, col.x2 - col.x1, col.y2 - col.y1]}
-                stroke={col.type === 'Hard' ? 'rgba(40, 10, 75, 1)' : 'rgba(76, 29, 149, 1)'}
-                strokeWidth={10}
-                onClick={(e) => selectCollision(e.target.id())}
-                draggable
-                onDragMove={handleColDrag}
-                onDragStart={handleDragStart}
-                dragBoundFunc={freezeDragFn}
-                onMouseEnter={(e) => {
-                    const container = e.target.getStage().container();
-                    container.style.cursor = 'move';
-                }}
-                onMouseLeave={(e) => {
-                    const container = e.target.getStage().container();
-                    container.style.cursor = 'default';
-                }}
-            />
-        );
     };
 
     const getDefaultStageTransform = (maxWidth: number) => {
@@ -182,7 +97,7 @@ export function MapCanvas({ floating }: Props): JSX.Element {
     // TODO: correct map zoom
     useEffect(() => {
         if (loadedNewMap) {
-            setStageTransform(getDefaultStageTransform(canvasW));
+            setStageTransform(getDefaultStageTransform(canvasDimensions.canvasW));
             setLoadedNewMap(false);
         } else console.log('bruh');
     }, [loadedNewMap]);
@@ -207,6 +122,130 @@ export function MapCanvas({ floating }: Props): JSX.Element {
         window.addEventListener('resize', updateCanvasSize);
         updateCanvasSize();
     }, []);
+
+    return {
+        floatingStageTransform,
+        setFloatingStageTransform,
+        canvasDimensions,
+        setCanvasDimensions,
+        containerRef,
+        handleWheel,
+        handleStageDrag,
+    };
+};
+
+const CanvasPlatform = ({ platform, assetDir }: { platform: Platform | Asset; assetDir: string }) => {
+    useEffect(() => {
+        console.log('assetDIROIJHDOIASJD', assetDir);
+    }, [assetDir]);
+
+    const { theme } = useEditorStateContext();
+    return (
+        (platform.themes.length <= 0 || [...platform.themes].includes(theme)) && (
+            <Fragment key={platform.id}>
+                {platform.assetName && <URLImage url={`/mapArt/${assetDir}/${platform.assetName}`} {...platform} />}
+                <Group
+                    x={platform.x}
+                    y={platform.y}
+                    width={platform.w}
+                    height={platform.h}
+                    scaleX={platform.scaleX}
+                    scaleY={platform.scaleY}
+                    rotation={platform.rotation}
+                >
+                    {platform.type === 'platform' &&
+                        [...platform.platforms, ...platform.assets].map((child, i) => (
+                            <CanvasPlatform platform={child} key={i} assetDir={assetDir} />
+                        ))}
+                </Group>
+            </Fragment>
+        )
+    );
+};
+
+const CanvasCollision = ({ col }: { col: Collision }) => {
+    const { selectCollision, updateCollision } = useMapNodesContext();
+
+    const { freezeDragPos, handleDragStart, freezeDragFn, setFreezeDrag } = useDrag();
+
+    const handleColDrag = (e: KonvaEventObject<DragEvent>) => {
+        const id = e.target.id();
+        const pos = e.target.position();
+        selectCollision(id);
+
+        const xDirMostChanged = Math.abs(pos.x - freezeDragPos.x) >= Math.abs(pos.y - freezeDragPos.y);
+
+        if (e.evt.shiftKey) setFreezeDrag({ x: !xDirMostChanged, y: xDirMostChanged });
+        else setFreezeDrag({ x: false, y: false });
+
+        updateCollision(id, (col) => ({
+            x1: pos.x,
+            y1: pos.y,
+            x2: pos.x + col.x2 - col.x1,
+            y2: pos.y + col.y2 - col.y1,
+        }));
+    };
+
+    // const handleDrag = (e: KonvaEventObject<DragEvent>, handleId: '1' | '2') => {
+    //     if (!selectedCollision) return;
+    //     const pos = e.target.position();
+
+    //     const xDirMostChanged = Math.abs(pos.x - freezeDragPos.x) >= Math.abs(pos.y - freezeDragPos.y);
+
+    //     if (e.evt.shiftKey) setFreezeDrag({ x: !xDirMostChanged, y: xDirMostChanged });
+    //     else setFreezeDrag({ x: false, y: false });
+
+    //     updateCollision(selectedCollision.id, () => ({
+    //         [`x${handleId}`]: pos.x,
+    //         [`y${handleId}`]: pos.y,
+    //     }));
+    // };
+
+    return (
+        <Line
+            key={col.id}
+            id={col.id}
+            x={col.x1}
+            y={col.y1}
+            points={[0, 0, col.x2 - col.x1, col.y2 - col.y1]}
+            stroke={col.type === 'Hard' ? 'rgba(40, 10, 75, 1)' : 'rgba(76, 29, 149, 1)'}
+            strokeWidth={10}
+            onClick={(e) => selectCollision(e.target.id())}
+            draggable
+            onDragMove={handleColDrag}
+            onDragStart={handleDragStart}
+            dragBoundFunc={freezeDragFn}
+            onMouseEnter={(e) => {
+                const container = e.target.getStage().container();
+                container.style.cursor = 'move';
+            }}
+            onMouseLeave={(e) => {
+                const container = e.target.getStage().container();
+                container.style.cursor = 'default';
+            }}
+        />
+    );
+};
+
+export function MapCanvas({ floating }: Props): JSX.Element {
+    const { mapData, deselectCollision } = useMapNodesContext();
+
+    const {
+        currentFrame,
+        showCollisions,
+        showMapBounds,
+        stageTransform: { stageScale, stageX, stageY },
+    } = useEditorStateContext();
+
+    const {
+        floatingStageTransform,
+        canvasDimensions: { canvasW, canvasH },
+        containerRef,
+        handleWheel,
+        handleStageDrag,
+    } = useCanvasActions(floating);
+
+    const router = useRouter();
 
     return (
         typeof window !== 'undefined' && (
@@ -274,7 +313,11 @@ export function MapCanvas({ floating }: Props): JSX.Element {
                         </Layer>
                     )}
                     {/* TODO: Some themed platforms show behind regular platforms */}
-                    <Layer>{mapData.platforms.map(drawPlatform)}</Layer>
+                    <Layer>
+                        {mapData.platforms.map((plat, i) => (
+                            <CanvasPlatform platform={plat} key={i} assetDir={mapData.assetDir} />
+                        ))}
+                    </Layer>
                     <Layer>
                         {mapData.movingPlatforms.map((plat) => {
                             const anim = mapData.animations.find((a) => a.platId === plat.platId);
@@ -284,14 +327,18 @@ export function MapCanvas({ floating }: Props): JSX.Element {
                             // console.log(plat.platId, pos);
                             return (
                                 <Group x={pos.x} y={pos.y} key={plat.platId}>
-                                    {drawPlatform(plat)}
+                                    <CanvasPlatform platform={plat} assetDir={mapData.assetDir} />
                                 </Group>
                             );
                         })}
                     </Layer>
                     {showCollisions && !floating && (
                         <>
-                            <Layer>{mapData.collisions.map(drawCollision)}</Layer>
+                            <Layer>
+                                {mapData.collisions.map((col, i) => (
+                                    <CanvasCollision col={col} key={i} />
+                                ))}
+                            </Layer>
                             <Layer>
                                 {mapData.dynamicCollisions.map((col) => {
                                     const anim = mapData.animations.find((a) => a.platId === col.platId);
@@ -301,14 +348,17 @@ export function MapCanvas({ floating }: Props): JSX.Element {
 
                                     return (
                                         <Group x={pos.x + col.x} y={pos.y + col.y} key={col.platId}>
-                                            {col.collisions.map(drawCollision)}
+                                            {col.collisions.map((child, i) => (
+                                                <CanvasCollision col={child} key={i} />
+                                            ))}
                                         </Group>
                                     );
                                 })}
                             </Layer>
                         </>
                     )}
-                    <Layer>
+                    {/* Collision Hanles */}
+                    {/* <Layer>
                         {selectedCollision && (
                             <>
                                 <Circle
@@ -349,7 +399,7 @@ export function MapCanvas({ floating }: Props): JSX.Element {
                                 />
                             </>
                         )}
-                    </Layer>
+                    </Layer> */}
                 </Stage>
             </motion.div>
         )
