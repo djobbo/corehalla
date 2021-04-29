@@ -2,151 +2,195 @@
 @import '~styles/devices.scss';
 
 .landingNavbar {
-	position: sticky;
-	top: 0;
-	left: 0;
-	right: 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding: 2rem;
-	transition: 0.25s all ease;
-	z-index: 50;
-	border-bottom: 1px solid transparent;
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    transition: 0.25s all ease;
+    z-index: 50;
+    border-bottom: 1px solid transparent;
 
-	& > ul {
-		display: none;
-	}
+    & > ul {
+        display: none;
+    }
 
-	&.hasScrolled {
-		background-color: $bg-1;
-		padding: 1rem 2rem;
-		border-bottom: 1px solid rgba($text-2, 0.16);
-	}
+    &.hasScrolled {
+        background-color: $bg-1;
+        padding: 1rem 2rem;
+        border-bottom: 1px solid rgba($text-2, 0.16);
+    }
 
-	.navCTA {
-		padding: 0.25rem 0.75rem;
-		background-color: $accent;
-		color: $text;
-		border-radius: 2rem;
-	}
+    .navCTA {
+        padding: 0.25rem 0.75rem;
+        background-color: $accent;
+        color: $text;
+        border-radius: 2rem;
+    }
 
-	.mainLogo {
-		width: auto;
-		height: 1.5rem;
-	}
+    .mainLogo {
+        width: auto;
+        height: 1.5rem;
+    }
 
-	@media only screen and (min-width: $size_desktop) {
-		justify-content: space-between;
-		& > ul {
-			display: flex;
-			align-items: center;
+    @media only screen and (min-width: $size_desktop) {
+        justify-content: space-between;
+        & > ul {
+            display: flex;
+            align-items: center;
 
-			& > a {
-				margin-left: 2rem;
-				color: $text;
-			}
-		}
-	}
+            & > a {
+                margin-left: 2rem;
+                color: $text;
+            }
+        }
+    }
 }
 
 .landingSections {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	gap: 2rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 
-	.landingContent {
-		display: flex;
-		justify-content: flex-start;
-		flex-direction: column;
-		align-items: center;
-		width: 100%;
-		height: 75vh;
-		min-height: 32rem;
-		max-height: 42rem;
-		padding: 0 3rem;
-		z-index: 10;
-		max-width: 1200px;
-		gap: 2rem;
+    .landingContent {
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 75vh;
+        min-height: 32rem;
+        max-height: 42rem;
+        padding: 0 3rem;
+        z-index: 10;
+        max-width: 1200px;
+        gap: 2rem;
 
-		@media only screen and (min-width: $size_desktop) {
-			align-items: space-between;
-			flex-direction: row;
-		}
+        @media only screen and (min-width: $size_desktop) {
+            align-items: space-between;
+            flex-direction: row;
+        }
 
-		.text {
-			flex: 1;
-			.title {
-				font-size: 2rem;
-				color: $text;
-				font-weight: normal;
-				margin-bottom: 1rem;
-				max-width: 540px;
-				color: $accent;
-				text-transform: uppercase;
+        .text {
+            flex: 1;
+            .title {
+                font-size: 2rem;
+                color: $text;
+                font-weight: normal;
+                margin-bottom: 1rem;
+                max-width: 540px;
+                color: $accent;
+                text-transform: uppercase;
 
-				.bold {
-					font-size: 3rem;
-					color: $text;
-					font-weight: bold;
-					display: block;
+                .bold {
+                    font-size: 3rem;
+                    color: $text;
+                    font-weight: bold;
+                    display: block;
 
-					@media only screen and (min-width: $size_desktop) {
-						font-size: 5rem;
-					}
-				}
-			}
+                    @media only screen and (min-width: $size_desktop) {
+                        font-size: 5rem;
+                    }
+                }
+            }
 
-			.desc {
-				color: $text-2;
-				font-size: 1.125rem;
-				line-height: 1.5rem;
-				margin-bottom: 2rem;
+            .desc {
+                color: $text-2;
+                font-size: 1.125rem;
+                line-height: 1.5rem;
+                margin-bottom: 2rem;
 
-				@media only screen and (min-width: $size_desktop) {
-					max-width: 540px;
-				}
-			}
+                @media only screen and (min-width: $size_desktop) {
+                    max-width: 540px;
+                }
+            }
 
-			.searchInput {
-				background-color: $text;
-				color: $bg;
-				border-radius: 1rem;
-				height: 2rem;
-				outline: none;
-				padding: 0 1rem;
-				font-size: 1rem;
-			}
-		}
+            .searchInput {
+                background-color: $text;
+                color: $bg;
+                border-radius: 1rem;
+                height: 2rem;
+                outline: none;
+                padding: 0 1rem;
+                font-size: 1rem;
+            }
+        }
 
-		.landingImg {
-			flex: 1;
-			img {
-				width: 100%;
-				max-height: 32rem;
-				object-fit: contain;
-				filter: drop-shadow(0px 0px 16px rgba($text, 0.08));
-			}
-		}
+        .landingImg {
+            flex: 1;
+            img {
+                width: 100%;
+                max-height: 32rem;
+                object-fit: contain;
+                filter: drop-shadow(0px 0px 16px rgba($text, 0.08));
+            }
+        }
 
-		&.right {
-			flex-direction: row-reverse;
-		}
-	}
+        .landingBtn {
+            color: $text;
+            padding: 0.5rem 1rem;
+            background-color: $accent;
+            display: inline-flex;
+            align-items: center;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 0.5rem $bg-1;
+            gap: 1rem;
+            text-transform: uppercase;
 
-	.mainContent {
-		.blips {
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
-			justify-items: center;
-			padding: 2rem;
-			gap: 4rem;
-			color: $text-2;
+            svg {
+                width: 2rem;
+                height: 2rem;
+                fill: $text;
+            }
 
-			.blip {
-				max-width: 8rem;
-			}
-		}
-	}
+            &:hover {
+                background-color: $bg-1;
+
+                svg {
+                    fill: $accent;
+                }
+            }
+        }
+
+        &.right {
+            flex-direction: row-reverse;
+        }
+
+        &.card {
+            background-color: $bg;
+            border-radius: 1rem;
+            box-shadow: 0 0 1rem rgba($bg-1, 0.32);
+            margin: 4rem 0;
+        }
+    }
+
+    .mainContent {
+        margin-top: 8rem;
+        background-color: $bg-1;
+        border-bottom: 1px solid rgba($text-2, 0.16);
+        padding-bottom: 4rem;
+        .landingPreview {
+            margin-top: -8rem;
+            width: 100%;
+            border-radius: 1rem;
+            box-shadow: 0 0 1rem $bg;
+            margin-bottom: 4rem;
+        }
+
+        .blips {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+            justify-items: center;
+            padding: 2rem;
+            gap: 4rem;
+
+            .blip {
+                max-width: 8rem;
+            }
+        }
+    }
 }

@@ -42,6 +42,8 @@ export function parseMapXML(mapXML: string): LevelDesc {
             case 'Platform':
             case 'MovingPlatform':
                 const p = parsePlatform(node);
+                if (p.platform.type !== 'platform') throw new Error('Error Parsing Platform');
+
                 if (node.tagName === 'Platform') mapData.platforms = [...mapData.platforms, p.platform];
                 else mapData.movingPlatforms = [...mapData.movingPlatforms, p.platform];
 
@@ -120,13 +122,16 @@ function parseCollision(col: Element, colType: CollisionType, platId = undefined
     };
 }
 
-function parsePlatform(platform: Element): { platform: Platform; themes: string[]; animation?: PlatformAnimation } {
+function parsePlatform(
+    platform: Element,
+): { platform: Platform | Asset; themes: string[]; animation?: PlatformAnimation } {
     let themes: string[] = platform.getAttribute('Theme')?.split(',') ?? [];
 
     const platId = platform.getAttribute('PlatID');
     console.log(platId);
 
     const outPlatform: Platform = {
+        type: 'platform',
         id: Math.random().toString(),
         isDragging: false,
         platId,
@@ -151,11 +156,11 @@ function parsePlatform(platform: Element): { platform: Platform; themes: string[
             animation = parseAnimation(child, platId, outPlatform.x, outPlatform.y);
         } else {
             const { platform: plat, themes: th } = parsePlatform(child);
-            switch (child.tagName) {
-                case 'Platform':
+            switch (plat.type) {
+                case 'platform':
                     outPlatform.platforms.push(plat);
                     break;
-                case 'Asset':
+                case 'asset':
                     outPlatform.assets.push(plat);
                     break;
                 default:
