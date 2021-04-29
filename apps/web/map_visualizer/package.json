@@ -5,7 +5,9 @@
     "scripts": {
         "dev": "next dev",
         "build": "next build",
-        "start": "next start"
+        "start": "next start",
+        "eslint": "eslint '*/**/*.{js,jsx,ts,tsx}' --fix --ignore-path .eslintignore",
+        "typecheck": "tsc --noemit"
     },
     "dependencies": {
         "framer-motion": "^4.1.11",

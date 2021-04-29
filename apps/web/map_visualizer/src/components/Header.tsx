@@ -1,10 +1,9 @@
-import { useContext } from 'react';
-import { MapNodesContext } from '../providers/MapNodesProvider';
+import { useMapNodesContext } from '../providers/MapNodesProvider';
 import styles from '../styles/Header.module.scss';
 
-export function Header() {
-	const {
-		mapData: { levelName },
-	} = useContext(MapNodesContext);
-	return <div className={styles.container}>{levelName}</div>;
+export function Header(): JSX.Element {
+    const {
+        mapData: { levelName },
+    } = useMapNodesContext();
+    return <div className={styles.container}>{levelName}</div>;
 }
