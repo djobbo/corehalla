@@ -16,14 +16,15 @@
         height: 75vh;
         min-height: 32rem;
         max-height: 42rem;
-        padding: 0 3rem;
+        padding: 0 1rem;
         z-index: 10;
         max-width: 1200px;
         gap: 2rem;
 
         @media only screen and (min-width: $size_desktop) {
-            align-items: space-between;
+            justify-items: space-between;
             flex-direction: row;
+            padding: 0 3rem;
         }
 
         .text {
@@ -33,6 +34,7 @@
                 color: $text;
                 font-weight: normal;
                 margin-bottom: 1rem;
+                width: 100%;
                 max-width: 540px;
                 color: $accent;
                 text-transform: uppercase;
@@ -73,9 +75,11 @@
 
         .landingImg {
             flex: 1;
+            height: 32rem;
+            video,
             img {
                 width: 100%;
-                max-height: 32rem;
+                height: 100%;
                 object-fit: contain;
                 filter: drop-shadow(0px 0px 16px rgba($text, 0.08));
             }

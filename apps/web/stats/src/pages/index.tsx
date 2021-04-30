@@ -40,13 +40,21 @@ export default function HomePage(): JSX.Element {
                                 />
                             </div>
                             <div className={styles.landingImg}>
-                                <img src="/images/Brynn_BP3_Landing.gif" alt="" width="50%" height="auto" />
+                                <video
+                                    src="/images/Brynn_BP3_Landing.webm"
+                                    width="100%"
+                                    height="100%"
+                                    playsInline
+                                    autoPlay
+                                    muted
+                                    loop
+                                />
                             </div>
                         </div>
                     </div>
                     <div className={styles.mainContent}>
                         <div className={layoutStyles.container}>
-                            <img src="/images/Landing_Preview.png" className={styles.landingPreview} />
+                            <img src="/images/Landing_Preview.jpg" className={styles.landingPreview} />
                         </div>
                         <div className={layoutStyles.container}>
                             <div className={styles.blips}>
@@ -89,7 +97,7 @@ export default function HomePage(): JSX.Element {
                                 </Link>
                             </div>
                             <div className={styles.landingImg}>
-                                <img src="/images/Nix Landing.png" alt="" width="50%" height="auto" />
+                                <img src="/images/Nix Landing.webp" alt="" width="100%" height="100%" />
                             </div>
                         </div>
                     </div>
