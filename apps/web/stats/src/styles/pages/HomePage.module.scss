@@ -1,55 +1,6 @@
 @import '~styles/theme.scss';
 @import '~styles/devices.scss';
 
-.landingNavbar {
-    position: sticky;
-    top: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 2rem;
-    transition: 0.25s all ease;
-    z-index: 50;
-    border-bottom: 1px solid transparent;
-
-    & > ul {
-        display: none;
-    }
-
-    &.hasScrolled {
-        background-color: $bg-1;
-        padding: 1rem 2rem;
-        border-bottom: 1px solid rgba($text-2, 0.16);
-    }
-
-    .navCTA {
-        padding: 0.25rem 0.75rem;
-        background-color: $accent;
-        color: $text;
-        border-radius: 2rem;
-    }
-
-    .mainLogo {
-        width: auto;
-        height: 1.5rem;
-    }
-
-    @media only screen and (min-width: $size_desktop) {
-        justify-content: space-between;
-        & > ul {
-            display: flex;
-            align-items: center;
-
-            & > a {
-                margin-left: 2rem;
-                color: $text;
-            }
-        }
-    }
-}
-
 .landingSections {
     position: relative;
     display: flex;
