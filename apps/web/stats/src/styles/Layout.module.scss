@@ -1,23 +1,24 @@
 @import '~styles/devices.scss';
 
-.mainGrid {
-	display: grid;
-	grid-template-rows: 1fr auto;
-	min-height: 100vh;
-	position: relative;
-	transition: 0.15s all linear;
-	padding-left: 4rem;
+.mainLayout {
+    // display: grid;
+    // grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+    min-height: 100vh;
+    position: relative;
+    transition: 0.15s all linear;
+    padding-left: 4rem;
 
-	@media only screen and (max-width: $size_desktop) {
-		padding-left: 0;
-		&.sideNavOpen {
-			transform: translateX(4rem);
-		}
-	}
+    @media only screen and (max-width: $size_desktop) {
+        padding-left: 0;
+        &.sideNavOpen {
+            transform: translateX(4rem);
+        }
+    }
 }
 
 .container {
-	padding: 0 1rem;
-	max-width: 1200px;
-	margin: 0 auto;
+    padding: 0 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }

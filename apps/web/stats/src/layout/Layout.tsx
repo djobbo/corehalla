@@ -13,7 +13,7 @@ export function Layout({ children }: Props): JSX.Element {
 
     return (
         <>
-            <div className={`${styles.mainGrid} ${sideNavOpen ? styles.sideNavOpen : ''}`}>
+            <div className={`${styles.mainLayout} ${sideNavOpen ? styles.sideNavOpen : ''}`}>
                 <div>{children}</div>
                 <Footer />
             </div>
