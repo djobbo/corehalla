@@ -1,27 +1,18 @@
 import styles from '~styles/pages/HomePage.module.scss';
 import layoutStyles from '~styles/Layout.module.scss';
 // Library imports
-import { useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import { StatSmall, StatDesc } from '@TextStyles';
 
 // Components imports
 import { usePlayerSearchContext } from '~providers/PlayerSearchProvider';
-import { useViewportScroll } from 'framer-motion';
 import { Layout } from '~layout/Layout';
-import { useSideNavContext } from '~providers/SideNavProvider';
-import { DiscordIcon } from '~components/SocialIcons';
+import { DiscordIcon } from '@SocialIcons';
+import { ArticleNavbar } from '@ArticleNavbar';
 
 export default function HomePage(): JSX.Element {
-    const { scrollY } = useViewportScroll();
     const { setPlayerSearch } = usePlayerSearchContext();
-    const [hasScrolled, setHasScrolled] = useState(scrollY.get() > 0);
-    const { sideNavOpen } = useSideNavContext();
-
-    scrollY.onChange(() => {
-        setHasScrolled(scrollY.get() > 0);
-    });
 
     return (
         <>
@@ -29,25 +20,7 @@ export default function HomePage(): JSX.Element {
                 <Head>
                     <title>Index • Corehalla</title>
                 </Head>
-                <div
-                    className={`${styles.landingNavbar} ${hasScrolled ? styles.hasScrolled : ''} ${
-                        sideNavOpen ? styles.sideNavOpen : ''
-                    }`}
-                >
-                    <Link href="/">
-                        <a>
-                            <img className={styles.mainLogo} src="/images/logo.png" alt="Corehalla Logo" />
-                        </a>
-                    </Link>
-                    <ul>
-                        <Link href="/">Home</Link>
-                        <Link href="/rankings">Rankings</Link>
-                        <Link href="/favorites">Favorites</Link>
-                        <Link href="#">
-                            <a className={styles.navCTA}>Login</a>
-                        </Link>
-                    </ul>
-                </div>
+                <ArticleNavbar />
                 <div className={styles.landingSections}>
                     <div className={layoutStyles.container}>
                         <div className={styles.landingContent}>
