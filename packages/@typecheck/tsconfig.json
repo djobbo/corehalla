@@ -8,6 +8,7 @@
         "strict": true,
         "target": "es2017",
         "resolveJsonModule": true,
-        "declaration": true
+        "declaration": true,
+        "lib": ["ESNext"]
     }
 }

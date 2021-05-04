@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "axios": "^0.21.1",
-        "@corehalla/formatters": "0.1.0"
+        "@corehalla/formatters": "0.1.0",
+        "@corehalla/mocks": "0.1.0"
     }
 }
