@@ -7,13 +7,14 @@
     "scripts": {
         "build": "tsc",
         "watch": "tsc -w",
-        "dev": "ts-node-dev src/index.ts"
+        "dev": "ts-node-dev src/index.tsx"
     },
     "author": "Alfie",
     "license": "ISC",
     "dependencies": {
-        "discord.js": "^12.3.1",
-        "dotenv": "^8.2.0"
+        "@corehalla/core": "0.1.0",
+        "dotenv": "^8.2.0",
+        "fancy-discord.js": "^0.6.0"
     },
     "devDependencies": {
         "@types/node": "^15.0.1",

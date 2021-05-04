@@ -1,8 +1,8 @@
-import type { RankedTier, RankedRegion, Weapon } from './general';
+import type { RankedTier, RankedRegion, Weapon, BrawlhallaID } from './general';
 
 //#region Player Stats Format
 export interface IPlayerStatsFormat {
-    id: number;
+    id: BrawlhallaID;
     name: string;
     xp: number;
     level: number;
@@ -19,7 +19,6 @@ export interface IPlayerStatsFormat {
     season: IPlayerSeasonFormat;
     clan: IPlayerClanFormat | undefined;
     legends: ILegendStatsFormat[];
-    weapons: IWeaponStatsFormat[];
     gadgets: {
         bomb: {
             damage: number;
@@ -80,7 +79,7 @@ export interface I2v2TeamFormat {
 
 export interface IPlayerClanFormat {
     name: string;
-    id: number;
+    id: BrawlhallaID;
     xp: string;
     personalXp: number;
 }

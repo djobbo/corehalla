@@ -1,3 +1,5 @@
+export type BrawlhallaID = string | number;
+
 export type RankedTier =
     | 'Diamond'
     | 'Platinum 5'
@@ -28,7 +30,8 @@ export type RankedTier =
     | 'Tin 3'
     | 'Tin 2'
     | 'Tin 1'
-    | 'Tin 0';
+    | 'Tin 0'
+    | 'Unranked';
 
 export type RankedRegion =
     | 'all'
