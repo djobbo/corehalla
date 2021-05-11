@@ -6189,10 +6189,10 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
-fancy-discord.js@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/fancy-discord.js/-/fancy-discord.js-0.6.0.tgz#2a35390d13821eff96fa6b7f84588bf114b1bf0a"
-  integrity sha512-lApEZKm7GvEKuUG+UMD2TG5XpHVlZf/1fiiSgcqLxUyBwwATaUPpk2F/wdvLcOpo7C3R4trvzI7Xkpd4gSQPTg==
+fancy-discord.js@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/fancy-discord.js/-/fancy-discord.js-0.7.0.tgz#92564993d461d88d7d47266d7f90561c6df59273"
+  integrity sha512-YQsMYlFpSR3VNHtbXtufLvb9qBZO81Wf+ROsGDJa8WkqHLxHEFyaZ+81a16FPq54YDGOL7ivjQyWFo9pq1SGhg==
   dependencies:
     discord.js "^12.5.3"
 

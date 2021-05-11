@@ -14,7 +14,7 @@
     "dependencies": {
         "@corehalla/core": "0.1.0",
         "dotenv": "^8.2.0",
-        "fancy-discord.js": "^0.6.0"
+        "fancy-discord.js": "^0.7.0"
     },
     "devDependencies": {
         "@types/node": "^15.0.1",
