@@ -1,0 +1,19 @@
+@import '~styles/theme.scss';
+
+.tabs {
+    .tab {
+        padding: 1rem;
+        background-color: transparent;
+        color: $on-bg-dark;
+        cursor: pointer;
+        border-radius: 0.5rem;
+        font-weight: bold;
+        margin-right: 1rem;
+        font-size: 0.75rem;
+
+        &.active,
+        &:hover {
+            background-color: $bg-dark-var2;
+        }
+    }
+}

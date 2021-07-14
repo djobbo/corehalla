@@ -1,0 +1,44 @@
+@import '~styles/theme.scss';
+
+.header {
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+
+    .content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1rem;
+
+        .logo {
+            margin-right: 2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .searchBar {
+            margin-left: 2rem;
+            flex: 1;
+            max-width: 480px;
+            height: 2.5rem;
+            background-color: $bg-dark;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            color: $on-bg-dark;
+        }
+
+        .nav {
+            .navItem {
+                margin-left: 2rem;
+                color: $on-bg-dark;
+                padding: 0.75rem 1rem;
+                border-radius: 0.5rem;
+
+                &:hover {
+                    background-color: $bg-dark;
+                }
+            }
+        }
+    }
+}

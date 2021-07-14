@@ -1,61 +1,62 @@
 @import './theme.scss';
 
 * {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
-	border: none;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-family: 'Poppins', sans-serif;
 }
 
 html,
 body {
-	font-family: 'Rubik', sans-serif;
-	height: 100%;
-	background-repeat: repeat;
-	background-size: contain;
-	// background-image: url('/images/backgrounds/Background.jpg');
+    font-family: 'Poppins', sans-serif;
+    height: 100%;
+    background-repeat: repeat;
+    background-size: contain;
+    // background-image: url('/images/backgrounds/Background.jpg');
 
-	background-color: $bg-1;
-	opacity: 1;
-	background-image: radial-gradient($bg 1.4px, transparent 1.4px),
-		radial-gradient($bg 1.4px, $bg-1 1.4px);
-	background-size: 56px 56px;
-	background-position: 0 0, 28px 28px;
-	scroll-behavior: smooth;
+    background-color: $bg-dark;
+    opacity: 1;
+    background-image: radial-gradient($bg-dark-var1 1.4px, transparent 1.4px),
+        radial-gradient($bg-dark-var1 1.4px, $bg-dark 1.4px);
+    background-size: 56px 56px;
+    background-position: 0 0, 28px 28px;
+    scroll-behavior: smooth;
 }
 
 a,
 a:visited {
-	color: $accent;
-	text-decoration: none;
+    color: $accent;
+    text-decoration: none;
 
-	&:hover {
-		color: $text;
-	}
+    &:hover {
+        color: $on-bg-dark;
+    }
 
-	img {
-		vertical-align: middle;
-	}
+    img {
+        vertical-align: middle;
+    }
 }
 
 ul {
-	list-style: none;
+    list-style: none;
 }
 
 svg {
-	display: inline-block;
+    display: inline-block;
 }
 
 #App {
-	position: relative;
-	z-index: 10;
+    position: relative;
+    z-index: 10;
 }
 
 :root {
-	--bg: #212121;
-	--bg-1: #282828;
-	--bg-2: #373737;
-	--text-2: #ababab;
-	--text: #f1f1f1;
-	--accent: #ff732f;
+    --bg: #212121;
+    --bg-dark: #282828;
+    --bg-dark-var2: #373737;
+    --text-2: #ababab;
+    --text: #f1f1f1;
+    --accent: #ff732f;
 }

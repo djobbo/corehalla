@@ -7,17 +7,17 @@
     .title {
         font-size: 4rem;
         padding: 4rem 2rem;
-        color: $text;
+        color: $on-bg-dark;
 
         .subtitle {
             display: block;
             font-size: 1rem;
             font-weight: normal;
-            color: $text-2;
+            color: $on-bg-dark-var1;
         }
     }
 
     .content {
-        color: $text;
+        color: $on-bg-dark;
     }
 }

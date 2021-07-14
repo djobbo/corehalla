@@ -20,6 +20,13 @@ class MyDocument extends Document {
                     <link href="icons/favicon-512x512.png" rel="icon" type="image/png" sizes="512x512" />
                     <link rel="apple-touch-icon" href="icons/icon-192x192.png" />
                     <meta name="theme-color" content="#317EFB" />
+
+                    <link rel="preconnect" href="https://fonts.googleapis.com" />
+                    <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+                    <link
+                        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
+                        rel="stylesheet"
+                    />
                 </Head>
                 <body>
                     <Main />

@@ -1,7 +1,7 @@
 import React, { createContext, useState, FC, useContext, ReactNode } from 'react';
 
 type ThemeMode = 'light' | 'dark' | 'solarizedDark' | 'solarizedLight';
-type ThemeProps = 'bg' | 'bg-1' | 'bg-2' | 'text-2' | 'text' | 'accent';
+type ThemeProps = 'bg' | 'bg-dark' | 'bg-dark-var2' | 'text-2' | 'text' | 'accent';
 export type Theme = {
     [k in ThemeProps]: string;
 };
@@ -9,32 +9,32 @@ export type Theme = {
 export const themeModes: { [k in ThemeMode]: Theme } = {
     dark: {
         bg: '#212121',
-        'bg-1': '#282828',
-        'bg-2': '#373737',
+        'bg-dark': '#282828',
+        'bg-dark-var2': '#373737',
         'text-2': '#ABABAB',
         text: '#F1F1F1',
         accent: '#FF732F',
     },
     light: {
         bg: '#F1F1F1',
-        'bg-1': '#cccccc',
-        'bg-2': '#ABABAB',
+        'bg-dark': '#cccccc',
+        'bg-dark-var2': '#ABABAB',
         'text-2': '#373737',
         text: '#212121',
         accent: '#FF732F',
     },
     solarizedDark: {
         bg: '#002b36',
-        'bg-1': '#073642',
-        'bg-2': '#073642',
+        'bg-dark': '#073642',
+        'bg-dark-var2': '#073642',
         'text-2': '#073642',
         text: '#eee8d5',
         accent: '#2aa198',
     },
     solarizedLight: {
         bg: '#fdf6e3',
-        'bg-1': '#eee8d5',
-        'bg-2': '#eee8d5',
+        'bg-dark': '#eee8d5',
+        'bg-dark-var2': '#eee8d5',
         'text-2': '#eee8d5',
         text: '#073642',
         accent: '#2aa198',

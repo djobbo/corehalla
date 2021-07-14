@@ -31,7 +31,7 @@
             flex: 1;
             .title {
                 font-size: 2rem;
-                color: $text;
+                color: $on-bg-dark;
                 font-weight: normal;
                 margin-bottom: 1rem;
                 width: 100%;
@@ -41,7 +41,7 @@
 
                 .bold {
                     font-size: 3rem;
-                    color: $text;
+                    color: $on-bg-dark;
                     font-weight: bold;
                     display: block;
 
@@ -52,7 +52,7 @@
             }
 
             .desc {
-                color: $text-2;
+                color: $on-bg-dark-var1;
                 font-size: 1.125rem;
                 line-height: 1.5rem;
                 margin-bottom: 2rem;
@@ -63,8 +63,8 @@
             }
 
             .searchInput {
-                background-color: $text;
-                color: $bg;
+                background-color: $on-bg-dark;
+                color: $bg-dark-var1;
                 border-radius: 1rem;
                 height: 2rem;
                 outline: none;
@@ -81,29 +81,29 @@
                 width: 100%;
                 height: 100%;
                 object-fit: contain;
-                filter: drop-shadow(0px 0px 16px rgba($text, 0.08));
+                filter: drop-shadow(0px 0px 16px rgba($on-bg-dark, 0.08));
             }
         }
 
         .landingBtn {
-            color: $text;
+            color: $on-bg-dark;
             padding: 0.5rem 1rem;
             background-color: $accent;
             display: inline-flex;
             align-items: center;
             border-radius: 0.5rem;
-            box-shadow: 0 0 0.5rem $bg-1;
+            box-shadow: 0 0 0.5rem $bg-dark;
             gap: 1rem;
             text-transform: uppercase;
 
             svg {
                 width: 2rem;
                 height: 2rem;
-                fill: $text;
+                fill: $on-bg-dark;
             }
 
             &:hover {
-                background-color: $bg-1;
+                background-color: $bg-dark;
 
                 svg {
                     fill: $accent;
@@ -116,23 +116,23 @@
         }
 
         &.card {
-            background-color: $bg;
+            background-color: $bg-dark-var1;
             border-radius: 1rem;
-            box-shadow: 0 0 1rem rgba($bg-1, 0.32);
+            box-shadow: 0 0 1rem rgba($bg-dark, 0.32);
             margin: 4rem 0;
         }
     }
 
     .mainContent {
         margin-top: 8rem;
-        background-color: $bg-1;
-        border-bottom: 1px solid rgba($text-2, 0.16);
+        background-color: $bg-dark;
+        border-bottom: 1px solid rgba($on-bg-dark-var1, 0.16);
         padding-bottom: 4rem;
         .landingPreview {
             margin-top: -8rem;
             width: 100%;
             border-radius: 1rem;
-            box-shadow: 0 0 1rem $bg;
+            box-shadow: 0 0 1rem $bg-dark-var1;
             margin-bottom: 4rem;
         }
 
