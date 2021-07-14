@@ -1,43 +1,43 @@
 @import '~styles/theme.scss';
 
 .teammateName {
-	font-size: 1rem;
-	color: $text;
-	display: flex;
-	align-items: center;
-	margin-bottom: 0.5rem;
-	padding: 0.25rem 0.5rem;
-	border-radius: 0.125rem;
-	font-weight: bold;
+    font-size: 1rem;
+    color: $on-bg-dark;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.125rem;
+    font-weight: bold;
 
-	&:hover {
-		color: $accent;
-	}
+    &:hover {
+        color: $accent;
+    }
 
-	.regionIcon {
-		width: 1rem;
-		height: auto;
-		border-radius: 0.25rem;
-		margin-right: 0.5rem;
-	}
+    .regionIcon {
+        width: 1rem;
+        height: auto;
+        border-radius: 0.25rem;
+        margin-right: 0.5rem;
+    }
 }
 
 .stats {
-	display: flex;
-	align-items: center;
-	margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
 
-	.rankedIcon {
-		width: 4rem;
-		height: 4rem;
-		border-radius: 0.5rem;
-		margin-right: 1rem;
-	}
+    .rankedIcon {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 0.5rem;
+        margin-right: 1rem;
+    }
 }
 
 .winLoss {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-top: 0.75rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0.75rem;
 }

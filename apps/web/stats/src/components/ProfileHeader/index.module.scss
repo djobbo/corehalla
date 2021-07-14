@@ -1,35 +1,35 @@
 @import '~styles/theme.scss';
 
 .container {
-	padding-top: 1rem;
-	.bannerImg {
-		width: 100%;
-		height: 6rem;
-		object-fit: cover;
-		object-position: center;
-		margin-bottom: 1rem;
-		border-radius: 0.5rem;
-		box-shadow: $card-shadow;
-	}
+    padding-top: 1rem;
+    .bannerImg {
+        width: 100%;
+        height: 6rem;
+        object-fit: cover;
+        object-position: center;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+        box-shadow: $card-shadow;
+    }
 
-	.title {
-		color: $text;
-		font-size: 1.5rem;
-		font-weight: 600;
-		display: block;
-	}
+    .title {
+        color: $on-bg-dark;
+        font-size: 1.5rem;
+        font-weight: 600;
+        display: block;
+    }
 
-	.addToFavBtn {
-		text-transform: uppercase;
-		color: $accent;
-		font-weight: bold;
+    .addToFavBtn {
+        text-transform: uppercase;
+        color: $accent;
+        font-weight: bold;
 
-		&.isFav {
-			color: $text-2;
-		}
-	}
+        &.isFav {
+            color: $on-bg-dark-var1;
+        }
+    }
 
-	.description {
-		margin: 1rem 0;
-	}
+    .description {
+        margin: 1rem 0;
+    }
 }

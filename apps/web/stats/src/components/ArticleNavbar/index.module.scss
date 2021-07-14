@@ -19,15 +19,15 @@
     }
 
     &.hasScrolled {
-        background-color: $bg-1;
+        background-color: $bg-dark;
         padding: 1rem 2rem;
-        border-bottom: 1px solid rgba($text-2, 0.16);
+        border-bottom: 1px solid rgba($on-bg-dark-var1, 0.16);
     }
 
     .navCTA {
         padding: 0.25rem 0.75rem;
         background-color: $accent;
-        color: $text;
+        color: $on-bg-dark;
         border-radius: 2rem;
     }
 
@@ -44,7 +44,7 @@
 
             & > a {
                 margin-left: 2rem;
-                color: $text;
+                color: $on-bg-dark;
             }
         }
     }

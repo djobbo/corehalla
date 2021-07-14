@@ -6,7 +6,10 @@ import { formatTime } from '~util';
 import { SectionOverallStatsContent } from '@SectionOverallStatsContent';
 import { SectionSeasonOverviewContent } from '@SectionSeasonOverviewContent';
 import { StatDesc, StatSmall } from '@TextStyles';
-import { ITabComponent } from '~layout/TabLayout';
+import { useFilter } from '~hooks/useFilter';
+import { useSort } from '~hooks/useSort';
+import Select from 'react-select';
+import { Card } from '~/components/Card';
 
 export type LegendSort =
     | 'level'
@@ -18,113 +21,138 @@ export type LegendSort =
     | 'ranked games'
     | 'ranked winrate';
 
-const getSortedProp = (state: LegendSort, legendStats: ILegendStatsFormat) => {
-    switch (state) {
-        case 'matchtime':
-            return legendStats.matchtime;
-        case 'rating':
-            return legendStats.season.rating;
-        case 'peak':
-            return legendStats.season.peak;
-        case 'games':
-            return legendStats.games;
-        case 'winrate':
-            return legendStats.games <= 0 ? 0 : legendStats.wins / legendStats.games;
-        case 'ranked games':
-            return legendStats.season.games;
-        case 'ranked winrate':
-            return legendStats.season.games <= 0 ? 0 : legendStats.season.wins / legendStats.season.games;
-        default:
-            return legendStats.xp;
-    }
-};
+interface Props {
+    playerStats: IPlayerStatsFormat;
+}
 
-const getSortedDisplay = (state: LegendSort, legendStats: ILegendStatsFormat) => {
-    switch (state) {
-        case 'matchtime':
-            return `Time Played: ${formatTime(legendStats.matchtime)}`;
-        case 'rating':
-            return `${legendStats.season.rating} elo`;
-        case 'peak':
-            return `${legendStats.season.peak} peak elo`;
-        case 'games':
-            return `${legendStats.games} games`;
-        case 'winrate':
-            return legendStats.games <= 0 ? `N/A` : `${((legendStats.wins / legendStats.games) * 100).toFixed(2)}%`;
-        case 'ranked games':
-            return `${legendStats.season.games} games`;
-        case 'ranked winrate':
-            return legendStats.season.games <= 0
-                ? `N/A`
-                : `${((legendStats.season.wins / legendStats.season.games) * 100).toFixed(2)}%`; // TODO: winrate ch.js
-        default:
-            return `Level ${legendStats.level}`;
-    }
-};
+export const LegendsTab = ({ playerStats }: Props): JSX.Element => {
+    const [filterByWeapon, setWeaponFilter] = useFilter<Weapon, ILegendStatsFormat>((weapon) => ({ weapons }) =>
+        [weapons.weaponOne.name, weapons.weaponTwo.name].includes(weapon),
+    );
 
-export const LegendsTab = (playerStats: IPlayerStatsFormat): ITabComponent<Weapon | 'all', LegendSort> => {
-    const Tab: ITabComponent<Weapon | 'all', LegendSort> = (active: boolean, activeWeapon, sort): JSX.Element => {
-        const legends =
-            activeWeapon === 'all'
-                ? playerStats.legends
-                : playerStats.legends.filter((l) =>
-                      [l.weapons.weaponOne.name, l.weapons.weaponTwo.name].includes(activeWeapon),
-                  );
+    const {
+        sort: sortByProp,
+        setActiveSort: setSortingProp,
+        getDisplayStr: getSortDisplayStr,
+        order: sortOrder,
+        setOrder: setSortOrder,
+    } = useSort<LegendSort, ILegendStatsFormat>(
+        'level',
+        {
+            matchtime: (legend) => legend.matchtime,
+            rating: (legend) => legend.season.rating,
+            peak: (legend) => legend.season.peak,
+            games: (legend) => legend.games,
+            winrate: (legend) => (legend.games <= 0 ? 0 : legend.wins / legend.games),
+            'ranked games': (legend) => legend.season.games,
+            'ranked winrate': (legend) => (legend.season.games <= 0 ? 0 : legend.season.wins / legend.season.games),
+            level: (legend) => legend.xp,
+        },
+        {
+            matchtime: (legend) => `Time Played: ${formatTime(legend.matchtime)}`,
+            rating: (legend) => `${legend.season.rating} elo`,
+            peak: (legend) => `${legend.season.peak} peak elo`,
+            games: (legend) => `${legend.games} games`,
+            winrate: (legend) => (legend.games <= 0 ? `N/A` : `${((legend.wins / legend.games) * 100).toFixed(2)}%`),
+            'ranked games': (legend) => `${legend.season.games} games`,
+            'ranked winrate': (legend) =>
+                legend.season.games <= 0 ? `N/A` : `${((legend.season.wins / legend.season.games) * 100).toFixed(2)}%`, // TODO: winrate ch.js,
+            level: (legend) => `Level ${legend.level}`,
+        },
+    );
 
-        return (
-            active && (
-                <>
-                    {/* <Select<LegendSort>
-				action={setSort}
-				title='Sort by'
-				options={[
-					{ name: 'Level', value: 'default' },
-					{ name: 'Time Played', value: 'matchtime' },
-					{ name: 'Rating', value: 'rating' },
-					{ name: 'Peak Rating', value: 'peak' },
-					{ name: 'Games', value: 'games' },
-					{ name: 'Winrate', value: 'winrate' },
-					{ name: 'Ranked Games', value: 'ranked games' },
-					{ name: 'Ranked Winrate', value: 'ranked winrate' },
-				]}
-			/> */}
-                    {legends
-                        .sort((a, b) => (getSortedProp(sort, a) < getSortedProp(sort, b) ? 1 : -1))
-                        .map((legend, i) => (
-                            <motion.div layoutId={`legend_${legend.id}`} key={legend.id}>
-                                <SectionSeparator />
-                                <PageSection
-                                    title={`${i + 1}. ${legend.name} ${`• ${getSortedDisplay(sort, legend)}`}`}
-                                >
-                                    <div className={styles.legendLevelStats}>
-                                        <img
-                                            className={styles.legendIcon}
-                                            src={`/images/icons/legends/${legend.name}.png`}
-                                        />
-                                        <div>
-                                            <div>
-                                                <StatDesc>Level</StatDesc>
-                                                <StatSmall>{legend.level}</StatSmall>
-                                                <StatDesc>({legend.xp}xp)</StatDesc>
-                                            </div>
-                                            <div>
-                                                <StatDesc>Time played</StatDesc>
-                                                <StatSmall>{formatTime(legend.matchtime)}</StatSmall>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <SectionSeasonOverviewContent
-                                        {...legend.season}
-                                        losses={legend.season.games - legend.season.wins}
-                                        winrate={(legend.season.wins / legend.season.games) * 100}
-                                    />
-                                    <SectionOverallStatsContent {...legend} losses={legend.games - legend.wins} />
-                                </PageSection>
-                            </motion.div>
-                        ))}
-                </>
-            )
-        );
-    };
-    return Tab;
+    return (
+        <>
+            <Card>
+                <Select<LegendSort>
+                    action={(selected) => setSortingProp(selected)}
+                    options={[
+                        {
+                            option: 'matchtime',
+                            displayName: 'Time Played',
+                        },
+                        {
+                            option: 'rating',
+                            displayName: 'Rating',
+                        },
+                        {
+                            option: 'peak',
+                            displayName: 'Peak Rating',
+                        },
+                        {
+                            option: 'games',
+                            displayName: 'Games',
+                        },
+                        {
+                            option: 'winrate',
+                            displayName: 'Winrate',
+                        },
+                        {
+                            option: 'ranked games',
+                            displayName: 'Ranked Games',
+                        },
+                        {
+                            option: 'ranked winrate',
+                            displayName: 'Ranked Winrate',
+                        },
+                        {
+                            option: 'level',
+                            displayName: 'Level / XP',
+                        },
+                    ]}
+                />
+                <Select<Weapon>
+                    action={(selected) => setWeaponFilter(selected)}
+                    options={[
+                        { option: null, displayName: 'All Weapons' },
+                        { option: 'Hammer' },
+                        { option: 'Sword' },
+                        { option: 'Blasters' },
+                        { option: 'Rocket Lance' },
+                        { option: 'Spear' },
+                        { option: 'Katars' },
+                        { option: 'Axe' },
+                        { option: 'Bow' },
+                        { option: 'Gauntlets' },
+                        { option: 'Scythe' },
+                        { option: 'Cannon' },
+                        { option: 'Orb' },
+                        { option: 'Greatsword' },
+                    ]}
+                />
+            </Card>
+            <button onClick={() => setSortingProp('peak')}>XD</button>
+            <br />
+            <button onClick={() => setSortingProp('winrate')}>XDDDD</button>
+            <br />
+            <button onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}>Reverse</button>
+            {sortByProp(filterByWeapon(playerStats.legends)).map((legend, i) => (
+                <motion.div layoutId={`legend_${legend.id}`} key={legend.id}>
+                    <SectionSeparator />
+                    <PageSection title={`${i + 1}. ${legend.name} • ${getSortDisplayStr(legend)}`}>
+                        <div className={styles.legendLevelStats}>
+                            <img className={styles.legendIcon} src={`/images/icons/legends/${legend.name}.png`} />
+                            <div>
+                                <div>
+                                    <StatDesc>Level</StatDesc>
+                                    <StatSmall>{legend.level}</StatSmall>
+                                    <StatDesc>({legend.xp}xp)</StatDesc>
+                                </div>
+                                <div>
+                                    <StatDesc>Time played</StatDesc>
+                                    <StatSmall>{formatTime(legend.matchtime)}</StatSmall>
+                                </div>
+                            </div>
+                        </div>
+                        <SectionSeasonOverviewContent
+                            {...legend.season}
+                            losses={legend.season.games - legend.season.wins}
+                            winrate={(legend.season.wins / legend.season.games) * 100}
+                        />
+                        <SectionOverallStatsContent {...legend} losses={legend.games - legend.wins} />
+                    </PageSection>
+                </motion.div>
+            ))}
+        </>
+    );
 };
