@@ -1,11 +1,9 @@
 import styles from '~styles/pages/stats/PlayerStatsPage.module.scss';
 import { SectionSeparator, PageSection } from '@PageSection';
-import { ProfileHeader } from '@ProfileHeader';
 import { SectionClanOverviewSmallContent } from '@SectionClanOverviewSmallContent';
 import { SectionOverallStatsContent } from '@SectionOverallStatsContent';
 import { SectionSeasonOverviewContent } from '@SectionSeasonOverviewContent';
 import { StatDesc, StatSmall, StatMedium } from '@TextStyles';
-import { formatTime } from '~util';
 import { IPlayerStatsFormat } from '@corehalla/types';
 
 interface Props {
@@ -17,31 +15,6 @@ export const OverviewTab = ({ playerStats }: Props): JSX.Element => {
 
     return (
         <>
-            <ProfileHeader
-                title={playerStats.name}
-                bannerURI="/images/backgrounds/Orion.jpg"
-                favorite={{
-                    name: playerStats.name,
-                    id: playerStats.id.toString(), // TODO: id is a number?
-                    type: 'player',
-                    thumbURI: `/images/icons/legends/${
-                        playerStats.legends.sort((a, b) => b.season.rating - a.season.rating)[0].name
-                    }.png`,
-                }}
-            >
-                <div>
-                    <p>
-                        <StatDesc>level</StatDesc>
-                        <StatSmall>{playerStats.level}</StatSmall>
-                        <StatDesc>({playerStats.xp} xp)</StatDesc>
-                    </p>
-                    <p>
-                        <StatDesc>time spent in game</StatDesc>
-                        <StatSmall>{formatTime(playerStats.matchtime)}</StatSmall>
-                    </p>
-                </div>
-            </ProfileHeader>
-            <SectionSeparator />
             <PageSection title="Season Overview" initFoldState>
                 <SectionSeasonOverviewContent
                     {...season}

@@ -1,4 +1,6 @@
 import styles from '~styles/pages/stats/PlayerStatsPage.module.scss';
+import layoutStyles from '~layout/Layout.module.scss';
+
 import { ILegendStatsFormat, IPlayerStatsFormat, Weapon } from '@corehalla/types';
 import { SectionSeparator, PageSection } from '@PageSection';
 import { motion } from 'framer-motion';
@@ -8,8 +10,8 @@ import { SectionSeasonOverviewContent } from '@SectionSeasonOverviewContent';
 import { StatDesc, StatSmall } from '@TextStyles';
 import { useFilter } from '~hooks/useFilter';
 import { useSort } from '~hooks/useSort';
-import Select from 'react-select';
-import { Card } from '~/components/Card';
+import { Select } from '@Select';
+import { Card } from '@Card';
 
 export type LegendSort =
     | 'level'
@@ -63,69 +65,73 @@ export const LegendsTab = ({ playerStats }: Props): JSX.Element => {
 
     return (
         <>
-            <Card>
+            <Card className={layoutStyles.sortAndFilterContainer}>
                 <Select<LegendSort>
-                    action={(selected) => setSortingProp(selected)}
+                    onChange={(value) => {
+                        console.log({ value });
+                        setSortingProp(value);
+                    }}
                     options={[
                         {
-                            option: 'matchtime',
-                            displayName: 'Time Played',
+                            value: 'level',
+                            label: 'Level / XP',
                         },
                         {
-                            option: 'rating',
-                            displayName: 'Rating',
+                            value: 'matchtime',
+                            label: 'Time Played',
                         },
                         {
-                            option: 'peak',
-                            displayName: 'Peak Rating',
+                            value: 'rating',
+                            label: 'Rating',
                         },
                         {
-                            option: 'games',
-                            displayName: 'Games',
+                            value: 'peak',
+                            label: 'Peak Rating',
                         },
                         {
-                            option: 'winrate',
-                            displayName: 'Winrate',
+                            value: 'games',
+                            label: 'Games',
                         },
                         {
-                            option: 'ranked games',
-                            displayName: 'Ranked Games',
+                            value: 'winrate',
+                            label: 'Winrate',
                         },
                         {
-                            option: 'ranked winrate',
-                            displayName: 'Ranked Winrate',
+                            value: 'ranked games',
+                            label: 'Ranked Games',
                         },
                         {
-                            option: 'level',
-                            displayName: 'Level / XP',
+                            value: 'ranked winrate',
+                            label: 'Ranked Winrate',
                         },
                     ]}
+                    defaultValue={{
+                        value: 'level',
+                        label: 'Level / XP',
+                    }}
                 />
                 <Select<Weapon>
-                    action={(selected) => setWeaponFilter(selected)}
+                    onChange={(value) => setWeaponFilter(value)}
                     options={[
-                        { option: null, displayName: 'All Weapons' },
-                        { option: 'Hammer' },
-                        { option: 'Sword' },
-                        { option: 'Blasters' },
-                        { option: 'Rocket Lance' },
-                        { option: 'Spear' },
-                        { option: 'Katars' },
-                        { option: 'Axe' },
-                        { option: 'Bow' },
-                        { option: 'Gauntlets' },
-                        { option: 'Scythe' },
-                        { option: 'Cannon' },
-                        { option: 'Orb' },
-                        { option: 'Greatsword' },
+                        { value: null, label: 'All Weapons' },
+                        { value: 'Hammer' },
+                        { value: 'Sword' },
+                        { value: 'Blasters' },
+                        { value: 'Rocket Lance' },
+                        { value: 'Spear' },
+                        { value: 'Katars' },
+                        { value: 'Axe' },
+                        { value: 'Bow' },
+                        { value: 'Gauntlets' },
+                        { value: 'Scythe' },
+                        { value: 'Cannon' },
+                        { value: 'Orb' },
+                        { value: 'Greatsword' },
                     ]}
+                    placeholder="All Weapons"
                 />
+                <button onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}>Reverse Order</button>
             </Card>
-            <button onClick={() => setSortingProp('peak')}>XD</button>
-            <br />
-            <button onClick={() => setSortingProp('winrate')}>XDDDD</button>
-            <br />
-            <button onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}>Reverse</button>
             {sortByProp(filterByWeapon(playerStats.legends)).map((legend, i) => (
                 <motion.div layoutId={`legend_${legend.id}`} key={legend.id}>
                     <SectionSeparator />

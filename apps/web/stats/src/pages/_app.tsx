@@ -11,7 +11,6 @@ import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Loader } from '@Loader';
-import { Background } from '@Background';
 import { SideNavProvider } from '~providers/SideNavProvider';
 
 // Router.events.on('routeChangeStart', (url) => {
@@ -49,7 +48,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
                 <link rel="icon" type="image/png" href="/images/favicon.png" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
             </Head>
-            <Background />
+            {/* <Background /> */}
 
             <ThemeProvider>
                 <FavoritesProvider>

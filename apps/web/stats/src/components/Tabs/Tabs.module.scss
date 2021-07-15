@@ -1,6 +1,8 @@
 @import '~styles/theme.scss';
 
 .tabs {
+    position: sticky;
+    top: 5rem;
     .tab {
         padding: 1rem;
         background-color: transparent;

@@ -1,5 +1,5 @@
 import styles from '~styles/pages/HomePage.module.scss';
-import layoutStyles from '~styles/Layout.module.scss';
+import { Container } from '@Container';
 // Library imports
 import Link from 'next/link';
 import Head from 'next/head';
@@ -22,7 +22,7 @@ export default function HomePage(): JSX.Element {
                 </Head>
                 <ArticleNavbar />
                 <div className={styles.landingSections}>
-                    <div className={layoutStyles.container}>
+                    <Container>
                         <div className={styles.landingContent}>
                             <div className={styles.text}>
                                 <h1 className={styles.title}>
@@ -51,12 +51,12 @@ export default function HomePage(): JSX.Element {
                                 />
                             </div>
                         </div>
-                    </div>
+                    </Container>
                     <div className={styles.mainContent}>
-                        <div className={layoutStyles.container}>
+                        <Container>
                             <img src="/images/Landing_Preview.jpg" className={styles.landingPreview} />
-                        </div>
-                        <div className={layoutStyles.container}>
+                        </Container>
+                        <Container>
                             <div className={styles.blips}>
                                 <div className={styles.blip}>
                                     <StatSmall>Rankings</StatSmall>
@@ -83,9 +83,9 @@ export default function HomePage(): JSX.Element {
                                     </StatDesc>
                                 </div>
                             </div>
-                        </div>
+                        </Container>
                     </div>
-                    <div className={layoutStyles.container}>
+                    <Container>
                         <div className={`${styles.landingContent} ${styles.right} ${styles.card}`}>
                             <div className={styles.text}>
                                 <h1 className={styles.title}>Join the community</h1>
@@ -100,7 +100,7 @@ export default function HomePage(): JSX.Element {
                                 <img src="/images/Nix Landing.webp" alt="" width="100%" height="100%" />
                             </div>
                         </div>
-                    </div>
+                    </Container>
                 </div>
             </Layout>
         </>
