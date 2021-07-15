@@ -4,13 +4,14 @@ import { PropsWithChildren } from 'react';
 
 interface Props {
     title?: string;
+    className?: string;
 }
 
-export const Card = ({ title, children }: PropsWithChildren<Props>): JSX.Element => {
+export const Card = ({ title, children, className }: PropsWithChildren<Props>): JSX.Element => {
     return (
-        <motion.div className={styles.card}>
+        <motion.div className={`${styles.card} ${className ?? ''}`}>
             {title && <span className={styles.title}>{title}</span>}
-            <div>{children}</div>
+            {children}
         </motion.div>
     );
 };

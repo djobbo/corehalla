@@ -2,9 +2,12 @@ import { GetServerSideProps } from 'next';
 import type { IRanking1v1Format, RankedRegion } from '@corehalla/types';
 import { fetch1v1RankingsFormat } from '@corehalla/core';
 import { Mock1v1Rankings } from '@corehalla/mocks';
-import { TabLayout } from '~layout/TabLayout';
 import Head from 'next/head';
 import { Rankings1v1Tab } from '~layout/pages/rankings/Rankings_1v1Tab';
+import { TabsProvider, useTabs } from '~providers/TabsProvider';
+import { Container } from '@Container';
+import { Tabs } from '@Tabs';
+import { Header } from '@Header';
 
 export interface Props {
     bracket: Bracket;
@@ -23,50 +26,53 @@ export interface IRankingsTabs {
     power2v2: null;
 }
 
-export default function RankingsPage({ rankings, bracket, page, region, playerSearch }: Props): JSX.Element {
+const Tab = ({ rankings }: Props) => {
+    const { tab } = useTabs<Bracket>();
+
+    switch (tab) {
+        case '1v1':
+            return <Rankings1v1Tab rankings={rankings} />;
+        case '2v2':
+            return <>2v2</>;
+        case 'power1v1':
+            return <>Power 1v1</>;
+        case 'power2v2':
+            return <>Power 2v2</>;
+        default:
+            return <Rankings1v1Tab rankings={rankings} />;
+    }
+};
+
+const RankingsPage = (props: Props): JSX.Element => {
+    const { bracket, page, region } = props;
+
     return (
-        <>
+        <TabsProvider<Bracket> defaultTab="1v1">
             <Head>
                 <title>
                     {region}-{bracket} Rankings | Page {page} • Corehalla
                 </title>
             </Head>
-            <TabLayout<
-                '1v1',
-                {
-                    '1v1': ['all' | 'US-E' | 'EU' | 'SEA' | 'BRZ' | 'AUS' | 'US-W' | 'JPN', null];
+            <Header
+                content={
+                    <Tabs<Bracket>
+                        tabs={[
+                            { title: '1v1', name: '1v1' },
+                            { title: '2v2', name: '2v2' },
+                            { title: 'Power 1v1', name: 'power1v1' },
+                            { title: 'Power 2v2', name: 'power2v2' },
+                        ]}
+                    />
                 }
-            >
-                title={`${region}-${bracket} Rankings | Page ${page} • Corehalla` ?? 'Corehalla'}
-                tabs={{
-                    '1v1': {
-                        displayName: '1v1',
-                        chips: {
-                            all: 'Global',
-                            'US-E': null,
-                            EU: null,
-                            SEA: null,
-                            BRZ: null,
-                            AUS: null,
-                            'US-W': null,
-                            JPN: null,
-                        },
-                        defaultChip: 'all',
-                        link: `/rankings/${bracket}/${region}/${page}${playerSearch ? `?p=${playerSearch}` : ''}`,
-                        component: Rankings1v1Tab({
-                            region,
-                            page,
-                            playerSearch,
-                            rankings,
-                        }),
-                        sortOptions: null,
-                        defaultSort: null,
-                    },
-                }}
             />
-        </>
+            <Container>
+                <Tab {...props} />
+            </Container>
+        </TabsProvider>
     );
-}
+};
+
+export default RankingsPage;
 
 export const getServerSideProps: GetServerSideProps<
     Props,

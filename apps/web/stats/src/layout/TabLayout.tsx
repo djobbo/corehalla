@@ -1,4 +1,4 @@
-import styles from '~styles/Layout.module.scss';
+import styles from './Layout.module.scss';
 // Library imports
 import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 

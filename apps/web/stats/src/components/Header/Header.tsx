@@ -1,5 +1,7 @@
-import { Card } from '~components/Card';
+import { ReactNode } from 'react';
+import { Card } from '@Card';
 import styles from './Header.module.scss';
+import Link from 'next/link';
 
 const links = [
     {
@@ -7,8 +9,8 @@ const links = [
         href: '/',
     },
     {
-        title: 'Leaderboard',
-        href: '/Leaderboard',
+        title: 'Rankings',
+        href: '/rankings',
     },
     {
         title: 'Favorites',
@@ -32,15 +34,29 @@ const SearchBar = () => {
     return <input className={styles.searchBar} placeholder="Search Player..." />;
 };
 
-export const Header = (): JSX.Element => {
+interface Props {
+    content?: ReactNode;
+}
+
+export const Header = ({ content }: Props): JSX.Element => {
     return (
         <div className={styles.header}>
             <Card>
                 <div className={styles.content}>
                     <div className={styles.logo}>
-                        <img className={styles.mainLogo} src="/images/logo.png" alt="Corehalla Logo" height={24} />
+                        <Link href="/">
+                            <a>
+                                <img
+                                    className={styles.mainLogo}
+                                    src="/images/logo.png"
+                                    alt="Corehalla Logo"
+                                    height={24}
+                                />
+                            </a>
+                        </Link>
+                        <SearchBar />
                     </div>
-                    <SearchBar />
+                    {content}
                     <Nav />
                 </div>
             </Card>

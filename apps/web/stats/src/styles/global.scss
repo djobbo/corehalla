@@ -1,5 +1,15 @@
 @import './theme.scss';
 
+:root {
+    --bg-dark: #202225;
+    --bg-dark-var1: #2f3136;
+    --bg-dark-var2: #36393f;
+    --on-bg-dark-var1: #8f9296;
+    --on-bg-dark: #ffffff;
+    --accent: #318ae4;
+    --secondary: #ff732f;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -50,13 +60,4 @@ svg {
 #App {
     position: relative;
     z-index: 10;
-}
-
-:root {
-    --bg: #212121;
-    --bg-dark: #282828;
-    --bg-dark-var2: #373737;
-    --text-2: #ababab;
-    --text: #f1f1f1;
-    --accent: #ff732f;
 }

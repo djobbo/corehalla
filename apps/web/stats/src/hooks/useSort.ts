@@ -17,11 +17,11 @@ export const useSort = <Sort extends string, T = unknown>(
     getDisplayStr: (item: T) => string;
 } => {
     const { query } = useRouter();
-    const [activeSort, setActiveSort] = useState<Sort>((query.sort ?? null) as Sort);
+    const [activeSort, setActiveSort] = useState<Sort>((query.sort ?? defaultSort) as Sort);
     const [order, setOrder] = useState<Order>('desc');
 
     useEffect(() => {
-        setActiveSort((query.sort ?? null) as Sort);
+        setActiveSort((query.sort ?? defaultSort) as Sort);
     }, [query.sort]);
 
     const sort = (array: T[]): T[] => {
@@ -41,6 +41,6 @@ export const useSort = <Sort extends string, T = unknown>(
         setActiveSort,
         order,
         setOrder,
-        getDisplayStr: (item: T) => (getSortedDisplays[activeSort] ?? getSortedDisplays[defaultSort])(item),
+        getDisplayStr: (item: T) => (getSortedDisplays?.[activeSort] ?? getSortedDisplays?.[defaultSort])(item) ?? '',
     };
 };
