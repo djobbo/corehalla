@@ -1,19 +1,19 @@
-import { useEffect, useState } from 'react';
-import ReactSelect, { ActionMeta, InputActionMeta } from 'react-select';
+import { useEffect, useState } from 'react'
+import ReactSelect, { ActionMeta, InputActionMeta } from 'react-select'
 
 export interface Option<T> {
-    value: T;
-    label?: string;
+    value: T
+    label?: string
 }
 
 interface Props<T> {
-    onChange?: (value: T) => void;
-    onInputChange?: (value: string) => void;
-    options: Option<T>[];
-    placeholder?: string;
-    defaultValue?: Option<T>;
-    searchable?: boolean;
-    clearable?: boolean;
+    onChange?: (value: T) => void
+    onInputChange?: (value: string) => void
+    options: Option<T>[]
+    placeholder?: string
+    defaultValue?: Option<T>
+    searchable?: boolean
+    clearable?: boolean
 }
 
 export const Select = <T extends string>({
@@ -25,36 +25,36 @@ export const Select = <T extends string>({
     searchable,
     clearable,
 }: Props<T>): JSX.Element => {
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState('')
     const [fieldValue, setFieldValue] = useState<Required<Option<T>>>(
         defaultValue ? { label: defaultValue.label ?? defaultValue.value, value: defaultValue.value } : null,
-    );
+    )
 
     const handleInputChange = (value: string, action: InputActionMeta) => {
         if (action.action !== 'input-blur' && action.action !== 'menu-close') {
-            setInputValue(value);
+            setInputValue(value)
             if (value.trim() === '') {
-                setFieldValue(null);
+                setFieldValue(null)
             } else {
-                setFieldValue({ value: value as T, label: value });
+                setFieldValue({ value: value as T, label: value })
             }
         }
-    };
+    }
 
     const handleFieldChange = (item: Required<Option<T>>, action: ActionMeta<Option<T>>) => {
         if (action.action === 'clear') {
-            setInputValue('');
+            setInputValue('')
         }
-        setFieldValue(item);
-    };
+        setFieldValue(item)
+    }
 
     useEffect(() => {
-        onInputChange?.(inputValue);
-    }, [inputValue]);
+        onInputChange?.(inputValue)
+    }, [inputValue])
 
     useEffect(() => {
-        onChange?.(fieldValue?.value);
-    }, [fieldValue]);
+        onChange?.(fieldValue?.value)
+    }, [fieldValue])
 
     return (
         <ReactSelect<{ value: T; label: string }>
@@ -108,5 +108,5 @@ export const Select = <T extends string>({
                     : undefined
             }
         />
-    );
-};
+    )
+}

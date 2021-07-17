@@ -1,4 +1,4 @@
-import type { IStaticLegendData } from '@corehalla/types';
+import type { IStaticLegendData } from '@corehalla/types'
 
 export const legends: IStaticLegendData[] = [
     {
@@ -313,4 +313,4 @@ export const legends: IStaticLegendData[] = [
         weapon_one: 'Hammer',
         weapon_two: 'Greatsword',
     },
-];
+]

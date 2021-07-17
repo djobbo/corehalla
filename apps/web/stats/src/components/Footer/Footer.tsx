@@ -1,14 +1,14 @@
-import styles from './Footer.module.scss';
+import styles from './Footer.module.scss'
 
-import Link from 'next/link';
-import { DiscordIcon, GithubIcon, InstagramIcon, TwitterIcon } from '@SocialIcons';
-import { ReactNode } from 'react';
+import Link from 'next/link'
+import { DiscordIcon, GithubIcon, InstagramIcon, TwitterIcon } from '@SocialIcons'
+import { ReactNode } from 'react'
 
-import { Container } from '@Container';
+import { Container } from '@Container'
 
 interface ISocialLink {
-    href: string;
-    icon: ReactNode;
+    href: string
+    icon: ReactNode
 }
 
 const socialLinks: ISocialLink[] = [
@@ -28,7 +28,7 @@ const socialLinks: ISocialLink[] = [
         href: 'https://discord.gg/eD248ez',
         icon: DiscordIcon,
     },
-];
+]
 
 export function Footer(): JSX.Element {
     return (
@@ -100,5 +100,5 @@ export function Footer(): JSX.Element {
                 </div>
             </div>
         </div>
-    );
+    )
 }

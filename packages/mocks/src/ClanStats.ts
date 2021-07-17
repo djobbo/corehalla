@@ -1,4 +1,4 @@
-import type { IClanFormat } from '@corehalla/types';
+import type { IClanFormat } from '@corehalla/types'
 
 export const MockClanStats: IClanFormat = {
     id: 955295,
@@ -275,4 +275,4 @@ export const MockClanStats: IClanFormat = {
         },
     ],
     xpInClan: 1530384,
-};
+}

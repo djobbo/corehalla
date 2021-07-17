@@ -1,19 +1,19 @@
-import styles from './index.module.scss';
+import styles from './index.module.scss'
 // Library imports
-import { useState } from 'react';
-import { motion, useViewportScroll, Variants } from 'framer-motion';
-import { Select } from '@Select';
+import { useState } from 'react'
+import { motion, useViewportScroll, Variants } from 'framer-motion'
+import { Select } from '@Select'
 
 // Components imports
-import { IChip, ChipsContainer } from '@ChipsContainer';
-import { ITab, TabsContainer } from '@TabsContainer';
-import { Navbar } from '@Navbar';
+import { IChip, ChipsContainer } from '@ChipsContainer'
+import { ITab, TabsContainer } from '@TabsContainer'
+import { Navbar } from '@Navbar'
 
 export interface Props<Tabs extends string, Chips extends string, Sort extends string> {
-    title?: string;
-    tabs?: ITab<Tabs>[];
-    chips?: IChip<Chips>[];
-    sort?: { options: [Sort, string][]; action: (selected: Sort) => void };
+    title?: string
+    tabs?: ITab<Tabs>[]
+    chips?: IChip<Chips>[]
+    sort?: { options: [Sort, string][]; action: (selected: Sort) => void }
 }
 
 const extrasContainerVariants: Variants = {
@@ -26,7 +26,7 @@ const extrasContainerVariants: Variants = {
         opacity: 0,
         y: -80,
     },
-};
+}
 
 export function AppBar<Tabs extends string, Chips extends string, Sort extends string>({
     title,
@@ -34,13 +34,13 @@ export function AppBar<Tabs extends string, Chips extends string, Sort extends s
     chips,
     sort,
 }: Props<Tabs, Chips, Sort>): JSX.Element {
-    const { scrollY } = useViewportScroll();
-    const [hideOnScroll, setHideOnScroll] = useState(false);
+    const { scrollY } = useViewportScroll()
+    const [hideOnScroll, setHideOnScroll] = useState(false)
 
     scrollY.onChange(() => {
-        const isShow = scrollY.getVelocity() > 0;
-        if (isShow !== hideOnScroll) setHideOnScroll(isShow);
-    });
+        const isShow = scrollY.getVelocity() > 0
+        if (isShow !== hideOnScroll) setHideOnScroll(isShow)
+    })
 
     return (
         <>
@@ -65,5 +65,5 @@ export function AppBar<Tabs extends string, Chips extends string, Sort extends s
                 </div>
             </div>
         </>
-    );
+    )
 }

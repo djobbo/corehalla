@@ -1,11 +1,11 @@
-import styles from '~styles/pages/RankingsPage.module.scss';
-import type { IRanking1v1Format } from '@corehalla/types';
-import { motion } from 'framer-motion';
-import { SectionSeparator } from '@PageSection';
-import { RankingsItem1v1 } from '@RankingsItem';
+import styles from '~styles/pages/RankingsPage.module.scss'
+import type { IRanking1v1Format } from '@corehalla/types'
+import { motion } from 'framer-motion'
+import { SectionSeparator } from '@PageSection'
+import { RankingsItem1v1 } from '@RankingsItem'
 
 export interface Props {
-    rankings: IRanking1v1Format[];
+    rankings: IRanking1v1Format[]
 }
 
 export const Rankings1v1Tab = ({ rankings }: Props): JSX.Element => {
@@ -18,5 +18,5 @@ export const Rankings1v1Tab = ({ rankings }: Props): JSX.Element => {
                 </motion.div>
             ))}
         </div>
-    );
-};
+    )
+}

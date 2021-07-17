@@ -1,2 +1,2 @@
-export * from './time';
-export * from './devices';
+export * from './time'
+export * from './devices'

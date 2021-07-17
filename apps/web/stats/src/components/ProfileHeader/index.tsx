@@ -1,21 +1,21 @@
-import styles from './index.module.scss';
+import styles from './index.module.scss'
 // Library imports
-import { PropsWithChildren, useEffect, useState } from 'react';
-import { useFavoritesContext, IFavorite } from '~providers/FavoritesProvider';
+import { PropsWithChildren, useEffect, useState } from 'react'
+import { useFavoritesContext, IFavorite } from '~providers/FavoritesProvider'
 
 interface Props {
-    bannerURI: string;
-    title: string;
-    favorite: IFavorite;
+    bannerURI: string
+    title: string
+    favorite: IFavorite
 }
 
 export function ProfileHeader({ bannerURI, title, favorite, children }: PropsWithChildren<Props>): JSX.Element {
-    const { isFavorite, addFavorite, removeFavorite, updatedAt } = useFavoritesContext();
-    const [isFav, setIsFav] = useState(isFavorite(favorite));
+    const { isFavorite, addFavorite, removeFavorite, updatedAt } = useFavoritesContext()
+    const [isFav, setIsFav] = useState(isFavorite(favorite))
 
     useEffect(() => {
-        setIsFav(isFavorite(favorite));
-    }, [updatedAt]);
+        setIsFav(isFavorite(favorite))
+    }, [updatedAt])
 
     return (
         <div className={styles.container}>
@@ -27,8 +27,8 @@ export function ProfileHeader({ bannerURI, title, favorite, children }: PropsWit
                     className={`${styles.addToFavBtn} ${styles.isFav}`}
                     href="#"
                     onClick={(e) => {
-                        e.preventDefault();
-                        removeFavorite(favorite);
+                        e.preventDefault()
+                        removeFavorite(favorite)
                     }}
                 >
                     Remove Favorite
@@ -38,8 +38,8 @@ export function ProfileHeader({ bannerURI, title, favorite, children }: PropsWit
                     className={styles.addToFavBtn}
                     href="#"
                     onClick={(e) => {
-                        e.preventDefault();
-                        addFavorite(favorite);
+                        e.preventDefault()
+                        addFavorite(favorite)
                     }}
                 >
                     Add Favorite
@@ -47,5 +47,5 @@ export function ProfileHeader({ bannerURI, title, favorite, children }: PropsWit
             )}
             <div className={styles.description}>{children}</div>
         </div>
-    );
+    )
 }

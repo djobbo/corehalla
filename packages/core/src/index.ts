@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios'
 
 import {
     formatPlayerStats,
@@ -6,7 +6,7 @@ import {
     format1v1Rankings,
     format2v2Rankings,
     // formatPowerRankings,
-} from '@corehalla/formatters';
+} from '@corehalla/formatters'
 
 import type {
     BrawlhallaID,
@@ -20,18 +20,18 @@ import type {
     IRanking2v2,
     IRanking2v2Format,
     RankedRegion,
-} from '@corehalla/types';
+} from '@corehalla/types'
 
-const API_URL = 'https://api.brawlhalla.com';
+const API_URL = 'https://api.brawlhalla.com'
 
 interface IRankingsOptions {
-    region: RankedRegion;
-    page: string | number;
-    name: string;
+    region: RankedRegion
+    page: string | number
+    name: string
 }
 
 const fetchPlayerById = <T>(apiKey: string, dataType: 'ranked' | 'stats', brawlhallaId: BrawlhallaID) =>
-    axios.get<T>(`${API_URL}/player/${brawlhallaId}/${dataType}?api_key=${apiKey}`).then(async (res) => res.data);
+    axios.get<T>(`${API_URL}/player/${brawlhallaId}/${dataType}?api_key=${apiKey}`).then(async (res) => res.data)
 
 // const getBHIdBySteamId = (apiKey: string, steamId: string) =>
 // 	axios
@@ -41,12 +41,12 @@ const fetchPlayerById = <T>(apiKey: string, dataType: 'ranked' | 'stats', brawlh
 // 		.then(async (res) => res.data);
 
 const fetchClanById = (apiKey: string, clanId: BrawlhallaID) =>
-    axios.get<IClan>(`${API_URL}/clan/${clanId}?api_key=${apiKey}`).then(async (res) => res.data);
+    axios.get<IClan>(`${API_URL}/clan/${clanId}?api_key=${apiKey}`).then(async (res) => res.data)
 
 const fetchRankings = <T>(apiKey: string, bracket: '1v1' | '2v2', { region, page, name }: IRankingsOptions) =>
     axios
         .get<T[]>(`${API_URL}/rankings/${bracket}/${region.toLowerCase()}/${page}?name=${name}&api_key=${apiKey}`)
-        .then(async (res) => res.data);
+        .then(async (res) => res.data)
 
 // const fetchPowerRankings = (bracket: '1v1' | '2v2') =>
 //     axios
@@ -62,25 +62,25 @@ const fetchAllStats = async (
     const [stats, ranked] = await Promise.allSettled([
         fetchPlayerById<IPlayerStats>(apiKey, 'stats', brawlhallaId),
         fetchPlayerById<IPlayerRanked>(apiKey, 'ranked', brawlhallaId),
-    ]);
+    ])
     return [
         stats.status === 'rejected' ? undefined : stats.value,
         ranked.status === 'rejected' ? undefined : ranked.value,
-    ];
-};
+    ]
+}
 
 export const fetchPlayerFormat = (apiKey: string, brawlhallaId: BrawlhallaID): Promise<IPlayerStatsFormat | null> =>
     fetchAllStats(apiKey, brawlhallaId).then((stats) =>
         stats.some((x) => !x || typeof x.brawlhalla_id === undefined) //TODO: Better {} check
             ? null
             : formatPlayerStats(...stats),
-    );
+    )
 
 export const fetchClanFormat = (apiKey: string, clanId: BrawlhallaID): Promise<IClanFormat | null> =>
-    fetchClanById(apiKey, clanId).then(formatClan);
+    fetchClanById(apiKey, clanId).then(formatClan)
 
 export const fetch1v1RankingsFormat = (apiKey: string, options: IRankingsOptions): Promise<IRanking1v1Format[]> =>
-    fetchRankings<IRanking1v1>(apiKey, '1v1', options).then(format1v1Rankings);
+    fetchRankings<IRanking1v1>(apiKey, '1v1', options).then(format1v1Rankings)
 
 export const fetch2v2RankingsFormat = (apiKey: string, options: IRankingsOptions): Promise<IRanking2v2Format[]> =>
-    fetchRankings<IRanking2v2>(apiKey, '2v2', options).then(format2v2Rankings);
+    fetchRankings<IRanking2v2>(apiKey, '2v2', options).then(format2v2Rankings)

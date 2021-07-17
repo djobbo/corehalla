@@ -1,50 +1,50 @@
-import { GetServerSideProps } from 'next';
-import type { IRanking1v1Format, RankedRegion } from '@corehalla/types';
-import { fetch1v1RankingsFormat } from '@corehalla/core';
-import { Mock1v1Rankings } from '@corehalla/mocks';
-import Head from 'next/head';
-import { Rankings1v1Tab } from '~layout/pages/rankings/Rankings_1v1Tab';
-import { TabsProvider, useTabs } from '~providers/TabsProvider';
-import { Container } from '@Container';
-import { Tabs } from '@Tabs';
-import { Header } from '@Header';
+import { GetServerSideProps } from 'next'
+import type { IRanking1v1Format, RankedRegion } from '@corehalla/types'
+import { fetch1v1RankingsFormat } from '@corehalla/core'
+import { Mock1v1Rankings } from '@corehalla/mocks'
+import Head from 'next/head'
+import { Rankings1v1Tab } from '~layout/pages/rankings/Rankings_1v1Tab'
+import { TabsProvider, useTabs } from '~providers/TabsProvider'
+import { Container } from '@Container'
+import { Tabs } from '@Tabs'
+import { Header } from '@Header'
 
 export interface Props {
-    bracket: Bracket;
-    region: RankedRegion;
-    page: string;
-    playerSearch: string;
-    rankings: IRanking1v1Format[];
+    bracket: Bracket
+    region: RankedRegion
+    page: string
+    playerSearch: string
+    rankings: IRanking1v1Format[]
 }
 
-type Bracket = '1v1' | '2v2' | 'power1v1' | 'power2v2'; // TODO: move this to @types
+type Bracket = '1v1' | '2v2' | 'power1v1' | 'power2v2' // TODO: move this to @types
 
 export interface IRankingsTabs {
-    '1v1': RankedRegion | 'all';
-    '2v2': RankedRegion | 'all';
-    power1v1: null;
-    power2v2: null;
+    '1v1': RankedRegion | 'all'
+    '2v2': RankedRegion | 'all'
+    power1v1: null
+    power2v2: null
 }
 
 const Tab = ({ rankings }: Props) => {
-    const { tab } = useTabs<Bracket>();
+    const { tab } = useTabs<Bracket>()
 
     switch (tab) {
         case '1v1':
-            return <Rankings1v1Tab rankings={rankings} />;
+            return <Rankings1v1Tab rankings={rankings} />
         case '2v2':
-            return <>2v2</>;
+            return <>2v2</>
         case 'power1v1':
-            return <>Power 1v1</>;
+            return <>Power 1v1</>
         case 'power2v2':
-            return <>Power 2v2</>;
+            return <>Power 2v2</>
         default:
-            return <Rankings1v1Tab rankings={rankings} />;
+            return <Rankings1v1Tab rankings={rankings} />
     }
-};
+}
 
 const RankingsPage = (props: Props): JSX.Element => {
-    const { bracket, page, region } = props;
+    const { bracket, page, region } = props
 
     return (
         <TabsProvider<Bracket> defaultTab="1v1">
@@ -69,20 +69,20 @@ const RankingsPage = (props: Props): JSX.Element => {
                 <Tab {...props} />
             </Container>
         </TabsProvider>
-    );
-};
+    )
+}
 
-export default RankingsPage;
+export default RankingsPage
 
 export const getServerSideProps: GetServerSideProps<
     Props,
     { rankingsOptions: [bracket: Bracket, region: RankedRegion, page: string] }
 > = async ({ params, query }) => {
-    const [bracket, region, page] = params?.rankingsOptions || [];
+    const [bracket, region, page] = params?.rankingsOptions || []
 
-    const playerSearch = query.p?.toString() || '';
+    const playerSearch = query.p?.toString() || ''
 
-    let rankings: IRanking1v1Format[];
+    let rankings: IRanking1v1Format[]
 
     // TODO: Switch Bracket 2v2 1v1power 2v2power
 
@@ -91,12 +91,12 @@ export const getServerSideProps: GetServerSideProps<
             page,
             region,
             name: playerSearch,
-        });
+        })
     } else {
-        rankings = Mock1v1Rankings;
+        rankings = Mock1v1Rankings
     }
 
-    if (!rankings) return { notFound: true };
+    if (!rankings) return { notFound: true }
 
     return {
         props: {
@@ -106,5 +106,5 @@ export const getServerSideProps: GetServerSideProps<
             playerSearch,
             rankings,
         },
-    };
-};
+    }
+}

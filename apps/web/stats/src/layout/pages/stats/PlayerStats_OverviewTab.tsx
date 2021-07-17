@@ -1,17 +1,17 @@
-import styles from '~styles/pages/stats/PlayerStatsPage.module.scss';
-import { SectionSeparator, PageSection } from '@PageSection';
-import { SectionClanOverviewSmallContent } from '@SectionClanOverviewSmallContent';
-import { SectionOverallStatsContent } from '@SectionOverallStatsContent';
-import { SectionSeasonOverviewContent } from '@SectionSeasonOverviewContent';
-import { StatDesc, StatSmall, StatMedium } from '@TextStyles';
-import { IPlayerStatsFormat } from '@corehalla/types';
+import styles from '~styles/pages/stats/PlayerStatsPage.module.scss'
+import { SectionSeparator, PageSection } from '@PageSection'
+import { SectionClanOverviewSmallContent } from '@SectionClanOverviewSmallContent'
+import { SectionOverallStatsContent } from '@SectionOverallStatsContent'
+import { SectionSeasonOverviewContent } from '@SectionSeasonOverviewContent'
+import { StatDesc, StatSmall, StatMedium } from '@TextStyles'
+import { IPlayerStatsFormat } from '@corehalla/types'
 
 interface Props {
-    playerStats: IPlayerStatsFormat;
+    playerStats: IPlayerStatsFormat
 }
 
 export const OverviewTab = ({ playerStats }: Props): JSX.Element => {
-    const { season, clan } = playerStats;
+    const { season, clan } = playerStats
 
     return (
         <>
@@ -69,5 +69,5 @@ export const OverviewTab = ({ playerStats }: Props): JSX.Element => {
                 <SectionOverallStatsContent {...playerStats} losses={playerStats.games - playerStats.wins} />
             </PageSection>
         </>
-    );
-};
+    )
+}

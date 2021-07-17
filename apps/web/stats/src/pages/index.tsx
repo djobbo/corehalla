@@ -1,18 +1,18 @@
-import styles from '~styles/pages/HomePage.module.scss';
-import { Container } from '@Container';
+import styles from '~styles/pages/HomePage.module.scss'
+import { Container } from '@Container'
 // Library imports
-import Link from 'next/link';
-import Head from 'next/head';
-import { StatSmall, StatDesc } from '@TextStyles';
+import Link from 'next/link'
+import Head from 'next/head'
+import { StatSmall, StatDesc } from '@TextStyles'
 
 // Components imports
-import { usePlayerSearchContext } from '~providers/PlayerSearchProvider';
-import { Layout } from '~layout/Layout';
-import { DiscordIcon } from '@SocialIcons';
-import { ArticleNavbar } from '@ArticleNavbar';
+import { usePlayerSearchContext } from '~providers/PlayerSearchProvider'
+import { Layout } from '~layout/Layout'
+import { DiscordIcon } from '@SocialIcons'
+import { ArticleNavbar } from '@ArticleNavbar'
 
 export default function HomePage(): JSX.Element {
-    const { setPlayerSearch } = usePlayerSearchContext();
+    const { setPlayerSearch } = usePlayerSearchContext()
 
     return (
         <>
@@ -104,5 +104,5 @@ export default function HomePage(): JSX.Element {
                 </div>
             </Layout>
         </>
-    );
+    )
 }

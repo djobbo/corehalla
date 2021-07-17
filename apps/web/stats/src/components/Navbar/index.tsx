@@ -1,19 +1,19 @@
-import styles from './index.module.scss';
-import { GoBackIcon, SearchIcon } from '@Icons';
-import { useRouter } from 'next/router';
-import { FC, useState } from 'react';
-import Link from 'next/link';
-import { SearchBar } from '@SearchBar';
-import { motion } from 'framer-motion';
+import styles from './index.module.scss'
+import { GoBackIcon, SearchIcon } from '@Icons'
+import { useRouter } from 'next/router'
+import { FC, useState } from 'react'
+import Link from 'next/link'
+import { SearchBar } from '@SearchBar'
+import { motion } from 'framer-motion'
 
 interface Props {
-    title?: string;
+    title?: string
 }
 
 export const Navbar: FC<Props> = ({ title }: Props) => {
-    const [showSearch, setShowSearch] = useState(false);
+    const [showSearch, setShowSearch] = useState(false)
 
-    const router = useRouter();
+    const router = useRouter()
 
     return (
         <div className={`${styles.container} ${showSearch ? styles.showSearch : ''}`}>
@@ -26,8 +26,8 @@ export const Navbar: FC<Props> = ({ title }: Props) => {
                             <motion.a
                                 href="#"
                                 onClick={(e) => {
-                                    e.preventDefault();
-                                    router.back();
+                                    e.preventDefault()
+                                    router.back()
                                 }}
                                 className={styles.icon}
                                 initial={{ rotate: -90 }}
@@ -46,8 +46,8 @@ export const Navbar: FC<Props> = ({ title }: Props) => {
                     <a
                         href="#"
                         onClick={(e) => {
-                            e.preventDefault();
-                            setShowSearch(true);
+                            e.preventDefault()
+                            setShowSearch(true)
                         }}
                         className={styles.icon}
                     >
@@ -56,5 +56,5 @@ export const Navbar: FC<Props> = ({ title }: Props) => {
                 </>
             )}
         </div>
-    );
-};
+    )
+}

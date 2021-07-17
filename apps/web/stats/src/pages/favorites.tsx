@@ -1,12 +1,12 @@
 // Library imports
 
-import { useFavoritesContext } from '~providers/FavoritesProvider';
+import { useFavoritesContext } from '~providers/FavoritesProvider'
 
 // Components imports
-import { TabLayout } from '~layout/TabLayout';
+import { TabLayout } from '~layout/TabLayout'
 
 export default function FavoritesPage(): JSX.Element {
-    const { favorites } = useFavoritesContext();
+    const { favorites } = useFavoritesContext()
 
     const playersTabComponent = (active: boolean) =>
         active && (
@@ -17,9 +17,9 @@ export default function FavoritesPage(): JSX.Element {
                         <p key={i}>{fav.name}</p>
                     ))}
             </>
-        );
+        )
 
-    const clansTabComponent = (active: boolean) => active && 'Clans';
+    const clansTabComponent = (active: boolean) => active && 'Clans'
 
     return (
         <TabLayout<'players' | 'clans', { players: [null, null]; clans: [null, null] }>
@@ -70,5 +70,5 @@ export default function FavoritesPage(): JSX.Element {
         // 	</AnimatePresence>
         // 	<SideNav />
         // </MainLayout>
-    );
+    )
 }

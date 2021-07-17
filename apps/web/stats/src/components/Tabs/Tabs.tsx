@@ -1,12 +1,12 @@
-import { useTabs } from '~providers/TabsProvider';
-import styles from './Tabs.module.scss';
+import { useTabs } from '~providers/TabsProvider'
+import styles from './Tabs.module.scss'
 
 interface Props<T extends string> {
-    tabs: { title: string; name: T }[];
+    tabs: { title: string; name: T }[]
 }
 
 export const Tabs = <T extends string>({ tabs }: Props<T>): JSX.Element => {
-    const { tab: activeTab, setTab } = useTabs<T>();
+    const { tab: activeTab, setTab } = useTabs<T>()
 
     return (
         <div className={styles.tabs}>
@@ -20,5 +20,5 @@ export const Tabs = <T extends string>({ tabs }: Props<T>): JSX.Element => {
                 </button>
             ))}
         </div>
-    );
-};
+    )
+}

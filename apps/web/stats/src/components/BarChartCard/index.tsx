@@ -1,19 +1,19 @@
-import styles from './index.module.scss';
+import styles from './index.module.scss'
 
 // Components imports
-import { Card } from '@Card';
-import { BarChart } from '@Charts';
-import { StatDesc, StatSmall } from '@TextStyles';
+import { Card } from '@Card'
+import { BarChart } from '@Charts'
+import { StatDesc, StatSmall } from '@TextStyles'
 
 interface BarChartStat {
-    title: string;
-    amount: number;
-    max: number;
+    title: string
+    amount: number
+    max: number
 }
 
 interface Props {
-    title: string;
-    stats: BarChartStat[];
+    title: string
+    stats: BarChartStat[]
 }
 
 export function BarChartCard({ title, stats }: Props): JSX.Element {
@@ -29,5 +29,5 @@ export function BarChartCard({ title, stats }: Props): JSX.Element {
                 </div>
             ))}
         </Card>
-    );
+    )
 }

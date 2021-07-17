@@ -1,10 +1,10 @@
-import { Footer } from '@Footer';
-import { SideNav } from '@SideNav';
-import styles from './Layout.module.scss';
-import { ReactNode } from 'react';
+import { Footer } from '@Footer'
+import { SideNav } from '@SideNav'
+import styles from './Layout.module.scss'
+import { ReactNode } from 'react'
 
 interface Props {
-    children: ReactNode;
+    children: ReactNode
 }
 
 export function Layout({ children }: Props): JSX.Element {
@@ -16,5 +16,5 @@ export function Layout({ children }: Props): JSX.Element {
             </div>
             <SideNav />
         </>
-    );
+    )
 }

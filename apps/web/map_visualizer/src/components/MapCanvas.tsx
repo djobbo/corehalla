@@ -1,37 +1,37 @@
-import styles from '../styles/MapCanvas.module.scss';
-import { Stage, Layer, Line, Group } from 'react-konva';
-import { Fragment, useEffect, useRef, useState } from 'react';
-import { useMapNodesContext } from '../providers/MapNodesProvider';
-import { KonvaEventObject } from 'konva/types/Node';
-import { URLImage } from './URLImage';
-import { getAnimationPos } from '../util/getAnimationPos';
-import { useEditorStateContext } from '../providers/EditorStateProvider';
-import { motion } from 'framer-motion';
-import { useRouter } from 'next/router';
+import styles from '../styles/MapCanvas.module.scss'
+import { Stage, Layer, Line, Group } from 'react-konva'
+import { Fragment, useEffect, useRef, useState } from 'react'
+import { useMapNodesContext } from '../providers/MapNodesProvider'
+import { KonvaEventObject } from 'konva/types/Node'
+import { URLImage } from './URLImage'
+import { getAnimationPos } from '../util/getAnimationPos'
+import { useEditorStateContext } from '../providers/EditorStateProvider'
+import { motion } from 'framer-motion'
+import { useRouter } from 'next/router'
 
 interface Props {
-    floating?: boolean;
+    floating?: boolean
 }
 
 const useDrag = () => {
     const [freezeDragPos, setFreezeDragPos] = useState<{
-        x: number;
-        y: number;
-    }>({ x: null, y: null });
-    const [freezeDrag, setFreezeDrag] = useState({ x: false, y: false });
+        x: number
+        y: number
+    }>({ x: null, y: null })
+    const [freezeDrag, setFreezeDrag] = useState({ x: false, y: false })
 
     const handleDragStart = (e: KonvaEventObject<DragEvent>) => {
-        setFreezeDragPos(e.target.position());
-        console.log(e.target.position());
-    };
+        setFreezeDragPos(e.target.position())
+        console.log(e.target.position())
+    }
 
     const freezeDragFn = (pos: { x: number; y: number }) => ({
         x: freezeDrag.x ? freezeDragPos.x : pos.x,
         y: freezeDrag.y ? freezeDragPos.y : pos.y,
-    });
+    })
 
-    return { freezeDragPos, freezeDrag, setFreezeDrag, freezeDragFn, handleDragStart };
-};
+    return { freezeDragPos, freezeDrag, setFreezeDrag, freezeDragFn, handleDragStart }
+}
 
 const useCanvasActions = (floating: boolean) => {
     const {
@@ -41,87 +41,87 @@ const useCanvasActions = (floating: boolean) => {
         loadedNewMap,
         setLoadedNewMap,
         setTimeFlow,
-    } = useEditorStateContext();
+    } = useEditorStateContext()
 
-    const { mapData } = useMapNodesContext();
+    const { mapData } = useMapNodesContext()
 
     const [floatingStageTransform, setFloatingStageTransform] = useState<IStageTransform>({
         stageScale: 1,
         stageX: 0,
         stageY: 0,
-    });
+    })
 
     const [canvasDimensions, setCanvasDimensions] = useState({
         canvasW: 0,
         canvasH: 0,
-    });
+    })
 
-    const containerRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null)
 
     const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
-        e.evt.preventDefault();
+        e.evt.preventDefault()
 
-        const scaleBy = 1.15;
-        const stage = e.target.getStage();
-        const oldScale = stage.scaleX();
+        const scaleBy = 1.15
+        const stage = e.target.getStage()
+        const oldScale = stage.scaleX()
         const mousePointTo = {
             x: stage.getPointerPosition().x / oldScale - stage.x() / oldScale,
             y: stage.getPointerPosition().y / oldScale - stage.y() / oldScale,
-        };
+        }
 
-        const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
+        const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy
 
-        stage.scale({ x: newScale, y: newScale });
+        stage.scale({ x: newScale, y: newScale })
 
         setStageTransform({
             stageScale: newScale,
             stageX: -(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale,
             stageY: -(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale,
-        });
-    };
+        })
+    }
 
     const handleStageDrag = (e: KonvaEventObject<DragEvent>) => {
-        const { x, y } = e.target.position();
-        updateStageTransform({ stageX: x, stageY: y });
-    };
+        const { x, y } = e.target.position()
+        updateStageTransform({ stageX: x, stageY: y })
+    }
 
     const getDefaultStageTransform = (maxWidth: number) => {
-        const newScale = maxWidth / mapData.cameraBounds.w || stageScale;
+        const newScale = maxWidth / mapData.cameraBounds.w || stageScale
         return {
             stageScale: newScale,
             stageX: -mapData.cameraBounds.x * newScale,
             stageY: -mapData.cameraBounds.y * newScale,
-        };
-    };
+        }
+    }
 
     // TODO: correct map zoom
     useEffect(() => {
         if (loadedNewMap) {
-            setStageTransform(getDefaultStageTransform(canvasDimensions.canvasW));
-            setLoadedNewMap(false);
-        } else console.log('bruh');
-    }, [loadedNewMap]);
+            setStageTransform(getDefaultStageTransform(canvasDimensions.canvasW))
+            setLoadedNewMap(false)
+        } else console.log('bruh')
+    }, [loadedNewMap])
 
     useEffect(() => {
-        setFloatingStageTransform(getDefaultStageTransform(16 * 16));
+        setFloatingStageTransform(getDefaultStageTransform(16 * 16))
         //TODO: \/ THIS \/
-        if (floating) setTimeFlow(0);
-    }, [floating]);
+        if (floating) setTimeFlow(0)
+    }, [floating])
 
     const updateCanvasSize = () => {
-        if (!containerRef || !containerRef.current) return;
-        const { offsetWidth, offsetHeight } = containerRef.current;
-        console.log(offsetWidth, offsetHeight);
+        if (!containerRef || !containerRef.current) return
+        const { offsetWidth, offsetHeight } = containerRef.current
+        console.log(offsetWidth, offsetHeight)
         setCanvasDimensions({
             canvasW: offsetWidth,
             canvasH: offsetHeight,
-        });
-    };
+        })
+    }
 
     useEffect(() => {
-        window.addEventListener('resize', updateCanvasSize);
-        updateCanvasSize();
-    }, []);
+        window.addEventListener('resize', updateCanvasSize)
+        updateCanvasSize()
+    }, [])
 
     return {
         floatingStageTransform,
@@ -131,15 +131,15 @@ const useCanvasActions = (floating: boolean) => {
         containerRef,
         handleWheel,
         handleStageDrag,
-    };
-};
+    }
+}
 
 const CanvasPlatform = ({ platform, assetDir }: { platform: Platform | Asset; assetDir: string }) => {
     useEffect(() => {
-        console.log('assetDIROIJHDOIASJD', assetDir);
-    }, [assetDir]);
+        console.log('assetDIROIJHDOIASJD', assetDir)
+    }, [assetDir])
 
-    const { theme } = useEditorStateContext();
+    const { theme } = useEditorStateContext()
     return (
         (platform.themes.length <= 0 || [...platform.themes].includes(theme)) && (
             <Fragment key={platform.id}>
@@ -160,31 +160,31 @@ const CanvasPlatform = ({ platform, assetDir }: { platform: Platform | Asset; as
                 </Group>
             </Fragment>
         )
-    );
-};
+    )
+}
 
 const CanvasCollision = ({ col }: { col: Collision }) => {
-    const { selectCollision, updateCollision } = useMapNodesContext();
+    const { selectCollision, updateCollision } = useMapNodesContext()
 
-    const { freezeDragPos, handleDragStart, freezeDragFn, setFreezeDrag } = useDrag();
+    const { freezeDragPos, handleDragStart, freezeDragFn, setFreezeDrag } = useDrag()
 
     const handleColDrag = (e: KonvaEventObject<DragEvent>) => {
-        const id = e.target.id();
-        const pos = e.target.position();
-        selectCollision(id);
+        const id = e.target.id()
+        const pos = e.target.position()
+        selectCollision(id)
 
-        const xDirMostChanged = Math.abs(pos.x - freezeDragPos.x) >= Math.abs(pos.y - freezeDragPos.y);
+        const xDirMostChanged = Math.abs(pos.x - freezeDragPos.x) >= Math.abs(pos.y - freezeDragPos.y)
 
-        if (e.evt.shiftKey) setFreezeDrag({ x: !xDirMostChanged, y: xDirMostChanged });
-        else setFreezeDrag({ x: false, y: false });
+        if (e.evt.shiftKey) setFreezeDrag({ x: !xDirMostChanged, y: xDirMostChanged })
+        else setFreezeDrag({ x: false, y: false })
 
         updateCollision(id, (col) => ({
             x1: pos.x,
             y1: pos.y,
             x2: pos.x + col.x2 - col.x1,
             y2: pos.y + col.y2 - col.y1,
-        }));
-    };
+        }))
+    }
 
     // const handleDrag = (e: KonvaEventObject<DragEvent>, handleId: '1' | '2') => {
     //     if (!selectedCollision) return;
@@ -216,26 +216,26 @@ const CanvasCollision = ({ col }: { col: Collision }) => {
             onDragStart={handleDragStart}
             dragBoundFunc={freezeDragFn}
             onMouseEnter={(e) => {
-                const container = e.target.getStage().container();
-                container.style.cursor = 'move';
+                const container = e.target.getStage().container()
+                container.style.cursor = 'move'
             }}
             onMouseLeave={(e) => {
-                const container = e.target.getStage().container();
-                container.style.cursor = 'default';
+                const container = e.target.getStage().container()
+                container.style.cursor = 'default'
             }}
         />
-    );
-};
+    )
+}
 
 export function MapCanvas({ floating }: Props): JSX.Element {
-    const { mapData, deselectCollision } = useMapNodesContext();
+    const { mapData, deselectCollision } = useMapNodesContext()
 
     const {
         currentFrame,
         showCollisions,
         showMapBounds,
         stageTransform: { stageScale, stageX, stageY },
-    } = useEditorStateContext();
+    } = useEditorStateContext()
 
     const {
         floatingStageTransform,
@@ -243,9 +243,9 @@ export function MapCanvas({ floating }: Props): JSX.Element {
         containerRef,
         handleWheel,
         handleStageDrag,
-    } = useCanvasActions(floating);
+    } = useCanvasActions(floating)
 
-    const router = useRouter();
+    const router = useRouter()
 
     return (
         typeof window !== 'undefined' && (
@@ -266,11 +266,11 @@ export function MapCanvas({ floating }: Props): JSX.Element {
                     draggable={!floating}
                     onClick={(e) => {
                         if (floating) {
-                            router.push('/');
-                            return;
+                            router.push('/')
+                            return
                         }
 
-                        if (e.target === e.target.getStage()) deselectCollision();
+                        if (e.target === e.target.getStage()) deselectCollision()
                     }}
                     onDragEnd={handleStageDrag}
                 >
@@ -320,16 +320,16 @@ export function MapCanvas({ floating }: Props): JSX.Element {
                     </Layer>
                     <Layer>
                         {mapData.movingPlatforms.map((plat) => {
-                            const anim = mapData.animations.find((a) => a.platId === plat.platId);
-                            if (!anim) return null;
+                            const anim = mapData.animations.find((a) => a.platId === plat.platId)
+                            if (!anim) return null
 
-                            const pos = getAnimationPos(anim, currentFrame, mapData);
+                            const pos = getAnimationPos(anim, currentFrame, mapData)
                             // console.log(plat.platId, pos);
                             return (
                                 <Group x={pos.x} y={pos.y} key={plat.platId}>
                                     <CanvasPlatform platform={plat} assetDir={mapData.assetDir} />
                                 </Group>
-                            );
+                            )
                         })}
                     </Layer>
                     {showCollisions && !floating && (
@@ -341,10 +341,10 @@ export function MapCanvas({ floating }: Props): JSX.Element {
                             </Layer>
                             <Layer>
                                 {mapData.dynamicCollisions.map((col) => {
-                                    const anim = mapData.animations.find((a) => a.platId === col.platId);
-                                    if (!anim) return null;
+                                    const anim = mapData.animations.find((a) => a.platId === col.platId)
+                                    if (!anim) return null
 
-                                    const pos = getAnimationPos(anim, currentFrame, mapData);
+                                    const pos = getAnimationPos(anim, currentFrame, mapData)
 
                                     return (
                                         <Group x={pos.x + col.x} y={pos.y + col.y} key={col.platId}>
@@ -352,7 +352,7 @@ export function MapCanvas({ floating }: Props): JSX.Element {
                                                 <CanvasCollision col={child} key={i} />
                                             ))}
                                         </Group>
-                                    );
+                                    )
                                 })}
                             </Layer>
                         </>
@@ -403,5 +403,5 @@ export function MapCanvas({ floating }: Props): JSX.Element {
                 </Stage>
             </motion.div>
         )
-    );
+    )
 }

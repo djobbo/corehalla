@@ -1,4 +1,4 @@
-import { Theme } from '.';
+import { Theme } from '.'
 
 export const defaultTheme: Theme = {
     'bg-dark': '#202225',
@@ -8,4 +8,4 @@ export const defaultTheme: Theme = {
     'on-bg-dark-var1': '#8f9296',
     accent: '#318ae4',
     secondary: '#ff732f',
-};
+}

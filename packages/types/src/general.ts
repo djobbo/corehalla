@@ -1,4 +1,4 @@
-export type BrawlhallaID = string | number;
+export type BrawlhallaID = string | number
 
 export type RankedTier =
     | 'Diamond'
@@ -31,7 +31,7 @@ export type RankedTier =
     | 'Tin 2'
     | 'Tin 1'
     | 'Tin 0'
-    | 'Unranked';
+    | 'Unranked'
 
 export type RankedRegion =
     | 'all'
@@ -49,7 +49,7 @@ export type RankedRegion =
     | 'us-w'
     | 'US-W'
     | 'jpn'
-    | 'JPN';
+    | 'JPN'
 
 export type Weapon =
     | 'Hammer'
@@ -64,13 +64,13 @@ export type Weapon =
     | 'Scythe'
     | 'Cannon'
     | 'Orb'
-    | 'Greatsword';
+    | 'Greatsword'
 
-export type ClanRank = 'Leader' | 'Officer' | 'Member' | 'Recruit';
+export type ClanRank = 'Leader' | 'Officer' | 'Member' | 'Recruit'
 
 export interface IStaticLegendData {
-    id: number;
-    name: string;
-    weapon_one: Weapon;
-    weapon_two: Weapon;
+    id: number
+    name: string
+    weapon_one: Weapon
+    weapon_two: Weapon
 }

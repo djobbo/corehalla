@@ -1,4 +1,4 @@
-import { cleanString } from './util/cleanString';
+import { cleanString } from './util/cleanString'
 
 import type {
     IPlayerStats,
@@ -14,14 +14,14 @@ import type {
     I2v2TeamFormat,
     IPlayerClan,
     IPlayerClanFormat,
-} from '@corehalla/types';
+} from '@corehalla/types'
 
 import {
     getGloryFromWins,
     getGloryFromBestRating,
     getHeroRatingSquash,
     getPersonalRatingSquash,
-} from '@corehalla/glory-calc';
+} from '@corehalla/glory-calc'
 
 import {
     staticLegendsData,
@@ -29,7 +29,7 @@ import {
     defaultLegendStats,
     defaultLegendSeason,
     defaultWeaponStats,
-} from '@corehalla/static';
+} from '@corehalla/static'
 
 export function formatPlayerStats(
     playerStats: IPlayerStats | undefined,
@@ -39,18 +39,18 @@ export function formatPlayerStats(
 
     // const { legends, weapons } = formatLegendsAndWeaponsStats(staticLegendsData, legendsStats, legendsRanked);
 
-    const legends = formatLegendsStats(staticLegendsData, playerStats?.legends, playerRanked?.legends);
+    const legends = formatLegendsStats(staticLegendsData, playerStats?.legends, playerRanked?.legends)
 
-    const season = getSeasonStats(playerRanked);
+    const season = getSeasonStats(playerRanked)
 
     const globalStats = legends.reduce<{
-        kos: number;
-        falls: number;
-        suicides: number;
-        teamkos: number;
-        matchtime: number;
-        damageDealt: number;
-        damageTaken: number;
+        kos: number
+        falls: number
+        suicides: number
+        teamkos: number
+        matchtime: number
+        damageDealt: number
+        damageTaken: number
     }>(
         (acc, l) => ({
             kos: acc.kos + l.kos,
@@ -70,7 +70,7 @@ export function formatPlayerStats(
             damageDealt: 0,
             damageTaken: 0,
         },
-    );
+    )
 
     const gadgets = {
         bomb: {
@@ -93,7 +93,7 @@ export function formatPlayerStats(
             hits: playerStats?.hitsnowball ?? 0,
             kos: playerStats?.kosnowball ?? 0,
         },
-    };
+    }
 
     return {
         id: playerStats?.brawlhalla_id ?? -1,
@@ -108,7 +108,7 @@ export function formatPlayerStats(
         ...globalStats,
         clan: formatClanStats(playerStats?.clan),
         gadgets,
-    };
+    }
 
     // return {
     //     id: generalStats.brawlhalla_id,
@@ -176,15 +176,15 @@ export function formatPlayerStats(
 }
 
 export function formatClanStats(clan?: IPlayerClan): IPlayerClanFormat | undefined {
-    if (!clan) return;
+    if (!clan) return
 
-    const { clan_id, clan_name, clan_xp, personal_xp } = clan;
+    const { clan_id, clan_name, clan_xp, personal_xp } = clan
     return {
         id: clan_id,
         name: cleanString(clan_name),
         xp: clan_xp,
         personalXp: personal_xp,
-    };
+    }
 }
 
 export function formatLegendsStats(
@@ -193,10 +193,10 @@ export function formatLegendsStats(
     legendsRanked: ILegendRanked[] | undefined,
 ): ILegendStatsFormat[] {
     return staticLegends.map((legend) => {
-        const legendStats = legendsStats?.find((l) => l.legend_id === legend.id);
-        const legendRanked = legendsRanked?.find((l) => l.legend_id === legend.id);
-        return formatLegendStats(legend, legendStats, legendRanked);
-    });
+        const legendStats = legendsStats?.find((l) => l.legend_id === legend.id)
+        const legendRanked = legendsRanked?.find((l) => l.legend_id === legend.id)
+        return formatLegendStats(legend, legendStats, legendRanked)
+    })
 }
 
 // export function formatWeaponsStats(legends: ILegendStatsFormat[]) {
@@ -378,7 +378,7 @@ export function formatLegendStats(
             games: legendRanked.games,
             ratingSquash: getHeroRatingSquash(legendRanked.rating),
         },
-    };
+    }
 }
 
 export function getSeasonStats(playerRanked?: IPlayerRanked): IPlayerSeasonFormat {
@@ -392,15 +392,15 @@ export function getSeasonStats(playerRanked?: IPlayerRanked): IPlayerSeasonForma
         region = 'US-W',
         ['2v2']: teams = [],
         legends = [],
-    } = playerRanked ?? {};
+    } = playerRanked ?? {}
 
-    const totalWins = wins + teams.reduce((acc, team) => acc + team.wins, 0);
+    const totalWins = wins + teams.reduce((acc, team) => acc + team.wins, 0)
 
     const bestOverallRating = Math.max(
         peak_rating,
         ...teams.map((team) => team.peak_rating),
         ...legends.map((legend) => legend.peak_rating),
-    );
+    )
 
     return {
         rating,
@@ -417,7 +417,7 @@ export function getSeasonStats(playerRanked?: IPlayerRanked): IPlayerSeasonForma
             wins: getGloryFromWins(totalWins),
         },
         teams: playerID === undefined ? [] : formatTeamsStats(playerID, teams),
-    };
+    }
 }
 
 export function formatWeaponStats(weapons: (IWeaponStatsFormat | undefined)[]): IWeaponStatsFormat[] {
@@ -444,15 +444,15 @@ export function formatWeaponStats(weapons: (IWeaponStatsFormat | undefined)[]): 
             }),
             defaultWeaponStats,
         ),
-    }));
+    }))
 }
 
 export function formatTeamsStats(playerID: number, teamsStats: I2v2Team[]): I2v2TeamFormat[] {
     return teamsStats
         .map<I2v2TeamFormat>(
             ({ brawlhalla_id_one, brawlhalla_id_two, teamname, region, global_rank: _, peak_rating, ...season }) => {
-                const isPlayerOne = brawlhalla_id_one === playerID;
-                const playerNames = teamname.split('+');
+                const isPlayerOne = brawlhalla_id_one === playerID
+                const playerNames = teamname.split('+')
 
                 return {
                     playerAlias: cleanString(playerNames[+!isPlayerOne]),
@@ -466,11 +466,11 @@ export function formatTeamsStats(playerID: number, teamsStats: I2v2Team[]): I2v2
                         peak: peak_rating,
                         ratingSquash: getHeroRatingSquash(season.rating),
                     },
-                };
+                }
             },
         )
         .reduce<I2v2TeamFormat[]>(
             (acc, x) => (acc.find((y) => y.teammate.id === x.teammate.id) ? acc : [...acc, x]),
             [],
-        );
+        )
 }

@@ -1,9 +1,9 @@
-import formStyles from '../styles/Forms.module.scss';
-import { useMapNodesContext } from '../providers/MapNodesProvider';
+import formStyles from '../styles/Forms.module.scss'
+import { useMapNodesContext } from '../providers/MapNodesProvider'
 
 // Level Metadata Settings
 export function LevelMDSettings(): JSX.Element {
-    const { mapData, setMapData } = useMapNodesContext();
+    const { mapData, setMapData } = useMapNodesContext()
 
     return (
         <div className={formStyles.formContainer}>
@@ -50,5 +50,5 @@ export function LevelMDSettings(): JSX.Element {
                 />
             </label>
         </div>
-    );
+    )
 }

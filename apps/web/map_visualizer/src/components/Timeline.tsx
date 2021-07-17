@@ -1,8 +1,8 @@
-import { useEditorStateContext } from '../providers/EditorStateProvider';
-import styles from '../styles/Timeline.module.scss';
+import { useEditorStateContext } from '../providers/EditorStateProvider'
+import styles from '../styles/Timeline.module.scss'
 
 export function Timeline(): JSX.Element {
-    const { currentFrame, setCurrentFrame, timeFlow, setTimeFlow } = useEditorStateContext();
+    const { currentFrame, setCurrentFrame, timeFlow, setTimeFlow } = useEditorStateContext()
 
     return (
         <div className={styles.container}>
@@ -13,8 +13,8 @@ export function Timeline(): JSX.Element {
                         type="number"
                         value={timeFlow}
                         onChange={(e) => {
-                            const flow = parseInt(e.target.value);
-                            setTimeFlow(isNaN(flow) ? 0 : flow);
+                            const flow = parseInt(e.target.value)
+                            setTimeFlow(isNaN(flow) ? 0 : flow)
                         }}
                     />
                 </div>
@@ -24,12 +24,12 @@ export function Timeline(): JSX.Element {
                         type="number"
                         value={Math.round(currentFrame)}
                         onChange={(e) => {
-                            const frame = parseInt(e.target.value);
-                            setCurrentFrame(isNaN(frame) ? 0 : frame);
+                            const frame = parseInt(e.target.value)
+                            setCurrentFrame(isNaN(frame) ? 0 : frame)
                         }}
                     />
                 </div>
             </div>
         </div>
-    );
+    )
 }

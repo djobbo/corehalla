@@ -1,20 +1,20 @@
-import styles from '~styles/pages/stats/PlayerStatsPage.module.scss';
-import layoutStyles from '~layout/Layout.module.scss';
-import type { I2v2TeamFormat } from '@corehalla/types';
-import { SectionSeparator, PageSection } from '@PageSection';
-import { motion } from 'framer-motion';
-import { GamesStatsCard } from '@GamesStatsCard';
-import { MiscStats } from '@MiscStats';
-import { TeamCard } from '@TeamCard';
-import { Card } from '@Card';
-import { Select } from '@Select';
-import { useSort } from '~hooks/useSort';
-import { useState } from 'react';
+import styles from '~styles/pages/stats/PlayerStatsPage.module.scss'
+import layoutStyles from '~layout/Layout.module.scss'
+import type { I2v2TeamFormat } from '@corehalla/types'
+import { SectionSeparator, PageSection } from '@PageSection'
+import { motion } from 'framer-motion'
+import { GamesStatsCard } from '@GamesStatsCard'
+import { MiscStats } from '@MiscStats'
+import { TeamCard } from '@TeamCard'
+import { Card } from '@Card'
+import { Select } from '@Select'
+import { useSort } from '~hooks/useSort'
+import { useState } from 'react'
 
-export type TeamsSort = 'rating' | 'peak' | 'games' | 'winrate' | 'wins' | 'losses';
+export type TeamsSort = 'rating' | 'peak' | 'games' | 'winrate' | 'wins' | 'losses'
 
 interface Props {
-    teams: I2v2TeamFormat[];
+    teams: I2v2TeamFormat[]
 }
 
 export const TeamsTab = ({ teams }: Props): JSX.Element => {
@@ -28,9 +28,9 @@ export const TeamsTab = ({ teams }: Props): JSX.Element => {
         wins: ({ season }) => season.wins,
         losses: ({ season }) => season.games - season.wins,
         winrate: ({ season }) => (season.games <= 0 ? 0 : season.wins / season.games),
-    });
+    })
 
-    const [teamSearch, setTeamsearch] = useState('');
+    const [teamSearch, setTeamsearch] = useState('')
 
     const totalTeamsStats = teams.reduce(
         (acc, team) => ({
@@ -53,7 +53,7 @@ export const TeamsTab = ({ teams }: Props): JSX.Element => {
             ratingAccPond: { rating: 0, peak: 0, total: 0 },
             winrateAcc: 0,
         },
-    );
+    )
 
     return (
         <>
@@ -136,5 +136,5 @@ export const TeamsTab = ({ teams }: Props): JSX.Element => {
                 `No teams`
             )}
         </>
-    );
-};
+    )
+}

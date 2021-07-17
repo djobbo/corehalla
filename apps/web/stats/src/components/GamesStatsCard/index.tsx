@@ -1,14 +1,14 @@
-import styles from './index.module.scss';
+import styles from './index.module.scss'
 // Components imports
-import { Card } from '@Card';
-import { PieChart } from '@Charts';
-import { StatLarge, StatDesc, StatSmall } from '@TextStyles';
+import { Card } from '@Card'
+import { PieChart } from '@Charts'
+import { StatLarge, StatDesc, StatSmall } from '@TextStyles'
 
 interface Props {
-    games: number;
-    wins: number;
-    losses: number;
-    winrate: number;
+    games: number
+    wins: number
+    losses: number
+    winrate: number
 }
 
 export function GamesStatsCard({ games, wins, losses, winrate }: Props): JSX.Element {
@@ -36,5 +36,5 @@ export function GamesStatsCard({ games, wins, losses, winrate }: Props): JSX.Ele
                 <PieChart width="10rem" height="10rem" amount={(wins / games) * 100} />
             </div>
         </Card>
-    );
+    )
 }

@@ -1,41 +1,41 @@
-import Head from 'next/head';
-import { GetServerSideProps } from 'next';
-import type { IPlayerStatsFormat } from '@corehalla/types';
-import { OverviewTab } from '~layout/pages/stats/PlayerStats_OverviewTab';
-import { LegendsTab } from '~layout/pages/stats/PlayerStats_LegendsTab';
-import { fetchPlayerFormat } from '@corehalla/core';
-import { MockPlayerStats } from '@corehalla/mocks';
-import { TabsProvider, useTabs } from '~providers/TabsProvider';
-import { Header } from '@Header';
-import { Tabs } from '@Tabs';
-import { Container } from '@Container';
-import { TeamsTab } from '~layout/pages/stats/PlayerStats_TeamsTab';
-import { Footer } from '@Footer';
-import React from 'react';
-import { ProfileHeader } from '@ProfileHeader';
-import { StatDesc, StatSmall } from '@TextStyles';
-import { formatTime } from '~util';
+import Head from 'next/head'
+import { GetServerSideProps } from 'next'
+import type { IPlayerStatsFormat } from '@corehalla/types'
+import { OverviewTab } from '~layout/pages/stats/PlayerStats_OverviewTab'
+import { LegendsTab } from '~layout/pages/stats/PlayerStats_LegendsTab'
+import { fetchPlayerFormat } from '@corehalla/core'
+import { MockPlayerStats } from '@corehalla/mocks'
+import { TabsProvider, useTabs } from '~providers/TabsProvider'
+import { Header } from '@Header'
+import { Tabs } from '@Tabs'
+import { Container } from '@Container'
+import { TeamsTab } from '~layout/pages/stats/PlayerStats_TeamsTab'
+import { Footer } from '@Footer'
+import React from 'react'
+import { ProfileHeader } from '@ProfileHeader'
+import { StatDesc, StatSmall } from '@TextStyles'
+import { formatTime } from '~util'
 
 interface Props {
-    playerStats: IPlayerStatsFormat;
+    playerStats: IPlayerStatsFormat
 }
 
-type PlayerStatsTabs = 'overview' | 'teams' | 'legends';
+type PlayerStatsTabs = 'overview' | 'teams' | 'legends'
 
 const Tab = ({ playerStats }: Props) => {
-    const { tab } = useTabs<PlayerStatsTabs>();
+    const { tab } = useTabs<PlayerStatsTabs>()
 
     switch (tab) {
         case 'overview':
-            return <OverviewTab playerStats={playerStats} />;
+            return <OverviewTab playerStats={playerStats} />
         case 'teams':
-            return <TeamsTab teams={playerStats.season.teams ?? []} />;
+            return <TeamsTab teams={playerStats.season.teams ?? []} />
         case 'legends':
-            return <LegendsTab playerStats={playerStats} />;
+            return <LegendsTab playerStats={playerStats} />
         default:
-            return <OverviewTab playerStats={playerStats} />;
+            return <OverviewTab playerStats={playerStats} />
     }
-};
+}
 
 const PlayerStatsPage = ({ playerStats }: Props): JSX.Element => {
     return (
@@ -83,25 +83,25 @@ const PlayerStatsPage = ({ playerStats }: Props): JSX.Element => {
             </Container>
             <Footer />
         </TabsProvider>
-    );
-};
+    )
+}
 
-export default PlayerStatsPage;
+export default PlayerStatsPage
 
 export const getServerSideProps: GetServerSideProps<Props, { id: string }> = async ({ params: { id } }) => {
-    let playerStats: IPlayerStatsFormat;
+    let playerStats: IPlayerStatsFormat
 
     if (process.env.NODE_ENV === 'production') {
-        playerStats = await fetchPlayerFormat(process.env.BH_API_KEY, parseInt(id));
+        playerStats = await fetchPlayerFormat(process.env.BH_API_KEY, parseInt(id))
     } else {
-        playerStats = MockPlayerStats;
+        playerStats = MockPlayerStats
     }
 
-    if (!playerStats) return { notFound: true };
+    if (!playerStats) return { notFound: true }
 
     return {
         props: {
             playerStats,
         },
-    };
-};
+    }
+}

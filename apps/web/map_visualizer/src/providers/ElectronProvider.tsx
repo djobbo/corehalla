@@ -1,20 +1,20 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 
-const ElectronContext = createContext(false);
+const ElectronContext = createContext(false)
 
-export const useElectron = (): boolean => useContext(ElectronContext);
+export const useElectron = (): boolean => useContext(ElectronContext)
 
 interface Props {
-    children: ReactNode;
+    children: ReactNode
 }
 
 export function ElectronProvider({ children }: Props): JSX.Element {
-    const [isElectron, setIsElectron] = useState(false);
+    const [isElectron, setIsElectron] = useState(false)
 
     useEffect(() => {
-        const userAgent = navigator.userAgent.toLowerCase();
-        setIsElectron(userAgent.indexOf(' electron/') > -1);
-    }, []);
+        const userAgent = navigator.userAgent.toLowerCase()
+        setIsElectron(userAgent.indexOf(' electron/') > -1)
+    }, [])
 
-    return <ElectronContext.Provider value={isElectron}>{children}</ElectronContext.Provider>;
+    return <ElectronContext.Provider value={isElectron}>{children}</ElectronContext.Provider>
 }

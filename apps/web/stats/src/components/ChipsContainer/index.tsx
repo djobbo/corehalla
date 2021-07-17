@@ -1,13 +1,13 @@
-import styles from './index.module.scss';
+import styles from './index.module.scss'
 
 export interface IChip<T extends string> {
-    displayName: T;
-    action?: () => void;
-    active?: boolean;
+    displayName: T
+    action?: () => void
+    active?: boolean
 }
 
 export interface Props<T extends string> {
-    chips: IChip<T>[];
+    chips: IChip<T>[]
 }
 
 export function ChipsContainer<T extends string>({ chips }: Props<T>): JSX.Element {
@@ -20,8 +20,8 @@ export function ChipsContainer<T extends string>({ chips }: Props<T>): JSX.Eleme
                         onClick={
                             action
                                 ? (e) => {
-                                      e.preventDefault();
-                                      action();
+                                      e.preventDefault()
+                                      action()
                                   }
                                 : null
                         }
@@ -31,5 +31,5 @@ export function ChipsContainer<T extends string>({ chips }: Props<T>): JSX.Eleme
                 </div>
             ))}
         </div>
-    );
+    )
 }

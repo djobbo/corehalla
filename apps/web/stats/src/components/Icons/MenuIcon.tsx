@@ -4,4 +4,4 @@ export const MenuIcon = (
         <path d="M16 40L64 40" />
         <path d="M16 58L64 58" />
     </svg>
-);
+)

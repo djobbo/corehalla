@@ -1,16 +1,16 @@
 // Library imports
-import Link from 'next/link';
+import Link from 'next/link'
 
 // Components imports
-import { StatSmall, StatMedium, StatDesc } from '@TextStyles';
+import { StatSmall, StatMedium, StatDesc } from '@TextStyles'
 
 interface Props {
-    name: string;
-    level: number;
-    xp: number;
-    personalXp: number;
-    xpPercentage: number;
-    id: string | number; // TODO: ch.js
+    name: string
+    level: number
+    xp: number
+    personalXp: number
+    xpPercentage: number
+    id: string | number // TODO: ch.js
 }
 
 export function SectionClanOverviewSmallContent({ name, level, xp, personalXp, xpPercentage, id }: Props): JSX.Element {
@@ -30,5 +30,5 @@ export function SectionClanOverviewSmallContent({ name, level, xp, personalXp, x
                 <StatDesc>({xpPercentage.toFixed(2)}%)</StatDesc>
             </div>
         </div>
-    );
+    )
 }

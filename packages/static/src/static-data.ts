@@ -1,4 +1,4 @@
-import { legends } from './legends';
+import { legends } from './legends'
 
 import type {
     RankedRegion,
@@ -7,11 +7,11 @@ import type {
     IWeaponStatsFormat,
     Weapon,
     RankedTier,
-} from '@corehalla/types';
+} from '@corehalla/types'
 
-export const staticLegendsData = legends;
+export const staticLegendsData = legends
 
-export const regions: RankedRegion[] = ['US-E', 'EU', 'SEA', 'BRZ', 'AUS', 'US-W', 'JPN'];
+export const regions: RankedRegion[] = ['US-E', 'EU', 'SEA', 'BRZ', 'AUS', 'US-W', 'JPN']
 
 export const defaultLegendStats: ILegendStats = {
     legend_id: 0,
@@ -40,7 +40,7 @@ export const defaultLegendStats: ILegendStats = {
     xp: 0,
     level: 1,
     xp_percentage: 0,
-};
+}
 
 export const defaultLegendSeason: ILegendRanked = {
     legend_id: 0,
@@ -50,7 +50,7 @@ export const defaultLegendSeason: ILegendRanked = {
     tier: 'Tin 0',
     wins: 0,
     games: 0,
-};
+}
 
 export const defaultWeaponStats: IWeaponStatsFormat = {
     name: 'Hammer',
@@ -69,7 +69,7 @@ export const defaultWeaponStats: IWeaponStatsFormat = {
         wins: 0,
     },
     legends: [],
-};
+}
 
 export const staticWeaponsData = staticLegendsData.reduce<{ [k in Weapon]?: IWeaponStatsFormat }>(
     (acc, { weapon_one, weapon_two }) => ({
@@ -78,9 +78,9 @@ export const staticWeaponsData = staticLegendsData.reduce<{ [k in Weapon]?: IWea
         [weapon_two]: defaultWeaponStats,
     }),
     {},
-);
+)
 
-type RankedTierThreshold = [RankedTier, number];
+type RankedTierThreshold = [RankedTier, number]
 
 export const rankedTiers: RankedTierThreshold[] = [
     ['Diamond', 2000],
@@ -113,4 +113,4 @@ export const rankedTiers: RankedTierThreshold[] = [
     ['Tin 2', 758],
     ['Tin 1', 720],
     ['Tin 0', 200],
-];
+]

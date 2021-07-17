@@ -1,10 +1,10 @@
-import styles from './Card.module.scss';
-import { motion } from 'framer-motion';
-import { PropsWithChildren } from 'react';
+import styles from './Card.module.scss'
+import { motion } from 'framer-motion'
+import { PropsWithChildren } from 'react'
 
 interface Props {
-    title?: string;
-    className?: string;
+    title?: string
+    className?: string
 }
 
 export const Card = ({ title, children, className }: PropsWithChildren<Props>): JSX.Element => {
@@ -13,5 +13,5 @@ export const Card = ({ title, children, className }: PropsWithChildren<Props>): 
             {title && <span className={styles.title}>{title}</span>}
             {children}
         </motion.div>
-    );
-};
+    )
+}

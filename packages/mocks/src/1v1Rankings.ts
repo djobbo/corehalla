@@ -1,4 +1,4 @@
-import type { IRanking1v1Format } from '@corehalla/types';
+import type { IRanking1v1Format } from '@corehalla/types'
 
 export const Mock1v1Rankings: IRanking1v1Format[] = [
     {
@@ -605,4 +605,4 @@ export const Mock1v1Rankings: IRanking1v1Format[] = [
         peak: 2607,
         bestLegend: { id: 40, games: 355, wins: 250 },
     },
-];
+]

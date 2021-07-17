@@ -1,22 +1,22 @@
-import styles from '../styles/CodePage.module.scss';
-import { useEffect, useState } from 'react';
-import { Layout } from '../components/Layout';
-import { useMapNodesContext } from '../providers/MapNodesProvider';
-import { createMapXML } from '../util/createMapXML';
-import hljs from 'highlight.js';
-import xmlhl from 'highlight.js/lib/languages/xml';
-import { MapCanvas } from '../components/MapCanvas';
-import { motion } from 'framer-motion';
+import styles from '../styles/CodePage.module.scss'
+import { useEffect, useState } from 'react'
+import { Layout } from '../components/Layout'
+import { useMapNodesContext } from '../providers/MapNodesProvider'
+import { createMapXML } from '../util/createMapXML'
+import hljs from 'highlight.js'
+import xmlhl from 'highlight.js/lib/languages/xml'
+import { MapCanvas } from '../components/MapCanvas'
+import { motion } from 'framer-motion'
 
-hljs.registerLanguage('xml', xmlhl);
+hljs.registerLanguage('xml', xmlhl)
 
 export default function Code(): JSX.Element {
-    const [mapXML, setMapXML] = useState('');
-    const { mapData } = useMapNodesContext();
+    const [mapXML, setMapXML] = useState('')
+    const { mapData } = useMapNodesContext()
 
     useEffect(() => {
-        setMapXML(hljs.highlight('xml', createMapXML(mapData)).value);
-    }, [mapData]);
+        setMapXML(hljs.highlight('xml', createMapXML(mapData)).value)
+    }, [mapData])
 
     return (
         <Layout>
@@ -33,5 +33,5 @@ export default function Code(): JSX.Element {
             </motion.div>
             <MapCanvas floating />
         </Layout>
-    );
+    )
 }

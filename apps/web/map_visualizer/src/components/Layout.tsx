@@ -1,13 +1,13 @@
-import styles from '../styles/Layout.module.scss';
-import { ReactNode } from 'react';
-import { Header } from './Header';
-import { SideNav } from './SideNav';
-import { PropertiesPanel } from './PropertiesPanel';
-import { Timeline } from './Timeline';
+import styles from '../styles/Layout.module.scss'
+import { ReactNode } from 'react'
+import { Header } from './Header'
+import { SideNav } from './SideNav'
+import { PropertiesPanel } from './PropertiesPanel'
+import { Timeline } from './Timeline'
 // import { Resizable } from './Resizable';
 
 interface Props {
-    children: ReactNode;
+    children: ReactNode
 }
 
 export function Layout({ children }: Props): JSX.Element {
@@ -19,5 +19,5 @@ export function Layout({ children }: Props): JSX.Element {
             <div className={styles.editor}>{children}</div>
             <Timeline />
         </div>
-    );
+    )
 }

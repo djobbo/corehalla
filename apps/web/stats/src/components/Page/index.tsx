@@ -1,11 +1,11 @@
-import styles from './index.module.scss';
+import styles from './index.module.scss'
 // Library imports
-import { useEffect, ReactNode } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, ReactNode } from 'react'
+import { motion } from 'framer-motion'
 
 interface Props {
-    title?: string;
-    children: ReactNode;
+    title?: string
+    children: ReactNode
 }
 
 const pageTransition = {
@@ -15,15 +15,15 @@ const pageTransition = {
     out: {
         opacity: 0,
     },
-};
+}
 
 // TODO: Remove this file
 
 export function Page({ children, title }: Props): JSX.Element {
     useEffect(() => {
-        if (!title) return;
-        document.title = title;
-    }, []);
+        if (!title) return
+        document.title = title
+    }, [])
 
     return (
         <motion.div
@@ -36,5 +36,5 @@ export function Page({ children, title }: Props): JSX.Element {
         >
             <div>{children}</div>
         </motion.div>
-    );
+    )
 }

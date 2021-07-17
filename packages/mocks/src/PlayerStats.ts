@@ -1,4 +1,4 @@
-import type { IPlayerStatsFormat } from '@corehalla/types';
+import type { IPlayerStatsFormat } from '@corehalla/types'
 
 export const MockPlayerStats: IPlayerStatsFormat = {
     id: 4281946,
@@ -2427,4 +2427,4 @@ export const MockPlayerStats: IPlayerStatsFormat = {
         sidekick: { damage: 34365, kos: 8 },
         snowball: { hits: 581, kos: 168 },
     },
-};
+}
