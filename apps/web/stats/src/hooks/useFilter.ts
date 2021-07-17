@@ -13,10 +13,7 @@ export const useFilter = <Filter extends string = string, T = unknown>(
         setActiveFilter((query.filter ?? null) as Filter);
     }, [query.filter]);
 
-    const filter = (array: T[]): T[] => {
-        console.log({ activeFilter });
-        return activeFilter ? array.filter(filterFn(activeFilter)) : array;
-    };
+    const filter = (array: T[]): T[] => (activeFilter ? array.filter(filterFn(activeFilter)) : array);
 
     return [filter, setActiveFilter];
 };

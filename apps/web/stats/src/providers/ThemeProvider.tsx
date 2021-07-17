@@ -1,75 +1,61 @@
-import React, { createContext, useState, FC, useContext, ReactNode } from 'react';
+import { Dispatch } from 'react';
+import { SetStateAction } from 'react';
+import { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import { themes, ThemeName, themeNames } from '~styles/themes';
 
-type ThemeMode = 'light' | 'dark' | 'solarizedDark' | 'solarizedLight';
-type ThemeProps = 'bg' | 'bg-dark' | 'bg-dark-var2' | 'text-2' | 'text' | 'accent';
-export type Theme = {
-    [k in ThemeProps]: string;
-};
-
-export const themeModes: { [k in ThemeMode]: Theme } = {
-    dark: {
-        bg: '#212121',
-        'bg-dark': '#282828',
-        'bg-dark-var2': '#373737',
-        'text-2': '#ABABAB',
-        text: '#F1F1F1',
-        accent: '#FF732F',
-    },
-    light: {
-        bg: '#F1F1F1',
-        'bg-dark': '#cccccc',
-        'bg-dark-var2': '#ABABAB',
-        'text-2': '#373737',
-        text: '#212121',
-        accent: '#FF732F',
-    },
-    solarizedDark: {
-        bg: '#002b36',
-        'bg-dark': '#073642',
-        'bg-dark-var2': '#073642',
-        'text-2': '#073642',
-        text: '#eee8d5',
-        accent: '#2aa198',
-    },
-    solarizedLight: {
-        bg: '#fdf6e3',
-        'bg-dark': '#eee8d5',
-        'bg-dark-var2': '#eee8d5',
-        'text-2': '#eee8d5',
-        text: '#073642',
-        accent: '#2aa198',
-    },
-};
-
-interface IThemeContext {
-    getTheme: () => Theme;
-    getThemeStr: () => string;
-    setThemeMode: React.Dispatch<React.SetStateAction<ThemeMode>>;
+interface ThemeContext {
+    themeName: ThemeName;
+    setThemeName: Dispatch<SetStateAction<ThemeName>>;
 }
 
-export const ThemeContext = createContext<IThemeContext>({
-    getTheme: () => themeModes['dark'],
-    getThemeStr: () => '',
-    setThemeMode: () => ({}),
+const themeContext = createContext<ThemeContext>({
+    themeName: 'default',
+    setThemeName: () => ({}),
 });
 
-export const useThemeContext = (): IThemeContext => useContext(ThemeContext);
+export const useTheme = (): ThemeContext => useContext(themeContext);
 
 interface Props {
     children: ReactNode;
 }
 
-export const ThemeProvider: FC<Props> = ({ children }: Props) => {
-    const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
+export const ThemeProvider = ({ children }: Props): JSX.Element => {
+    const [themeName, setThemeName] = useState<ThemeName>('default');
 
-    const getTheme = () => themeModes[themeMode];
-    const getThemeStr = () => {
-        console.log(themeModes[themeMode]);
-        return Object.entries(themeModes[themeMode]).reduce<string>(
-            (acc, [key, value]) => `${acc} --${key}: ${value};`,
-            '',
-        );
-    };
+    useEffect(() => {
+        const onStorageChange = ({ key, newValue }: StorageEvent) => {
+            console.log(`Key Changed: ${key}`);
+            console.log(`New Value: ${newValue}`);
 
-    return <ThemeContext.Provider value={{ getTheme, getThemeStr, setThemeMode }}>{children}</ThemeContext.Provider>;
+            if (key !== 'theme') return;
+
+            setThemeName(themeNames.includes(newValue as ThemeName) ? (newValue as ThemeName) : 'default');
+        };
+
+        const savedTheme: ThemeName = (localStorage.getItem('theme') as ThemeName) ?? 'default';
+        setThemeName(themeNames.includes(savedTheme) ? savedTheme : 'default');
+
+        window.addEventListener('storage', onStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', onStorageChange);
+        };
+    }, []);
+
+    useEffect(() => {
+        console.log({ themeName });
+        if (!themeName) return;
+
+        localStorage.setItem('theme', themeName);
+
+        const theme = themes[themeName];
+
+        if (!theme) return;
+
+        Object.entries(theme).forEach(([prop, value]) => {
+            document.documentElement.style.setProperty(`--${prop}`, value);
+        });
+    }, [themeName]);
+
+    return <themeContext.Provider value={{ themeName, setThemeName }}>{children}</themeContext.Provider>;
 };
