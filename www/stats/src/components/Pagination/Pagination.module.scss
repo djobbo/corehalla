@@ -1,0 +1,34 @@
+@import '~styles/theme.scss';
+
+.pagination {
+    display: flex;
+    gap: 0.5rem;
+
+    .item {
+        width: 2.5rem;
+        height: 2.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 0.5rem;
+        background-color: $bg-dark-var1;
+
+        &.separator {
+            background-color: $bg-dark;
+            color: $on-bg-dark;
+        }
+
+        &.link {
+            &:hover {
+                color: $on-bg-dark;
+                background-color: $accent;
+            }
+        }
+
+        &.active {
+            cursor: default;
+            color: $on-bg-dark;
+            background-color: $accent;
+        }
+    }
+}

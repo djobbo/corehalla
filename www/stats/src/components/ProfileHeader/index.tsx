@@ -1,7 +1,7 @@
 import styles from './index.module.scss'
 // Library imports
 import { PropsWithChildren, useEffect, useState } from 'react'
-import { useFavoritesContext, IFavorite } from '~providers/FavoritesProvider'
+import { useFavorites, IFavorite } from '~providers/FavoritesProvider'
 
 interface Props {
     bannerURI: string
@@ -10,7 +10,7 @@ interface Props {
 }
 
 export function ProfileHeader({ bannerURI, title, favorite, children }: PropsWithChildren<Props>): JSX.Element {
-    const { isFavorite, addFavorite, removeFavorite, updatedAt } = useFavoritesContext()
+    const { isFavorite, addFavorite, removeFavorite, updatedAt } = useFavorites()
     const [isFav, setIsFav] = useState(isFavorite(favorite))
 
     useEffect(() => {
