@@ -3,7 +3,6 @@ import layoutStyles from '~layout/Layout.module.scss';
 
 import { ILegendStatsFormat, IPlayerStatsFormat, Weapon } from '@corehalla/types';
 import { SectionSeparator, PageSection } from '@PageSection';
-import { motion } from 'framer-motion';
 import { formatTime } from '~util';
 import { SectionOverallStatsContent } from '@SectionOverallStatsContent';
 import { SectionSeasonOverviewContent } from '@SectionSeasonOverviewContent';
@@ -129,13 +128,13 @@ export const LegendsTab = ({ playerStats }: Props): JSX.Element => {
                         { value: 'Greatsword' },
                     ]}
                     placeholder="All Weapons"
+                    clearable
                 />
                 <button onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}>Reverse Order</button>
             </Card>
             {sortByProp(filterByWeapon(playerStats.legends)).map((legend, i) => (
-                <motion.div layoutId={`legend_${legend.id}`} key={legend.id}>
-                    <SectionSeparator />
-                    <PageSection title={`${i + 1}. ${legend.name} • ${getSortDisplayStr(legend)}`}>
+                <>
+                    <PageSection key={legend.id} title={`${i + 1}. ${legend.name} • ${getSortDisplayStr(legend)}`}>
                         <div className={styles.legendLevelStats}>
                             <img className={styles.legendIcon} src={`/images/icons/legends/${legend.name}.png`} />
                             <div>
@@ -157,7 +156,8 @@ export const LegendsTab = ({ playerStats }: Props): JSX.Element => {
                         />
                         <SectionOverallStatsContent {...legend} losses={legend.games - legend.wins} />
                     </PageSection>
-                </motion.div>
+                    <SectionSeparator />
+                </>
             ))}
         </>
     );

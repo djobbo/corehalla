@@ -1,21 +1,34 @@
-// Library imports
+import { SetStateAction } from 'react';
+import { DependencyList } from 'react';
+import { Dispatch } from 'react';
 import { useState, useEffect } from 'react';
 
-export const useDebounce = <T extends string>(callback: (value: T) => void, delay: number, value: T): void => {
-    const [debouncedValue, setDebouncedValue] = useState<T | null>(null);
+export const useDebounce = (fn: () => void, delay = 0, ...deps: DependencyList): void => {
     useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedValue(value);
+        const timer = setTimeout(() => {
+            fn();
         }, delay);
 
         return () => {
-            clearTimeout(handler);
+            clearTimeout(timer);
         };
-    }, [value, delay]);
+    }, [fn, delay, deps]);
 
-    useEffect(() => {
-        if (!debouncedValue) return;
-        callback(debouncedValue);
-        setDebouncedValue(null);
-    }, [debouncedValue, callback]);
+    return;
+};
+
+export const useDebounceValue = <T>(
+    defaultValue: T,
+    delay = 0,
+): [value: T, setValue: Dispatch<SetStateAction<T>>, loading: boolean] => {
+    const [value, setValue] = useState<T>(defaultValue);
+    const [debouncedValue, setDebouncedValue] = useState<T>(defaultValue);
+
+    const updateValue = () => {
+        setDebouncedValue(value);
+    };
+
+    useDebounce(updateValue, delay, value);
+
+    return [debouncedValue, setValue, value !== debouncedValue];
 };

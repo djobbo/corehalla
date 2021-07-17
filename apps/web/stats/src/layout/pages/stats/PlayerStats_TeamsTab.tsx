@@ -92,12 +92,12 @@ export const TeamsTab = ({ teams }: Props): JSX.Element => {
                     }}
                 />
                 <Select
+                    onInputChange={setTeamsearch}
                     onChange={setTeamsearch}
-                    options={[
-                        { value: null, label: 'All Teams' },
-                        ...teams.map(({ teammate }) => ({ value: teammate.name })),
-                    ]}
+                    options={teams.map(({ teammate }) => ({ value: teammate.name }))}
                     placeholder="All Teams"
+                    searchable
+                    clearable
                 />
                 <button onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}>Reverse Order</button>
             </Card>
@@ -119,7 +119,11 @@ export const TeamsTab = ({ teams }: Props): JSX.Element => {
                     <PageSection title="teams" initFoldState={true}>
                         <div className={styles.teamsContainer}>
                             {sortByProp(
-                                teamSearch ? teams.filter(({ teammate }) => teammate.name === teamSearch) : teams,
+                                teamSearch
+                                    ? teams.filter(({ teammate }) =>
+                                          teammate.name.toLowerCase().includes(teamSearch.toLowerCase()),
+                                      )
+                                    : teams,
                             ).map((team) => (
                                 <motion.div layoutId={`team_${team.teammate.id}`} key={team.teammate.id}>
                                     <TeamCard team={team} />

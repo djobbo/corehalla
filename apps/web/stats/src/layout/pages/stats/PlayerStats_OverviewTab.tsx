@@ -15,6 +15,7 @@ export const OverviewTab = ({ playerStats }: Props): JSX.Element => {
 
     return (
         <>
+            <SectionSeparator />
             <PageSection title="Season Overview" initFoldState>
                 <SectionSeasonOverviewContent
                     {...season}
