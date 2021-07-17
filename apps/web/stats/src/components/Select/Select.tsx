@@ -75,7 +75,7 @@ export const Select = <T extends string>({
                 }),
                 valueContainer: (styles) => ({
                     ...styles,
-                    cursor: 'text',
+                    cursor: searchable ? 'text' : 'default',
                 }),
                 indicatorsContainer: (styles) => ({
                     ...styles,

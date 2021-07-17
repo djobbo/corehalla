@@ -66,10 +66,7 @@ export const LegendsTab = ({ playerStats }: Props): JSX.Element => {
         <>
             <Card className={layoutStyles.sortAndFilterContainer}>
                 <Select<LegendSort>
-                    onChange={(value) => {
-                        console.log({ value });
-                        setSortingProp(value);
-                    }}
+                    onChange={setSortingProp}
                     options={[
                         {
                             value: 'level',

@@ -23,9 +23,9 @@ const Nav = () => {
     return (
         <nav className={styles.nav}>
             {links.map((link) => (
-                <a href={link.href} key={link.title} className={styles.navItem}>
-                    {link.title}
-                </a>
+                <Link href={link.href} key={link.title}>
+                    <a className={styles.navItem}>{link.title}</a>
+                </Link>
             ))}
         </nav>
     );
