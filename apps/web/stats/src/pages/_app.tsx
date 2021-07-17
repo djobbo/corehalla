@@ -1,31 +1,31 @@
-import type { AppProps } from 'next/app';
-import { AnimatePresence, AnimateSharedLayout } from 'framer-motion';
+import type { AppProps } from 'next/app'
+import { AnimatePresence, AnimateSharedLayout } from 'framer-motion'
 
-import '~styles/global.scss';
+import '~styles/global.scss'
 
-import { FavoritesProvider } from '~providers/FavoritesProvider';
-import { ThemeProvider } from '~providers/ThemeProvider';
+import { FavoritesProvider } from '~providers/FavoritesProvider'
+import { ThemeProvider } from '~providers/ThemeProvider'
 
-import { useEffect, useState } from 'react';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import { Loader } from '@Loader';
+import { useEffect, useState } from 'react'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { Loader } from '@Loader'
 
 const App = ({ Component, pageProps }: AppProps): JSX.Element => {
-    const router = useRouter();
-    const [pageLoading, setPageLoading] = useState(false);
+    const router = useRouter()
+    const [pageLoading, setPageLoading] = useState(false)
     useEffect(() => {
         const handleStart = () => {
-            setPageLoading(true);
-        };
+            setPageLoading(true)
+        }
         const handleComplete = () => {
-            setPageLoading(false);
-        };
+            setPageLoading(false)
+        }
 
-        router.events.on('routeChangeStart', handleStart);
-        router.events.on('routeChangeComplete', handleComplete);
-        router.events.on('routeChangeError', handleComplete);
-    }, [router]);
+        router.events.on('routeChangeStart', handleStart)
+        router.events.on('routeChangeComplete', handleComplete)
+        router.events.on('routeChangeError', handleComplete)
+    }, [router])
 
     return (
         <>
@@ -47,7 +47,7 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
             </ThemeProvider>
             {pageLoading && <Loader />}
         </>
-    );
-};
+    )
+}
 
-export default App;
+export default App

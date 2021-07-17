@@ -1,4 +1,4 @@
-import { Theme } from '.';
+import { Theme } from '.'
 
 export const solarizedDarkTheme: Theme = {
     'bg-dark': '#002b36',
@@ -8,4 +8,4 @@ export const solarizedDarkTheme: Theme = {
     'on-bg-dark-var1': '#eee8d5',
     accent: '#268bd2',
     secondary: '#cb4b16',
-};
+}

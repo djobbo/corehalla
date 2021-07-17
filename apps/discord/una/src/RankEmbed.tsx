@@ -1,16 +1,16 @@
-import { ILegendStatsFormat, IPlayerStatsFormat } from '@corehalla/types';
-import { React } from 'fancy-discord.js/lib/Embeds';
+import { ILegendStatsFormat, IPlayerStatsFormat } from '@corehalla/types'
+import { React } from 'fancy-discord.js/lib/Embeds'
 
 interface Props {
-    type: 'stats' | 'ranked';
-    playerStats: IPlayerStatsFormat;
-    iconUrl?: string | null;
+    type: 'stats' | 'ranked'
+    playerStats: IPlayerStatsFormat
+    iconUrl?: string | null
 }
 
 // TODO: Define JSX.Element in fancy-discord.js
 const LegendsRankedField = ({ legends }: { legends: ILegendStatsFormat[] }): JSX.Element => {
-    const highestLegend = legends.sort((a, b) => b.season.rating - a.season.rating)[0];
-    const mostPlayedLegend = legends.sort((a, b) => b.season.games - a.season.games)[0];
+    const highestLegend = legends.sort((a, b) => b.season.rating - a.season.rating)[0]
+    const mostPlayedLegend = legends.sort((a, b) => b.season.games - a.season.games)[0]
 
     return (
         <field title="Legends" inline>
@@ -20,8 +20,8 @@ const LegendsRankedField = ({ legends }: { legends: ILegendStatsFormat[] }): JSX
             <span bold>Most Played: </span>
             {mostPlayedLegend.name} ({highestLegend.season.games} Games)
         </field>
-    );
-};
+    )
+}
 
 // FIXME: null elements
 export const RankEmbed = ({
@@ -72,5 +72,5 @@ export const RankEmbed = ({
             <timestamp timestamp={Date.now()} />
             {/* FIXME: <Url>asdas</Url> */}
         </>
-    );
-};
+    )
+}

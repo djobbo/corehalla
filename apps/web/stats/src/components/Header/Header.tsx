@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
-import { Card } from '@Card';
-import styles from './Header.module.scss';
-import Link from 'next/link';
-import { SearchBar } from '@SearchBar';
+import { ReactNode } from 'react'
+import { Card } from '@Card'
+import styles from './Header.module.scss'
+import Link from 'next/link'
+import { SearchBar } from '@SearchBar'
 
 const links = [
     {
@@ -17,7 +17,7 @@ const links = [
         title: 'Favorites',
         href: '/favorites',
     },
-];
+]
 
 const Nav = () => {
     return (
@@ -28,11 +28,11 @@ const Nav = () => {
                 </Link>
             ))}
         </nav>
-    );
-};
+    )
+}
 
 interface Props {
-    content?: ReactNode;
+    content?: ReactNode
 }
 
 export const Header = ({ content }: Props): JSX.Element => {
@@ -58,5 +58,5 @@ export const Header = ({ content }: Props): JSX.Element => {
                 </div>
             </Card>
         </div>
-    );
-};
+    )
+}

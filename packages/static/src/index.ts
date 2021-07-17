@@ -1,2 +1,2 @@
-export * from './legends';
-export * from './static-data';
+export * from './legends'
+export * from './static-data'

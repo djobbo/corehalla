@@ -1,11 +1,11 @@
-import '../styles/globals.scss';
-import '../styles/code.scss';
+import '../styles/globals.scss'
+import '../styles/code.scss'
 
-import type { AppProps } from 'next/app';
-import { MapNodesProvider } from '../providers/MapNodesProvider';
-import { EditorStateProvider } from '../providers/EditorStateProvider';
+import type { AppProps } from 'next/app'
+import { MapNodesProvider } from '../providers/MapNodesProvider'
+import { EditorStateProvider } from '../providers/EditorStateProvider'
 
-import { AnimatePresence, AnimateSharedLayout } from 'framer-motion';
+import { AnimatePresence, AnimateSharedLayout } from 'framer-motion'
 
 function MyApp({ Component, pageProps, router }: AppProps): JSX.Element {
     return (
@@ -18,7 +18,7 @@ function MyApp({ Component, pageProps, router }: AppProps): JSX.Element {
                 </MapNodesProvider>
             </EditorStateProvider>
         </AnimateSharedLayout>
-    );
+    )
 }
 
-export default MyApp;
+export default MyApp

@@ -1,14 +1,14 @@
-import styles from './index.module.scss';
+import styles from './index.module.scss'
 // Components imports
-import { StatDesc } from '@TextStyles';
+import { StatDesc } from '@TextStyles'
 
 interface IMiscStat {
-    title: string;
-    value: string;
+    title: string
+    value: string
 }
 
 interface Props {
-    stats: IMiscStat[];
+    stats: IMiscStat[]
 }
 
 export function MiscStats({ stats }: Props): JSX.Element {
@@ -21,5 +21,5 @@ export function MiscStats({ stats }: Props): JSX.Element {
                 </p>
             ))}
         </div>
-    );
+    )
 }

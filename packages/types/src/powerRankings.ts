@@ -1,16 +1,16 @@
 export interface IPowerRankingsFormat {
-    rank: number;
+    rank: number
     socials: {
-        twitter?: string;
-        twitch?: string;
-    };
-    name: string;
-    earnings: number;
-    t8: number;
-    t32: number;
+        twitter?: string
+        twitch?: string
+    }
+    name: string
+    earnings: number
+    t8: number
+    t32: number
     medals: {
-        gold: number;
-        silver: number;
-        bronze: number;
-    };
+        gold: number
+        silver: number
+        bronze: number
+    }
 }

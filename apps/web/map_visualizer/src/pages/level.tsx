@@ -1,6 +1,6 @@
-import { Layout } from '../components/Layout';
-import { LevelMDSettings } from '../components/LevelMDSettings';
-import { MapCanvas } from '../components/MapCanvas';
+import { Layout } from '../components/Layout'
+import { LevelMDSettings } from '../components/LevelMDSettings'
+import { MapCanvas } from '../components/MapCanvas'
 
 export default function LevelMDPage(): JSX.Element {
     return (
@@ -8,5 +8,5 @@ export default function LevelMDPage(): JSX.Element {
             <LevelMDSettings />
             <MapCanvas floating />
         </Layout>
-    );
+    )
 }

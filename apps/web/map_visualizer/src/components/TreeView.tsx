@@ -1,10 +1,10 @@
-import { PropsWithChildren, useState } from 'react';
-import { useMapNodesContext } from '../providers/MapNodesProvider';
-import styles from '../styles/TreeView.module.scss';
-import { CollisionSettings } from './CollisionSettings';
+import { PropsWithChildren, useState } from 'react'
+import { useMapNodesContext } from '../providers/MapNodesProvider'
+import styles from '../styles/TreeView.module.scss'
+import { CollisionSettings } from './CollisionSettings'
 
 function TreeNode({ children, title, onClick }: PropsWithChildren<{ title: string; onClick?: () => void }>) {
-    const [isVisible, setIsVisible] = useState(false);
+    const [isVisible, setIsVisible] = useState(false)
 
     return (
         <>
@@ -38,11 +38,11 @@ function TreeNode({ children, title, onClick }: PropsWithChildren<{ title: strin
             </p>
             {isVisible && <div className={styles.treeNodeContainer}>{children}</div>}
         </>
-    );
+    )
 }
 
 export function TreeView(): JSX.Element {
-    const { mapData } = useMapNodesContext();
+    const { mapData } = useMapNodesContext()
 
     return (
         <div className={styles.container}>
@@ -100,5 +100,5 @@ export function TreeView(): JSX.Element {
                 </TreeNode>
             </TreeNode>
         </div>
-    );
+    )
 }

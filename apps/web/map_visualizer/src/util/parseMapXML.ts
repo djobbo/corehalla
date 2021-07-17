@@ -1,9 +1,9 @@
 export function parseMapXML(mapXML: string): LevelDesc {
-    console.log(mapXML);
-    const parser = new DOMParser();
-    const dom = parser.parseFromString(mapXML, 'text/xml');
+    console.log(mapXML)
+    const parser = new DOMParser()
+    const dom = parser.parseFromString(mapXML, 'text/xml')
 
-    const levelDesc = dom.getElementsByTagName(`LevelDesc`)[0];
+    const levelDesc = dom.getElementsByTagName(`LevelDesc`)[0]
 
     const mapData: LevelDesc = {
         assetDir: levelDesc.getAttribute('AssetDir'),
@@ -20,47 +20,47 @@ export function parseMapXML(mapXML: string): LevelDesc {
         animations: [],
         numFrames: parseInt(levelDesc.getAttribute('NumFrames') ?? '-1'),
         slowMult: parseFloat(levelDesc.getAttribute('SlowMult') ?? '1'),
-    };
+    }
 
     for (const node of levelDesc.children) {
         switch (node.tagName) {
             case 'HardCollision':
-                mapData.collisions.push(parseCollision(node, 'Hard'));
-                break;
+                mapData.collisions.push(parseCollision(node, 'Hard'))
+                break
             case 'SoftCollision':
-                mapData.collisions.push(parseCollision(node, 'Soft'));
-                break;
+                mapData.collisions.push(parseCollision(node, 'Soft'))
+                break
             case 'DynamicCollision':
-                mapData.dynamicCollisions.push(parseDynamicCollision(node));
-                break;
+                mapData.dynamicCollisions.push(parseDynamicCollision(node))
+                break
             case 'CameraBounds':
-                mapData.cameraBounds = parseBounds(node);
-                break;
+                mapData.cameraBounds = parseBounds(node)
+                break
             case 'SpawnBotBounds':
-                mapData.spawnBotBounds = parseBounds(node);
-                break;
+                mapData.spawnBotBounds = parseBounds(node)
+                break
             case 'Platform':
             case 'MovingPlatform':
-                const p = parsePlatform(node);
-                if (p.platform.type !== 'platform') throw new Error('Error Parsing Platform');
+                const p = parsePlatform(node)
+                if (p.platform.type !== 'platform') throw new Error('Error Parsing Platform')
 
-                if (node.tagName === 'Platform') mapData.platforms = [...mapData.platforms, p.platform];
-                else mapData.movingPlatforms = [...mapData.movingPlatforms, p.platform];
+                if (node.tagName === 'Platform') mapData.platforms = [...mapData.platforms, p.platform]
+                else mapData.movingPlatforms = [...mapData.movingPlatforms, p.platform]
 
-                if (p.animation) mapData.animations = [...new Set([...mapData.animations, p.animation])];
+                if (p.animation) mapData.animations = [...new Set([...mapData.animations, p.animation])]
 
-                mapData.themes = [...mapData.themes, ...p.themes];
-                break;
+                mapData.themes = [...mapData.themes, ...p.themes]
+                break
             default:
-                break;
+                break
         }
     }
 
-    mapData.themes = [...new Set(mapData.themes)].map((t) => t.split(',')).flat();
+    mapData.themes = [...new Set(mapData.themes)].map((t) => t.split(',')).flat()
 
-    console.log('LevelDesc', mapData);
+    console.log('LevelDesc', mapData)
 
-    return mapData;
+    return mapData
 }
 
 function parseBounds(bounds: Element): Bounds {
@@ -69,24 +69,24 @@ function parseBounds(bounds: Element): Bounds {
         y: parseFloat(bounds.getAttribute('Y')),
         w: parseFloat(bounds.getAttribute('W')),
         h: parseFloat(bounds.getAttribute('H')),
-    };
+    }
 }
 
 function parseDynamicCollision(col: Element): DynamicCollision {
-    const children: Collision[] = [];
+    const children: Collision[] = []
 
-    const platId = col.getAttribute('PlatID');
+    const platId = col.getAttribute('PlatID')
 
     for (const child of col.children) {
         switch (child.tagName) {
             case 'HardCollision':
-                children.push(parseCollision(child, 'Hard'));
-                break;
+                children.push(parseCollision(child, 'Hard'))
+                break
             case 'SoftCollision':
-                children.push(parseCollision(child, 'Soft'));
-                break;
+                children.push(parseCollision(child, 'Soft'))
+                break
             default:
-                break;
+                break
         }
     }
 
@@ -95,12 +95,12 @@ function parseDynamicCollision(col: Element): DynamicCollision {
         collisions: children,
         x: parseFloat(col.getAttribute('X') ?? '0'),
         y: parseFloat(col.getAttribute('Y') ?? '0'),
-    };
+    }
 }
 
 function parseCollision(col: Element, colType: CollisionType, platId = undefined): Collision {
-    const x = col.getAttribute('X');
-    const y = col.getAttribute('Y');
+    const x = col.getAttribute('X')
+    const y = col.getAttribute('Y')
 
     return {
         id: Math.random().toString(),
@@ -119,16 +119,16 @@ function parseCollision(col: Element, colType: CollisionType, platId = undefined
                   y1: parseInt(col.getAttribute('Y1')),
                   y2: parseInt(col.getAttribute('Y2')),
               }),
-    };
+    }
 }
 
 function parsePlatform(
     platform: Element,
 ): { platform: Platform | Asset; themes: string[]; animation?: PlatformAnimation } {
-    let themes: string[] = platform.getAttribute('Theme')?.split(',') ?? [];
+    let themes: string[] = platform.getAttribute('Theme')?.split(',') ?? []
 
-    const platId = platform.getAttribute('PlatID');
-    console.log(platId);
+    const platId = platform.getAttribute('PlatID')
+    console.log(platId)
 
     const outPlatform: Platform = {
         type: 'platform',
@@ -147,43 +147,43 @@ function parsePlatform(
         platforms: [],
         assets: [],
         themes,
-    };
+    }
 
-    let animation: PlatformAnimation;
+    let animation: PlatformAnimation
 
     for (const child of platform.children) {
         if (child.tagName === 'Animation' && platId) {
-            animation = parseAnimation(child, platId, outPlatform.x, outPlatform.y);
+            animation = parseAnimation(child, platId, outPlatform.x, outPlatform.y)
         } else {
-            const { platform: plat, themes: th } = parsePlatform(child);
+            const { platform: plat, themes: th } = parsePlatform(child)
             switch (plat.type) {
                 case 'platform':
-                    outPlatform.platforms.push(plat);
-                    break;
+                    outPlatform.platforms.push(plat)
+                    break
                 case 'asset':
-                    outPlatform.assets.push(plat);
-                    break;
+                    outPlatform.assets.push(plat)
+                    break
                 default:
-                    break;
+                    break
             }
-            themes = [...themes, ...th];
+            themes = [...themes, ...th]
         }
     }
 
-    console.log(outPlatform.assetName);
+    console.log(outPlatform.assetName)
 
-    return { platform: outPlatform, themes, animation };
+    return { platform: outPlatform, themes, animation }
 }
 
 function parseAnimation(anim: Element, platId: string, baseX = 0, baseY = 0): PlatformAnimation {
-    const keyframes: (PlatformKeyframe | PlatformPhase)[] = [];
+    const keyframes: (PlatformKeyframe | PlatformPhase)[] = []
 
     for (const child of anim.children) {
         if (child.tagName === 'KeyFrame') {
-            const key = parseKeyframe(child);
-            keyframes.push(key);
+            const key = parseKeyframe(child)
+            keyframes.push(key)
         } else if (child.tagName === 'Phase') {
-            keyframes.push(parsePhase(child));
+            keyframes.push(parsePhase(child))
         }
     }
 
@@ -194,7 +194,7 @@ function parseAnimation(anim: Element, platId: string, baseX = 0, baseY = 0): Pl
         x: baseX,
         y: baseY,
         slowMult: parseFloat(anim.getAttribute('SlowMult') ?? '1'),
-    };
+    }
 }
 
 function parseKeyframe(key: Element): PlatformKeyframe {
@@ -203,7 +203,7 @@ function parseKeyframe(key: Element): PlatformKeyframe {
         type: 'Keyframe',
         x: parseFloat(key.getAttribute('X') ?? '0'),
         y: parseFloat(key.getAttribute('Y') ?? '0'),
-    };
+    }
 }
 
 function parsePhase(phase: Element): PlatformPhase {
@@ -211,13 +211,13 @@ function parsePhase(phase: Element): PlatformPhase {
         type: 'Phase',
         frameNum: parseInt(phase.getAttribute('StartFrame')),
         keyFrames: [],
-    };
+    }
 
     for (const child of phase.children) {
         if (child.tagName === 'KeyFrame') {
-            outPhase.keyFrames.push(parseKeyframe(child));
+            outPhase.keyFrames.push(parseKeyframe(child))
         }
     }
 
-    return outPhase;
+    return outPhase
 }

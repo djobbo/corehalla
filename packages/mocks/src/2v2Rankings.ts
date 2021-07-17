@@ -1,4 +1,4 @@
-import type { IRanking2v2Format } from '@corehalla/types';
+import type { IRanking2v2Format } from '@corehalla/types'
 
 export const Mock2v2Rankings: IRanking2v2Format[] = [
     {
@@ -655,4 +655,4 @@ export const Mock2v2Rankings: IRanking2v2Format[] = [
             { name: 'dedindior', id: 5628889 },
         ],
     },
-];
+]

@@ -1,4 +1,4 @@
-import type { IClanMember, IClan, IClanFormat, IClanMemberFormat } from '@corehalla/types';
+import type { IClanMember, IClan, IClanFormat, IClanMemberFormat } from '@corehalla/types'
 
 export function formatClan({ clan: members, clan_id, clan_name, clan_create_date, clan_xp }: IClan): IClanFormat {
     return {
@@ -8,13 +8,13 @@ export function formatClan({ clan: members, clan_id, clan_name, clan_create_date
         xp: clan_xp,
         memberCount: members.length,
         ...sortClanMembers(members),
-    };
+    }
 }
 
 export function sortClanMembers(members: IClanMember[]): { members: IClanMemberFormat[]; xpInClan: number } {
     return members.reduce<{
-        members: IClanMemberFormat[];
-        xpInClan: number;
+        members: IClanMemberFormat[]
+        xpInClan: number
     }>(
         (acc, { rank, brawlhalla_id, name, join_date, xp }) => {
             acc.members = [
@@ -26,13 +26,13 @@ export function sortClanMembers(members: IClanMember[]): { members: IClanMemberF
                     joinDate: join_date,
                     xp,
                 },
-            ];
-            acc.xpInClan += xp || 0;
-            return acc;
+            ]
+            acc.xpInClan += xp || 0
+            return acc
         },
         {
             members: [],
             xpInClan: 0,
         },
-    );
+    )
 }

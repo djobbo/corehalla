@@ -1,4 +1,4 @@
-import type { IRanking2v2, IRanking2v2Format } from '@corehalla/types';
+import type { IRanking2v2, IRanking2v2Format } from '@corehalla/types'
 
 export const format2v2Ranking = ({
     rank,
@@ -14,7 +14,7 @@ export const format2v2Ranking = ({
     twitch_name_one,
     twitch_name_two,
 }: IRanking2v2): IRanking2v2Format => {
-    const playerNames = teamname.split('+');
+    const playerNames = teamname.split('+')
     return {
         rank,
         rating,
@@ -35,7 +35,7 @@ export const format2v2Ranking = ({
                 twitchName: twitch_name_two,
             },
         ],
-    };
-};
+    }
+}
 
-export const format2v2Rankings = (rankings: IRanking2v2[]): IRanking2v2Format[] => rankings.map(format2v2Ranking);
+export const format2v2Rankings = (rankings: IRanking2v2[]): IRanking2v2Format[] => rankings.map(format2v2Ranking)

@@ -1,15 +1,15 @@
-import formStyles from '../styles/Forms.module.scss';
-import React from 'react';
-import { useEditorStateContext } from '../providers/EditorStateProvider';
-import { useMapNodesContext } from '../providers/MapNodesProvider';
-import styles from '../styles/PropertiesPanel.module.scss';
-import { parseMapXML } from '../util/parseMapXML';
+import formStyles from '../styles/Forms.module.scss'
+import React from 'react'
+import { useEditorStateContext } from '../providers/EditorStateProvider'
+import { useMapNodesContext } from '../providers/MapNodesProvider'
+import styles from '../styles/PropertiesPanel.module.scss'
+import { parseMapXML } from '../util/parseMapXML'
 // import { CollisionSettings } from './CollisionSettings';
-import { TreeView } from './TreeView';
-import { Resizable } from './Resizable';
+import { TreeView } from './TreeView'
+import { Resizable } from './Resizable'
 
 export function PropertiesPanel(): JSX.Element {
-    const { mapData, setMapData } = useMapNodesContext();
+    const { mapData, setMapData } = useMapNodesContext()
 
     const {
         setTheme,
@@ -19,7 +19,7 @@ export function PropertiesPanel(): JSX.Element {
         setShowMapBounds,
         theme: currentTheme,
         setLoadedNewMap,
-    } = useEditorStateContext();
+    } = useEditorStateContext()
 
     // function getRandomCol(): Collision {
     // 	return {
@@ -48,16 +48,16 @@ export function PropertiesPanel(): JSX.Element {
                     type="file"
                     name="mapFile"
                     onChange={async (e) => {
-                        if (e.target.files.length <= 0) return;
-                        const file = e.target.files[0];
-                        setMapData(parseMapXML(await file.text()));
-                        setLoadedNewMap(true);
+                        if (e.target.files.length <= 0) return
+                        const file = e.target.files[0]
+                        setMapData(parseMapXML(await file.text()))
+                        setLoadedNewMap(true)
                     }}
                 />
                 <select
                     className={formStyles.input}
                     onChange={(e) => {
-                        setTheme(e.target.value);
+                        setTheme(e.target.value)
                     }}
                     value={currentTheme}
                 >
@@ -87,5 +87,5 @@ export function PropertiesPanel(): JSX.Element {
                 <TreeView />
             </div>
         </Resizable>
-    );
+    )
 }

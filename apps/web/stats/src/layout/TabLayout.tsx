@@ -1,49 +1,49 @@
-import styles from './Layout.module.scss';
+import styles from './Layout.module.scss'
 // Library imports
-import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
+import { PropsWithChildren, ReactNode, useEffect, useState } from 'react'
 
 // Components imports
-import { AppBar } from '@AppBar';
-import { useTabs } from '~hooks/useTabs';
-import { Layout } from './Layout';
+import { AppBar } from '@AppBar'
+import { useTabs } from '~hooks/useTabs'
+import { Layout } from './Layout'
 
 export type ITabComponent<Chip extends string, Sort extends string> = (
     active: boolean,
     activeChip: Chip,
     activeSort: Sort,
-) => ReactNode;
+) => ReactNode
 
 interface ITab<Chip extends string, Sort extends string> {
-    displayName: string;
-    link: string;
-    component: ITabComponent<Chip, Sort>;
-    chips: { [k in Chip]: string } | null;
-    defaultChip: Chip;
-    sortOptions: { [k in Sort]: string } | null;
-    defaultSort: Sort;
+    displayName: string
+    link: string
+    component: ITabComponent<Chip, Sort>
+    chips: { [k in Chip]: string } | null
+    defaultChip: Chip
+    sortOptions: { [k in Sort]: string } | null
+    defaultSort: Sort
 }
 
 interface Props<TabName extends string, Tabs extends { [k in TabName]: [Chips: string, SortOptions: string] }> {
     tabs: {
-        [k in TabName]: ITab<Tabs[k][0], Tabs[k][1]>;
-    };
-    title: string;
-    loading?: boolean;
+        [k in TabName]: ITab<Tabs[k][0], Tabs[k][1]>
+    }
+    title: string
+    loading?: boolean
 }
 
 export function TabLayout<
     TabName extends string,
     Tabs extends { [k in TabName]: [Chips: string, SortOptions: string] }
 >({ tabs, title }: PropsWithChildren<Props<TabName, Tabs>>): JSX.Element {
-    const [activeTab] = useTabs(Object.keys(tabs) as TabName[], Object.keys(tabs)[0] as TabName);
+    const [activeTab] = useTabs(Object.keys(tabs) as TabName[], Object.keys(tabs)[0] as TabName)
 
-    const [activeChip, setActiveChip] = useState(tabs[activeTab].defaultChip ?? null);
+    const [activeChip, setActiveChip] = useState(tabs[activeTab].defaultChip ?? null)
 
-    const [activeSort, setActiveSort] = useState(tabs[activeTab].defaultSort ?? null);
+    const [activeSort, setActiveSort] = useState(tabs[activeTab].defaultSort ?? null)
 
     useEffect(() => {
-        setActiveChip(tabs[activeTab].defaultChip ?? null);
-    }, [activeTab]);
+        setActiveChip(tabs[activeTab].defaultChip ?? null)
+    }, [activeTab])
 
     return (
         <Layout>
@@ -85,5 +85,5 @@ export function TabLayout<
                 ][]).map(([tabName, { component }]) => component(tabName === activeTab, activeChip, activeSort))}
             </main>
         </Layout>
-    );
+    )
 }

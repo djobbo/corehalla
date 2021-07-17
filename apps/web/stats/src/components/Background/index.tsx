@@ -1,11 +1,11 @@
-import styles from './index.module.scss';
-import { motion, useTransform, useViewportScroll } from 'framer-motion';
+import styles from './index.module.scss'
+import { motion, useTransform, useViewportScroll } from 'framer-motion'
 
 export function Background(): JSX.Element {
-    const { scrollY } = useViewportScroll();
-    const bg = useTransform(scrollY, [0, 5000], [0, -800]);
-    const bg1 = useTransform(scrollY, [0, 5000], [0, -1600]);
-    const bgAcc = useTransform(scrollY, [0, 5000], [0, -3200]);
+    const { scrollY } = useViewportScroll()
+    const bg = useTransform(scrollY, [0, 5000], [0, -800])
+    const bg1 = useTransform(scrollY, [0, 5000], [0, -1600])
+    const bgAcc = useTransform(scrollY, [0, 5000], [0, -3200])
 
     return (
         <svg width="1920" height="5000" viewBox="0 0 1920 5000" className={styles.container}>
@@ -1184,5 +1184,5 @@ export function Background(): JSX.Element {
                 </motion.g>
             </g>
         </svg>
-    );
+    )
 }

@@ -1,16 +1,16 @@
-import styles from '~styles/pages/stats/PlayerStatsPage.module.scss';
-import layoutStyles from '~layout/Layout.module.scss';
+import styles from '~styles/pages/stats/PlayerStatsPage.module.scss'
+import layoutStyles from '~layout/Layout.module.scss'
 
-import { ILegendStatsFormat, IPlayerStatsFormat, Weapon } from '@corehalla/types';
-import { SectionSeparator, PageSection } from '@PageSection';
-import { formatTime } from '~util';
-import { SectionOverallStatsContent } from '@SectionOverallStatsContent';
-import { SectionSeasonOverviewContent } from '@SectionSeasonOverviewContent';
-import { StatDesc, StatSmall } from '@TextStyles';
-import { useFilter } from '~hooks/useFilter';
-import { useSort } from '~hooks/useSort';
-import { Select } from '@Select';
-import { Card } from '@Card';
+import { ILegendStatsFormat, IPlayerStatsFormat, Weapon } from '@corehalla/types'
+import { SectionSeparator, PageSection } from '@PageSection'
+import { formatTime } from '~util'
+import { SectionOverallStatsContent } from '@SectionOverallStatsContent'
+import { SectionSeasonOverviewContent } from '@SectionSeasonOverviewContent'
+import { StatDesc, StatSmall } from '@TextStyles'
+import { useFilter } from '~hooks/useFilter'
+import { useSort } from '~hooks/useSort'
+import { Select } from '@Select'
+import { Card } from '@Card'
 
 export type LegendSort =
     | 'level'
@@ -20,16 +20,16 @@ export type LegendSort =
     | 'games'
     | 'winrate'
     | 'ranked games'
-    | 'ranked winrate';
+    | 'ranked winrate'
 
 interface Props {
-    playerStats: IPlayerStatsFormat;
+    playerStats: IPlayerStatsFormat
 }
 
 export const LegendsTab = ({ playerStats }: Props): JSX.Element => {
     const [filterByWeapon, setWeaponFilter] = useFilter<Weapon, ILegendStatsFormat>((weapon) => ({ weapons }) =>
         [weapons.weaponOne.name, weapons.weaponTwo.name].includes(weapon),
-    );
+    )
 
     const {
         sort: sortByProp,
@@ -60,7 +60,7 @@ export const LegendsTab = ({ playerStats }: Props): JSX.Element => {
                 legend.season.games <= 0 ? `N/A` : `${((legend.season.wins / legend.season.games) * 100).toFixed(2)}%`, // TODO: winrate ch.js,
             level: (legend) => `Level ${legend.level}`,
         },
-    );
+    )
 
     return (
         <>
@@ -157,5 +157,5 @@ export const LegendsTab = ({ playerStats }: Props): JSX.Element => {
                 </>
             ))}
         </>
-    );
-};
+    )
+}

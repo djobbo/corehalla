@@ -1,13 +1,13 @@
-import styles from './index.module.scss';
+import styles from './index.module.scss'
 // Library imports
-import Link from 'next/link';
+import Link from 'next/link'
 
-import { StatLarge, StatDesc, StatSmall, StatMedium } from '@TextStyles';
-import { BarChart } from '@Charts';
-import type { IRanking1v1Format } from '@corehalla/types';
+import { StatLarge, StatDesc, StatSmall, StatMedium } from '@TextStyles'
+import { BarChart } from '@Charts'
+import type { IRanking1v1Format } from '@corehalla/types'
 
 interface Props1v1 {
-    player: IRanking1v1Format;
+    player: IRanking1v1Format
 }
 
 export function RankingsItem1v1({ player }: Props1v1): JSX.Element {
@@ -43,5 +43,5 @@ export function RankingsItem1v1({ player }: Props1v1): JSX.Element {
                 </div>
             </div>
         </div>
-    );
+    )
 }

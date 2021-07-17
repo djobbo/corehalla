@@ -1,10 +1,10 @@
-import { useRouter } from 'next/router';
-import { ReactNode } from 'react';
-import styles from '../styles/SideNav.module.scss';
-import Link from 'next/link';
+import { useRouter } from 'next/router'
+import { ReactNode } from 'react'
+import styles from '../styles/SideNav.module.scss'
+import Link from 'next/link'
 
 function NavItem({ navItem: { href, icon } }: { navItem: INavItem }) {
-    const { pathname } = useRouter();
+    const { pathname } = useRouter()
     return (
         <Link href={href}>
             <a className={`${styles.navItem} ${href === pathname ? styles.selected : ''}`}>
@@ -13,13 +13,13 @@ function NavItem({ navItem: { href, icon } }: { navItem: INavItem }) {
                 </svg>
             </a>
         </Link>
-    );
+    )
 }
 
 interface INavItem {
-    name: string;
-    href: string;
-    icon: ReactNode;
+    name: string
+    href: string
+    icon: ReactNode
 }
 
 const navItems: INavItem[] = [
@@ -55,7 +55,7 @@ const navItems: INavItem[] = [
             </>
         ),
     },
-];
+]
 
 export function SideNav(): JSX.Element {
     return (
@@ -64,5 +64,5 @@ export function SideNav(): JSX.Element {
                 <NavItem key={item.href} navItem={item} />
             ))}
         </div>
-    );
+    )
 }

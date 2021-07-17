@@ -1,5 +1,5 @@
-import styles from './index.module.scss';
-import { motion } from 'framer-motion';
+import styles from './index.module.scss'
+import { motion } from 'framer-motion'
 
 const icon = {
     hidden: {
@@ -8,7 +8,7 @@ const icon = {
     visible: {
         opacity: 1,
     },
-};
+}
 
 export function Loader(): JSX.Element {
     return (
@@ -111,5 +111,5 @@ export function Loader(): JSX.Element {
                 </motion.div>
             </motion.div>
         </div>
-    );
+    )
 }

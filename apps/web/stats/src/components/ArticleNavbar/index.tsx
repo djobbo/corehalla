@@ -1,17 +1,17 @@
-import styles from './index.module.scss';
-import { useState } from 'react';
-import Link from 'next/link';
-import { useViewportScroll } from 'framer-motion';
-import { useSideNavContext } from '~providers/SideNavProvider';
+import styles from './index.module.scss'
+import { useState } from 'react'
+import Link from 'next/link'
+import { useViewportScroll } from 'framer-motion'
+import { useSideNavContext } from '~providers/SideNavProvider'
 
 export const ArticleNavbar = (): JSX.Element => {
-    const { scrollY } = useViewportScroll();
-    const [hasScrolled, setHasScrolled] = useState(scrollY.get() > 0);
-    const { sideNavOpen } = useSideNavContext();
+    const { scrollY } = useViewportScroll()
+    const [hasScrolled, setHasScrolled] = useState(scrollY.get() > 0)
+    const { sideNavOpen } = useSideNavContext()
 
     scrollY.onChange(() => {
-        setHasScrolled(scrollY.get() > 0);
-    });
+        setHasScrolled(scrollY.get() > 0)
+    })
 
     return (
         <div
@@ -33,5 +33,5 @@ export const ArticleNavbar = (): JSX.Element => {
                 </Link>
             </ul>
         </div>
-    );
-};
+    )
+}

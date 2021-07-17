@@ -1,4 +1,4 @@
-import type { IRanking1v1, IRanking1v1Format } from '@corehalla/types';
+import type { IRanking1v1, IRanking1v1Format } from '@corehalla/types'
 
 export const format1v1Ranking = ({
     rank,
@@ -30,6 +30,6 @@ export const format1v1Ranking = ({
         wins: best_legend_wins,
     },
     twitchName,
-});
+})
 
-export const format1v1Rankings = (rankings: IRanking1v1[]): IRanking1v1Format[] => rankings.map(format1v1Ranking);
+export const format1v1Rankings = (rankings: IRanking1v1[]): IRanking1v1Format[] => rankings.map(format1v1Ranking)

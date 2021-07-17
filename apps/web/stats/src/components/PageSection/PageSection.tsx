@@ -1,16 +1,16 @@
-import styles from './PageSection.module.scss';
+import styles from './PageSection.module.scss'
 // Library imports
-import { PropsWithChildren, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { ExpandIcon, CompressIcon, ChevronUpIcon } from '@Icons';
+import { PropsWithChildren, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { ExpandIcon, CompressIcon, ChevronUpIcon } from '@Icons'
 
 interface Props {
-    title: string;
-    initFoldState?: boolean;
+    title: string
+    initFoldState?: boolean
 }
 
 export function PageSection({ children, title, initFoldState }: PropsWithChildren<Props>): JSX.Element {
-    const [foldState, setFoldState] = useState(initFoldState ?? false);
+    const [foldState, setFoldState] = useState(initFoldState ?? false)
 
     return (
         <div className={styles.container}>
@@ -18,8 +18,8 @@ export function PageSection({ children, title, initFoldState }: PropsWithChildre
                 className={styles.title}
                 href="#"
                 onClick={(e) => {
-                    e.preventDefault();
-                    setFoldState((oldState) => !oldState);
+                    e.preventDefault()
+                    setFoldState((oldState) => !oldState)
                 }}
             >
                 {title}
@@ -46,7 +46,7 @@ export function PageSection({ children, title, initFoldState }: PropsWithChildre
                 )}
             </AnimatePresence>
         </div>
-    );
+    )
 }
 
-export const SectionSeparator = (): JSX.Element => <hr className={styles.separator} />;
+export const SectionSeparator = (): JSX.Element => <hr className={styles.separator} />

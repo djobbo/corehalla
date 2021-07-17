@@ -1,12 +1,12 @@
-import formStyles from '../styles/Forms.module.scss';
-import { useMapNodesContext } from '../providers/MapNodesProvider';
+import formStyles from '../styles/Forms.module.scss'
+import { useMapNodesContext } from '../providers/MapNodesProvider'
 
 interface Props {
-    col: Collision;
+    col: Collision
 }
 
 export function CollisionSettings({ col }: Props): JSX.Element {
-    const { updateCollision } = useMapNodesContext();
+    const { updateCollision } = useMapNodesContext()
 
     return col ? (
         <div className={formStyles.formContainer}>
@@ -44,5 +44,5 @@ export function CollisionSettings({ col }: Props): JSX.Element {
                 </div>
             </label>
         </div>
-    ) : null;
+    ) : null
 }

@@ -11,7 +11,10 @@
         "watch": "lerna run --scope @corehalla/* dist:watch",
         "test": "lerna run --parallel test",
         "typecheck": "lerna run --parallel typecheck",
-        "lint": "yarn dist && yarn eslint && yarn typecheck && yarn test"
+        "lint": "yarn dist && yarn eslint && yarn typecheck && yarn test",
+        "format": "prettier --write .",
+        "precommit": "yarn format",
+        "postinstall": "husky install"
     },
     "devDependencies": {
         "@types/jest": "^26.0.23",

@@ -1,20 +1,20 @@
-import styles from './index.module.scss';
+import styles from './index.module.scss'
 // Library imports
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
-import { HomeIcon, FavoriteIcon, RankingsIcon, GoBackIcon } from '@Icons';
+import { HomeIcon, FavoriteIcon, RankingsIcon, GoBackIcon } from '@Icons'
 
 // Providers imports
-import { useFavoritesContext } from '~providers/FavoritesProvider';
-import { useSideNavContext } from '~providers/SideNavProvider';
-import { motion } from 'framer-motion';
+import { useFavoritesContext } from '~providers/FavoritesProvider'
+import { useSideNavContext } from '~providers/SideNavProvider'
+import { motion } from 'framer-motion'
 
 interface BottomNavigationTab {
-    title: string;
-    link: string;
-    icon: JSX.Element;
-    exact?: boolean;
+    title: string
+    link: string
+    icon: JSX.Element
+    exact?: boolean
 }
 
 const tabs: BottomNavigationTab[] = [
@@ -44,15 +44,15 @@ const tabs: BottomNavigationTab[] = [
     //     link: '/settings',
     //     icon: SettingsIcon,
     // },
-];
+]
 
 export function SideNav(): JSX.Element {
-    const { favorites } = useFavoritesContext();
-    const { pathname, query } = useRouter();
+    const { favorites } = useFavoritesContext()
+    const { pathname, query } = useRouter()
 
-    const { sideNavOpen, setSideNavOpen } = useSideNavContext();
+    const { sideNavOpen, setSideNavOpen } = useSideNavContext()
 
-    if (typeof document === 'undefined') return null;
+    if (typeof document === 'undefined') return null
     return (
         <div className={`${styles.container} ${sideNavOpen ? '' : styles.closed}`}>
             {tabs.map(({ link, icon, exact }, i) => (
@@ -86,5 +86,5 @@ export function SideNav(): JSX.Element {
                 </motion.span>
             </div>
         </div>
-    );
+    )
 }

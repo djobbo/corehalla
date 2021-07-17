@@ -1,20 +1,20 @@
-import styles from './index.module.scss';
+import styles from './index.module.scss'
 // Library imports
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion'
 
 // Components imports
-import { StatSmall, StatMedium, StatLarge, StatDesc } from '@TextStyles';
+import { StatSmall, StatMedium, StatLarge, StatDesc } from '@TextStyles'
 
 interface Props {
-    tier: string;
-    rating: number;
-    peak: number;
-    games: number;
-    wins: number;
-    losses: number;
-    winrate: number;
-    ratingSquash: number;
-    region?: string;
+    tier: string
+    rating: number
+    peak: number
+    games: number
+    wins: number
+    losses: number
+    winrate: number
+    ratingSquash: number
+    region?: string
 }
 
 export function SectionSeasonOverviewContent({
@@ -85,5 +85,5 @@ export function SectionSeasonOverviewContent({
                 )}
             </div>
         </div>
-    );
+    )
 }

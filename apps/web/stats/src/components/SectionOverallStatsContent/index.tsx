@@ -1,20 +1,20 @@
-import styles from './index.module.scss';
+import styles from './index.module.scss'
 // Components imports
-import { GamesStatsCard } from '@GamesStatsCard';
-import { BarChartCard } from '@BarChartCard';
-import { MiscStats } from '@MiscStats';
+import { GamesStatsCard } from '@GamesStatsCard'
+import { BarChartCard } from '@BarChartCard'
+import { MiscStats } from '@MiscStats'
 
 interface Props {
-    kos: number;
-    falls: number;
-    suicides: number;
-    teamkos: number;
-    damageDealt: number;
-    damageTaken: number;
-    matchtime: number;
-    games: number;
-    wins: number;
-    losses: number;
+    kos: number
+    falls: number
+    suicides: number
+    teamkos: number
+    damageDealt: number
+    damageTaken: number
+    matchtime: number
+    games: number
+    wins: number
+    losses: number
 }
 
 export function SectionOverallStatsContent({
@@ -29,8 +29,8 @@ export function SectionOverallStatsContent({
     wins,
     losses,
 }: Props): JSX.Element {
-    const maxKos = Math.max(kos, falls, suicides, teamkos);
-    const maxDmg = Math.max(damageDealt, damageTaken);
+    const maxKos = Math.max(kos, falls, suicides, teamkos)
+    const maxDmg = Math.max(damageDealt, damageTaken)
 
     return (
         <>
@@ -106,5 +106,5 @@ export function SectionOverallStatsContent({
                 ]}
             />
         </>
-    );
+    )
 }
