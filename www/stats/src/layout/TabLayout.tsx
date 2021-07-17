@@ -33,7 +33,7 @@ interface Props<TabName extends string, Tabs extends { [k in TabName]: [Chips: s
 
 export function TabLayout<
     TabName extends string,
-    Tabs extends { [k in TabName]: [Chips: string, SortOptions: string] }
+    Tabs extends { [k in TabName]: [Chips: string, SortOptions: string] },
 >({ tabs, title }: PropsWithChildren<Props<TabName, Tabs>>): JSX.Element {
     const [activeTab] = useTabs(Object.keys(tabs) as TabName[], Object.keys(tabs)[0] as TabName)
 
@@ -79,10 +79,9 @@ export function TabLayout<
                 title={title}
             />
             <main className={styles.container}>
-                {(Object.entries(tabs) as [
-                    TabName,
-                    ITab<Tabs[TabName][0], Tabs[TabName][1]>,
-                ][]).map(([tabName, { component }]) => component(tabName === activeTab, activeChip, activeSort))}
+                {(Object.entries(tabs) as [TabName, ITab<Tabs[TabName][0], Tabs[TabName][1]>][]).map(
+                    ([tabName, { component }]) => component(tabName === activeTab, activeChip, activeSort),
+                )}
             </main>
         </Layout>
     )

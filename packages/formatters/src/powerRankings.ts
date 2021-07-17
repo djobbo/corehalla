@@ -6,9 +6,8 @@ export function formatPowerRankings(html: string): IPowerRankingsFormat[] {
     return rows.reduce<IPowerRankingsFormat[]>((acc, row, i) => {
         if (i < 3 || i === rows.length - 1) return acc
 
-        const [, rank, socials, name, earnings, t8, t32, gold, silver, bronze] = row.split(
-            /<\/td><td[a-zA-Z0-9=:;\-_" ]*>/,
-        )
+        const [, rank, socials, name, earnings, t8, t32, gold, silver, bronze] =
+            row.split(/<\/td><td[a-zA-Z0-9=:;\-_" ]*>/)
 
         return [
             ...acc,

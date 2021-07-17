@@ -30,7 +30,7 @@ export const SearchBar = (): JSX.Element => {
                 options={options}
                 onInputChange={setVal}
                 placeholder="Search Player..."
-                onChange={(value) => console.log({value})}
+                onChange={(value) => console.log({ value })}
                 searchable
                 clearable
             />
