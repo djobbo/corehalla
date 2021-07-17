@@ -122,9 +122,11 @@ function parseCollision(col: Element, colType: CollisionType, platId = undefined
     }
 }
 
-function parsePlatform(
-    platform: Element,
-): { platform: Platform | Asset; themes: string[]; animation?: PlatformAnimation } {
+function parsePlatform(platform: Element): {
+    platform: Platform | Asset
+    themes: string[]
+    animation?: PlatformAnimation
+} {
     let themes: string[] = platform.getAttribute('Theme')?.split(',') ?? []
 
     const platId = platform.getAttribute('PlatID')

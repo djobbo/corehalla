@@ -27,8 +27,10 @@ interface Props {
 }
 
 export const LegendsTab = ({ playerStats }: Props): JSX.Element => {
-    const [filterByWeapon, setWeaponFilter] = useFilter<Weapon, ILegendStatsFormat>((weapon) => ({ weapons }) =>
-        [weapons.weaponOne.name, weapons.weaponTwo.name].includes(weapon),
+    const [filterByWeapon, setWeaponFilter] = useFilter<Weapon, ILegendStatsFormat>(
+        (weapon) =>
+            ({ weapons }) =>
+                [weapons.weaponOne.name, weapons.weaponTwo.name].includes(weapon),
     )
 
     const {

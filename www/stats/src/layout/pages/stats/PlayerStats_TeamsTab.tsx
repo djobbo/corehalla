@@ -18,10 +18,12 @@ interface Props {
 }
 
 export const TeamsTab = ({ teams }: Props): JSX.Element => {
-    const { sort: sortByProp, setActiveSort: setSortingProp, order: sortOrder, setOrder: setSortOrder } = useSort<
-        TeamsSort,
-        I2v2TeamFormat
-    >('rating', {
+    const {
+        sort: sortByProp,
+        setActiveSort: setSortingProp,
+        order: sortOrder,
+        setOrder: setSortOrder,
+    } = useSort<TeamsSort, I2v2TeamFormat>('rating', {
         rating: ({ season }) => season.rating,
         peak: ({ season }) => season.peak,
         games: ({ season }) => season.games,
