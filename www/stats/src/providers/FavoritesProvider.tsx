@@ -4,13 +4,13 @@ interface Props {
     children: ReactNode
 }
 
-export type ProfileType = 'player' | 'clan' // TODO: Put this somewhere else
+export type FavoriteType = 'player' | 'clan'
 
 export interface IFavorite {
     id: string
     name: string
     thumbURI: string
-    type: ProfileType
+    type: FavoriteType
 }
 
 const getLocalStorage = () => {
@@ -38,7 +38,7 @@ const FavoritesContext = createContext<IFavoritesContext>({
     updatedAt: -1,
 })
 
-export const useFavoritesContext = (): IFavoritesContext => useContext(FavoritesContext)
+export const useFavorites = (): IFavoritesContext => useContext(FavoritesContext)
 
 export const FavoritesProvider: FC<Props> = ({ children }: Props) => {
     const [favorites, setFavorites] = useState<IFavorite[]>(fetchFavorites())

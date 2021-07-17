@@ -17,6 +17,10 @@ const links = [
         title: 'Favorites',
         href: '/favorites',
     },
+    {
+        title: 'Settings',
+        href: '/settings',
+    },
 ]
 
 const Nav = () => {

@@ -7,7 +7,7 @@ import { Select } from '@Select'
 import { useTheme } from '~providers/ThemeProvider'
 import { themeNames, ThemeName } from '~styles/themes'
 
-const DashboardPage = (): JSX.Element => {
+const SettingsPage = (): JSX.Element => {
     const { setThemeName, themeName } = useTheme()
 
     return (
@@ -17,6 +17,7 @@ const DashboardPage = (): JSX.Element => {
             </Head>
             <Header />
             <Container>
+                <h1>Settings</h1>
                 <Select<ThemeName>
                     options={themeNames.map((themeName) => ({ value: themeName }))}
                     onChange={(value) => setThemeName(value)}
@@ -28,4 +29,4 @@ const DashboardPage = (): JSX.Element => {
     )
 }
 
-export default DashboardPage
+export default SettingsPage

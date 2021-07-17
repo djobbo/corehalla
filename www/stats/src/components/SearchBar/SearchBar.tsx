@@ -26,7 +26,14 @@ export const SearchBar = (): JSX.Element => {
 
     return (
         <div className={styles.searchBar}>
-            <Select options={options} onInputChange={setVal} placeholder="Search Player..." searchable clearable />
+            <Select
+                options={options}
+                onInputChange={setVal}
+                placeholder="Search Player..."
+                onChange={(value) => console.log({value})}
+                searchable
+                clearable
+            />
             {isLoading && <Loader />}
         </div>
     )

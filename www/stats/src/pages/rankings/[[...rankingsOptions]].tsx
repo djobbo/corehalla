@@ -8,11 +8,13 @@ import { TabsProvider, useTabs } from '~providers/TabsProvider'
 import { Container } from '@Container'
 import { Tabs } from '@Tabs'
 import { Header } from '@Header'
+import { Pagination } from '@Pagination'
+import styles from '~styles/pages/RankingsPage.module.scss'
 
 export interface Props {
     bracket: Bracket
     region: RankedRegion
-    page: string
+    page: number
     playerSearch: string
     rankings: IRanking1v1Format[]
 }
@@ -66,6 +68,15 @@ const RankingsPage = (props: Props): JSX.Element => {
                 }
             />
             <Container>
+                <div className={styles.paginationContainer}>
+                    Regions here...
+                    <Pagination
+                        page={page}
+                        getPageHref={(_page) => `/rankings/${bracket}/${region}/${_page}`}
+                        firstPage={1}
+                        span={1}
+                    />
+                </div>
                 <Tab {...props} />
             </Container>
         </TabsProvider>
@@ -102,7 +113,7 @@ export const getServerSideProps: GetServerSideProps<
         props: {
             bracket: bracket || '1v1',
             region: region || 'ALL',
-            page: page || '1',
+            page: parseInt(page || '1'),
             playerSearch,
             rankings,
         },

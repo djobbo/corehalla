@@ -1,74 +1,63 @@
-// Library imports
+import { useFavorites, FavoriteType } from '~providers/FavoritesProvider'
+import { Header } from '@Header'
+import { Tabs } from '@Tabs'
+import { Container } from '@Container'
+import { TabsProvider, useTabs } from '~providers/TabsProvider'
+import Link from 'next/link'
 
-import { useFavoritesContext } from '~providers/FavoritesProvider'
+const Tab = (): JSX.Element => {
+    const { tab } = useTabs<FavoriteType>()
+    const { favorites } = useFavorites()
 
-// Components imports
-import { TabLayout } from '~layout/TabLayout'
+    switch (tab) {
+        case 'player':
+            return (
+                <>
+                    {favorites
+                        .filter((fav) => fav.type === 'player')
+                        .map((fav, i) => (
+                            <Link href={`/stats/player/${fav.id}`} key={i}>
+                                <a>{fav.name}</a>
+                            </Link>
+                        ))}
+                </>
+            )
+        case 'clan':
+            return (
+                <>
+                    {favorites
+                        .filter((fav) => fav.type === 'clan')
+                        .map((fav, i) => (
+                            <Link href={`/stats/clan/${fav.id}`} key={i}>
+                                <a>{fav.name}</a>
+                            </Link>
+                        ))}
+                </>
+            )
+        default:
+            return <>Unknown Favorite Type</>
+    }
+}
 
-export default function FavoritesPage(): JSX.Element {
-    const { favorites } = useFavoritesContext()
-
-    const playersTabComponent = (active: boolean) =>
-        active && (
-            <>
-                {favorites
-                    .filter((fav) => fav.type === 'player')
-                    .map((fav, i) => (
-                        <p key={i}>{fav.name}</p>
-                    ))}
-            </>
-        )
-
-    const clansTabComponent = (active: boolean) => active && 'Clans'
-
+const FavoritesPage = (): JSX.Element => {
     return (
-        <TabLayout<'players' | 'clans', { players: [null, null]; clans: [null, null] }>
-            title="Favorites • Corehalla"
-            tabs={{
-                players: {
-                    displayName: 'Players',
-                    component: playersTabComponent,
-                    chips: null,
-                    defaultChip: null,
-                    sortOptions: null,
-                    defaultSort: null,
-                    link: '/favorites',
-                },
-                clans: {
-                    displayName: 'Clans',
-                    component: clansTabComponent,
-                    chips: null,
-                    defaultChip: null,
-                    sortOptions: null,
-                    defaultSort: null,
-                    link: '/favorites?tab=clans',
-                },
-            }}
-        />
-        // 	<Head>
-        // 		<title>Favorites • Corehalla</title>
-        // 	</Head>
-        // 	<AppBar title='Favorites' />
-        // 	<AnimatePresence exitBeforeEnter initial>
-        // 		<motion.div
-        // 			key='page'
-        // 			animate={{ opacity: 1 }}
-        // 			initial={{ opacity: 0 }}
-        // 		>
-        // 			<main>
-        // 				{favorites.map((fav) => (
-        // 					<Link
-        // 						key={fav.id}
-        // 						href={`/stats/${fav.type}/${fav.id}`}
-        // 					>
-        // 						{fav.name}
-        // 						<img src={fav.thumbURI} alt={fav.name} />
-        // 					</Link>
-        // 				))}
-        // 			</main>
-        // 		</motion.div>
-        // 	</AnimatePresence>
-        // 	<SideNav />
-        // </MainLayout>
+        <TabsProvider<FavoriteType> defaultTab="player">
+            <Header
+                content={
+                    <Tabs<FavoriteType>
+                        tabs={[
+                            { title: 'Players', name: 'player' },
+                            { title: 'Clans', name: 'clan' },
+                        ]}
+                    />
+                }
+            />
+            <Container>
+                <h1>Favorites</h1>
+                <Tab />
+            </Container>
+        </TabsProvider>
     )
 }
+
+export default FavoritesPage

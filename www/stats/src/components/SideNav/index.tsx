@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { HomeIcon, FavoriteIcon, RankingsIcon, GoBackIcon } from '@Icons'
 
 // Providers imports
-import { useFavoritesContext } from '~providers/FavoritesProvider'
+import { useFavorites } from '~providers/FavoritesProvider'
 import { useSideNavContext } from '~providers/SideNavProvider'
 import { motion } from 'framer-motion'
 
@@ -47,7 +47,7 @@ const tabs: BottomNavigationTab[] = [
 ]
 
 export function SideNav(): JSX.Element {
-    const { favorites } = useFavoritesContext()
+    const { favorites } = useFavorites()
     const { pathname, query } = useRouter()
 
     const { sideNavOpen, setSideNavOpen } = useSideNavContext()
