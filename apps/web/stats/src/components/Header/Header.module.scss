@@ -11,11 +11,12 @@
         justify-content: space-between;
         align-items: center;
         padding: 0 1rem;
+        flex-wrap: wrap;
 
         .logo {
-            margin-right: 2rem;
             display: flex;
             align-items: center;
+            gap: 2rem;
         }
 
         .searchBar {

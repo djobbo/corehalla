@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { Card } from '@Card';
 import styles from './Header.module.scss';
 import Link from 'next/link';
+import { SearchBar } from '@SearchBar';
 
 const links = [
     {
@@ -28,10 +29,6 @@ const Nav = () => {
             ))}
         </nav>
     );
-};
-
-const SearchBar = () => {
-    return <input className={styles.searchBar} placeholder="Search Player..." />;
 };
 
 interface Props {

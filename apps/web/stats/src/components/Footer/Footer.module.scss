@@ -1,10 +1,10 @@
 @import '~styles/theme.scss';
 
 .footer {
-    background-color: $bg-dark-var1;
+    background-color: $bg-dark;
 
     .section {
-        border-top: 1px solid $on-bg-dark-var1;
+        border-top: 1px solid $bg-dark-var1;
 
         .container {
             padding: 4rem 2rem;
@@ -53,7 +53,7 @@
         .copyright {
             padding: 2rem;
             text-align: center;
-            color: $on-bg-dark;
+            color: $on-bg-dark-var1;
         }
     }
 }

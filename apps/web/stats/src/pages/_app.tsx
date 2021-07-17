@@ -52,17 +52,13 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 
             <ThemeProvider>
                 <FavoritesProvider>
-                    <PlayerSearchProvider>
-                        <SideNavProvider>
-                            <AnimateSharedLayout>
-                                <div id="App">
-                                    <AnimatePresence exitBeforeEnter initial>
-                                        <Component {...pageProps} />
-                                    </AnimatePresence>
-                                </div>
-                            </AnimateSharedLayout>
-                        </SideNavProvider>
-                    </PlayerSearchProvider>
+                    <AnimateSharedLayout>
+                        <div id="App">
+                            <AnimatePresence exitBeforeEnter initial>
+                                <Component {...pageProps} />
+                            </AnimatePresence>
+                        </div>
+                    </AnimateSharedLayout>
                 </FavoritesProvider>
             </ThemeProvider>
             {pageLoading && <Loader />}
