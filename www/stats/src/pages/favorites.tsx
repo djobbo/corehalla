@@ -6,6 +6,7 @@ import { TabsProvider, useTabs } from '~providers/TabsProvider'
 import { Container } from '@Container'
 import { Header } from '@Header'
 import { Tabs } from '@Tabs'
+import { Card } from '@Card'
 
 const Tab = (): JSX.Element => {
     const { tab } = useTabs<FavoriteType>()
@@ -18,9 +19,11 @@ const Tab = (): JSX.Element => {
                     {favorites
                         .filter((fav) => fav.type === 'player')
                         .map((fav, i) => (
-                            <Link href={`/stats/player/${fav.id}`} key={i}>
-                                <a>{fav.name}</a>
-                            </Link>
+                            <Card key={i}>
+                                <Link href={`/stats/player/${fav.id}`}>
+                                    <a>{fav.name}</a>
+                                </Link>
+                            </Card>
                         ))}
                 </>
             )
@@ -30,9 +33,11 @@ const Tab = (): JSX.Element => {
                     {favorites
                         .filter((fav) => fav.type === 'clan')
                         .map((fav, i) => (
-                            <Link href={`/stats/clan/${fav.id}`} key={i}>
-                                <a>{fav.name}</a>
-                            </Link>
+                            <Card key={i}>
+                                <Link href={`/stats/clan/${fav.id}`} key={i}>
+                                    <a>{fav.name}</a>
+                                </Link>
+                            </Card>
                         ))}
                 </>
             )

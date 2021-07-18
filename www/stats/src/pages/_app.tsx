@@ -10,6 +10,7 @@ import { FavoritesProvider } from '~providers/FavoritesProvider'
 import { ThemeProvider } from '~providers/ThemeProvider'
 
 import { Loader } from '@Loader'
+import { SideNav } from '@SideNav'
 
 const App = ({ Component, pageProps }: AppProps): JSX.Element => {
     const router = useRouter()
@@ -38,9 +39,14 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
                 <FavoritesProvider>
                     <AnimateSharedLayout>
                         <div id="App">
-                            <AnimatePresence exitBeforeEnter initial>
-                                <Component {...pageProps} />
-                            </AnimatePresence>
+                            <div id="Sidenav">
+                                <SideNav />
+                            </div>
+                            <div id="Content">
+                                <AnimatePresence exitBeforeEnter initial>
+                                    <Component {...pageProps} />
+                                </AnimatePresence>
+                            </div>
                         </div>
                     </AnimateSharedLayout>
                 </FavoritesProvider>
