@@ -16,6 +16,19 @@
     padding: 0;
     border: none;
     font-family: 'Poppins', sans-serif;
+
+    &::-webkit-scrollbar {
+        width: 0.5rem;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: $bg-dark-var1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $on-bg-dark-var1;
+        border-radius: 0.25rem;
+    }
 }
 
 html,
