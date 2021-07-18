@@ -1,10 +1,10 @@
+import { IRanking1v1Format } from '@corehalla/core/types'
 import { Option, Select } from '@Select'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
 import { useDebounceValue } from '~hooks/useDebounce'
 
-import { IRanking1v1Format } from '../../../../../packages/core/types'
 import styles from './SearchBar.module.scss'
 
 const Loader = () => {
@@ -35,13 +35,11 @@ export const SearchBar = (): JSX.Element => {
         if (!val) return
         ;(async () => {
             try {
-                const res = await fetch('/api/rankings/1v1/ALL/1')
+                const res = await fetch(`/api/rankings/1v1/ALL/1?p=${val}`)
                 const data = (await res.json()) as IRanking1v1Format[]
                 setOptions(data.map<Option<string>>((player) => ({ value: player.id.toString(), label: player.name })))
             } catch {}
         })()
-
-        setOptions([{ value: '1213456', label: val }])
     }, [val])
 
     return (
