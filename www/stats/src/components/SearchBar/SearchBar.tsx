@@ -3,8 +3,8 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
 import { useDebounceValue } from '~hooks/useDebounce'
-import { IRanking1v1Format } from '../../../../../packages/core/types'
 
+import { IRanking1v1Format } from '../../../../../packages/core/types'
 import styles from './SearchBar.module.scss'
 
 const Loader = () => {
