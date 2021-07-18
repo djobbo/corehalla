@@ -1,12 +1,13 @@
+import Head from 'next/head'
+import Link from 'next/link'
+
+import styles from '~styles/pages/HomePage.module.scss'
+
 import { Container } from '@Container'
 import { Header } from '@Header'
 import { SearchBar } from '@SearchBar'
 import { DiscordIcon } from '@SocialIcons'
 import { StatDesc, StatSmall } from '@TextStyles'
-import Head from 'next/head'
-import Link from 'next/link'
-
-import styles from '~styles/pages/HomePage.module.scss'
 
 const HomePage = (): JSX.Element => {
     return (

@@ -17,10 +17,30 @@
     "rules": {
         "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": ["error", { "ignoreRestSiblings": true }],
-        "simple-import-sort/imports": "error",
         "simple-import-sort/exports": "error",
         "import/first": "error",
         "import/newline-after-import": "error",
-        "import/no-duplicates": "error"
+        "import/no-duplicates": "error",
+        "simple-import-sort/imports": [
+            "error",
+            {
+                "groups": [
+                    // Side effects
+                    ["^\\u0000"],
+                    // Libs
+                    ["^@\\w+/", "^\\w"],
+                    // Styles
+                    ["^.+\\.s?css$"],
+                    // Internal
+                    ["^~(components|hooks|layout|pages|providers|styles|util)(/.*|$)"],
+                    // Components
+                    ["^@\\w+$"],
+                    // Relative
+                    ["^\\."],
+                    // Unmatched
+                    ["^"]
+                ]
+            }
+        ]
     }
 }

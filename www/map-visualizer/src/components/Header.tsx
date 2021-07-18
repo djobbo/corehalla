@@ -1,5 +1,6 @@
-import { useMapNodesContext } from '../providers/MapNodesProvider'
 import styles from '../styles/Header.module.scss'
+
+import { useMapNodesContext } from '../providers/MapNodesProvider'
 
 export function Header(): JSX.Element {
     const {

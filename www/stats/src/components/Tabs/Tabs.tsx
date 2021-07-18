@@ -1,6 +1,6 @@
-import { useTabs } from '~providers/TabsProvider'
-
 import styles from './Tabs.module.scss'
+
+import { useTabs } from '~providers/TabsProvider'
 
 interface Props<T extends string> {
     tabs: { title: string; name: T }[]

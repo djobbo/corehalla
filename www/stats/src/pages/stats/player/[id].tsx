@@ -1,12 +1,6 @@
-import { Container } from '@Container'
 import { fetchPlayerFormat } from '@corehalla/core'
 import { MockPlayerStats } from '@corehalla/core/mocks'
 import type { IPlayerStatsFormat } from '@corehalla/core/types'
-import { Footer } from '@Footer'
-import { Header } from '@Header'
-import { ProfileHeader } from '@ProfileHeader'
-import { Tabs } from '@Tabs'
-import { StatDesc, StatSmall } from '@TextStyles'
 import { GetServerSideProps } from 'next'
 import Head from 'next/head'
 import React from 'react'
@@ -16,6 +10,13 @@ import { OverviewTab } from '~layout/pages/stats/PlayerStats_OverviewTab'
 import { TeamsTab } from '~layout/pages/stats/PlayerStats_TeamsTab'
 import { TabsProvider, useTabs } from '~providers/TabsProvider'
 import { formatTime } from '~util'
+
+import { Container } from '@Container'
+import { Footer } from '@Footer'
+import { Header } from '@Header'
+import { ProfileHeader } from '@ProfileHeader'
+import { Tabs } from '@Tabs'
+import { StatDesc, StatSmall } from '@TextStyles'
 
 interface Props {
     playerStats: IPlayerStatsFormat

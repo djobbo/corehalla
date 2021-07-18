@@ -1,11 +1,12 @@
 import { IRanking1v1Format } from '@corehalla/core/types'
-import { Option, Select } from '@Select'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
+import styles from './SearchBar.module.scss'
+
 import { useDebounceValue } from '~hooks/useDebounce'
 
-import styles from './SearchBar.module.scss'
+import { Option, Select } from '@Select'
 
 const Loader = () => {
     return (

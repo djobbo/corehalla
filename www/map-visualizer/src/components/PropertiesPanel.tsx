@@ -1,9 +1,10 @@
 import React from 'react'
 
-import { useEditorStateContext } from '../providers/EditorStateProvider'
-import { useMapNodesContext } from '../providers/MapNodesProvider'
 import formStyles from '../styles/Forms.module.scss'
 import styles from '../styles/PropertiesPanel.module.scss'
+
+import { useEditorStateContext } from '../providers/EditorStateProvider'
+import { useMapNodesContext } from '../providers/MapNodesProvider'
 import { parseMapXML } from '../util/parseMapXML'
 import { Resizable } from './Resizable'
 // import { CollisionSettings } from './CollisionSettings';

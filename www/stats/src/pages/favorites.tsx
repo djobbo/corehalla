@@ -1,10 +1,11 @@
-import { Container } from '@Container'
-import { Header } from '@Header'
-import { Tabs } from '@Tabs'
 import Link from 'next/link'
 
 import { FavoriteType, useFavorites } from '~providers/FavoritesProvider'
 import { TabsProvider, useTabs } from '~providers/TabsProvider'
+
+import { Container } from '@Container'
+import { Header } from '@Header'
+import { Tabs } from '@Tabs'
 
 const Tab = (): JSX.Element => {
     const { tab } = useTabs<FavoriteType>()

@@ -1,16 +1,18 @@
-import { Container } from '@Container'
 import { fetch1v1RankingsFormat } from '@corehalla/core'
 import { Mock1v1Rankings } from '@corehalla/core/mocks'
 import type { IRanking1v1Format, RankedRegion } from '@corehalla/core/types'
-import { Header } from '@Header'
-import { Pagination } from '@Pagination'
-import { Tabs } from '@Tabs'
 import { GetServerSideProps } from 'next'
 import Head from 'next/head'
 
+import styles from '~styles/pages/RankingsPage.module.scss'
+
 import { Rankings1v1Tab } from '~layout/pages/rankings/Rankings_1v1Tab'
 import { TabsProvider, useTabs } from '~providers/TabsProvider'
-import styles from '~styles/pages/RankingsPage.module.scss'
+
+import { Container } from '@Container'
+import { Header } from '@Header'
+import { Pagination } from '@Pagination'
+import { Tabs } from '@Tabs'
 
 export interface Props {
     bracket: Bracket

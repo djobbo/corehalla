@@ -1,9 +1,10 @@
 import type { IRanking1v1Format } from '@corehalla/core/types'
-import { SectionSeparator } from '@PageSection'
-import { RankingsItem1v1 } from '@RankingsItem'
 import { motion } from 'framer-motion'
 
 import styles from '~styles/pages/RankingsPage.module.scss'
+
+import { SectionSeparator } from '@PageSection'
+import { RankingsItem1v1 } from '@RankingsItem'
 
 export interface Props {
     rankings: IRanking1v1Format[]

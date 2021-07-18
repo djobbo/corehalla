@@ -3,10 +3,11 @@ import hljs from 'highlight.js'
 import xmlhl from 'highlight.js/lib/languages/xml'
 import { useEffect, useState } from 'react'
 
+import styles from '../styles/CodePage.module.scss'
+
 import { Layout } from '../components/Layout'
 import { MapCanvas } from '../components/MapCanvas'
 import { useMapNodesContext } from '../providers/MapNodesProvider'
-import styles from '../styles/CodePage.module.scss'
 import { createMapXML } from '../util/createMapXML'
 
 hljs.registerLanguage('xml', xmlhl)

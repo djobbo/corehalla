@@ -1,12 +1,11 @@
 import type { I2v2TeamFormat } from '@corehalla/core/types'
-// Library imports
 import Link from 'next/link'
+
+import styles from './index.module.scss'
 
 import { Card } from '../Card'
 import { BarChart } from '../Charts'
-// Components imports
 import { StatDesc, StatSmall } from '../TextStyles'
-import styles from './index.module.scss'
 
 interface Props {
     team: I2v2TeamFormat
