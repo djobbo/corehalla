@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { StatDesc, StatSmall } from '../TextStyles'
 import { Card } from '../Card'
 import { BarChart } from '../Charts'
-import type { I2v2TeamFormat } from '@corehalla/types'
+import type { I2v2TeamFormat } from '@corehalla/core/types'
 
 interface Props {
     team: I2v2TeamFormat

@@ -1,5 +1,5 @@
 {
-    "name": "@web/calc",
+    "name": "@www/calc",
     "version": "0.1.0",
     "private": true,
     "scripts": {
@@ -27,7 +27,7 @@
         "typescript": "^4.0.0"
     },
     "dependencies": {
-        "@corehalla/glory-calc": "0.1.0",
+        "@corehalla/core": "0.1.0",
         "sirv-cli": "^1.0.0"
     }
 }

@@ -4,7 +4,7 @@ import { SectionClanOverviewSmallContent } from '@SectionClanOverviewSmallConten
 import { SectionOverallStatsContent } from '@SectionOverallStatsContent'
 import { SectionSeasonOverviewContent } from '@SectionSeasonOverviewContent'
 import { StatDesc, StatSmall, StatMedium } from '@TextStyles'
-import { IPlayerStatsFormat } from '@corehalla/types'
+import { IPlayerStatsFormat } from '@corehalla/core/types'
 
 interface Props {
     playerStats: IPlayerStatsFormat

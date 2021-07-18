@@ -1,4 +1,4 @@
-import { ILegendStatsFormat, IPlayerStatsFormat } from '@corehalla/types'
+import { ILegendStatsFormat, IPlayerStatsFormat } from '@corehalla/core/types'
 import { React } from 'fancy-discord.js/lib/Embeds'
 
 interface Props {

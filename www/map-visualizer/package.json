@@ -1,5 +1,5 @@
 {
-    "name": "@web/map_visualizer",
+    "name": "@www/map_visualizer",
     "version": "0.1.0",
     "private": true,
     "scripts": {

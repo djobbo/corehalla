@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 import { StatLarge, StatDesc, StatSmall, StatMedium } from '@TextStyles'
 import { BarChart } from '@Charts'
-import type { IRanking1v1Format } from '@corehalla/types'
+import type { IRanking1v1Format } from '@corehalla/core/types'
 
 interface Props1v1 {
     player: IRanking1v1Format
