@@ -1,6 +1,6 @@
-import { getHeroRatingSquash } from '~calc'
-import { defaultLegendStats, defaultLegendSeason } from '~static'
-import { IStaticLegendData, ILegendStats, ILegendRanked, ILegendStatsFormat } from '~types'
+import { getHeroRatingSquash } from '../../calc'
+import { defaultLegendStats, defaultLegendSeason } from '../../static'
+import { IStaticLegendData, ILegendStats, ILegendRanked, ILegendStatsFormat } from '../../types'
 
 export const formatLegendStats = (
     staticLegend: IStaticLegendData,

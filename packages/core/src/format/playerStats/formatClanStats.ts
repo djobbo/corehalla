@@ -1,5 +1,5 @@
-import { IPlayerClan, IPlayerClanFormat } from '~types'
-import { cleanString } from '~util/cleanString'
+import { IPlayerClan, IPlayerClanFormat } from '../../types'
+import { cleanString } from '../../util/cleanString'
 
 export const formatClanStats = (clan?: IPlayerClan): IPlayerClanFormat | undefined => {
     if (!clan) return

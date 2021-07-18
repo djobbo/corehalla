@@ -1,4 +1,4 @@
-import type { IStaticLegendData } from '~types'
+import type { IStaticLegendData } from '../types'
 
 export const legends: IStaticLegendData[] = [
     {

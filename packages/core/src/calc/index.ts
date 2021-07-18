@@ -1,5 +1,5 @@
-import { rankedTiers } from '~static'
-import { RankedTier } from '~types'
+import { rankedTiers } from '../static'
+import { RankedTier } from '../types'
 
 export const getGloryFromWins = (wins: number): number =>
     wins <= 150 ? 20 * wins : Math.floor(10 * (45 * Math.pow(Math.log10(wins * 2), 2)) + 245)

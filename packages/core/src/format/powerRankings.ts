@@ -1,4 +1,4 @@
-import type { IPowerRankingsFormat } from '~types'
+import type { IPowerRankingsFormat } from '../types'
 
 export function formatPowerRankings(html: string): IPowerRankingsFormat[] {
     const table = html.substring(html.indexOf('<table '), html.indexOf('</table>'))
