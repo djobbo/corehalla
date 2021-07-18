@@ -1,16 +1,18 @@
-import { Card } from '@Card'
 import { ILegendStatsFormat, IPlayerStatsFormat, Weapon } from '@corehalla/core/types'
+
+import layoutStyles from '~layout/Layout.module.scss'
+import styles from '~styles/pages/stats/PlayerStatsPage.module.scss'
+
+import { useFilter } from '~hooks/useFilter'
+import { useSort } from '~hooks/useSort'
+import { formatTime } from '~util'
+
+import { Card } from '@Card'
 import { PageSection, SectionSeparator } from '@PageSection'
 import { SectionOverallStatsContent } from '@SectionOverallStatsContent'
 import { SectionSeasonOverviewContent } from '@SectionSeasonOverviewContent'
 import { Select } from '@Select'
 import { StatDesc, StatSmall } from '@TextStyles'
-
-import { useFilter } from '~hooks/useFilter'
-import { useSort } from '~hooks/useSort'
-import layoutStyles from '~layout/Layout.module.scss'
-import styles from '~styles/pages/stats/PlayerStatsPage.module.scss'
-import { formatTime } from '~util'
 
 export type LegendSort =
     | 'level'

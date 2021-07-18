@@ -1,9 +1,8 @@
+import styles from './index.module.scss'
+
 import { BarChartCard } from '@BarChartCard'
-// Components imports
 import { GamesStatsCard } from '@GamesStatsCard'
 import { MiscStats } from '@MiscStats'
-
-import styles from './index.module.scss'
 
 interface Props {
     kos: number

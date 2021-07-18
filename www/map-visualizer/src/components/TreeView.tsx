@@ -1,7 +1,8 @@
 import { PropsWithChildren, useState } from 'react'
 
-import { useMapNodesContext } from '../providers/MapNodesProvider'
 import styles from '../styles/TreeView.module.scss'
+
+import { useMapNodesContext } from '../providers/MapNodesProvider'
 import { CollisionSettings } from './CollisionSettings'
 
 function TreeNode({ children, title, onClick }: PropsWithChildren<{ title: string; onClick?: () => void }>) {

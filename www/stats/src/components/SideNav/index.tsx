@@ -1,14 +1,13 @@
-import { FavoriteIcon, GoBackIcon, HomeIcon, RankingsIcon } from '@Icons'
 import { motion } from 'framer-motion'
-// Library imports
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-// Providers imports
+import styles from './index.module.scss'
+
 import { useFavorites } from '~providers/FavoritesProvider'
 import { useSideNavContext } from '~providers/SideNavProvider'
 
-import styles from './index.module.scss'
+import { FavoriteIcon, GoBackIcon, HomeIcon, RankingsIcon, SettingsIcon } from '@Icons'
 
 interface BottomNavigationTab {
     title: string
@@ -39,11 +38,11 @@ const tabs: BottomNavigationTab[] = [
     //     link: '/history',
     //     icon: HistoryIcon,
     // },
-    // {
-    //     title: 'Settings',
-    //     link: '/settings',
-    //     icon: SettingsIcon,
-    // },
+    {
+        title: 'Settings',
+        link: '/settings',
+        icon: SettingsIcon,
+    },
 ]
 
 export function SideNav(): JSX.Element {

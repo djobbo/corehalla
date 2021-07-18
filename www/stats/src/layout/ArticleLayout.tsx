@@ -1,7 +1,8 @@
-import { ArticleNavbar } from '@ArticleNavbar'
 import { ReactNode } from 'react'
 
 import styles from '~styles/Article.module.scss'
+
+import { ArticleNavbar } from '@ArticleNavbar'
 
 import { Layout } from './Layout'
 

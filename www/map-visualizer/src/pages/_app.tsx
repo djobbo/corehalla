@@ -1,8 +1,8 @@
-import '../styles/globals.scss'
-import '../styles/code.scss'
-
 import { AnimatePresence, AnimateSharedLayout } from 'framer-motion'
 import type { AppProps } from 'next/app'
+
+import '../styles/globals.scss'
+import '../styles/code.scss'
 
 import { EditorStateProvider } from '../providers/EditorStateProvider'
 import { MapNodesProvider } from '../providers/MapNodesProvider'

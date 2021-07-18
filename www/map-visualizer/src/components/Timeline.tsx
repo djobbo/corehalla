@@ -1,5 +1,6 @@
-import { useEditorStateContext } from '../providers/EditorStateProvider'
 import styles from '../styles/Timeline.module.scss'
+
+import { useEditorStateContext } from '../providers/EditorStateProvider'
 
 export function Timeline(): JSX.Element {
     const { currentFrame, setCurrentFrame, timeFlow, setTimeFlow } = useEditorStateContext()

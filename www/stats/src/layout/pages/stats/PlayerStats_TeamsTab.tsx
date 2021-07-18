@@ -1,16 +1,18 @@
-import { Card } from '@Card'
 import type { I2v2TeamFormat } from '@corehalla/core/types'
+import { motion } from 'framer-motion'
+import { useState } from 'react'
+
+import layoutStyles from '~layout/Layout.module.scss'
+import styles from '~styles/pages/stats/PlayerStatsPage.module.scss'
+
+import { useSort } from '~hooks/useSort'
+
+import { Card } from '@Card'
 import { GamesStatsCard } from '@GamesStatsCard'
 import { MiscStats } from '@MiscStats'
 import { PageSection, SectionSeparator } from '@PageSection'
 import { Select } from '@Select'
 import { TeamCard } from '@TeamCard'
-import { motion } from 'framer-motion'
-import { useState } from 'react'
-
-import { useSort } from '~hooks/useSort'
-import layoutStyles from '~layout/Layout.module.scss'
-import styles from '~styles/pages/stats/PlayerStatsPage.module.scss'
 
 export type TeamsSort = 'rating' | 'peak' | 'games' | 'winrate' | 'wins' | 'losses'
 

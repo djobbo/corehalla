@@ -4,9 +4,10 @@ import { useRouter } from 'next/router'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { Group, Layer, Line, Stage } from 'react-konva'
 
+import styles from '../styles/MapCanvas.module.scss'
+
 import { useEditorStateContext } from '../providers/EditorStateProvider'
 import { useMapNodesContext } from '../providers/MapNodesProvider'
-import styles from '../styles/MapCanvas.module.scss'
 import { getAnimationPos } from '../util/getAnimationPos'
 import { URLImage } from './URLImage'
 

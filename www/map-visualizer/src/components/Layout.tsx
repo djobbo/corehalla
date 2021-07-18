@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import styles from '../styles/Layout.module.scss'
+
 import { Header } from './Header'
 import { PropertiesPanel } from './PropertiesPanel'
 import { SideNav } from './SideNav'
