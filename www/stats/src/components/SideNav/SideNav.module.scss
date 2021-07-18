@@ -14,6 +14,11 @@
     position: sticky;
     top: 0;
     border-right: 1px solid $bg-dark-var1;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+        width: 0px;
+    }
 
     .navItem {
         width: 3rem;
