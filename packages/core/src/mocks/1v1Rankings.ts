@@ -1,4 +1,4 @@
-import type { IRanking1v1Format } from '~types'
+import type { IRanking1v1Format } from '../types'
 
 export const Mock1v1Rankings: IRanking1v1Format[] = [
     {

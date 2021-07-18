@@ -1,4 +1,4 @@
-import type { IPlayerStatsFormat } from '~types'
+import type { IPlayerStatsFormat } from '../types'
 
 export const MockPlayerStats: IPlayerStatsFormat = {
     id: 4281946,

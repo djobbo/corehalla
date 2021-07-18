@@ -1,4 +1,4 @@
-import type { IClanMember, IClan, IClanFormat, IClanMemberFormat } from '~types'
+import type { IClanMember, IClan, IClanFormat, IClanMemberFormat } from '../types'
 
 export function formatClan({ clan: members, clan_id, clan_name, clan_create_date, clan_xp }: IClan): IClanFormat {
     return {

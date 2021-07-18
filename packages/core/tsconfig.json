@@ -11,11 +11,7 @@
         "declaration": true,
         "lib": ["ESNext"],
         "outDir": "lib",
-        "skipLibCheck": true,
-        "baseUrl": ".",
-        "paths": {
-            "~*": ["./src/*"]
-        }
+        "skipLibCheck": true
     },
     "include": ["src"],
     "exclude": ["dist", "node_modules", "**/*.spec.ts", "**/*.test.ts"]

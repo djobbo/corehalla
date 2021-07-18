@@ -1,4 +1,4 @@
-import type { IClanFormat } from '~types'
+import type { IClanFormat } from '../types'
 
 export const MockClanStats: IClanFormat = {
     id: 955295,

@@ -1,8 +1,8 @@
 import { cleanString } from '../../util/cleanString'
 
-import type { IPlayerStats, IPlayerRanked, IPlayerStatsFormat } from '~types'
+import type { IPlayerStats, IPlayerRanked, IPlayerStatsFormat } from '../../types'
 
-import { staticLegendsData } from '~static'
+import { staticLegendsData } from '../../static'
 import { formatClanStats } from './formatClanStats'
 import { formatLegendsStats } from './formatLegendsStats'
 import { getSeasonStats } from './getSeasonStats'

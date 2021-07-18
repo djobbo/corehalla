@@ -1,5 +1,5 @@
-import { getPersonalRatingSquash, getGloryFromBestRating, getGloryFromWins } from '~calc'
-import { IPlayerRanked, IPlayerSeasonFormat } from '~types'
+import { getPersonalRatingSquash, getGloryFromBestRating, getGloryFromWins } from '../../calc'
+import { IPlayerRanked, IPlayerSeasonFormat } from '../../types'
 import { formatTeamsStats } from './formatTeamsStats'
 
 export const getSeasonStats = (playerRanked?: IPlayerRanked): IPlayerSeasonFormat => {
