@@ -14,7 +14,8 @@
     position: sticky;
     top: 0;
     border-right: 1px solid $bg-dark-var1;
-    overflow-y: scroll;
+    overflow-x: hidden;
+    overflow-y: auto;
 
     &::-webkit-scrollbar {
         width: 0px;
