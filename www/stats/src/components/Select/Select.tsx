@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import ReactSelect, { ActionMeta, InputActionMeta } from 'react-select'
 
+import styles from './Select.module.scss'
+
 export interface Option<T> {
     value: T
     label?: string
@@ -14,6 +16,10 @@ interface Props<T> {
     defaultValue?: Option<T>
     searchable?: boolean
     clearable?: boolean
+}
+
+const NoOptionsMessage = (): JSX.Element => {
+    return <div className={styles.noOptions}>...</div>
 }
 
 export const Select = <T extends string>({
@@ -67,6 +73,9 @@ export const Select = <T extends string>({
             blurInputOnSelect
             options={options.map(({ label, value }) => ({ label: label ?? value, value }))}
             placeholder={placeholder}
+            components={{
+                NoOptionsMessage,
+            }}
             styles={{
                 container: (styles) => ({
                     ...styles,
@@ -97,6 +106,18 @@ export const Select = <T extends string>({
                     ...styles,
                     backgroundColor: 'var(--bg-dark-var1)',
                     border: 'none',
+                }),
+                menu: (styles) => ({
+                    ...styles,
+                    backgroundColor: 'var(--bg-dark)',
+                }),
+                option: (styles) => ({
+                    ...styles,
+                    color: 'var(--on-bg-dark)',
+                    backgroundColor: 'var(--bg-dark)',
+                    ':hover': {
+                        backgroundColor: 'var(--bg-dark-var1)',
+                    },
                 }),
             }}
             defaultValue={
