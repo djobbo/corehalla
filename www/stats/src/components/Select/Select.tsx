@@ -36,7 +36,7 @@ export const Select = <T extends string>({
             if (value.trim() === '') {
                 setFieldValue(null)
             } else {
-                setFieldValue({ value: value as T, label: value })
+                setFieldValue({ value: null, label: value })
             }
         }
     }
