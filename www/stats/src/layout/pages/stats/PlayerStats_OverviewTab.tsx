@@ -1,10 +1,11 @@
-import styles from '~styles/pages/stats/PlayerStatsPage.module.scss'
-import { SectionSeparator, PageSection } from '@PageSection'
+import { IPlayerStatsFormat } from '@corehalla/core/types'
+import { PageSection, SectionSeparator } from '@PageSection'
 import { SectionClanOverviewSmallContent } from '@SectionClanOverviewSmallContent'
 import { SectionOverallStatsContent } from '@SectionOverallStatsContent'
 import { SectionSeasonOverviewContent } from '@SectionSeasonOverviewContent'
-import { StatDesc, StatSmall, StatMedium } from '@TextStyles'
-import { IPlayerStatsFormat } from '@corehalla/core/types'
+import { StatDesc, StatMedium, StatSmall } from '@TextStyles'
+
+import styles from '~styles/pages/stats/PlayerStatsPage.module.scss'
 
 interface Props {
     playerStats: IPlayerStatsFormat

@@ -1,8 +1,9 @@
-import { ReactNode } from 'react'
 import { Card } from '@Card'
-import styles from './Header.module.scss'
-import Link from 'next/link'
 import { SearchBar } from '@SearchBar'
+import Link from 'next/link'
+import { ReactNode } from 'react'
+
+import styles from './Header.module.scss'
 
 const links = [
     {

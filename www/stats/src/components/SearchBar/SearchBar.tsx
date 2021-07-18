@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react'
-import { useDebounceValue } from '~hooks/useDebounce'
 import { Select } from '@Select'
+import { useEffect, useState } from 'react'
+
+import { useDebounceValue } from '~hooks/useDebounce'
+
 import styles from './SearchBar.module.scss'
 
 const Loader = () => {

@@ -1,9 +1,9 @@
-import styles from './index.module.scss'
-
 // Components imports
 import { Card } from '@Card'
 import { BarChart } from '@Charts'
 import { StatDesc, StatSmall } from '@TextStyles'
+
+import styles from './index.module.scss'
 
 interface BarChartStat {
     title: string

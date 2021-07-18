@@ -1,5 +1,5 @@
-import formStyles from '../styles/Forms.module.scss'
 import { useMapNodesContext } from '../providers/MapNodesProvider'
+import formStyles from '../styles/Forms.module.scss'
 
 interface Props {
     col: Collision

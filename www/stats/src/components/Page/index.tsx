@@ -1,7 +1,8 @@
-import styles from './index.module.scss'
-// Library imports
-import { useEffect, ReactNode } from 'react'
 import { motion } from 'framer-motion'
+// Library imports
+import { ReactNode, useEffect } from 'react'
+
+import styles from './index.module.scss'
 
 interface Props {
     title?: string

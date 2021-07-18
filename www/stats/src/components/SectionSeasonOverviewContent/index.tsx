@@ -1,9 +1,9 @@
-import styles from './index.module.scss'
+// Components imports
+import { StatDesc, StatLarge, StatMedium, StatSmall } from '@TextStyles'
 // Library imports
 import { motion } from 'framer-motion'
 
-// Components imports
-import { StatSmall, StatMedium, StatLarge, StatDesc } from '@TextStyles'
+import styles from './index.module.scss'
 
 interface Props {
     tier: string

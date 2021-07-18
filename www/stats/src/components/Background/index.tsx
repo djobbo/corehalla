@@ -1,5 +1,6 @@
-import styles from './index.module.scss'
 import { motion, useTransform, useViewportScroll } from 'framer-motion'
+
+import styles from './index.module.scss'
 
 export function Background(): JSX.Element {
     const { scrollY } = useViewportScroll()

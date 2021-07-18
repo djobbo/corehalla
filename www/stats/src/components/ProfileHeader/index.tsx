@@ -1,7 +1,9 @@
-import styles from './index.module.scss'
 // Library imports
 import { PropsWithChildren, useEffect, useState } from 'react'
-import { useFavorites, IFavorite } from '~providers/FavoritesProvider'
+
+import { IFavorite, useFavorites } from '~providers/FavoritesProvider'
+
+import styles from './index.module.scss'
 
 interface Props {
     bannerURI: string

@@ -1,7 +1,8 @@
+import { readFileSync } from 'fs'
 import { NextApiRequest, NextApiResponse } from 'next'
 import getConfig from 'next/config'
-import { readFileSync } from 'fs'
 import path from 'path'
+
 import { decodeMap } from '../../../util/decodeMap'
 // import { parseMapXML } from '../../../util/parseMapXML';
 

@@ -1,4 +1,4 @@
-import type { RankedTier, RankedRegion, Weapon, BrawlhallaID } from './general'
+import type { BrawlhallaID, RankedRegion, RankedTier, Weapon } from './general'
 
 //#region Player Stats Format
 export interface IPlayerStatsFormat {

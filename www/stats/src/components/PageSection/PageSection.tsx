@@ -1,8 +1,9 @@
-import styles from './PageSection.module.scss'
+import { ChevronUpIcon, CompressIcon, ExpandIcon } from '@Icons'
+import { AnimatePresence, motion } from 'framer-motion'
 // Library imports
 import { PropsWithChildren, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
-import { ExpandIcon, CompressIcon, ChevronUpIcon } from '@Icons'
+
+import styles from './PageSection.module.scss'
 
 interface Props {
     title: string

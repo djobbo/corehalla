@@ -1,10 +1,10 @@
-import styles from './index.module.scss'
+import { BarChart } from '@Charts'
+import type { IRanking1v1Format } from '@corehalla/core/types'
+import { StatDesc, StatLarge, StatMedium, StatSmall } from '@TextStyles'
 // Library imports
 import Link from 'next/link'
 
-import { StatLarge, StatDesc, StatSmall, StatMedium } from '@TextStyles'
-import { BarChart } from '@Charts'
-import type { IRanking1v1Format } from '@corehalla/core/types'
+import styles from './index.module.scss'
 
 interface Props1v1 {
     player: IRanking1v1Format

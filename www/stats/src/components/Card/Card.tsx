@@ -1,6 +1,7 @@
-import styles from './Card.module.scss'
 import { motion } from 'framer-motion'
 import { PropsWithChildren } from 'react'
+
+import styles from './Card.module.scss'
 
 interface Props {
     title?: string

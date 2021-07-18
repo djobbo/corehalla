@@ -1,15 +1,14 @@
-import type { AppProps } from 'next/app'
-import { AnimatePresence, AnimateSharedLayout } from 'framer-motion'
-
 import '~styles/global.scss'
+
+import { Loader } from '@Loader'
+import { AnimatePresence, AnimateSharedLayout } from 'framer-motion'
+import type { AppProps } from 'next/app'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 
 import { FavoritesProvider } from '~providers/FavoritesProvider'
 import { ThemeProvider } from '~providers/ThemeProvider'
-
-import { useEffect, useState } from 'react'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { Loader } from '@Loader'
 
 const App = ({ Component, pageProps }: AppProps): JSX.Element => {
     const router = useRouter()

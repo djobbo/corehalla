@@ -1,4 +1,4 @@
-import { getPersonalRatingSquash, getGloryFromBestRating, getGloryFromWins } from '../../calc'
+import { getGloryFromBestRating, getGloryFromWins, getPersonalRatingSquash } from '../../calc'
 import { IPlayerRanked, IPlayerSeasonFormat } from '../../types'
 import { formatTeamsStats } from './formatTeamsStats'
 

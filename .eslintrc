@@ -12,9 +12,15 @@
             "version": "detect"
         }
     },
+    "plugins": ["simple-import-sort", "import"],
     "extends": ["plugin:react/recommended", "plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"],
     "rules": {
         "no-unused-vars": "off",
-        "@typescript-eslint/no-unused-vars": ["error", { "ignoreRestSiblings": true }]
+        "@typescript-eslint/no-unused-vars": ["error", { "ignoreRestSiblings": true }],
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error",
+        "import/first": "error",
+        "import/newline-after-import": "error",
+        "import/no-duplicates": "error"
     }
 }

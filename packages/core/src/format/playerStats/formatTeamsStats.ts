@@ -1,7 +1,7 @@
 import { getHeroRatingSquash } from '../../calc'
-import { cleanString } from '../../util/cleanString'
 import { regions } from '../../static'
 import { I2v2Team, I2v2TeamFormat } from '../../types'
+import { cleanString } from '../../util/cleanString'
 
 export const formatTeamsStats = (playerID: number, teamsStats: I2v2Team[]): I2v2TeamFormat[] => {
     return teamsStats

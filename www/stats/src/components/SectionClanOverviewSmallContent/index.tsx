@@ -1,8 +1,7 @@
 // Library imports
-import Link from 'next/link'
-
 // Components imports
-import { StatSmall, StatMedium, StatDesc } from '@TextStyles'
+import { StatDesc, StatMedium, StatSmall } from '@TextStyles'
+import Link from 'next/link'
 
 interface Props {
     name: string

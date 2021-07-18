@@ -1,7 +1,4 @@
-import { SetStateAction } from 'react'
-import { DependencyList } from 'react'
-import { Dispatch } from 'react'
-import { useState, useEffect } from 'react'
+import { DependencyList, Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 export const useDebounce = (fn: () => void, delay = 0, ...deps: DependencyList): void => {
     useEffect(() => {

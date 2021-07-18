@@ -1,6 +1,6 @@
 import { defaultTheme } from './default'
-import { solarizedDarkTheme } from './solarizedDark'
 import { earthsongTheme } from './earthsong'
+import { solarizedDarkTheme } from './solarizedDark'
 
 export interface Theme {
     'bg-dark': string

@@ -1,7 +1,8 @@
 import { Footer } from '@Footer'
 import { SideNav } from '@SideNav'
-import styles from './Layout.module.scss'
 import { ReactNode } from 'react'
+
+import styles from './Layout.module.scss'
 
 interface Props {
     children: ReactNode
