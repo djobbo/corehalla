@@ -1,7 +1,6 @@
-import { Dispatch } from 'react'
-import { SetStateAction } from 'react'
-import { createContext, useState, useContext, ReactNode, useEffect } from 'react'
-import { themes, ThemeName, themeNames } from '~styles/themes'
+import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState } from 'react'
+
+import { ThemeName, themeNames, themes } from '~styles/themes'
 
 interface ThemeContext {
     themeName: ThemeName

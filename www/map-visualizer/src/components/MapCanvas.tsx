@@ -1,13 +1,14 @@
-import styles from '../styles/MapCanvas.module.scss'
-import { Stage, Layer, Line, Group } from 'react-konva'
-import { Fragment, useEffect, useRef, useState } from 'react'
-import { useMapNodesContext } from '../providers/MapNodesProvider'
-import { KonvaEventObject } from 'konva/types/Node'
-import { URLImage } from './URLImage'
-import { getAnimationPos } from '../util/getAnimationPos'
-import { useEditorStateContext } from '../providers/EditorStateProvider'
 import { motion } from 'framer-motion'
+import { KonvaEventObject } from 'konva/types/Node'
 import { useRouter } from 'next/router'
+import { Fragment, useEffect, useRef, useState } from 'react'
+import { Group, Layer, Line, Stage } from 'react-konva'
+
+import { useEditorStateContext } from '../providers/EditorStateProvider'
+import { useMapNodesContext } from '../providers/MapNodesProvider'
+import styles from '../styles/MapCanvas.module.scss'
+import { getAnimationPos } from '../util/getAnimationPos'
+import { URLImage } from './URLImage'
 
 interface Props {
     floating?: boolean

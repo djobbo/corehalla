@@ -1,7 +1,6 @@
 import axios from 'axios'
 
-import { formatPlayerStats, formatClan, format1v1Rankings, format2v2Rankings } from './format'
-
+import { format1v1Rankings, format2v2Rankings, formatClan, formatPlayerStats } from './format'
 import type {
     BrawlhallaID,
     IClan,

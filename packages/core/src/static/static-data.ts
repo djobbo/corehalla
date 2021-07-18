@@ -1,6 +1,5 @@
+import type { ILegendRanked, ILegendStats, IWeaponStatsFormat, RankedRegion, RankedTier, Weapon } from '../types'
 import { legends } from './legends'
-
-import type { RankedRegion, ILegendStats, ILegendRanked, IWeaponStatsFormat, Weapon, RankedTier } from '../types'
 
 export const staticLegendsData = legends
 

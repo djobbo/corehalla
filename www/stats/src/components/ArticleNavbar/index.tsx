@@ -1,8 +1,10 @@
-import styles from './index.module.scss'
-import { useState } from 'react'
-import Link from 'next/link'
 import { useViewportScroll } from 'framer-motion'
+import Link from 'next/link'
+import { useState } from 'react'
+
 import { useSideNavContext } from '~providers/SideNavProvider'
+
+import styles from './index.module.scss'
 
 export const ArticleNavbar = (): JSX.Element => {
     const { scrollY } = useViewportScroll()

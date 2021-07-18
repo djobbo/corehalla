@@ -1,5 +1,6 @@
-import styles from './index.module.scss'
 import { DetailedHTMLProps, HTMLAttributes } from 'react'
+
+import styles from './index.module.scss'
 
 const Stat = (statType: string) => {
     const RawStat = (props: DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>): JSX.Element => (

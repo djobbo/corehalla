@@ -1,6 +1,7 @@
-import styles from './index.module.scss'
-import { ReactElement } from 'react'
 import Link from 'next/link'
+import { ReactElement } from 'react'
+
+import styles from './index.module.scss'
 
 export interface ITab<T extends string> {
     displayName: T

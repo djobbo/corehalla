@@ -1,12 +1,13 @@
-import styles from '../styles/CodePage.module.scss'
-import { useEffect, useState } from 'react'
-import { Layout } from '../components/Layout'
-import { useMapNodesContext } from '../providers/MapNodesProvider'
-import { createMapXML } from '../util/createMapXML'
+import { motion } from 'framer-motion'
 import hljs from 'highlight.js'
 import xmlhl from 'highlight.js/lib/languages/xml'
+import { useEffect, useState } from 'react'
+
+import { Layout } from '../components/Layout'
 import { MapCanvas } from '../components/MapCanvas'
-import { motion } from 'framer-motion'
+import { useMapNodesContext } from '../providers/MapNodesProvider'
+import styles from '../styles/CodePage.module.scss'
+import { createMapXML } from '../util/createMapXML'
 
 hljs.registerLanguage('xml', xmlhl)
 

@@ -1,4 +1,5 @@
-import { cloneElement, DragEvent, useRef, MutableRefObject, ReactElement, useState, useEffect } from 'react'
+import { cloneElement, DragEvent, MutableRefObject, ReactElement, useEffect, useRef, useState } from 'react'
+
 import styles from '../styles/Resizable.module.scss'
 
 interface Props {

@@ -1,4 +1,5 @@
 import { useTabs } from '~providers/TabsProvider'
+
 import styles from './Tabs.module.scss'
 
 interface Props<T extends string> {

@@ -1,4 +1,4 @@
-import { IStaticLegendData, ILegendStats, ILegendRanked, ILegendStatsFormat } from '../../types'
+import { ILegendRanked, ILegendStats, ILegendStatsFormat, IStaticLegendData } from '../../types'
 import { formatLegendStats } from './formatLegendStats'
 
 export const formatLegendsStats = (

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+
 import styles from './Pagination.module.scss'
 
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
     span?: number
 }
 
-export const Pagination = ({ page, getPageHref, firstPage = 0, span = 0 }: Props) => {
+export const Pagination = ({ page, getPageHref, firstPage = 0, span = 0 }: Props): JSX.Element => {
     return (
         <div className={styles.pagination}>
             {page > firstPage + span && (

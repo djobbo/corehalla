@@ -1,4 +1,5 @@
 import { PropsWithChildren, useState } from 'react'
+
 import { useMapNodesContext } from '../providers/MapNodesProvider'
 import styles from '../styles/TreeView.module.scss'
 import { CollisionSettings } from './CollisionSettings'

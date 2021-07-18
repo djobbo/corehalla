@@ -1,10 +1,9 @@
-import styles from './Footer.module.scss'
-
-import Link from 'next/link'
+import { Container } from '@Container'
 import { DiscordIcon, GithubIcon, InstagramIcon, TwitterIcon } from '@SocialIcons'
+import Link from 'next/link'
 import { ReactNode } from 'react'
 
-import { Container } from '@Container'
+import styles from './Footer.module.scss'
 
 interface ISocialLink {
     href: string

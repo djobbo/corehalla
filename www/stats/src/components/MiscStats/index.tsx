@@ -1,6 +1,7 @@
-import styles from './index.module.scss'
 // Components imports
 import { StatDesc } from '@TextStyles'
+
+import styles from './index.module.scss'
 
 interface IMiscStat {
     title: string

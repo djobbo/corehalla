@@ -1,7 +1,8 @@
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ReactNode } from 'react'
+
 import styles from '../styles/SideNav.module.scss'
-import Link from 'next/link'
 
 function NavItem({ navItem: { href, icon } }: { navItem: INavItem }) {
     const { pathname } = useRouter()

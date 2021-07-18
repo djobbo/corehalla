@@ -1,8 +1,9 @@
-import styles from './index.module.scss'
 // Components imports
 import { Card } from '@Card'
 import { PieChart } from '@Charts'
-import { StatLarge, StatDesc, StatSmall } from '@TextStyles'
+import { StatDesc, StatLarge, StatSmall } from '@TextStyles'
+
+import styles from './index.module.scss'
 
 interface Props {
     games: number

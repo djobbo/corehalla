@@ -1,11 +1,12 @@
 import { Container } from '@Container'
 import { Footer } from '@Footer'
 import { Header } from '@Header'
+import { Select } from '@Select'
 import Head from 'next/head'
 import React from 'react'
-import { Select } from '@Select'
+
 import { useTheme } from '~providers/ThemeProvider'
-import { themeNames, ThemeName } from '~styles/themes'
+import { ThemeName, themeNames } from '~styles/themes'
 
 const SettingsPage = (): JSX.Element => {
     const { setThemeName, themeName } = useTheme()

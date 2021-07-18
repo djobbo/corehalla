@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, ReactNode } from 'react'
+import { createContext, ReactNode, useContext, useState } from 'react'
 
 interface ISideNavContext {
     sideNavOpen: boolean

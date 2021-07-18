@@ -1,6 +1,6 @@
 import {
-    getGloryFromWins,
     getGloryFromBestRating,
+    getGloryFromWins,
     // getHeroRatingSquash,
     // getPersonalRatingSquash,
     // getTierFromRating,

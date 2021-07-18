@@ -1,4 +1,5 @@
-import React, { createContext, useState, Dispatch, ReactNode, useContext } from 'react'
+import React, { createContext, Dispatch, ReactNode, useContext, useState } from 'react'
+
 import useInterval from '../hooks/useInterval'
 
 interface IEditorStateContext {

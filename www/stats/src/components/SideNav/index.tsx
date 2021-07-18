@@ -1,14 +1,14 @@
-import styles from './index.module.scss'
+import { FavoriteIcon, GoBackIcon, HomeIcon, RankingsIcon } from '@Icons'
+import { motion } from 'framer-motion'
 // Library imports
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import { HomeIcon, FavoriteIcon, RankingsIcon, GoBackIcon } from '@Icons'
-
 // Providers imports
 import { useFavorites } from '~providers/FavoritesProvider'
 import { useSideNavContext } from '~providers/SideNavProvider'
-import { motion } from 'framer-motion'
+
+import styles from './index.module.scss'
 
 interface BottomNavigationTab {
     title: string

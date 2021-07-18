@@ -1,10 +1,10 @@
-import styles from '../styles/Layout.module.scss'
 import { ReactNode } from 'react'
+
+import styles from '../styles/Layout.module.scss'
 import { Header } from './Header'
-import { SideNav } from './SideNav'
 import { PropertiesPanel } from './PropertiesPanel'
+import { SideNav } from './SideNav'
 import { Timeline } from './Timeline'
-// import { Resizable } from './Resizable';
 
 interface Props {
     children: ReactNode

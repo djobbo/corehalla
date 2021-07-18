@@ -1,7 +1,9 @@
-import styles from '~styles/Article.module.scss'
-import { Layout } from './Layout'
 import { ArticleNavbar } from '@ArticleNavbar'
 import { ReactNode } from 'react'
+
+import styles from '~styles/Article.module.scss'
+
+import { Layout } from './Layout'
 
 interface Props {
     title: string
