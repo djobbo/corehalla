@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Input from './components/Input.svelte';
-	import { getGloryFromBestRating, getGloryFromWins, getHeroRatingSquash, getPersonalRatingSquash, getTierFromRating } from '@corehalla/glory-calc';
+	import { getGloryFromBestRating, getGloryFromWins, getHeroRatingSquash, getPersonalRatingSquash, getTierFromRating } from '@corehalla/core/calc';
 	import { getNumberFromLocalStorage, getBoolFromLocalStorage, saveToLocalStorage } from './util/saveToLocalStorage';
 
 	let wins = getNumberFromLocalStorage('wins');

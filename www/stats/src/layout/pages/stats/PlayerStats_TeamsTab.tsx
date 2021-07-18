@@ -1,6 +1,6 @@
 import styles from '~styles/pages/stats/PlayerStatsPage.module.scss'
 import layoutStyles from '~layout/Layout.module.scss'
-import type { I2v2TeamFormat } from '@corehalla/types'
+import type { I2v2TeamFormat } from '@corehalla/core/types'
 import { SectionSeparator, PageSection } from '@PageSection'
 import { motion } from 'framer-motion'
 import { GamesStatsCard } from '@GamesStatsCard'

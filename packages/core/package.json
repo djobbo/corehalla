@@ -1,23 +1,33 @@
 {
     "name": "@corehalla/core",
     "version": "0.1.0",
-    "main": "dist/index.js",
+    "main": "lib/index.js",
     "license": "MIT",
     "scripts": {
         "build": "tsc",
-        "dist": "tsc",
-        "dist:watch": "tsc -w",
+        "build:lib": "tsc",
+        "watch": "tsc -w",
         "eslint": "eslint '*/**/*.{js,jsx,ts,tsx}' --fix --ignore-path .eslintignore",
-        "typecheck": "tsc --noemit"
+        "typecheck": "tsc --noemit",
+        "test": "jest"
     },
+    "files": [
+        "./lib/*",
+        "calc.d.ts",
+        "calc.js",
+        "format.d.ts",
+        "format.js",
+        "mocks.d.ts",
+        "mock.js",
+        "static.d.ts",
+        "static.js",
+        "types.d.ts",
+        "types.js"
+    ],
     "devDependencies": {
-        "@corehalla/types": "0.1.0",
-        "typescript": "^4.2.4",
-        "@config/typecheck": "1.0.0"
+        "typescript": "^4.2.4"
     },
     "dependencies": {
-        "axios": "^0.21.1",
-        "@corehalla/formatters": "0.1.0",
-        "@corehalla/mocks": "0.1.0"
+        "axios": "^0.21.1"
     }
 }

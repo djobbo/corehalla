@@ -1,5 +1,4 @@
 {
-    "extends": "@config/typecheck",
     "compilerOptions": {
         "target": "es5",
         "lib": ["dom", "dom.iterable", "esnext"],

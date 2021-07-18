@@ -6,15 +6,15 @@
         "discord/*"
     ],
     "scripts": {
-        "dist": "lerna run --scope @corehalla/* dist",
+        "build:lib": "lerna run build:lib",
         "eslint": "lerna run --parallel eslint",
         "build": "lerna run build",
-        "watch": "lerna run --scope @corehalla/* dist:watch",
+        "watch": "lerna run --scope @corehalla/* watch",
         "test": "lerna run --parallel test",
         "typecheck": "lerna run --parallel typecheck",
-        "lint": "yarn dist && yarn eslint && yarn typecheck && yarn test",
+        "lint": "yarn build:lib && yarn eslint && yarn typecheck && yarn test && yarn format",
         "format": "prettier --write .",
-        "precommit": "yarn format",
+        "precommit": "yarn lint",
         "postinstall": "husky install"
     },
     "devDependencies": {

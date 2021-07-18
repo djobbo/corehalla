@@ -1,7 +1,7 @@
 import styles from '~styles/pages/stats/PlayerStatsPage.module.scss'
 import layoutStyles from '~layout/Layout.module.scss'
 
-import { ILegendStatsFormat, IPlayerStatsFormat, Weapon } from '@corehalla/types'
+import { ILegendStatsFormat, IPlayerStatsFormat, Weapon } from '@corehalla/core/types'
 import { SectionSeparator, PageSection } from '@PageSection'
 import { formatTime } from '~util'
 import { SectionOverallStatsContent } from '@SectionOverallStatsContent'

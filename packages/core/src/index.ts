@@ -1,12 +1,6 @@
 import axios from 'axios'
 
-import {
-    formatPlayerStats,
-    formatClan,
-    format1v1Rankings,
-    format2v2Rankings,
-    // formatPowerRankings,
-} from '@corehalla/formatters'
+import { formatPlayerStats, formatClan, format1v1Rankings, format2v2Rankings } from '~format'
 
 import type {
     BrawlhallaID,
@@ -20,7 +14,7 @@ import type {
     IRanking2v2,
     IRanking2v2Format,
     RankedRegion,
-} from '@corehalla/types'
+} from '~types'
 
 const API_URL = 'https://api.brawlhalla.com'
 
