@@ -1,0 +1,60 @@
+@import '~styles/theme.scss';
+
+.sidenav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: $bg-dark;
+    width: 4rem;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    max-height: 100vh;
+    min-height: 100vh;
+    position: sticky;
+    top: 0;
+    border-right: 1px solid $bg-dark-var1;
+
+    .navItem {
+        width: 3rem;
+        min-height: 3rem;
+        height: 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: $on-bg-dark-var1;
+        font-size: 0.75rem;
+        border: 1px solid $bg-dark-var1;
+        border-radius: 1rem;
+        padding: 0.25rem;
+
+        svg {
+            fill: none;
+            stroke: $on-bg-dark-var1;
+            stroke-width: 0.125rem;
+            width: 2rem;
+        }
+
+        img {
+            width: 100%;
+            height: 1.5rem;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        &.active {
+            border-color: $accent;
+            color: $on-bg-dark;
+
+            svg {
+                stroke: $on-bg-dark;
+            }
+        }
+    }
+
+    .separator {
+        border-bottom: 1px solid $on-bg-dark-var1;
+        width: 1.5rem;
+    }
+}

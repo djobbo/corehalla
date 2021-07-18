@@ -58,6 +58,6 @@ svg {
 }
 
 #App {
-    position: relative;
-    z-index: 10;
+    display: grid;
+    grid-template-columns: auto 1fr;
 }
