@@ -8,7 +8,8 @@
         "build:dev": "next build",
         "start": "next start",
         "eslint": "eslint '*/**/*.{js,jsx,ts,tsx}' --fix --ignore-path .eslintignore",
-        "typecheck": "tsc --noemit"
+        "typecheck": "tsc --noemit",
+        "vercel-build": "yum install libuuid-devel libmount-devel && cp /lib64/{libuuid,libmount,libblkid}.so.1 node_modules/canvas/build/Release/ && npm run build"
     },
     "dependencies": {
         "@corehalla/core": "0.1.0",
