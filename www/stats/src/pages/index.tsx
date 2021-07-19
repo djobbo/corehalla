@@ -13,7 +13,7 @@ const HomePage = (): JSX.Element => {
     return (
         <>
             <Head>
-                <title>Index • Corehalla</title>
+                <title>Home • Corehalla</title>
             </Head>
             <Header />
             <div className={styles.landingSections}>

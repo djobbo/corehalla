@@ -27,6 +27,25 @@ class MyDocument extends Document {
                         href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
                         rel="stylesheet"
                     />
+
+                    {/* HTML Meta Tags */}
+                    <title>Index • Corehalla</title>
+                    <meta name="description" content="Brawlhalla Stats and Rankings" />
+
+                    {/* Facebook Meta Tags */}
+                    <meta property="og:url" content="https://neue.corehalla.com" />
+                    <meta property="og:type" content="website" />
+                    <meta property="og:title" content="Corehalla" />
+                    <meta property="og:description" content="Brawlhalla Stats and Rankings" />
+                    <meta property="og:image" content="/images/og/main-og.jpg" />
+
+                    {/* Twitter Meta Tags */}
+                    <meta name="twitter:card" content="summary_large_image" />
+                    <meta property="twitter:domain" content="neue.corehalla.com" />
+                    <meta property="twitter:url" content="https://neue.corehalla.com" />
+                    <meta name="twitter:title" content="Corehalla" />
+                    <meta name="twitter:description" content="Brawlhalla Stats and Rankings" />
+                    <meta name="twitter:image" content="/images/og/main-og.jpg" />
                 </Head>
                 <body>
                     <Main />
