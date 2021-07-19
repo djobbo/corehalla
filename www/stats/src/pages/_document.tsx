@@ -29,7 +29,6 @@ class MyDocument extends Document {
                     />
 
                     {/* HTML Meta Tags */}
-                    <title>Index • Corehalla</title>
                     <meta name="description" content="Brawlhalla Stats and Rankings" />
 
                     {/* Facebook Meta Tags */}
@@ -37,7 +36,6 @@ class MyDocument extends Document {
                     <meta property="og:type" content="website" />
                     <meta property="og:title" content="Corehalla" />
                     <meta property="og:description" content="Brawlhalla Stats and Rankings" />
-                    <meta property="og:image" content="/images/og/main-og.jpg" />
 
                     {/* Twitter Meta Tags */}
                     <meta name="twitter:card" content="summary_large_image" />
@@ -45,7 +43,6 @@ class MyDocument extends Document {
                     <meta property="twitter:url" content="https://neue.corehalla.com" />
                     <meta name="twitter:title" content="Corehalla" />
                     <meta name="twitter:description" content="Brawlhalla Stats and Rankings" />
-                    <meta name="twitter:image" content="/images/og/main-og.jpg" />
                 </Head>
                 <body>
                     <Main />

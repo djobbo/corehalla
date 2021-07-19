@@ -44,6 +44,8 @@ const PlayerStatsPage = ({ playerStats }: Props): JSX.Element => {
         <TabsProvider<PlayerStatsTabs> defaultTab="overview">
             <Head>
                 <title>{playerStats.name} Stats • Corehalla</title>
+                <meta property="og:image" content={`/api/og/stats/player/${playerStats.id}`} />
+                <meta name="twitter:image" content={`/api/og/stats/player/${playerStats.id}`} />
             </Head>
             <Header
                 content={

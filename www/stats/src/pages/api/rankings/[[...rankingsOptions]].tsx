@@ -4,6 +4,8 @@ import { RankedRegion } from '@corehalla/core/types'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
+    res.setHeader('Cache-Control', 's-maxage=150, stale-while-revalidate')
+
     const [bracket, region, page] =
         (req.query?.rankingsOptions as [bracket: '1v1' | '2v2', region: RankedRegion, page: string]) || []
     const playerSearch = req.query?.p as string

@@ -33,6 +33,8 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
             <Head>
                 <link rel="icon" type="image/png" href="/images/favicon.png" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta property="og:image" content="/images/og/main-og.jpg" />
+                <meta name="twitter:image" content="/images/og/main-og.jpg" />
             </Head>
 
             <ThemeProvider>
