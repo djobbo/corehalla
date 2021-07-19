@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@corehalla/core": "0.1.0",
-        "axios": "^0.21.1",
+        "@corehalla/open-graph": "0.1.0",
         "dayjs": "^1.10.3",
         "framer-motion": "^4.1.11",
         "next": "10.2.0",
