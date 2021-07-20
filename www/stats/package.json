@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "LD_PRELOAD=../../node_modules/canvas/build/Release/libz.so.1 lerna run build:lib && next build",
+        "build": "LD_PRELOAD=/var/task/node_modules/canvas/build/Release/libz.so.1 lerna run build:lib && next build",
         "build:dev": "next build",
         "start": "next start",
         "eslint": "eslint '*/**/*.{js,jsx,ts,tsx}' --fix --ignore-path .eslintignore",
