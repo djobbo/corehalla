@@ -12,10 +12,10 @@
         "watch": "lerna run --scope @corehalla/* watch",
         "test": "lerna run --parallel test",
         "typecheck": "lerna run --parallel typecheck",
-        "lint": "yarn build:lib && yarn eslint && yarn typecheck && yarn test && yarn format",
+        "lint": "(yarn build:lib) && (yarn eslint) && (yarn typecheck) && (yarn test) && (yarn format)",
         "format": "prettier --write .",
         "precommit": "yarn lint",
-        "postinstall": "husky install"
+        "postinstall": "husky install && patch-package"
     },
     "devDependencies": {
         "@types/jest": "^26.0.24",
@@ -46,5 +46,9 @@
             "jest --coverage --findRelatedTests",
             "git add"
         ]
+    },
+    "dependencies": {
+        "patch-package": "^6.4.7",
+        "postinstall-postinstall": "^2.1.0"
     }
 }
