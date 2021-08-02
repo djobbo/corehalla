@@ -41,10 +41,6 @@ body {
 
     background-color: $bg-dark;
     opacity: 1;
-    background-image: radial-gradient($bg-dark-var1 1.4px, transparent 1.4px),
-        radial-gradient($bg-dark-var1 1.4px, $bg-dark 1.4px);
-    background-size: 56px 56px;
-    background-position: 0 0, 28px 28px;
     scroll-behavior: smooth;
 }
 

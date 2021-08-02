@@ -1,11 +1,9 @@
 @import '~styles/theme.scss';
 
 .card {
-    background-color: $bg-dark;
+    background-color: $bg-dark-var1;
     padding: 1rem;
     border-radius: 1rem;
-    border: 1px solid $bg-dark-var1;
-    // box-shadow: $card-shadow;
 
     .title {
         font-size: 0.75rem;
