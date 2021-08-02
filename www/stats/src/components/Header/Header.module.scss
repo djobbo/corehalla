@@ -6,7 +6,7 @@
     top: 0;
     z-index: 100;
     background-color: $bg-dark;
-    background: linear-gradient(180deg, $bg-dark 0%, $bg-dark 50%, rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(180deg, $bg-dark 0%, $bg-dark 50%, rgba(0, 0, 0, 0) 75%);
 
     .content {
         display: flex;
