@@ -73,4 +73,10 @@ svg {
 #App {
     display: grid;
     grid-template-columns: auto 1fr;
+
+    @media only screen and (max-width: 1200px) {
+        #Sidenav {
+            display: none;
+        }
+    }
 }

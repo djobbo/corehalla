@@ -15,34 +15,36 @@
         padding: 0 1rem;
         flex-wrap: wrap;
 
-        .logo {
+        .burger {
+            display: none;
+        }
+
+        .left {
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            width: auto;
             gap: 2rem;
         }
 
-        .searchBar {
-            margin-left: 2rem;
-            flex: 1;
-            max-width: 480px;
-            height: 2.5rem;
-            background-color: $bg-dark;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            color: $on-bg-dark;
-        }
-
-        .nav {
-            .navItem {
-                margin-left: 2rem;
-                color: $on-bg-dark;
-                padding: 0.75rem 1rem;
-                border-radius: 0.5rem;
-
-                &:hover {
-                    background-color: $bg-dark;
-                }
+        @media only screen and (max-width: 1000px) {
+            .searchBar,
+            .innerContent,
+            .nav {
+                display: none;
             }
+
+            .burger {
+                display: block;
+            }
+        }
+    }
+
+    @media only screen and (max-width: 1000px) {
+        .content {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
         }
     }
 }

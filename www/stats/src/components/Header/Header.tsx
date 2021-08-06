@@ -1,66 +1,47 @@
 import Link from 'next/link'
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 
 import styles from './Header.module.scss'
 
 import { Card } from '@Card'
+import { MobileNav } from '@MobileNav'
 import { SearchBar } from '@SearchBar'
 
-const links = [
-    {
-        title: 'Home',
-        href: '/',
-    },
-    {
-        title: 'Rankings',
-        href: '/rankings',
-    },
-    {
-        title: 'Favorites',
-        href: '/favorites',
-    },
-    {
-        title: 'Settings',
-        href: '/settings',
-    },
-]
-
-const Nav = () => {
-    return (
-        <nav className={styles.nav}>
-            {links.map((link) => (
-                <Link href={link.href} key={link.title}>
-                    <a className={styles.navItem}>{link.title}</a>
-                </Link>
-            ))}
-        </nav>
-    )
-}
+import { BurgerButton } from './BurgerButton'
 
 interface Props {
     content?: ReactNode
 }
 
 export const Header = ({ content }: Props): JSX.Element => {
+    const [mobileNavOpen, setMobileNavOpen] = useState(false)
+
     return (
         <div className={styles.header}>
             <Card>
                 <div className={styles.content}>
-                    <div className={styles.logo}>
-                        <Link href="/">
-                            <a>
-                                <img
-                                    className={styles.mainLogo}
-                                    src="/images/logo.png"
-                                    alt="Corehalla Logo"
-                                    height={24}
-                                />
-                            </a>
-                        </Link>
-                        <SearchBar />
+                    <div className={styles.left}>
+                        <div className={styles.logo}>
+                            <Link href="/">
+                                <a>
+                                    <img
+                                        className={styles.mainLogo}
+                                        src="/images/logo.png"
+                                        alt="Corehalla Logo"
+                                        height={24}
+                                    />
+                                </a>
+                            </Link>
+                        </div>
+                        <div className={styles.burger}>
+                            <BurgerButton onClick={() => setMobileNavOpen(!mobileNavOpen)} />
+                        </div>
+                        <div className={styles.searchBar}>
+                            <SearchBar />
+                        </div>
                     </div>
-                    {content}
-                    <Nav />
+                    {content && <div className={styles.innerContent}>{content}</div>}
+                    <MobileNav open={mobileNavOpen} />
                 </div>
             </Card>
         </div>
