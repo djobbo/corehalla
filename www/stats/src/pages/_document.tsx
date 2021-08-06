@@ -47,6 +47,7 @@ class MyDocument extends Document {
                 <body>
                     <Main />
                     <NextScript />
+                    <div id="mobilenav" />
                 </body>
             </Html>
         )

@@ -46,30 +46,32 @@ export function SideNav(): JSX.Element {
 
     return (
         <div className={styles.sidenav}>
-            {tabs.map(({ link, icon, exact }, i) => (
-                <Link href={link} key={i}>
-                    <a
-                        className={`${styles.navItem} ${
-                            pathname === link || (!exact && pathname.startsWith(link)) ? styles.active : ''
-                        }`}
-                    >
-                        {icon}
-                    </a>
-                </Link>
-            ))}
-            <hr className={styles.separator} />
-            {favorites.map(({ id, type, name, thumbURI }) => (
-                <Link href={`/stats/${type}/${id}`} key={`${type}/${id}`}>
-                    <a
-                        className={`${styles.navItem} ${
-                            pathname.startsWith(`/stats/${type}`) && query.id === id ? styles.active : ''
-                        }`}
-                    >
-                        <img src={thumbURI} alt={name} />
-                        <span>{name.substr(0, 3).toUpperCase()}</span>
-                    </a>
-                </Link>
-            ))}
+            <div className={styles.content}>
+                {tabs.map(({ link, icon, exact }, i) => (
+                    <Link href={link} key={i}>
+                        <a
+                            className={`${styles.navItem} ${
+                                pathname === link || (!exact && pathname.startsWith(link)) ? styles.active : ''
+                            }`}
+                        >
+                            {icon}
+                        </a>
+                    </Link>
+                ))}
+                <hr className={styles.separator} />
+                {favorites.map(({ id, type, name, thumbURI }) => (
+                    <Link href={`/stats/${type}/${id}`} key={`${type}/${id}`}>
+                        <a
+                            className={`${styles.navItem} ${
+                                pathname.startsWith(`/stats/${type}`) && query.id === id ? styles.active : ''
+                            }`}
+                        >
+                            <img src={thumbURI} alt={name} />
+                            <span>{name.substr(0, 3).toUpperCase()}</span>
+                        </a>
+                    </Link>
+                ))}
+            </div>
         </div>
     )
 }
