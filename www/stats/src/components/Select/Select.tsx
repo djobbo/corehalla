@@ -77,7 +77,7 @@ export const Select = <T extends string>({
             placeholder={placeholder}
             components={{
                 NoOptionsMessage,
-                ...(dropIndicator ? {} : {DropdownIndicator:() => null, IndicatorSeparator:() => null })
+                ...(dropIndicator ? {} : { DropdownIndicator: () => null, IndicatorSeparator: () => null }),
             }}
             styles={{
                 container: (styles) => ({

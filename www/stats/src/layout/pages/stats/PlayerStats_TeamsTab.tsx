@@ -78,51 +78,52 @@ export const TeamsTab = ({ teams }: Props): JSX.Element => {
                         </>
                     )}
                     <PageSection title="teams" initFoldState={true}>
-                    
-            <Card className={layoutStyles.sortAndFilterContainer}>
-                <Select<TeamsSort>
-                    onChange={setSortingProp}
-                    options={[
-                        {
-                            value: 'rating',
-                            label: 'Rating',
-                        },
-                        {
-                            value: 'peak',
-                            label: 'Peak Rating',
-                        },
-                        {
-                            value: 'games',
-                            label: 'Games',
-                        },
-                        {
-                            value: 'wins',
-                            label: 'Wins',
-                        },
-                        {
-                            value: 'losses',
-                            label: 'Losses',
-                        },
-                        {
-                            value: 'winrate',
-                            label: 'Winrate',
-                        },
-                    ]}
-                    defaultValue={{
-                        value: 'rating',
-                        label: 'Rating',
-                    }}
-                />
-                <Select
-                    onInputChange={setTeamsearch}
-                    onChange={setTeamsearch}
-                    options={teams.map(({ teammate }) => ({ value: teammate.name }))}
-                    placeholder="All Teams"
-                    searchable
-                    clearable
-                />
-                <button onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}>Reverse Order</button>
-            </Card>
+                        <Card className={layoutStyles.sortAndFilterContainer}>
+                            <Select<TeamsSort>
+                                onChange={setSortingProp}
+                                options={[
+                                    {
+                                        value: 'rating',
+                                        label: 'Rating',
+                                    },
+                                    {
+                                        value: 'peak',
+                                        label: 'Peak Rating',
+                                    },
+                                    {
+                                        value: 'games',
+                                        label: 'Games',
+                                    },
+                                    {
+                                        value: 'wins',
+                                        label: 'Wins',
+                                    },
+                                    {
+                                        value: 'losses',
+                                        label: 'Losses',
+                                    },
+                                    {
+                                        value: 'winrate',
+                                        label: 'Winrate',
+                                    },
+                                ]}
+                                defaultValue={{
+                                    value: 'rating',
+                                    label: 'Rating',
+                                }}
+                            />
+                            <Select
+                                onInputChange={setTeamsearch}
+                                onChange={setTeamsearch}
+                                options={teams.map(({ teammate }) => ({ value: teammate.name }))}
+                                placeholder="All Teams"
+                                searchable
+                                clearable
+                            />
+                            <button onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}>
+                                Reverse Order
+                            </button>
+                        </Card>
                         <div className={styles.teamsContainer}>
                             {sortByProp(
                                 teamSearch
