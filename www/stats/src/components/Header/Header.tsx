@@ -18,32 +18,26 @@ export const Header = ({ content }: Props): JSX.Element => {
 
     return (
         <div className={styles.header}>
-            <Card>
-                <div className={styles.content}>
-                    <div className={styles.left}>
-                        <div className={styles.logo}>
-                            <Link href="/">
-                                <a>
-                                    <img
-                                        className={styles.mainLogo}
-                                        src="/images/logo.png"
-                                        alt="Corehalla Logo"
-                                        height={24}
-                                    />
-                                </a>
-                            </Link>
-                        </div>
-                        <div className={styles.burger}>
-                            <BurgerButton onClick={() => setMobileNavOpen(!mobileNavOpen)} />
-                        </div>
-                        <div className={styles.searchBar}>
-                            <SearchBar />
-                        </div>
-                    </div>
-                    {content && <div className={styles.innerContent}>{content}</div>}
-                    <MobileNav open={mobileNavOpen} />
+                <div className={styles.logo}>
+                    <Link href="/">
+                        <a>
+                            <img
+                                className={styles.mainLogo}
+                                src="/images/logo.png"
+                                alt="Corehalla Logo"
+                                height={24}
+                            />
+                        </a>
+                    </Link>
                 </div>
-            </Card>
+                {content && <div className={styles.content}>{content}</div>}
+                <div className={styles.searchBar}>
+                    <SearchBar />
+                </div>
+                <div className={styles.burger}>
+                    <BurgerButton onClick={() => setMobileNavOpen(!mobileNavOpen)} />
+                </div>
+                <MobileNav open={mobileNavOpen} />
         </div>
     )
 }
