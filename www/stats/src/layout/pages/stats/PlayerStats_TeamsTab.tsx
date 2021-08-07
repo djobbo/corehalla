@@ -62,6 +62,23 @@ export const TeamsTab = ({ teams }: Props): JSX.Element => {
 
     return (
         <>
+            {teams.length > 0 ? (
+                <>
+                    {teamSearch ? null : (
+                        <>
+                            <PageSection title="2v2 overview" initFoldState={true}>
+                                <GamesStatsCard
+                                    {...totalTeamsStats}
+                                    losses={totalTeamsStats.games - totalTeamsStats.wins}
+                                    winrate={(totalTeamsStats.winrateAcc / teams.length) * 100}
+                                />
+                                <MiscStats stats={[]} />
+                            </PageSection>
+                            <SectionSeparator />
+                        </>
+                    )}
+                    <PageSection title="teams" initFoldState={true}>
+                    
             <Card className={layoutStyles.sortAndFilterContainer}>
                 <Select<TeamsSort>
                     onChange={setSortingProp}
@@ -106,22 +123,6 @@ export const TeamsTab = ({ teams }: Props): JSX.Element => {
                 />
                 <button onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}>Reverse Order</button>
             </Card>
-            {teams.length > 0 ? (
-                <>
-                    {teamSearch ? null : (
-                        <>
-                            <PageSection title="2v2 overview" initFoldState={true}>
-                                <GamesStatsCard
-                                    {...totalTeamsStats}
-                                    losses={totalTeamsStats.games - totalTeamsStats.wins}
-                                    winrate={(totalTeamsStats.winrateAcc / teams.length) * 100}
-                                />
-                                <MiscStats stats={[]} />
-                            </PageSection>
-                            <SectionSeparator />
-                        </>
-                    )}
-                    <PageSection title="teams" initFoldState={true}>
                         <div className={styles.teamsContainer}>
                             {sortByProp(
                                 teamSearch

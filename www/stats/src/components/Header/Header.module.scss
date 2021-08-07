@@ -1,35 +1,24 @@
 @import '~styles/theme.scss';
 
 .header {
-    padding: 1rem 2rem;
+    padding: 0.75rem 2rem;
     position: sticky;
     top: 0;
     z-index: 100;
-    background-color: $bg-dark;
-    background: linear-gradient(180deg, $bg-dark 0%, $bg-dark 50%, rgba(0, 0, 0, 0) 75%);
+    background-color: $bg-dark-var1;
+    border-bottom: 2px solid $bg-dark-var2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-    .content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 1rem;
-        flex-wrap: wrap;
 
         .burger {
             display: none;
         }
 
-        .left {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: auto;
-            gap: 2rem;
-        }
-
         @media only screen and (max-width: 1000px) {
             .searchBar,
-            .innerContent,
+            .content,
             .nav {
                 display: none;
             }
@@ -38,7 +27,7 @@
                 display: block;
             }
         }
-    }
+    
 
     @media only screen and (max-width: 1000px) {
         .content {

@@ -16,6 +16,7 @@ interface Props<T> {
     defaultValue?: Option<T>
     searchable?: boolean
     clearable?: boolean
+    dropIndicator?: boolean
 }
 
 const NoOptionsMessage = (): JSX.Element => {
@@ -30,6 +31,7 @@ export const Select = <T extends string>({
     onInputChange,
     searchable,
     clearable,
+    dropIndicator = true,
 }: Props<T>): JSX.Element => {
     const [inputValue, setInputValue] = useState('')
     const [fieldValue, setFieldValue] = useState<Required<Option<T>>>(
@@ -75,6 +77,7 @@ export const Select = <T extends string>({
             placeholder={placeholder}
             components={{
                 NoOptionsMessage,
+                ...(dropIndicator ? {} : {DropdownIndicator:() => null, IndicatorSeparator:() => null })
             }}
             styles={{
                 container: (styles) => ({
@@ -104,8 +107,9 @@ export const Select = <T extends string>({
                 }),
                 control: (styles) => ({
                     ...styles,
-                    backgroundColor: 'var(--bg-dark-var1)',
-                    border: 'none',
+                    backgroundColor: 'var(--bg-dark)',
+                    borderRadius: '0.5rem',
+                    border: '2px solid var(--bg-dark-var2)',
                 }),
                 menu: (styles) => ({
                     ...styles,
