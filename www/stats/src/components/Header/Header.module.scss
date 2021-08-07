@@ -11,23 +11,21 @@
     justify-content: space-between;
     align-items: center;
 
+    .burger {
+        display: none;
+    }
 
-        .burger {
+    @media only screen and (max-width: 1000px) {
+        .searchBar,
+        .content,
+        .nav {
             display: none;
         }
 
-        @media only screen and (max-width: 1000px) {
-            .searchBar,
-            .content,
-            .nav {
-                display: none;
-            }
-
-            .burger {
-                display: block;
-            }
+        .burger {
+            display: block;
         }
-    
+    }
 
     @media only screen and (max-width: 1000px) {
         .content {

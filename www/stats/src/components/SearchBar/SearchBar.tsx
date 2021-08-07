@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
 import styles from './SearchBar.module.scss'
-import {useFavorites} from '~providers/FavoritesProvider'
+import { useFavorites } from '~providers/FavoritesProvider'
 
 import { useDebounceValue } from '~hooks/useDebounce'
 
@@ -21,9 +21,11 @@ const Loader = () => {
 }
 
 export const SearchBar = (): JSX.Element => {
-    const {favorites} = useFavorites()
+    const { favorites } = useFavorites()
     const [val, setVal, isLoading] = useDebounceValue('', 500)
-    const [options, setOptions] = useState(favorites.filter(fav => fav.type === 'player').map(player => ({ value: player.id, label: player.name })))
+    const [options, setOptions] = useState(
+        favorites.filter((fav) => fav.type === 'player').map((player) => ({ value: player.id, label: player.name })),
+    )
 
     const router = useRouter()
 

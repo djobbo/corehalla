@@ -18,26 +18,21 @@ export const Header = ({ content }: Props): JSX.Element => {
 
     return (
         <div className={styles.header}>
-                <div className={styles.logo}>
-                    <Link href="/">
-                        <a>
-                            <img
-                                className={styles.mainLogo}
-                                src="/images/logo.png"
-                                alt="Corehalla Logo"
-                                height={24}
-                            />
-                        </a>
-                    </Link>
-                </div>
-                {content && <div className={styles.content}>{content}</div>}
-                <div className={styles.searchBar}>
-                    <SearchBar />
-                </div>
-                <div className={styles.burger}>
-                    <BurgerButton onClick={() => setMobileNavOpen(!mobileNavOpen)} />
-                </div>
-                <MobileNav open={mobileNavOpen} />
+            <div className={styles.logo}>
+                <Link href="/">
+                    <a>
+                        <img className={styles.mainLogo} src="/images/logo.png" alt="Corehalla Logo" height={24} />
+                    </a>
+                </Link>
+            </div>
+            {content && <div className={styles.content}>{content}</div>}
+            <div className={styles.searchBar}>
+                <SearchBar />
+            </div>
+            <div className={styles.burger}>
+                <BurgerButton onClick={() => setMobileNavOpen(!mobileNavOpen)} />
+            </div>
+            <MobileNav open={mobileNavOpen} />
         </div>
     )
 }
