@@ -1,9 +1,6 @@
-import { cleanString } from '@corehalla/core/util'
 import chromium from 'chrome-aws-lambda'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { chromium as playwrightChromium } from 'playwright-core'
-
-import { getAbsoluteURL } from '~util/getAbsoluteURL'
 
 export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
     // Start the browser with the AWS Lambda wrapper (chrome-aws-lambda)
@@ -28,9 +25,10 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
             height: 630,
         },
     })
+    console.log('host', req.headers.host, req.headers.prot)
     // Generate the full URL out of the given path (GET parameter)
-    const relativeUrl = (req.query['path'] as string) || ''
-    const url = getAbsoluteURL(cleanString(relativeUrl))
+    const relativeUrl = (req.query['path'] as string) || '/'
+    const url = req.headers.host + relativeUrl
 
     console.log({ url })
 
