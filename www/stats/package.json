@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "LD_PRELOAD=/var/task/node_modules/canvas/build/Release/libz.so.1 lerna run build:lib && next build",
+        "build": "lerna run build:lib && next build",
         "build:dev": "next build",
         "start": "next start",
         "eslint": "eslint '*/**/*.{js,jsx,ts,tsx}' --fix --ignore-path .eslintignore",
@@ -13,20 +13,21 @@
     },
     "dependencies": {
         "@corehalla/core": "0.1.0",
-        "@corehalla/open-graph": "0.1.0",
+        "chrome-aws-lambda": "^10.1.0",
         "dayjs": "^1.10.3",
         "framer-motion": "^4.1.11",
-        "next": "10.2.0",
-        "next-pwa": "^5.2.16",
+        "next": "^11.0.1",
+        "next-pwa": "^5.2.24",
+        "playwright-core": "^1.13.1",
         "qs": "^6.9.6",
         "react": "17.0.2",
         "react-dom": "17.0.2",
         "react-select": "^4.3.1",
-        "sass": "^1.32.12"
+        "sass": "^1.37.5"
     },
     "devDependencies": {
-        "@types/node": "^15.0.1",
-        "@types/react": "^17.0.0",
+        "@types/node": "^16.4.13",
+        "@types/react": "^17.0.16",
         "@types/react-select": "^4.0.17",
         "typescript": "^4.1.3"
     }

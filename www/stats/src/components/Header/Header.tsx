@@ -3,7 +3,6 @@ import { ReactNode, useState } from 'react'
 
 import styles from './Header.module.scss'
 
-import { Card } from '@Card'
 import { MobileNav } from '@MobileNav'
 import { SearchBar } from '@SearchBar'
 
