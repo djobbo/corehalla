@@ -5,7 +5,7 @@ import styles from './TeamCard.module.scss'
 
 import { Card } from '../Card'
 import { BarChart } from '../Charts'
-import { StatDesc, StatLarge, StatMedium, StatSmall } from '../TextStyles'
+import { StatDesc, StatLarge, StatSmall } from '../TextStyles'
 
 interface Props {
     team: I2v2TeamFormat

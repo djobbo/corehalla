@@ -52,6 +52,10 @@
                 object-position: center;
             }
 
+            &:hover {
+                border-color: $on-bg-dark-var1;
+            }
+
             &.active {
                 border-color: $accent;
                 color: $on-bg-dark;

@@ -18,8 +18,8 @@
         max-height: 42rem;
         padding: 0 1rem;
         z-index: 10;
-        max-width: 1200px;
         gap: 2rem;
+        width: 100%;
 
         @media only screen and (min-width: $size_desktop) {
             justify-items: space-between;
@@ -29,8 +29,10 @@
 
         .text {
             flex: 1;
+
             .title {
-                font-size: 2rem;
+                line-height: 3.5rem;
+                font-size: 1.25rem;
                 color: $on-bg-dark;
                 font-weight: normal;
                 margin-bottom: 1rem;
@@ -53,7 +55,7 @@
 
             .desc {
                 color: $on-bg-dark-var1;
-                font-size: 1.125rem;
+                font-size: 1rem;
                 line-height: 1.5rem;
                 margin-bottom: 2rem;
 
@@ -74,14 +76,32 @@
         }
 
         .landingImg {
-            flex: 1;
+            z-index: 1;
+            grid-area: main;
             height: 32rem;
+            display: grid;
+            grid-template-areas: 'main';
+            align-items: top;
+
             video,
             img {
+                grid-area: main;
                 width: 100%;
                 height: 100%;
                 object-fit: contain;
+                object-position: center;
                 filter: drop-shadow(0px 0px 16px rgba($on-bg-dark, 0.08));
+            }
+
+            .podium {
+                z-index: 1;
+            }
+
+            .illustration {
+                z-index: 2;
+                height: 60%;
+                width: 100%;
+                opacity: 0.48;
             }
         }
 
@@ -113,13 +133,6 @@
 
         &.right {
             flex-direction: row-reverse;
-        }
-
-        &.card {
-            background-color: $bg-dark-var1;
-            border-radius: 1rem;
-            box-shadow: 0 0 1rem rgba($bg-dark, 0.32);
-            margin: 4rem 0;
         }
     }
 
