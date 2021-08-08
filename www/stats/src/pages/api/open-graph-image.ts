@@ -24,13 +24,9 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
     const relativeUrl = (req.query['path'] as string) || '/'
     const url = (process.env.NODE_ENV === 'production' ? 'https://' : 'http://') + req.headers.host + relativeUrl
 
-    console.log({ url })
-
     await page.goto(url, { timeout: 15 * 1000 })
 
-    const data = await page.screenshot({
-        type: 'png',
-    })
+    const data = await page.screenshot({ type: 'png' })
 
     await browser.close()
 
