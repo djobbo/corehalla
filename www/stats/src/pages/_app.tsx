@@ -33,8 +33,16 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
             <Head>
                 <link rel="icon" type="image/png" href="/images/favicon.png" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <meta property="og:image" content="/images/og/main-og.jpg" />
-                <meta name="twitter:image" content="/images/og/main-og.jpg" />
+                {!router.pathname.startsWith('/stats') && (
+                    <>
+                        <meta name="description" content="Brawlhalla Stats and Rankings" />
+                        <meta property="og:title" content="Corehalla" />
+                        <meta property="og:description" content="Brawlhalla Stats and Rankings" />
+
+                        <meta property="og:image" content="/images/og/main-og.jpg" />
+                        <meta name="twitter:image" content="/images/og/main-og.jpg" />
+                    </>
+                )}
             </Head>
 
             <ThemeProvider>

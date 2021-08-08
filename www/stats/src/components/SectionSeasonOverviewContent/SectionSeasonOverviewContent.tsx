@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 
-import styles from './index.module.scss'
+import styles from './SectionSeasonOverviewContent.module.scss'
 
 import { StatDesc, StatLarge, StatMedium, StatSmall } from '@TextStyles'
 

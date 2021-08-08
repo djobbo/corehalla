@@ -12,8 +12,7 @@
         "watch": "lerna run --scope @corehalla/* watch",
         "test": "lerna run --parallel test",
         "typecheck": "lerna run --parallel typecheck",
-        "lint": "(yarn build:lib) && (yarn eslint) && (yarn typecheck) && (yarn test) && (yarn format)",
-        "format": "prettier --write .",
+        "lint": "(yarn build:lib) && (yarn eslint) && (yarn typecheck) && (yarn test)",
         "precommit": "yarn lint",
         "postinstall": "husky install && patch-package"
     },

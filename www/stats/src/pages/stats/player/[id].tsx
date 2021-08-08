@@ -5,6 +5,7 @@ import { GetServerSideProps } from 'next'
 import Head from 'next/head'
 import React from 'react'
 
+import { useOpenGraphImage } from '~hooks/useOpenGraphImage'
 import { LegendsTab } from '~layout/pages/stats/PlayerStats_LegendsTab'
 import { OverviewTab } from '~layout/pages/stats/PlayerStats_OverviewTab'
 import { TeamsTab } from '~layout/pages/stats/PlayerStats_TeamsTab'
@@ -40,12 +41,17 @@ const Tab = ({ playerStats }: Props) => {
 }
 
 const PlayerStatsPage = ({ playerStats }: Props): JSX.Element => {
+    const { ogImageURL } = useOpenGraphImage()
     return (
         <TabsProvider<PlayerStatsTabs> defaultTab="overview">
             <Head>
                 <title>{playerStats.name} Stats • Corehalla</title>
-                <meta property="og:image" content={`/api/og/stats/player/${playerStats.id}`} />
-                <meta name="twitter:image" content={`/api/og/stats/player/${playerStats.id}`} />
+                <meta name="description" content={`${playerStats.name} Stats`} />
+                <meta property="og:title" content="Corehalla" />
+                <meta property="og:description" content={`${playerStats.name} Stats`} />
+
+                <meta property="og:image" content={ogImageURL} />
+                <meta name="twitter:image" content={ogImageURL} />
             </Head>
             <Header
                 content={

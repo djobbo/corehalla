@@ -28,16 +28,9 @@ class MyDocument extends Document {
                         rel="stylesheet"
                     />
 
-                    {/* HTML Meta Tags */}
-                    <meta name="description" content="Brawlhalla Stats and Rankings" />
-
-                    {/* Facebook Meta Tags */}
                     <meta property="og:url" content="https://neue.corehalla.com" />
                     <meta property="og:type" content="website" />
-                    <meta property="og:title" content="Corehalla" />
-                    <meta property="og:description" content="Brawlhalla Stats and Rankings" />
 
-                    {/* Twitter Meta Tags */}
                     <meta name="twitter:card" content="summary_large_image" />
                     <meta property="twitter:domain" content="neue.corehalla.com" />
                     <meta property="twitter:url" content="https://neue.corehalla.com" />
