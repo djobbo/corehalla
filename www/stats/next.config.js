@@ -6,7 +6,7 @@ const withPWA = require('next-pwa')
  */
 const config = {
     webpack5: true,
-    webpack: (config) => ({
+    webpack: config => ({
         ...config,
         module: {
             ...config.module,
