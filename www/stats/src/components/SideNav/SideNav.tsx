@@ -59,15 +59,15 @@ export function SideNav(): JSX.Element {
                     </Link>
                 ))}
                 <hr className={styles.separator} />
-                {favorites.map(({ id, type, name, thumbURI }) => (
-                    <Link href={`/stats/${type}/${id}`} key={`${type}/${id}`}>
+                {favorites.map(({ favorite_id, type, label, thumb_uri }) => (
+                    <Link href={`/stats/${type}/${favorite_id}`} key={`${type}/${favorite_id}`}>
                         <a
                             className={`${styles.navItem} ${
-                                pathname.startsWith(`/stats/${type}`) && query.id === id ? styles.active : ''
+                                pathname.startsWith(`/stats/${type}`) && query.id === favorite_id ? styles.active : ''
                             }`}
                         >
-                            <img src={thumbURI} alt={name} />
-                            <span>{name.substr(0, 3).toUpperCase()}</span>
+                            <img src={thumb_uri} alt={label} />
+                            <span>{label.substr(0, 3).toUpperCase()}</span>
                         </a>
                     </Link>
                 ))}

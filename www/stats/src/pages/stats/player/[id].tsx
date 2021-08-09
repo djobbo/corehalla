@@ -69,10 +69,10 @@ const PlayerStatsPage = ({ playerStats }: Props): JSX.Element => {
                     title={playerStats.name}
                     bannerURI="/images/backgrounds/Orion.jpg"
                     favorite={{
-                        name: playerStats.name,
-                        id: playerStats.id.toString(), // TODO: id is a number?
+                        label: playerStats.name,
+                        favorite_id: playerStats.id.toString(), // TODO: id is a number?
                         type: 'player',
-                        thumbURI: `/images/icons/legends/${
+                        thumb_uri: `/images/icons/legends/${
                             playerStats.legends.sort((a, b) => b.season.rating - a.season.rating)[0].name
                         }.png`,
                     }}

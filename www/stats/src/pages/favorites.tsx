@@ -20,8 +20,8 @@ const Tab = (): JSX.Element => {
                         .filter((fav) => fav.type === 'player')
                         .map((fav, i) => (
                             <Card key={i}>
-                                <Link href={`/stats/player/${fav.id}`}>
-                                    <a>{fav.name}</a>
+                                <Link href={`/stats/player/${fav.favorite_id}`}>
+                                    <a>{fav.label}</a>
                                 </Link>
                             </Card>
                         ))}
@@ -34,8 +34,8 @@ const Tab = (): JSX.Element => {
                         .filter((fav) => fav.type === 'clan')
                         .map((fav, i) => (
                             <Card key={i}>
-                                <Link href={`/stats/clan/${fav.id}`} key={i}>
-                                    <a>{fav.name}</a>
+                                <Link href={`/stats/clan/${fav.favorite_id}`} key={i}>
+                                    <a>{fav.label}</a>
                                 </Link>
                             </Card>
                         ))}

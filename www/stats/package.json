@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@corehalla/core": "0.1.0",
+        "@supabase/supabase-js": "^1.21.0",
         "chrome-aws-lambda": "^10.1.0",
         "dayjs": "^1.10.3",
         "framer-motion": "^4.1.11",
