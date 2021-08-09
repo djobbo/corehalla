@@ -11,12 +11,15 @@ interface Props {
 }
 
 export function ProfileHeader({ bannerURI, title, favorite, children }: PropsWithChildren<Props>): JSX.Element {
-    const { isFavorite, addFavorite, removeFavorite, updatedAt } = useFavorites()
-    const [isFav, setIsFav] = useState(isFavorite(favorite))
+    const { favorites, isFavorite, addFavorite, removeFavorite } = useFavorites()
+    const [isFav, setIsFav] = useState(false)
 
     useEffect(() => {
-        setIsFav(isFavorite(favorite))
-    }, [updatedAt])
+        ;(async () => {
+            const checkIsFav = await isFavorite(favorite)
+            setIsFav(checkIsFav)
+        })()
+    }, [favorites])
 
     return (
         <div className={styles.container}>

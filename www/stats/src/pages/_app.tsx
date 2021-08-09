@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 
 import '~styles/global.scss'
 
+import { AuthProvider } from '~providers/AuthProvider'
 import { FavoritesProvider } from '~providers/FavoritesProvider'
 import { ThemeProvider } from '~providers/ThemeProvider'
 
@@ -46,20 +47,22 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
             </Head>
 
             <ThemeProvider>
-                <FavoritesProvider>
-                    <AnimateSharedLayout>
-                        <div id="App">
-                            <div id="Sidenav">
-                                <SideNav />
+                <AuthProvider>
+                    <FavoritesProvider>
+                        <AnimateSharedLayout>
+                            <div id="App">
+                                <div id="Sidenav">
+                                    <SideNav />
+                                </div>
+                                <div id="Content">
+                                    <AnimatePresence exitBeforeEnter initial>
+                                        <Component {...pageProps} />
+                                    </AnimatePresence>
+                                </div>
                             </div>
-                            <div id="Content">
-                                <AnimatePresence exitBeforeEnter initial>
-                                    <Component {...pageProps} />
-                                </AnimatePresence>
-                            </div>
-                        </div>
-                    </AnimateSharedLayout>
-                </FavoritesProvider>
+                        </AnimateSharedLayout>
+                    </FavoritesProvider>
+                </AuthProvider>
             </ThemeProvider>
             {pageLoading && <Loader />}
         </>

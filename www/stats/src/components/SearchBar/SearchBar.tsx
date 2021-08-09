@@ -24,7 +24,9 @@ export const SearchBar = (): JSX.Element => {
     const { favorites } = useFavorites()
     const [val, setVal, isLoading] = useDebounceValue('', 500)
     const [options, setOptions] = useState<Option<string>[]>(
-        favorites.filter((fav) => fav.type === 'player').map((player) => ({ value: player.id, label: player.name })),
+        favorites
+            .filter((fav) => fav.type === 'player')
+            .map((player) => ({ value: player.favorite_id, label: player.label })),
     )
 
     const router = useRouter()
