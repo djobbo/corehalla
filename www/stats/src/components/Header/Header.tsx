@@ -3,12 +3,14 @@ import { ReactNode, useState } from 'react'
 
 import styles from './Header.module.scss'
 
+import { useAuth } from '~providers/AuthProvider'
+
 import { MobileNav } from '@MobileNav'
 import { SearchBar } from '@SearchBar'
 
 import { BurgerButton } from './BurgerButton'
-import { useAuth } from '~providers/AuthProvider'
-import { signIn, signOut } from '~supabase/client'
+
+import { signIn } from '~supabase/client'
 
 interface Props {
     content?: ReactNode
