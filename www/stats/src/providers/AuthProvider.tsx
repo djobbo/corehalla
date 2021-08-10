@@ -35,10 +35,14 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
 
         setUser(profileData)
 
-        if (!session || !session.provider_token || !profileData) return
+        if (!profileData) return
+
+        const { error } = await supabase.from('profiles').upsert({ id: profileData.id })
+        console.log({ error })
+
+        if (!session || !session.provider_token) return
 
         try {
-            console.log('asdokjsadolkasjdlaksdjaslkdjaslkdjsaldkjsa')
             const res = await fetch('https://discord.com/api/users/@me/connections', {
                 headers: {
                     authorization: `Bearer ${session.provider_token}`,
@@ -58,7 +62,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
         })
 
         return () => {
-            authListener.unsubscribe()
+            authListener?.unsubscribe()
         }
     }, [])
 
@@ -89,7 +93,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
                 console.error()
             }
         })()
-    }, [user])
+    }, [user, discord3rdPartyApps])
 
     return (
         <authContext.Provider

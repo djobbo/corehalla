@@ -17,8 +17,6 @@ export interface IFavorite {
     type: FavoriteType
 }
 
-const getLocalStorage = () => (typeof window !== 'undefined' ? localStorage : undefined)
-
 interface IFavoritesContext {
     favorites: IFavorite[]
     isFavorite: (value: IFavorite) => Promise<boolean>
@@ -70,9 +68,6 @@ export const FavoritesProvider: FC<Props> = ({ children }: Props) => {
         const { error } = await supabase.from('favorites').insert({ ...favorite, user_id: user.id })
 
         if (error) console.error(error)
-
-        getLocalStorage()?.setItem('favoritesUpdated', Date.now().toString())
-        await fetchFavorites()
     }
 
     const removeFavorite = async ({ favorite_id, type }: IFavorite): Promise<void> => {
@@ -85,9 +80,6 @@ export const FavoritesProvider: FC<Props> = ({ children }: Props) => {
         console.log({ result })
 
         // if (error) console.error(error)
-
-        getLocalStorage()?.setItem('favoritesUpdated', Date.now().toString())
-        await fetchFavorites()
     }
 
     useEffect(() => {
@@ -96,19 +88,24 @@ export const FavoritesProvider: FC<Props> = ({ children }: Props) => {
             await fetchFavorites()
         })()
 
-        const onStorageChange = async (event) => {
-            console.log(`Key Changed: ${event.key}`)
-            console.log(`New Value: ${event.newValue}`)
+        if (!user) return
 
-            if (event.key === 'favoritesUpdated') {
+        // const listener = supabase
+        //     .from('*')
+        //     .on('*', (payload) => {
+        //         console.log('Change received!', payload)
+        //     })
+        //     .subscribe((...a) => console.log('asdasdasdasd', { a }))
+        const listener = supabase
+            .from(`favorites:user_id=eq.${user.id}`)
+            .on('*', async () => {
+                console.log('asidjhasidjkhsa')
                 await fetchFavorites()
-            }
-        }
-
-        window.addEventListener('storage', onStorageChange)
+            })
+            .subscribe()
 
         return () => {
-            window.removeEventListener('storage', onStorageChange)
+            listener.unsubscribe()
         }
     }, [user])
 
