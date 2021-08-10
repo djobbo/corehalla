@@ -23,9 +23,6 @@ export const ThemeProvider = ({ children }: Props): JSX.Element => {
 
     useEffect(() => {
         const onStorageChange = ({ key, newValue }: StorageEvent) => {
-            console.log(`Key Changed: ${key}`)
-            console.log(`New Value: ${newValue}`)
-
             if (key !== 'theme') return
 
             setThemeName(themeNames.includes(newValue as ThemeName) ? (newValue as ThemeName) : 'default')
@@ -42,7 +39,6 @@ export const ThemeProvider = ({ children }: Props): JSX.Element => {
     }, [])
 
     useEffect(() => {
-        console.log({ themeName })
         if (!themeName) return
 
         localStorage.setItem('theme', themeName)

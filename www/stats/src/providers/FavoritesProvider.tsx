@@ -41,8 +41,6 @@ export const FavoritesProvider: FC<Props> = ({ children }: Props) => {
     const fetchFavorites = async (): Promise<void> => {
         const { error, data: dbFav } = await supabase.from<IFavorite>('favorites')
 
-        console.log({ error, dbFav })
-
         if (error) {
             console.error(error)
             setFavorites([])
@@ -52,9 +50,7 @@ export const FavoritesProvider: FC<Props> = ({ children }: Props) => {
     }
 
     const isFavorite = async ({ favorite_id, type }: IFavorite): Promise<boolean> => {
-        const { error, data: existingFav } = await supabase.from('favorites').select('*').match({ favorite_id, type })
-
-        console.log({ error, existingFav })
+        const { data: existingFav } = await supabase.from('favorites').select('*').match({ favorite_id, type })
 
         return existingFav.length > 0
     }
@@ -71,35 +67,19 @@ export const FavoritesProvider: FC<Props> = ({ children }: Props) => {
     }
 
     const removeFavorite = async ({ favorite_id, type }: IFavorite): Promise<void> => {
-        console.log('bruh', { favorite_id, type })
-
-        const { data } = await supabase.from('favorites').select('*').match({ favorite_id, type })
-        console.log({ data })
-        const result = await supabase.from('favorites').delete().match({ favorite_id, type })
-
-        console.log({ result })
-
-        // if (error) console.error(error)
+        await supabase.from('favorites').delete().match({ favorite_id, type })
     }
 
     useEffect(() => {
         ;(async () => {
-            console.log('update favs xd')
             await fetchFavorites()
         })()
 
         if (!user) return
 
-        // const listener = supabase
-        //     .from('*')
-        //     .on('*', (payload) => {
-        //         console.log('Change received!', payload)
-        //     })
-        //     .subscribe((...a) => console.log('asdasdasdasd', { a }))
         const listener = supabase
             .from(`favorites:user_id=eq.${user.id}`)
             .on('*', async () => {
-                console.log('asidjhasidjkhsa')
                 await fetchFavorites()
             })
             .subscribe()
