@@ -53,17 +53,7 @@ const PlayerStatsPage = ({ playerStats }: Props): JSX.Element => {
                 <meta property="og:image" content={ogImageURL} />
                 <meta name="twitter:image" content={ogImageURL} />
             </Head>
-            <Header
-                content={
-                    <Tabs<PlayerStatsTabs>
-                        tabs={[
-                            { title: 'Overview', name: 'overview' },
-                            { title: 'Teams', name: 'teams' },
-                            { title: 'Legends', name: 'legends' },
-                        ]}
-                    />
-                }
-            />
+            <Header content={`${playerStats.name} • Stats`} />
             <Container>
                 <ProfileHeader
                     title={playerStats.name}
@@ -77,17 +67,26 @@ const PlayerStatsPage = ({ playerStats }: Props): JSX.Element => {
                         }.png`,
                     }}
                 >
-                    <div>
-                        <p>
-                            <StatDesc>level</StatDesc>
-                            <StatSmall>{playerStats.level}</StatSmall>
-                            <StatDesc>({playerStats.xp} xp)</StatDesc>
-                        </p>
-                        <p>
-                            <StatDesc>time spent in game</StatDesc>
-                            <StatSmall>{formatTime(playerStats.matchtime)}</StatSmall>
-                        </p>
-                    </div>
+                    <>
+                        <div>
+                            <p>
+                                <StatDesc>level</StatDesc>
+                                <StatSmall>{playerStats.level}</StatSmall>
+                                <StatDesc>({playerStats.xp} xp)</StatDesc>
+                            </p>
+                            <p>
+                                <StatDesc>time spent in game</StatDesc>
+                                <StatSmall>{formatTime(playerStats.matchtime)}</StatSmall>
+                            </p>
+                        </div>
+                        <Tabs<PlayerStatsTabs>
+                            tabs={[
+                                { title: 'Overview', name: 'overview' },
+                                { title: 'Teams', name: 'teams' },
+                                { title: 'Legends', name: 'legends' },
+                            ]}
+                        />
+                    </>
                 </ProfileHeader>
                 <Tab playerStats={playerStats} />
             </Container>

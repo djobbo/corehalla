@@ -66,6 +66,7 @@ export const TeamsTab = ({ teams }: Props): JSX.Element => {
                 <>
                     {teamSearch ? null : (
                         <>
+                            <SectionSeparator />
                             <PageSection title="2v2 overview" initFoldState={true}>
                                 <GamesStatsCard
                                     {...totalTeamsStats}
@@ -74,9 +75,9 @@ export const TeamsTab = ({ teams }: Props): JSX.Element => {
                                 />
                                 <MiscStats stats={[]} />
                             </PageSection>
-                            <SectionSeparator />
                         </>
                     )}
+                    <SectionSeparator />
                     <PageSection title="teams" initFoldState={true}>
                         <Card className={layoutStyles.sortAndFilterContainer}>
                             <Select<TeamsSort>

@@ -66,24 +66,22 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     }, [])
 
     useEffect(() => {
+        console.log({ discord3rdPartyApps })
+
         if (!user || discord3rdPartyApps.length < 0) return
         ;(async () => {
             try {
                 await supabase.from('third_party').upsert(
                     discord3rdPartyApps.map(({ id, name, type, verified }) => ({
                         app_id: id,
-                        unique_app_id: type + id,
                         name,
                         type,
                         verified,
                         user_id: user.id,
                     })),
-                    {
-                        onConflict: 'unique_app_id',
-                    },
                 )
             } catch (e) {
-                console.error()
+                console.error(e)
             }
         })()
     }, [user, discord3rdPartyApps])

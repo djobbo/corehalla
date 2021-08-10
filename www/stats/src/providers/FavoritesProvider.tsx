@@ -46,13 +46,19 @@ export const FavoritesProvider: FC<Props> = ({ children }: Props) => {
             setFavorites([])
         }
 
+        console.log({ dbFav })
+
         setFavorites(dbFav)
     }
 
     const isFavorite = async ({ favorite_id, type }: IFavorite): Promise<boolean> => {
-        const { data: existingFav } = await supabase.from('favorites').select('*').match({ favorite_id, type })
+        return typeof favorites.find((fav) => fav.favorite_id === favorite_id && fav.type === type) !== 'undefined'
+        // const { data: existingFav } = await supabase.from('favorites').select('*').match({ favorite_id, type })
+        // console.log(existingFav)
 
-        return existingFav.length > 0
+        // if (!existingFav) return false
+
+        // return existingFav.length > 0
     }
 
     const addFavorite = async (favorite: IFavorite): Promise<void> => {
@@ -61,7 +67,7 @@ export const FavoritesProvider: FC<Props> = ({ children }: Props) => {
 
         if (await isFavorite(favorite)) return
 
-        const { error } = await supabase.from('favorites').insert({ ...favorite, user_id: user.id })
+        const { error } = await supabase.from('favorites').upsert({ ...favorite, user_id: user.id })
 
         if (error) console.error(error)
     }
