@@ -9,6 +9,7 @@ const signIn = async (): Promise<void> => {
         },
         {
             scopes: 'identify email connections guilds',
+            redirectTo: window.location.href,
         },
     )
 
