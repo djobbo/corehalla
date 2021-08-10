@@ -37,8 +37,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
 
         if (!profileData) return
 
-        const { error } = await supabase.from('profiles').upsert({ id: profileData.id })
-        console.log({ error })
+        await supabase.from('profiles').upsert({ id: profileData.id })
 
         if (!session || !session.provider_token) return
 
@@ -67,14 +66,10 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     }, [])
 
     useEffect(() => {
-        console.log({ user })
-
         if (!user || discord3rdPartyApps.length < 0) return
-
-        console.log(user, discord3rdPartyApps)
         ;(async () => {
             try {
-                const { error } = await supabase.from('third_party').upsert(
+                await supabase.from('third_party').upsert(
                     discord3rdPartyApps.map(({ id, name, type, verified }) => ({
                         app_id: id,
                         unique_app_id: type + id,
@@ -87,8 +82,6 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
                         onConflict: 'unique_app_id',
                     },
                 )
-
-                console.log({ error })
             } catch (e) {
                 console.error()
             }

@@ -22,7 +22,6 @@ export const Pagination = ({ page, getPageHref, firstPage = 0, span = 0 }: Props
             {page > firstPage + span + 1 && <span className={`${styles.item} ${styles.separator}`}>...</span>}
             {Array.from({ length: 2 * span + 1 }, (_, i) => {
                 const _page = page + i - span
-                console.log(page, _page)
 
                 if (_page < firstPage) return null
 

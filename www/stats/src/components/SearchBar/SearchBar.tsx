@@ -32,7 +32,6 @@ export const SearchBar = (): JSX.Element => {
     const router = useRouter()
 
     const handleChange = (playerId: string) => {
-        console.log({ playerId })
         if (!playerId) return
 
         router.push(`/stats/player/${playerId}`)
