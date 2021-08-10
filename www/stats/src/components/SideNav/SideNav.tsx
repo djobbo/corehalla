@@ -3,9 +3,12 @@ import { useRouter } from 'next/router'
 
 import styles from './SideNav.module.scss'
 
+import { useAuth } from '~providers/AuthProvider'
 import { useFavorites } from '~providers/FavoritesProvider'
 
 import { FavoriteIcon, HomeIcon, RankingsIcon, SettingsIcon } from '@Icons'
+
+import { signIn, signOut } from '~supabase/client'
 
 interface BottomNavigationTab {
     title: string
@@ -38,9 +41,11 @@ const tabs: BottomNavigationTab[] = [
     },
 ]
 
-export function SideNav(): JSX.Element {
+export const SideNav = (): JSX.Element => {
     const { favorites } = useFavorites()
     const { pathname, query } = useRouter()
+
+    const { user } = useAuth()
 
     if (typeof document === 'undefined') return null
 
@@ -71,6 +76,22 @@ export function SideNav(): JSX.Element {
                         </a>
                     </Link>
                 ))}
+            </div>
+            <div className={styles.content}>
+                {user ? (
+                    <>
+                        <a className={styles.profileIcon}>
+                            <img src={user.user_metadata['avatar_url']} alt="avatar" width={32} height={32} />
+                        </a>
+                        <a onClick={signOut} className={styles.navItem}>
+                            Logout
+                        </a>
+                    </>
+                ) : (
+                    <a onClick={signIn} className={styles.navItem}>
+                        Login
+                    </a>
+                )}
             </div>
         </div>
     )

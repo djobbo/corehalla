@@ -135,6 +135,7 @@ export const LegendsTab = ({ playerStats }: Props): JSX.Element => {
             </Card>
             {sortByProp(filterByWeapon(playerStats.legends)).map((legend, i) => (
                 <>
+                    <SectionSeparator />
                     <PageSection key={legend.id} title={`${i + 1}. ${legend.name} • ${getSortDisplayStr(legend)}`}>
                         <div className={styles.legendLevelStats}>
                             <img className={styles.legendIcon} src={`/images/icons/legends/${legend.name}.png`} />
@@ -157,7 +158,6 @@ export const LegendsTab = ({ playerStats }: Props): JSX.Element => {
                         />
                         <SectionOverallStatsContent {...legend} losses={legend.games - legend.wins} />
                     </PageSection>
-                    <SectionSeparator />
                 </>
             ))}
         </>
