@@ -18,7 +18,7 @@
     .right {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 2rem;
 
         .profileIcon {
             img {
@@ -32,6 +32,18 @@
         }
 
         .loginBtn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background-color: $accent;
+            color: $on-bg-dark;
+            box-shadow: 0 0 0.5rem rgba(black, 0.24);
+            white-space: nowrap;
+
+            fill: $on-bg-dark;
         }
     }
 

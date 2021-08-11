@@ -1,3 +1,4 @@
+import { DiscordIcon } from '@Icons/Social'
 import Link from 'next/link'
 import { ReactNode, useState } from 'react'
 
@@ -41,7 +42,7 @@ export const Header = ({ content }: Props): JSX.Element => {
                     </>
                 ) : (
                     <a onClick={signIn} className={styles.loginBtn}>
-                        Login
+                        Login <DiscordIcon width="1.5rem" height="1.5rem" />
                     </a>
                 )}
             </div>

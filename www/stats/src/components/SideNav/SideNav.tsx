@@ -9,6 +9,7 @@ import { useFavorites } from '~providers/FavoritesProvider'
 import { FavoriteIcon, HomeIcon, RankingsIcon, SettingsIcon } from '@Icons'
 
 import { signIn, signOut } from '~supabase/client'
+import { useSearch } from '~providers/SearchProvider'
 
 interface BottomNavigationTab {
     title: string
@@ -47,12 +48,14 @@ export const SideNav = (): JSX.Element => {
 
     const { user } = useAuth()
 
+    const { search, setSearch } = useSearch()
+
     if (typeof document === 'undefined') return null
 
     return (
         <div className={styles.sidenav}>
             <div className={styles.content}>
-                {tabs.map(({ link, icon, exact }, i) => (
+                {tabs.map(({ link, icon, exact, title }, i) => (
                     <Link href={link} key={i}>
                         <a
                             className={`${styles.navItem} ${
@@ -60,30 +63,40 @@ export const SideNav = (): JSX.Element => {
                             }`}
                         >
                             {icon}
+                            {title}
                         </a>
                     </Link>
                 ))}
-                <hr className={styles.separator} />
-                {favorites.map(({ favorite_id, type, label, thumb_uri }) => (
-                    <Link href={`/stats/${type}/${favorite_id}`} key={`${type}/${favorite_id}`}>
-                        <a
-                            className={`${styles.navItem} ${
-                                pathname.startsWith(`/stats/${type}`) && query.id === favorite_id ? styles.active : ''
-                            }`}
-                        >
-                            <img src={thumb_uri} alt={label} />
-                            <span>{label.substr(0, 3).toUpperCase()}</span>
-                        </a>
-                    </Link>
-                ))}
+                {favorites.length > 0 && (
+                    <>
+                        <hr className={styles.separator} />
+                        <input type="text" value={search} onChange={({ target }) => setSearch(target.value)} />
+                    </>
+                )}
+                {favorites
+                    .filter((fav) => fav.label.toLowerCase().includes(search.toLowerCase()))
+                    .map(({ favorite_id, type, label, thumb_uri }) => (
+                        <Link href={`/stats/${type}/${favorite_id}`} key={`${type}/${favorite_id}`}>
+                            <a
+                                className={`${styles.navItem} ${
+                                    pathname.startsWith(`/stats/${type}`) && query.id === favorite_id
+                                        ? styles.active
+                                        : ''
+                                }`}
+                            >
+                                <img src={thumb_uri} alt={label} />
+                                <span>{label.substr(0, 16)}</span>
+                            </a>
+                        </Link>
+                    ))}
             </div>
             <div className={styles.content}>
                 {user ? (
                     <>
-                        <a className={styles.profileIcon}>
-                            <img src={user.user_metadata['avatar_url']} alt="avatar" width={32} height={32} />
-                        </a>
                         <a onClick={signOut} className={styles.navItem}>
+                            <a className={styles.profileIcon}>
+                                <img src={user.user_metadata['avatar_url']} alt="avatar" width={32} height={32} />
+                            </a>
                             Logout
                         </a>
                     </>
