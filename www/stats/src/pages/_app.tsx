@@ -17,6 +17,7 @@ import { SideNav } from '@SideNav'
 const App = ({ Component, pageProps }: AppProps): JSX.Element => {
     const router = useRouter()
     const [pageLoading, setPageLoading] = useState(false)
+
     useEffect(() => {
         const handleStart = () => {
             setPageLoading(true)
@@ -67,7 +68,9 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
                     </FavoritesProvider>
                 </AuthProvider>
             </ThemeProvider>
+
             {pageLoading && <Loader />}
+            {pageLoading && 'asdolikjashokrdljiasjhdlksadlkasjdksajdk'}
         </>
     )
 }

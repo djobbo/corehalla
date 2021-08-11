@@ -120,10 +120,8 @@ export const SideNav = (): JSX.Element => {
             <div className={styles.content}>
                 {user ? (
                     <>
-                        <a onClick={signOut} className={styles.navItem}>
-                            <a className={styles.profileIcon}>
-                                <img src={user.user_metadata['avatar_url']} alt="avatar" width={32} height={32} />
-                            </a>
+                        <a onClick={signOut} className={`${styles.navItem} ${styles.profileIcon}`}>
+                            <img src={user.user_metadata['avatar_url']} alt="avatar" width={32} height={32} />
                             Logout
                         </a>
                     </>
