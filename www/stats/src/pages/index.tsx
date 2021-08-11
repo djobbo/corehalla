@@ -1,3 +1,4 @@
+import { DiscordIcon } from '@Icons/Social'
 import Head from 'next/head'
 import Link from 'next/link'
 
@@ -7,7 +8,6 @@ import { Container } from '@Container'
 import { Footer } from '@Footer'
 import { Header } from '@Header'
 import { SearchBar } from '@SearchBar'
-import { DiscordIcon } from '@SocialIcons'
 
 const HomePage = (): JSX.Element => {
     return (
@@ -41,7 +41,7 @@ const HomePage = (): JSX.Element => {
                             <p className={styles.desc}>Salut jac</p>
                             <Link href="https://discord.corehalla.com">
                                 <a target="_blank" className={styles.landingBtn}>
-                                    {DiscordIcon} Join our Discord
+                                    <DiscordIcon width="2rem" height="2rem" /> Join our Discord
                                 </a>
                             </Link>
                         </div>

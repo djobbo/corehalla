@@ -4,13 +4,13 @@
     position: sticky;
     top: 0;
     background-color: $bg-dark;
-    width: 4rem;
+    width: 16rem;
     height: 100vh;
     background-color: $bg-dark;
     border-right: 1px solid $bg-dark-var2;
     display: grid;
     grid-template-rows: 1fr auto;
-    padding: 1rem 0;
+    padding: 1rem 0.5rem;
 
     &::-webkit-scrollbar {
         width: 0px;
@@ -19,7 +19,6 @@
     .content {
         display: flex;
         flex-direction: column;
-        align-items: center;
         justify-content: flex-start;
         max-height: 100vh;
         overflow-x: hidden;
@@ -27,20 +26,19 @@
         gap: 0.75rem;
 
         .navItem {
-            width: 3rem;
-            min-height: 3rem;
-            height: 3rem;
+            min-height: 2.5rem;
+            height: 2.5rem;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
+            gap: 0.5rem;
             color: $on-bg-dark-var1;
-            font-size: 0.75rem;
-            background-color: $bg-dark;
-            border: 2px solid $bg-dark-var2;
-            border-radius: 1rem;
+            font-size: 1rem;
+            background-color: $bg-dark-var1;
+            border-radius: 0.5rem;
             padding: 0.25rem;
             cursor: pointer;
+            text-overflow: ellipsis;
+            word-wrap: nowrap;
 
             svg {
                 fill: none;
@@ -50,7 +48,7 @@
             }
 
             img {
-                width: 100%;
+                width: 2rem;
                 height: 1.5rem;
                 object-fit: contain;
                 object-position: center;
@@ -74,18 +72,17 @@
             cursor: pointer;
 
             img {
-                width: 3rem;
-                height: 3rem;
+                width: 2rem;
+                height: 2rem;
                 object-fit: cover;
                 object-position: center;
-                border-radius: 50%;
+                border-radius: 1.25rem;
                 box-shadow: 0 0 0.5rem rgba(black, 0.24);
             }
         }
 
         .separator {
-            border-bottom: 1px solid $on-bg-dark-var1;
-            width: 1.5rem;
+            border-bottom: 1px solid $bg-dark-var2;
         }
     }
 }

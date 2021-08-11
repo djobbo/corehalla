@@ -17,7 +17,7 @@ export const useDebounce = (fn: () => void, delay = 0, ...deps: DependencyList):
 export const useDebounceValue = <T>(
     defaultValue: T,
     delay = 0,
-): [value: T, setValue: Dispatch<SetStateAction<T>>, loading: boolean] => {
+): [value: T, debouncedValue: T, setValue: Dispatch<SetStateAction<T>>, loading: boolean] => {
     const [value, setValue] = useState<T>(defaultValue)
     const [debouncedValue, setDebouncedValue] = useState<T>(defaultValue)
 
@@ -27,5 +27,5 @@ export const useDebounceValue = <T>(
 
     useDebounce(updateValue, delay, value)
 
-    return [debouncedValue, setValue, value !== debouncedValue]
+    return [value, debouncedValue, setValue, value !== debouncedValue]
 }

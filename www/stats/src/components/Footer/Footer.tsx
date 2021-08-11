@@ -1,32 +1,32 @@
+import { DiscordIcon, GithubIcon, InstagramIcon, TwitterIcon } from '@Icons/Social'
 import Link from 'next/link'
-import { ReactNode } from 'react'
 
 import styles from './Footer.module.scss'
 
 import { Container } from '@Container'
-import { DiscordIcon, GithubIcon, InstagramIcon, TwitterIcon } from '@SocialIcons'
+import { IconComponent } from '@Icons'
 
 interface ISocialLink {
     href: string
-    icon: ReactNode
+    Icon: IconComponent
 }
 
 const socialLinks: ISocialLink[] = [
     {
         href: 'https://twitter.com/Corehalla',
-        icon: TwitterIcon,
+        Icon: TwitterIcon,
     },
     {
         href: 'https://github.com/AlfieGoldson/CorehallaNeue',
-        icon: GithubIcon,
+        Icon: GithubIcon,
     },
     {
         href: 'https://instagram.com/Corehalla',
-        icon: InstagramIcon,
+        Icon: InstagramIcon,
     },
     {
         href: 'https://discord.gg/eD248ez',
-        icon: DiscordIcon,
+        Icon: DiscordIcon,
     },
 ]
 
@@ -48,7 +48,7 @@ export function Footer(): JSX.Element {
                             <p className={`${styles.content} ${styles.socials}`}>
                                 {socialLinks.map((l, i) => (
                                     <a href={l.href} target="_blank" rel="noreferrer" key={i}>
-                                        {l.icon}
+                                        <l.Icon width="2rem" height="2rem" />
                                     </a>
                                 ))}
                             </p>
