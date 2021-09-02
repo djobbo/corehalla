@@ -1,9 +1,10 @@
 import type { IClan, IClanFormat, IClanMember, IClanMemberFormat } from '../types'
+import { cleanString } from '../util'
 
 export function formatClan({ clan: members, clan_id, clan_name, clan_create_date, clan_xp }: IClan): IClanFormat {
     return {
         id: clan_id,
-        name: clan_name,
+        name: cleanString(clan_name),
         creationDate: clan_create_date,
         xp: clan_xp,
         memberCount: members.length,
@@ -21,7 +22,7 @@ export function sortClanMembers(members: IClanMember[]): { members: IClanMemberF
                 ...acc.members,
                 {
                     id: brawlhalla_id,
-                    name,
+                    name: cleanString(name),
                     rank,
                     joinDate: join_date,
                     xp,

@@ -1,4 +1,5 @@
 import type { IRanking2v2, IRanking2v2Format } from '../types'
+import { cleanString } from '../util'
 
 export const format2v2Ranking = ({
     rank,
@@ -25,12 +26,12 @@ export const format2v2Ranking = ({
         peak,
         players: [
             {
-                name: playerNames[0],
+                name: cleanString(playerNames[0]),
                 id: brawlhalla_id_one,
                 twitchName: twitch_name_one,
             },
             {
-                name: playerNames[1],
+                name: cleanString(playerNames[1]),
                 id: brawlhalla_id_two,
                 twitchName: twitch_name_two,
             },
