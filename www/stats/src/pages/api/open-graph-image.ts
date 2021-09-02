@@ -2,6 +2,8 @@ import chromium from 'chrome-aws-lambda'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { chromium as playwrightChromium } from 'playwright-core'
 
+import { getHostURL } from '~util/getHostURL'
+
 export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
     const execPath = await chromium.executablePath
 
@@ -22,7 +24,12 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
     })
 
     const relativeUrl = (req.query['path'] as string) || '/'
-    const url = (process.env.NODE_ENV === 'production' ? 'https://' : 'http://') + req.headers.host + relativeUrl
+
+    const host = getHostURL(req)
+
+    if (!host) throw new Error('Cannot find host')
+
+    const url = host + relativeUrl
 
     await page.goto(url, { timeout: 15 * 1000 })
 

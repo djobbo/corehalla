@@ -1,5 +1,3 @@
-import { fetch1v1RankingsFormat } from '@corehalla/core'
-import { Mock1v1Rankings } from '@corehalla/core/mocks'
 import type { IRanking1v1Format, RankedRegion } from '@corehalla/core/types'
 import { GetServerSideProps } from 'next'
 import Head from 'next/head'
@@ -8,6 +6,7 @@ import styles from '~styles/pages/RankingsPage.module.scss'
 
 import { Rankings1v1Tab } from '~layout/pages/rankings/Rankings_1v1Tab'
 import { TabsProvider, useTabs } from '~providers/TabsProvider'
+import { getHostURL } from '~util/getHostURL'
 
 import { Container } from '@Container'
 import { Header } from '@Header'
@@ -91,34 +90,35 @@ export default RankingsPage
 export const getServerSideProps: GetServerSideProps<
     Props,
     { rankingsOptions: [bracket: Bracket, region: RankedRegion, page: string] }
-> = async ({ params, query }) => {
-    const [bracket, region, page] = params?.rankingsOptions || []
+> = async ({ params, query, req }) => {
+    const [bracket = '1v1', region = 'ALL', page = '1'] = params?.rankingsOptions || []
 
     const playerSearch = query.p?.toString() || ''
 
-    let rankings: IRanking1v1Format[]
+    try {
+        const host = getHostURL(req)
 
-    // TODO: Switch Bracket 2v2 1v1power 2v2power
+        if (!host) throw new Error('Cannot find host')
 
-    if (process.env.NODE_ENV === 'production') {
-        rankings = await fetch1v1RankingsFormat(process.env.BH_API_KEY, {
-            page,
-            region,
-            name: playerSearch,
-        })
-    } else {
-        rankings = Mock1v1Rankings
-    }
+        const res = await fetch(
+            `${host}/api/rankings/${bracket}/${region}/${page}${playerSearch ? `?p=${playerSearch}` : ''}`,
+        )
 
-    if (!rankings) return { notFound: true }
+        const rankings = await res.json()
 
-    return {
-        props: {
-            bracket: bracket || '1v1',
-            region: region || 'ALL',
-            page: parseInt(page || '1'),
-            playerSearch,
-            rankings,
-        },
+        if (!rankings) return { notFound: true }
+
+        return {
+            props: {
+                bracket: bracket,
+                region: region,
+                page: parseInt(page),
+                playerSearch,
+                rankings,
+            },
+        }
+    } catch (e) {
+        console.log(e)
+        return { notFound: true }
     }
 }

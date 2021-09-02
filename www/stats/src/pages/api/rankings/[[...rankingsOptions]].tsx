@@ -7,12 +7,12 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
     res.setHeader('Cache-Control', 's-maxage=150, stale-while-revalidate')
 
     const [bracket, region, page] =
-        (req.query?.rankingsOptions as [bracket: '1v1' | '2v2', region: RankedRegion, page: string]) || []
+        (req.query?.rankingsOptions as [bracket: '1v1' | '2v2', region: RankedRegion, page: string]) || [] // TODO: Validate input
+
     const playerSearch = req.query?.p as string
 
     if (process.env.NODE_ENV === 'production') {
         if (!bracket || !region || !page) {
-            // TODO: verify types (bracket = 1v1 | 2v2 etc)
             res.status(400).json({ error: 'Bad Request' })
             return
         }
