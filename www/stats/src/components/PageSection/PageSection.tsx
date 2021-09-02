@@ -7,11 +7,11 @@ import { ChevronUpIcon, CompressIcon, ExpandIcon } from '@Icons'
 
 interface Props {
     title: string
-    initFoldState?: boolean
+    collapsed?: boolean
 }
 
-export function PageSection({ children, title, initFoldState }: PropsWithChildren<Props>): JSX.Element {
-    const [foldState, setFoldState] = useState(initFoldState ?? false)
+export function PageSection({ children, title, collapsed }: PropsWithChildren<Props>): JSX.Element {
+    const [foldState, setFoldState] = useState(collapsed ?? false)
 
     return (
         <div className={styles.container}>

@@ -12,6 +12,11 @@ interface Props {
 export const Pagination = ({ page, getPageHref, firstPage = 0, span = 0 }: Props): JSX.Element => {
     return (
         <div className={styles.pagination}>
+            {page > firstPage && (
+                <Link href={getPageHref(page - 1)}>
+                    <a className={`${styles.item}  ${styles.link}`}>{'<'}</a>
+                </Link>
+            )}
             {page > firstPage + span && (
                 <Link href={getPageHref(firstPage)}>
                     <a className={`${styles.item}  ${styles.link} ${page === firstPage ? styles.active : ''}`}>
@@ -33,6 +38,9 @@ export const Pagination = ({ page, getPageHref, firstPage = 0, span = 0 }: Props
                     </Link>
                 )
             })}
+            <Link href={getPageHref(page + 1)}>
+                <a className={`${styles.item}  ${styles.link}`}>{'>'}</a>
+            </Link>
         </div>
     )
 }

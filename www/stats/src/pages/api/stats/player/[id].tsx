@@ -3,8 +3,6 @@ import { MockPlayerStats } from '@corehalla/core/mocks'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
-    res.setHeader('Cache-Control', 's-maxage=150, stale-while-revalidate')
-
     const id = req.query.id as string
 
     if (process.env.NODE_ENV === 'production') {
@@ -19,5 +17,6 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
         return
     }
 
+    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate')
     res.status(200).json(MockPlayerStats)
 }
