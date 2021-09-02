@@ -2,12 +2,13 @@
 
 .tabs {
     margin-top: 1rem;
+
     .tab {
-        padding: 1rem;
+        padding: 0.5rem 1rem;
         background-color: transparent;
         color: $on-bg-dark;
         cursor: pointer;
-        border-radius: 0.5rem;
+        border-radius: 0.25rem;
         font-weight: bold;
         margin-right: 1rem;
         font-size: 0.75rem;

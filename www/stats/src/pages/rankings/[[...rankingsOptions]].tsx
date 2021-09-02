@@ -80,6 +80,12 @@ const RankingsPage = (props: Props): JSX.Element => {
                     />
                 </div>
                 <Tab {...props} />
+                <Pagination
+                    page={page}
+                    getPageHref={(_page) => `/rankings/${bracket}/${region}/${_page}`}
+                    firstPage={1}
+                    span={1}
+                />
             </Container>
         </TabsProvider>
     )

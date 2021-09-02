@@ -18,7 +18,7 @@ export const OverviewTab = ({ playerStats }: Props): JSX.Element => {
     return (
         <>
             <SectionSeparator />
-            <PageSection title="Season Overview" initFoldState>
+            <PageSection title="Season Overview" collapsed>
                 <SectionSeasonOverviewContent
                     {...season}
                     losses={season.games - season.wins}
@@ -26,7 +26,7 @@ export const OverviewTab = ({ playerStats }: Props): JSX.Element => {
                 />
             </PageSection>
             <SectionSeparator />
-            <PageSection title="Aliases" initFoldState>
+            <PageSection title="Aliases" collapsed>
                 {season.teams
                     .reduce<string[]>(
                         (acc, { playerAlias }) => (acc.find((x) => x === playerAlias) ? acc : [...acc, playerAlias]),
@@ -39,7 +39,7 @@ export const OverviewTab = ({ playerStats }: Props): JSX.Element => {
                     ))}
             </PageSection>
             <SectionSeparator />
-            <PageSection title="Glory" initFoldState>
+            <PageSection title="Glory" collapsed>
                 <p>
                     <StatDesc>estimated glory:</StatDesc>
                     <StatMedium>{season.glory.wins + season.glory.bestRating}</StatMedium>
@@ -56,7 +56,7 @@ export const OverviewTab = ({ playerStats }: Props): JSX.Element => {
             {clan && (
                 <>
                     <SectionSeparator />
-                    <PageSection title="Clan" initFoldState>
+                    <PageSection title="Clan" collapsed>
                         <SectionClanOverviewSmallContent
                             {...clan}
                             xp={parseInt(clan.xp)}
@@ -67,7 +67,7 @@ export const OverviewTab = ({ playerStats }: Props): JSX.Element => {
                 </>
             )}
             <SectionSeparator />
-            <PageSection title="Overall Stats" initFoldState>
+            <PageSection title="Overall Stats" collapsed>
                 <SectionOverallStatsContent {...playerStats} losses={playerStats.games - playerStats.wins} />
             </PageSection>
         </>

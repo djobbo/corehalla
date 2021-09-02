@@ -1,0 +1,45 @@
+@import '~styles/theme.scss';
+
+.rankingsItem {
+    display: none;
+    width: 100%;
+    color: $on-bg-dark;
+
+    .name {
+        text-align: left;
+    }
+}
+
+.mobileRankingsItem {
+    background-color: $bg-dark-var1;
+    margin-bottom: 0.5rem;
+
+    .stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .barChart {
+        display: flex;
+        align-items: center;
+
+        .barChartLabel {
+            margin-left: 1rem;
+        }
+    }
+
+    .largeStat {
+        text-align: right;
+    }
+}
+
+@media only screen and (min-width: 600px) {
+    .rankingsItem {
+        display: table-row;
+    }
+
+    .mobileRankingsItem {
+        display: none;
+    }
+}

@@ -24,7 +24,7 @@ export function BarChartCard({ title, stats }: Props): JSX.Element {
                         <StatSmall>{amount}</StatSmall>
                         <StatDesc>{statTitle}</StatDesc>
                     </div>
-                    <BarChart width="100%" height="0.25rem" amount={(amount / max) * 100} />
+                    <BarChart width="100%" height="0.25rem" amount={(amount / max) * 100} rounded />
                 </div>
             ))}
         </Card>
