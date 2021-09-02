@@ -1,4 +1,5 @@
 import type { IRanking1v1, IRanking1v1Format } from '../types'
+import { cleanString } from '../util'
 
 export const format1v1Ranking = ({
     rank,
@@ -16,7 +17,7 @@ export const format1v1Ranking = ({
     best_legend_wins,
 }: IRanking1v1): IRanking1v1Format => ({
     rank,
-    name,
+    name: cleanString(name),
     id,
     rating,
     tier,
