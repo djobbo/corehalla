@@ -16,9 +16,9 @@ class MyDocument extends Document {
                     {/* <meta name="keywords" content="Keywords" /> */}
 
                     <link rel="manifest" href="/manifest.json" />
-                    <link href="icons/favicon-192x192.png" rel="icon" type="image/png" sizes="192x192" />
-                    <link href="icons/favicon-512x512.png" rel="icon" type="image/png" sizes="512x512" />
-                    <link rel="apple-touch-icon" href="icons/icon-192x192.png" />
+                    <link href="/icons/favicon-192x192.png" rel="icon" type="image/png" sizes="192x192" />
+                    <link href="/icons/favicon-512x512.png" rel="icon" type="image/png" sizes="512x512" />
+                    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
                     <meta name="theme-color" content="#317EFB" />
 
                     <link rel="preconnect" href="https://fonts.googleapis.com" />
