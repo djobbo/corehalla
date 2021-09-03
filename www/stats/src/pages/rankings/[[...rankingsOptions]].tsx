@@ -57,8 +57,10 @@ const RankingsPage = (props: Props): JSX.Element => {
                     {region}-{bracket} Rankings | Page {page} • Corehalla
                 </title>
             </Head>
-            <Header
-                content={
+            <Header />
+            <Container>
+                <div className={styles.paginationContainer}>
+                    Regions here...
                     <Tabs<Bracket>
                         tabs={[
                             { title: '1v1', name: '1v1' },
@@ -67,11 +69,6 @@ const RankingsPage = (props: Props): JSX.Element => {
                             { title: 'Power 2v2', name: 'power2v2' },
                         ]}
                     />
-                }
-            />
-            <Container>
-                <div className={styles.paginationContainer}>
-                    Regions here...
                     <Pagination
                         page={page}
                         getPageHref={(_page) => `/rankings/${bracket}/${region}/${_page}`}
