@@ -65,25 +65,87 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
         }
     }, [])
 
+    const fetch3rdPartyApps = async (): Promise<void> => {
+        if (!user) {
+            setDiscord3rdPartyApps([])
+            return
+        }
+
+        const { error, data } = await supabase
+            .from<Discord3rdPartyApp & { user_id: string }>(`third_party`)
+            .select('*')
+            .eq('user_id', user.id)
+
+        console.log({ data })
+
+        if (error) {
+            console.error(error)
+            setDiscord3rdPartyApps([])
+        }
+
+        setDiscord3rdPartyApps(data)
+    }
+
+    useEffect(() => {
+        ;(async () => {
+            await fetch3rdPartyApps()
+        })()
+
+        if (!user) return
+
+        const listener = supabase
+            .from(`third_party:user_id=eq.${user.id}`)
+            .on('*', async (payload) => {
+                console.log({ payload })
+
+                switch (payload.eventType) {
+                    case 'DELETE':
+                        setDiscord3rdPartyApps((current) =>
+                            current.filter((app) => app.id !== payload.old.app_id && app.type === payload.old.type),
+                        )
+                        break
+                    case 'INSERT':
+                        setDiscord3rdPartyApps((current) => [...current, payload.new])
+                        break
+                    case 'UPDATE':
+                        setDiscord3rdPartyApps((current) => [
+                            ...current.filter((app) => app.id !== payload.old.app_id && app.type === payload.old.type),
+                            payload.new,
+                        ])
+                        break
+                    default:
+                        break
+                }
+            })
+            .subscribe()
+
+        return () => {
+            listener.unsubscribe()
+        }
+    }, [user])
+
+    const update3rdPartyApps = async () => {
+        try {
+            await supabase.from('third_party').upsert(
+                discord3rdPartyApps.map(({ id, name, type, verified }) => ({
+                    app_id: id,
+                    name,
+                    type,
+                    verified,
+                    user_id: user.id,
+                })),
+            )
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
     useEffect(() => {
         console.log({ discord3rdPartyApps })
 
-        if (!user || discord3rdPartyApps.length < 0) return
-        ;(async () => {
-            try {
-                await supabase.from('third_party').upsert(
-                    discord3rdPartyApps.map(({ id, name, type, verified }) => ({
-                        app_id: id,
-                        name,
-                        type,
-                        verified,
-                        user_id: user.id,
-                    })),
-                )
-            } catch (e) {
-                console.error(e)
-            }
-        })()
+        if (!user || discord3rdPartyApps.length <= 0) return
+
+        update3rdPartyApps()
     }, [user, discord3rdPartyApps])
 
     return (

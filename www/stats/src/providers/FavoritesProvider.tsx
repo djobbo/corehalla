@@ -85,8 +85,27 @@ export const FavoritesProvider: FC<Props> = ({ children }: Props) => {
 
         const listener = supabase
             .from(`favorites:user_id=eq.${user.id}`)
-            .on('*', async () => {
-                await fetchFavorites()
+            .on('*', async (payload) => {
+                console.log({ payload })
+
+                switch (payload.eventType) {
+                    case 'DELETE':
+                        setFavorites((current) =>
+                            current.filter((favorite) => favorite.favorite_id !== payload.old.favorite_id),
+                        )
+                        break
+                    case 'INSERT':
+                        setFavorites((current) => [...current, payload.new])
+                        break
+                    case 'UPDATE':
+                        setFavorites((current) => [
+                            ...current.filter((favorite) => favorite.favorite_id !== payload.old.favorite_id),
+                            payload.new,
+                        ])
+                        break
+                    default:
+                        break
+                }
             })
             .subscribe()
 
