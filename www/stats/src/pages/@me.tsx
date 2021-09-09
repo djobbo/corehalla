@@ -8,9 +8,12 @@ import { Container } from '@Container'
 import { Footer } from '@Footer'
 import { Header } from '@Header'
 import { Select } from '@Select'
+import { useAuth } from '~providers/AuthProvider'
 
 const SettingsPage = (): JSX.Element => {
     const { setThemeName, themeName } = useTheme()
+
+    const { discord3rdPartyApps } = useAuth()
 
     return (
         <>
@@ -25,6 +28,14 @@ const SettingsPage = (): JSX.Element => {
                     onChange={(value) => setThemeName(value)}
                     defaultValue={{ value: themeName }}
                 />
+            </Container>
+            <Container>
+                {discord3rdPartyApps.map((app) => (
+                    <div key={app.id}>
+                        <h2>{app.type}</h2>
+                        {app.name}
+                    </div>
+                ))}
             </Container>
             <Footer />
         </>

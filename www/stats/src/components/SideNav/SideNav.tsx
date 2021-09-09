@@ -37,8 +37,8 @@ const tabs: BottomNavigationTab[] = [
         icon: FavoriteIcon,
     },
     {
-        title: 'Settings',
-        link: '/settings',
+        title: 'Dashboard',
+        link: '/@me',
         icon: SettingsIcon,
     },
 ]
