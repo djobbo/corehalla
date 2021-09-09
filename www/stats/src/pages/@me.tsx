@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import React from 'react'
 
+import { useAuth } from '~providers/AuthProvider'
 import { useTheme } from '~providers/ThemeProvider'
 import { ThemeName, themeNames } from '~styles/themes'
 
@@ -8,7 +9,6 @@ import { Container } from '@Container'
 import { Footer } from '@Footer'
 import { Header } from '@Header'
 import { Select } from '@Select'
-import { useAuth } from '~providers/AuthProvider'
 
 const SettingsPage = (): JSX.Element => {
     const { setThemeName, themeName } = useTheme()

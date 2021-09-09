@@ -4,7 +4,7 @@ import { StatDesc, StatMedium, StatSmall } from '@TextStyles'
 
 interface Props {
     name: string
-    level: number
+    level: number | string
     xp: number
     personalXp: number
     xpPercentage: number

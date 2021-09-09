@@ -60,7 +60,7 @@ export const OverviewTab = ({ playerStats }: Props): JSX.Element => {
                         <SectionClanOverviewSmallContent
                             {...clan}
                             xp={parseInt(clan.xp)}
-                            level={56 /* TODO: don't hardcode this */}
+                            level={'TBA'}
                             xpPercentage={(clan.personalXp / parseInt(clan.xp)) * 100} // TODO: change clan xp to number in ch.js
                         />
                     </PageSection>
