@@ -1,8 +1,9 @@
 import { FavoritesGrid } from "ui/favorites/FavoritesGrid"
 import { SectionTitle } from "ui/layout/SectionTitle"
+import { bg, css, text } from "ui/theme"
 import { cn } from "common/helpers/classnames"
-import { css, text } from "ui/theme"
 import { useFavorites } from "common/features/favorites/favoritesProvider"
+import { useKBar } from "kbar"
 
 const landingClassName = css({
     height: "60vh",
@@ -10,6 +11,7 @@ const landingClassName = css({
 
 const Page = () => {
     const { favorites } = useFavorites()
+    const { query } = useKBar()
 
     return (
         <>
@@ -34,6 +36,15 @@ const Page = () => {
                     Welcome to Corehalla, the fastest and easiest way to find
                     your Brawlhalla Stats, and official rankings.
                 </p>
+                <div className="mt-8">
+                    <button
+                        type="button"
+                        className={cn("rounded py-2 px-4", bg("blue9"))}
+                        onClick={query.toggle}
+                    >
+                        Search player...
+                    </button>
+                </div>
             </div>
             {favorites.length > 0 && (
                 <div>

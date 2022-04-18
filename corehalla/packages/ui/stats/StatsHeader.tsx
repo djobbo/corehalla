@@ -57,7 +57,7 @@ export const StatsHeader = ({
                     >
                         {isItemFavorite ? (
                             <>
-                                Favorite
+                                Remove Favorite
                                 <UserRemoveIcon className="ml-2 w-4 h-4" />
                             </>
                         ) : (

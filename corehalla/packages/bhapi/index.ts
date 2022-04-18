@@ -2,8 +2,16 @@ import { IS_DEV } from "common/helpers/nodeEnv"
 import { clanMock } from "./mocks/clan"
 import { playerRankedMock } from "./mocks/playerRanked"
 import { playerStatsMock } from "./mocks/playerStats"
+import { rankings1v1Mock } from "./mocks/rankings1v1"
+import { rankings2v2Mock } from "./mocks/rankings2v2"
 import axios from "axios"
-import type { Clan, PlayerRanked, PlayerStats } from "./types"
+import type {
+    Clan,
+    PlayerRanked,
+    PlayerStats,
+    Ranking1v1,
+    Ranking2v2,
+} from "./types"
 
 const BH_API_BASE = "https://api.brawlhalla.com"
 
@@ -24,15 +32,38 @@ export const getIdBySteamId = (steamId: string) =>
         name: string
     }>("/search", { steamid: steamId })
 
-type Bracket = "1v1" | "2v2"
-type Region = "us-e" | "eu" | "sea" | "brz" | "aus" | "us-w" | "jpn" | "all"
+export type Bracket = "1v1" | "2v2"
+export type Region =
+    | "us-e"
+    | "eu"
+    | "sea"
+    | "brz"
+    | "aus"
+    | "us-w"
+    | "jpn"
+    | "all"
 
 export const getRankings = async (
     bracket: Bracket = "1v1",
     region: Region = "all",
-    page = 1,
+    page = "1",
     name?: string,
-) => getBhApi(`/rankings/${bracket}/${region}/${page}`, { name })
+) => {
+    if (!IS_DEV)
+        return getBhApi<Ranking1v1[] | Ranking2v2[]>(
+            `/rankings/${bracket}/${region}/${page}`,
+            { name },
+        )
+
+    switch (bracket) {
+        case "1v1":
+            return rankings1v1Mock
+        case "2v2":
+            return rankings2v2Mock
+        default:
+            return []
+    }
+}
 
 export const getPlayerStats = async (playerId: string) =>
     IS_DEV

@@ -4,8 +4,10 @@ import "@fontsource/montserrat/600.css"
 import "@fontsource/montserrat/700.css"
 
 import { FavoritesProvider } from "common/features/favorites/favoritesProvider"
+import { KBarProvider } from "kbar"
 import { Layout } from "ui/layout/Layout"
 import { QueryClient, QueryClientProvider } from "react-query"
+import { Searchbox } from "ui/search/Searchbox"
 import { globalCss, theme } from "ui/theme"
 import Head from "next/head"
 import type { AppProps } from "next/app"
@@ -48,12 +50,16 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     return (
         <QueryClientProvider client={queryClient}>
             <FavoritesProvider>
-                <Layout>
-                    <Head>
-                        <title>Corehalla</title>
-                    </Head>
-                    <Component {...pageProps} />
-                </Layout>
+                {/* @ts-expect-error kbar is weird */}
+                <KBarProvider actions={[]} options={{}}>
+                    <Layout>
+                        <Head>
+                            <title>Corehalla</title>
+                        </Head>
+                        <Component {...pageProps} />
+                    </Layout>
+                    <Searchbox />
+                </KBarProvider>
             </FavoritesProvider>
         </QueryClientProvider>
     )

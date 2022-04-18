@@ -1,7 +1,7 @@
 import { ClanMember } from "ui/stats/clan/ClanMember"
 import { StatsHeader } from "ui/stats/StatsHeader"
 import { formatUnixTime } from "common/helpers/date"
-import { useClan } from "../../../hooks/useClan"
+import { useClan } from "bhapi/hooks/useClan"
 import { useRouter } from "next/router"
 import type { MiscStat } from "ui/stats/MiscStatGroup"
 import type { NextPage } from "next"
