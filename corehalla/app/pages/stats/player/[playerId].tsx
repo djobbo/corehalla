@@ -275,9 +275,11 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
         queryClient.prefetchQuery(["playerStats", playerId], () =>
             getPlayerStats(playerId),
         ),
-        queryClient.prefetchQuery(["playerRanked", playerId], () =>
-            getPlayerRanked(playerId),
-        ),
+        queryClient.prefetchQuery(["playerRanked", playerId], async () => {
+            const ranked = await getPlayerRanked(playerId)
+            if (!ranked.brawlhalla_id) throw new Error("Player not ranked")
+            return ranked
+        }),
     ])
 
     return {
