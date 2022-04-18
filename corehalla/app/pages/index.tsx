@@ -1,17 +1,18 @@
+import { Button } from "ui/base/Button"
 import { FavoritesGrid } from "ui/favorites/FavoritesGrid"
+import { SearchButton } from "ui/search/SearchButton"
 import { SectionTitle } from "ui/layout/SectionTitle"
-import { bg, css, text } from "ui/theme"
 import { cn } from "common/helpers/classnames"
+import { css, text } from "ui/theme"
 import { useFavorites } from "common/features/favorites/favoritesProvider"
-import { useKBar } from "kbar"
 
 const landingClassName = css({
-    height: "60vh",
+    height: "50vh",
+    minHeight: "400px",
 })()
 
 const Page = () => {
     const { favorites } = useFavorites()
-    const { query } = useKBar()
 
     return (
         <>
@@ -36,14 +37,17 @@ const Page = () => {
                     Welcome to Corehalla, the fastest and easiest way to find
                     your Brawlhalla Stats, and official rankings.
                 </p>
-                <div className="mt-8">
-                    <button
-                        type="button"
-                        className={cn("rounded py-2 px-4", bg("blue9"))}
-                        onClick={query.toggle}
+                <div className="mt-8 flex items-center gap-6">
+                    <SearchButton />
+                    or
+                    <Button
+                        large
+                        as="a"
+                        href="/rankings"
+                        className="whitespace-nowrap font-semibold"
                     >
-                        Search player...
-                    </button>
+                        View rankings
+                    </Button>
                 </div>
             </div>
             {favorites.length > 0 && (
