@@ -4,23 +4,24 @@ import "@fontsource/montserrat/600.css"
 import "@fontsource/montserrat/700.css"
 
 import { FavoritesProvider } from "common/features/favorites/favoritesProvider"
+import { Hydrate, QueryClient, QueryClientProvider } from "react-query"
 import { KBarProvider } from "kbar"
 import { Layout } from "ui/layout/Layout"
-import { QueryClient, QueryClientProvider } from "react-query"
 import { Searchbox } from "ui/search/Searchbox"
 import { globalCss, theme } from "ui/theme"
+import { useRef } from "react"
 import Head from "next/head"
 import type { AppProps } from "next/app"
+import type { QueryClientConfig } from "react-query"
 
-const queryClient = new QueryClient({
+const queryClientConfig: QueryClientConfig = {
     defaultOptions: {
         queries: {
             refetchOnWindowFocus: false,
             retry: false,
         },
     },
-})
-
+}
 export const globalStyles = globalCss({
     "html, body": {
         backgroundColor: theme.colors.blue1,
@@ -45,22 +46,25 @@ export const globalStyles = globalCss({
 })
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
+    const queryClient = useRef(new QueryClient(queryClientConfig))
     globalStyles()
 
     return (
-        <QueryClientProvider client={queryClient}>
-            <FavoritesProvider>
-                {/* @ts-expect-error kbar is weird */}
-                <KBarProvider actions={[]} options={{}}>
-                    <Layout>
-                        <Head>
-                            <title>Corehalla</title>
-                        </Head>
-                        <Component {...pageProps} />
-                    </Layout>
-                    <Searchbox />
-                </KBarProvider>
-            </FavoritesProvider>
+        <QueryClientProvider client={queryClient.current}>
+            <Hydrate state={pageProps.dehydratedState}>
+                <FavoritesProvider>
+                    {/* @ts-expect-error kbar is weird */}
+                    <KBarProvider actions={[]} options={{}}>
+                        <Layout>
+                            <Head>
+                                <title>Corehalla</title>
+                            </Head>
+                            <Component {...pageProps} />
+                        </Layout>
+                        <Searchbox />
+                    </KBarProvider>
+                </FavoritesProvider>
+            </Hydrate>
         </QueryClientProvider>
     )
 }

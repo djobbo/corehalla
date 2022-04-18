@@ -2,6 +2,7 @@ import { Player2v2Tab } from "ui/stats/player/Player2v2Tab"
 import { PlayerLegendsTab } from "ui/stats/player/PlayerLegendsTab"
 import { PlayerOverviewTab } from "ui/stats/player/PlayerOverviewTab"
 import { PlayerWeaponsTab } from "ui/stats/player/PlayerWeaponsTab"
+import { QueryClient, dehydrate } from "react-query"
 import { StatsHeader } from "ui/stats/StatsHeader"
 import {
     Root as Tabs,
@@ -13,11 +14,13 @@ import { bg, css, theme } from "ui/theme"
 import { cn } from "common/helpers/classnames"
 import { formatTime } from "common/helpers/date"
 import { getFullLegends, getFullWeapons } from "bhapi/legends"
+import { getPlayerRanked, getPlayerStats } from "bhapi"
 import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
 import { usePlayerRanked } from "bhapi/hooks/usePlayerRanked"
 import { usePlayerStats } from "bhapi/hooks/usePlayerStats"
 import { useRouter } from "next/router"
 import Image from "next/image"
+import type { GetServerSideProps, NextPage } from "next"
 import type { MiscStat } from "ui/stats/MiscStatGroup"
 
 const tabClassName = cn(
@@ -35,7 +38,7 @@ const tabClassName = cn(
     })(),
 )
 
-const Page = () => {
+const Page: NextPage = () => {
     const router = useRouter()
     const { playerId } = router.query
     const { playerStats, isLoading, isError } = usePlayerStats(
@@ -262,3 +265,24 @@ const Page = () => {
 }
 
 export default Page
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+    const { playerId } = query
+    if (!playerId || typeof playerId !== "string") return { notFound: true }
+    const queryClient = new QueryClient()
+
+    await Promise.all([
+        queryClient.prefetchQuery(["playerStats", playerId], () =>
+            getPlayerStats(playerId),
+        ),
+        queryClient.prefetchQuery(["playerRanked", playerId], () =>
+            getPlayerRanked(playerId),
+        ),
+    ])
+
+    return {
+        props: {
+            dehydratedState: dehydrate(queryClient),
+        },
+    }
+}

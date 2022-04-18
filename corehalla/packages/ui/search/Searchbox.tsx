@@ -7,7 +7,7 @@ import {
     KBarSearch,
     useMatches,
 } from "kbar"
-import { bg, border, css, text } from "../theme"
+import { bg, border, text } from "../theme"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { legendsMap } from "bhapi/legends"
