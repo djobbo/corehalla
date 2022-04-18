@@ -169,10 +169,10 @@ export const PlayerOverviewTab = ({
             />
             <SectionTitle hasBorder>Unarmed</SectionTitle>
             <MiscStatGroup className="mt-8" stats={generalStats} />
-            <SectionTitle hasBorder>Gadgets</SectionTitle>
-            <MiscStatGroup className="mt-8" stats={gadgetsStats} />
             <SectionTitle hasBorder>Weapon Throws</SectionTitle>
             <MiscStatGroup className="mt-8" stats={throwsStats} />
+            <SectionTitle hasBorder>Gadgets</SectionTitle>
+            <MiscStatGroup className="mt-8" stats={gadgetsStats} />
         </>
     )
 }

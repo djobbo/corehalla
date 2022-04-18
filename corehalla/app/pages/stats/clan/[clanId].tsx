@@ -1,10 +1,12 @@
 import { ClanMember } from "ui/stats/clan/ClanMember"
+import { QueryClient, dehydrate } from "react-query"
 import { StatsHeader } from "ui/stats/StatsHeader"
 import { formatUnixTime } from "common/helpers/date"
+import { getClan } from "bhapi"
 import { useClan } from "bhapi/hooks/useClan"
 import { useRouter } from "next/router"
+import type { GetServerSideProps, NextPage } from "next"
 import type { MiscStat } from "ui/stats/MiscStatGroup"
-import type { NextPage } from "next"
 
 const Page: NextPage = () => {
     const router = useRouter()
@@ -61,3 +63,19 @@ const Page: NextPage = () => {
 }
 
 export default Page
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+    const { clanId } = query
+    if (!clanId || typeof clanId !== "string") return { notFound: true }
+    const queryClient = new QueryClient()
+
+    await queryClient.prefetchQuery(["clanStats", clanId], () =>
+        getClan(clanId),
+    )
+
+    return {
+        props: {
+            dehydratedState: dehydrate(queryClient),
+        },
+    }
+}
