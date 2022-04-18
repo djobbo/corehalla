@@ -108,7 +108,7 @@ export type Ranking = {
     tier: RankedTier
     games: number
     wins: number
-    region: RankedRegion
+    region: RankedRegion | Uppercase<RankedRegion>
     peak_rating: number
 }
 
