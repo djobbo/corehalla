@@ -1,0 +1,27 @@
+name: Code QA
+on: [push]
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Lint
+            action: yarn ci:lint
+          - name: Check Types
+            action: yarn ts:check
+          - name: Check Deadcode
+            action: yarn ci:deadcode
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+      - name: ${{ matrix.name }}
+        run: |
+          yarn ci
+          ${{ matrix.action }}

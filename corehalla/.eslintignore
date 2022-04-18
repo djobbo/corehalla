@@ -1,0 +1,7 @@
+node_modules/
+.next/
+.turbo/
+dist/
+build/
+out/
+*/**/wrapper_base.js
