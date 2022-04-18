@@ -2,6 +2,7 @@ import { Button } from "../base/Button"
 import { SearchButton } from "../search/SearchButton"
 import { border } from "../theme"
 import { cn } from "common/helpers/classnames"
+import { logInfo } from "logger"
 
 export const Header = () => {
     return (
@@ -16,7 +17,7 @@ export const Header = () => {
                 <SearchButton />
                 <Button
                     onClick={() => {
-                        console.log("login")
+                        logInfo("login")
                     }}
                 >
                     Login

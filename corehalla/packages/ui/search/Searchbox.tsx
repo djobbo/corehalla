@@ -61,7 +61,7 @@ export const Searchbox = () => {
                               key={legend.legend_id}
                           >
                               <Image
-                                  src={`/images/icons/legends/${legend.bio_name}.png`}
+                                  src={`/images/icons/roster/legends/${legend.bio_name}.png`}
                                   alt={legend.bio_name}
                                   layout="fill"
                                   objectFit="contain"

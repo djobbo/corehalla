@@ -18,6 +18,9 @@
     },
     "dev": {
       "cache": false
+    },
+    "dl-roster": {
+      "outputs": []
     }
   }
 }

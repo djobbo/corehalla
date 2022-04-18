@@ -53,7 +53,7 @@ export const Legend = ({ legend, matchtime, games }: LegendProps) => {
                 <>
                     <span className="relative w-6 h-6">
                         <Image
-                            src={`/images/icons/legends/${legend.bio_name}.png`}
+                            src={`/images/icons/roster/legends/${legend.bio_name}.png`}
                             alt={legend.bio_name}
                             layout="fill"
                             objectFit="contain"
