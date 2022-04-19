@@ -1,5 +1,6 @@
 import { UserGroupIcon, XIcon } from "@heroicons/react/solid"
 import { bg, css, text } from "../theme"
+import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { legendsMap } from "bhapi/legends"
 import { useFavorites } from "common/features/favorites/favoritesProvider"
@@ -35,7 +36,7 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                             <div className="relative w-8 h-8">
                                 <Image
                                     src={`/images/icons/roster/legends/${legend.bio_name}.png`}
-                                    alt={`player ${fav.name} icon`}
+                                    alt={`player ${cleanString(fav.name)} icon`}
                                     layout="fill"
                                     objectFit="contain"
                                     objectPosition="center"
@@ -64,7 +65,9 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                             >
                                 {icon}
                                 <div>
-                                    <p className="font-bold">{fav.name}</p>
+                                    <p className="font-bold">
+                                        {cleanString(fav.name)}
+                                    </p>
                                     <p
                                         className={cn(
                                             "text-xs uppercase",

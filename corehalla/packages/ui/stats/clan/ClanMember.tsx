@@ -1,6 +1,7 @@
 import { Card } from "../../base/Card"
 import { MiscStatGroup } from "../MiscStatGroup"
 import { border } from "../../theme"
+import { cleanString } from "common/helpers/cleanString"
 import { formatUnixTime } from "common/helpers/date"
 import Link from "next/link"
 import type { Clan } from "bhapi/types"
@@ -33,7 +34,7 @@ export const ClanMember = ({ member, clan }: ClanMemberProps) => {
             <a>
                 <Card
                     key={member.brawlhalla_id}
-                    title={`${member.name} (${member.rank})`}
+                    title={`${cleanString(member.name)} (${member.rank})`}
                     className={border("blue6", "&:hover")}
                 >
                     <MiscStatGroup

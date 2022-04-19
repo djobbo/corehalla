@@ -5,6 +5,7 @@ import {
     XIcon,
 } from "@heroicons/react/solid"
 import { bg, border, css, text } from "../theme"
+import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { legendsMap } from "bhapi/legends"
 import { useFavorites } from "common/features/favorites/favoritesProvider"
@@ -40,6 +41,7 @@ const SideNavIcon = ({
     onRemove,
     active = false,
 }: SideNavIconProps) => {
+    const cleanName = cleanString(name)
     return (
         <div className={cn("relative", sideNavIconClassName)}>
             <Link href={href}>
@@ -60,7 +62,7 @@ const SideNavIcon = ({
                         >
                             <Image
                                 src={image}
-                                alt={`player ${name} icon`}
+                                alt={`player ${cleanName} icon`}
                                 layout="fill"
                                 objectFit="contain"
                                 objectPosition="center"
@@ -68,7 +70,7 @@ const SideNavIcon = ({
                         </span>
                     )}
                     <span className="text-sm z-10">
-                        {content ?? name.slice(0, 3)}
+                        {content ?? cleanName.slice(0, 3)}
                     </span>
                 </a>
             </Link>
@@ -139,7 +141,7 @@ export const SideNav = () => {
                             <SideNavIcon
                                 key={favorite.id}
                                 href={`/stats/player/${favorite.id}`}
-                                name={favorite.name}
+                                name={cleanString(favorite.name)}
                                 {...(legend && {
                                     image: `/images/icons/roster/legends/${legend.bio_name}.png`,
                                 })}
@@ -158,7 +160,7 @@ export const SideNav = () => {
                             <SideNavIcon
                                 key={favorite.id}
                                 href={`/stats/clan/${favorite.id}`}
-                                name={favorite.name}
+                                name={cleanString(favorite.name)}
                                 active={
                                     pathname === "/stats/clan/[clanId]" &&
                                     clanId === favorite.id.toString()

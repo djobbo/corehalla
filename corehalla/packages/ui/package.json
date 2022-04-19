@@ -26,6 +26,7 @@
     "@radix-ui/react-tooltip": "^0.1.7",
     "@stitches/react": "^1.2.7",
     "common": "workspace:*",
+    "kbar": "0.1.0-beta.33",
     "logger": "workspace:*",
     "next": "^12.1.5",
     "react-icons": "^4.3.1",
