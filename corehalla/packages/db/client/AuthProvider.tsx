@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react"
+import { signIn, signOut } from "../supabase/auth"
 import { supabase } from "../supabase/client"
 import { useUserProfile } from "./useUserProfile"
 import type { ReactNode } from "react"
@@ -10,6 +11,8 @@ interface AuthContext {
     session: Session | null
     user: User | null
     userProfile: UserProfile | null
+    signIn: () => void
+    signOut: () => void
 }
 
 const authContext = createContext<AuthContext>({
@@ -17,6 +20,8 @@ const authContext = createContext<AuthContext>({
     session: null,
     user: null,
     userProfile: null,
+    signIn: () => void 0,
+    signOut: () => void 0,
 })
 
 export const useAuth = (): AuthContext => useContext(authContext)
@@ -25,12 +30,12 @@ interface Props {
     children: ReactNode
 }
 
-export const AuthProvider = ({ children }: Props): JSX.Element => {
+export const AuthProvider = ({ children }: Props) => {
     const [session, setSession] = useState<Session | null>(null)
     const { userProfile } = useUserProfile(session)
 
     useEffect(() => {
-        setSession(supabase.auth.session)
+        setSession(supabase.auth.session())
 
         const { data: authSubscription } = supabase.auth.onAuthStateChange(
             (evt, session) => {
@@ -55,6 +60,8 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
                 user: session?.user ?? null,
                 userProfile,
                 isLoggedIn,
+                signIn,
+                signOut,
             }}
         >
             {children}

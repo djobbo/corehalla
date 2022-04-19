@@ -1,34 +1,15 @@
 import { getDiscordProfile } from "../discord/getDiscordProfile"
 import { getUserConnections } from "../discord/getUserConnections"
 import { supabase } from "../supabase/client"
-import { useCallback, useEffect } from "react"
-import { useQuery } from "react-query"
+import { useCallback, useEffect, useState } from "react"
 import type { Session } from "@supabase/supabase-js"
 import type { UserConnection, UserProfile } from "../generated/client"
 
 export const useUserProfile = (session: Session | null) => {
+    const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
+    const [userConnections, setUserConnections] = useState<UserConnection[]>([])
     const userId = session?.user?.id
     const discordToken = session?.provider_token
-
-    const { data: userProfile, ...query } = useQuery(
-        "userProfile",
-        async () => {
-            if (!userId) throw new Error("No userId")
-
-            const { error, data } = await supabase
-                .from<UserProfile>("UserProfile")
-                .select("*")
-                .eq("id", userId)
-                .single()
-
-            if (error) throw new Error(error.message)
-
-            return data
-        },
-        {
-            enabled: !!userId,
-        },
-    )
 
     const updateUserProfile = useCallback(async () => {
         if (!userId || !discordToken) return
@@ -39,7 +20,7 @@ export const useUserProfile = (session: Session | null) => {
 
         const { username, avatar } = discordProfile
 
-        await supabase.from<UserProfile>("UserProfile").upsert({
+        await supabase.from<UserProfile>("user_profiles").upsert({
             id: userId,
             username,
             ...(!!avatar && { avatarUrl: avatar }),
@@ -54,7 +35,7 @@ export const useUserProfile = (session: Session | null) => {
         if (!userConnections) return
 
         // TODO: delete old connections
-        await supabase.from<UserConnection>("UserConnection").upsert(
+        await supabase.from<UserConnection>("user_connections").upsert(
             userConnections.map(({ id, name, type, verified }) => ({
                 appId: id,
                 userId,
@@ -66,15 +47,39 @@ export const useUserProfile = (session: Session | null) => {
     }, [discordToken, userId])
 
     useEffect(() => {
+        const userProfileSubscription = supabase
+            .from<UserProfile>("user_profiles")
+            .on("*", (payload) => {
+                if (payload.new.id !== userId) return
+                console.log("UserProfile Change received!", payload)
+                setUserProfile(payload.new)
+            })
+            .subscribe()
+
         updateUserProfile()
-    }, [updateUserProfile])
+
+        return () => {
+            userProfileSubscription.unsubscribe()
+        }
+    }, [updateUserProfile, userId])
 
     useEffect(() => {
+        const userConnectionsSubscription = supabase
+            .from<UserConnection>("user_connections")
+            .on("*", (payload) => {
+                console.log("UserConnection Change received!", payload)
+            })
+            .subscribe()
+
         updateUserConnections()
+
+        return () => {
+            userConnectionsSubscription.unsubscribe()
+        }
     }, [updateUserConnections])
 
     return {
-        userProfile: userProfile ?? null,
-        ...query,
+        userProfile,
+        userConnections,
     }
 }

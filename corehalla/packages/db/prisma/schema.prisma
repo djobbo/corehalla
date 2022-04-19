@@ -9,31 +9,38 @@ datasource db {
 }
 
 model UserProfile {
+  // Cross Schema Foreign Keys
+  // @relation auth.users.id -> auth_user_trigger_[add].sql
+  // see https://github.com/prisma/prisma/issues/1175#issuecomment-1100726897
   id          String           @id @db.Uuid
-  username    String
-  avatarUrl   String
+  username    String           @default("")
+  avatarUrl   String           @default("") @map("avatar_url")
   favorites   UserFavorite[]
   connections UserConnection[]
+
+  @@map("user_profiles")
 }
 
 model UserFavorite {
   type       String
-  favoriteId String
+  favoriteId String      @map("favorite_id")
   meta       String
-  userId     String      @db.Uuid
+  userId     String      @map("user_id") @db.Uuid
   user       UserProfile @relation(fields: [userId], references: [id])
 
   @@unique([userId, type, favoriteId])
+  @@map("user_favorites")
 }
 
 model UserConnection {
-  userId   String      @db.Uuid
+  userId   String      @map("user_id") @db.Uuid
   type     String
-  appId    String
+  appId    String      @map("app_id")
   name     String
   verified Boolean
   public   Boolean
   user     UserProfile @relation(fields: [userId], references: [id])
 
   @@unique([userId, type, appId])
+  @@map("user_connections")
 }
