@@ -34,7 +34,8 @@ export const downloadImages = async () => {
 
         const prefix = i < NUM_LEGENDS ? "legend" : "crossover"
 
-        logInfo(`Downloading: ${prefix} => ${img.name}`)
+        // eslint-disable-next-line no-console
+        console.log(`Downloading: ${prefix} => ${img.name}`)
 
         downloadImage(img.src, `${OUT_DIR}/${prefix}s/${img.name}.png`)
     })
