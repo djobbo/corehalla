@@ -185,7 +185,7 @@ importers:
       autoprefixer: ^10.4.4
       bhapi: workspace:*
       common: workspace:*
-      kbar: ^0.1.0-beta.33
+      kbar: 0.1.0-beta.33
       logger: workspace:*
       next: ^12.1.5
       postcss: ^8.4.12
@@ -579,7 +579,7 @@ packages:
       '@radix-ui/react-slot': 0.1.2
       '@radix-ui/react-use-controllable-state': 0.1.0
       aria-hidden: 1.1.3
-      react-remove-scroll: 2.5.0_@types+react@18.0.5
+      react-remove-scroll: 2.5.1_@types+react@18.0.5
     transitivePeerDependencies:
       - '@types/react'
     dev: false
@@ -677,7 +677,7 @@ packages:
       '@radix-ui/react-use-callback-ref': 0.1.0
       '@radix-ui/react-use-direction': 0.1.0
       aria-hidden: 1.1.3
-      react-remove-scroll: 2.5.0_@types+react@18.0.5
+      react-remove-scroll: 2.5.1_@types+react@18.0.5
     transitivePeerDependencies:
       - '@types/react'
     dev: false
@@ -725,7 +725,7 @@ packages:
       '@radix-ui/react-primitive': 0.1.4
       '@radix-ui/react-use-controllable-state': 0.1.0
       aria-hidden: 1.1.3
-      react-remove-scroll: 2.5.0_@types+react@18.0.5
+      react-remove-scroll: 2.5.1_@types+react@18.0.5
     transitivePeerDependencies:
       - '@types/react'
     dev: false
@@ -3312,8 +3312,8 @@ packages:
       tslib: 2.3.1
     dev: false
 
-  /react-remove-scroll/2.5.0_@types+react@18.0.5:
-    resolution: {integrity: sha512-uROvacoPUnY7U42vkCAYtyUJrvS0yE+TpayIaWtWL7RkZ25Y1nO1hlf+JRJ4X5rGFlJNtG+eJmUTdawgJaiqrg==}
+  /react-remove-scroll/2.5.1_@types+react@18.0.5:
+    resolution: {integrity: sha512-Lzam+uvyTLlSCqxGeEe5fLadZQkAYYWurr7P+9kgJfgBcBhs04T181D3yqmUzML63W0FLW/oqSd6dnaE0IIisQ==}
     engines: {node: '>=10'}
     peerDependencies:
       '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0

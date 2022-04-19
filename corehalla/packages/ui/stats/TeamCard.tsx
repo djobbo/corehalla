@@ -7,6 +7,7 @@ import { Card } from "../base/Card"
 import { MiscStatGroup } from "./MiscStatGroup"
 import { RatingDisplay } from "./RatingDisplay"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
+import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { css } from "../theme"
 import { getLegendEloReset } from "bhapi/calculator"
@@ -47,7 +48,8 @@ export const TeamCard = ({ playerId, team }: Props): JSX.Element => {
                                 objectPosition="center"
                             />
                         </span>
-                        {playerName} {"&"} {teammate.name}
+                        {cleanString(playerName)} {"&"}{" "}
+                        {cleanString(teammate.name)}
                     </a>
                 </Link>
             }

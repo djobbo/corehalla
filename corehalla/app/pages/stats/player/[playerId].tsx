@@ -11,6 +11,7 @@ import {
     TabsTrigger,
 } from "@radix-ui/react-tabs"
 import { bg, css, theme } from "ui/theme"
+import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { formatTime } from "common/helpers/date"
 import { getFullLegends, getFullWeapons } from "bhapi/legends"
@@ -96,10 +97,11 @@ const Page: NextPage = () => {
 
     const aliases = playerRanked?.["2v2"] && [
         ...new Set([
-            playerStats.name,
-            ...playerRanked["2v2"].map(
-                (team) =>
+            cleanString(playerStats.name),
+            ...playerRanked["2v2"].map((team) =>
+                cleanString(
                     getTeamPlayers(playerRanked.brawlhalla_id, team).playerName,
+                ),
             ),
         ]),
     ]
@@ -179,7 +181,7 @@ const Page: NextPage = () => {
     return (
         <>
             <StatsHeader
-                name={playerStats.name}
+                name={cleanString(playerStats.name)}
                 id={playerStats.brawlhalla_id}
                 aliases={aliases}
                 miscStats={accountStats}
@@ -200,7 +202,7 @@ const Page: NextPage = () => {
                     type: "player",
                     id: playerStats.brawlhalla_id,
                     legend_id: legendsSortedByLevel[0].legend_id,
-                    name: playerStats.name,
+                    name: cleanString(playerStats.name),
                 }}
             />
             <Tabs defaultValue="overview">

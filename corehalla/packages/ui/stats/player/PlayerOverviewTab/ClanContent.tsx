@@ -1,5 +1,6 @@
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { SectionTitle } from "../../../layout/SectionTitle"
+import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { text } from "../../../theme"
 import Link from "next/link"
@@ -22,7 +23,7 @@ export const PlayerOverviewClanContent = ({
                             "inline-block font-bold text-3xl mt-2 hover:underline",
                         )}
                     >
-                        {clan.clan_name}{" "}
+                        {cleanString(clan.clan_name)}{" "}
                     </a>
                 </Link>
                 <span

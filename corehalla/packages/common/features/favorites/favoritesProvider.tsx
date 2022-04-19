@@ -1,3 +1,4 @@
+import { cleanString } from "../../helpers/cleanString"
 import { createContext, useCallback, useContext } from "react"
 import { useLocalStorageState } from "../../hooks/useLocalStorageState"
 import type { ReactNode } from "react"
@@ -74,7 +75,9 @@ export const FavoritesProvider = ({ children }: FavoritesProviderProps) => {
     const removeFavorite = (favorite: FavoriteBase) => {
         if (
             !window.confirm(
-                `Delete ${favorite.name} from your favorite ${favorite.type}s ?`,
+                `Delete ${cleanString(favorite.name)} from your favorite ${
+                    favorite.type
+                }s ?`,
             )
         )
             return

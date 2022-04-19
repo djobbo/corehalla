@@ -1,6 +1,7 @@
 import { ClanMember } from "ui/stats/clan/ClanMember"
 import { QueryClient, dehydrate } from "react-query"
 import { StatsHeader } from "ui/stats/StatsHeader"
+import { cleanString } from "common/helpers/cleanString"
 import { formatUnixTime } from "common/helpers/date"
 import { getClan } from "bhapi"
 import { useClan } from "bhapi/hooks/useClan"
@@ -40,13 +41,13 @@ const Page: NextPage = () => {
     return (
         <>
             <StatsHeader
-                name={clan.clan_name}
+                name={cleanString(clan.clan_name)}
                 id={clan.clan_id}
                 miscStats={clanStats}
                 favorite={{
                     type: "clan",
                     id: clan.clan_id,
-                    name: clan.clan_name,
+                    name: cleanString(clan.clan_name),
                 }}
             />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
