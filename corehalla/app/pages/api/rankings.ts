@@ -1,6 +1,7 @@
 import { getRankings } from "bhapi"
-import type { Bracket, Region } from "bhapi"
+import type { Bracket } from "bhapi/types"
 import type { NextApiHandler } from "next"
+import type { RankedRegion } from "bhapi/constants"
 
 const handler: NextApiHandler = async (req, res) => {
     res.setHeader(
@@ -12,7 +13,7 @@ const handler: NextApiHandler = async (req, res) => {
         const { bracket, region, page, name } = req.query
         const data = await getRankings(
             bracket as Bracket,
-            region as Region,
+            region as RankedRegion,
             page as string,
             name as string,
         )

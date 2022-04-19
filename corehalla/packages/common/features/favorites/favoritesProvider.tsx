@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext } from "react"
-import { useLocalStorageState } from "common/hooks/useLocalStorageState"
+import { useLocalStorageState } from "../../hooks/useLocalStorageState"
 import type { ReactNode } from "react"
 
 type FavoriteBase = {

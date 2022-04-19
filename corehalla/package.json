@@ -10,12 +10,13 @@
         "build": "turbo run build",
         "dev": "turbo run dev --parallel",
         "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
-        "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+        "format": "prettier --write \"**/*.{ts,tsx,md}\" && turbo run format",
         "ts:check": "turbo run ts:check",
-        "ci": "yarn install --frozen-lockfile",
+        "ci": "pnpm install --frozen-lockfile",
         "ci:lint": "eslint --ext .js,.jsx,.ts,.tsx .",
         "ci:deadcode": "turbo run ci:deadcode",
-        "dl-roster": "turbo run dl-roster"
+        "dl-roster": "turbo run dl-roster",
+        "migrate": "turbo run migrate"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^5.19.0",
@@ -30,5 +31,5 @@
         "npm": ">=7.0.0",
         "node": ">=14.0.0"
     },
-    "packageManager": "yarn@1.22.17"
+    "packageManager": "pnpm@7.0.0-rc.6"
 }

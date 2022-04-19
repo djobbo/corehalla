@@ -4,4 +4,4 @@ node_modules/
 dist/
 build/
 out/
-*/**/wrapper_base.js
+generated/

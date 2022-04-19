@@ -3,6 +3,7 @@ import "@fontsource/montserrat/400.css"
 import "@fontsource/montserrat/600.css"
 import "@fontsource/montserrat/700.css"
 
+import { AuthProvider } from "db/client/AuthProvider"
 import { FavoritesProvider } from "common/features/favorites/favoritesProvider"
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query"
 import { KBarProvider } from "kbar"
@@ -52,18 +53,20 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     return (
         <QueryClientProvider client={queryClient.current}>
             <Hydrate state={pageProps.dehydratedState}>
-                <FavoritesProvider>
-                    {/* @ts-expect-error kbar is weird */}
-                    <KBarProvider actions={[]} options={{}}>
-                        <Layout>
-                            <Head>
-                                <title>Corehalla</title>
-                            </Head>
-                            <Component {...pageProps} />
-                        </Layout>
-                        <Searchbox />
-                    </KBarProvider>
-                </FavoritesProvider>
+                <AuthProvider>
+                    <FavoritesProvider>
+                        {/* @ts-expect-error kbar is weird */}
+                        <KBarProvider actions={[]} options={{}}>
+                            <Layout>
+                                <Head>
+                                    <title>Corehalla</title>
+                                </Head>
+                                <Component {...pageProps} />
+                            </Layout>
+                            <Searchbox />
+                        </KBarProvider>
+                    </FavoritesProvider>
+                </AuthProvider>
             </Hydrate>
         </QueryClientProvider>
     )

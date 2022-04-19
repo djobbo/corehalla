@@ -21,6 +21,12 @@
     },
     "dl-roster": {
       "outputs": []
+    },
+    "migrate": {
+      "outputs": []
+    },
+    "format": {
+      "outputs": []
     }
   }
 }

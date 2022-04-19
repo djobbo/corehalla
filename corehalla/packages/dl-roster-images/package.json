@@ -5,16 +5,20 @@
     "types": "./index.ts",
     "license": "MIT",
     "scripts": {
-        "dev": "tsnd --respawn ./index.ts",
-        "dl-roster": "ts-node ./index.ts"
+        "dl-roster-dev": "tsnd --respawn ./index.ts",
+        "dl-roster": "ts-node ./index.ts",
+        "ts:check": "tsc --noEmit"
     },
     "dependencies": {
-        "axios": "^0.24.0",
+        "axios": "^0.26.1",
         "cheerio": "^1.0.0-rc.10",
-        "logger": "*"
+        "logger": "workspace:*"
     },
     "devDependencies": {
+        "@types/node": "^17.0.25",
         "ts-node": "^10.7.0",
-        "ts-node-dev": "^1.1.8"
+        "ts-node-dev": "^1.1.8",
+        "typescript": "^4.6.3",
+        "tsconfig": "workspace:*"
     }
 }
