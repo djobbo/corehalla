@@ -9,19 +9,19 @@ jobs:
       matrix:
         include:
           - name: Lint
-            action: pnpm ci:lint
+            action: yarn ci:lint
           - name: Check Types
-            action: pnpm ts:check
+            action: yarn ts:check
           - name: Check Deadcode
-            action: pnpm ci:deadcode
+            action: yarn ci:deadcode
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: 16
-          cache: 'pnpm'
-          cache-dependency-path: pnpm-lock.yaml
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
       - name: ${{ matrix.name }}
         run: |
-          pnpm ci
+          yarn ci
           ${{ matrix.action }}

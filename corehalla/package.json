@@ -12,7 +12,7 @@
         "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
         "format": "prettier --write \"**/*.{ts,tsx,md}\" && turbo run format",
         "ts:check": "turbo run ts:check",
-        "ci": "pnpm install --frozen-lockfile",
+        "ci": "yarn install --frozen-lockfile",
         "ci:lint": "eslint --ext .js,.jsx,.ts,.tsx .",
         "ci:deadcode": "turbo run ci:deadcode",
         "dl-roster": "turbo run dl-roster",
@@ -31,5 +31,5 @@
         "npm": ">=7.0.0",
         "node": ">=14.0.0"
     },
-    "packageManager": "pnpm@7.0.0-rc.6"
+    "packageManager": "yarn@1.22.17"
 }

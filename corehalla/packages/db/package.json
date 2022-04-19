@@ -12,7 +12,7 @@
         "@types/react": "^18.0.5",
         "discord-api-types": "^0.31.2",
         "prisma": "^3.7.0",
-        "tsconfig": "workspace:*",
+        "tsconfig": "*",
         "typescript": "^4.6.3"
     },
     "dependencies": {

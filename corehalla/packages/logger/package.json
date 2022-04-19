@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "main": "index.ts",
   "dependencies": {
-    "common": "workspace:*"
+    "common": "*"
   },
   "devDependencies": {
     "@types/node": "^17.0.25",
-    "tsconfig": "workspace:*",
+    "tsconfig": "*",
     "typescript": "^4.5.3"
   },
   "scripts": {
