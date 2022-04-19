@@ -1,4 +1,4 @@
-import { Card } from "ui/base/Card"
+import { Card } from "../../base/Card"
 import { MiscStatGroup } from "../MiscStatGroup"
 import { border } from "../../theme"
 import { formatUnixTime } from "common/helpers/date"

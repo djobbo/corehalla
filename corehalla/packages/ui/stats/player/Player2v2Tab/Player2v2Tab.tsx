@@ -1,7 +1,7 @@
-import { MiscStatGroup } from "ui/stats/MiscStatGroup"
-import { TeamCard } from "ui/stats/TeamCard"
+import { MiscStatGroup } from "../../MiscStatGroup"
+import { TeamCard } from "../../TeamCard"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
-import type { MiscStat } from "ui/stats/MiscStatGroup"
+import type { MiscStat } from "../../MiscStatGroup"
 import type { PlayerRanked } from "bhapi/types"
 
 type Player2v2TabProps = {

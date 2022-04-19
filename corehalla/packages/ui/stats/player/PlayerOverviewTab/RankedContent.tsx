@@ -1,11 +1,11 @@
-import { MiscStatGroup } from "ui/stats/MiscStatGroup"
-import { RatingDisplay } from "ui/stats/RatingDisplay"
-import { SectionTitle } from "ui/layout/SectionTitle"
+import { MiscStatGroup } from "../../MiscStatGroup"
+import { RatingDisplay } from "../../RatingDisplay"
+import { SectionTitle } from "../../../layout/SectionTitle"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
 import { getGlory, getPersonalEloReset } from "bhapi/calculator"
 import { getTierFromRating } from "bhapi/helpers/getTierFromRating"
 import Image from "next/image"
-import type { MiscStat } from "ui/stats/MiscStatGroup"
+import type { MiscStat } from "../../MiscStatGroup"
 import type { PlayerRanked } from "bhapi/types"
 
 type PlayerOverviewRankedContentProps = {

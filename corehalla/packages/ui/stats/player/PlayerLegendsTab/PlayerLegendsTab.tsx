@@ -1,7 +1,7 @@
 import { Legend } from "./Legend"
-import { MiscStatGroup } from "ui/stats/MiscStatGroup"
+import { MiscStatGroup } from "../../MiscStatGroup"
 import type { FullLegend } from "bhapi/legends"
-import type { MiscStat } from "ui/stats/MiscStatGroup"
+import type { MiscStat } from "../../MiscStatGroup"
 
 type PlayerLegendsTabProps = {
     legends: FullLegend[]

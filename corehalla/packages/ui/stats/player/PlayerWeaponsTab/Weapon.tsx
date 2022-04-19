@@ -1,13 +1,13 @@
-import { Card } from "ui/base/Card"
-import { CollapsibleSection } from "ui/layout/CollapsibleSection"
-import { GamesDisplay } from "ui/stats/GamesDisplay"
-import { MiscStatGroup } from "ui/stats/MiscStatGroup"
-import { border } from "ui/theme"
+import { Card } from "../../../base/Card"
+import { CollapsibleSection } from "../../../layout/CollapsibleSection"
+import { GamesDisplay } from "../../GamesDisplay"
+import { MiscStatGroup } from "../../MiscStatGroup"
+import { border } from "../../../theme"
 import { cn } from "common/helpers/classnames"
 import { formatTime } from "common/helpers/date"
 import Image from "next/image"
 import type { FullWeapon } from "bhapi/legends"
-import type { MiscStat } from "ui/stats/MiscStatGroup"
+import type { MiscStat } from "../../MiscStatGroup"
 
 type WeaponProps = {
     weapon: FullWeapon & {

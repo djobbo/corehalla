@@ -2,13 +2,18 @@
   "name": "bhapi",
   "version": "0.0.0",
   "devDependencies": {
-    "tsconfig": "*",
+    "@types/node": "^17.0.25",
+    "tsconfig": "workspace:*",
     "typescript": "^4.5.3"
   },
   "scripts": {
     "ts:check": "tsc --noEmit"
   },
   "dependencies": {
-    "axios": "^0.26.1"
+    "axios": "^0.26.1",
+    "common": "workspace:*",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-query": "^3.35.0"
   }
 }

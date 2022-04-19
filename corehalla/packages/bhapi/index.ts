@@ -6,12 +6,14 @@ import { rankings1v1Mock } from "./mocks/rankings1v1"
 import { rankings2v2Mock } from "./mocks/rankings2v2"
 import axios from "axios"
 import type {
+    Bracket,
     Clan,
     PlayerRanked,
     PlayerStats,
     Ranking1v1,
     Ranking2v2,
 } from "./types"
+import type { RankedRegion } from "./constants"
 
 const BH_API_BASE = "https://api.brawlhalla.com"
 
@@ -32,20 +34,9 @@ export const getIdBySteamId = (steamId: string) =>
         name: string
     }>("/search", { steamid: steamId })
 
-export type Bracket = "1v1" | "2v2"
-export type Region =
-    | "us-e"
-    | "eu"
-    | "sea"
-    | "brz"
-    | "aus"
-    | "us-w"
-    | "jpn"
-    | "all"
-
 export const getRankings = async (
     bracket: Bracket = "1v1",
-    region: Region = "all",
+    region: RankedRegion = "all",
     page = "1",
     name?: string,
 ) => {

@@ -1,0 +1,25 @@
+{
+    "name": "db",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "migrate": "prisma migrate dev",
+        "format": "prisma format",
+        "studio": "prisma studio",
+        "ts:check": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "@types/react": "^18.0.5",
+        "discord-api-types": "^0.31.2",
+        "prisma": "^3.7.0",
+        "tsconfig": "workspace:*",
+        "typescript": "^4.6.3"
+    },
+    "dependencies": {
+        "@prisma/client": "^3.7.0",
+        "@supabase/supabase-js": "^1.34.1",
+        "axios": "^0.26.1",
+        "react": "^18.0.0",
+        "react-query": "^3.35.0"
+    }
+}

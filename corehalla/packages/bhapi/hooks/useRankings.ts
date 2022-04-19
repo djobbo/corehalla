@@ -1,11 +1,11 @@
 import { useQuery } from "react-query"
 import axios from "axios"
-import type { Bracket, Region } from "bhapi"
-import type { Ranking1v1 } from "bhapi/types"
+import type { Bracket, Ranking1v1 } from "../types"
+import type { RankedRegion } from "../constants"
 
 const useRankings = <T>(
     bracket: Bracket,
-    region: Region,
+    region: RankedRegion,
     page: string,
     name?: string,
 ) => {
@@ -19,7 +19,11 @@ const useRankings = <T>(
     })
 }
 
-export const useRankings1v1 = (region: Region, page: string, name?: string) => {
+export const useRankings1v1 = (
+    region: RankedRegion,
+    page: string,
+    name?: string,
+) => {
     const { data: rankings1v1, ...query } = useRankings<Ranking1v1[]>(
         "1v1",
         region,
@@ -33,7 +37,11 @@ export const useRankings1v1 = (region: Region, page: string, name?: string) => {
     }
 }
 
-export const useRankings2v2 = (region: Region, page: string, name?: string) => {
+export const useRankings2v2 = (
+    region: RankedRegion,
+    page: string,
+    name?: string,
+) => {
     const { data: rankings2v2, ...query } = useRankings<Ranking1v1[]>(
         "2v2",
         region,

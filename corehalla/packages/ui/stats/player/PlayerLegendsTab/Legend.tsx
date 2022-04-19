@@ -1,12 +1,12 @@
-import { CollapsibleSection } from "ui/layout/CollapsibleSection"
-import { GeneralStats } from "ui/stats/GeneralStats"
-import { MiscStatGroup } from "ui/stats/MiscStatGroup"
-import { border } from "ui/theme"
+import { CollapsibleSection } from "../../../layout/CollapsibleSection"
+import { GeneralStats } from "../../GeneralStats"
+import { MiscStatGroup } from "../../MiscStatGroup"
+import { border } from "../../../theme"
 import { cn } from "common/helpers/classnames"
 import { formatTime } from "common/helpers/date"
 import Image from "next/image"
 import type { FullLegend } from "bhapi/legends"
-import type { MiscStat } from "ui/stats/MiscStatGroup"
+import type { MiscStat } from "../../MiscStatGroup"
 
 type LegendProps = {
     legend: FullLegend

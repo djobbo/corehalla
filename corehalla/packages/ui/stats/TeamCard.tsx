@@ -3,7 +3,7 @@ import { rankedRegion } from "bhapi/constants"
 import Link from "next/link"
 import type { PlayerRanked } from "bhapi/types"
 
-import { Card } from "ui/base/Card"
+import { Card } from "../base/Card"
 import { MiscStatGroup } from "./MiscStatGroup"
 import { RatingDisplay } from "./RatingDisplay"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"

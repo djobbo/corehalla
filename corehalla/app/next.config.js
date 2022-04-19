@@ -4,6 +4,7 @@ const withTM = require("next-transpile-modules")([
     "ui",
     "logger",
     "common",
+    "db",
 ])
 
 module.exports = withTM({

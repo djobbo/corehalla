@@ -1,7 +1,7 @@
-import { MiscStatGroup } from "ui/stats/MiscStatGroup"
-import { SectionTitle } from "ui/layout/SectionTitle"
+import { MiscStatGroup } from "../../MiscStatGroup"
+import { SectionTitle } from "../../../layout/SectionTitle"
 import { cn } from "common/helpers/classnames"
-import { text } from "ui/theme"
+import { text } from "../../../theme"
 import Link from "next/link"
 import type { PlayerStats } from "bhapi/types"
 
