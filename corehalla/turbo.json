@@ -22,7 +22,7 @@
     "dl-roster": {
       "outputs": []
     },
-    "migrate": {
+    "db:migrate": {
       "outputs": []
     },
     "format": {

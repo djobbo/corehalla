@@ -32,7 +32,8 @@
     "react-icons": "^4.3.1",
     "react-phone-input-2": "^2.15.0",
     "react-table": "^7.7.0",
-    "bhapi": "*"
+    "bhapi": "*",
+    "db": "*"
   },
   "scripts": {
     "ts:check": "tsc --noEmit"
