@@ -8,7 +8,7 @@ import { bg, border, css, text } from "../theme"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { legendsMap } from "bhapi/legends"
-import { useFavorites } from "common/features/favorites/favoritesProvider"
+import { useFavorites } from "db/client/AuthProvider"
 import { useRouter } from "next/router"
 import Image from "next/image"
 import Link from "next/link"
@@ -135,8 +135,9 @@ export const SideNav = () => {
             ))}
             {favorites.map((favorite) => {
                 switch (favorite.type) {
-                    case "player": {
-                        const legend = legendsMap[favorite.legend_id]
+                    case "PLAYER": {
+                        const legendId = favorite.meta.icon?.legend_id
+                        const legend = !!legendId && legendsMap[legendId]
                         return (
                             <SideNavIcon
                                 key={favorite.id}
@@ -155,7 +156,7 @@ export const SideNav = () => {
                             />
                         )
                     }
-                    case "clan":
+                    case "CLAN":
                         return (
                             <SideNavIcon
                                 key={favorite.id}

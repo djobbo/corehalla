@@ -36,7 +36,7 @@ export const useUserConnections = (session: Session | null) => {
     }, [discordToken, userId])
 
     useEffect(() => {
-        const userConnectionsSubscription = supabase
+        const subscription = supabase
             .from<UserConnection>("UserConnection")
             .on("*", (payload) => {
                 logInfo("UserConnection Change received!", payload)
@@ -46,7 +46,7 @@ export const useUserConnections = (session: Session | null) => {
         updateUserConnections()
 
         return () => {
-            userConnectionsSubscription.unsubscribe()
+            subscription.unsubscribe()
         }
     }, [updateUserConnections])
 

@@ -19,14 +19,20 @@ model UserProfile {
   connections UserConnection[]
 }
 
-model UserFavorite {
-  type       String
-  favoriteId String
-  meta       String
-  userId     String      @db.Uuid
-  user       UserProfile @relation(fields: [userId], references: [id])
+enum UserFavoriteType {
+  PLAYER
+  CLAN
+}
 
-  @@id([userId, type, favoriteId])
+model UserFavorite {
+  type   UserFavoriteType
+  id     String
+  name   String
+  meta   Json
+  userId String      @db.Uuid
+  user   UserProfile @relation(fields: [userId], references: [id])
+
+  @@id([userId, type, id])
 }
 
 model UserConnection {

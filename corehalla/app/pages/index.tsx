@@ -4,7 +4,7 @@ import { SearchButton } from "ui/search/SearchButton"
 import { SectionTitle } from "ui/layout/SectionTitle"
 import { cn } from "common/helpers/classnames"
 import { css, text } from "ui/theme"
-import { useFavorites } from "common/features/favorites/favoritesProvider"
+import { useFavorites } from "db/client/AuthProvider"
 
 const landingClassName = css({
     height: "50vh",

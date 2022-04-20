@@ -194,10 +194,15 @@ const Page: NextPage<PageProps> = ({ aliases }) => {
                     )
                 }
                 favorite={{
-                    type: "player",
-                    id: playerStats.brawlhalla_id,
-                    legend_id: legendsSortedByLevel[0].legend_id,
+                    type: "PLAYER",
+                    id: playerStats.brawlhalla_id.toString(),
                     name: cleanString(playerStats.name),
+                    meta: {
+                        icon: {
+                            type: "legend",
+                            legend_id: legendsSortedByLevel[0].legend_id,
+                        },
+                    },
                 }}
             />
             <Tabs defaultValue="overview">
