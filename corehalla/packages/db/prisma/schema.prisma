@@ -35,8 +35,29 @@ model UserConnection {
   appId    String
   name     String
   verified Boolean
-  public   Boolean @default(false)
+  public   Boolean     @default(false)
   user     UserProfile @relation(fields: [userId], references: [id])
 
   @@id([userId, type, appId])
+}
+
+model BHPlayer {
+  id      String          @id
+  name    String
+  aliases BHPlayerAlias[]
+}
+
+model BHPlayerAlias {
+  playerId String
+  alias    String
+  player   BHPlayer @relation(fields: [playerId], references: [id])
+
+  @@id([playerId, alias])
+}
+
+model BHClan {
+  id      String @id
+  name    String
+  created Int
+  xp      String
 }

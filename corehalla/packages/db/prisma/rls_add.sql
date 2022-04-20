@@ -41,3 +41,16 @@ create policy "User can edit own connections"
     using ( auth.uid() = "userId" );
 
 -- TODO: Add rls for deleting connections
+
+-- Brawlhalla
+
+-- Player
+alter table public."BHPlayer"
+  enable row level security;
+
+alter table public."BHPlayerAlias"
+  enable row level security;
+
+-- Clan
+alter table public."BHClan"
+  enable row level security;
