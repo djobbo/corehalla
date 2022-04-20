@@ -2,42 +2,42 @@
 
 -- User Profile
 
-alter table public.user_profiles
+alter table public."UserProfile"
   enable row level security;
 
-drop policy if exists "User can view own profile" on public.user_profiles;
+drop policy if exists "User can view own profile" on public."UserProfile";
 create policy "User can view own profile" 
-    on public.user_profiles for select 
+    on public."UserProfile" for select 
     using ( auth.uid() = id );
 
-drop policy if exists "User can create own profile" on public.user_profiles;
+drop policy if exists "User can create own profile" on public."UserProfile";
 create policy "User can create own profile" 
-    on public.user_profiles for insert 
+    on public."UserProfile" for insert 
     with check ( auth.uid() = id );
 
-drop policy if exists "User can edit own profile" on public.user_profiles;
+drop policy if exists "User can edit own profile" on public."UserProfile";
 create policy "User can edit own profile" 
-    on public.user_profiles for update 
+    on public."UserProfile" for update 
     using ( auth.uid() = id );
 
 -- User Connection
 
-alter table public.user_connections
+alter table public."UserConnection"
   enable row level security;
 
-drop policy if exists "User can view own connections" on public.user_connections;
+drop policy if exists "User can view own connections" on public."UserConnection";
 create policy "User can view own connections" 
-    on public.user_connections for select 
-    using ( auth.uid() = user_id );
+    on public."UserConnection" for select 
+    using ( auth.uid() = "userId" );
 
-drop policy if exists "User can create own connections" on public.user_connections;
+drop policy if exists "User can create own connections" on public."UserConnection";
 create policy "User can create own connections" 
-    on public.user_connections for insert 
-    with check ( auth.uid() = user_id );
+    on public."UserConnection" for insert 
+    with check ( auth.uid() = "userId" );
 
-drop policy if exists "User can edit own connections" on public.user_connections;
+drop policy if exists "User can edit own connections" on public."UserConnection";
 create policy "User can edit own connections" 
-    on public.user_connections for update 
-    using ( auth.uid() = user_id );
+    on public."UserConnection" for update 
+    using ( auth.uid() = "userId" );
 
 -- TODO: Add rls for deleting connections
