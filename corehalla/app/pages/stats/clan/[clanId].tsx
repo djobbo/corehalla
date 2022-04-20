@@ -4,8 +4,10 @@ import { StatsHeader } from "ui/stats/StatsHeader"
 import { cleanString } from "common/helpers/cleanString"
 import { formatUnixTime } from "common/helpers/date"
 import { getClan } from "bhapi"
+import { supabaseService } from "db/supabase/service"
 import { useClan } from "bhapi/hooks/useClan"
 import { useRouter } from "next/router"
+import type { BHClan } from "db/generated/client"
 import type { GetServerSideProps, NextPage } from "next"
 import type { MiscStat } from "ui/stats/MiscStatGroup"
 
@@ -70,9 +72,18 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     if (!clanId || typeof clanId !== "string") return { notFound: true }
     const queryClient = new QueryClient()
 
-    await queryClient.prefetchQuery(["clanStats", clanId], () =>
-        getClan(clanId),
-    )
+    // TODO: Error handling
+    const clan = await getClan(clanId)
+
+    await Promise.all([
+        queryClient.prefetchQuery(["clanStats", clanId], async () => clan),
+        supabaseService.from<BHClan>("BHClan").upsert({
+            id: clan.clan_id.toString(),
+            name: clan.clan_name,
+            created: clan.clan_create_date,
+            xp: clan.clan_xp,
+        }),
+    ])
 
     return {
         props: {

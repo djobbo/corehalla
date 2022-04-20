@@ -15,12 +15,14 @@ import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { formatTime } from "common/helpers/date"
 import { getFullLegends, getFullWeapons } from "bhapi/legends"
+import { getPlayerAliases } from "bhapi/helpers/getPlayerAliases"
 import { getPlayerRanked, getPlayerStats } from "bhapi"
-import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
+import { supabaseService } from "db/supabase/service"
 import { usePlayerRanked } from "bhapi/hooks/usePlayerRanked"
 import { usePlayerStats } from "bhapi/hooks/usePlayerStats"
 import { useRouter } from "next/router"
 import Image from "next/image"
+import type { BHPlayer, BHPlayerAlias } from "db/generated/client"
 import type { GetServerSideProps, NextPage } from "next"
 import type { MiscStat } from "ui/stats/MiscStatGroup"
 
@@ -39,7 +41,11 @@ const tabClassName = cn(
     })(),
 )
 
-const Page: NextPage = () => {
+type PageProps = {
+    aliases: string[]
+}
+
+const Page: NextPage<PageProps> = ({ aliases }) => {
     const router = useRouter()
     const { playerId } = router.query
     const { playerStats, isLoading, isError } = usePlayerStats(
@@ -94,17 +100,6 @@ const Page: NextPage = () => {
             damagetaken: 0,
         },
     )
-
-    const aliases = playerRanked?.["2v2"] && [
-        ...new Set([
-            cleanString(playerStats.name),
-            ...playerRanked["2v2"].map((team) =>
-                cleanString(
-                    getTeamPlayers(playerRanked.brawlhalla_id, team).playerName,
-                ),
-            ),
-        ]),
-    ]
 
     const legendsSortedByLevel = fullLegends
         .slice(0)
@@ -273,20 +268,41 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     if (!playerId || typeof playerId !== "string") return { notFound: true }
     const queryClient = new QueryClient()
 
+    // TODO: Error handling
+    const [stats, ranked] = await Promise.all([
+        getPlayerStats(playerId),
+        getPlayerRanked(playerId),
+    ])
+
+    const aliases = getPlayerAliases(stats, ranked)
+
     await Promise.all([
-        queryClient.prefetchQuery(["playerStats", playerId], () =>
-            getPlayerStats(playerId),
-        ),
+        queryClient.prefetchQuery(["playerStats", playerId], async () => stats),
         queryClient.prefetchQuery(["playerRanked", playerId], async () => {
-            const ranked = await getPlayerRanked(playerId)
             if (!ranked.brawlhalla_id) throw new Error("Player not ranked")
             return ranked
         }),
+        supabaseService.from<BHPlayer>("BHPlayer").upsert({
+            id: stats.brawlhalla_id.toString(),
+            name: stats.name,
+        }),
+        supabaseService.from<BHPlayerAlias>("BHPlayerAlias").upsert(
+            aliases.map((alias) => ({
+                playerId: stats.brawlhalla_id.toString(),
+                alias,
+            })),
+        ),
     ])
+
+    const { data } = await supabaseService
+        .from<BHPlayerAlias>("BHPlayerAlias")
+        .select("alias")
+        .eq("playerId", stats.brawlhalla_id.toString())
 
     return {
         props: {
             dehydratedState: dehydrate(queryClient),
+            aliases: data?.map(({ alias }) => alias) ?? aliases,
         },
     }
 }
