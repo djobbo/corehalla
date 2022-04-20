@@ -42,6 +42,31 @@ create policy "User can edit own connections"
 
 -- TODO: Add rls for deleting connections
 
+-- User Favorite
+
+alter table public."UserFavorite"
+  enable row level security;
+
+drop policy if exists "User can view own favorites" on public."UserFavorite";
+create policy "User can view own favorites" 
+    on public."UserFavorite" for select 
+    using ( auth.uid() = "userId" );
+
+drop policy if exists "User can create own favorites" on public."UserFavorite";
+create policy "User can create own favorites" 
+    on public."UserFavorite" for insert 
+    with check ( auth.uid() = "userId" );
+
+drop policy if exists "User can edit own favorites" on public."UserFavorite";
+create policy "User can edit own favorites" 
+    on public."UserFavorite" for update 
+    using ( auth.uid() = "userId" );
+
+drop policy if exists "User can delete own favorites" on public."UserFavorite";
+create policy "User can delete own favorites" 
+    on public."UserFavorite" for delete 
+    using ( auth.uid() = "userId" );
+
 -- Brawlhalla
 
 -- Player

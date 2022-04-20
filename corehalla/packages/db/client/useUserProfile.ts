@@ -33,7 +33,7 @@ export const useUserProfile = (session: Session | null) => {
     }, [userId, discordToken])
 
     useEffect(() => {
-        const userProfileSubscription = supabase
+        const subscription = supabase
             .from<UserProfile>("UserProfile")
             .on("*", (payload) => {
                 if (payload.new.id !== userId) return
@@ -44,7 +44,7 @@ export const useUserProfile = (session: Session | null) => {
         updateUserProfile()
 
         return () => {
-            userProfileSubscription.unsubscribe()
+            subscription.unsubscribe()
         }
     }, [updateUserProfile, userId])
 

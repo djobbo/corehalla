@@ -3,10 +3,10 @@ import { bg, css, text } from "../theme"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { legendsMap } from "bhapi/legends"
-import { useFavorites } from "common/features/favorites/favoritesProvider"
+import { useFavorites } from "db/client/AuthProvider"
 import Image from "next/image"
 import Link from "next/link"
-import type { Favorite } from "common/features/favorites/favoritesProvider"
+import type { Favorite } from "db/client/useUserFavorites"
 import type { ReactNode } from "react"
 
 type FavoritesGridProps = {
@@ -29,8 +29,9 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
             {favorites.slice(0, 12).map((fav) => {
                 let icon: ReactNode = null
 
-                if (fav.type === "player") {
-                    const legend = legendsMap[fav.legend_id]
+                if (fav.type === "PLAYER") {
+                    const legendId = fav.meta.icon?.legend_id
+                    const legend = !!legendId && legendsMap[legendId]
                     if (legend)
                         icon = (
                             <div className="relative w-8 h-8">
@@ -43,7 +44,7 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                                 />
                             </div>
                         )
-                } else if (fav.type === "clan") {
+                } else if (fav.type === "CLAN") {
                     icon = <UserGroupIcon className="w-8 h-8" />
                 }
 
@@ -56,7 +57,9 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                         )}
                         key={`${fav.type}/${fav.id}`}
                     >
-                        <Link href={`/stats/${fav.type}/${fav.id}`}>
+                        <Link
+                            href={`/stats/${fav.type.toLowerCase()}/${fav.id}`}
+                        >
                             <a
                                 key={fav.id}
                                 className={cn(

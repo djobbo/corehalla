@@ -47,9 +47,10 @@ const Page: NextPage = () => {
                 id={clan.clan_id}
                 miscStats={clanStats}
                 favorite={{
-                    type: "clan",
-                    id: clan.clan_id,
+                    type: "CLAN",
+                    id: clan.clan_id.toString(),
                     name: cleanString(clan.clan_name),
+                    meta: {},
                 }}
             />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
