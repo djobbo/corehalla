@@ -1,5 +1,5 @@
 -- addforeignKey
-alter table public.user_profiles add constraint "UserProfile_userId_fkey" foreign key ("id") references auth.users("id") on delete restrict on update cascade;
+alter table public."UserProfile" add constraint "UserProfile_userId_fkey" foreign key ("id") references auth.users("id") on delete restrict on update cascade;
 
 -- create User Profile trigger function
 create or replace function create_profile_for_new_user()
@@ -8,7 +8,7 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public.user_profiles (id)
+  insert into public."UserProfile" (id)
   values(new.id) on conflict (id) do nothing;
   return new;
 end;

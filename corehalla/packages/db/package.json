@@ -5,7 +5,6 @@
     "scripts": {
         "db:migrate": "yarn db:supabase:clean && prisma migrate dev && yarn db:supabase:setup",
         "db:migrate:create": "yarn db:supabase:clean && prisma migrate dev --create-only && yarn db:supabase:setup",
-        "db:reset": "yarn prisma migrate reset && yarn db:supabase:setup",
         "db:supabase:setup": "yarn db:rls:add && yarn db:auth-user-trigger:add",
         "db:supabase:clean": "yarn db:auth-user-trigger:rm",
         "db:auth-user-trigger:add": "prisma db execute --preview-feature --file ./prisma/auth_user_trigger_add.sql --schema ./prisma/schema.prisma",
@@ -27,6 +26,7 @@
         "@supabase/supabase-js": "^1.34.1",
         "axios": "^0.26.1",
         "react": "^18.0.0",
-        "react-query": "^3.35.0"
+        "react-query": "^3.35.0",
+        "logger": "*"
     }
 }

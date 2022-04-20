@@ -1,10 +1,11 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react"
 import { signIn, signOut } from "../supabase/auth"
 import { supabase } from "../supabase/client"
+import { useUserConnections } from "./useUserConnections"
 import { useUserProfile } from "./useUserProfile"
 import type { ReactNode } from "react"
 import type { Session, User } from "@supabase/supabase-js"
-import type { UserProfile } from "../generated/client"
+import type { UserConnection, UserProfile } from "../generated/client"
 
 interface AuthContext {
     isLoggedIn: boolean
@@ -13,6 +14,7 @@ interface AuthContext {
     userProfile: UserProfile | null
     signIn: () => void
     signOut: () => void
+    userConnections: UserConnection[]
 }
 
 const authContext = createContext<AuthContext>({
@@ -22,6 +24,7 @@ const authContext = createContext<AuthContext>({
     userProfile: null,
     signIn: () => void 0,
     signOut: () => void 0,
+    userConnections: [],
 })
 
 export const useAuth = (): AuthContext => useContext(authContext)
@@ -32,7 +35,8 @@ interface Props {
 
 export const AuthProvider = ({ children }: Props) => {
     const [session, setSession] = useState<Session | null>(null)
-    const { userProfile } = useUserProfile(session)
+    const userProfile = useUserProfile(session)
+    const userConnections = useUserConnections(session)
 
     useEffect(() => {
         setSession(supabase.auth.session())
@@ -62,6 +66,7 @@ export const AuthProvider = ({ children }: Props) => {
                 isLoggedIn,
                 signIn,
                 signOut,
+                userConnections,
             }}
         >
             {children}

@@ -1,13 +1,11 @@
 import { getDiscordProfile } from "../discord/getDiscordProfile"
-import { getUserConnections } from "../discord/getUserConnections"
 import { supabase } from "../supabase/client"
 import { useCallback, useEffect, useState } from "react"
 import type { Session } from "@supabase/supabase-js"
-import type { UserConnection, UserProfile } from "../generated/client"
+import type { UserProfile } from "../generated/client"
 
 export const useUserProfile = (session: Session | null) => {
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
-    const [userConnections, setUserConnections] = useState<UserConnection[]>([])
     const userId = session?.user?.id
     const discordToken = session?.provider_token
 
@@ -20,38 +18,25 @@ export const useUserProfile = (session: Session | null) => {
 
         const { username, avatar } = discordProfile
 
-        await supabase.from<UserProfile>("user_profiles").upsert({
-            id: userId,
-            username,
-            ...(!!avatar && { avatarUrl: avatar }),
-        })
+        const { data: profile, error } = await supabase
+            .from<UserProfile>("UserProfile")
+            .upsert({
+                id: userId,
+                username,
+                ...(avatar ? { avatarUrl: avatar ?? "" } : {}),
+            })
+            .single()
+
+        if (error) throw error
+
+        setUserProfile(profile)
     }, [userId, discordToken])
-
-    const updateUserConnections = useCallback(async () => {
-        if (!userId || !discordToken) return
-
-        const userConnections = await getUserConnections(discordToken)
-
-        if (!userConnections) return
-
-        // TODO: delete old connections
-        await supabase.from<UserConnection>("user_connections").upsert(
-            userConnections.map(({ id, name, type, verified }) => ({
-                appId: id,
-                userId,
-                type,
-                verified,
-                name,
-            })),
-        )
-    }, [discordToken, userId])
 
     useEffect(() => {
         const userProfileSubscription = supabase
-            .from<UserProfile>("user_profiles")
+            .from<UserProfile>("UserProfile")
             .on("*", (payload) => {
                 if (payload.new.id !== userId) return
-                console.log("UserProfile Change received!", payload)
                 setUserProfile(payload.new)
             })
             .subscribe()
@@ -63,23 +48,5 @@ export const useUserProfile = (session: Session | null) => {
         }
     }, [updateUserProfile, userId])
 
-    useEffect(() => {
-        const userConnectionsSubscription = supabase
-            .from<UserConnection>("user_connections")
-            .on("*", (payload) => {
-                console.log("UserConnection Change received!", payload)
-            })
-            .subscribe()
-
-        updateUserConnections()
-
-        return () => {
-            userConnectionsSubscription.unsubscribe()
-        }
-    }, [updateUserConnections])
-
-    return {
-        userProfile,
-        userConnections,
-    }
+    return userProfile
 }

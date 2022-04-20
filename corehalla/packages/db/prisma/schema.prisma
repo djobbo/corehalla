@@ -14,33 +14,29 @@ model UserProfile {
   // see https://github.com/prisma/prisma/issues/1175#issuecomment-1100726897
   id          String           @id @db.Uuid
   username    String           @default("")
-  avatarUrl   String           @default("") @map("avatar_url")
+  avatarUrl   String           @default("")
   favorites   UserFavorite[]
   connections UserConnection[]
-
-  @@map("user_profiles")
 }
 
 model UserFavorite {
   type       String
-  favoriteId String      @map("favorite_id")
+  favoriteId String
   meta       String
-  userId     String      @map("user_id") @db.Uuid
+  userId     String      @db.Uuid
   user       UserProfile @relation(fields: [userId], references: [id])
 
-  @@unique([userId, type, favoriteId])
-  @@map("user_favorites")
+  @@id([userId, type, favoriteId])
 }
 
 model UserConnection {
-  userId   String      @map("user_id") @db.Uuid
+  userId   String      @db.Uuid
   type     String
-  appId    String      @map("app_id")
+  appId    String
   name     String
   verified Boolean
-  public   Boolean
+  public   Boolean @default(false)
   user     UserProfile @relation(fields: [userId], references: [id])
 
-  @@unique([userId, type, appId])
-  @@map("user_connections")
+  @@id([userId, type, appId])
 }
