@@ -2,7 +2,6 @@
     "name": "@corehalla/core",
     "version": "0.1.0",
     "main": "lib/index.js",
-    "license": "MIT",
     "scripts": {
         "build": "tsc",
         "build:lib": "tsc",

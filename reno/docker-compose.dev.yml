@@ -1,0 +1,19 @@
+# See https://github.dev/supabase/supabase/blob/master/docker/docker-compose.yml
+
+version: "3"
+
+services:
+  app:
+    build:
+      context: ../../corehalla
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    container_name: corehalla-app
+    stdin_open: true
+    volumes:
+       - ./.:/usr/src/app
+       - /usr/src/app/node_modules
+       - /usr/src/app/app/node_modules
+       - /usr/src/packages/**/node_modules
