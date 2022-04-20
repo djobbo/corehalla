@@ -16,7 +16,6 @@
         "dev": "vuepress dev docs",
         "build": "vuepress build docs"
     },
-    "license": "MIT",
     "devDependencies": {
         "glob": "^7.1.6",
         "markdown-it": "^12.0.6",
