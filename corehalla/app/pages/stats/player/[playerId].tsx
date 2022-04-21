@@ -194,7 +194,7 @@ const Page: NextPage<PageProps> = ({ aliases }) => {
                     )
                 }
                 favorite={{
-                    type: "PLAYER",
+                    type: "player",
                     id: playerStats.brawlhalla_id.toString(),
                     name: cleanString(playerStats.name),
                     meta: {

@@ -29,7 +29,7 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
             {favorites.slice(0, 12).map((fav) => {
                 let icon: ReactNode = null
 
-                if (fav.type === "PLAYER") {
+                if (fav.type === "player") {
                     const legendId = fav.meta.icon?.legend_id
                     const legend = !!legendId && legendsMap[legendId]
                     if (legend)
@@ -44,7 +44,7 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                                 />
                             </div>
                         )
-                } else if (fav.type === "CLAN") {
+                } else if (fav.type === "clan") {
                     icon = <UserGroupIcon className="w-8 h-8" />
                 }
 
@@ -57,9 +57,7 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                         )}
                         key={`${fav.type}/${fav.id}`}
                     >
-                        <Link
-                            href={`/stats/${fav.type.toLowerCase()}/${fav.id}`}
-                        >
+                        <Link href={`/stats/${fav.type}/${fav.id}`}>
                             <a
                                 key={fav.id}
                                 className={cn(

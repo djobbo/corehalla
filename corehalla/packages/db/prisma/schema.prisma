@@ -10,7 +10,7 @@ datasource db {
 
 model UserProfile {
   // Cross Schema Foreign Keys
-  // @relation auth.users.id -> auth_user_trigger_[add].sql
+  // @relation auth.users.id -> auth_user_trigger_[add|rm].sql
   // see https://github.com/prisma/prisma/issues/1175#issuecomment-1100726897
   id          String           @id @db.Uuid
   username    String           @default("")
@@ -19,18 +19,13 @@ model UserProfile {
   connections UserConnection[]
 }
 
-enum UserFavoriteType {
-  PLAYER
-  CLAN
-}
-
 model UserFavorite {
-  type   UserFavoriteType
+  type   String
   id     String
   name   String
   meta   Json
-  userId String      @db.Uuid
-  user   UserProfile @relation(fields: [userId], references: [id])
+  userId String           @db.Uuid
+  user   UserProfile      @relation(fields: [userId], references: [id])
 
   @@id([userId, type, id])
 }
@@ -48,7 +43,7 @@ model UserConnection {
 }
 
 model BHPlayer {
-  id      String          @id
+  id      String   @id
   name    String
   aliases BHPlayerAlias[]
 }

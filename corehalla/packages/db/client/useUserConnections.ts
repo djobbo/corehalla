@@ -48,18 +48,10 @@ export const useUserConnections = (
             })
             .subscribe()
 
-        const a = supabase
-            .from("UserFavorite")
-            .on("*", (payload) => {
-                logInfo("UserFavorite Change received!", payload)
-            })
-            .subscribe()
-
         updateUserConnections()
 
         return () => {
             subscription.unsubscribe()
-            a.unsubscribe()
         }
     }, [updateUserConnections, updateEnabled])
 

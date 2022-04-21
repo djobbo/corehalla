@@ -47,7 +47,7 @@ const Page: NextPage = () => {
                 id={clan.clan_id}
                 miscStats={clanStats}
                 favorite={{
-                    type: "CLAN",
+                    type: "clan",
                     id: clan.clan_id.toString(),
                     name: cleanString(clan.clan_name),
                     meta: {},
