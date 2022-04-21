@@ -1,16 +1,11 @@
 import { supabase } from "../supabase/client"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import type {
-    Prisma,
-    UserFavorite,
-    UserFavoriteType,
-} from "../generated/client"
+import type { Prisma, UserFavorite } from "../generated/client"
 import type { Session } from "@supabase/supabase-js"
 
-type FavoriteBase<
-    Type extends UserFavoriteType,
-    Meta extends Prisma.JsonValue,
-> = {
+type FavoriteType = "player" | "clan"
+
+type FavoriteBase<Type extends FavoriteType, Meta extends Prisma.JsonValue> = {
     id: string
     type: Type
     name: string
@@ -18,7 +13,7 @@ type FavoriteBase<
 }
 
 type PlayerFavorite = FavoriteBase<
-    "PLAYER",
+    "player",
     {
         icon?: {
             type?: "legend"
@@ -27,14 +22,14 @@ type PlayerFavorite = FavoriteBase<
     }
 >
 
-type ClanFavorite = FavoriteBase<"CLAN", Record<string, never>>
+type ClanFavorite = FavoriteBase<"clan", Record<string, never>>
 
 export type Favorite = PlayerFavorite | ClanFavorite
 
 const isFavoritePlayer = (favorite: Favorite): favorite is PlayerFavorite =>
-    favorite.type === "PLAYER"
+    favorite.type === "player"
 const isFavoriteClan = (favorite: Favorite): favorite is ClanFavorite =>
-    favorite.type === "CLAN"
+    favorite.type === "clan"
 
 export const useUserFavorites = (session: Session | null) => {
     const [favorites, setFavorites] = useState<Favorite[]>([])
@@ -93,15 +88,16 @@ export const useUserFavorites = (session: Session | null) => {
     }, [userId])
 
     useEffect(() => {
-        if (!userId) return
+        if (!userId) {
+            setFavorites([])
+            return
+        }
+
         fetchInitialFavorites()
 
         const subscription = supabase
             .from<UserFavorite>("UserFavorite")
             .on("*", (payload) => {
-                console.log("favorite changed", payload)
-                if (payload.new.userId !== userId) return
-
                 const { id, name, meta, type } = payload.new
 
                 switch (payload.eventType) {

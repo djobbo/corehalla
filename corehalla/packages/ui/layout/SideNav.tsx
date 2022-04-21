@@ -135,7 +135,7 @@ export const SideNav = () => {
             ))}
             {favorites.map((favorite) => {
                 switch (favorite.type) {
-                    case "PLAYER": {
+                    case "player": {
                         const legendId = favorite.meta.icon?.legend_id
                         const legend = !!legendId && legendsMap[legendId]
                         return (
@@ -156,7 +156,7 @@ export const SideNav = () => {
                             />
                         )
                     }
-                    case "CLAN":
+                    case "clan":
                         return (
                             <SideNavIcon
                                 key={favorite.id}
