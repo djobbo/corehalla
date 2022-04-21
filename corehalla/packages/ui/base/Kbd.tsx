@@ -9,13 +9,14 @@ type KbdProps = {
 
 const kbdClassName = css({
     minWidth: "1.5rem",
+    height: "1.5rem",
 })()
 
 export const Kbd = ({ children, className }: KbdProps) => (
     <kbd
         className={cn(
             kbdClassName,
-            "rounded-md flex items-center justify-center",
+            "rounded-md flex items-center justify-center px-2",
             bg("blue3"),
             className,
         )}

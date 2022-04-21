@@ -68,7 +68,15 @@ const Page: NextPage = () => {
 
 export default Page
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+    query,
+    res,
+}) => {
+    res.setHeader(
+        "Cache-Control",
+        "public, s-maxage=300, stale-while-revalidate=480",
+    )
+
     const { clanId } = query
     if (!clanId || typeof clanId !== "string") return { notFound: true }
     const queryClient = new QueryClient()
