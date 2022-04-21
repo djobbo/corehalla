@@ -5,8 +5,6 @@
   "repository": "https://github.com/djobbo/CorehallaNeue.git",
   "author": "Djobbo Maïga <4998293+AlfieGoldson@users.noreply.github.com>",
   "scripts": {
-    "dev:upgrade": "./reno/upgrade.sh",
-    "dev": "./reno/dev.sh",
-    "db:migrate": "./reno/migrate.sh"
+    "dev": "./reno/dev.sh"
   }
 }
