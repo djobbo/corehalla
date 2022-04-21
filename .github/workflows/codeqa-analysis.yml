@@ -4,6 +4,9 @@ jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./corehalla
     strategy:
       fail-fast: false
       matrix:

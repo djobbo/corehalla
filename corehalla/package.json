@@ -16,8 +16,7 @@
         "ci:lint": "eslint --ext .js,.jsx,.ts,.tsx .",
         "ci:deadcode": "turbo run ci:deadcode",
         "dl-roster": "turbo run dl-roster",
-        "db:migrate": "turbo run db:migrate",
-        "docker:dev": "yarn ci && yarn dev"
+        "db:migrate": "turbo run db:migrate"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^5.19.0",
