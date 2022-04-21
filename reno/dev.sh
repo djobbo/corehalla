@@ -5,7 +5,9 @@ source .env.dev
 
 cd reno
 
-docker-compose -f docker-compose.dev.yml up --build -d
+docker-compose -f docker-compose.dev.yml up -d
+
+DATABASE_URL=postgres://postgres:$POSTGRES_PASSWORD@localhost:$POSTGRES_PORT/postgres
 
 cd ../corehalla/packages/db
 

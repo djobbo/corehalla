@@ -168,5 +168,10 @@ services:
        - ../corehalla:/usr/src/app
        - ../corehalla/node_modules:/usr/src/app/node_modules
        - ../corehalla/app/node_modules:/usr/src/app/app/node_modules
+    environment:
+      NEXT_PUBLIC_SUPABASE_URL: ${PUBLIC_REST_URL}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
+      BH_API_KEY: ${BH_API_KEY}
     depends_on:
       - db
