@@ -10,6 +10,6 @@ const withTM = require("next-transpile-modules")([
 module.exports = withTM({
     reactStrictMode: true,
     images: {
-        domains: ["raw.githubusercontent.com", "images.smash.gg"],
+        domains: ["cdn.discordapp.com"],
     },
 })
