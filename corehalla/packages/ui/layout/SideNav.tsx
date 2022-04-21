@@ -1,9 +1,4 @@
-import {
-    ChevronDoubleUpIcon,
-    HeartIcon,
-    HomeIcon,
-    XIcon,
-} from "@heroicons/react/solid"
+import { HeartIcon, HomeIcon, XIcon } from "@heroicons/react/solid"
 import { bg, border, css, text } from "../theme"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
@@ -97,16 +92,12 @@ const defaultNav = [
         icon: <HomeIcon className="w-6 h-6" />,
         href: "/",
     },
-    {
-        name: "Rankings",
-        icon: <ChevronDoubleUpIcon className="w-6 h-6" />,
-        href: "/rankings",
-    },
-    {
-        name: "Favorites",
-        icon: <HeartIcon className="w-6 h-6" />,
-        href: "/@me/favorites",
-    },
+    // TODO: Rankings Page
+    // {
+    //     name: "Rankings",
+    //     icon: <ChevronDoubleUpIcon className="w-6 h-6" />,
+    //     href: "/rankings",
+    // },
 ]
 
 export const SideNav = () => {
@@ -116,6 +107,18 @@ export const SideNav = () => {
     const { pathname } = router
     const { playerId, clanId } = router.query
 
+    const nav = defaultNav.concat(
+        favorites.length > 0
+            ? [
+                  {
+                      name: "Favorites",
+                      icon: <HeartIcon className="w-6 h-6" />,
+                      href: "/@me/favorites",
+                  },
+              ]
+            : [],
+    )
+
     return (
         <div
             className={cn(
@@ -124,7 +127,7 @@ export const SideNav = () => {
                 border("blue4"),
             )}
         >
-            {defaultNav.map((nav) => (
+            {nav.map((nav) => (
                 <SideNavIcon
                     key={nav.name}
                     name={nav.name}

@@ -45,8 +45,10 @@ export const useUserFavorites = (session: Session | null) => {
         if (error) throw error
     }
 
-    const removeFavorite = async ({ id, type }: Favorite) => {
+    const removeFavorite = async ({ id, type, name }: Favorite) => {
         if (!userId) return
+        if (!window.confirm(`Remove ${name} from your favorite ${type}s ?`))
+            return
 
         const { error } = await supabase
             .from<UserFavorite>("UserFavorite")
