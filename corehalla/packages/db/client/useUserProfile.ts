@@ -1,52 +1,64 @@
 import { getDiscordProfile } from "../discord/getDiscordProfile"
 import { supabase } from "../supabase/client"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect } from "react"
+import { useQuery, useQueryClient } from "react-query"
 import type { Session } from "@supabase/supabase-js"
 import type { UserProfile } from "../generated/client"
 
 export const useUserProfile = (session: Session | null) => {
-    const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
     const userId = session?.user?.id
     const discordToken = session?.provider_token
 
-    const updateUserProfile = useCallback(async () => {
-        if (!userId || !discordToken) return
+    const queryClient = useQueryClient()
 
-        const discordProfile = await getDiscordProfile(discordToken)
+    const { data: userProfile, isError: failedToFetchUserProfile } = useQuery(
+        ["userProfile", userId],
+        async () => {
+            const { data } = await supabase
+                .from<UserProfile>("UserProfile")
+                .select("*")
+                .throwOnError()
+                .single()
 
-        if (!discordProfile) return
+            return data
+        },
+    )
 
-        const { username, avatar } = discordProfile
+    useQuery(
+        ["discordProfile", userId, discordToken],
+        async () => {
+            const discordProfile = await getDiscordProfile(discordToken ?? "")
 
-        const { data: profile, error } = await supabase
-            .from<UserProfile>("UserProfile")
-            .upsert({
-                id: userId,
-                username,
-                ...(avatar ? { avatarUrl: avatar ?? "" } : {}),
-            })
-            .single()
+            if (!discordProfile)
+                throw new Error("Failed to fetch discord profile")
 
-        if (error) throw error
+            const { username, avatar } = discordProfile
 
-        setUserProfile(profile)
-    }, [userId, discordToken])
+            await supabase
+                .from<UserProfile>("UserProfile")
+                .upsert({
+                    id: userId,
+                    username,
+                    ...(avatar ? { avatarUrl: avatar ?? "" } : {}),
+                })
+                .throwOnError()
+        },
+        { enabled: !!discordToken && !!userId && failedToFetchUserProfile },
+    )
 
     useEffect(() => {
         const subscription = supabase
             .from<UserProfile>("UserProfile")
             .on("*", (payload) => {
                 if (payload.new.id !== userId) return
-                setUserProfile(payload.new)
+                queryClient.invalidateQueries(["userProfile", userId])
             })
             .subscribe()
-
-        updateUserProfile()
 
         return () => {
             subscription.unsubscribe()
         }
-    }, [updateUserProfile, userId])
+    }, [queryClient, userId])
 
-    return userProfile
+    return userProfile ?? null
 }
