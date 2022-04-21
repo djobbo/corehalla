@@ -1,5 +1,9 @@
 import { unix } from "dayjs"
 
+/**
+ * @error returns different dates in client or ssr mode
+ * @issue https://github.com/iamkun/dayjs/issues/1690
+ */
 export const getDateFromUnixTime = (unixTime: number, template?: string) =>
     unix(unixTime).format(template)
 

@@ -1,5 +1,8 @@
 -- Setup supabase realtime
 
-alter publication supabase_realtime add table public."UserProfile";
-alter publication supabase_realtime add table public."UserFavorite";
-alter publication supabase_realtime add table public."UserConnection";
+begin;
+    drop publication if exists supabase_realtime; 
+
+    create publication supabase_realtime 
+        for table public."UserProfile", public."UserFavorite", public."UserConnection";
+commit;

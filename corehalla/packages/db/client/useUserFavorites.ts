@@ -132,8 +132,6 @@ export const useUserFavorites = (session: Session | null) => {
             })
             .subscribe()
 
-        console.log(supabase.getSubscriptions())
-
         return () => {
             subscription.unsubscribe()
         }

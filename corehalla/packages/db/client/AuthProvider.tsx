@@ -48,7 +48,7 @@ interface Props {
 export const AuthProvider = ({ children }: Props) => {
     const [session, setSession] = useState<Session | null>(null)
     const userProfile = useUserProfile(session)
-    const userConnections = useUserConnections(session)
+    const userConnections = useUserConnections(session, !!userProfile)
     const userFavorites = useUserFavorites(session)
 
     useEffect(() => {

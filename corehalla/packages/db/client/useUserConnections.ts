@@ -5,7 +5,10 @@ import { useCallback, useEffect, useState } from "react"
 import type { Session } from "@supabase/supabase-js"
 import type { UserConnection } from "../generated/client"
 
-export const useUserConnections = (session: Session | null) => {
+export const useUserConnections = (
+    session: Session | null,
+    updateEnabled = false,
+) => {
     const [userConnections, setUserConnections] = useState<UserConnection[]>([])
     const userId = session?.user?.id
     const discordToken = session?.provider_token
@@ -36,6 +39,8 @@ export const useUserConnections = (session: Session | null) => {
     }, [discordToken, userId])
 
     useEffect(() => {
+        if (!updateEnabled) return
+
         const subscription = supabase
             .from<UserConnection>("UserConnection")
             .on("*", (payload) => {
@@ -43,12 +48,20 @@ export const useUserConnections = (session: Session | null) => {
             })
             .subscribe()
 
+        const a = supabase
+            .from("UserFavorite")
+            .on("*", (payload) => {
+                logInfo("UserFavorite Change received!", payload)
+            })
+            .subscribe()
+
         updateUserConnections()
 
         return () => {
             subscription.unsubscribe()
+            a.unsubscribe()
         }
-    }, [updateUserConnections])
+    }, [updateUserConnections, updateEnabled])
 
     return userConnections
 }
