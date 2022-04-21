@@ -3,6 +3,10 @@
 set -a
 source .env.dev
 
-docker-compose -f supabase/docker/docker-compose.yml -f supabase/docker/dev/docker-compose.dev.yml -f reno/docker-compose.dev.yml up --build -d
+cd reno
 
-./reno/migrate.sh
+docker-compose -f docker-compose.dev.yml up --build -d
+
+cd ../corehalla/packages/db
+
+yarn db:migrate
