@@ -14,6 +14,8 @@ export const Footer = () => {
                 <a
                     className="font-bold hover:underline"
                     href="https://djobbo.com"
+                    target="_blank"
+                    rel="noreferrer"
                 >
                     Djobbo Maïga
                 </a>
