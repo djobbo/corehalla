@@ -46,12 +46,8 @@ export const GamesDisplay = ({
                 indicatorClassName={cn("h-2", bg("green9"))}
             />
             <div className="flex justify-between font-bold text-md mt-2">
-                <p>
-                    <span>{wins}W</span>
-                </p>
-                <p>
-                    <span>{games - wins}L</span>
-                </p>
+                <span>{wins}W</span>
+                <span>{games - wins}L</span>
             </div>
         </div>
     )
