@@ -1,5 +1,5 @@
 import { cleanString } from "common/helpers/cleanString"
-import { getTeamPlayers } from "./getTeamPlayers"
+import { getPlayerTeam } from "./getTeamPlayers"
 import type { PlayerRanked, PlayerStats } from "../types"
 
 export const getPlayerAliases = (
@@ -10,7 +10,7 @@ export const getPlayerAliases = (
         cleanString(playerStats.name),
         ...(playerRanked?.["2v2"].map((team) =>
             cleanString(
-                getTeamPlayers(playerRanked.brawlhalla_id, team).playerName,
+                getPlayerTeam(playerRanked.brawlhalla_id, team).playerName,
             ),
         ) ?? []),
     ]),

@@ -1,4 +1,4 @@
-import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
+import { getPlayerTeam } from "bhapi/helpers/getTeamPlayers"
 import { rankedRegion } from "bhapi/constants"
 import Link from "next/link"
 import type { PlayerRanked } from "bhapi/types"
@@ -29,7 +29,7 @@ const rankedBannerClassName = css({
 })()
 
 export const TeamCard = ({ playerId, team }: Props): JSX.Element => {
-    const { playerName, teammate } = getTeamPlayers(playerId, team)
+    const { playerName, teammate } = getPlayerTeam(playerId, team)
     const regionTxt = rankedRegion[team.region] ?? "all"
     const eloReset = getLegendEloReset(team.rating)
 
