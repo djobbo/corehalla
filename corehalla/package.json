@@ -16,7 +16,9 @@
         "ci:lint": "eslint --ext .js,.jsx,.ts,.tsx .",
         "ci:deadcode": "turbo run ci:deadcode",
         "dl-roster": "turbo run dl-roster",
-        "db:migrate": "turbo run db:migrate"
+        "db:migrate": "turbo run db:migrate",
+        "db:migrate:prod": "turbo run db:migrate:prod --scope=db --include-dependencies --no-deps",
+        "build:prod": "yarn db:migrate:prod && turbo run build --scope=app --include-dependencies --no-deps"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^5.19.0",
