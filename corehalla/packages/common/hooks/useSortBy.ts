@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 
 type CompareFn<ElementType> = {
-    name: string
+    label: string
     fn: (a: ElementType, b: ElementType) => number
 }
 
@@ -42,10 +42,10 @@ export const useSortBy = <ElementType, Option extends string>(
         setSortBy,
         options: (
             Object.entries(compareFns) as [string, CompareFn<ElementType>][]
-        ).map(([key, { name }]) => ({
-            key,
-            name,
-        })),
+        ).map(([value, { label }]) => ({
+            value,
+            label,
+        })) as { value: Option; label: string }[],
         sortDirection,
         setSortDirection,
         changeSortDirection,

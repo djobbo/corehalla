@@ -45,11 +45,11 @@ export const rankedTiers = [
     ["Tin 0", 200],
 ] as const
 
-export const rankedTier = rankedTiers.map(([tier]) => tier)
+export const rankedTiersComplete = rankedTiers.map(([tier]) => tier)
 
-export type RankedTier = typeof rankedTier[number]
+export type RankedTier = typeof rankedTiersComplete[number]
 
-export const rankedRegion = [
+export const rankedRegions = [
     "all",
     "us-e",
     "eu",
@@ -60,9 +60,9 @@ export const rankedRegion = [
     "jpn",
 ] as const
 
-export type RankedRegion = typeof rankedRegion[number]
+export type RankedRegion = typeof rankedRegions[number]
 
-export const weapon = [
+export const weapons = [
     "Hammer",
     "Sword",
     "Blasters",
@@ -78,8 +78,8 @@ export const weapon = [
     "Greatsword",
 ] as const
 
-export type Weapon = typeof weapon[number]
+export type Weapon = typeof weapons[number]
 
-export const clanRank = ["Leader", "Officer", "Member", "Recruit"] as const
+export const clanRanks = ["Leader", "Officer", "Member", "Recruit"] as const
 
-export type ClanRank = typeof clanRank[number]
+export type ClanRank = typeof clanRanks[number]
