@@ -55,6 +55,14 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
     return (
         <>
+            <Head>
+                <link
+                    rel="icon"
+                    type="image/png"
+                    href="/icons/icon-192x192.png"
+                />
+                <title>Corehalla</title>
+            </Head>
             <GAScripts />
             <QueryClientProvider client={queryClient.current}>
                 <Hydrate state={pageProps.dehydratedState}>
@@ -68,9 +76,6 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
                                 </div>
                             </PageLoader>
                             <Layout>
-                                <Head>
-                                    <title>Corehalla</title>
-                                </Head>
                                 <Component {...pageProps} />
                             </Layout>
                             <Searchbox />

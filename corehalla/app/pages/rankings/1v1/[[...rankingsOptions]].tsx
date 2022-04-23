@@ -5,6 +5,7 @@ import { cleanString } from "common/helpers/cleanString"
 import { legendsMap } from "bhapi/legends"
 import { useRankings1v1 } from "bhapi/hooks/useRankings"
 import { useRouter } from "next/router"
+import Head from "next/head"
 import Image from "next/image"
 import Link from "next/link"
 import type { NextPage } from "next"
@@ -30,6 +31,11 @@ const Page: NextPage = () => {
 
     return (
         <>
+            <Head>
+                <title>{`${
+                    region === "all" ? "Global" : region.toUpperCase()
+                } 1v1 Rankings - Page ${page} • Corehalla`}</title>
+            </Head>
             {!player && (
                 <Pagination
                     getPageHref={(page) =>

@@ -7,6 +7,7 @@ import { getClan } from "bhapi"
 import { supabaseService } from "db/supabase/service"
 import { useClan } from "bhapi/hooks/useClan"
 import { useRouter } from "next/router"
+import Head from "next/head"
 import type { BHClan } from "db/generated/client"
 import type { GetServerSideProps, NextPage } from "next"
 import type { MiscStat } from "ui/stats/MiscStatGroup"
@@ -42,6 +43,9 @@ const Page: NextPage = () => {
 
     return (
         <>
+            <Head>
+                <title>{`${clan.clan_name} - Clan Stats • Corehalla`}</title>
+            </Head>
             <StatsHeader
                 name={cleanString(clan.clan_name)}
                 id={clan.clan_id}

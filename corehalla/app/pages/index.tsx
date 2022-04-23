@@ -5,6 +5,7 @@ import { SectionTitle } from "ui/layout/SectionTitle"
 import { cn } from "common/helpers/classnames"
 import { css, text } from "ui/theme"
 import { useFavorites } from "db/client/AuthProvider"
+import Head from "next/head"
 
 const landingClassName = css({
     height: "50vh",
@@ -16,6 +17,9 @@ const Page = () => {
 
     return (
         <>
+            <Head>
+                <title>Home • Corehalla</title>
+            </Head>
             <div
                 className={cn(
                     "flex flex-col justify-center items-center",

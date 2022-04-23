@@ -21,6 +21,7 @@ import { supabaseService } from "db/supabase/service"
 import { usePlayerRanked } from "bhapi/hooks/usePlayerRanked"
 import { usePlayerStats } from "bhapi/hooks/usePlayerStats"
 import { useRouter } from "next/router"
+import Head from "next/head"
 import Image from "next/image"
 import type { BHPlayer, BHPlayerAlias } from "db/generated/client"
 import type { GetServerSideProps, NextPage } from "next"
@@ -175,6 +176,9 @@ const Page: NextPage<PageProps> = ({ aliases }) => {
 
     return (
         <>
+            <Head>
+                <title>{`${playerStats.name} - Player Stats • Corehalla`}</title>
+            </Head>
             <StatsHeader
                 name={cleanString(playerStats.name)}
                 id={playerStats.brawlhalla_id}
