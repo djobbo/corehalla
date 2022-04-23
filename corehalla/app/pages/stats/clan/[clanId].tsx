@@ -45,6 +45,10 @@ const Page: NextPage = () => {
         <>
             <Head>
                 <title>{`${clan.clan_name} - Clan Stats • Corehalla`}</title>
+                <meta
+                    name="Description"
+                    content={`${clan.clan_name} Stats - Brawlhalla Clan Stats • Corehalla`}
+                />
             </Head>
             <StatsHeader
                 name={cleanString(clan.clan_name)}

@@ -35,6 +35,13 @@ const Page: NextPage = () => {
                 <title>{`${
                     region === "all" ? "Global" : region.toUpperCase()
                 } 1v1 Rankings - Page ${page} • Corehalla`}</title>
+                <meta
+                    name="Description"
+                    content={`Brawhalla ${
+                        region === "all" ? "Global" : region.toUpperCase()
+                    } 1v1 Rankings - Page ${page} • Corehalla`}
+                />
+                <meta name="robots" content="noindex,nofollow" />
             </Head>
             {!player && (
                 <Pagination
