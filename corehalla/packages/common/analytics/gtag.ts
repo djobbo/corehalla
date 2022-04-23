@@ -2,7 +2,6 @@
  * Google Analytics Identifier
  */
 export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_TRACKING_ID
-
 /**
  * Google Adsense Identifier
  */
