@@ -5,6 +5,7 @@ import "@fontsource/montserrat/700.css"
 
 import { AnimatedLogo } from "ui/base/AnimatedLogo"
 import { AuthProvider } from "db/client/AuthProvider"
+import { GAScripts } from "common/analytics/GAScripts"
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query"
 import { KBarProvider } from "kbar"
 import { Layout } from "ui/layout/Layout"
@@ -49,31 +50,35 @@ export const globalStyles = globalCss({
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
     const queryClient = useRef(new QueryClient(queryClientConfig))
+
     globalStyles()
 
     return (
-        <QueryClientProvider client={queryClient.current}>
-            <Hydrate state={pageProps.dehydratedState}>
-                <AuthProvider>
-                    {/* @ts-expect-error kbar is weird */}
-                    <KBarProvider actions={[]} options={{}}>
-                        <PageLoader>
-                            <div className="flex items-center gap-4">
-                                <span className="text-sm">Loading...</span>
-                                <AnimatedLogo size={32} />
-                            </div>
-                        </PageLoader>
-                        <Layout>
-                            <Head>
-                                <title>Corehalla</title>
-                            </Head>
-                            <Component {...pageProps} />
-                        </Layout>
-                        <Searchbox />
-                    </KBarProvider>
-                </AuthProvider>
-            </Hydrate>
-        </QueryClientProvider>
+        <>
+            <GAScripts />
+            <QueryClientProvider client={queryClient.current}>
+                <Hydrate state={pageProps.dehydratedState}>
+                    <AuthProvider>
+                        {/* @ts-expect-error kbar is weird */}
+                        <KBarProvider actions={[]} options={{}}>
+                            <PageLoader>
+                                <div className="flex items-center gap-4">
+                                    <span className="text-sm">Loading...</span>
+                                    <AnimatedLogo size={32} />
+                                </div>
+                            </PageLoader>
+                            <Layout>
+                                <Head>
+                                    <title>Corehalla</title>
+                                </Head>
+                                <Component {...pageProps} />
+                            </Layout>
+                            <Searchbox />
+                        </KBarProvider>
+                    </AuthProvider>
+                </Hydrate>
+            </QueryClientProvider>
+        </>
     )
 }
 

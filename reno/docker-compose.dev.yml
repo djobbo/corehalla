@@ -179,5 +179,7 @@ services:
       SUPABASE_URL: http://kong:8000
       SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
       BH_API_KEY: ${BH_API_KEY}
+      NEXT_PUBLIC_GA_TRACKING_ID: ${GA_TRACKING_ID}
+      NEXT_PUBLIC_ADSENSE_ID: ${ADSENSE_ID}
     depends_on:
       - db
