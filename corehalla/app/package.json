@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && yarn gen:sitemap",
     "start": "next start",
-    "ts:check": "tsc --noEmit"
+    "ts:check": "tsc --noEmit",
+    "gen:sitemap": "next-sitemap"
   },
   "dependencies": {
     "@fontsource/montserrat": "^4.5.7",
@@ -14,14 +15,15 @@
     "axios": "^0.26.1",
     "bhapi": "*",
     "common": "*",
+    "db": "*",
     "kbar": "^0.1.0-beta.33",
     "logger": "*",
     "next": "^12.1.5",
+    "next-sitemap": "^2.5.20",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-query": "^3.35.0",
-    "ui": "*",
-    "db": "*"
+    "ui": "*"
   },
   "devDependencies": {
     "@types/node": "^17.0.24",
