@@ -14,7 +14,8 @@
         "db:realtime:setup": "prisma db execute --preview-feature --file ./prisma/realtime_setup.sql --schema ./prisma/schema.prisma",
         "format": "prisma format",
         "db:studio": "prisma studio",
-        "ts:check": "tsc --noEmit"
+        "ts:check": "tsc --noEmit",
+        "build": "prisma generate"
     },
     "devDependencies": {
         "@types/react": "^18.0.5",
