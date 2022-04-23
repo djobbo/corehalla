@@ -15,7 +15,8 @@
         "format": "prisma format",
         "db:studio": "prisma studio",
         "ts:check": "tsc --noEmit",
-        "build": "prisma generate"
+        "build": "prisma generate",
+        "postinstall": "yarn build"
     },
     "devDependencies": {
         "@types/react": "^18.0.5",
