@@ -6,6 +6,7 @@ import { Spinner } from "../base/Spinner"
 import { bg, border, styled, text, theme } from "../theme"
 import { cn } from "common/helpers/classnames"
 import { css } from "@stitches/react"
+import { gaEvent } from "common/analytics/gtag"
 import { useDebouncedState } from "common/hooks/useDebouncedState"
 import { useEffect, useState } from "react"
 import { useRankings1v1 } from "bhapi/hooks/useRankings"
@@ -27,8 +28,14 @@ export const Searchbox = () => {
     useEffect(() => {
         if (isLoading) return
 
+        gaEvent({
+            action: "use_searchbox",
+            category: "app",
+            label: `player ${search}`,
+        })
+
         setRankings(rankings1v1 ?? [])
-    }, [rankings1v1, isLoading])
+    }, [rankings1v1, isLoading, search])
 
     return (
         <KBarPortal>

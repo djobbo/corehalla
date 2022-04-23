@@ -25,7 +25,7 @@ export const PageLoader = ({ children }: PageLoaderProps) => {
             router.events.off("routeChangeComplete", handleComplete)
             router.events.off("routeChangeError", handleComplete)
         }
-    })
+    }, [router.events])
 
     if (!loading) return null
 

@@ -1,9 +1,9 @@
+import { AdsenseStatsHeader } from "common/analytics/Adsense"
 import { MiscStatGroup } from "./MiscStatGroup"
 import { UserAddIcon, UserRemoveIcon } from "@heroicons/react/solid"
 import { bg, border, text } from "../theme"
 import { cn } from "common/helpers/classnames"
 import { useFavorites } from "db/client/AuthProvider"
-import Image from "next/image"
 import type { Favorite } from "db/client/useUserFavorites"
 import type { MiscStat } from "./MiscStatGroup"
 import type { ReactNode } from "react"
@@ -31,14 +31,15 @@ export const StatsHeader = ({
 
     return (
         <>
-            <div className="w-full h-28 relative rounded-md overflow-hidden shadow-md">
-                <Image
-                    src="/images/backgrounds/orion.jpg"
-                    alt="Banner"
-                    layout="fill"
-                    objectFit="cover"
-                    objectPosition="center"
-                />
+            <div
+                className="w-full h-28 relative rounded-md overflow-hidden shadow-md"
+                style={{
+                    background: "url(/images/backgrounds/orion.jpg)",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                }}
+            >
+                <AdsenseStatsHeader />
             </div>
             <div className="flex justify-end py-2">
                 {favorite && (
