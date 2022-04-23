@@ -30,7 +30,7 @@ const rankedBannerClassName = css({
 
 export const TeamCard = ({ playerId, team }: TeamCardProps) => {
     const { playerName, teammate } = getPlayerTeam(playerId, team)
-    const regionTxt = rankedRegions[team.region] ?? "all"
+    const regionTxt = rankedRegions[team.region]?.toUpperCase() ?? "ALL"
     const eloReset = getLegendEloReset(team.rating)
 
     return (
