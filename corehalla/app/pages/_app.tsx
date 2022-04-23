@@ -3,10 +3,12 @@ import "@fontsource/montserrat/400.css"
 import "@fontsource/montserrat/600.css"
 import "@fontsource/montserrat/700.css"
 
+import { AnimatedLogo } from "ui/base/AnimatedLogo"
 import { AuthProvider } from "db/client/AuthProvider"
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query"
 import { KBarProvider } from "kbar"
 import { Layout } from "ui/layout/Layout"
+import { PageLoader } from "ui/base/PageLoader"
 import { Searchbox } from "ui/search/Searchbox"
 import { globalCss, theme } from "ui/theme"
 import { useRef } from "react"
@@ -55,6 +57,12 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
                 <AuthProvider>
                     {/* @ts-expect-error kbar is weird */}
                     <KBarProvider actions={[]} options={{}}>
+                        <PageLoader>
+                            <div className="flex items-center gap-4">
+                                <span className="text-sm">Loading...</span>
+                                <AnimatedLogo size={32} />
+                            </div>
+                        </PageLoader>
                         <Layout>
                             <Head>
                                 <title>Corehalla</title>
