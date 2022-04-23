@@ -315,7 +315,9 @@ export const getServerSideProps: GetServerSideProps = async ({
     return {
         props: {
             dehydratedState: dehydrate(queryClient),
-            aliases: data?.map(({ alias }) => alias) ?? aliases,
+            aliases: [
+                ...new Set([...(data?.map(({ alias }) => alias) ?? aliases)]),
+            ],
         },
     }
 }
