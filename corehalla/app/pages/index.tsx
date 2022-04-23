@@ -19,6 +19,10 @@ const Page = () => {
         <>
             <Head>
                 <title>Home • Corehalla</title>
+                <meta
+                    name="Description"
+                    content="Brawlhalla Stats, Rankings and more!"
+                />
             </Head>
             <div
                 className={cn(

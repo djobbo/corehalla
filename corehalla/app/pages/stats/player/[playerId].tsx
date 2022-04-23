@@ -178,6 +178,10 @@ const Page: NextPage<PageProps> = ({ aliases }) => {
         <>
             <Head>
                 <title>{`${playerStats.name} - Player Stats • Corehalla`}</title>
+                <meta
+                    name="Description"
+                    content={`${playerStats.name} Stats - Brawlhalla Player Stats • Corehalla`}
+                />
             </Head>
             <StatsHeader
                 name={cleanString(playerStats.name)}

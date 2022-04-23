@@ -56,6 +56,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     return (
         <>
             <Head>
+                <meta charSet="utf-8" />
                 <link
                     rel="icon"
                     type="image/png"
