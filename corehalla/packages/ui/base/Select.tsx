@@ -1,15 +1,15 @@
 import { theme } from "../theme"
 import ReactSelect from "react-select"
 
-export interface Option<T> {
+type SelectOption<T> = {
     value: T
     label: string
 }
 
-interface Props<T> {
+type SelectProps<T> = {
     onChange?: (value: T) => void
     onInputChange?: (value: string) => void
-    options: Option<T>[]
+    options: SelectOption<T>[]
     placeholder?: string
     value: T
     className?: string
@@ -20,8 +20,8 @@ export const Select = <T extends string>({
     options,
     value,
     className,
-}: Props<T>): JSX.Element => {
-    const handleChange = (value: Option<T> | null) => {
+}: SelectProps<T>) => {
+    const handleChange = (value: SelectOption<T> | null) => {
         if (!value) return
         onChange?.(value.value)
     }

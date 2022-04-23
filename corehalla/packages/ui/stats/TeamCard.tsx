@@ -14,7 +14,7 @@ import { getLegendEloReset } from "bhapi/calculator"
 import { getMiniTierFromRating } from "bhapi/helpers/getTierFromRating"
 import Image from "next/image"
 
-interface Props {
+type TeamCardProps = {
     playerId: number
     team: PlayerRanked["2v2"][number]
 }
@@ -28,7 +28,7 @@ const rankedBannerClassName = css({
     zIndex: -1,
 })()
 
-export const TeamCard = ({ playerId, team }: Props): JSX.Element => {
+export const TeamCard = ({ playerId, team }: TeamCardProps) => {
     const { playerName, teammate } = getPlayerTeam(playerId, team)
     const regionTxt = rankedRegions[team.region] ?? "all"
     const eloReset = getLegendEloReset(team.rating)
