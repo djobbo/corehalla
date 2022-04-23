@@ -3,6 +3,7 @@ import { PlayerLegendsTab } from "ui/stats/player/PlayerLegendsTab"
 import { PlayerOverviewTab } from "ui/stats/player/PlayerOverviewTab"
 import { PlayerWeaponsTab } from "ui/stats/player/PlayerWeaponsTab"
 import { QueryClient, dehydrate } from "react-query"
+import { SEO } from "../../../components/SEO"
 import { StatsHeader } from "ui/stats/StatsHeader"
 import {
     Root as Tabs,
@@ -21,7 +22,6 @@ import { supabaseService } from "db/supabase/service"
 import { usePlayerRanked } from "bhapi/hooks/usePlayerRanked"
 import { usePlayerStats } from "bhapi/hooks/usePlayerStats"
 import { useRouter } from "next/router"
-import Head from "next/head"
 import Image from "next/image"
 import type { BHPlayer, BHPlayerAlias } from "db/generated/client"
 import type { GetServerSideProps, NextPage } from "next"
@@ -176,13 +176,10 @@ const Page: NextPage<PageProps> = ({ aliases }) => {
 
     return (
         <>
-            <Head>
-                <title>{`${playerStats.name} - Player Stats • Corehalla`}</title>
-                <meta
-                    name="Description"
-                    content={`${playerStats.name} Stats - Brawlhalla Player Stats • Corehalla`}
-                />
-            </Head>
+            <SEO
+                title={`${playerStats.name} - Player Stats • Corehalla`}
+                description={`${playerStats.name} Stats - Brawlhalla Player Stats • Corehalla`}
+            />
             <StatsHeader
                 name={cleanString(playerStats.name)}
                 id={playerStats.brawlhalla_id}
