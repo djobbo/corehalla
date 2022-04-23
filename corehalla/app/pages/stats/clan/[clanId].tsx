@@ -1,5 +1,6 @@
 import { ClanMember } from "ui/stats/clan/ClanMember"
 import { QueryClient, dehydrate } from "react-query"
+import { SEO } from "../../../components/SEO"
 import { StatsHeader } from "ui/stats/StatsHeader"
 import { cleanString } from "common/helpers/cleanString"
 import { formatUnixTime } from "common/helpers/date"
@@ -7,7 +8,6 @@ import { getClan } from "bhapi"
 import { supabaseService } from "db/supabase/service"
 import { useClan } from "bhapi/hooks/useClan"
 import { useRouter } from "next/router"
-import Head from "next/head"
 import type { BHClan } from "db/generated/client"
 import type { GetServerSideProps, NextPage } from "next"
 import type { MiscStat } from "ui/stats/MiscStatGroup"
@@ -43,13 +43,10 @@ const Page: NextPage = () => {
 
     return (
         <>
-            <Head>
-                <title>{`${clan.clan_name} - Clan Stats • Corehalla`}</title>
-                <meta
-                    name="Description"
-                    content={`${clan.clan_name} Stats - Brawlhalla Clan Stats • Corehalla`}
-                />
-            </Head>
+            <SEO
+                title={`${clan.clan_name} - Clan Stats • Corehalla`}
+                description={`${clan.clan_name} Stats - Brawlhalla Clan Stats • Corehalla`}
+            />
             <StatsHeader
                 name={cleanString(clan.clan_name)}
                 id={clan.clan_id}

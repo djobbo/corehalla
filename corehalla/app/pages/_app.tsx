@@ -10,6 +10,7 @@ import { Hydrate, QueryClient, QueryClientProvider } from "react-query"
 import { KBarProvider } from "kbar"
 import { Layout } from "ui/layout/Layout"
 import { PageLoader } from "ui/base/PageLoader"
+import { SEO } from "../components/SEO"
 import { Searchbox } from "ui/search/Searchbox"
 import { globalCss, theme } from "ui/theme"
 import { useRef } from "react"
@@ -25,6 +26,7 @@ const queryClientConfig: QueryClientConfig = {
         },
     },
 }
+
 export const globalStyles = globalCss({
     "html, body": {
         backgroundColor: theme.colors.blue1,
@@ -57,13 +59,13 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <>
             <Head>
                 <meta charSet="utf-8" />
-                <link
-                    rel="icon"
-                    type="image/png"
-                    href="/icons/icon-192x192.png"
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1"
                 />
-                <title>Corehalla</title>
+                <link rel="icon" type="image/png" href="/images/favicon.png" />
             </Head>
+            <SEO title="Corehalla" image="/images/og/main-og.jpg" />
             <GAScripts />
             <QueryClientProvider client={queryClient.current}>
                 <Hydrate state={pageProps.dehydratedState}>

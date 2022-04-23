@@ -1,11 +1,11 @@
 import { Pagination } from "ui/base/Pagination"
 import { RankingsTableItem } from "ui/stats/RankingsTableItem"
+import { SEO } from "../../../components/SEO"
 import { Spinner } from "ui/base/Spinner"
 import { cleanString } from "common/helpers/cleanString"
 import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
 import { useRankings2v2 } from "bhapi/hooks/useRankings"
 import { useRouter } from "next/router"
-import Head from "next/head"
 import Link from "next/link"
 import type { NextPage } from "next"
 
@@ -29,18 +29,14 @@ const Page: NextPage = () => {
 
     return (
         <>
-            <Head>
-                <title>{`${
+            <SEO
+                title={`${
                     region === "all" ? "Global" : region.toUpperCase()
-                } 2v2 Rankings - Page ${page} • Corehalla`}</title>
-                <meta
-                    name="Description"
-                    content={`Brawhalla ${
-                        region === "all" ? "Global" : region.toUpperCase()
-                    } 2v2 Rankings - Page ${page} • Corehalla`}
-                />
-                <meta name="robots" content="noindex,nofollow" />
-            </Head>
+                } 2v2 Rankings - Page ${page} • Corehalla`}
+                description={`Brawhalla ${
+                    region === "all" ? "Global" : region.toUpperCase()
+                } 2v2 Rankings - Page ${page} • Corehalla`}
+            />
             <Pagination
                 getPageHref={(page) =>
                     `/rankings/2v2/${region ?? "all"}/${page}`

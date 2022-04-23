@@ -1,5 +1,6 @@
 import { Button } from "ui/base/Button"
 import { FavoritesGrid } from "ui/favorites/FavoritesGrid"
+import { SEO } from "../components/SEO"
 import { SearchButton } from "ui/search/SearchButton"
 import { SectionTitle } from "ui/layout/SectionTitle"
 import { cn } from "common/helpers/classnames"
@@ -18,10 +19,9 @@ const Page = () => {
     return (
         <>
             <Head>
-                <title>Home • Corehalla</title>
-                <meta
-                    name="Description"
-                    content="Brawlhalla Stats, Rankings and more!"
+                <SEO
+                    title="Home • Corehalla"
+                    description="Brawlhalla Stats, Rankings and more! Corehalla is a community of Brawlhalla players and fans. Join the community and get involved!"
                 />
             </Head>
             <div
