@@ -1,4 +1,9 @@
-import { HeartIcon, HomeIcon, XIcon } from "@heroicons/react/solid"
+import {
+    ChevronDoubleUpIcon,
+    HeartIcon,
+    HomeIcon,
+    XIcon,
+} from "@heroicons/react/solid"
 import { bg, border, css, text } from "../theme"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
@@ -92,12 +97,11 @@ const defaultNav = [
         icon: <HomeIcon className="w-6 h-6" />,
         href: "/",
     },
-    // TODO: Rankings Page
-    // {
-    //     name: "Rankings",
-    //     icon: <ChevronDoubleUpIcon className="w-6 h-6" />,
-    //     href: "/rankings",
-    // },
+    {
+        name: "Rankings",
+        icon: <ChevronDoubleUpIcon className="w-6 h-6" />,
+        href: "/rankings",
+    },
 ]
 
 export const SideNav = () => {

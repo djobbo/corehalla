@@ -1,9 +1,13 @@
 FROM node:14
 
+ENV NODE_ENV development
+
 WORKDIR /usr/src/app
 
-COPY package.json ./
-COPY yarn.lock ./
+COPY package.json .
+COPY yarn.lock .
+
+COPY . .
 
 RUN yarn install
 

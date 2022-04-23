@@ -4,6 +4,7 @@ import { border } from "../theme"
 import { cn } from "common/helpers/classnames"
 import { useAuth } from "db/client/AuthProvider"
 import Image from "next/image"
+import Link from "next/link"
 
 export const Header = () => {
     const { isLoggedIn, signIn, signOut, userProfile } = useAuth()
@@ -16,15 +17,17 @@ export const Header = () => {
             )}
         >
             <div className="flex items-center">
-                <div className="relative rounded-lg w-32 h-8 overflow-hidden">
-                    <Image
-                        src="/images/logo.png"
-                        alt="Corehalla logo"
-                        layout="fill"
-                        objectFit="contain"
-                        objectPosition="center"
-                    />
-                </div>
+                <Link href="/">
+                    <a className="relative rounded-lg w-32 h-8 overflow-hidden">
+                        <Image
+                            src="/images/logo.png"
+                            alt="Corehalla logo"
+                            layout="fill"
+                            objectFit="contain"
+                            objectPosition="center"
+                        />
+                    </a>
+                </Link>
             </div>
             <div className="flex items-center gap-4">
                 <SearchButton />

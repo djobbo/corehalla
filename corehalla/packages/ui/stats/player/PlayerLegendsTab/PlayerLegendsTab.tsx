@@ -1,10 +1,14 @@
-import { Button } from "../../../base/Button"
 import { Legend } from "./Legend"
 import { MiscStatGroup } from "../../MiscStatGroup"
+import { Select } from "../../../base/Select"
+import { SortAscendingIcon, SortDescendingIcon } from "@heroicons/react/solid"
 import { SortDirection, useSortBy } from "common/hooks/useSortBy"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
+import { useMemo, useState } from "react"
+import { weapons } from "bhapi/constants"
 import type { FullLegend } from "bhapi/legends"
 import type { MiscStat } from "../../MiscStatGroup"
+import type { Weapon } from "bhapi/constants"
 
 type PlayerLegendsTabProps = {
     legends: FullLegend[]
@@ -27,6 +31,7 @@ export const PlayerLegendsTab = ({
     matchtime,
     games,
 }: PlayerLegendsTabProps) => {
+    const [weaponFilter, setWeaponFilter] = useState<Weapon | "">("")
     const {
         sortedArray: sortedLegends,
         sortBy: legendSortBy,
@@ -38,40 +43,40 @@ export const PlayerLegendsTab = ({
         legends,
         {
             name: {
-                name: "Name",
+                label: "Name",
                 fn: (a, b) => a.bio_name.localeCompare(b.bio_name),
             },
             xp: {
-                name: "Level / XP",
+                label: "Level / XP",
                 fn: (a, b) => (a.stats?.xp ?? 0) - (b.stats?.xp ?? 0),
             },
             games: {
-                name: "Games",
+                label: "Games",
                 fn: (a, b) => (a.stats?.games ?? 0) - (b.stats?.games ?? 0),
             },
             wins: {
-                name: "Wins",
+                label: "Wins",
                 fn: (a, b) => (a.stats?.wins ?? 0) - (b.stats?.wins ?? 0),
             },
             losses: {
-                name: "Losses",
+                label: "Losses",
                 fn: (a, b) =>
                     (a.stats?.games ?? 0) -
                     (a.stats?.wins ?? 0) -
                     ((b.stats?.games ?? 0) - (b.stats?.wins ?? 0)),
             },
             winrate: {
-                name: "Winrate",
+                label: "Winrate",
                 fn: (a, b) =>
                     calculateWinrate(a.stats?.wins ?? 0, a.stats?.games ?? 0) -
                     calculateWinrate(b.stats?.wins ?? 0, b.stats?.games ?? 0),
             },
             rating: {
-                name: "Elo",
+                label: "Elo",
                 fn: (a, b) => (a.ranked?.rating ?? 0) - (b.ranked?.rating ?? 0),
             },
             peak_rating: {
-                name: "Peak elo",
+                label: "Peak elo",
                 fn: (a, b) =>
                     (a.ranked?.peak_rating ?? 0) - (b.ranked?.peak_rating ?? 0),
             },
@@ -79,18 +84,31 @@ export const PlayerLegendsTab = ({
         "xp",
         SortDirection.Descending,
     )
+
+    const filteredLegends = useMemo(
+        () =>
+            sortedLegends.filter(
+                (legend) =>
+                    !weaponFilter ||
+                    [legend.weapon_one, legend.weapon_two].includes(
+                        weaponFilter,
+                    ),
+            ),
+        [sortedLegends, weaponFilter],
+    )
+
     const globalLegendsStats: MiscStat[] = [
         {
             name: "Legends played",
             value: (
                 <>
                     {
-                        legends.filter(
+                        filteredLegends.filter(
                             (legend) =>
                                 legend.stats && legend.stats.matchtime > 0,
                         ).length
                     }{" "}
-                    / {legends.length}
+                    / {filteredLegends.length}
                 </>
             ),
         },
@@ -98,16 +116,16 @@ export const PlayerLegendsTab = ({
             name: "Played in ranked",
             value: (
                 <>
-                    {legends.filter(
+                    {filteredLegends.filter(
                         (legend) => legend.ranked && legend.ranked.games > 0,
                     ).length ?? 0}{" "}
-                    / {legends.length}
+                    / {filteredLegends.length}
                 </>
             ),
         },
         {
             name: "Total legends level",
-            value: legends.reduce(
+            value: filteredLegends.reduce(
                 (level, legend) => level + (legend.stats?.level ?? 0),
                 0,
             ),
@@ -115,7 +133,7 @@ export const PlayerLegendsTab = ({
         {
             name: "Avg. level",
             value: (
-                legends.reduce(
+                filteredLegends.reduce(
                     (level, legend) => level + (legend.stats?.level ?? 0),
                     0,
                 ) / legends.length
@@ -125,34 +143,57 @@ export const PlayerLegendsTab = ({
 
     return (
         <>
+            <div className="flex gap-4 mt-8 items-center">
+                <Select<Weapon | "">
+                    className="flex-1"
+                    onChange={setWeaponFilter}
+                    value={weaponFilter}
+                    options={[
+                        {
+                            label: "All Weapons",
+                            value: "",
+                        },
+                        ...weapons.map((weapon) => ({
+                            label: weapon,
+                            value: weapon,
+                        })),
+                    ]}
+                />
+                <Select<LegendSortOption>
+                    className="flex-1"
+                    onChange={sortLegendBy}
+                    value={legendSortBy}
+                    options={legendSortOptions}
+                />
+                <button
+                    onClick={changeLegendSortDirection}
+                    className="flex items-center"
+                >
+                    {legendSortDirection === SortDirection.Ascending ? (
+                        <SortAscendingIcon className="w-6 h-6" />
+                    ) : (
+                        <SortDescendingIcon className="w-6 h-6" />
+                    )}
+                </button>
+            </div>
             <MiscStatGroup className="mt-8" stats={globalLegendsStats} />
-            {/* TODO: Typesafe select */}
-            <select
-                onChange={(e) => {
-                    sortLegendBy(e.target.value as LegendSortOption)
-                }}
-                value={legendSortBy}
-            >
-                {legendSortOptions.map(({ key, name }) => (
-                    <option key={key} value={key}>
-                        {name}
-                    </option>
-                ))}
-            </select>
-            <Button onClick={changeLegendSortDirection}>
-                {legendSortDirection === SortDirection.Ascending
-                    ? "asc"
-                    : "dsc"}
-            </Button>
             <div className="flex flex-col gap-2 mt-8">
-                {sortedLegends.map((legend) => (
-                    <Legend
-                        key={legend.legend_id}
-                        legend={legend}
-                        matchtime={matchtime}
-                        games={games}
-                    />
-                ))}
+                {sortedLegends
+                    .filter(
+                        (legend) =>
+                            !weaponFilter ||
+                            [legend.weapon_one, legend.weapon_two].includes(
+                                weaponFilter,
+                            ),
+                    )
+                    .map((legend) => (
+                        <Legend
+                            key={legend.legend_id}
+                            legend={legend}
+                            matchtime={matchtime}
+                            games={games}
+                        />
+                    ))}
             </div>
         </>
     )
