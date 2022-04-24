@@ -1,5 +1,4 @@
 import { cn } from "common/helpers/classnames"
-import { css, theme } from "../theme"
 import Link from "next/link"
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from "react"
 
