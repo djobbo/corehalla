@@ -1,3 +1,4 @@
+import { ArticlePreviewGrid } from "ui/articles/ArticlePreviewGrid"
 import { Button } from "ui/base/Button"
 import { FavoritesGrid } from "ui/favorites/FavoritesGrid"
 import { SEO } from "../components/SEO"
@@ -5,14 +6,23 @@ import { SearchButton } from "ui/search/SearchButton"
 import { SectionTitle } from "ui/layout/SectionTitle"
 import { cn } from "common/helpers/classnames"
 import { css } from "ui/theme"
-import { useFavorites } from "db/client/AuthProvider"
+import { logError } from "logger"
+import { parseBHArticlesPage } from "web-parser/bh-articles/parseBHArticlesPage"
+import { useAuth, useFavorites } from "db/client/AuthProvider"
+import type { BHArticle } from "web-parser/bh-articles/parseBHArticlesPage"
+import type { GetServerSideProps } from "next"
 
 const landingClassName = css({
     height: "50vh",
     minHeight: "400px",
 })()
 
-const Page = () => {
+type PageProps = {
+    latestArticles: BHArticle[]
+}
+
+const Page = ({ latestArticles }: PageProps) => {
+    const { isLoggedIn, signIn } = useAuth()
     const { favorites } = useFavorites()
 
     return (
@@ -40,23 +50,82 @@ const Page = () => {
                 <div className="mt-8 flex items-center gap-6">
                     <SearchButton />
                     <span className="text-textVar1">or</span>
-                    <Button
-                        as="a"
-                        href="/rankings"
-                        className="whitespace-nowrap font-semibold"
-                    >
-                        View rankings
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            as="a"
+                            href="/rankings"
+                            className="whitespace-nowrap font-semibold"
+                        >
+                            View rankings
+                        </Button>
+                        <Button
+                            as="a"
+                            buttonStyle="outline"
+                            href="/rankings/2v2"
+                            className="whitespace-nowrap font-semibold"
+                        >
+                            2v2
+                        </Button>
+                    </div>
                 </div>
             </div>
-            {favorites.length > 0 && (
-                <div>
-                    <SectionTitle>Favorites</SectionTitle>
-                    <FavoritesGrid favorites={favorites} />
-                </div>
+            <SectionTitle>Favorites</SectionTitle>
+            {favorites.length > 0 ? (
+                <FavoritesGrid favorites={favorites} />
+            ) : (
+                <p className="flex flex-col items-center gap-4">
+                    {isLoggedIn ? (
+                        <>
+                            You don&apos;t have any favorites yet, you can a
+                            player or a clan as favorite when visiting their
+                            profile page.
+                            <Button onClick={signIn}>View rankings</Button>
+                        </>
+                    ) : (
+                        <>
+                            You need to be logged in to see your favorites.
+                            <Button onClick={signIn}>
+                                Sign in with discord
+                            </Button>
+                        </>
+                    )}
+                </p>
+            )}
+
+            {latestArticles.length > 0 && (
+                <>
+                    <SectionTitle>Latest Patches</SectionTitle>
+                    <ArticlePreviewGrid articles={latestArticles} />
+                </>
             )}
         </>
     )
 }
 
 export default Page
+
+export const getServerSideProps: GetServerSideProps<PageProps> = async ({
+    res,
+}) => {
+    res.setHeader(
+        "Cache-Control",
+        `public, s-maxage=1200, stale-while-revalidate=${60 * 60 * 24 * 7}`,
+    )
+
+    let latestArticles: BHArticle[] = []
+
+    try {
+        latestArticles = (await parseBHArticlesPage(1, "patch-notes")).slice(
+            0,
+            3,
+        )
+    } catch {
+        logError("Failed to parse latest articles")
+    }
+
+    return {
+        props: {
+            latestArticles,
+        },
+    }
+}

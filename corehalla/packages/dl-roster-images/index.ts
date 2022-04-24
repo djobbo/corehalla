@@ -2,7 +2,7 @@ import { downloadImage } from "./downloadImage"
 import { existsSync, mkdirSync, rmdirSync } from "fs"
 import { load } from "cheerio"
 import { logInfo } from "logger"
-import Axios from "axios"
+import axios from "axios"
 
 const APP_DIR = "../../app"
 const PUBLIC_DIR = `${APP_DIR}/public`
@@ -16,8 +16,7 @@ export const downloadImages = async () => {
     mkdirSync(`${OUT_DIR}/legends`)
     mkdirSync(`${OUT_DIR}/crossovers`)
 
-    const res = await Axios.get(LEGENDS_URL)
-    const text = await res.data
+    const { data: text } = await axios.get(LEGENDS_URL)
 
     const $ = load(text)
 
