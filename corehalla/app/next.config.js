@@ -5,11 +5,12 @@ const withTM = require("next-transpile-modules")([
     "logger",
     "common",
     "db",
+    "web-parser",
 ])
 
 module.exports = withTM({
     reactStrictMode: true,
     images: {
-        domains: ["cdn.discordapp.com"],
+        domains: ["cdn.discordapp.com", "www.brawlhalla.com"],
     },
 })
