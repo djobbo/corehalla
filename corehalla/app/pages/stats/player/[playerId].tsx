@@ -11,9 +11,9 @@ import {
     TabsList,
     TabsTrigger,
 } from "@radix-ui/react-tabs"
-import { bg, css, theme } from "ui/theme"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
+import { css, theme } from "ui/theme"
 import { formatTime } from "common/helpers/date"
 import { getFullLegends, getFullWeapons } from "bhapi/legends"
 import { getPlayerAliases } from "bhapi/helpers/getPlayerAliases"
@@ -213,10 +213,7 @@ const Page: NextPage<PageProps> = ({ aliases }) => {
             <Tabs defaultValue="overview">
                 <TabsList
                     aria-label="Manage your account"
-                    className={cn(
-                        "relative flex mt-8 before:absolute before:inset-x-0 before:bottom-0 before:h-0.5",
-                        bg("blue4", "&::before"),
-                    )}
+                    className="relative flex mt-8 before:absolute before:inset-x-0 before:bottom-0 before:h-0.5 before:bg-blue4"
                 >
                     <TabsTrigger value="overview" className={tabClassName}>
                         Overview

@@ -1,5 +1,4 @@
 import { Progress } from "../base/Progress"
-import { bg, text } from "../theme"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
 import { cn } from "common/helpers/classnames"
 import type { ReactNode } from "react"
@@ -23,12 +22,7 @@ export const GamesDisplay = ({
         <div className={cn("flex flex-col", className)}>
             <p className="text-5xl font-bold">
                 {mainContent ?? games}
-                <span
-                    className={cn(
-                        "ml-2 text-xs font-normal uppercase",
-                        text("blue11"),
-                    )}
-                >
+                <span className="ml-2 text-xs font-normal uppercase text-blue11">
                     {description ?? (
                         <>
                             games ({calculateWinrate(wins, games).toFixed(2)}%
@@ -39,11 +33,8 @@ export const GamesDisplay = ({
             </p>
             <Progress
                 value={(wins / games) * 100}
-                className={cn(
-                    "h-2 rounded-full mt-2 overflow-hidden",
-                    bg("red9"),
-                )}
-                indicatorClassName={cn("h-2", bg("green9"))}
+                className="h-2 rounded-full mt-2 overflow-hidden bg-danger"
+                indicatorClassName="h-2 bg-success"
             />
             <div className="flex justify-between font-bold text-md mt-2">
                 <span>{wins}W</span>

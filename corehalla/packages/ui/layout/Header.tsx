@@ -1,7 +1,5 @@
 import { Button } from "../base/Button"
 import { SearchButton } from "../search/SearchButton"
-import { border } from "../theme"
-import { cn } from "common/helpers/classnames"
 import { useAuth } from "db/client/AuthProvider"
 import Image from "next/image"
 import Link from "next/link"
@@ -10,12 +8,7 @@ export const Header = () => {
     const { isLoggedIn, signIn, signOut, userProfile } = useAuth()
 
     return (
-        <header
-            className={cn(
-                "flex items-center justify-between mx-auto h-16 px-8 mb-8 border-b",
-                border("blue4"),
-            )}
-        >
+        <header className="flex items-center justify-between mx-auto h-16 px-8 mb-8 border-b border-blue4">
             <div className="flex items-center">
                 <Link href="/">
                     <a className="relative rounded-lg w-32 h-8 overflow-hidden">

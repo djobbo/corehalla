@@ -1,4 +1,3 @@
-import { bg, border } from "../theme"
 import { cn } from "common/helpers/classnames"
 import type { ReactNode } from "react"
 
@@ -20,17 +19,14 @@ export const Card = ({
     return (
         <div
             className={cn(
-                "rounded p-4 border w-full",
-                bg("blue2"),
-                border("blue4"),
+                "rounded p-4 border w-full bg-blue2 border-blue4",
                 className,
             )}
         >
             {title && (
                 <p
                     className={cn(
-                        "inline-block uppercase rounded-md text-xs py-1 px-2",
-                        bg("blue4"),
+                        "inline-block uppercase rounded-md text-xs py-1 px-2 bg-blue4",
                         titleClassName,
                     )}
                 >

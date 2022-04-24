@@ -2,7 +2,6 @@ import { MiscStatGroup } from "../../MiscStatGroup"
 import { SectionTitle } from "../../../layout/SectionTitle"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
-import { text } from "../../../theme"
 import Link from "next/link"
 import type { PlayerStats } from "bhapi/types"
 
@@ -26,12 +25,7 @@ export const PlayerOverviewClanContent = ({
                         {cleanString(clan.clan_name)}{" "}
                     </a>
                 </Link>
-                <span
-                    className={cn(
-                        "inline-block text-xs font-bold ml-2",
-                        text("blue9"),
-                    )}
-                >
+                <span className="inline-block text-xs font-bold ml-2 text-blue9">
                     #{clan.clan_id}
                 </span>
             </p>

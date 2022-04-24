@@ -4,9 +4,9 @@ import {
     HomeIcon,
     XIcon,
 } from "@heroicons/react/solid"
-import { bg, border, css, text } from "../theme"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
+import { css } from "../theme"
 import { legendsMap } from "bhapi/legends"
 import { useFavorites } from "db/client/AuthProvider"
 import { useRouter } from "next/router"
@@ -48,11 +48,11 @@ const SideNavIcon = ({
                 <a
                     className={cn(
                         className,
-                        "w-10 h-10 rounded flex justify-center items-center border uppercase cursor-pointer",
-                        bg(active ? "blue9" : "blue4"),
-                        bg(active ? "blue10" : "blue5", "&:hover"),
-                        border("blue6"),
-                        border("blue7", "&:hover"),
+                        "w-10 h-10 rounded flex justify-center items-center border uppercase cursor-pointer border-blue6 hover:border-blue7",
+                        {
+                            "bg-blue9 hover:bg-blue10": active,
+                            "bg-blue4 hover:bg-blue5": !active,
+                        },
                     )}
                 >
                     {image && (
@@ -76,12 +76,7 @@ const SideNavIcon = ({
             </Link>
             {onRemove && (
                 <button
-                    className={cn(
-                        "hidden remove-btn absolute w-4 h-4 p-0.5 rounded-full overflow-hidden shadow-md",
-                        bg("blue10"),
-                        bg("blue12", "&:hover"),
-                        text("blue11", "&:hover"),
-                    )}
+                    className="hidden remove-btn absolute w-4 h-4 p-0.5 rounded-full overflow-hidden shadow-md bg-blue10 hover:bg-blue12 hover:text-blue11"
                     onClick={() => onRemove()}
                 >
                     <XIcon />
@@ -124,13 +119,7 @@ export const SideNav = () => {
     )
 
     return (
-        <div
-            className={cn(
-                "sticky top-0 p-2 flex flex-col gap-2 shadow-lg border-r h-screen overflow-y-auto",
-                bg("blue2"),
-                border("blue4"),
-            )}
-        >
+        <div className="sticky top-0 p-2 flex flex-col gap-2 shadow-lg border-r h-screen overflow-y-auto bg-blue2 border-blue4">
             {nav.map((nav) => (
                 <SideNavIcon
                     key={nav.name}

@@ -1,8 +1,6 @@
 import { CollapsibleSection } from "../../../layout/CollapsibleSection"
 import { GeneralStats } from "../../GeneralStats"
 import { MiscStatGroup } from "../../MiscStatGroup"
-import { border } from "../../../theme"
-import { cn } from "common/helpers/classnames"
 import { formatTime } from "common/helpers/date"
 import Image from "next/image"
 import type { FullLegend } from "bhapi/legends"
@@ -46,7 +44,7 @@ export const Legend = ({ legend, matchtime, games }: LegendProps) => {
     return (
         <CollapsibleSection
             key={legend.legend_id}
-            className={cn("shadow-md p-4 border rounded", border("blue4"))}
+            className="shadow-md p-4 border rounded border-blue4"
             triggerClassName="w-full flex justify-start items-center gap-2"
             contentClassName="pt-4"
             trigger={

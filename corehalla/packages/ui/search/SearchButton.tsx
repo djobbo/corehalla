@@ -1,5 +1,4 @@
 import { Kbd } from "../base/Kbd"
-import { bg, border } from "../theme"
 import { cn } from "common/helpers/classnames"
 import { useDevice } from "common/hooks/useDevice"
 import { useKBar } from "kbar"
@@ -17,9 +16,7 @@ export const SearchButton = ({ className }: SearchButtonProps) => {
             type="button"
             className={cn(
                 className,
-                "rounded-xl py-2 px-4 w-64 border-2 cursor-text text-sm flex items-center justify-between",
-                border("blue4"),
-                bg("blue1"),
+                "rounded-xl py-2 px-4 w-64 border-2 cursor-text text-sm flex items-center justify-between bg-blue1 border-blue4",
             )}
             onClick={query.toggle}
         >
