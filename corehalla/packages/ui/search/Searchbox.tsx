@@ -48,10 +48,10 @@ export const Searchbox = () => {
             >
                 {/* @ts-expect-error kbar is weird */}
                 <KBarAnimator className="w-full max-w-screen-md">
-                    <div className="rounded-lg overflow-hidden border mx-auto bg-blue2 border-blue3">
+                    <div className="rounded-lg overflow-hidden mx-auto bg-bgVar1">
                         <div className="relative">
                             <KBarSearch
-                                className="px-4 py-3 w-full text-blue3"
+                                className="px-4 py-3 w-full text-bgVar2"
                                 defaultPlaceholder="Search player..."
                                 onChange={(e) => {
                                     setSearch(e.target.value)
@@ -69,7 +69,7 @@ export const Searchbox = () => {
                                         })(),
                                     )}
                                     size="2rem"
-                                    color={theme.colors.blue6.toString()}
+                                    color={theme.colors.bg.toString()}
                                 />
                             )}
                         </div>

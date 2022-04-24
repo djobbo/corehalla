@@ -20,12 +20,20 @@ const Page: NextPage = () => {
 
     const { rankings2v2, isLoading, isError } = useRankings2v2(
         // @ts-expect-error TODO: Typecheck this
-        "2v2",
         region,
         page,
     )
 
     if (isError || (!isLoading && !rankings2v2)) return <div>Error</div>
+
+    const pagination = (
+        <Pagination
+            getPageHref={(page) => `/rankings/2v2/${region ?? "all"}/${page}`}
+            currentPage={parseInt(page)}
+            firstPage={1}
+            className="justify-end"
+        />
+    )
 
     return (
         <>
@@ -37,14 +45,7 @@ const Page: NextPage = () => {
                     region === "all" ? "Global" : region.toUpperCase()
                 } 2v2 Rankings - Page ${page} • Corehalla`}
             />
-            <Pagination
-                getPageHref={(page) =>
-                    `/rankings/2v2/${region ?? "all"}/${page}`
-                }
-                currentPage={parseInt(page)}
-                firstPage={1}
-                className="justify-end"
-            />
+            {pagination}
             <div className="py-4 w-full h-full flex items-center gap-4">
                 <p className="w-16 text-center">Rank</p>
                 <p className="w-16 text-center">Region</p>
@@ -53,14 +54,14 @@ const Page: NextPage = () => {
                 <p className="w-16 text-center">Games</p>
                 <p className="w-32 text-center">W/L</p>
                 <p className="w-20 text-center">Winrate</p>
-                <p className="w-40 text-center">Elo</p>
+                <p className="w-40 pl-1">Elo</p>
             </div>
             {isLoading ? (
                 <div className="flex items-center justify-center h-48">
                     <Spinner size="4rem" />
                 </div>
             ) : (
-                <div>
+                <div className="rounded-lg overflow-hidden border border-bg mb-4">
                     {rankings2v2?.map((team, i) => {
                         const [player1, player2] = getTeamPlayers(team)
                         return (
@@ -95,6 +96,7 @@ const Page: NextPage = () => {
                     })}
                 </div>
             )}
+            {pagination}
         </>
     )
 }

@@ -24,9 +24,9 @@ export const RankingsTableItem = ({
     return (
         <div
             className={cn(
-                "py-1 w-full h-full flex items-center gap-4 hover:bg-blue4",
+                "py-1 w-full h-full flex items-center gap-4 hover:bg-bg",
                 {
-                    "bg-blue2": index % 2 === 0,
+                    "bg-bgVar2": index % 2 === 0,
                 },
                 className,
             )}
@@ -43,7 +43,7 @@ export const RankingsTableItem = ({
                 <Progress
                     value={(wins / games) * 100}
                     className="h-1 rounded-full mt-2 overflow-hidden bg-danger"
-                    indicatorClassName="h-2 bg-sucess"
+                    indicatorClassName="h-2 bg-success"
                 />
                 <div className="flex justify-between text-xs mt-2">
                     <span>{wins}W</span>
@@ -56,8 +56,9 @@ export const RankingsTableItem = ({
             <div className="w-40 flex items-center justify-start">
                 <p>
                     <span className="text-xl font-bold">{rating}</span>{" "}
-                    <span className="text-blue11">/</span>{" "}
-                    <span className="text-sm">{peak_rating} peak</span>
+                    <span className="text-textVar1 text-sm">
+                        / {peak_rating} peak
+                    </span>
                 </p>
             </div>
         </div>

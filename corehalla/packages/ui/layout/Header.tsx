@@ -1,14 +1,26 @@
 import { Button } from "../base/Button"
 import { SearchButton } from "../search/SearchButton"
+import { cn } from "common/helpers/classnames"
 import { useAuth } from "db/client/AuthProvider"
+import { useRouter } from "next/router"
 import Image from "next/image"
 import Link from "next/link"
 
 export const Header = () => {
     const { isLoggedIn, signIn, signOut, userProfile } = useAuth()
+    const router = useRouter()
+
+    const isLandingPage = router.pathname === "/"
 
     return (
-        <header className="flex items-center justify-between mx-auto h-16 px-8 mb-8 border-b border-blue4">
+        <header
+            className={cn(
+                "flex items-center justify-between mx-auto h-20 px-8 mb-8",
+                {
+                    "bg-bgVar2": !isLandingPage,
+                },
+            )}
+        >
             <div className="flex items-center">
                 <Link href="/">
                     <a className="relative rounded-lg w-32 h-8 overflow-hidden">
@@ -23,7 +35,7 @@ export const Header = () => {
                 </Link>
             </div>
             <div className="flex items-center gap-4">
-                <SearchButton />
+                <SearchButton bg={isLandingPage ? "bg-bgVar2" : "bg-bgVar1"} />
                 {isLoggedIn ? (
                     <>
                         {userProfile && (

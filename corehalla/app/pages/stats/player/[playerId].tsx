@@ -31,13 +31,15 @@ const tabClassName = cn(
     "px-6 py-4 uppercase text-xs border-b-2 z-10",
     css({
         borderColor: "transparent",
+        color: theme.colors.textVar1,
         '&[data-state="active"]': {
-            borderColor: theme.colors.blue9,
-            color: theme.colors.blue9,
+            borderColor: theme.colors.accent,
+            color: theme.colors.text,
         },
         "&:hover": {
-            backgroundColor: theme.colors.blue3,
-            borderColor: theme.colors.blue7,
+            backgroundColor: theme.colors.bgVar2,
+            borderColor: theme.colors.text,
+            color: theme.colors.text,
         },
     })(),
 )
@@ -213,7 +215,7 @@ const Page: NextPage<PageProps> = ({ aliases }) => {
             <Tabs defaultValue="overview">
                 <TabsList
                     aria-label="Manage your account"
-                    className="relative flex mt-8 before:absolute before:inset-x-0 before:bottom-0 before:h-0.5 before:bg-blue4"
+                    className="relative flex mt-8 before:absolute before:inset-x-0 before:bottom-0 before:h-0.5 before:bg-bgVar1"
                 >
                     <TabsTrigger value="overview" className={tabClassName}>
                         Overview

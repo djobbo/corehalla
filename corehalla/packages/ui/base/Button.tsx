@@ -4,7 +4,7 @@ import Link from "next/link"
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from "react"
 
 type ButtonType = "a" | "button"
-type ButtonStyle = "primary"
+type ButtonStyle = "primary" | "outline"
 
 export type ButtonProps<Type extends ButtonType> = {
     as?: Type
@@ -13,23 +13,6 @@ export type ButtonProps<Type extends ButtonType> = {
 } & (Type extends "a"
     ? AnchorHTMLAttributes<HTMLAnchorElement>
     : ButtonHTMLAttributes<HTMLButtonElement>)
-
-const buttonStyles = css({
-    variants: {
-        buttonStyle: {
-            primary: {
-                color: theme.colors.blue12,
-                background: theme.colors.blue9,
-                "&:hover": {
-                    background: theme.colors.blue10,
-                },
-            },
-        },
-    },
-    defaultVariants: {
-        buttonStyle: "primary",
-    },
-})
 
 export const Button = <Type extends ButtonType = "button">(
     props: ButtonProps<Type>,
@@ -42,14 +25,14 @@ export const Button = <Type extends ButtonType = "button">(
         ...buttonProps
     } = props
     const buttonClass = cn(
-        "flex font-semibold cursor-pointer items-center justify-center",
+        "flex font-semibold cursor-pointer items-center justify-center rounded-lg",
         {
-            "shadow-md": buttonStyle === "primary",
+            "shadow-md bg-accent": buttonStyle === "primary",
+            "border border-bg bg-transparent": buttonStyle === "outline",
         },
-        buttonStyles({ buttonStyle }),
         {
-            "rounded-xl py-2 px-4 text-base": large,
-            "rounded-lg py-2 px-3 text-sm": !large,
+            "py-2 px-4 text-base": large,
+            "py-2 px-3 text-sm": !large,
         },
         className,
     )

@@ -16,8 +16,8 @@ type FavoritesGridProps = {
 const favoriteClassName = css({
     "&:hover .remove-btn": {
         display: "block",
-        top: "-0.25rem",
-        right: "-0.25rem",
+        top: "-0.6rem",
+        right: "-0.6rem",
     },
 })()
 
@@ -51,7 +51,7 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                 return (
                     <div
                         className={cn(
-                            "relative rounded hover:shadow-md hover:bg-blue6",
+                            "relative rounded-lg hover:bg-bgVar2",
                             favoriteClassName,
                         )}
                         key={`${fav.type}/${fav.id}`}
@@ -60,7 +60,7 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                             <a
                                 key={fav.id}
                                 className={cn(
-                                    "flex items-center gap-2 px-4 py-2",
+                                    "flex items-center gap-2 px-3 py-3",
                                 )}
                             >
                                 {icon}
@@ -68,14 +68,14 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                                     <p className="font-bold">
                                         {cleanString(fav.name)}
                                     </p>
-                                    <p className="text-xs uppercase text-blue11">
+                                    <p className="text-xs text-textVar1">
                                         {fav.type} #{fav.id}
                                     </p>
                                 </div>
                             </a>
                         </Link>
                         <button
-                            className="hidden remove-btn absolute w-4 h-4 p-0.5 rounded-full overflow-hidden shadow-md bg-blue10 hover:bg-blue12 hover:text-blue11"
+                            className="hidden remove-btn absolute w-5 h-5 p-0.5 rounded-full overflow-hidden shadow-md bg-accent hover:bg-text hover:text-bgVar2"
                             onClick={() => removeFavorite(fav)}
                         >
                             <XIcon />

@@ -78,9 +78,9 @@ export const Weapon = ({ weapon, matchtime, games }: WeaponProps) => {
     return (
         <CollapsibleSection
             key={weapon.weapon}
-            className="shadow-md p-4 border rounded border-blue4"
-            triggerClassName="w-full flex justify-start items-center gap-2"
-            contentClassName="pt-4"
+            className="shadow-md border rounded-lg border-bg"
+            triggerClassName="w-full p-4 flex justify-start items-center gap-2"
+            contentClassName="px-4 pb-4"
             trigger={
                 <>
                     <span className="relative w-6 h-6">

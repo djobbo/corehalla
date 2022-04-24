@@ -44,12 +44,12 @@ export const Legend = ({ legend, matchtime, games }: LegendProps) => {
     return (
         <CollapsibleSection
             key={legend.legend_id}
-            className="shadow-md p-4 border rounded border-blue4"
-            triggerClassName="w-full flex justify-start items-center gap-2"
-            contentClassName="pt-4"
+            className="shadow-md border rounded-lg border-bg"
+            triggerClassName="w-full p-4 flex justify-start items-center gap-2"
+            contentClassName="px-4 pb-4"
             trigger={
                 <>
-                    <span className="relative w-6 h-6">
+                    <span className="relative w-6 h-6 rounded-lg overflow-hidden mr-1">
                         <Image
                             src={`/images/icons/roster/legends/${legend.bio_name}.png`}
                             alt={legend.bio_name}

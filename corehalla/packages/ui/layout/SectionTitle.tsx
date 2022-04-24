@@ -23,7 +23,7 @@ export const SectionTitle = ({
                 {
                     "mt-10 mb-4": !customMargin,
                     "py-2": !customPadding,
-                    "border-b border-blue6": hasBorder,
+                    "border-b border-bg": hasBorder,
                 },
                 className,
             )}

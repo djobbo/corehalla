@@ -1,4 +1,5 @@
 import { AdsenseStatsHeader } from "common/analytics/Adsense"
+import { Button } from "../base/Button"
 import { MiscStatGroup } from "./MiscStatGroup"
 import { UserAddIcon, UserRemoveIcon } from "@heroicons/react/solid"
 import { cn } from "common/helpers/classnames"
@@ -42,13 +43,8 @@ export const StatsHeader = ({
             </div>
             <div className="flex justify-end py-2">
                 {favorite && (
-                    <button
-                        className={cn(
-                            "text-sm flex items-center rounded-md px-4 py-1 cursor-pointer border border-blue6",
-                            {
-                                "bg-blue9": !isItemFavorite,
-                            },
-                        )}
+                    <Button
+                        buttonStyle={isItemFavorite ? "outline" : "primary"}
                         onClick={() => {
                             if (isItemFavorite) return removeFavorite(favorite)
                             addFavorite(favorite)
@@ -65,7 +61,7 @@ export const StatsHeader = ({
                                 <UserAddIcon className="ml-2 w-4 h-4" />
                             </>
                         )}
-                    </button>
+                    </Button>
                 )}
             </div>
             <div
@@ -78,14 +74,16 @@ export const StatsHeader = ({
                     {icon}
                     {name}
                 </h1>
-                <span className="text-xs font-bold mt-1 text-blue9">#{id}</span>
+                <span className="text-xs font-bold mt-1 text-textVar1">
+                    #{id}
+                </span>
             </div>
             {aliases && aliases.length > 1 && (
                 <div className="flex flex-wrap gap-2 mt-2 justify-center mt-4">
                     {aliases.map((alias) => (
                         <p
                             key={alias}
-                            className={cn("rounded-lg py-0.5 px-3 bg-blue3")}
+                            className={cn("rounded-lg py-0.5 px-3 bg-bg")}
                         >
                             {alias}
                         </p>

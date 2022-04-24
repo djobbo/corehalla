@@ -13,6 +13,7 @@ type PaginationItemProps = {
     href: string
     className?: string
     activeClassName?: string
+    inactiveClassName?: string
     activePage: number
 }
 
@@ -22,6 +23,7 @@ const PaginationItem = ({
     href,
     className,
     activeClassName = "",
+    inactiveClassName = "",
     activePage,
 }: PaginationItemProps) => {
     if (page < 0) return null
@@ -31,6 +33,7 @@ const PaginationItem = ({
             <a
                 className={cn(className, {
                     [activeClassName]: page === activePage,
+                    [inactiveClassName]: page !== activePage,
                 })}
             >
                 {label ?? page}
@@ -46,8 +49,6 @@ type PaginationProps = {
     getPageHref: (page: number) => string
     span?: number
     className?: string
-    itemClassName?: string
-    itemActiveClassName?: string
 }
 
 export const Pagination = ({
@@ -56,15 +57,15 @@ export const Pagination = ({
     firstPage = 0,
     span = 1,
     className,
-    itemClassName,
-    itemActiveClassName,
 }: PaginationProps) => {
     const pages = [
         {
-            page: 1,
+            page: firstPage,
             label: (
                 <span className="flex items-center gap-1">
-                    <ChevronDoubleLeftIcon className="w-4 h-4" />
+                    {currentPage !== firstPage && (
+                        <ChevronDoubleLeftIcon className="w-4 h-4" />
+                    )}
                     top
                 </span>
             ),
@@ -108,11 +109,9 @@ export const Pagination = ({
                         page={page}
                         label={label}
                         href={getPageHref(page)}
-                        className={cn(
-                            "p-2 border h-8 flex items-center justify-center text-sm rounded border-blue4",
-                            itemClassName,
-                        )}
-                        activeClassName={cn("bg-blue7", itemActiveClassName)}
+                        className="p-2 h-8 flex items-center justify-center text-sm rounded-lg border-bg"
+                        activeClassName="bg-accent"
+                        inactiveClassName="bg-bgVar2"
                         activePage={currentPage}
                     />
                 )

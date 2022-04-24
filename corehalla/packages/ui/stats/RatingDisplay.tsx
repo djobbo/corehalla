@@ -24,8 +24,9 @@ export const RatingDisplay = ({
                 mainContent={
                     <>
                         {rating}
-                        <span className="text-4xl mx-3 text-blue11">/</span>
-                        <span className="text-4xl">{peak_rating}</span>
+                        <span className="text-4xl ml-3 text-textVar1">
+                            / {peak_rating}
+                        </span>
                     </>
                 }
                 description="Peak"

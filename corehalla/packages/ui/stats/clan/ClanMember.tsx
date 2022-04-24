@@ -34,7 +34,7 @@ export const ClanMember = ({ member, clan }: ClanMemberProps) => {
                 <Card
                     key={member.brawlhalla_id}
                     title={`${cleanString(member.name)} (${member.rank})`}
-                    className="hover:border-blue6"
+                    className="hover:bg-bgVar2"
                 >
                     <MiscStatGroup
                         className="mt-4 justify-items-center text-center"
