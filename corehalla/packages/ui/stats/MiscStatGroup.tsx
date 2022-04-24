@@ -1,5 +1,5 @@
 import { cn } from "common/helpers/classnames"
-import { css, text } from "../theme"
+import { css } from "../theme"
 import type { ReactNode } from "react"
 
 export type MiscStat = {
@@ -34,9 +34,7 @@ export const MiscStatGroup = ({
         >
             {stats.map(({ name, value }) => (
                 <div key={name}>
-                    <p className={cn("text-xs uppercase", text("blue11"))}>
-                        {name}
-                    </p>
+                    <p className="text-xs uppercase text-blue11">{name}</p>
                     <div className="font-semibold mt-2 text-lg">{value}</div>
                 </div>
             ))}

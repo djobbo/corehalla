@@ -1,4 +1,3 @@
-import { border } from "../theme"
 import { cn } from "common/helpers/classnames"
 import type { ReactNode } from "react"
 
@@ -24,8 +23,7 @@ export const SectionTitle = ({
                 {
                     "mt-10 mb-4": !customMargin,
                     "py-2": !customPadding,
-                    [border("blue6")]: hasBorder,
-                    "border-b": hasBorder,
+                    "border-b border-blue6": hasBorder,
                 },
                 className,
             )}

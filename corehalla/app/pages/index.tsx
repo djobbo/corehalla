@@ -4,9 +4,8 @@ import { SEO } from "../components/SEO"
 import { SearchButton } from "ui/search/SearchButton"
 import { SectionTitle } from "ui/layout/SectionTitle"
 import { cn } from "common/helpers/classnames"
-import { css, text } from "ui/theme"
+import { css } from "ui/theme"
 import { useFavorites } from "db/client/AuthProvider"
-import Head from "next/head"
 
 const landingClassName = css({
     height: "50vh",
@@ -18,24 +17,17 @@ const Page = () => {
 
     return (
         <>
-            <Head>
-                <SEO
-                    title="Home • Corehalla"
-                    description="Brawlhalla Stats, Rankings and more! Corehalla is a community of Brawlhalla players and fans. Join the community and get involved!"
-                />
-            </Head>
+            <SEO
+                title="Home • Corehalla"
+                description="Brawlhalla Stats, Rankings and more! Corehalla is a community of Brawlhalla players and fans. Join the community and get involved!"
+            />
             <div
                 className={cn(
                     "flex flex-col justify-center items-center",
                     landingClassName,
                 )}
             >
-                <span
-                    className={cn(
-                        "text-2xl font-bold uppercase",
-                        text("blue9"),
-                    )}
-                >
+                <span className="text-2xl font-bold uppercase text-blue9">
                     Brawlhalla
                 </span>
                 <h1 className="text-5xl font-bold uppercase">

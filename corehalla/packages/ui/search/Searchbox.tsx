@@ -3,10 +3,10 @@ import { IS_DEV } from "common/helpers/nodeEnv"
 import { KBarAnimator, KBarPortal, KBarPositioner, KBarSearch } from "kbar"
 import { SearchboxItem } from "./SearchboxItem"
 import { Spinner } from "../base/Spinner"
-import { bg, border, styled, text, theme } from "../theme"
 import { cn } from "common/helpers/classnames"
 import { css } from "@stitches/react"
 import { gaEvent } from "common/analytics/gtag"
+import { styled, theme } from "../theme"
 import { useDebouncedState } from "common/hooks/useDebouncedState"
 import { useEffect, useState } from "react"
 import { useRankings1v1 } from "bhapi/hooks/useRankings"
@@ -48,19 +48,10 @@ export const Searchbox = () => {
             >
                 {/* @ts-expect-error kbar is weird */}
                 <KBarAnimator className="w-full max-w-screen-md">
-                    <div
-                        className={cn(
-                            "rounded-lg overflow-hidden border mx-auto",
-                            bg("blue2"),
-                            border("blue3"),
-                        )}
-                    >
+                    <div className="rounded-lg overflow-hidden border mx-auto bg-blue2 border-blue3">
                         <div className="relative">
                             <KBarSearch
-                                className={cn(
-                                    "px-4 py-3 w-full",
-                                    text("blue3"),
-                                )}
+                                className="px-4 py-3 w-full text-blue3"
                                 defaultPlaceholder="Search player..."
                                 onChange={(e) => {
                                     setSearch(e.target.value)

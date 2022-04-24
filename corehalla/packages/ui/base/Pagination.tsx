@@ -3,7 +3,6 @@ import {
     ChevronLeftIcon,
     ChevronRightIcon,
 } from "@heroicons/react/solid"
-import { bg, border } from "../theme"
 import { cn } from "common/helpers/classnames"
 import Link from "next/link"
 import type { ReactNode } from "react"
@@ -110,11 +109,10 @@ export const Pagination = ({
                         label={label}
                         href={getPageHref(page)}
                         className={cn(
-                            "p-2 border h-8 flex items-center justify-center text-sm rounded",
+                            "p-2 border h-8 flex items-center justify-center text-sm rounded border-blue4",
                             itemClassName,
-                            border("blue4"),
                         )}
-                        activeClassName={cn(bg("blue7"), itemActiveClassName)}
+                        activeClassName={cn("bg-blue7", itemActiveClassName)}
                         activePage={currentPage}
                     />
                 )

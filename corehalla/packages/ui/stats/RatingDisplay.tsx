@@ -1,6 +1,4 @@
 import { GamesDisplay } from "./GamesDisplay"
-import { cn } from "common/helpers/classnames"
-import { text } from "../theme"
 
 type RatingDisplayProps = {
     className?: string
@@ -26,9 +24,7 @@ export const RatingDisplay = ({
                 mainContent={
                     <>
                         {rating}
-                        <span className={cn("text-4xl mx-3", text("blue11"))}>
-                            /
-                        </span>
+                        <span className="text-4xl mx-3 text-blue11">/</span>
                         <span className="text-4xl">{peak_rating}</span>
                     </>
                 }

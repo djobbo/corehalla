@@ -1,6 +1,5 @@
 import { Card } from "../../base/Card"
 import { MiscStatGroup } from "../MiscStatGroup"
-import { border } from "../../theme"
 import { cleanString } from "common/helpers/cleanString"
 import { formatUnixTime } from "common/helpers/date"
 import Link from "next/link"
@@ -35,7 +34,7 @@ export const ClanMember = ({ member, clan }: ClanMemberProps) => {
                 <Card
                     key={member.brawlhalla_id}
                     title={`${cleanString(member.name)} (${member.rank})`}
-                    className={border("blue6", "&:hover")}
+                    className="hover:border-blue6"
                 >
                     <MiscStatGroup
                         className="mt-4 justify-items-center text-center"

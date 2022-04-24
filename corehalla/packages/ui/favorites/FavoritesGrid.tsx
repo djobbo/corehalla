@@ -1,7 +1,7 @@
 import { UserGroupIcon, XIcon } from "@heroicons/react/solid"
-import { bg, css, text } from "../theme"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
+import { css } from "../theme"
 import { legendsMap } from "bhapi/legends"
 import { useFavorites } from "db/client/AuthProvider"
 import Image from "next/image"
@@ -51,8 +51,7 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                 return (
                     <div
                         className={cn(
-                            "relative rounded hover:shadow-md",
-                            bg("blue6", "&:hover"),
+                            "relative rounded hover:shadow-md hover:bg-blue6",
                             favoriteClassName,
                         )}
                         key={`${fav.type}/${fav.id}`}
@@ -69,24 +68,14 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                                     <p className="font-bold">
                                         {cleanString(fav.name)}
                                     </p>
-                                    <p
-                                        className={cn(
-                                            "text-xs uppercase",
-                                            text("blue11"),
-                                        )}
-                                    >
+                                    <p className="text-xs uppercase text-blue11">
                                         {fav.type} #{fav.id}
                                     </p>
                                 </div>
                             </a>
                         </Link>
                         <button
-                            className={cn(
-                                "hidden remove-btn absolute w-4 h-4 p-0.5 rounded-full overflow-hidden shadow-md",
-                                bg("blue10"),
-                                bg("blue12", "&:hover"),
-                                text("blue11", "&:hover"),
-                            )}
+                            className="hidden remove-btn absolute w-4 h-4 p-0.5 rounded-full overflow-hidden shadow-md bg-blue10 hover:bg-blue12 hover:text-blue11"
                             onClick={() => removeFavorite(fav)}
                         >
                             <XIcon />

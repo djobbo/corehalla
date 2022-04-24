@@ -1,5 +1,4 @@
 import { Progress } from "ui/base/Progress"
-import { bg, text } from "../theme"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
 import { cn } from "common/helpers/classnames"
 import type { Ranking } from "bhapi/types"
@@ -25,11 +24,10 @@ export const RankingsTableItem = ({
     return (
         <div
             className={cn(
-                "py-1 w-full h-full flex items-center gap-4",
+                "py-1 w-full h-full flex items-center gap-4 hover:bg-blue4",
                 {
-                    [bg("blue2")]: index % 2 === 0,
+                    "bg-blue2": index % 2 === 0,
                 },
-                bg("blue4", "&:hover"),
                 className,
             )}
         >
@@ -44,11 +42,8 @@ export const RankingsTableItem = ({
             <div className="w-32">
                 <Progress
                     value={(wins / games) * 100}
-                    className={cn(
-                        "h-1 rounded-full mt-2 overflow-hidden",
-                        bg("red9"),
-                    )}
-                    indicatorClassName={cn("h-2", bg("green9"))}
+                    className="h-1 rounded-full mt-2 overflow-hidden bg-danger"
+                    indicatorClassName="h-2 bg-sucess"
                 />
                 <div className="flex justify-between text-xs mt-2">
                     <span>{wins}W</span>
@@ -61,7 +56,7 @@ export const RankingsTableItem = ({
             <div className="w-40 flex items-center justify-start">
                 <p>
                     <span className="text-xl font-bold">{rating}</span>{" "}
-                    <span className={text("blue11")}>/</span>{" "}
+                    <span className="text-blue11">/</span>{" "}
                     <span className="text-sm">{peak_rating} peak</span>
                 </p>
             </div>
