@@ -21,13 +21,21 @@ const Page: NextPage = () => {
 
     const { rankings1v1, isLoading, isError } = useRankings1v1(
         // @ts-expect-error TODO: Typecheck this
-        "1v1",
         region,
         page,
         player,
     )
 
     if (isError || (!isLoading && !rankings1v1)) return <div>Error</div>
+
+    const pagination = !player && (
+        <Pagination
+            getPageHref={(page) => `/rankings/1v1/${region ?? "all"}/${page}`}
+            currentPage={parseInt(page)}
+            firstPage={1}
+            className="justify-end"
+        />
+    )
 
     return (
         <>
@@ -39,16 +47,7 @@ const Page: NextPage = () => {
                     region === "all" ? "Global" : region.toUpperCase()
                 } 1v1 Rankings - Page ${page} • Corehalla`}
             />
-            {!player && (
-                <Pagination
-                    getPageHref={(page) =>
-                        `/rankings/1v1/${region ?? "all"}/${page}`
-                    }
-                    currentPage={parseInt(page)}
-                    firstPage={1}
-                    className="justify-end"
-                />
-            )}
+            {pagination}
             <div className="py-4 w-full h-full flex items-center gap-4">
                 <p className="w-16 text-center">Rank</p>
                 <p className="w-16 text-center">Region</p>
@@ -56,14 +55,14 @@ const Page: NextPage = () => {
                 <p className="w-16 text-center">Games</p>
                 <p className="w-32 text-center">W/L</p>
                 <p className="w-20 text-center">Winrate</p>
-                <p className="w-40 text-center">Elo</p>
+                <p className="w-40 pl-1">Elo</p>
             </div>
             {isLoading ? (
                 <div className="flex items-center justify-center h-48">
                     <Spinner size="4rem" />
                 </div>
             ) : (
-                <div>
+                <div className="rounded-lg overflow-hidden border border-bg mb-4">
                     {rankings1v1?.map((player, i) => {
                         const legend = legendsMap[player.best_legend]
 
@@ -75,7 +74,7 @@ const Page: NextPage = () => {
                                     <Link
                                         href={`/stats/player/${player.brawlhalla_id}`}
                                     >
-                                        <a className="flex flex-1 items-center gap-4">
+                                        <a className="flex flex-1 items-center gap-3">
                                             <div className="relative w-6 h-6 rounded-lg overflow-hidden">
                                                 {legend && (
                                                     <Image
@@ -97,6 +96,7 @@ const Page: NextPage = () => {
                     })}
                 </div>
             )}
+            {pagination}
         </>
     )
 }

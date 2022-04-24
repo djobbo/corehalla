@@ -29,8 +29,8 @@ const queryClientConfig: QueryClientConfig = {
 
 export const globalStyles = globalCss({
     "html, body": {
-        backgroundColor: theme.colors.blue1,
-        color: theme.colors.blue12,
+        backgroundColor: theme.colors.bgVar1,
+        color: theme.colors.text,
         fontFamily: '"Montserrat", sans-serif',
     },
 
@@ -42,11 +42,11 @@ export const globalStyles = globalCss({
         background: "transparent",
     },
     "::-webkit-scrollbar-thumb": {
-        background: theme.colors.blue8,
+        background: theme.colors.bg,
         borderRadius: "0.5rem",
     },
     "::-webkit-scrollbar-thumb:hover": {
-        background: theme.colors.blue9,
+        background: theme.colors.accent,
     },
 })
 

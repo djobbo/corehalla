@@ -16,7 +16,10 @@ export const SearchboxItem = ({ player }: SearchboxItemProps) => {
     } = useKBar()
 
     const icon = legend && (
-        <div className="w-8 h-8 relative" key={legend.legend_id}>
+        <div
+            className="w-8 h-8 relative rounded-lg overflow-hidden border border-textVar1"
+            key={legend.legend_id}
+        >
             <Image
                 src={`/images/icons/roster/legends/${legend.bio_name}.png`}
                 alt={legend.bio_name}
@@ -31,12 +34,12 @@ export const SearchboxItem = ({ player }: SearchboxItemProps) => {
         <Link href={`/stats/player/${player.brawlhalla_id}`}>
             <a
                 onClick={() => toggle()}
-                className="px-4 py-3 w-full flex items-center border-b cursor-pointer border-blue4 hover:bg-blue3"
+                className="px-4 py-3 w-full flex items-center border-b cursor-pointer border-bgVar2 hover:bg-bg"
             >
                 {icon}
                 <div className="ml-4">
                     <p>{cleanString(player.name)}</p>
-                    <p className="uppercase text-xs text-blue11">
+                    <p className="text-xs text-textVar1">
                         {player.rating} / {player.peak_rating} peak (
                         {player.tier})
                     </p>

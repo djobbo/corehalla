@@ -34,7 +34,7 @@ export const MiscStatGroup = ({
         >
             {stats.map(({ name, value }) => (
                 <div key={name}>
-                    <p className="text-xs uppercase text-blue11">{name}</p>
+                    <p className="text-sm text-textVar1">{name}</p>
                     <div className="font-semibold mt-2 text-lg">{value}</div>
                 </div>
             ))}

@@ -22,13 +22,8 @@ export const GamesDisplay = ({
         <div className={cn("flex flex-col", className)}>
             <p className="text-5xl font-bold">
                 {mainContent ?? games}
-                <span className="ml-2 text-xs font-normal uppercase text-blue11">
-                    {description ?? (
-                        <>
-                            games ({calculateWinrate(wins, games).toFixed(2)}%
-                            Winrate)
-                        </>
-                    )}
+                <span className="ml-2 text-xs font-normal uppercase text-textVar1">
+                    {description ?? "games"}
                 </span>
             </p>
             <Progress
@@ -37,8 +32,18 @@ export const GamesDisplay = ({
                 indicatorClassName="h-2 bg-success"
             />
             <div className="flex justify-between font-bold text-md mt-2">
-                <span>{wins}W</span>
-                <span>{games - wins}L</span>
+                <span>
+                    {wins}W{" "}
+                    <span className="text-xs text-textVar1">
+                        ({calculateWinrate(wins, games).toFixed(2)}%)
+                    </span>
+                </span>
+                <span>
+                    {games - wins}L{" "}
+                    <span className="text-xs text-textVar1">
+                        ({calculateWinrate(games - wins, games).toFixed(2)}%)
+                    </span>
+                </span>
             </div>
         </div>
     )

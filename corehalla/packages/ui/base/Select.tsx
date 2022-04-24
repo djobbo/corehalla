@@ -35,26 +35,27 @@ export const Select = <T extends string>({
             styles={{
                 singleValue: (styles) => ({
                     ...styles,
-                    color: theme.colors.blue12.toString(),
+                    color: theme.colors.text.toString(),
                 }),
                 control: (styles) => ({
                     ...styles,
-                    backgroundColor: theme.colors.blue1.toString(),
+                    backgroundColor: theme.colors.bgVar2.toString(),
                     borderRadius: "0.5rem",
-                    border: `2px solid ${theme.colors.blue3}`,
+                    border: `thin solid ${theme.colors.bg}`,
                     cursor: "pointer",
+                    padding: "0.25rem 0.5rem",
                 }),
                 menu: (styles) => ({
                     ...styles,
-                    backgroundColor: theme.colors.blue2.toString(),
+                    backgroundColor: theme.colors.bg.toString(),
                 }),
                 option: (styles) => ({
                     ...styles,
-                    color: "var(--on-bg-dark)",
-                    backgroundColor: "var(--bg-dark)",
+                    color: theme.colors.text.toString(),
+                    backgroundColor: theme.colors.bg.toString(),
                     cursor: "pointer",
                     ":hover": {
-                        backgroundColor: theme.colors.blue4.toString(),
+                        backgroundColor: theme.colors.bgVar1.toString(),
                     },
                 }),
             }}

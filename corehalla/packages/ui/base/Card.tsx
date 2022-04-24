@@ -17,16 +17,11 @@ export const Card = ({
     contentClassName,
 }: CardProps) => {
     return (
-        <div
-            className={cn(
-                "rounded p-4 border w-full bg-blue2 border-blue4",
-                className,
-            )}
-        >
+        <div className={cn("rounded-lg p-4 w-full bg-bg shadow-md", className)}>
             {title && (
                 <p
                     className={cn(
-                        "inline-block uppercase rounded-md text-xs py-1 px-2 bg-blue4",
+                        "inline-block uppercase rounded-md text-xs py-1 px-2 bg-bgVar1",
                         titleClassName,
                     )}
                 >

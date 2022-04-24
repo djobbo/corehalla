@@ -27,8 +27,8 @@ type SideNavIconProps = {
 const sideNavIconClassName = css({
     "&:hover .remove-btn": {
         display: "block",
-        top: "-0.25rem",
-        right: "-0.25rem",
+        top: "-0.375rem",
+        right: "-0.375rem",
     },
 })()
 
@@ -48,10 +48,10 @@ const SideNavIcon = ({
                 <a
                     className={cn(
                         className,
-                        "w-10 h-10 rounded flex justify-center items-center border uppercase cursor-pointer border-blue6 hover:border-blue7",
+                        "w-10 h-10 rounded-lg flex justify-center items-center uppercase cursor-pointer",
                         {
-                            "bg-blue9 hover:bg-blue10": active,
-                            "bg-blue4 hover:bg-blue5": !active,
+                            "bg-accent": active,
+                            "bg-bg hover:border hover:border-text": !active,
                         },
                     )}
                 >
@@ -69,14 +69,14 @@ const SideNavIcon = ({
                             />
                         </span>
                     )}
-                    <span className="text-sm z-10">
+                    <span className="font-semibold z-10">
                         {content ?? cleanName.slice(0, 3)}
                     </span>
                 </a>
             </Link>
             {onRemove && (
                 <button
-                    className="hidden remove-btn absolute w-4 h-4 p-0.5 rounded-full overflow-hidden shadow-md bg-blue10 hover:bg-blue12 hover:text-blue11"
+                    className="hidden remove-btn absolute w-4 h-4 p-0.5 rounded-full overflow-hidden shadow-md bg-accent hover:bg-text hover:text-bgVar2"
                     onClick={() => onRemove()}
                 >
                     <XIcon />
@@ -119,7 +119,7 @@ export const SideNav = () => {
     )
 
     return (
-        <div className="sticky top-0 p-2 flex flex-col gap-2 shadow-lg border-r h-screen overflow-y-auto bg-blue2 border-blue4">
+        <div className="sticky top-0 p-2 flex flex-col gap-2 border-r border-bg h-screen overflow-y-auto bg-bgVar2">
             {nav.map((nav) => (
                 <SideNavIcon
                     key={nav.name}

@@ -136,7 +136,7 @@ export const PlayerLegendsTab = ({
                 filteredLegends.reduce(
                     (level, legend) => level + (legend.stats?.level ?? 0),
                     0,
-                ) / legends.length
+                ) / filteredLegends.length
             ).toFixed(0),
         },
     ]
@@ -167,7 +167,7 @@ export const PlayerLegendsTab = ({
                 />
                 <button
                     onClick={changeLegendSortDirection}
-                    className="flex items-center"
+                    className="flex items-center hover:text-accent"
                 >
                     {legendSortDirection === SortDirection.Ascending ? (
                         <SortAscendingIcon className="w-6 h-6" />

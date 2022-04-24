@@ -25,7 +25,7 @@ export const PlayerOverviewClanContent = ({
                         {cleanString(clan.clan_name)}{" "}
                     </a>
                 </Link>
-                <span className="inline-block text-xs font-bold ml-2 text-blue9">
+                <span className="inline-block text-xs font-bold ml-2 text-textVar1">
                     #{clan.clan_id}
                 </span>
             </p>

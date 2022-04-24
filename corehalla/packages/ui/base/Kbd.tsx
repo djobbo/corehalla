@@ -16,7 +16,7 @@ export const Kbd = ({ children, className }: KbdProps) => (
     <kbd
         className={cn(
             kbdClassName,
-            "rounded-md flex items-center justify-center px-2 bg-blue3",
+            "rounded-md flex items-center justify-center px-2 bg-bg",
             className,
         )}
     >

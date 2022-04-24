@@ -27,21 +27,20 @@ const Page = () => {
                     landingClassName,
                 )}
             >
-                <span className="text-2xl font-bold uppercase text-blue9">
+                <span className="text-2xl font-bold uppercase text-accent">
                     Brawlhalla
                 </span>
-                <h1 className="text-5xl font-bold uppercase">
+                <h1 className="text-5xl font-bold uppercase mt-1">
                     Stats for everyone.
                 </h1>
-                <p className="mt-4 max-w-lg text-center">
+                <p className="mt-3 max-w-lg text-center text-textVar1">
                     Welcome to Corehalla, the fastest and easiest way to find
                     your Brawlhalla Stats, and official rankings.
                 </p>
                 <div className="mt-8 flex items-center gap-6">
                     <SearchButton />
-                    or
+                    <span className="text-textVar1">or</span>
                     <Button
-                        large
                         as="a"
                         href="/rankings"
                         className="whitespace-nowrap font-semibold"
