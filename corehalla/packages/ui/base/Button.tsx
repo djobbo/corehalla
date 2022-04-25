@@ -26,8 +26,10 @@ export const Button = <Type extends ButtonType = "button">(
     const buttonClass = cn(
         "flex font-semibold cursor-pointer items-center justify-center rounded-lg",
         {
-            "shadow-md bg-accent": buttonStyle === "primary",
-            "border border-bg bg-transparent": buttonStyle === "outline",
+            "shadow-md bg-accent hover:bg-textVar1 hover:text-bgVar2":
+                buttonStyle === "primary",
+            "border border-bg bg-bgVar2 hover:border-textVar1":
+                buttonStyle === "outline",
         },
         {
             "py-2 px-4 text-base": large,

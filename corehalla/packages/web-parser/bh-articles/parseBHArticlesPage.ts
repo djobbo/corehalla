@@ -1,3 +1,5 @@
+import { IS_DEV } from "common/helpers/nodeEnv"
+import { bhArticlesMock } from "./bhArticlesMock"
 import { load } from "cheerio"
 import axios from "axios"
 
@@ -7,10 +9,7 @@ export type BHArticle = {
     id: string
     title: string
     href: string
-    thumb: {
-        src: string
-        srcset: string
-    }
+    thumb: string
     tags: {
         label: string
         type: string
@@ -23,6 +22,8 @@ export const parseBHArticlesPage = async (
     pageId: number,
     articleType = "patch-notes",
 ): Promise<BHArticle[]> => {
+    if (IS_DEV) return bhArticlesMock
+
     const page = `${PATCHES_BASE_URL}/${articleType}/page/${pageId}`
     const { data } = await axios.get<string>(page)
 
@@ -42,10 +43,7 @@ export const parseBHArticlesPage = async (
                 id: $article.attr("id") ?? "",
                 title: $title.text(),
                 href: $link.attr("href") ?? "",
-                thumb: {
-                    src: $thumb.attr("src") ?? "",
-                    srcset: $thumb.attr("srcset") ?? "",
-                },
+                thumb: $thumb.attr("src") ?? "",
                 tags: $tags
                     .map((_, el) => {
                         const label = $(el).text()

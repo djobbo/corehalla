@@ -17,7 +17,7 @@ export const SearchButton = ({ className, bg }: SearchButtonProps) => {
             type="button"
             className={cn(
                 className,
-                "rounded-xl py-2 px-4 w-64 cursor-text text-sm flex items-center justify-between border border-bg text-textVar1 hover:text-text",
+                "rounded-xl py-2 px-4 w-64 cursor-text text-sm flex items-center justify-between border border-bg text-textVar1 hover:text-text hover:border-textVar1",
                 bg ?? "bg-bgVar2",
             )}
             onClick={query.toggle}

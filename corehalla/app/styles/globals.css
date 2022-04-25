@@ -16,3 +16,7 @@ html, body {
 ::-webkit-scrollbar-thumb {
     @apply bg-bg rounded-full hover:bg-accent;
 }
+
+.p-link {
+    @apply text-accent hover:underline;
+}
