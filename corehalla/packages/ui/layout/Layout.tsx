@@ -18,14 +18,6 @@ const BackgroundContainer = styled("div", {
 })
 
 export const Layout = ({ children, showBackground }: LayoutProps) => {
-    // const LandingBackground = styled("div", {
-    //     backgroundImage: `url(${landingBackgroundImg})`,
-    //     opacity: "0.04",
-    //     filter: "saturate(0.1)",
-    //     zIndex: -1,
-    //     maxHeight: "100vh",
-    // })
-
     return (
         <>
             {showBackground && (
@@ -35,12 +27,12 @@ export const Layout = ({ children, showBackground }: LayoutProps) => {
             )}
             <div className="relative z-10 flex">
                 <SideNav />
-                <div className="overflow-y-auto flex-1 mx-4 xl:mx-0">
-                    <Header />
-                    <div className="flex-1 max-w-screen-xl mx-auto">
+                <div className="overflow-y-auto flex-1">
+                    <Header className="max-w-screen-xl mx-auto px-4 xl:px-0" />
+                    <div className="max-w-screen-xl mx-auto px-4 pl:mx-0">
                         {children}
                     </div>
-                    <Footer />
+                    <Footer className="bg-bgVar2 mt-16" />
                 </div>
             </div>
         </>

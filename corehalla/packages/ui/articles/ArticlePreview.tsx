@@ -17,7 +17,7 @@ export const ArticlePreview = ({ article }: ArticlePreviewProps) => {
                 rel="noreferrer"
             >
                 <Image
-                    src={thumb.src}
+                    src={thumb}
                     alt={title}
                     layout="fill"
                     objectFit="cover"

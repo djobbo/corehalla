@@ -6,7 +6,11 @@ import { useRouter } from "next/router"
 import Image from "next/image"
 import Link from "next/link"
 
-export const Header = () => {
+type HeaderProps = {
+    className?: string
+}
+
+export const Header = ({ className }: HeaderProps) => {
     const { isLoggedIn, signIn, signOut, userProfile } = useAuth()
     const router = useRouter()
 
@@ -15,6 +19,7 @@ export const Header = () => {
     return (
         <header
             className={cn(
+                className,
                 "flex items-center justify-between mx-auto h-20 px-8 mb-8",
                 {
                     "bg-bgVar2": !isLandingPage,
