@@ -5,7 +5,7 @@ module.exports = {
     textVar1: "#CCD0D6",
     text: "#FFFFFF",
     accent: "#3861FB",
-    accentVar1: "#7EBAFF",
+    accentVar1: "#2095F2",
     success: "#24CD7C",
     danger: "#ED7853",
     warning: "#F3DA57",

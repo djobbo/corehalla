@@ -1,6 +1,6 @@
 import { useQuery } from "react-query"
 import axios from "axios"
-import type { PlayerStats } from "../types"
+import type { PlayerStats } from "bhapi/types"
 
 export const usePlayerStats = (playerId: string) => {
     const { data: playerStats, ...query } = useQuery(

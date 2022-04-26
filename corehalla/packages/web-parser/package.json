@@ -4,7 +4,8 @@
     "main": "./index.ts",
     "types": "./index.ts",
     "scripts": {
-        "dl-bh-articles-dev": "tsnd --respawn ./dev.ts",
+        "parse-bh-articles-dev": "tsnd --respawn ./bh-articles/dev.ts",
+        "parse-pr-dev": "tsnd --respawn ./power-rankings/dev.ts",
         "ts:check": "tsc --noEmit"
     },
     "dependencies": {

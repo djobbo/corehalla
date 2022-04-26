@@ -19,7 +19,7 @@ export const SectionTitle = ({
     return (
         <h3
             className={cn(
-                "text-xl",
+                "text-3xl font-bold",
                 {
                     "mt-10 mb-4": !customMargin,
                     "py-2": !customPadding,
@@ -28,7 +28,9 @@ export const SectionTitle = ({
                 className,
             )}
         >
-            {children}
+            <span className="bg-gradient-to-l from-accent to-accentVar1 bg-clip-text text-fill-none pr-32">
+                {children}
+            </span>
         </h3>
     )
 }

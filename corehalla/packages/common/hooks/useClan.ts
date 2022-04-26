@@ -1,6 +1,6 @@
 import { useQuery } from "react-query"
 import axios from "axios"
-import type { Clan } from "../types"
+import type { Clan } from "bhapi/types"
 
 export const useClan = (clanId: string) => {
     const { data: clan, ...query } = useQuery(

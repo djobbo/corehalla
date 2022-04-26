@@ -18,7 +18,7 @@ export const ProgressCard = ({ title, bars }: ProgressCardProps) => {
                     <Progress
                         value={progress}
                         className="h-1 rounded-full mt-2 overflow-hidden mt-1 bg-bgVar1"
-                        indicatorClassName="h-2 bg-accent"
+                        indicatorClassName="h-2 bg-gradient-to-r from-accent to-accentVar1"
                     />
                 </div>
             ))}

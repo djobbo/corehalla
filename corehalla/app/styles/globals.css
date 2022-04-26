@@ -20,3 +20,7 @@ html, body {
 .p-link {
     @apply text-accent hover:underline;
 }
+
+.text-fill-none {
+    -webkit-text-fill-color: transparent
+}

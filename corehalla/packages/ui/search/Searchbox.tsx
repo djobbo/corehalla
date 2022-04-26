@@ -9,7 +9,7 @@ import { gaEvent } from "common/analytics/gtag"
 import { styled, theme } from "../theme"
 import { useDebouncedState } from "common/hooks/useDebouncedState"
 import { useEffect, useState } from "react"
-import { useRankings1v1 } from "bhapi/hooks/useRankings"
+import { useRankings1v1 } from "common/hooks/useRankings"
 import type { Ranking1v1 } from "bhapi/types"
 
 const ResultsContainer = styled("div", {
