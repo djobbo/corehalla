@@ -13,8 +13,8 @@ import type { BHArticle } from "web-parser/bh-articles/parseBHArticlesPage"
 import type { GetServerSideProps } from "next"
 
 const landingClassName = css({
-    height: "50vh",
-    minHeight: "400px",
+    height: "40vh",
+    minHeight: "320px",
 })()
 
 type PageProps = {
@@ -37,7 +37,7 @@ const Page = ({ latestArticles }: PageProps) => {
                     landingClassName,
                 )}
             >
-                <span className="text-2xl font-bold uppercase text-accent">
+                <span className="text-2xl font-bold uppercase bg-gradient-to-l from-accent to-accentVar1 bg-clip-text text-fill-none">
                     Brawlhalla
                 </span>
                 <h1 className="text-5xl font-bold uppercase mt-1">
@@ -79,7 +79,9 @@ const Page = ({ latestArticles }: PageProps) => {
                             You don&apos;t have any favorites yet, you can a
                             player or a clan as favorite when visiting their
                             profile page.
-                            <Button onClick={signIn}>View rankings</Button>
+                            <Button as="a" href="/rankings">
+                                View rankings
+                            </Button>
                         </>
                     ) : (
                         <>

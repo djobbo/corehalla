@@ -1,7 +1,7 @@
 import { useQuery } from "react-query"
 import axios from "axios"
-import type { Bracket, Ranking1v1, Ranking2v2 } from "../types"
-import type { RankedRegion } from "../constants"
+import type { Bracket, Ranking1v1, Ranking2v2 } from "bhapi/types"
+import type { RankedRegion } from "bhapi/constants"
 import type { UseQueryOptions } from "react-query"
 
 const useRankings = <T>(

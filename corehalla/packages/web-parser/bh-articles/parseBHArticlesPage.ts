@@ -3,7 +3,7 @@ import { bhArticlesMock } from "./bhArticlesMock"
 import { load } from "cheerio"
 import axios from "axios"
 
-const PATCHES_BASE_URL = "https://www.brawlhalla.com/news"
+const BH_ARTICLES_BASE_URL = "https://www.brawlhalla.com/news"
 
 export type BHArticle = {
     id: string
@@ -24,7 +24,7 @@ export const parseBHArticlesPage = async (
 ): Promise<BHArticle[]> => {
     if (IS_DEV) return bhArticlesMock
 
-    const page = `${PATCHES_BASE_URL}/${articleType}/page/${pageId}`
+    const page = `${BH_ARTICLES_BASE_URL}/${articleType}/page/${pageId}`
     const { data } = await axios.get<string>(page)
 
     const $ = load(data)

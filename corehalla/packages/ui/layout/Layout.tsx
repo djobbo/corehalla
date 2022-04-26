@@ -2,13 +2,13 @@ import { Footer } from "./Footer"
 import { Header } from "./Header"
 import { LandingBackground } from "./LandingBackground"
 import { SideNav } from "./SideNav"
+import { SubHeader } from "./SubHeader"
 import { bgVar1 } from "../theme/theme"
 import { styled } from "../theme"
 import type { ReactNode } from "react"
 
 export type LayoutProps = {
     children: ReactNode
-    showBackground?: boolean
 }
 
 const BackgroundContainer = styled("div", {
@@ -17,19 +17,18 @@ const BackgroundContainer = styled("div", {
     },
 })
 
-export const Layout = ({ children, showBackground }: LayoutProps) => {
+export const Layout = ({ children }: LayoutProps) => {
     return (
         <>
-            {showBackground && (
-                <BackgroundContainer className="w-full h-screen absolute opacity-50">
-                    <LandingBackground className="w-full h-5/6" />
-                </BackgroundContainer>
-            )}
+            <BackgroundContainer className="w-full h-screen absolute opacity-50">
+                <LandingBackground className="w-full h-5/6" />
+            </BackgroundContainer>
             <div className="relative z-10 flex">
                 <SideNav />
                 <div className="overflow-y-auto flex-1">
                     <Header className="max-w-screen-xl mx-auto px-4 xl:px-0" />
-                    <div className="max-w-screen-xl mx-auto px-4 pl:mx-0">
+                    <SubHeader className="mt-4" />
+                    <div className="max-w-screen-xl mx-auto px-4 pl:mx-0 mt-4">
                         {children}
                     </div>
                     <Footer className="bg-bgVar2 mt-16" />

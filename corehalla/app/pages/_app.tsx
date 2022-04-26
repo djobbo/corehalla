@@ -13,7 +13,6 @@ import { PageLoader } from "ui/base/PageLoader"
 import { SEO } from "../components/SEO"
 import { Searchbox } from "ui/search/Searchbox"
 import { useRef } from "react"
-import { useRouter } from "next/router"
 import Head from "next/head"
 import type { AppProps } from "next/app"
 import type { QueryClientConfig } from "react-query"
@@ -29,7 +28,6 @@ const queryClientConfig: QueryClientConfig = {
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
     const queryClient = useRef(new QueryClient(queryClientConfig))
-    const router = useRouter()
 
     return (
         <>
@@ -54,7 +52,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
                                     <AnimatedLogo size={32} />
                                 </div>
                             </PageLoader>
-                            <Layout showBackground={router.pathname === "/"}>
+                            <Layout>
                                 <Component {...pageProps} />
                             </Layout>
                             <Searchbox />
