@@ -17,27 +17,32 @@ export const Legend = ({ legend, matchtime, games }: LegendProps) => {
         {
             name: "level",
             value: legend.stats?.level ?? 0,
+            desc: "Legend level",
         },
         {
             name: "xp",
             value: legend.stats?.xp ?? 0,
+            desc: "XP earned with this legend",
         },
         {
             name: "Time played",
             value: `${formatTime(legend.stats?.matchtime ?? 0)}`,
+            desc: "Time played with this legend",
         },
         {
-            name: "Time played %",
+            name: "Time played (%)",
             value: `${(
                 ((legend.stats?.matchtime ?? 0) / matchtime) *
                 100
             ).toFixed(2)}%`,
+            desc: "Time played with this legend (percentage of total time)",
         },
         {
             name: "Usage rate (games)",
             value: `${(((legend.stats?.games ?? 0) / games) * 100).toFixed(
                 2,
             )}%`,
+            desc: "Usage rate of this legend (percentage of total games)",
         },
     ]
 

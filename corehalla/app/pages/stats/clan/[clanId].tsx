@@ -26,6 +26,7 @@ const Page: NextPage = () => {
         {
             name: "Created on",
             value: formatUnixTime(clan.clan_create_date),
+            desc: `Date when ${cleanString(clan.clan_name)} was created`,
         },
         // {
         //     name: "Level",
@@ -34,10 +35,14 @@ const Page: NextPage = () => {
         {
             name: "XP",
             value: clan.clan_xp,
+            desc: `XP earned by ${cleanString(
+                clan.clan_name,
+            )} members since creation`,
         },
         {
             name: "Members",
             value: clan.clan.length,
+            desc: `Number of members in ${cleanString(clan.clan_name)}`,
         },
     ]
 

@@ -16,12 +16,16 @@ export const ClanMember = ({ member, clan }: ClanMemberProps) => {
         {
             name: "Joined on",
             value: formatUnixTime(member.join_date),
+            desc: `Date when ${cleanString(member.name)} joined the clan`,
         },
         {
             name: "XP",
             value: `${member.xp} (
                     ${((member.xp / parseInt(clan.clan_xp)) * 100).toFixed(2)}
                     %)`,
+            desc: `XP earned ${cleanString(
+                member.name,
+            )} the member since joining the clan`,
         },
     ]
 

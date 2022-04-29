@@ -6,12 +6,15 @@ import { cn } from "common/helpers/classnames"
 import type { PlayerStats } from "bhapi/types"
 
 type PlayerOverviewClanContentProps = {
-    clan: Required<PlayerStats>["clan"]
+    playerStats: PlayerStats
 }
 
 export const PlayerOverviewClanContent = ({
-    clan,
+    playerStats,
 }: PlayerOverviewClanContentProps) => {
+    const { name: playerName, clan } = playerStats
+
+    if (!clan) return null
     return (
         <>
             <SectionTitle hasBorder>Clan</SectionTitle>
@@ -34,6 +37,7 @@ export const PlayerOverviewClanContent = ({
                     {
                         name: "Clan XP",
                         value: clan.clan_xp,
+                        desc: "XP earned by the clan members since creation",
                     },
                     {
                         name: "Clan XP Contribution",
@@ -41,6 +45,9 @@ export const PlayerOverviewClanContent = ({
                             (clan.personal_xp / parseInt(clan.clan_xp)) *
                             100
                         ).toFixed(2)}%`,
+                        desc: `Percentage of the clan XP earned by the ${cleanString(
+                            playerName,
+                        )}`,
                     },
                 ]}
             />

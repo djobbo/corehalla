@@ -111,6 +111,7 @@ export const PlayerLegendsTab = ({
                     / {filteredLegends.length}
                 </>
             ),
+            desc: "Legends that were played at least once",
         },
         {
             name: "Played in ranked",
@@ -122,6 +123,7 @@ export const PlayerLegendsTab = ({
                     / {filteredLegends.length}
                 </>
             ),
+            desc: "Legends that were played at least once in ranked 1v1 during this season",
         },
         {
             name: "Total legends level",
@@ -129,6 +131,7 @@ export const PlayerLegendsTab = ({
                 (level, legend) => level + (legend.stats?.level ?? 0),
                 0,
             ),
+            desc: "Sum of of all legends",
         },
         {
             name: "Avg. level",
@@ -138,6 +141,7 @@ export const PlayerLegendsTab = ({
                     0,
                 ) / filteredLegends.length
             ).toFixed(0),
+            desc: "Average level of all legends",
         },
     ]
 

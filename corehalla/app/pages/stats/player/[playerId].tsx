@@ -112,14 +112,17 @@ const Page: NextPage<PageProps> = ({ aliases }) => {
         {
             name: "Account level",
             value: playerStats.level,
+            desc: `${playerStats.name}'s account level`,
         },
         {
             name: "Account XP",
             value: playerStats.xp,
+            desc: `${playerStats.name}'s account XP`,
         },
         {
             name: "Time spent in game",
             value: formatTime(matchtime),
+            desc: `Time ${playerStats.name} spent in game`,
         },
         {
             name: "Main legends",
@@ -141,6 +144,7 @@ const Page: NextPage<PageProps> = ({ aliases }) => {
                     ))}
                 </div>
             ),
+            desc: `${playerStats.name}'s main legends`,
         },
         {
             name: "Main weapons",
@@ -173,6 +177,7 @@ const Page: NextPage<PageProps> = ({ aliases }) => {
                         ))}
                 </div>
             ),
+            desc: `${playerStats.name}'s main weapons`,
         },
     ]
 

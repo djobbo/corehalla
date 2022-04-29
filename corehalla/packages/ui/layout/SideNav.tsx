@@ -5,6 +5,7 @@ import {
     HomeIcon,
     XIcon,
 } from "@heroicons/react/solid"
+import { Tooltip } from "../base/Tooltip"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { css } from "../theme"
@@ -22,6 +23,7 @@ type SideNavIconProps = {
     href: string
     active?: boolean
     onRemove?: () => void
+    desc?: string
 }
 
 const sideNavIconClassName = css({
@@ -40,48 +42,51 @@ const SideNavIcon = ({
     href,
     onRemove,
     active = false,
+    desc,
 }: SideNavIconProps) => {
     const cleanName = cleanString(name)
     return (
-        <div className={cn("relative", sideNavIconClassName)}>
-            <AppLink
-                href={href}
-                className={cn(
-                    className,
-                    "w-10 h-10 rounded-lg flex justify-center items-center uppercase cursor-pointer",
-                    {
-                        "bg-accent": active,
-                        "bg-bg hover:border hover:border-text": !active,
-                    },
-                )}
-            >
-                {image && (
-                    <span
-                        className="absolute w-8 h-8 text-xs z-0 opacity-50"
-                        aria-hidden
-                    >
-                        <Image
-                            src={image}
-                            alt={`player ${cleanName} icon`}
-                            layout="fill"
-                            objectFit="contain"
-                            objectPosition="center"
-                        />
-                    </span>
-                )}
-                <span className="font-semibold text-sm z-10">
-                    {content ?? cleanName.slice(0, 3)}
-                </span>
-            </AppLink>
-            {onRemove && (
-                <button
-                    className="hidden remove-btn absolute w-4 h-4 p-0.5 rounded-full overflow-hidden shadow-md bg-accent hover:bg-text hover:text-bgVar2"
-                    onClick={() => onRemove()}
+        <Tooltip content={desc ?? cleanName} placement="right">
+            <div className={cn("relative", sideNavIconClassName)}>
+                <AppLink
+                    href={href}
+                    className={cn(
+                        className,
+                        "w-10 h-10 rounded-lg flex justify-center items-center uppercase cursor-pointer",
+                        {
+                            "bg-accent": active,
+                            "bg-bg hover:border hover:border-text": !active,
+                        },
+                    )}
                 >
-                    <XIcon />
-                </button>
-            )}
-        </div>
+                    {image && (
+                        <span
+                            className="absolute w-8 h-8 text-xs z-0 opacity-50"
+                            aria-hidden
+                        >
+                            <Image
+                                src={image}
+                                alt={`player ${cleanName} icon`}
+                                layout="fill"
+                                objectFit="contain"
+                                objectPosition="center"
+                            />
+                        </span>
+                    )}
+                    <span className="font-semibold text-sm z-10">
+                        {content ?? cleanName.slice(0, 3)}
+                    </span>
+                </AppLink>
+                {onRemove && (
+                    <button
+                        className="hidden remove-btn absolute w-4 h-4 p-0.5 rounded-full overflow-hidden shadow-md bg-accent hover:bg-text hover:text-bgVar2"
+                        onClick={() => onRemove()}
+                    >
+                        <XIcon />
+                    </button>
+                )}
+            </div>
+        </Tooltip>
     )
 }
 
