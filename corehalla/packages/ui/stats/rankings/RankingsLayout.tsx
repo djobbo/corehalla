@@ -1,7 +1,7 @@
 import { Pagination } from "../../base/Pagination"
 import { Paginator } from "../../base/Paginator"
+import type { Dispatch, ReactNode, SetStateAction } from "react"
 import type { PaginatorPage } from "../../base/Paginator"
-import type { ReactNode } from "react"
 
 type RankingsLayoutProps = {
     children: ReactNode
@@ -10,7 +10,11 @@ type RankingsLayoutProps = {
     currentRegion: string
     regions: PaginatorPage[]
     currentPage?: string
-    hasPagination: boolean
+    hasPagination?: boolean
+    hasSearch?: boolean
+    search?: string
+    setSearch?: Dispatch<SetStateAction<string>>
+    searchPlaceholder?: string
 }
 
 export const RankingsLayout = ({
@@ -20,7 +24,11 @@ export const RankingsLayout = ({
     regions,
     currentRegion,
     currentPage,
-    hasPagination,
+    hasPagination = false,
+    hasSearch = false,
+    search,
+    setSearch,
+    searchPlaceholder = "Search...",
 }: RankingsLayoutProps) => {
     const pagination =
         (currentPage && hasPagination && (
@@ -53,6 +61,16 @@ export const RankingsLayout = ({
                 />
             </div>
             {pagination}
+            {hasSearch && (
+                <input
+                    value={search}
+                    onChange={(e) => {
+                        setSearch?.(e.target.value)
+                    }}
+                    className="w-full mt-8 p-2 border bg-bgVar2 border-bg"
+                    placeholder={searchPlaceholder}
+                />
+            )}
             <div className="py-4">{children}</div>
             {pagination}
         </>
