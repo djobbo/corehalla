@@ -1,11 +1,26 @@
 import { RankingsLayout } from "ui/stats/rankings/RankingsLayout"
 import { SEO } from "../../../components/SEO"
+import { Select } from "ui/base/Select"
 import { Spinner } from "ui/base/Spinner"
+import { Tooltip } from "ui/base/Tooltip"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
+import { useDebouncedState } from "common/hooks/useDebouncedState"
 import { usePowerRankings } from "common/hooks/usePowerRankings"
 import { useRouter } from "next/router"
+import { useSortBy } from "common/hooks/useSortBy"
 import type { NextPage } from "next"
+import type { PR } from "web-parser/power-rankings/parsePowerRankingsPage"
+
+type PRSortOption =
+    | "rank"
+    | "name"
+    | "earnings"
+    | "t1"
+    | "t2"
+    | "t3"
+    | "t8"
+    | "t32"
 
 const Page: NextPage = () => {
     const router = useRouter()
@@ -22,7 +37,37 @@ const Page: NextPage = () => {
         region,
     )
 
+    const {
+        sortedArray: sortedPowerRankings,
+        setSortBy,
+        sortBy,
+        options: sortOptions,
+    } = useSortBy<PR, PRSortOption>(
+        powerRankings ?? [],
+        {
+            rank: { label: "Rank", fn: (a, b) => a.rank - b.rank },
+            name: { label: "Name", fn: (a, b) => a.name.localeCompare(b.name) },
+            earnings: {
+                label: "Earnings (Not implemented)",
+                fn: () => 0, // TOODO: Sort by earnings
+            },
+            t1: { label: "T1", fn: (a, b) => a.t1 - b.t1 },
+            t2: { label: "T2", fn: (a, b) => a.t2 - b.t2 },
+            t3: { label: "T3", fn: (a, b) => a.t3 - b.t3 },
+            t8: { label: "T8", fn: (a, b) => a.t8 - b.t8 },
+            t32: { label: "T32", fn: (a, b) => a.t32 - b.t32 },
+        },
+        "rank",
+    )
+
+    const [search, setSearch, immediateSearch] = useDebouncedState("", 250)
+
     if (isError || (!isLoading && !powerRankings)) return <div>Error</div>
+
+    const filteredlPowerRankings =
+        sortedPowerRankings.filter(({ name }) =>
+            cleanString(name).toLowerCase().startsWith(search.toLowerCase()),
+        ) ?? []
 
     return (
         <RankingsLayout
@@ -43,6 +88,10 @@ const Page: NextPage = () => {
             ]}
             currentRegion={region}
             hasPagination
+            hasSearch
+            search={immediateSearch}
+            setSearch={setSearch}
+            searchPlaceholder="Search player..."
         >
             <SEO
                 title={`${
@@ -51,6 +100,12 @@ const Page: NextPage = () => {
                 description={`Brawhalla ${
                     region === "all" ? "Global" : region.toUpperCase()
                 } ${bracket} Power Rankings • Corehalla`}
+            />
+            <Select<LegendSortOption>
+                className="flex-1"
+                onChange={setSortBy}
+                value={sortBy}
+                options={sortOptions}
             />
             <div className="py-4 w-full h-full flex items-center gap-4">
                 <p className="w-16 text-center">Rank</p>
@@ -66,9 +121,9 @@ const Page: NextPage = () => {
                 <div className="flex items-center justify-center h-48">
                     <Spinner size="4rem" />
                 </div>
-            ) : (
+            ) : filteredlPowerRankings.length > 0 ? (
                 <div className="rounded-lg overflow-hidden border border-bg mb-4">
-                    {powerRankings?.map((player, i) => (
+                    {filteredlPowerRankings.map((player, i) => (
                         <div
                             className={cn(
                                 "py-1 w-full h-full flex items-center gap-4 hover:bg-bg",
@@ -89,6 +144,13 @@ const Page: NextPage = () => {
                         </div>
                     ))}
                 </div>
+            ) : (
+                <Tooltip content="do better >:)">
+                    <div className="p-4 text-center text-textVar1">
+                        No results found in {bracket} {region.toUpperCase()}{" "}
+                        Power Rankings
+                    </div>
+                </Tooltip>
             )}
         </RankingsLayout>
     )
