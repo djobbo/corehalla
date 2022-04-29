@@ -31,7 +31,7 @@ const Page: NextPage = () => {
             brackets={[
                 { page: "1v1" },
                 { page: "2v2" },
-                { page: "switchcraft", label: "Switchcraft" },
+                // { page: "switchcraft", label: "Switchcraft" },
                 { page: "power/1v1", label: "Power 1v1" },
                 { page: "power/2v2", label: "Power 2v2" },
             ]}
@@ -51,7 +51,7 @@ const Page: NextPage = () => {
             hasPagination
         >
             <SEO
-                title={`${
+                title={`Brawlhalla ${
                     region === "all" ? "Global" : region.toUpperCase()
                 } 2v2 Rankings - Page ${page} • Corehalla`}
                 description={`Brawhalla ${

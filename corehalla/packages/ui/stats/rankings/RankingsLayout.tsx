@@ -15,6 +15,8 @@ type RankingsLayoutProps = {
     search?: string
     setSearch?: Dispatch<SetStateAction<string>>
     searchPlaceholder?: string
+    defaultRegion?: string
+    defaultBracket?: string
 }
 
 export const RankingsLayout = ({
@@ -29,12 +31,20 @@ export const RankingsLayout = ({
     search,
     setSearch,
     searchPlaceholder = "Search...",
+    defaultRegion = "all",
+    defaultBracket = "1v1",
 }: RankingsLayoutProps) => {
+    const region = regions.map(({ page }) => page).includes(currentRegion)
+        ? currentRegion
+        : defaultRegion
+    const bracket = brackets.map(({ page }) => page).includes(currentBracket)
+        ? currentBracket
+        : defaultBracket
     const pagination =
         (currentPage && hasPagination && (
             <Pagination
                 getPageHref={(page) =>
-                    `/rankings/1v1/${currentRegion ?? "all"}/${page}`
+                    `/rankings/${bracket}/${region}${page ? `/${page}` : ""}`
                 }
                 currentPage={parseInt(currentPage)}
                 firstPage={1}
@@ -48,16 +58,14 @@ export const RankingsLayout = ({
             <div className="w-full flex flex-col items-center justify-center gap-2">
                 <Paginator
                     pages={brackets}
-                    currentPage={currentBracket}
-                    getPageHref={(bracket) => `/rankings/${bracket}`}
+                    currentPage={bracket}
+                    getPageHref={(bracket) => `/rankings/${bracket}/${region}`}
                 />
                 <Paginator
                     className="mt-2"
                     pages={regions}
-                    currentPage={currentRegion}
-                    getPageHref={(region) =>
-                        `/rankings/${currentBracket}/${region}`
-                    }
+                    currentPage={region}
+                    getPageHref={(region) => `/rankings/${bracket}/${region}`}
                 />
             </div>
             {pagination}
