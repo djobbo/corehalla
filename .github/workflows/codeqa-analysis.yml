@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: 16
           cache: 'yarn'
-          cache-dependency-path: yarn.lock
+          cache-dependency-path: corehalla/yarn.lock
       - name: ${{ matrix.name }}
         run: |
           yarn ci
