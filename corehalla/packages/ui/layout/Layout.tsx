@@ -2,7 +2,6 @@ import { Footer } from "./Footer"
 import { Header } from "./Header"
 import { LandingBackground } from "./LandingBackground"
 import { SideNav } from "./SideNav"
-import { SubHeader } from "./SubHeader"
 import { bgVar1 } from "../theme/theme"
 import { styled } from "../theme"
 import type { ReactNode } from "react"
@@ -27,7 +26,6 @@ export const Layout = ({ children }: LayoutProps) => {
                 <SideNav />
                 <div className="overflow-y-auto flex-1">
                     <Header className="max-w-screen-xl mx-auto px-4 xl:px-0" />
-                    <SubHeader className="mt-4" />
                     <div className="max-w-screen-xl mx-auto px-4 pl:mx-0 mt-4">
                         {children}
                     </div>

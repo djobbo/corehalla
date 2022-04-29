@@ -1,8 +1,8 @@
+import { AppLink } from "../../base/AppLink"
 import { Card } from "../../base/Card"
 import { MiscStatGroup } from "../MiscStatGroup"
 import { cleanString } from "common/helpers/cleanString"
 import { formatUnixTime } from "common/helpers/date"
-import Link from "next/link"
 import type { Clan } from "bhapi/types"
 import type { MiscStat } from "../MiscStatGroup"
 
@@ -26,23 +26,21 @@ export const ClanMember = ({ member, clan }: ClanMemberProps) => {
     ]
 
     return (
-        <Link
+        <AppLink
             href={`/stats/player/${member.brawlhalla_id}`}
             key={member.brawlhalla_id}
         >
-            <a>
-                <Card
-                    key={member.brawlhalla_id}
-                    title={`${cleanString(member.name)} (${member.rank})`}
-                    className="hover:bg-bgVar2"
-                >
-                    <MiscStatGroup
-                        className="mt-4 justify-items-center text-center"
-                        fit="fit"
-                        stats={memberStats}
-                    />
-                </Card>
-            </a>
-        </Link>
+            <Card
+                key={member.brawlhalla_id}
+                title={`${cleanString(member.name)} (${member.rank})`}
+                className="hover:bg-bgVar2"
+            >
+                <MiscStatGroup
+                    className="mt-4 justify-items-center text-center"
+                    fit="fit"
+                    stats={memberStats}
+                />
+            </Card>
+        </AppLink>
     )
 }

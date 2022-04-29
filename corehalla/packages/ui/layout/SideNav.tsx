@@ -1,3 +1,4 @@
+import { AppLink } from "../base/AppLink"
 import {
     ChevronDoubleUpIcon,
     HeartIcon,
@@ -11,7 +12,6 @@ import { legendsMap } from "bhapi/legends"
 import { useFavorites } from "db/client/AuthProvider"
 import { useRouter } from "next/router"
 import Image from "next/image"
-import Link from "next/link"
 import type { ReactNode } from "react"
 
 type SideNavIconProps = {
@@ -44,36 +44,35 @@ const SideNavIcon = ({
     const cleanName = cleanString(name)
     return (
         <div className={cn("relative", sideNavIconClassName)}>
-            <Link href={href}>
-                <a
-                    className={cn(
-                        className,
-                        "w-10 h-10 rounded-lg flex justify-center items-center uppercase cursor-pointer",
-                        {
-                            "bg-accent": active,
-                            "bg-bg hover:border hover:border-text": !active,
-                        },
-                    )}
-                >
-                    {image && (
-                        <span
-                            className="absolute w-8 h-8 text-xs z-0 opacity-50"
-                            aria-hidden
-                        >
-                            <Image
-                                src={image}
-                                alt={`player ${cleanName} icon`}
-                                layout="fill"
-                                objectFit="contain"
-                                objectPosition="center"
-                            />
-                        </span>
-                    )}
-                    <span className="font-semibold z-10">
-                        {content ?? cleanName.slice(0, 3)}
+            <AppLink
+                href={href}
+                className={cn(
+                    className,
+                    "w-10 h-10 rounded-lg flex justify-center items-center uppercase cursor-pointer",
+                    {
+                        "bg-accent": active,
+                        "bg-bg hover:border hover:border-text": !active,
+                    },
+                )}
+            >
+                {image && (
+                    <span
+                        className="absolute w-8 h-8 text-xs z-0 opacity-50"
+                        aria-hidden
+                    >
+                        <Image
+                            src={image}
+                            alt={`player ${cleanName} icon`}
+                            layout="fill"
+                            objectFit="contain"
+                            objectPosition="center"
+                        />
                     </span>
-                </a>
-            </Link>
+                )}
+                <span className="font-semibold text-sm z-10">
+                    {content ?? cleanName.slice(0, 3)}
+                </span>
+            </AppLink>
             {onRemove && (
                 <button
                     className="hidden remove-btn absolute w-4 h-4 p-0.5 rounded-full overflow-hidden shadow-md bg-accent hover:bg-text hover:text-bgVar2"

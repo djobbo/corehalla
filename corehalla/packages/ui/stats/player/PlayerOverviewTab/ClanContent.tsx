@@ -1,8 +1,8 @@
+import { AppLink } from "../../../base/AppLink"
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { SectionTitle } from "../../../layout/SectionTitle"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
-import Link from "next/link"
 import type { PlayerStats } from "bhapi/types"
 
 type PlayerOverviewClanContentProps = {
@@ -16,15 +16,14 @@ export const PlayerOverviewClanContent = ({
         <>
             <SectionTitle hasBorder>Clan</SectionTitle>
             <p>
-                <Link href={`/stats/clan/${clan.clan_id}`}>
-                    <a
-                        className={cn(
-                            "inline-block font-bold text-3xl mt-2 hover:underline",
-                        )}
-                    >
-                        {cleanString(clan.clan_name)}{" "}
-                    </a>
-                </Link>
+                <AppLink
+                    href={`/stats/clan/${clan.clan_id}`}
+                    className={cn(
+                        "inline-block font-bold text-3xl mt-2 hover:underline",
+                    )}
+                >
+                    {cleanString(clan.clan_name)}
+                </AppLink>
                 <span className="inline-block text-xs font-bold ml-2 text-textVar1">
                     #{clan.clan_id}
                 </span>

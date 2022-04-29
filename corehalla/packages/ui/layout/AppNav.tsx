@@ -1,6 +1,5 @@
 import {
     ChevronDoubleUpIcon,
-    HeartIcon,
     LightningBoltIcon,
     UserGroupIcon,
     UsersIcon,
@@ -24,11 +23,6 @@ const subHeaderNavigation = [
         icon: <LightningBoltIcon className="w-6 h-6" strokeWidth={1} />,
     },
     {
-        title: "Favorites",
-        href: "/@me/favorites",
-        icon: <HeartIcon className="w-6 h-6" strokeWidth={1} />,
-    },
-    {
         title: "Clans",
         href: "/clans",
         icon: <UserGroupIcon className="w-6 h-6" strokeWidth={1} />,
@@ -39,12 +33,12 @@ type SubHeaderProps = {
     className?: string
 }
 
-export const SubHeader = ({ className }: SubHeaderProps) => {
+export const AppNav = ({ className }: SubHeaderProps) => {
     return (
         <div
             className={cn(
                 className,
-                "py-3 flex items-center justify-around max-w-screen-lg mx-auto gap-8",
+                "p-4 rounded-xl flex items-center justify-around max-w-screen-lg mx-auto gap-8 bg-gradient-to-l from-accent to-accentAlt shadow-md",
             )}
         >
             {subHeaderNavigation.map(({ title, href, icon }) => (
@@ -54,7 +48,7 @@ export const SubHeader = ({ className }: SubHeaderProps) => {
                     href={href}
                 >
                     {icon}
-                    <span className="text-xs text-textVar1 mt-2">{title}</span>
+                    <span className="text-xs text-text mt-2">{title}</span>
                 </a>
             ))}
         </div>
