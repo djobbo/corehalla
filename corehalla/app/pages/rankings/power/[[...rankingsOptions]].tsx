@@ -101,7 +101,7 @@ const Page: NextPage = () => {
                     region === "all" ? "Global" : region.toUpperCase()
                 } ${bracket} Power Rankings • Corehalla`}
             />
-            <Select<LegendSortOption>
+            <Select<PRSortOption>
                 className="flex-1"
                 onChange={setSortBy}
                 value={sortBy}
