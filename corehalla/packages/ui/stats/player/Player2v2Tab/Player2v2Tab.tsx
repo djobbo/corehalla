@@ -33,42 +33,52 @@ export const Player2v2Tab = ({ ranked }: Player2v2TabProps) => {
         {
             name: "Total games",
             value: totalGames,
+            desc: "Total games played this season",
         },
         {
             name: "Total wins",
             value: totalWins,
+            desc: "Total games won this season",
         },
         {
             name: "Total losses",
             value: totalGames - totalWins,
+            desc: "Total games lost this season",
         },
         {
             name: "Winrate",
             value: `${calculateWinrate(totalWins, totalGames).toFixed(2)}%`,
+            desc: "Winrate (total wins / total games)",
         },
         {
             name: "Teammates",
             value: teamCount,
+            desc: "Number of teammates this season",
         },
         {
             name: "Avg. games per teammate",
             value: (totalGames / teamCount).toFixed(2),
+            desc: "Average games played per teammate",
         },
         {
             name: "Avg. wins per teammate",
             value: (totalWins / teamCount).toFixed(2),
+            desc: "Average games won per teammate",
         },
         {
             name: "Avg. losses per teammate",
             value: ((totalGames - totalWins) / teamCount).toFixed(2),
+            desc: "Average games lost per teammate",
         },
         {
             name: "Avg. team rating",
             value: (totalRating / teamCount).toFixed(0),
+            desc: "Average team Elo rating",
         },
         {
             name: "Avg. team peak rating",
             value: (totalPeakRating / teamCount).toFixed(0),
+            desc: "Average team peak Elo rating",
         },
     ]
 

@@ -17,37 +17,50 @@ export const PlayerOverviewRankedContent = ({
 }: PlayerOverviewRankedContentProps) => {
     const glory = getGlory(ranked)
     if (!glory.hasPlayedEnoughGames) return null
-    const { gloryFromBestRating, gloryFromWins, totalGlory } = glory
+    const {
+        gloryFromBestRating,
+        gloryFromWins,
+        totalGlory,
+        totalWins,
+        bestRating,
+    } = glory
     const eloReset = getPersonalEloReset(ranked.rating)
 
     const rankedStats: MiscStat[] = [
         {
-            name: "Games",
+            name: "1v1 Games",
             value: ranked.games,
+            desc: "1v1 Ranked games played this season",
         },
+        // {
+        //     name: "Total Games",
+        //     value: totalGames,
+        //     desc: "Total ranked games played this season (all gamemodes)",
+        // },
         {
             name: "Winrate",
             value: `${calculateWinrate(ranked.wins, ranked.games).toFixed(2)}%`,
+            desc: "Ranked winrate (ranked wins / ranked games)",
         },
         {
             name: "Total Glory",
             value: totalGlory,
+            desc: "Total glory earned this season (wins + best rating)",
         },
         {
             name: "Glory from best rating",
             value: gloryFromBestRating,
+            desc: `Glory earned from best rating (${bestRating} Elo)`,
         },
         {
             name: "Glory from wins",
             value: gloryFromWins,
+            desc: `Glory earned from wins (${totalWins} Wins)`,
         },
         {
             name: "Elo reset",
-            value: (
-                <>
-                    {eloReset} ({getTierFromRating(eloReset)})
-                </>
-            ),
+            value: <>{eloReset}</>,
+            desc: `Elo reset for next season (${getTierFromRating(eloReset)})`,
         },
     ]
 

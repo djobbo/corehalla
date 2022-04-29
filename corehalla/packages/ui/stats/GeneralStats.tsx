@@ -94,46 +94,57 @@ export const GeneralStats = ({
                     {
                         name: "DPS (Dealt)",
                         value: `${(damageDealt / matchtime).toFixed(1)} dmg/s`,
+                        desc: "Damage dealt per second",
                     },
                     {
                         name: "DPS (Taken)",
                         value: `${(damageTaken / matchtime).toFixed(1)} dmg/s`,
+                        desc: "Damage taken per second",
                     },
                     {
                         name: "Time to kill",
                         value: `${(matchtime / kos).toFixed(1)}s`,
+                        desc: "Time between each kill in seconds",
                     },
                     {
                         name: "Time to fall",
                         value: `${(matchtime / falls).toFixed(1)}s`,
+                        desc: "Time between each fall in seconds",
                     },
                     {
                         name: "Avg. Kos per game",
                         value: (kos / games).toFixed(1),
+                        desc: "Average Kos per game",
                     },
                     {
                         name: "Avg. Falls per game",
                         value: (falls / games).toFixed(1),
+                        desc: "Average Falls per game",
                     },
                     {
                         name: "1 Suicide every",
                         value: `${(games / suicides).toFixed(1)} games`,
+                        desc: `Average games between each suicides`,
                     },
                     {
                         name: "1 Team KO every",
                         value: `${(games / teamkos).toFixed(1)} games`,
+                        desc: `Average games between each Team KO`,
                     },
                     {
                         name: "Avg. dmg dealt per game",
                         value: (damageDealt / games).toFixed(1),
+                        desc: "Average damage dealt per game",
                     },
                     {
                         name: "Avg. dmg taken per game",
                         value: (damageTaken / games).toFixed(1),
+                        desc: "Average damage taken per game",
                     },
                     {
                         name: "Avg. game length",
                         value: `${(matchtime / games).toFixed(1)}s`,
+                        desc: "Average game length in seconds",
                     },
                 ]}
             />

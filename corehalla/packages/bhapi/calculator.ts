@@ -28,6 +28,9 @@ export const getGlory = (
 ):
     | { hasPlayedEnoughGames: false }
     | {
+          totalGames: number
+          totalWins: number
+          bestRating: number
           gloryFromWins: number
           gloryFromBestRating: number
           totalGlory: number
@@ -37,11 +40,6 @@ export const getGlory = (
         playerRanked.games,
         ...playerRanked["2v2"].map((team) => team.games),
     ]
-    if (games.reduce((a, b) => a + b, 0) < 10)
-        return {
-            hasPlayedEnoughGames: false,
-        }
-
     const wins = [
         playerRanked.wins,
         ...playerRanked["2v2"].map((team) => team.wins),
@@ -52,13 +50,26 @@ export const getGlory = (
         ...playerRanked.legends.map((legend) => legend.peak_rating),
     ]
 
-    const gloryFromWins = getGloryFromWins(wins.reduce((a, b) => a + b, 0))
-    const gloryFromBestRating = getGloryFromBestRating(Math.max(...ratings))
+    const totalWins = wins.reduce((a, b) => a + b, 0)
+    const totalGames = games.reduce((a, b) => a + b, 0)
+
+    if (totalGames < 10)
+        return {
+            hasPlayedEnoughGames: false,
+        }
+
+    const bestRating = Math.max(...ratings)
+
+    const gloryFromWins = getGloryFromWins(totalWins)
+    const gloryFromBestRating = getGloryFromBestRating(bestRating)
     const totalGlory = gloryFromWins + gloryFromBestRating
 
     return {
+        totalWins,
+        totalGames,
         gloryFromWins,
         gloryFromBestRating,
+        bestRating,
         totalGlory,
         hasPlayedEnoughGames: true,
     }

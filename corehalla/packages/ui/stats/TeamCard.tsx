@@ -11,7 +11,7 @@ import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { css } from "../theme"
 import { getLegendEloReset } from "bhapi/calculator"
-import { getMiniTierFromRating } from "bhapi/helpers/getTierFromRating"
+import { getTierFromRating } from "bhapi/helpers/getTierFromRating"
 import Image from "next/image"
 
 type TeamCardProps = {
@@ -75,6 +75,7 @@ export const TeamCard = ({ playerId, team }: TeamCardProps) => {
                         {
                             name: "Games",
                             value: team.games,
+                            desc: "Games played this season",
                         },
                         {
                             name: "Winrate",
@@ -82,17 +83,14 @@ export const TeamCard = ({ playerId, team }: TeamCardProps) => {
                                 team.wins,
                                 team.games,
                             ).toFixed(2)}%`,
+                            desc: "Winrate this season (wins / games)",
                         },
                         {
                             name: "Elo reset",
-                            value: (
-                                <>
-                                    {eloReset}{" "}
-                                    <span className="text-xs">
-                                        ({getMiniTierFromRating(eloReset)})
-                                    </span>
-                                </>
-                            ),
+                            value: eloReset,
+                            desc: `Elo reset for next season (${getTierFromRating(
+                                eloReset,
+                            )})`,
                         },
                     ]}
                 />

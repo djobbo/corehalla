@@ -1,3 +1,4 @@
+import { Tooltip } from "../base/Tooltip"
 import { cn } from "common/helpers/classnames"
 import { css } from "../theme"
 import type { ReactNode } from "react"
@@ -5,6 +6,7 @@ import type { ReactNode } from "react"
 export type MiscStat = {
     name: string
     value: ReactNode
+    desc: string
 }
 
 type MiscStatGroupProps = {
@@ -32,9 +34,11 @@ export const MiscStatGroup = ({
                 className,
             )}
         >
-            {stats.map(({ name, value }) => (
+            {stats.map(({ name, value, desc }) => (
                 <div key={name}>
-                    <p className="text-sm text-textVar1">{name}</p>
+                    <Tooltip content={desc} placement="top">
+                        <p className="text-sm text-textVar1">{name}</p>
+                    </Tooltip>
                     <div className="font-semibold mt-2 text-lg">{value}</div>
                 </div>
             ))}

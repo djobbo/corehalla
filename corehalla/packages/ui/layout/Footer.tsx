@@ -17,19 +17,23 @@
 // }
 
 import { Discord, Github, Twitter } from "@icons-pack/react-simple-icons"
+import { Tooltip } from "../base/Tooltip"
 
 const socialLinks = [
     {
         href: "https://twitter.com/Corehalla",
         Icon: Twitter,
+        name: "Twitter",
     },
     {
         href: "https://github.com/djobbo/corehalla",
         Icon: Github,
+        name: "Github",
     },
     {
         href: "https://discord.gg/eD248ez",
         Icon: Discord,
+        name: "Discord",
     },
 ]
 
@@ -58,16 +62,17 @@ export const Footer = ({ className }) => {
             </p>
             <div className="max-w-screen-lg mx-auto flex flex-col justify-center items-center border-t p-12 border-bg">
                 <div className="flex items-center gap-8">
-                    {socialLinks.map(({ Icon, href }) => (
-                        <a
-                            href={href}
-                            target="_blank"
-                            rel="noreferrer"
-                            key={href}
-                            className="text-textVar1 hover:text-text"
-                        >
-                            <Icon size={32} />
-                        </a>
+                    {socialLinks.map(({ Icon, href, name }) => (
+                        <Tooltip content={name} key={name}>
+                            <a
+                                href={href}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-textVar1 hover:text-text"
+                            >
+                                <Icon size={32} />
+                            </a>
+                        </Tooltip>
                     ))}
                 </div>
                 <p className="mr-1 text-xs text-textVar1 mt-8">
