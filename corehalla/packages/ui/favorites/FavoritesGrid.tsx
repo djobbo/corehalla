@@ -1,3 +1,4 @@
+import { AppLink } from "../base/AppLink"
 import { UserGroupIcon, XIcon } from "@heroicons/react/solid"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
@@ -5,7 +6,6 @@ import { css } from "../theme"
 import { legendsMap } from "bhapi/legends"
 import { useFavorites } from "db/client/AuthProvider"
 import Image from "next/image"
-import Link from "next/link"
 import type { Favorite } from "db/client/useUserFavorites"
 import type { ReactNode } from "react"
 
@@ -56,24 +56,20 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                         )}
                         key={`${fav.type}/${fav.id}`}
                     >
-                        <Link href={`/stats/${fav.type}/${fav.id}`}>
-                            <a
-                                key={fav.id}
-                                className={cn(
-                                    "flex items-center gap-2 px-3 py-3",
-                                )}
-                            >
-                                {icon}
-                                <div>
-                                    <p className="font-bold">
-                                        {cleanString(fav.name)}
-                                    </p>
-                                    <p className="text-xs text-textVar1">
-                                        {fav.type} #{fav.id}
-                                    </p>
-                                </div>
-                            </a>
-                        </Link>
+                        <AppLink
+                            href={`/stats/${fav.type}/${fav.id}`}
+                            className={cn("flex items-center gap-2 px-3 py-3")}
+                        >
+                            {icon}
+                            <div>
+                                <p className="font-bold">
+                                    {cleanString(fav.name)}
+                                </p>
+                                <p className="text-xs text-textVar1">
+                                    {fav.type} #{fav.id}
+                                </p>
+                            </div>
+                        </AppLink>
                         <button
                             className="hidden remove-btn absolute w-5 h-5 p-0.5 rounded-full overflow-hidden shadow-md bg-accent hover:bg-text hover:text-bgVar2"
                             onClick={() => removeFavorite(fav)}

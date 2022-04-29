@@ -73,21 +73,6 @@ export const Footer = ({ className }) => {
                 <p className="mr-1 text-xs text-textVar1 mt-8">
                     © 2018-2022 Corehalla
                 </p>
-                {/* <p className="mt-1">
-                    By using this site you agree to our{" "}
-                    <Link href="/terms">
-                        <a className="text-accent hover:underline">
-                            Terms of Service
-                        </a>
-                    </Link>{" "}
-                    and{" "}
-                    <Link href="/privacy">
-                        <a className="text-accent hover:underline">
-                            Privacy Policy
-                        </a>
-                    </Link>
-                    .
-                </p> */}
             </div>
         </footer>
     )

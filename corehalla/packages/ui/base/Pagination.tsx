@@ -3,50 +3,13 @@ import {
     ChevronLeftIcon,
     ChevronRightIcon,
 } from "@heroicons/react/solid"
-import { cn } from "common/helpers/classnames"
-import Link from "next/link"
-import type { ReactNode } from "react"
-
-type PaginationItemProps = {
-    label?: ReactNode
-    page: number
-    href: string
-    className?: string
-    activeClassName?: string
-    inactiveClassName?: string
-    activePage: number
-}
-
-const PaginationItem = ({
-    label,
-    page,
-    href,
-    className,
-    activeClassName = "",
-    inactiveClassName = "",
-    activePage,
-}: PaginationItemProps) => {
-    if (page < 0) return null
-
-    return (
-        <Link href={href}>
-            <a
-                className={cn(className, {
-                    [activeClassName]: page === activePage,
-                    [inactiveClassName]: page !== activePage,
-                })}
-            >
-                {label ?? page}
-            </a>
-        </Link>
-    )
-}
+import { Paginator } from "./Paginator"
 
 type PaginationProps = {
     firstPage?: number
     lastPage?: number
     currentPage: number
-    getPageHref: (page: number) => string
+    getPageHref: (page: string) => string
     span?: number
     className?: string
 }
@@ -60,7 +23,7 @@ export const Pagination = ({
 }: PaginationProps) => {
     const pages = [
         {
-            page: firstPage,
+            page: firstPage.toString(),
             label: (
                 <span className="flex items-center gap-1">
                     {currentPage !== firstPage && (
@@ -91,31 +54,17 @@ export const Pagination = ({
                 )
 
             return {
-                page,
+                page: page.toString(),
                 label,
             }
         }),
     ]
     return (
-        <div className={cn("flex items-center gap-2", className)}>
-            {pages.map((pageData) => {
-                if (!pageData) return null
-
-                const { page, label } = pageData
-
-                return (
-                    <PaginationItem
-                        key={page}
-                        page={page}
-                        label={label}
-                        href={getPageHref(page)}
-                        className="p-2 h-8 flex items-center justify-center text-sm rounded-lg border-bg"
-                        activeClassName="bg-accent"
-                        inactiveClassName="bg-bgVar2"
-                        activePage={currentPage}
-                    />
-                )
-            })}
-        </div>
+        <Paginator
+            pages={pages}
+            getPageHref={getPageHref}
+            currentPage={currentPage.toString()}
+            className={className}
+        />
     )
 }

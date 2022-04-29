@@ -1,3 +1,4 @@
+import { AppNav } from "ui/layout/AppNav"
 import { ArticlePreviewGrid } from "ui/articles/ArticlePreviewGrid"
 import { Button } from "ui/base/Button"
 import { FavoritesGrid } from "ui/favorites/FavoritesGrid"
@@ -13,8 +14,8 @@ import type { BHArticle } from "web-parser/bh-articles/parseBHArticlesPage"
 import type { GetServerSideProps } from "next"
 
 const landingClassName = css({
-    height: "40vh",
-    minHeight: "320px",
+    height: "60vh",
+    minHeight: "400px",
 })()
 
 type PageProps = {
@@ -69,6 +70,7 @@ const Page = ({ latestArticles }: PageProps) => {
                     </div>
                 </div>
             </div>
+            <AppNav className="mt-4" />
             <SectionTitle>Favorites</SectionTitle>
             {favorites.length > 0 ? (
                 <FavoritesGrid favorites={favorites} />

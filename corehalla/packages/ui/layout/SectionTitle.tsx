@@ -28,7 +28,7 @@ export const SectionTitle = ({
                 className,
             )}
         >
-            <span className="bg-gradient-to-l from-accent to-accentVar1 bg-clip-text text-fill-none pr-32">
+            <span className="bg-gradient-to-l from-accent to-accentVar1 bg-clip-text text-fill-none">
                 {children}
             </span>
         </h3>

@@ -1,4 +1,5 @@
-import { Pagination } from "ui/base/Pagination"
+import { AppLink } from "ui/base/AppLink"
+import { RankingsLayout } from "ui/stats/rankings/RankingsLayout"
 import { RankingsTableItem } from "ui/stats/RankingsTableItem"
 import { SEO } from "../../../components/SEO"
 import { Spinner } from "ui/base/Spinner"
@@ -6,7 +7,6 @@ import { cleanString } from "common/helpers/cleanString"
 import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
 import { useRankings2v2 } from "common/hooks/useRankings"
 import { useRouter } from "next/router"
-import Link from "next/link"
 import type { NextPage } from "next"
 
 const Page: NextPage = () => {
@@ -26,17 +26,30 @@ const Page: NextPage = () => {
 
     if (isError || (!isLoading && !rankings2v2)) return <div>Error</div>
 
-    const pagination = (
-        <Pagination
-            getPageHref={(page) => `/rankings/2v2/${region ?? "all"}/${page}`}
-            currentPage={parseInt(page)}
-            firstPage={1}
-            className="justify-end"
-        />
-    )
-
     return (
-        <>
+        <RankingsLayout
+            brackets={[
+                { page: "1v1" },
+                { page: "2v2" },
+                { page: "switchcraft", label: "Switchcraft" },
+                { page: "power/1v1", label: "Power 1v1" },
+                { page: "power/2v2", label: "Power 2v2" },
+            ]}
+            currentBracket="2v2"
+            regions={[
+                { page: "all", label: "Global" },
+                { page: "us-e", label: "US-E" },
+                { page: "eu", label: "EU" },
+                { page: "sea", label: "SEA" },
+                { page: "brz", label: "BRZ" },
+                { page: "aus", label: "AUS" },
+                { page: "us-w", label: "US-W" },
+                { page: "jpn", label: "JPN" },
+            ]}
+            currentRegion={region}
+            currentPage={page}
+            hasPagination
+        >
             <SEO
                 title={`${
                     region === "all" ? "Global" : region.toUpperCase()
@@ -45,7 +58,6 @@ const Page: NextPage = () => {
                     region === "all" ? "Global" : region.toUpperCase()
                 } 2v2 Rankings - Page ${page} • Corehalla`}
             />
-            {pagination}
             <div className="py-4 w-full h-full flex items-center gap-4">
                 <p className="w-16 text-center">Rank</p>
                 <p className="w-16 text-center">Region</p>
@@ -71,22 +83,18 @@ const Page: NextPage = () => {
                                 content={
                                     <>
                                         <p className="flex flex-1 items-center">
-                                            <Link
+                                            <AppLink
                                                 href={`/stats/player/${player1.id}`}
                                             >
-                                                <a>
-                                                    {cleanString(player1.name)}
-                                                </a>
-                                            </Link>
+                                                {cleanString(player1.name)}
+                                            </AppLink>
                                         </p>
                                         <p className="flex flex-1 items-center">
-                                            <Link
+                                            <AppLink
                                                 href={`/stats/player/${player2.id}`}
                                             >
-                                                <a>
-                                                    {cleanString(player2.name)}
-                                                </a>
-                                            </Link>
+                                                {cleanString(player2.name)}
+                                            </AppLink>
                                         </p>
                                     </>
                                 }
@@ -96,8 +104,7 @@ const Page: NextPage = () => {
                     })}
                 </div>
             )}
-            {pagination}
-        </>
+        </RankingsLayout>
     )
 }
 
