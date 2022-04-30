@@ -1,14 +1,8 @@
 {
-  "name": "corehalla-neue",
+  "name": "corehalla",
   "version": "0.0.0",
   "private": true,
   "main": "index.js",
   "repository": "https://github.com/djobbo/CorehallaNeue.git",
-  "author": "Djobbo Maïga <4998293+AlfieGoldson@users.noreply.github.com>",
-  "scripts": {
-    "dev": "./reno/dev.sh && yarn follow:app",
-    "rebuild": "./reno/rebuild.sh",
-    "restart": "./reno/restart.sh",
-    "follow:app": "./reno/follow_app.sh"
-  }
+  "author": "Djobbo Maïga <4998293+AlfieGoldson@users.noreply.github.com>"
 }
