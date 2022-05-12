@@ -1,9 +1,10 @@
 import { AdsenseStatsHeader } from "common/analytics/Adsense"
 import { Button } from "../base/Button"
+import { Discord } from "@icons-pack/react-simple-icons"
 import { MiscStatGroup } from "./MiscStatGroup"
 import { UserAddIcon, UserRemoveIcon } from "@heroicons/react/solid"
 import { cn } from "common/helpers/classnames"
-import { useFavorites } from "db/client/AuthProvider"
+import { useAuth, useFavorites } from "db/client/AuthProvider"
 import type { Favorite } from "db/client/useUserFavorites"
 import type { MiscStat } from "./MiscStatGroup"
 import type { ReactNode } from "react"
@@ -25,6 +26,7 @@ export const StatsHeader = ({
     miscStats,
     favorite,
 }: StatsHeaderProps) => {
+    const { isLoggedIn, signIn } = useAuth()
     const { isFavorite, removeFavorite, addFavorite } = useFavorites()
 
     const isItemFavorite = favorite && isFavorite(favorite)
@@ -42,25 +44,33 @@ export const StatsHeader = ({
                 <AdsenseStatsHeader />
             </div>
             <div className="flex justify-end py-2">
-                {favorite && (
-                    <Button
-                        buttonStyle={isItemFavorite ? "outline" : "primary"}
-                        onClick={() => {
-                            if (isItemFavorite) return removeFavorite(favorite)
-                            addFavorite(favorite)
-                        }}
-                    >
-                        {isItemFavorite ? (
-                            <>
-                                Remove Favorite
-                                <UserRemoveIcon className="ml-2 w-4 h-4" />
-                            </>
-                        ) : (
-                            <>
-                                Add favorite
-                                <UserAddIcon className="ml-2 w-4 h-4" />
-                            </>
-                        )}
+                {isLoggedIn ? (
+                    favorite && (
+                        <Button
+                            buttonStyle={isItemFavorite ? "outline" : "primary"}
+                            onClick={() => {
+                                if (isItemFavorite)
+                                    return removeFavorite(favorite)
+                                addFavorite(favorite)
+                            }}
+                        >
+                            {isItemFavorite ? (
+                                <>
+                                    Remove Favorite
+                                    <UserRemoveIcon className="ml-2 w-4 h-4" />
+                                </>
+                            ) : (
+                                <>
+                                    Add favorite
+                                    <UserAddIcon className="ml-2 w-4 h-4" />
+                                </>
+                            )}
+                        </Button>
+                    )
+                ) : (
+                    <Button buttonStyle="primary" onClick={signIn}>
+                        <Discord size="16" className="mr-2" /> Sign in to add
+                        favorites
                     </Button>
                 )}
             </div>
