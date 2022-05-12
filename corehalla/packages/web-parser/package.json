@@ -4,8 +4,9 @@
     "main": "./index.ts",
     "types": "./index.ts",
     "scripts": {
-        "parse-bh-articles-dev": "tsnd --respawn ./bh-articles/dev.ts",
-        "parse-pr-dev": "tsnd --respawn ./power-rankings/dev.ts",
+        "parse-bh-articles:dev": "tsnd --respawn ./bh-articles/dev.ts",
+        "parse-pr:dev": "tsnd --respawn ./power-rankings/dev.ts",
+        "parse-weekly-rot:dev": "tsnd --respawn ./weekly-rotation/dev.ts",
         "ts:check": "tsc --noEmit"
     },
     "dependencies": {

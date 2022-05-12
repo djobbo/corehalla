@@ -1,6 +1,7 @@
 import { AppNav } from "ui/layout/AppNav"
 import { ArticlePreviewGrid } from "ui/articles/ArticlePreviewGrid"
 import { Button } from "ui/base/Button"
+import { Discord } from "@icons-pack/react-simple-icons"
 import { FavoritesGrid } from "ui/favorites/FavoritesGrid"
 import { SEO } from "../components/SEO"
 import { SearchButton } from "ui/search/SearchButton"
@@ -89,7 +90,8 @@ const Page = ({ latestArticles }: PageProps) => {
                         <>
                             You need to be logged in to see your favorites.
                             <Button onClick={signIn}>
-                                Sign in with discord
+                                <Discord size="16" className="mr-2" />
+                                Sign in
                             </Button>
                         </>
                     )}

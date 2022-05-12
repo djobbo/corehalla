@@ -1,4 +1,6 @@
+import { IS_DEV } from "common/helpers/nodeEnv"
 import { load } from "cheerio"
+import { powerRankingsMock } from "./powerRankingsMock"
 import axios from "axios"
 import type { Bracket } from "bhapi/types"
 
@@ -23,7 +25,7 @@ export const parsePowerRankingsPage = async (
     bracket: Bracket,
     region: "us-e" | "eu" | "sea" | "brz" | "aus" | "us-w",
 ): Promise<PR[]> => {
-    // if (IS_DEV) return bhArticlesMock
+    if (IS_DEV) return powerRankingsMock
 
     const page = `${PR_BASE_URL}/${bracket}/${region}`
     const { data } = await axios.get<string>(page)
