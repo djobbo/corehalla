@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 RENO_VERSION="0.0.1"
 
+# Get the path to the script
+SCRIPT_PATH=$(readlink -f "$0")
+RENO_PATH=$(dirname "$SCRIPT")
+
 cd $RENO_PATH
 
 set -a

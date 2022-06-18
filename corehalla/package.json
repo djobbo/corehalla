@@ -6,6 +6,8 @@
         "app",
         "packages/*"
     ],
+    "repository": "https://github.com/djobbo/corehalla.git",
+    "author": "Djobbo Maïga <4998293+djobbo@users.noreply.github.com>",
     "scripts": {
         "build": "turbo run build",
         "dev": "turbo run dev --parallel",
