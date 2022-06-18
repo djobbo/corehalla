@@ -162,7 +162,7 @@ services:
       - ./volumes/db/init:/docker-entrypoint-initdb.d
   app:
     build:
-      context: ../corehalla
+      context: ../
       dockerfile: Dockerfile.dev
     restart: unless-stopped
     ports:
@@ -170,9 +170,9 @@ services:
     container_name: corehalla-app
     stdin_open: true
     volumes:
-       - ../corehalla:/usr/src/app
-       - /usr/src/app/node_modules
-       - /usr/src/app/app/node_modules
+       - ../:/usr/src/corehalla
+       - /usr/src/corehalla/node_modules
+       - /usr/src/corehalla/app/node_modules
     environment:
       NEXT_PUBLIC_SUPABASE_URL: http://localhost:${RENO_KONG_HTTP_PORT}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${RENO_ANON_KEY}
