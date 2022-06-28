@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UserProfile {
+  // Cross Schema Foreign Keys
+  // @relation auth.users.id -> auth_user_trigger_[add|rm].sql
+  // see https://github.com/prisma/prisma/issues/1175#issuecomment-1100726897
+  id          String           @id @db.Uuid
+  username    String           @default("")
+  avatarUrl   String           @default("")
+  favorites   UserFavorite[]
+  connections UserConnection[]
+}
+
+model UserFavorite {
+  type   String
+  id     String
+  name   String
+  meta   Json
+  userId String      @db.Uuid
+  user   UserProfile @relation(fields: [userId], references: [id])
+
+  @@id([userId, type, id])
+}
+
+model UserConnection {
+  userId   String      @db.Uuid
+  type     String
+  appId    String
+  name     String
+  verified Boolean
+  public   Boolean     @default(false)
+  user     UserProfile @relation(fields: [userId], references: [id])
+
+  @@id([userId, type, appId])
+}
+
+model BHPlayer {
+  id      String          @id
+  name    String
+  aliases BHPlayerAlias[]
+}
+
+model BHPlayerAlias {
+  playerId String
+  alias    String
+  player   BHPlayer @relation(fields: [playerId], references: [id])
+
+  @@id([playerId, alias])
+}
+
+model BHClan {
+  id      String @id
+  name    String
+  created Int
+  xp      String
+}

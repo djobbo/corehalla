@@ -1,0 +1,13 @@
+{
+    "name": "logger",
+    "version": "0.0.0",
+    "main": "index.ts",
+    "devDependencies": {
+        "@types/node": "^18.0.0",
+        "tsconfig": "workspace:*",
+        "typescript": "^4.7.4"
+    },
+    "scripts": {
+        "ts:check": "tsc --noEmit"
+    }
+}
