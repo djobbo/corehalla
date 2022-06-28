@@ -1,4 +1,4 @@
-import { GA_TRACKING_ID, adsenseCaPub, gaPageview } from "common/analytics/gtag"
+import { GA_TRACKING_ID, adsenseCaPub, gaPageview } from "./gtag"
 import { useEffect } from "react"
 import { useRouter } from "next/router"
 import Script from "next/script"

@@ -1,39 +1,44 @@
 {
-  "name": "app",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build && yarn gen:sitemap",
-    "start": "next start",
-    "ts:check": "tsc --noEmit",
-    "gen:sitemap": "next-sitemap"
-  },
-  "dependencies": {
-    "@fontsource/montserrat": "^4.5.7",
-    "@radix-ui/react-tabs": "^0.1.5",
-    "axios": "^0.26.1",
-    "bhapi": "*",
-    "common": "*",
-    "db": "*",
-    "kbar": "^0.1.0-beta.33",
-    "logger": "*",
-    "next": "^12.1.5",
-    "next-sitemap": "^2.5.20",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-query": "^3.35.0",
-    "ui": "*",
-    "web-parser": "*"
-  },
-  "devDependencies": {
-    "@types/node": "^17.0.24",
-    "@types/react": "^18.0.5",
-    "autoprefixer": "^10.4.4",
-    "next-transpile-modules": "9.0.0",
-    "postcss": "^8.4.12",
-    "tailwindcss": "^3.0.24",
-    "tsconfig": "*",
-    "typescript": "^4.5.3"
-  }
+    "name": "app",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build && yarn gen:sitemap",
+        "start": "next start",
+        "ts:check": "tsc --noEmit",
+        "gen:sitemap": "next-sitemap"
+    },
+    "dependencies": {
+        "@fontsource/montserrat": "^4.5.11",
+        "@heroicons/react": "^1.0.6",
+        "@icons-pack/react-simple-icons": "^5.1.2",
+        "@radix-ui/react-collapsible": "^0.1.6",
+        "@radix-ui/react-tabs": "^0.1.5",
+        "@stitches/react": "^1.2.8",
+        "axios": "^0.27.2",
+        "bhapi": "workspace:*",
+        "common": "workspace:*",
+        "db": "workspace:*",
+        "kbar": "0.1.0-beta.36",
+        "logger": "workspace:*",
+        "next": "^12.2.0",
+        "next-sitemap": "^3.1.7",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-query": "^3.39.1",
+        "solid": "link:@heroicons/react/solid",
+        "ui": "workspace:*",
+        "web-parser": "workspace:*"
+    },
+    "devDependencies": {
+        "@types/node": "^18.0.0",
+        "@types/react": "^18.0.14",
+        "autoprefixer": "^10.4.7",
+        "next-transpile-modules": "9.0.0",
+        "postcss": "^8.4.14",
+        "tailwindcss": "^3.1.4",
+        "tsconfig": "workspace:*",
+        "typescript": "^4.7.4"
+    }
 }

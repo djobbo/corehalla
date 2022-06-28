@@ -5,6 +5,8 @@ RENO_VERSION="0.0.1"
 SCRIPT_PATH=$(readlink -f "$0")
 RENO_PATH=$(dirname "$SCRIPT")
 
+echo $SCRIPT_PATH
+
 cd $RENO_PATH
 
 set -a
@@ -19,16 +21,18 @@ case $1 in
         ;;
     "build")
         echo "RENO: Building..."
-        docker-compose -f docker-compose.dev.yml build --no-cache
-        echo "RENO: Build complete."
+        docker-compose -f docker-compose.dev.yml build --no-cache \
+            && echo "RENO: Build complete." \
+            || echo "RENO: Build failed."
         ;;
     "start")
         echo "RENO: Starting..."
         docker-compose -f docker-compose.dev.yml up -d && \
         DATABASE_URL=postgres://postgres:$RENO_POSTGRES_PASSWORD@localhost:$RENO_POSTGRES_PORT/postgres && \
         cd ../corehalla/packages/db && \
-        for i in {1..5}; do command "yarn db:migrate" break || sleep 15; done && \
-        echo "RENO: Started."
+        for i in {1..5}; do command "yarn db:migrate" break || sleep 15; done \
+            && echo "RENO: Started." \
+            || echo "RENO: Failed to start."
         ;;
     "logs")
         echo "RENO: Logs..."

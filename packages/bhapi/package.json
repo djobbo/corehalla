@@ -1,19 +1,19 @@
 {
-  "name": "bhapi",
-  "version": "0.0.0",
-  "devDependencies": {
-    "@types/node": "^17.0.25",
-    "tsconfig": "*",
-    "typescript": "^4.5.3"
-  },
-  "scripts": {
-    "ts:check": "tsc --noEmit"
-  },
-  "dependencies": {
-    "axios": "^0.26.1",
-    "common": "*",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-query": "^3.35.0"
-  }
+    "name": "bhapi",
+    "version": "0.0.0",
+    "devDependencies": {
+        "@types/node": "^18.0.0",
+        "tsconfig": "workspace:*",
+        "typescript": "^4.7.4"
+    },
+    "scripts": {
+        "ts:check": "tsc --noEmit"
+    },
+    "dependencies": {
+        "axios": "^0.27.2",
+        "common": "workspace:*",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-query": "^3.39.1"
+    }
 }

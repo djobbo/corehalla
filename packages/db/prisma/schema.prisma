@@ -24,8 +24,8 @@ model UserFavorite {
   id     String
   name   String
   meta   Json
-  userId String           @db.Uuid
-  user   UserProfile      @relation(fields: [userId], references: [id])
+  userId String      @db.Uuid
+  user   UserProfile @relation(fields: [userId], references: [id])
 
   @@id([userId, type, id])
 }
@@ -43,7 +43,7 @@ model UserConnection {
 }
 
 model BHPlayer {
-  id      String   @id
+  id      String          @id
   name    String
   aliases BHPlayerAlias[]
 }

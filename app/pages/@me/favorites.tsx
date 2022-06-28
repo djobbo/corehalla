@@ -1,6 +1,6 @@
-import { FavoritesGrid } from "ui/favorites/FavoritesGrid"
-import { SEO } from "../../components/SEO"
-import { SectionTitle } from "ui/layout/SectionTitle"
+import { FavoritesGrid } from "@components/favorites/FavoritesGrid"
+import { SEO } from "@components/SEO"
+import { SectionTitle } from "@components/layout/SectionTitle"
 import { useFavorites } from "db/client/AuthProvider"
 import type { NextPage } from "next"
 
