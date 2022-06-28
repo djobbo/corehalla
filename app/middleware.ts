@@ -7,6 +7,7 @@ const handler: NextMiddleware = (req) => {
         url.pathname = "/rankings/1v1"
         return NextResponse.redirect(url)
     }
+
     return NextResponse.next()
 }
 
