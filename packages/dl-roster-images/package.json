@@ -1,0 +1,23 @@
+{
+    "name": "dl-roster-images",
+    "version": "0.0.0",
+    "main": "./index.ts",
+    "types": "./index.ts",
+    "scripts": {
+        "dl-roster-dev": "tsnd --respawn ./index.ts",
+        "dl-roster": "ts-node ./index.ts",
+        "ts:check": "tsc --noEmit"
+    },
+    "dependencies": {
+        "axios": "^0.27.2",
+        "cheerio": "1.0.0-rc.12",
+        "logger": "workspace:*"
+    },
+    "devDependencies": {
+        "@types/node": "^18.0.0",
+        "ts-node": "^10.8.1",
+        "ts-node-dev": "^2.0.0",
+        "tsconfig": "workspace:*",
+        "typescript": "^4.7.4"
+    }
+}

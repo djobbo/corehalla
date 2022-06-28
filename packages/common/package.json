@@ -1,0 +1,19 @@
+{
+    "name": "common",
+    "version": "0.0.0",
+    "devDependencies": {
+        "@types/node": "^18.0.0",
+        "@types/react": "^18.0.14",
+        "tsconfig": "workspace:*",
+        "typescript": "^4.7.4"
+    },
+    "scripts": {
+        "ts:check": "tsc --noEmit"
+    },
+    "dependencies": {
+        "classnames": "^2.3.1",
+        "dayjs": "^1.11.3",
+        "next": "^12.2.0",
+        "react-query": "^3.39.1"
+    }
+}

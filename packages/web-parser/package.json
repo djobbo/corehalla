@@ -1,0 +1,25 @@
+{
+    "name": "web-parser",
+    "version": "0.0.0",
+    "main": "./index.ts",
+    "types": "./index.ts",
+    "scripts": {
+        "parse-bh-articles:dev": "tsnd --respawn ./bh-articles/dev.ts",
+        "parse-pr:dev": "tsnd --respawn ./power-rankings/dev.ts",
+        "parse-weekly-rot:dev": "tsnd --respawn ./weekly-rotation/dev.ts",
+        "ts:check": "tsc --noEmit"
+    },
+    "dependencies": {
+        "axios": "^0.27.2",
+        "cheerio": "1.0.0-rc.12",
+        "logger": "workspace:*",
+        "bhapi": "workspace:*"
+    },
+    "devDependencies": {
+        "@types/node": "^18.0.0",
+        "ts-node": "^10.8.1",
+        "ts-node-dev": "^2.0.0",
+        "tsconfig": "workspace:*",
+        "typescript": "^4.7.4"
+    }
+}
