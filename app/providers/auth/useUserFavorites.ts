@@ -1,7 +1,7 @@
-import { supabase } from "../supabase/client"
+import { supabase } from "db/supabase/client"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import type { Prisma, UserFavorite } from "../generated/client"
-import type { Session } from "@supabase/supabase-js"
+import type { Prisma, UserFavorite } from "db/generated/client"
+import type { Session } from "db/supabase/client"
 
 type FavoriteType = "player" | "clan"
 

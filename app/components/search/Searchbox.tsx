@@ -8,7 +8,7 @@ import { gaEvent } from "common/analytics/gtag"
 import { styled, theme } from "ui/theme"
 import { useDebouncedState } from "common/hooks/useDebouncedState"
 import { useEffect, useState } from "react"
-import { useRankings1v1 } from "../../hooks/useRankings"
+import { useRankings1v1 } from "@hooks/stats/useRankings"
 import type { Ranking1v1 } from "bhapi/types"
 
 const __DEV = process.env.NODE_ENV === "development"

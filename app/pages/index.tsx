@@ -10,7 +10,7 @@ import { cn } from "common/helpers/classnames"
 import { css } from "ui/theme"
 import { logError } from "logger"
 import { parseBHArticlesPage } from "web-parser/bh-articles/parseBHArticlesPage"
-import { useAuth, useFavorites } from "db/client/AuthProvider"
+import { useAuth, useFavorites } from "@ctx/auth/AuthProvider"
 import type { BHArticle } from "web-parser/bh-articles/parseBHArticlesPage"
 import type { GetServerSideProps } from "next"
 

@@ -9,6 +9,8 @@ COPY pnpm-lock.yaml .
 
 COPY . .
 
+RUN npm i -g pnpm
+
 RUN pnpm install
 
 EXPOSE 3000

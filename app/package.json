@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "next build && yarn gen:sitemap",
+        "build": "next build && pnpm gen:sitemap",
         "start": "next start",
         "ts:check": "tsc --noEmit",
         "gen:sitemap": "next-sitemap"

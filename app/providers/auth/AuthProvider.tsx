@@ -1,12 +1,12 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react"
-import { signIn, signOut } from "../supabase/auth"
-import { supabase } from "../supabase/client"
+import { createContext, useContext, useEffect, useState } from "react"
+import { signIn, signOut } from "db/supabase/auth"
+import { supabase } from "db/supabase/client"
 import { useUserConnections } from "./useUserConnections"
 import { useUserFavorites } from "./useUserFavorites"
 import { useUserProfile } from "./useUserProfile"
 import type { ReactNode } from "react"
-import type { Session, User } from "@supabase/supabase-js"
-import type { UserConnection, UserProfile } from "../generated/client"
+import type { Session, User } from "db/supabase/client"
+import type { UserConnection, UserProfile } from "db/generated/client"
 
 interface AuthContext {
     isLoggedIn: boolean
@@ -65,10 +65,7 @@ export const AuthProvider = ({ children }: Props) => {
         }
     }, [])
 
-    const isLoggedIn = useMemo(
-        () => !!session && !!userProfile,
-        [session, userProfile],
-    )
+    const isLoggedIn = !!session && !!userProfile
 
     return (
         <authContext.Provider

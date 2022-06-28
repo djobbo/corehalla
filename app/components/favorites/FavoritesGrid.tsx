@@ -4,9 +4,9 @@ import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { css } from "ui/theme"
 import { legendsMap } from "bhapi/legends"
-import { useFavorites } from "db/client/AuthProvider"
+import { useFavorites } from "@ctx/auth/AuthProvider"
 import Image from "next/image"
-import type { Favorite } from "db/client/useUserFavorites"
+import type { Favorite } from "@ctx/auth/useUserFavorites"
 import type { ReactNode } from "react"
 
 type FavoritesGridProps = {
