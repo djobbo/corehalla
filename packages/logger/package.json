@@ -1,16 +1,13 @@
 {
-  "name": "logger",
-  "version": "0.0.0",
-  "main": "index.ts",
-  "dependencies": {
-    "common": "*"
-  },
-  "devDependencies": {
-    "@types/node": "^17.0.25",
-    "tsconfig": "*",
-    "typescript": "^4.5.3"
-  },
-  "scripts": {
-    "ts:check": "tsc --noEmit"
-  }
+    "name": "logger",
+    "version": "0.0.0",
+    "main": "index.ts",
+    "devDependencies": {
+        "@types/node": "^18.0.0",
+        "tsconfig": "workspace:*",
+        "typescript": "^4.7.4"
+    },
+    "scripts": {
+        "ts:check": "tsc --noEmit"
+    }
 }

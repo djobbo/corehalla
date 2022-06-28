@@ -1,16 +1,16 @@
-import { ClanMember } from "ui/stats/clan/ClanMember"
+import { ClanMember } from "@components/stats/clan/ClanMember"
 import { QueryClient, dehydrate } from "react-query"
-import { SEO } from "../../../components/SEO"
-import { StatsHeader } from "ui/stats/StatsHeader"
+import { SEO } from "@components/SEO"
+import { StatsHeader } from "@components/stats/StatsHeader"
 import { cleanString } from "common/helpers/cleanString"
 import { formatUnixTime } from "common/helpers/date"
 import { getClan } from "bhapi"
 import { supabaseService } from "db/supabase/service"
-import { useClan } from "common/hooks/useClan"
+import { useClan } from "../../../hooks/useClan"
 import { useRouter } from "next/router"
 import type { BHClan } from "db/generated/client"
 import type { GetServerSideProps, NextPage } from "next"
-import type { MiscStat } from "ui/stats/MiscStatGroup"
+import type { MiscStat } from "@components/stats/MiscStatGroup"
 
 const Page: NextPage = () => {
     const router = useRouter()

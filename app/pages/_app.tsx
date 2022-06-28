@@ -8,10 +8,10 @@ import { AuthProvider } from "db/client/AuthProvider"
 import { GAScripts } from "common/analytics/GAScripts"
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query"
 import { KBarProvider } from "kbar"
-import { Layout } from "ui/layout/Layout"
+import { Layout } from "@components/layout/Layout"
 import { PageLoader } from "ui/base/PageLoader"
-import { SEO } from "../components/SEO"
-import { Searchbox } from "ui/search/Searchbox"
+import { SEO } from "@components/SEO"
+import { Searchbox } from "@components/search/Searchbox"
 import { useRef } from "react"
 import Head from "next/head"
 import type { AppProps } from "next/app"
@@ -44,7 +44,6 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             <QueryClientProvider client={queryClient.current}>
                 <Hydrate state={pageProps.dehydratedState}>
                     <AuthProvider>
-                        {/* @ts-expect-error kbar is weird */}
                         <KBarProvider actions={[]} options={{}}>
                             <PageLoader>
                                 <div className="flex items-center gap-4">

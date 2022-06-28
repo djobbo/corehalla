@@ -5,12 +5,12 @@ ENV NODE_ENV development
 WORKDIR /usr/src/app
 
 COPY package.json .
-COPY yarn.lock .
+COPY pnpm-lock.yaml .
 
 COPY . .
 
-RUN yarn install
+RUN pnpm install
 
 EXPOSE 3000
 
-CMD ["yarn", "dev"]
+CMD ["pnpm", "dev"]

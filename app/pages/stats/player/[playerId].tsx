@@ -1,10 +1,10 @@
-import { Player2v2Tab } from "ui/stats/player/Player2v2Tab"
-import { PlayerLegendsTab } from "ui/stats/player/PlayerLegendsTab"
-import { PlayerOverviewTab } from "ui/stats/player/PlayerOverviewTab"
-import { PlayerWeaponsTab } from "ui/stats/player/PlayerWeaponsTab"
+import { Player2v2Tab } from "@components/stats/player/Player2v2Tab"
+import { PlayerLegendsTab } from "@components/stats/player/PlayerLegendsTab"
+import { PlayerOverviewTab } from "@components/stats/player/PlayerOverviewTab"
+import { PlayerWeaponsTab } from "@components/stats/player/PlayerWeaponsTab"
 import { QueryClient, dehydrate } from "react-query"
-import { SEO } from "../../../components/SEO"
-import { StatsHeader } from "ui/stats/StatsHeader"
+import { SEO } from "@components/SEO"
+import { StatsHeader } from "@components/stats/StatsHeader"
 import {
     Root as Tabs,
     TabsContent,
@@ -19,13 +19,13 @@ import { getFullLegends, getFullWeapons } from "bhapi/legends"
 import { getPlayerAliases } from "bhapi/helpers/getPlayerAliases"
 import { getPlayerRanked, getPlayerStats } from "bhapi"
 import { supabaseService } from "db/supabase/service"
-import { usePlayerRanked } from "common/hooks/usePlayerRanked"
-import { usePlayerStats } from "common/hooks/usePlayerStats"
+import { usePlayerRanked } from "../../../hooks/usePlayerRanked"
+import { usePlayerStats } from "../../../hooks/usePlayerStats"
 import { useRouter } from "next/router"
 import Image from "next/image"
 import type { BHPlayer, BHPlayerAlias } from "db/generated/client"
 import type { GetServerSideProps, NextPage } from "next"
-import type { MiscStat } from "ui/stats/MiscStatGroup"
+import type { MiscStat } from "@components/stats/MiscStatGroup"
 
 const tabClassName = cn(
     "px-6 py-4 uppercase text-xs border-b-2 z-10",

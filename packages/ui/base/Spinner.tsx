@@ -1,4 +1,3 @@
-import * as React from "react"
 import { cn } from "common/helpers/classnames"
 import { css, keyframes, styled } from "../theme"
 

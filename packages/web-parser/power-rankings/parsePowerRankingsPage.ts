@@ -1,8 +1,9 @@
-import { IS_DEV } from "common/helpers/nodeEnv"
 import { load } from "cheerio"
 import { powerRankingsMock } from "./powerRankingsMock"
 import axios from "axios"
 import type { Bracket } from "bhapi/types"
+
+const __DEV = process.env.NODE_ENV === "development"
 
 const PR_BASE_URL = "https://www.brawlhalla.com/rankings/power"
 
@@ -25,7 +26,7 @@ export const parsePowerRankingsPage = async (
     bracket: Bracket,
     region: "us-e" | "eu" | "sea" | "brz" | "aus" | "us-w",
 ): Promise<PR[]> => {
-    if (IS_DEV) return powerRankingsMock
+    if (__DEV) return powerRankingsMock
 
     const page = `${PR_BASE_URL}/${bracket}/${region}`
     const { data } = await axios.get<string>(page)

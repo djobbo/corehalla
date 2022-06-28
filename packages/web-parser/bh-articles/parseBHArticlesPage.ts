@@ -1,7 +1,8 @@
-import { IS_DEV } from "common/helpers/nodeEnv"
 import { bhArticlesMock } from "./bhArticlesMock"
 import { load } from "cheerio"
 import axios from "axios"
+
+const __DEV = process.env.NODE_ENV === "development"
 
 const BH_ARTICLES_BASE_URL = "https://www.brawlhalla.com/news"
 
@@ -22,7 +23,7 @@ export const parseBHArticlesPage = async (
     pageId: number,
     articleType = "patch-notes",
 ): Promise<BHArticle[]> => {
-    if (IS_DEV) return bhArticlesMock
+    if (__DEV) return bhArticlesMock
 
     const page = `${BH_ARTICLES_BASE_URL}/${articleType}/page/${pageId}`
     const { data } = await axios.get<string>(page)

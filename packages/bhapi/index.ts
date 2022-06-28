@@ -1,4 +1,3 @@
-import { IS_DEV } from "common/helpers/nodeEnv"
 import { clanMock } from "./mocks/clan"
 import { playerRankedMock } from "./mocks/playerRanked"
 import { playerStatsMock } from "./mocks/playerStats"
@@ -14,6 +13,8 @@ import type {
     Ranking2v2,
 } from "./types"
 import type { RankedRegion } from "./constants"
+
+const __DEV = process.env.NODE_ENV === "development"
 
 const BH_API_BASE = "https://api.brawlhalla.com"
 
@@ -40,7 +41,7 @@ export const getRankings = async (
     page = "1",
     name?: string,
 ) => {
-    if (!IS_DEV)
+    if (!__DEV)
         return getBhApi<Ranking1v1[] | Ranking2v2[]>(
             `/rankings/${bracket}/${region}/${page}`,
             { name },
@@ -57,17 +58,15 @@ export const getRankings = async (
 }
 
 export const getPlayerStats = async (playerId: string) =>
-    IS_DEV
-        ? playerStatsMock
-        : getBhApi<PlayerStats>(`/player/${playerId}/stats`)
+    __DEV ? playerStatsMock : getBhApi<PlayerStats>(`/player/${playerId}/stats`)
 
 export const getPlayerRanked = async (playerId: string) =>
-    IS_DEV
+    __DEV
         ? playerRankedMock
         : getBhApi<PlayerRanked>(`/player/${playerId}/ranked`)
 
 export const getClan = async (clanId: string) =>
-    IS_DEV ? clanMock : getBhApi<Clan>(`/clan/${clanId}`)
+    __DEV ? clanMock : getBhApi<Clan>(`/clan/${clanId}`)
 
 export const getAllLegends = async () => getBhApi("/legend/all")
 
