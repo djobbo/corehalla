@@ -1,7 +1,7 @@
 import { FavoritesGrid } from "@components/favorites/FavoritesGrid"
 import { SEO } from "@components/SEO"
 import { SectionTitle } from "@components/layout/SectionTitle"
-import { useFavorites } from "db/client/AuthProvider"
+import { useFavorites } from "@ctx/auth/AuthProvider"
 import type { NextPage } from "next"
 
 const Page: NextPage = () => {

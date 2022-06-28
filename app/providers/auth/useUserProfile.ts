@@ -1,9 +1,9 @@
-import { getDiscordProfile } from "../discord/getDiscordProfile"
-import { supabase } from "../supabase/client"
+import { getDiscordProfile } from "db/discord/getDiscordProfile"
+import { supabase } from "db/supabase/client"
 import { useEffect } from "react"
 import { useQuery, useQueryClient } from "react-query"
-import type { Session } from "@supabase/supabase-js"
-import type { UserProfile } from "../generated/client"
+import type { Session } from "db/supabase/client"
+import type { UserProfile } from "db/generated/client"
 
 export const useUserProfile = (session: Session | null) => {
     const userId = session?.user?.id

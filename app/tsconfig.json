@@ -6,7 +6,8 @@
         "baseUrl": ".",
         "paths": {
             "@hooks/*": ["hooks/*"],
-            "@components/*": ["components/*"]
+            "@components/*": ["components/*"],
+            "@ctx/*": ["providers/*"]
         }
     }
 }

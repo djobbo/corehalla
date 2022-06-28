@@ -3,7 +3,7 @@ import { Button } from "ui/base/Button"
 import { Discord } from "@icons-pack/react-simple-icons"
 import { SearchButton } from "../search/SearchButton"
 import { cn } from "common/helpers/classnames"
-import { useAuth } from "db/client/AuthProvider"
+import { useAuth } from "@ctx/auth/AuthProvider"
 import { useRouter } from "next/router"
 import Image from "next/image"
 

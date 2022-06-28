@@ -5,7 +5,7 @@ import { SEO } from "@components/SEO"
 import { Spinner } from "ui/base/Spinner"
 import { cleanString } from "common/helpers/cleanString"
 import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
-import { useRankings2v2 } from "../../../hooks/useRankings"
+import { useRankings2v2 } from "@hooks/stats/useRankings"
 import { useRouter } from "next/router"
 import type { NextPage } from "next"
 
