@@ -20,6 +20,8 @@ const socialLinks = [
 ]
 
 export const Footer = ({ className }) => {
+    const currentYear = new Date().getFullYear()
+
     return (
         <footer className={className}>
             <p className="text-center text-xs border-t border-bg py-8">
@@ -58,7 +60,7 @@ export const Footer = ({ className }) => {
                     ))}
                 </div>
                 <p className="mr-1 text-xs text-textVar1 mt-8">
-                    © 2018-2022 Corehalla
+                    © 2018-{currentYear} Corehalla
                 </p>
             </div>
         </footer>

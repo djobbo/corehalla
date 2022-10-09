@@ -33,7 +33,6 @@ importers:
   app:
     specifiers:
       '@fontsource/montserrat': ^4.5.13
-      '@heroicons/react': ^2.0.12
       '@icons-pack/react-simple-icons': ^5.9.0
       '@radix-ui/react-collapsible': ^1.0.0
       '@radix-ui/react-tabs': ^1.0.0
@@ -53,8 +52,8 @@ importers:
       postcss: ^8.4.17
       react: ^18.2.0
       react-dom: ^18.2.0
+      react-icons: ^4.4.0
       react-query: ^3.39.2
-      solid: link:@heroicons/react/solid
       tailwindcss: ^3.1.8
       tsconfig: workspace:*
       typescript: ^4.8.4
@@ -62,7 +61,6 @@ importers:
       web-parser: workspace:*
     dependencies:
       '@fontsource/montserrat': 4.5.13
-      '@heroicons/react': 2.0.12_react@18.2.0
       '@icons-pack/react-simple-icons': 5.9.0_react@18.2.0
       '@radix-ui/react-collapsible': 1.0.0_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-tabs': 1.0.0_biqbaboplfbrettd7655fr4n2y
@@ -77,8 +75,8 @@ importers:
       next-sitemap: 3.1.24_mna6xsgplvxkrmeg4ftolwenke
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      react-icons: 4.4.0_react@18.2.0
       react-query: 3.39.2_biqbaboplfbrettd7655fr4n2y
-      solid: link:@heroicons/react/solid
       ui: link:../packages/ui
       web-parser: link:../packages/web-parser
     devDependencies:
@@ -196,7 +194,6 @@ importers:
 
   packages/ui:
     specifiers:
-      '@heroicons/react': ^2.0.12
       '@icons-pack/react-simple-icons': ^5.9.0
       '@radix-ui/colors': ^0.1.8
       '@radix-ui/react-collapsible': ^1.0.0
@@ -228,7 +225,6 @@ importers:
       tsconfig: workspace:*
       typescript: ^4.8.4
     dependencies:
-      '@heroicons/react': 2.0.12_4jdp6okly7h64wr46jw5nzsnhe
       '@icons-pack/react-simple-icons': 5.9.0_4jdp6okly7h64wr46jw5nzsnhe
       '@radix-ui/colors': 0.1.8
       '@radix-ui/react-collapsible': 1.0.0_6zaz4vcngc7ijlbmvfrkxj5nyi
@@ -667,22 +663,6 @@ packages:
 
   /@fontsource/montserrat/4.5.13:
     resolution: {integrity: sha512-/XlcNsMFjdWX4Away8Ax/4NgND8Ckk9gVDwgz1sfxF6h+gFHChLOV0IvPrUfCQjZ1F35igg+nR9bSxmjsYEskQ==}
-    dev: false
-
-  /@heroicons/react/2.0.12_4jdp6okly7h64wr46jw5nzsnhe:
-    resolution: {integrity: sha512-FZxKh3i9aKIDxyALTgIpSF2t6V6/eZfF5mRu41QlwkX3Oxzecdm1u6dpft6PQGxIBwO7TKYWaMAYYL8mp/EaOg==}
-    peerDependencies:
-      react: '>= 16'
-    dependencies:
-      react: 18.0.0-rc.3-next-e7d0053e6-20220325
-    dev: false
-
-  /@heroicons/react/2.0.12_react@18.2.0:
-    resolution: {integrity: sha512-FZxKh3i9aKIDxyALTgIpSF2t6V6/eZfF5mRu41QlwkX3Oxzecdm1u6dpft6PQGxIBwO7TKYWaMAYYL8mp/EaOg==}
-    peerDependencies:
-      react: '>= 16'
-    dependencies:
-      react: 18.2.0
     dev: false
 
   /@humanwhocodes/config-array/0.10.7:
@@ -4214,6 +4194,14 @@ packages:
       react: '*'
     dependencies:
       react: 18.0.0-rc.3-next-e7d0053e6-20220325
+    dev: false
+
+  /react-icons/4.4.0_react@18.2.0:
+    resolution: {integrity: sha512-fSbvHeVYo/B5/L4VhB7sBA1i2tS8MkT0Hb9t2H1AVPkwGfVHLJCqyr2Py9dKMxsyM63Eng1GkdZfbWj+Fmv8Rg==}
+    peerDependencies:
+      react: '*'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-is/16.13.1:

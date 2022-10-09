@@ -1,7 +1,7 @@
+import { HiSortAscending, HiSortDescending } from "react-icons/hi"
 import { Legend } from "./Legend"
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { Select } from "ui/base/Select"
-import { SortAscendingIcon, SortDescendingIcon } from "@heroicons/react/solid"
 import { SortDirection, useSortBy } from "common/hooks/useSortBy"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
 import { useMemo, useState } from "react"
@@ -174,9 +174,9 @@ export const PlayerLegendsTab = ({
                     className="flex items-center hover:text-accent"
                 >
                     {legendSortDirection === SortDirection.Ascending ? (
-                        <SortAscendingIcon className="w-6 h-6" />
+                        <HiSortAscending className="w-6 h-6" />
                     ) : (
-                        <SortDescendingIcon className="w-6 h-6" />
+                        <HiSortDescending className="w-6 h-6" />
                     )}
                 </button>
             </div>
