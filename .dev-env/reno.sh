@@ -23,13 +23,13 @@ case $1 in
         ;;
     "build")
         echo "RENO: Building..."
-        docker-compose -f docker-compose.dev.yml build --no-cache && \
+        docker compose -f docker-compose.dev.yml build --no-cache && \
             echo "RENO: Build complete." || \
             echo "RENO: Build failed."
         ;;
-    "start")
+    "up")
         echo "RENO: Starting..."
-        docker-compose -f docker-compose.dev.yml up -d && \
+        docker compose -f docker-compose.dev.yml up -d && \
         DATABASE_URL=postgres://postgres:$RENO_POSTGRES_PASSWORD@localhost:$RENO_POSTGRES_PORT/postgres && \
         cd $COREHALLA_PATH/packages/db && \
         for i in {1..5};
@@ -42,7 +42,7 @@ case $1 in
         ;;
     "stop")
         echo "RENO: Stopping..."
-        docker-compose -f docker-compose.dev.yml stop && \
+        docker compose -f docker-compose.dev.yml stop && \
             echo "RENO: Stopped." || \
             echo "RENO: Failed to stop."
         ;;
@@ -68,12 +68,12 @@ case $1 in
         ;;
     "restart")
         echo "RENO: Restarting..."
-        docker-compose -f docker-compose.dev.yml restart
+        docker compose -f docker-compose.dev.yml restart
         ;;
     "rm")
         $RENO_PATH/reno.sh stop && \
         echo "RENO: Removing..." && \
-        docker-compose -f docker-compose.dev.yml rm -f && \
+        docker compose -f docker-compose.dev.yml rm -f && \
             echo "RENO: Removed all containers" || \
             echo "RENO: Failed to remove containers."
         ;;

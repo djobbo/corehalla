@@ -19,18 +19,18 @@
         "postinstall": "pnpm build"
     },
     "devDependencies": {
-        "@types/react": "^18.0.14",
-        "discord-api-types": "^0.35.0",
-        "prisma": "^4.0.0",
+        "@types/react": "^18.0.21",
+        "discord-api-types": "^0.37.12",
+        "prisma": "^4.4.0",
         "tsconfig": "workspace:*",
-        "typescript": "^4.7.4"
+        "typescript": "^4.8.4"
     },
     "dependencies": {
-        "@prisma/client": "^4.0.0",
-        "@supabase/supabase-js": "^1.35.4",
-        "axios": "^0.27.2",
+        "@prisma/client": "^4.4.0",
+        "@supabase/supabase-js": "^1.35.7",
+        "axios": "^1.1.2",
         "logger": "workspace:*",
         "react": "^18.2.0",
-        "react-query": "^3.39.1"
+        "react-query": "^3.39.2"
     }
 }
