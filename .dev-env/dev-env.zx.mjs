@@ -11,7 +11,7 @@ loadEnv({ path: join(DEV_ENV_PATH, ".env") })
 const {
     POSTGRES_USER,
     POSTGRES_PASSWORD,
-    POSTGRES_HOST,
+    POSTGRES_LOCAL_HOST,
     POSTGRES_PORT,
     POSTGRES_DB,
 } = process.env
@@ -40,7 +40,6 @@ const build = async () => {
 const start = async () => {
     log("Starting...")
     try {
-        await $`echo $STUDIO_DEFAULT_ORGANIZATION`
         await $`docker compose -f ${composeFilePath} up -d`
         log("Waiting for database to start...")
         cd("packages/db")
@@ -48,7 +47,7 @@ const start = async () => {
         let retries = 0
         while (true) {
             try {
-                await $`DATABASE_URL="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}" pnpm db:migrate up`
+                await $`DATABASE_URL="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_LOCAL_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}" pnpm db:migrate up`
                 log("Start complete")
                 break
             } catch {

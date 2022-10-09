@@ -1,10 +1,6 @@
 import { AppLink } from "ui/base/AppLink"
-import {
-    ChevronDoubleUpIcon,
-    HeartIcon,
-    HomeIcon,
-    XIcon,
-} from "@heroicons/react/solid"
+import { HiChevronDoubleUp, HiHeart, HiHome, HiX } from "react-icons/hi"
+
 import { Tooltip } from "ui/base/Tooltip"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
@@ -82,7 +78,7 @@ const SideNavIcon = ({
                         className="hidden remove-btn absolute w-4 h-4 p-0.5 rounded-full overflow-hidden shadow-md bg-accent hover:bg-text hover:text-bgVar2"
                         onClick={() => onRemove()}
                     >
-                        <XIcon />
+                        <HiX />
                     </button>
                 )}
             </div>
@@ -93,12 +89,12 @@ const SideNavIcon = ({
 const defaultNav = [
     {
         name: "Home",
-        icon: <HomeIcon className="w-6 h-6" />,
+        icon: <HiHome className="w-6 h-6" />,
         href: "/",
     },
     {
         name: "Rankings",
-        icon: <ChevronDoubleUpIcon className="w-6 h-6" />,
+        icon: <HiChevronDoubleUp className="w-6 h-6" />,
         href: "/rankings",
     },
 ]
@@ -115,7 +111,7 @@ export const SideNav = () => {
             ? [
                   {
                       name: "Favorites",
-                      icon: <HeartIcon className="w-6 h-6" />,
+                      icon: <HiHeart className="w-6 h-6" />,
                       href: "/@me/favorites",
                   },
               ]

@@ -1,4 +1,4 @@
-import { ArrowUpIcon } from "@heroicons/react/solid"
+import { HiArrowUp } from "react-icons/hi"
 import { KBarAnimator, KBarPortal, KBarPositioner, KBarSearch } from "kbar"
 import { SearchboxItem } from "./SearchboxItem"
 import { Spinner } from "ui/base/Spinner"
@@ -90,9 +90,9 @@ export const Searchbox = () => {
                                     ))
                             ) : (
                                 <div className="flex items-center justify-center px-4 py-8 w-full gap-2">
-                                    <ArrowUpIcon className="w-4 h-4" /> Search
-                                    for a player (must start with exact match)
-                                    <ArrowUpIcon className="w-4 h-4" />
+                                    <HiArrowUp className="w-4 h-4" /> Search for
+                                    a player (must start with exact match)
+                                    <HiArrowUp className="w-4 h-4" />
                                 </div>
                             )}
                         </ResultsContainer>
