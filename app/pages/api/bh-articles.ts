@@ -7,6 +7,12 @@ const handler: NextApiHandler = async (req, res) => {
     try {
         const pageNum = parseInt(page as string)
         const articles = await parseBHArticlesPage(pageNum, type.toString())
+
+        res.setHeader(
+            "Cache-Control",
+            "public, s-maxage=3600, stale-while-revalidate=7200",
+        )
+
         if (max) {
             return res.json(articles.slice(0, parseInt(max.toString())))
         }

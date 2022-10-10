@@ -1,4 +1,5 @@
 version: "3.8"
+name: corehalla
 
 services:
   studio:
@@ -167,13 +168,13 @@ services:
       - ./volumes/db/init:/docker-entrypoint-initdb.d
 
   app:
+    container_name: corehalla-app
     build:
         context: ../
         dockerfile: Dockerfile.dev
     restart: unless-stopped
     ports:
         - "3000:3000"
-    container_name: corehalla-app
     stdin_open: true
     volumes:
         - ../:/usr/src/app
@@ -189,3 +190,4 @@ services:
         NEXT_PUBLIC_ADSENSE_ID: ${ADSENSE_ID}
     depends_on:
         - db
+        - auth
