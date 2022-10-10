@@ -1,8 +1,8 @@
 import {
-    ChevronDoubleLeftIcon,
-    ChevronLeftIcon,
-    ChevronRightIcon,
-} from "@heroicons/react/solid"
+    HiChevronDoubleLeft,
+    HiChevronLeft,
+    HiChevronRight,
+} from "react-icons/hi"
 import { Paginator } from "./Paginator"
 
 type PaginationProps = {
@@ -27,7 +27,7 @@ export const Pagination = ({
             label: (
                 <span className="flex items-center gap-1">
                     {currentPage !== firstPage && (
-                        <ChevronDoubleLeftIcon className="w-4 h-4" />
+                        <HiChevronDoubleLeft className="w-4 h-4" />
                     )}
                     top
                 </span>
@@ -41,13 +41,13 @@ export const Pagination = ({
             const label =
                 page === currentPage - 1 ? (
                     <span className="flex items-center gap-1">
-                        <ChevronLeftIcon className="w-4 h-4" />
+                        <HiChevronLeft className="w-4 h-4" />
                         prev
                     </span>
                 ) : page === currentPage + 1 ? (
                     <span className="flex items-center gap-1">
                         next
-                        <ChevronRightIcon className="w-4 h-4" />
+                        <HiChevronRight className="w-4 h-4" />
                     </span>
                 ) : (
                     page.toString()

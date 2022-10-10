@@ -7,7 +7,7 @@ import axios from "axios"
 const APP_DIR = "../../app"
 const PUBLIC_DIR = `${APP_DIR}/public`
 const LEGENDS_URL = "https://www.brawlhalla.com/legends/"
-const NUM_LEGENDS = 55
+const NUM_LEGENDS = 56
 const OUT_DIR = `${PUBLIC_DIR}/images/icons/roster`
 
 export const downloadImages = async () => {

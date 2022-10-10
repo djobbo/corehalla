@@ -1,8 +1,8 @@
 import { AdsenseStatsHeader } from "common/analytics/Adsense"
 import { Button } from "ui/base/Button"
 import { Discord } from "@icons-pack/react-simple-icons"
+import { HiUserAdd, HiUserRemove } from "react-icons/hi"
 import { MiscStatGroup } from "./MiscStatGroup"
-import { UserAddIcon, UserRemoveIcon } from "@heroicons/react/solid"
 import { cn } from "common/helpers/classnames"
 import { useAuth, useFavorites } from "@ctx/auth/AuthProvider"
 import type { Favorite } from "@ctx/auth/useUserFavorites"
@@ -57,12 +57,12 @@ export const StatsHeader = ({
                             {isItemFavorite ? (
                                 <>
                                     Remove Favorite
-                                    <UserRemoveIcon className="ml-2 w-4 h-4" />
+                                    <HiUserRemove className="ml-2 w-4 h-4" />
                                 </>
                             ) : (
                                 <>
                                     Add favorite
-                                    <UserAddIcon className="ml-2 w-4 h-4" />
+                                    <HiUserAdd className="ml-2 w-4 h-4" />
                                 </>
                             )}
                         </Button>
