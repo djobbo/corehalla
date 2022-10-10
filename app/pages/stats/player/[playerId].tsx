@@ -16,9 +16,10 @@ import { cn } from "common/helpers/classnames"
 import { css, theme } from "ui/theme"
 import { formatTime } from "common/helpers/date"
 import { getFullLegends, getFullWeapons } from "bhapi/legends"
-import { getPlayerAliases } from "bhapi/helpers/getPlayerAliases"
 import { getPlayerRanked, getPlayerStats } from "bhapi"
+import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
 import { supabaseService } from "db/supabase/service"
+import { usePlayerAliases } from "@hooks/stats/usePlayerAliases"
 import { usePlayerRanked } from "@hooks/stats/usePlayerRanked"
 import { usePlayerStats } from "@hooks/stats/usePlayerStats"
 import { useRouter } from "next/router"
@@ -44,17 +45,14 @@ const tabClassName = cn(
     })(),
 )
 
-type PageProps = {
-    aliases: string[]
-}
-
-const Page: NextPage<PageProps> = ({ aliases }) => {
+const Page: NextPage = () => {
     const router = useRouter()
     const { playerId } = router.query
     const { playerStats, isLoading, isError } = usePlayerStats(
         playerId as string,
     )
     const { playerRanked } = usePlayerRanked(playerId as string)
+    const { playerAliases } = usePlayerAliases(playerId as string)
 
     if (isLoading) return <p>Loading...</p>
 
@@ -190,7 +188,7 @@ const Page: NextPage<PageProps> = ({ aliases }) => {
             <StatsHeader
                 name={cleanString(playerStats.name)}
                 id={playerStats.brawlhalla_id}
-                aliases={aliases}
+                aliases={playerAliases}
                 miscStats={accountStats}
                 icon={
                     playerRanked?.region && (
@@ -296,40 +294,43 @@ export const getServerSideProps: GetServerSideProps = async ({
         getPlayerRanked(playerId),
     ])
 
-    const aliases = getPlayerAliases(stats, ranked)
+    const aliases = [
+        {
+            id: stats.brawlhalla_id,
+            name: stats.name,
+        },
+        ...(ranked["2v2"]?.map(getTeamPlayers).flat() ?? []),
+    ]
+    const curratedAliases = aliases
+        .filter(
+            (alias, i) =>
+                aliases.findIndex(
+                    (a) => a.id === alias.id && a.name === alias.name,
+                ) === i,
+        )
+        .map<BHPlayerAlias>(({ name, id }) => ({
+            playerId: id.toString(),
+            alias: name,
+        }))
+
+    // No need to await these, it's not a big deal if they fail
+    supabaseService.from<BHPlayer>("BHPlayer").upsert({
+        id: stats.brawlhalla_id.toString(),
+        name: stats.name,
+    })
+    supabaseService.from<BHPlayerAlias>("BHPlayerAlias").upsert(curratedAliases)
 
     await Promise.all([
         queryClient.prefetchQuery(["playerStats", playerId], async () => stats),
         queryClient.prefetchQuery(["playerRanked", playerId], async () => {
-            if (!ranked.brawlhalla_id) throw new Error("Player not ranked")
+            if (!ranked?.brawlhalla_id) throw new Error("Player not ranked")
             return ranked
         }),
-        supabaseService.from<BHPlayer>("BHPlayer").upsert({
-            id: stats.brawlhalla_id.toString(),
-            name: stats.name,
-        }),
-        supabaseService.from<BHPlayerAlias>("BHPlayerAlias").upsert(
-            aliases.map((alias) => ({
-                playerId: stats.brawlhalla_id.toString(),
-                alias,
-            })),
-        ),
     ])
-
-    const { data } = await supabaseService
-        .from<BHPlayerAlias>("BHPlayerAlias")
-        .select("alias")
-        .eq("playerId", stats.brawlhalla_id.toString())
 
     return {
         props: {
             dehydratedState: dehydrate(queryClient),
-            aliases: [
-                ...new Set([
-                    ...(data?.map(({ alias }) => alias) ?? aliases),
-                    ...aliases,
-                ]),
-            ],
         },
     }
 }

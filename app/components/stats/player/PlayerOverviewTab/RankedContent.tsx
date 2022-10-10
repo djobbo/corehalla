@@ -74,7 +74,7 @@ export const PlayerOverviewRankedContent = ({
                 <div className="relative h-24 w-16">
                     <Image
                         src={`/images/ranked-banners/${ranked.tier}.png`}
-                        alt={ranked.tier}
+                        alt={ranked.tier ?? "Valhallan"}
                         layout="fill"
                         objectFit="contain"
                         objectPosition="center"

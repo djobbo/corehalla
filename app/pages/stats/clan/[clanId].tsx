@@ -20,7 +20,7 @@ const Page: NextPage = () => {
 
     if (isLoading) return <p>Loading...</p>
 
-    if (isError || !clan) return <p>Error</p>
+    if (isError || !clan) return <p>Error fetching clan stats</p>
 
     const clanStats: MiscStat[] = [
         {
@@ -94,14 +94,16 @@ export const getServerSideProps: GetServerSideProps = async ({
     // TODO: Error handling
     const clan = await getClan(clanId)
 
+    // No need to await this, if it fails it's not a big deal
+    supabaseService.from<BHClan>("BHClan").upsert({
+        id: clan.clan_id.toString(),
+        name: clan.clan_name,
+        created: clan.clan_create_date,
+        xp: clan.clan_xp,
+    })
+
     await Promise.all([
         queryClient.prefetchQuery(["clanStats", clanId], async () => clan),
-        supabaseService.from<BHClan>("BHClan").upsert({
-            id: clan.clan_id.toString(),
-            name: clan.clan_name,
-            created: clan.clan_create_date,
-            xp: clan.clan_xp,
-        }),
     ])
 
     return {

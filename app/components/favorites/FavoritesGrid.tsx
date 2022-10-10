@@ -1,5 +1,5 @@
 import { AppLink } from "ui/base/AppLink"
-import { UserGroupIcon, XIcon } from "@heroicons/react/solid"
+import { HiUserGroup, HiX } from "react-icons/hi"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { css } from "ui/theme"
@@ -45,7 +45,7 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                             </div>
                         )
                 } else if (fav.type === "clan") {
-                    icon = <UserGroupIcon className="w-8 h-8" />
+                    icon = <HiUserGroup className="w-8 h-8" />
                 }
 
                 return (
@@ -74,7 +74,7 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                             className="hidden remove-btn absolute w-5 h-5 p-0.5 rounded-full overflow-hidden shadow-md bg-accent hover:bg-text hover:text-bgVar2"
                             onClick={() => removeFavorite(fav)}
                         >
-                            <XIcon />
+                            <HiX />
                         </button>
                     </div>
                 )

@@ -1,4 +1,3 @@
-import { AppNav } from "@components/layout/AppNav"
 import { ArticlePreviewGrid } from "@components/articles/ArticlePreviewGrid"
 import { Button } from "ui/base/Button"
 import { Discord } from "@icons-pack/react-simple-icons"
@@ -6,26 +5,24 @@ import { FavoritesGrid } from "@components/favorites/FavoritesGrid"
 import { SEO } from "@components/SEO"
 import { SearchButton } from "@components/search/SearchButton"
 import { SectionTitle } from "@components/layout/SectionTitle"
+import { Tooltip } from "ui/base/Tooltip"
 import { cn } from "common/helpers/classnames"
 import { css } from "ui/theme"
-import { logError } from "logger"
-import { parseBHArticlesPage } from "web-parser/bh-articles/parseBHArticlesPage"
 import { useAuth, useFavorites } from "@ctx/auth/AuthProvider"
-import type { BHArticle } from "web-parser/bh-articles/parseBHArticlesPage"
-import type { GetServerSideProps } from "next"
+import { useBrawlhallaArticles } from "@hooks/useBrawlhallaArticles"
+import { useWeeklyRotation } from "@hooks/useWeeklyRotation"
+import Image from "next/image"
 
 const landingClassName = css({
     height: "60vh",
     minHeight: "400px",
 })()
 
-type PageProps = {
-    latestArticles: BHArticle[]
-}
-
-const Page = ({ latestArticles }: PageProps) => {
+const Page = () => {
     const { isLoggedIn, signIn } = useAuth()
     const { favorites } = useFavorites()
+    const { articles } = useBrawlhallaArticles(1, "patch-notes", 3)
+    const { weeklyRotation } = useWeeklyRotation()
 
     return (
         <>
@@ -71,8 +68,9 @@ const Page = ({ latestArticles }: PageProps) => {
                     </div>
                 </div>
             </div>
-            <AppNav className="mt-4" />
-            <SectionTitle>Favorites</SectionTitle>
+            <SectionTitle className="mt-0 mb-4" customMargin>
+                Favorites
+            </SectionTitle>
             {favorites.length > 0 ? (
                 <FavoritesGrid favorites={favorites} />
             ) : (
@@ -97,11 +95,33 @@ const Page = ({ latestArticles }: PageProps) => {
                     )}
                 </p>
             )}
-
-            {latestArticles.length > 0 && (
+            {weeklyRotation.length > 0 && (
+                <>
+                    <SectionTitle>Weekly Rotation</SectionTitle>
+                    <div className="flex gap-2">
+                        {weeklyRotation.map((legend) => (
+                            <Tooltip
+                                key={legend.legend_id}
+                                content={legend.bio_name}
+                            >
+                                <div className="relative w-16 h-16 rounded-md">
+                                    <Image
+                                        src={`/images/icons/roster/legends/${legend.bio_name}.png`}
+                                        alt={legend.bio_name}
+                                        layout="fill"
+                                        objectFit="contain"
+                                        objectPosition="center"
+                                    />
+                                </div>
+                            </Tooltip>
+                        ))}
+                    </div>
+                </>
+            )}
+            {articles.length > 0 && (
                 <>
                     <SectionTitle>Latest Patches</SectionTitle>
-                    <ArticlePreviewGrid articles={latestArticles} />
+                    <ArticlePreviewGrid articles={articles} />
                 </>
             )}
         </>
@@ -109,29 +129,3 @@ const Page = ({ latestArticles }: PageProps) => {
 }
 
 export default Page
-
-export const getServerSideProps: GetServerSideProps<PageProps> = async ({
-    res,
-}) => {
-    res.setHeader(
-        "Cache-Control",
-        `public, s-maxage=1200, stale-while-revalidate=${60 * 60 * 24 * 7}`,
-    )
-
-    let latestArticles: BHArticle[] = []
-
-    try {
-        latestArticles = (await parseBHArticlesPage(1, "patch-notes")).slice(
-            0,
-            3,
-        )
-    } catch {
-        logError("Failed to parse latest articles")
-    }
-
-    return {
-        props: {
-            latestArticles,
-        },
-    }
-}

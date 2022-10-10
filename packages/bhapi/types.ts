@@ -66,7 +66,7 @@ export type PlayerRanked = {
         legend_name_key: string
         rating: number
         peak_rating: number
-        tier: RankedTier
+        tier: RankedTier | null // TOFIX: 'Valhallan' tier is null
         wins: number
         games: number
     }[]
@@ -84,7 +84,7 @@ export type PlayerRanked = {
     }[]
     rating: number
     peak_rating: number
-    tier: RankedTier
+    tier: RankedTier | null // TOFIX: 'Valhallan' tier is null
     wins: number
     games: number
     region: RankedRegion | Uppercase<RankedRegion>
