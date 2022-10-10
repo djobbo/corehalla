@@ -35,22 +35,24 @@ type SubHeaderProps = {
 
 export const AppNav = ({ className }: SubHeaderProps) => {
     return (
-        <div
-            className={cn(
-                className,
-                "p-4 rounded-xl flex items-center justify-around max-w-screen-lg mx-auto gap-8 bg-gradient-to-l from-accent to-accentAlt shadow-md",
-            )}
-        >
-            {subHeaderNavigation.map(({ title, href, icon }) => (
-                <a
-                    key={title}
-                    className="flex flex-col items-center justify-center w-32"
-                    href={href}
-                >
-                    {icon}
-                    <span className="text-xs text-text mt-2">{title}</span>
-                </a>
-            ))}
+        <div className="w-full gap-8 bg-gradient-to-l from-accent to-accentAlt shadow-md">
+            <div
+                className={cn(
+                    className,
+                    "mx-auto px-4 py-1 flex items-center justify-around max-w-screen-lg gap-8",
+                )}
+            >
+                {subHeaderNavigation.map(({ title, href, icon }) => (
+                    <a
+                        key={title}
+                        className="flex flex-col items-center justify-center w-32"
+                        href={href}
+                    >
+                        {icon}
+                        <span className="text-xs text-text mt-2">{title}</span>
+                    </a>
+                ))}
+            </div>
         </div>
     )
 }

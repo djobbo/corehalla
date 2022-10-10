@@ -27,7 +27,10 @@ const queryClientConfig: QueryClientConfig = {
 
 const queryClient = new QueryClient(queryClientConfig)
 
-const App = ({ Component, pageProps }: AppProps) => {
+const App = ({
+    Component,
+    pageProps,
+}: AppProps<{ dehydratedState: unknown }>) => {
     return (
         <>
             <Head>
