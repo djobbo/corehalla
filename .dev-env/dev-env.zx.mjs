@@ -67,9 +67,13 @@ const start = async () => {
             }
         }
         log("Started dev environment")
-        log(`App is running at ${chalk.blue(SITE_URL)}`)
-        log(`Public API is running at ${chalk.blue(PUBLIC_REST_URL)}`)
-        log(`Studio is running ${chalk.blue(`http://localhost:${STUDIO_PORT}`)}`)
+        log(`App is running at: ${chalk.blue(SITE_URL)}`)
+        log(`Public API is running at: ${chalk.blue(PUBLIC_REST_URL)}`)
+        log(
+            `Studio is running at: ${chalk.blue(
+                `http://localhost:${STUDIO_PORT}`,
+            )}`,
+        )
     } catch (e) {
         log(chalk.red("Failed to start"))
         await $`docker compose -f ${composeFilePath} down`
@@ -138,17 +142,6 @@ const remove = async () => {
     }
 }
 
-const prune = async () => {
-    await remove()
-    log("Pruning...")
-    try {
-        await $`docker system prune -af`
-        log("Pruned")
-    } catch (e) {
-        log("Failed to prune")
-    }
-}
-
 switch (command) {
     case "version":
         showVersion()
@@ -178,9 +171,6 @@ switch (command) {
         break
     case "rm":
         remove()
-        break
-    case "prune":
-        prune()
         break
     default:
         log("Unknown command")
