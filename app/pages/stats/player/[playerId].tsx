@@ -313,25 +313,20 @@ export const getServerSideProps: GetServerSideProps = async ({
             alias: name,
         }))
 
+    // No need to await these, it's not a big deal if they fail
+    supabaseService.from<BHPlayer>("BHPlayer").upsert({
+        id: stats.brawlhalla_id.toString(),
+        name: stats.name,
+    })
+    supabaseService.from<BHPlayerAlias>("BHPlayerAlias").upsert(curratedAliases)
+
     await Promise.all([
         queryClient.prefetchQuery(["playerStats", playerId], async () => stats),
         queryClient.prefetchQuery(["playerRanked", playerId], async () => {
-            if (!ranked.brawlhalla_id) throw new Error("Player not ranked")
+            if (!ranked?.brawlhalla_id) throw new Error("Player not ranked")
             return ranked
         }),
-        supabaseService.from<BHPlayer>("BHPlayer").upsert({
-            id: stats.brawlhalla_id.toString(),
-            name: stats.name,
-        }),
-        supabaseService
-            .from<BHPlayerAlias>("BHPlayerAlias")
-            .upsert(curratedAliases),
     ])
-
-    // const { data: playerAliases } = await supabaseService
-    //     .from<BHPlayerAlias>("BHPlayerAlias")
-    //     .select("alias")
-    //     .match({ playerId: stats.brawlhalla_id.toString() })
 
     return {
         props: {

@@ -663,6 +663,18 @@ export const legends: Legend[] = [
         defense: "4",
         speed: "4",
     },
+    {
+        legend_id: 60,
+        legend_name_key: "ezio",
+        bio_name: "Ezio",
+        bio_aka: "The Master Assassin",
+        weapon_one: "Sword",
+        weapon_two: "Orb",
+        strength: "5",
+        dexterity: "7",
+        defense: "4",
+        speed: "6",
+    },
 ]
 
 // export const legendsMap = legends.reduce<Record<number, Legend>>((acc, legend) => {
