@@ -20,7 +20,7 @@ const Page: NextPage = () => {
 
     if (isLoading) return <p>Loading...</p>
 
-    if (isError || !clan) return <p>Error</p>
+    if (isError || !clan) return <p>Error fetching clan stats</p>
 
     const clanStats: MiscStat[] = [
         {

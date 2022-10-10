@@ -14,6 +14,9 @@ const {
     POSTGRES_LOCAL_HOST,
     POSTGRES_PORT,
     POSTGRES_DB,
+    SITE_URL,
+    PUBLIC_REST_URL,
+    STUDIO_PORT,
 } = process.env
 
 const [, , , command, ...args] = process.argv
@@ -48,7 +51,7 @@ const start = async () => {
         while (true) {
             try {
                 await $`DATABASE_URL="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_LOCAL_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}" pnpm db:migrate up`
-                log("Start complete")
+                log("Sucessfully migrated database")
                 break
             } catch {
                 if (retries >= MAX_RETRIES) {
@@ -63,6 +66,10 @@ const start = async () => {
                 await sleep(2500)
             }
         }
+        log("Started dev environment")
+        log(`App is running at ${chalk.blue(SITE_URL)}`)
+        log(`Public API is running at ${chalk.blue(PUBLIC_REST_URL)}`)
+        log(`Studio is running ${chalk.blue(`http://localhost:${STUDIO_PORT}`)}`)
     } catch (e) {
         log(chalk.red("Failed to start"))
         await $`docker compose -f ${composeFilePath} down`

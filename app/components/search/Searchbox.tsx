@@ -90,8 +90,16 @@ export const Searchbox = () => {
                                     ))
                             ) : (
                                 <div className="flex items-center justify-center px-4 py-8 w-full gap-2">
-                                    <HiArrowUp className="w-4 h-4" /> Search for
-                                    a player (must start with exact match)
+                                    <HiArrowUp className="w-4 h-4" />
+                                    <p className="text-center text-sm mx-4">
+                                        Search for a player (must start with
+                                        exact match)
+                                        <br />
+                                        <span className="text-xs">
+                                            Only players that have completed
+                                            their 10 placement matches are shown
+                                        </span>
+                                    </p>
                                     <HiArrowUp className="w-4 h-4" />
                                 </div>
                             )}

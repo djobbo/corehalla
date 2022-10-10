@@ -86,16 +86,23 @@ const SideNavIcon = ({
     )
 }
 
-const defaultNav = [
+const defaultNav: {
+    name: string
+    icon: ReactNode
+    href: string
+    exact?: boolean
+}[] = [
     {
         name: "Home",
         icon: <HiHome className="w-6 h-6" />,
         href: "/",
+        exact: true,
     },
     {
         name: "Rankings",
         icon: <HiChevronDoubleUp className="w-6 h-6" />,
         href: "/rankings",
+        exact: false,
     },
 ]
 
@@ -113,6 +120,7 @@ export const SideNav = () => {
                       name: "Favorites",
                       icon: <HiHeart className="w-6 h-6" />,
                       href: "/@me/favorites",
+                      exact: false,
                   },
               ]
             : [],
@@ -126,7 +134,11 @@ export const SideNav = () => {
                     name={nav.name}
                     content={nav.icon}
                     href={nav.href}
-                    active={pathname === nav.href}
+                    active={
+                        nav.exact
+                            ? pathname === nav.href
+                            : pathname.startsWith(nav.href)
+                    }
                 />
             ))}
             {favorites.map((favorite) => {
