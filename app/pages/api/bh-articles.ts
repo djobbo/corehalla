@@ -8,7 +8,7 @@ const handler: NextApiHandler = async (req, res) => {
         const pageNum = parseInt(page as string)
         const articles = await parseBHArticlesPage(pageNum, type.toString())
         if (max) {
-            res.json(articles.slice(0, parseInt(max.toString())))
+            return res.json(articles.slice(0, parseInt(max.toString())))
         }
         res.json(articles)
     } catch {
