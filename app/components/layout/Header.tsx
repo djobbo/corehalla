@@ -1,7 +1,7 @@
 import { AppLink } from "ui/base/AppLink"
 import { Button } from "ui/base/Button"
 import { SearchButton } from "../search/SearchButton"
-import { SiDiscord } from "react-icons/si"
+import { SiDiscord, SiGithub, SiTwitter } from "react-icons/si"
 import { cn } from "common/helpers/classnames"
 import { useAuth } from "@ctx/auth/AuthProvider"
 import { useRouter } from "next/router"
@@ -66,6 +66,29 @@ export const Header = ({ className }: HeaderProps) => {
                             Sign in
                         </Button>
                     )}
+                    <div className="flex items-center gap-1">
+                        <AppLink
+                            className="text-textVar1 hover:text-text"
+                            href="/twitter"
+                            target="_blank"
+                        >
+                            <SiTwitter size="16" className="mr-2" />
+                        </AppLink>
+                        <AppLink
+                            className="text-textVar1 hover:text-text"
+                            href="/github"
+                            target="_blank"
+                        >
+                            <SiGithub size="16" className="mr-2" />
+                        </AppLink>
+                        <AppLink
+                            className="text-textVar1 hover:text-text"
+                            href="/discord"
+                            target="_blank"
+                        >
+                            <SiDiscord size="16" className="mr-2" />
+                        </AppLink>
+                    </div>
                 </div>
             </div>
         </header>

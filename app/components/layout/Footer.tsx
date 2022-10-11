@@ -1,19 +1,20 @@
+import { AppLink } from "ui/base/AppLink"
 import { SiDiscord, SiGithub, SiTwitter } from "react-icons/si"
 import { Tooltip } from "ui/base/Tooltip"
 
 const socialLinks = [
     {
-        href: "https://twitter.com/Corehalla",
+        href: "/twitter",
         Icon: SiTwitter,
         name: "Twitter",
     },
     {
-        href: "https://github.com/djobbo/corehalla",
+        href: "/github",
         Icon: SiGithub,
         name: "Github",
     },
     {
-        href: "https://discord.gg/eD248ez",
+        href: "/discord",
         Icon: SiDiscord,
         name: "Discord",
     },
@@ -48,14 +49,13 @@ export const Footer = ({ className }) => {
                 <div className="flex items-center gap-8">
                     {socialLinks.map(({ Icon, href, name }) => (
                         <Tooltip content={name} key={name}>
-                            <a
+                            <AppLink
                                 href={href}
                                 target="_blank"
-                                rel="noreferrer"
                                 className="text-textVar1 hover:text-text"
                             >
                                 <Icon size={32} />
-                            </a>
+                            </AppLink>
                         </Tooltip>
                     ))}
                 </div>

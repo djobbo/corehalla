@@ -7,7 +7,11 @@ type AppLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }
 export const AppLink = ({ href, children, ...props }: AppLinkProps) => {
     return (
         <Link href={href} passHref>
-            <a href="/dummy" {...props}>
+            <a
+                href="/dummy"
+                {...props}
+                rel={props.target === "_blank" ? "noreferrer" : undefined}
+            >
                 {children}
             </a>
         </Link>
