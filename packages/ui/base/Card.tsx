@@ -28,7 +28,9 @@ export const Card = ({
                     {title}
                 </p>
             )}
-            <div className={cn("mt-2", contentClassName)}>{children}</div>
+            <div className={cn({ "mt-2": !!title }, contentClassName)}>
+                {children}
+            </div>
         </div>
     )
 }

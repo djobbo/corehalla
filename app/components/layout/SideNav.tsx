@@ -1,5 +1,6 @@
 import { AppLink } from "ui/base/AppLink"
 import {
+    HiBookOpen,
     HiChevronDoubleUp,
     HiHeart,
     HiHome,
@@ -8,7 +9,6 @@ import {
     HiUsers,
     HiX,
 } from "react-icons/hi"
-
 import { Tooltip } from "ui/base/Tooltip"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
@@ -28,6 +28,7 @@ type SideNavIconProps = {
     active?: boolean
     onRemove?: () => void
     desc?: string
+    external?: boolean
 }
 
 const sideNavIconClassName = css({
@@ -47,6 +48,7 @@ const SideNavIcon = ({
     onRemove,
     active = false,
     desc,
+    external = false,
 }: SideNavIconProps) => {
     const cleanName = cleanString(name)
     return (
@@ -62,6 +64,7 @@ const SideNavIcon = ({
                             "bg-bg hover:border hover:border-text": !active,
                         },
                     )}
+                    target={external ? "_blank" : undefined}
                 >
                     {image && (
                         <span
@@ -99,6 +102,7 @@ const defaultNav: {
     icon: ReactNode
     href: string
     exact?: boolean
+    external?: boolean
 }[] = [
     {
         name: "Home",
@@ -127,6 +131,12 @@ const defaultNav: {
         name: "Clans",
         href: "/rankings/clans",
         icon: <HiUserGroup className="w-6 h-6" />,
+    },
+    {
+        name: "Wiki",
+        href: "/wiki",
+        icon: <HiBookOpen className="w-6 h-6" />,
+        external: true,
     },
 ]
 
@@ -163,6 +173,7 @@ export const SideNav = () => {
                             ? pathname === nav.href
                             : pathname.startsWith(nav.href)
                     }
+                    external={nav.external}
                 />
             ))}
             {favorites.map((favorite) => {
