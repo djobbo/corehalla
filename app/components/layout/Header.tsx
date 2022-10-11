@@ -1,7 +1,7 @@
 import { AppLink } from "ui/base/AppLink"
 import { Button } from "ui/base/Button"
-import { Discord } from "@icons-pack/react-simple-icons"
 import { SearchButton } from "../search/SearchButton"
+import { SiDiscord } from "react-icons/si"
 import { cn } from "common/helpers/classnames"
 import { useAuth } from "@ctx/auth/AuthProvider"
 import { useRouter } from "next/router"
@@ -62,7 +62,7 @@ export const Header = ({ className }: HeaderProps) => {
                         </>
                     ) : (
                         <Button onClick={signIn}>
-                            <Discord size="16" className="mr-2" />
+                            <SiDiscord size="16" className="mr-2" />
                             Sign in
                         </Button>
                     )}

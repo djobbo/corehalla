@@ -11,7 +11,6 @@
     },
     "dependencies": {
         "@fontsource/montserrat": "^4.5.13",
-        "@icons-pack/react-simple-icons": "^5.9.0",
         "@radix-ui/react-collapsible": "^1.0.0",
         "@radix-ui/react-tabs": "^1.0.0",
         "@stitches/react": "^1.2.8",

@@ -34,6 +34,7 @@ const Page: NextPage = () => {
                 // { page: "switchcraft", label: "Switchcraft" },
                 { page: "power/1v1", label: "Power 1v1" },
                 { page: "power/2v2", label: "Power 2v2" },
+                { page: "clans", label: "Clans" },
             ]}
             currentBracket="2v2"
             regions={[

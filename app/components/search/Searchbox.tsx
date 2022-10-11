@@ -95,9 +95,10 @@ export const Searchbox = () => {
                                         Search for a player (must start with
                                         exact match)
                                         <br />
-                                        <span className="text-xs">
+                                        <span className="text-xs text-textVar1">
                                             Only players that have completed
-                                            their 10 placement matches are shown
+                                            their 10 placement matches are
+                                            shown.
                                         </span>
                                     </p>
                                     <HiArrowUp className="w-4 h-4" />

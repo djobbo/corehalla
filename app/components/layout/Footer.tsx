@@ -1,20 +1,20 @@
-import { Discord, Github, Twitter } from "@icons-pack/react-simple-icons"
+import { SiDiscord, SiGithub, SiTwitter } from "react-icons/si"
 import { Tooltip } from "ui/base/Tooltip"
 
 const socialLinks = [
     {
         href: "https://twitter.com/Corehalla",
-        Icon: Twitter,
+        Icon: SiTwitter,
         name: "Twitter",
     },
     {
         href: "https://github.com/djobbo/corehalla",
-        Icon: Github,
+        Icon: SiGithub,
         name: "Github",
     },
     {
         href: "https://discord.gg/eD248ez",
-        Icon: Discord,
+        Icon: SiDiscord,
         name: "Discord",
     },
 ]

@@ -33,7 +33,6 @@ importers:
   app:
     specifiers:
       '@fontsource/montserrat': ^4.5.13
-      '@icons-pack/react-simple-icons': ^5.9.0
       '@radix-ui/react-collapsible': ^1.0.0
       '@radix-ui/react-tabs': ^1.0.0
       '@stitches/react': ^1.2.8
@@ -61,7 +60,6 @@ importers:
       web-parser: workspace:*
     dependencies:
       '@fontsource/montserrat': 4.5.13
-      '@icons-pack/react-simple-icons': 5.9.0_react@18.2.0
       '@radix-ui/react-collapsible': 1.0.0_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-tabs': 1.0.0_biqbaboplfbrettd7655fr4n2y
       '@stitches/react': 1.2.8_react@18.2.0
@@ -691,14 +689,6 @@ packages:
       react: ^16.13 || ^17 || ^18
     dependencies:
       react: 18.0.0-rc.3-next-e7d0053e6-20220325
-    dev: false
-
-  /@icons-pack/react-simple-icons/5.9.0_react@18.2.0:
-    resolution: {integrity: sha512-WPaafg/0ZTYJPF4IArpNd5H3ti3vqlgYgRG0DL88jZRyYqdynY/XUPg26mh1VgyDuY8l1JRlIIhxPs/iYtLIuA==}
-    peerDependencies:
-      react: ^16.13 || ^17 || ^18
-    dependencies:
-      react: 18.2.0
     dev: false
 
   /@jridgewell/gen-mapping/0.1.1:

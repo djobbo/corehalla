@@ -1,17 +1,16 @@
 import { ArticlePreviewGrid } from "@components/articles/ArticlePreviewGrid"
 import { Button } from "ui/base/Button"
-import { Discord } from "@icons-pack/react-simple-icons"
 import { FavoritesGrid } from "@components/favorites/FavoritesGrid"
 import { SEO } from "@components/SEO"
 import { SearchButton } from "@components/search/SearchButton"
 import { SectionTitle } from "@components/layout/SectionTitle"
-import { Tooltip } from "ui/base/Tooltip"
+import { SiDiscord } from "react-icons/si"
+import { WeeklyRotation } from "@components/WeeklyRotation"
 import { cn } from "common/helpers/classnames"
 import { css } from "ui/theme"
 import { useAuth, useFavorites } from "@ctx/auth/AuthProvider"
 import { useBrawlhallaArticles } from "@hooks/useBrawlhallaArticles"
 import { useWeeklyRotation } from "@hooks/useWeeklyRotation"
-import Image from "next/image"
 
 const landingClassName = css({
     height: "60vh",
@@ -86,38 +85,18 @@ const Page = () => {
                         </>
                     ) : (
                         <>
-                            You need to be logged in to see your favorites.
-                            <Button onClick={signIn}>
-                                <Discord size="16" className="mr-2" />
+                            Log in to save your favorite players and clans.
+                            <Button onClick={signIn} className="mt-2">
+                                <SiDiscord size="16" className="mr-2" />
                                 Sign in
                             </Button>
                         </>
                     )}
                 </p>
             )}
-            {weeklyRotation.length > 0 && (
-                <>
-                    <SectionTitle>Weekly Rotation</SectionTitle>
-                    <div className="flex gap-2">
-                        {weeklyRotation.map((legend) => (
-                            <Tooltip
-                                key={legend.legend_id}
-                                content={legend.bio_name}
-                            >
-                                <div className="relative w-16 h-16 rounded-md">
-                                    <Image
-                                        src={`/images/icons/roster/legends/${legend.bio_name}.png`}
-                                        alt={legend.bio_name}
-                                        layout="fill"
-                                        objectFit="contain"
-                                        objectPosition="center"
-                                    />
-                                </div>
-                            </Tooltip>
-                        ))}
-                    </div>
-                </>
-            )}
+            <SectionTitle>Weekly Rotation</SectionTitle>
+            <WeeklyRotation weeklyRotation={weeklyRotation} />
+
             {articles.length > 0 && (
                 <>
                     <SectionTitle>Latest Patches</SectionTitle>

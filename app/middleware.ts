@@ -8,6 +8,24 @@ const handler: NextMiddleware = (req) => {
         return NextResponse.redirect(url)
     }
 
+    if (req.nextUrl.pathname.startsWith("/leaderboard")) {
+        const url = req.nextUrl.clone()
+        url.pathname = url.pathname.replace("/leaderboard", "/rankings")
+        return NextResponse.redirect(url)
+    }
+
+    if (req.nextUrl.pathname.startsWith("/p/")) {
+        const url = req.nextUrl.clone()
+        url.pathname = url.pathname.replace("/p/", "/stats/player/")
+        return NextResponse.redirect(url)
+    }
+
+    if (req.nextUrl.pathname.startsWith("/c/")) {
+        const url = req.nextUrl.clone()
+        url.pathname = url.pathname.replace("/c/", "/stats/clan/")
+        return NextResponse.redirect(url)
+    }
+
     return NextResponse.next()
 }
 
