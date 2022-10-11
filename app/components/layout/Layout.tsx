@@ -19,8 +19,8 @@ const BackgroundContainer = styled("div", {
 export const Layout = ({ children }: LayoutProps) => {
     return (
         <>
-            <BackgroundContainer className="w-full h-screen absolute opacity-50">
-                <LandingBackground className="w-full h-5/6" />
+            <BackgroundContainer className="w-full h-screen absolute">
+                <LandingBackground className="w-full h-5/6 fill-bgLanding" />
             </BackgroundContainer>
             <div className="relative z-10 flex">
                 <SideNav />
