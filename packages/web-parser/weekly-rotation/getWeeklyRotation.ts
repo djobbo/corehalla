@@ -23,7 +23,7 @@ export const getWeeklyRotation = async () => {
     const legendsNames = txt
         .slice(PREFIX.length)
         .replace(".", "")
-        .replace("and", "")
+        .replace(/&|(and)/g, "")
         .split(",")
         .map((s) => s.trim())
 
