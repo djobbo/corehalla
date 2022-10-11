@@ -1,5 +1,13 @@
 import { AppLink } from "ui/base/AppLink"
-import { HiChevronDoubleUp, HiHeart, HiHome, HiX } from "react-icons/hi"
+import {
+    HiChevronDoubleUp,
+    HiHeart,
+    HiHome,
+    HiLightningBolt,
+    HiUserGroup,
+    HiUsers,
+    HiX,
+} from "react-icons/hi"
 
 import { Tooltip } from "ui/base/Tooltip"
 import { cleanString } from "common/helpers/cleanString"
@@ -99,10 +107,26 @@ const defaultNav: {
         exact: true,
     },
     {
-        name: "Rankings",
+        name: "1v1 Rankings",
         icon: <HiChevronDoubleUp className="w-6 h-6" />,
-        href: "/rankings",
+        href: "/rankings/1v1",
         exact: false,
+    },
+    {
+        name: "2v2 Rankings",
+        icon: <HiUsers className="w-6 h-6" />,
+        href: "/rankings/2v2",
+        exact: false,
+    },
+    {
+        name: "Power Rankings",
+        href: "/rankings/power",
+        icon: <HiLightningBolt className="w-6 h-6" />,
+    },
+    {
+        name: "Clans",
+        href: "/rankings/clans",
+        icon: <HiUserGroup className="w-6 h-6" />,
     },
 ]
 

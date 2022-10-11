@@ -5,6 +5,8 @@ import { SEO } from "@components/SEO"
 import { Spinner } from "ui/base/Spinner"
 import { cleanString } from "common/helpers/cleanString"
 import { legendsMap } from "bhapi/legends"
+import { useDebouncedState } from "common/hooks/useDebouncedState"
+import { useEffect } from "react"
 import { useRankings1v1 } from "@hooks/stats/useRankings"
 import { useRouter } from "next/router"
 import Image from "next/image"
@@ -15,6 +17,11 @@ const Page: NextPage = () => {
 
     const { rankingsOptions, player = "" } = router.query
 
+    const [search, setSearch, immediateSearch] = useDebouncedState(
+        player.toString(),
+        500,
+    )
+
     const [region = "all", page = "1"] = Array.isArray(rankingsOptions)
         ? rankingsOptions
         : []
@@ -23,8 +30,20 @@ const Page: NextPage = () => {
         // @ts-expect-error TODO: Typecheck this
         region,
         page,
-        player,
+        search,
     )
+
+    useEffect(() => {
+        router.push(
+            `/rankings/1v1/${region}/${page}`,
+            {
+                query: {
+                    player: search,
+                },
+            },
+            { shallow: true },
+        )
+    }, [region, page, search])
 
     if (isError || (!isLoading && !rankings1v1)) return <div>Error</div>
 
@@ -36,6 +55,7 @@ const Page: NextPage = () => {
                 // { page: "switchcraft", label: "Switchcraft" },
                 { page: "power/1v1", label: "Power 1v1" },
                 { page: "power/2v2", label: "Power 2v2" },
+                { page: "clans", label: "Clans" },
             ]}
             currentBracket="1v1"
             regions={[
@@ -51,6 +71,11 @@ const Page: NextPage = () => {
             currentRegion={region}
             currentPage={page}
             hasPagination={!player}
+            hasSearch
+            search={immediateSearch}
+            setSearch={setSearch}
+            searchPlaceholder="Search for a player (must start with exact match)"
+            searchSubtitle="Only players that have completed their 10 placement matches are shown."
         >
             <SEO
                 title={`Brawlhalla ${

@@ -1,10 +1,12 @@
 import { AdsenseStatsHeader } from "common/analytics/Adsense"
 import { Button } from "ui/base/Button"
-import { Discord } from "@icons-pack/react-simple-icons"
+import { HiShare } from "react-icons/hi"
 import { HiUserAdd, HiUserRemove } from "react-icons/hi"
 import { MiscStatGroup } from "./MiscStatGroup"
+import { SiDiscord } from "react-icons/si"
 import { cn } from "common/helpers/classnames"
 import { useAuth, useFavorites } from "@ctx/auth/AuthProvider"
+import { useCopyToClipboard } from "common/hooks/useCopyToClipboard"
 import type { Favorite } from "@ctx/auth/useUserFavorites"
 import type { MiscStat } from "./MiscStatGroup"
 import type { ReactNode } from "react"
@@ -28,6 +30,7 @@ export const StatsHeader = ({
 }: StatsHeaderProps) => {
     const { isLoggedIn, signIn } = useAuth()
     const { isFavorite, removeFavorite, addFavorite } = useFavorites()
+    const copyToClipboard = useCopyToClipboard()
 
     const isItemFavorite = favorite && isFavorite(favorite)
 
@@ -43,7 +46,7 @@ export const StatsHeader = ({
             >
                 <AdsenseStatsHeader />
             </div>
-            <div className="flex justify-end py-2">
+            <div className="flex justify-end py-2 gap-2">
                 {isLoggedIn ? (
                     favorite && (
                         <Button
@@ -69,10 +72,18 @@ export const StatsHeader = ({
                     )
                 ) : (
                     <Button buttonStyle="primary" onClick={signIn}>
-                        <Discord size="16" className="mr-2" /> Sign in to add
+                        <SiDiscord size="16" className="mr-2" /> Sign in to add
                         favorites
                     </Button>
                 )}
+                <Button
+                    buttonStyle="outline"
+                    onClick={() => {
+                        copyToClipboard(window.location.href)
+                    }}
+                >
+                    <HiShare size="16" className="mr-2" /> Share
+                </Button>
             </div>
             <div
                 className={cn("flex flex-col justify-center items-center", {
@@ -89,7 +100,7 @@ export const StatsHeader = ({
                 </span>
             </div>
             {aliases && aliases.length > 1 && (
-                <div className="flex flex-wrap gap-2 mt-2 justify-center mt-4">
+                <div className="flex flex-wrap gap-2 mt-4 justify-center">
                     {aliases.map((alias) => (
                         <p
                             key={alias}
