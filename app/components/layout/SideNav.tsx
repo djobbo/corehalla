@@ -33,7 +33,7 @@ type SideNavIconProps = {
 
 const sideNavIconClassName = css({
     "&:hover .remove-btn": {
-        display: "block",
+        display: "flex",
         top: "-0.375rem",
         right: "-0.375rem",
     },
@@ -86,10 +86,10 @@ const SideNavIcon = ({
                 </AppLink>
                 {onRemove && (
                     <button
-                        className="hidden remove-btn absolute w-4 h-4 p-0.5 rounded-full overflow-hidden shadow-md bg-accent hover:bg-text hover:text-bgVar2"
+                        className="items-center justify-center hidden remove-btn absolute w-4 h-4 p-0.5 rounded-full overflow-hidden shadow-md bg-accent hover:bg-text hover:text-bgVar2"
                         onClick={() => onRemove()}
                     >
-                        <HiX />
+                        <HiX size={12} />
                     </button>
                 )}
             </div>

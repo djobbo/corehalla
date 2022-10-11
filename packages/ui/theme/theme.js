@@ -2,6 +2,7 @@ module.exports = {
     bgVar2: "#1A1B23",
     bgVar1: "#1E212C",
     bg: "#2B3043",
+    bgLanding: "#1A1B23AA",
     textVar1: "#CCD0D6",
     text: "#FFFFFF",
     accent: "#3861FB",

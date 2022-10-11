@@ -27,6 +27,7 @@ export const RankingsTableItem = ({
                 "py-1 w-full h-full flex items-center gap-4 hover:bg-bg",
                 {
                     "bg-bgVar2": index % 2 === 0,
+                    "bg-bgVar1": index % 2 === 1,
                 },
                 className,
             )}
