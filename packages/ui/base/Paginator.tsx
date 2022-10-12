@@ -2,10 +2,11 @@ import { AppLink } from "./AppLink"
 import { Select } from "./Select"
 import { cn } from "common/helpers/classnames"
 import { useRouter } from "next/router"
+import type { ReactNode } from "react"
 
 export type PaginatorPage = {
     page: string
-    label?: string
+    label?: ReactNode
 }
 
 type PaginatorProps = {
@@ -37,7 +38,10 @@ export const Paginator = ({
                 }}
                 value={currentPage}
                 options={pages.map((page) => ({
-                    label: page?.label ?? page?.page ?? "",
+                    label:
+                        typeof page?.label === "string"
+                            ? page.label
+                            : page?.page ?? "",
                     value: page?.page ?? "",
                 }))}
             />
