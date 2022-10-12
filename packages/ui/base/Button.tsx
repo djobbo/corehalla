@@ -46,5 +46,5 @@ export const Button = <Type extends ButtonType = "button">(
         )
     }
     // @ts-expect-error spread type isnt narrowed correctly
-    return <button className={buttonClass} {...buttonProps} />
+    return <button type="button" className={buttonClass} {...buttonProps} />
 }

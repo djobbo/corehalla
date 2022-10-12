@@ -147,9 +147,9 @@ export const PlayerLegendsTab = ({
 
     return (
         <>
-            <div className="flex gap-4 mt-8 items-center">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-8 items-center w-full">
                 <Select<Weapon | "">
-                    className="flex-1"
+                    className="flex-1 w-full"
                     onChange={setWeaponFilter}
                     value={weaponFilter}
                     options={[
@@ -163,22 +163,25 @@ export const PlayerLegendsTab = ({
                         })),
                     ]}
                 />
-                <Select<LegendSortOption>
-                    className="flex-1"
-                    onChange={sortLegendBy}
-                    value={legendSortBy}
-                    options={legendSortOptions}
-                />
-                <button
-                    onClick={changeLegendSortDirection}
-                    className="flex items-center hover:text-accent"
-                >
-                    {legendSortDirection === SortDirection.Ascending ? (
-                        <HiSortAscending className="w-6 h-6" />
-                    ) : (
-                        <HiSortDescending className="w-6 h-6" />
-                    )}
-                </button>
+                <div className="flex-1 flex gap-4 items-center w-full">
+                    <Select<LegendSortOption>
+                        className="flex-1"
+                        onChange={sortLegendBy}
+                        value={legendSortBy}
+                        options={legendSortOptions}
+                    />
+                    <button
+                        type="button"
+                        onClick={changeLegendSortDirection}
+                        className="flex items-center hover:text-accent"
+                    >
+                        {legendSortDirection === SortDirection.Ascending ? (
+                            <HiSortAscending className="w-6 h-6" />
+                        ) : (
+                            <HiSortDescending className="w-6 h-6" />
+                        )}
+                    </button>
+                </div>
             </div>
             <MiscStatGroup className="mt-8" stats={globalLegendsStats} />
             <div className="flex flex-col gap-2 mt-8">

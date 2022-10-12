@@ -46,7 +46,7 @@ export const StatsHeader = ({
             >
                 <AdsenseStatsHeader />
             </div>
-            <div className="flex justify-end py-2 gap-2">
+            <div className="flex flex-col sm:flex-row justify-end py-2 gap-2">
                 {isLoggedIn ? (
                     favorite && (
                         <Button

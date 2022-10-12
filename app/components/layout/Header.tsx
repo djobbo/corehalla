@@ -22,7 +22,7 @@ export const Header = ({ className }: HeaderProps) => {
             <div
                 className={cn(
                     className,
-                    "flex items-center justify-between h-20 px-8",
+                    "flex items-center justify-between h-16 sm:h-20 px-4",
                 )}
             >
                 <div className="flex items-center">
@@ -39,9 +39,10 @@ export const Header = ({ className }: HeaderProps) => {
                         />
                     </AppLink>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
                     <SearchButton
                         bg={isLandingPage ? "bg-bgVar2" : "bg-bgVar1"}
+                        className="hidden sm:flex mr-2"
                     />
                     {isLoggedIn ? (
                         <>
@@ -66,7 +67,7 @@ export const Header = ({ className }: HeaderProps) => {
                             Sign in
                         </Button>
                     )}
-                    <div className="flex items-center gap-1">
+                    <div className="hidden md:flex items-center gap-1 ml-2">
                         <AppLink
                             className="text-textVar1 hover:text-text"
                             href="/twitter"
@@ -90,6 +91,13 @@ export const Header = ({ className }: HeaderProps) => {
                         </AppLink>
                     </div>
                 </div>
+            </div>
+            <div className="flex sm:hidden justify-center">
+                <SearchButton
+                    bg={isLandingPage ? "bg-bgVar2" : "bg-bgVar1"}
+                    className="w-full mx-4 mb-4"
+                    customWidth
+                />
             </div>
         </header>
     )

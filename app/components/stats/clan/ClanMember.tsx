@@ -20,8 +20,10 @@ export const ClanMember = ({ member, clan }: ClanMemberProps) => {
         },
         {
             name: "XP",
-            value: `${member.xp} (
-                    ${((member.xp / parseInt(clan.clan_xp)) * 100).toFixed(2)}
+            value: `${member.xp} (${(
+                (member.xp / parseInt(clan.clan_xp)) *
+                100
+            ).toFixed(2)}
                     %)`,
             desc: `XP earned ${cleanString(
                 member.name,
