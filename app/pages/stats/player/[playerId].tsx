@@ -29,7 +29,7 @@ import type { GetServerSideProps, NextPage } from "next"
 import type { MiscStat } from "@components/stats/MiscStatGroup"
 
 const tabClassName = cn(
-    "px-6 py-4 uppercase text-xs border-b-2 z-10",
+    "px-6 py-4 uppercase text-xs border-b-2 z-10 whitespace-nowrap",
     css({
         borderColor: "transparent",
         color: theme.colors.textVar1,
@@ -118,7 +118,7 @@ const Page: NextPage = () => {
             desc: `${playerStats.name}'s account XP`,
         },
         {
-            name: "Time spent in game",
+            name: "Game time",
             value: formatTime(matchtime),
             desc: `Time ${playerStats.name} spent in game`,
         },
@@ -218,7 +218,7 @@ const Page: NextPage = () => {
             <Tabs defaultValue="overview">
                 <TabsList
                     aria-label="Manage your account"
-                    className="relative flex mt-8 before:absolute before:inset-x-0 before:bottom-0 before:h-0.5 before:bg-bgVar1"
+                    className="relative flex mt-8 before:absolute before:inset-x-0 before:bottom-0 before:h-0.5 before:bg-bgVar1 overflow-scroll"
                 >
                     <TabsTrigger value="overview" className={tabClassName}>
                         Overview
