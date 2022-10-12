@@ -1,10 +1,12 @@
 import { AppLink } from "ui/base/AppLink"
 import { Button } from "ui/base/Button"
+import { HiMenu } from "react-icons/hi"
 import { SearchButton } from "../search/SearchButton"
 import { SiDiscord, SiGithub, SiTwitter } from "react-icons/si"
 import { cn } from "common/helpers/classnames"
 import { useAuth } from "@ctx/auth/AuthProvider"
 import { useRouter } from "next/router"
+import { useSideNav } from "@ctx/SideNavProvider"
 import Image from "next/image"
 
 type HeaderProps = {
@@ -14,6 +16,8 @@ type HeaderProps = {
 export const Header = ({ className }: HeaderProps) => {
     const { isLoggedIn, signIn, signOut, userProfile } = useAuth()
     const router = useRouter()
+
+    const { openSideNav } = useSideNav()
 
     const isLandingPage = router.pathname === "/"
 
@@ -25,7 +29,16 @@ export const Header = ({ className }: HeaderProps) => {
                     "flex items-center justify-between h-16 sm:h-20 px-4",
                 )}
             >
-                <div className="flex items-center">
+                <div className="flex items-center gap-4">
+                    <button
+                        type="button"
+                        className="block sm:hidden"
+                        onClick={() => {
+                            openSideNav()
+                        }}
+                    >
+                        <HiMenu size={24} />
+                    </button>
                     <AppLink
                         href="/"
                         className="relative rounded-lg w-32 h-8 overflow-hidden"

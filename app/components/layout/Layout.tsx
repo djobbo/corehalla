@@ -23,9 +23,9 @@ export const Layout = ({ children }: LayoutProps) => {
                 <LandingBackground className="w-full h-5/6 fill-bgLanding" />
             </BackgroundContainer>
             <div className="relative z-10 flex">
-                <SideNav className="hidden sm:flex" />
+                <SideNav />
                 <div className="overflow-y-auto flex-1">
-                    <Header className="max-w-screen-xl mx-auto px-4 xl:px-0" />
+                    <Header className="max-w-screen-xl mx-auto" />
                     <div className="max-w-screen-xl mx-auto px-4 pl:mx-0 mt-4">
                         {children}
                     </div>
