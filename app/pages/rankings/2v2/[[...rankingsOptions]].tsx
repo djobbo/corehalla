@@ -59,7 +59,7 @@ const Page: NextPage = () => {
                     region === "all" ? "Global" : region.toUpperCase()
                 } 2v2 Rankings - Page ${page} • Corehalla`}
             />
-            <div className="py-4 w-full h-full flex items-center gap-4">
+            <div className="py-4 w-full h-full hidden md:flex items-center gap-4">
                 <p className="w-16 text-center">Rank</p>
                 <p className="w-16 text-center">Region</p>
                 <p className="flex-1">Player 1</p>
@@ -74,7 +74,7 @@ const Page: NextPage = () => {
                     <Spinner size="4rem" />
                 </div>
             ) : (
-                <div className="rounded-lg overflow-hidden border border-bg mb-4">
+                <div className="rounded-lg overflow-hidden border border-bg mb-4 flex flex-col">
                     {rankings2v2?.map((team, i) => {
                         const [player1, player2] = getTeamPlayers(team)
                         return (

@@ -57,7 +57,7 @@ export const RankingsLayout = ({
 
     return (
         <>
-            <div className="w-full flex flex-col items-center justify-center gap-2">
+            <div className="w-full flex flex-row sm:flex-col items-center justify-center gap-2">
                 <Paginator
                     pages={brackets}
                     currentPage={bracket}
