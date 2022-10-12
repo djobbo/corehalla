@@ -50,7 +50,7 @@ export const RankingsLayout = ({
                 }
                 currentPage={parseInt(currentPage)}
                 firstPage={1}
-                className="justify-end"
+                className="mt-4 justify-end"
             />
         )) ||
         null
@@ -62,15 +62,16 @@ export const RankingsLayout = ({
                     pages={brackets}
                     currentPage={bracket}
                     getPageHref={(bracket) => `/rankings/${bracket}/${region}`}
+                    responsive
                 />
                 {regions.length > 0 && (
                     <Paginator
-                        className="mt-2"
                         pages={regions}
                         currentPage={region ?? ""}
                         getPageHref={(region) =>
                             `/rankings/${bracket}/${region}`
                         }
+                        responsive
                     />
                 )}
             </div>
@@ -82,7 +83,7 @@ export const RankingsLayout = ({
                         onChange={(e) => {
                             setSearch?.(e.target.value)
                         }}
-                        className="w-full mt-8 px-4 py-2 border bg-bgVar2 border-bg rounded-lg"
+                        className="w-full mt-4 px-4 py-2 border bg-bgVar2 border-bg rounded-lg"
                         placeholder={searchPlaceholder}
                     />
                     {searchSubtitle && (

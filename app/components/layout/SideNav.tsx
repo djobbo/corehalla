@@ -140,7 +140,11 @@ const defaultNav: {
     },
 ]
 
-export const SideNav = () => {
+type SideNavProps = {
+    className?: string
+}
+
+export const SideNav = ({ className }: SideNavProps) => {
     const { favorites, removeFavorite } = useFavorites()
     const router = useRouter()
 
@@ -161,7 +165,12 @@ export const SideNav = () => {
     )
 
     return (
-        <div className="sticky top-0 p-2 flex flex-col gap-2 border-r border-bg h-screen overflow-y-auto bg-bgVar2">
+        <div
+            className={cn(
+                "sticky top-0 p-2 flex flex-col gap-2 border-r border-bg h-screen overflow-y-auto bg-bgVar2",
+                className,
+            )}
+        >
             {nav.map((nav) => (
                 <SideNavIcon
                     key={nav.name}

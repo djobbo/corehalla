@@ -35,19 +35,21 @@ const Page = () => {
                     landingClassName,
                 )}
             >
-                <span className="text-2xl font-bold uppercase bg-gradient-to-l from-accent to-accentVar1 bg-clip-text text-fill-none">
+                <span className="text-center text-lg sm:text-2xl font-bold uppercase bg-gradient-to-l from-accent to-accentVar1 bg-clip-text text-fill-none">
                     Brawlhalla
                 </span>
-                <h1 className="text-5xl font-bold uppercase mt-1">
+                <h1 className="text-center text-3xl sm:text-5xl font-bold uppercase mt-1">
                     Stats for everyone.
                 </h1>
-                <p className="mt-3 max-w-lg text-center text-textVar1">
+                <p className="text-sm sm:text-base mt-3 max-w-lg text-center text-textVar1">
                     Welcome to Corehalla, the fastest and easiest way to find
                     your Brawlhalla Stats, and official rankings.
                 </p>
-                <div className="mt-8 flex items-center gap-6">
+                <div className="mt-8 flex items-center gap-3 sm:gap-6 flex-col sm:flex-row">
                     <SearchButton />
-                    <span className="text-textVar1">or</span>
+                    <span className="text-textVar1 text-sm sm:text-base">
+                        or
+                    </span>
                     <div className="flex items-center gap-2">
                         <Button
                             as="a"
