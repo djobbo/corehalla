@@ -21,7 +21,8 @@
         "env:down": "zx ./.dev-env/dev-env.zx.mjs down",
         "env:logs": "zx ./.dev-env/dev-env.zx.mjs logs",
         "env:logs:f": "zx ./.dev-env/dev-env.zx.mjs logs -f",
-        "env:restart": "zx ./.dev-env/dev-env.zx.mjs restart"
+        "env:restart": "zx ./.dev-env/dev-env.zx.mjs restart",
+        "env:build": "zx ./.dev-env/dev-env.zx.mjs build"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^5.39.0",

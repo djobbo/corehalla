@@ -190,4 +190,6 @@ services:
         NEXT_PUBLIC_ADSENSE_ID: ${ADSENSE_ID}
     depends_on:
         - db
+        - rest
         - auth
+        - storage
