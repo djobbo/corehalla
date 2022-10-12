@@ -16,6 +16,7 @@ import { css } from "ui/theme"
 import { legendsMap } from "bhapi/legends"
 import { useFavorites } from "@ctx/auth/AuthProvider"
 import { useRouter } from "next/router"
+import { useSideNav } from "@ctx/SideNavProvider"
 import Image from "next/image"
 import type { ReactNode } from "react"
 
@@ -50,6 +51,8 @@ const SideNavIcon = ({
     desc,
     external = false,
 }: SideNavIconProps) => {
+    const { closeSideNav } = useSideNav()
+
     const cleanName = cleanString(name)
     return (
         <Tooltip content={desc ?? cleanName} placement="right">
@@ -65,6 +68,9 @@ const SideNavIcon = ({
                         },
                     )}
                     target={external ? "_blank" : undefined}
+                    onClick={() => {
+                        closeSideNav()
+                    }}
                 >
                     {image && (
                         <span
@@ -148,6 +154,8 @@ export const SideNav = ({ className }: SideNavProps) => {
     const { favorites, removeFavorite } = useFavorites()
     const router = useRouter()
 
+    const { isSideNavOpen, closeSideNav } = useSideNav()
+
     const { pathname } = router
     const { playerId, clanId } = router.query
 
@@ -167,10 +175,19 @@ export const SideNav = ({ className }: SideNavProps) => {
     return (
         <div
             className={cn(
-                "sticky top-0 p-2 flex flex-col gap-2 border-r border-bg h-screen overflow-y-auto bg-bgVar2",
+                "fixed sm:sticky top-0 p-2 flex flex-col gap-2 border-r border-bg h-screen overflow-y-auto bg-bgVar2 z-50",
                 className,
+                {
+                    "hidden sm:flex": !isSideNavOpen,
+                },
             )}
         >
+            <button
+                className="fixed sm:hidden w-full h-full inset-0 bg-bgVar2 opacity-50 cursor-default"
+                onClick={() => {
+                    closeSideNav()
+                }}
+            />
             {nav.map((nav) => (
                 <SideNavIcon
                     key={nav.name}

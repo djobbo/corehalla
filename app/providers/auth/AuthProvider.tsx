@@ -8,7 +8,7 @@ import type { ReactNode } from "react"
 import type { Session, User } from "db/supabase/client"
 import type { UserConnection, UserProfile } from "db/generated/client"
 
-interface AuthContext {
+type AuthContext = {
     isLoggedIn: boolean
     session: Session | null
     user: User | null
