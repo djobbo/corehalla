@@ -34,14 +34,10 @@ const Page: NextPage = () => {
     )
 
     useEffect(() => {
-        router.push(
-            `/rankings/1v1/${region}/${page}`,
-            {
-                query: {
-                    player: search,
-                },
-            },
-            { shallow: true },
+        window.history.replaceState(
+            "",
+            "",
+            `/rankings/1v1/${region}/${page}?player=${search}`,
         )
     }, [region, page, search])
 
@@ -74,18 +70,22 @@ const Page: NextPage = () => {
             hasSearch
             search={immediateSearch}
             setSearch={setSearch}
-            searchPlaceholder="Search for a player (must start with exact match)"
-            searchSubtitle="Only players that have completed their 10 placement matches are shown."
+            searchPlaceholder="Search player..."
+            searchSubtitle="Must start with exact match. Only players that have completed their 10 placement matches are shown."
         >
             <SEO
                 title={`Brawlhalla ${
                     region === "all" ? "Global" : region.toUpperCase()
-                } 1v1 Rankings - Page ${page} • Corehalla`}
+                } 1v1 Rankings - Page ${page}${
+                    search ? ` - ${search}` : ""
+                } • Corehalla`}
                 description={`Brawhalla ${
                     region === "all" ? "Global" : region.toUpperCase()
-                } 1v1 Rankings - Page ${page} • Corehalla`}
+                } 1v1 Rankings - Page ${page}${
+                    search ? ` - ${search}` : ""
+                } • Corehalla`}
             />
-            <div className="py-4 w-full h-full flex items-center gap-4">
+            <div className="py-4 w-full h-full items-center gap-4 hidden md:flex">
                 <p className="w-16 text-center">Rank</p>
                 <p className="w-16 text-center">Region</p>
                 <p className="flex-1">Name</p>
@@ -99,37 +99,43 @@ const Page: NextPage = () => {
                     <Spinner size="4rem" />
                 </div>
             ) : (
-                <div className="rounded-lg overflow-hidden border border-bg mb-4">
-                    {rankings1v1?.map((player, i) => {
-                        const legend = legendsMap[player.best_legend]
-
-                        return (
-                            <RankingsTableItem
-                                key={player.brawlhalla_id}
-                                index={i}
-                                content={
-                                    <AppLink
-                                        href={`/stats/player/${player.brawlhalla_id}`}
-                                        className="flex flex-1 items-center gap-3"
-                                    >
-                                        <div className="relative w-6 h-6 rounded-lg overflow-hidden">
-                                            {legend && (
-                                                <Image
-                                                    src={`/images/icons/roster/legends/${legend.bio_name}.png`}
-                                                    alt={legend.bio_name}
-                                                    layout="fill"
-                                                    objectFit="cover"
-                                                    objectPosition="center"
-                                                />
-                                            )}
-                                        </div>
-                                        {cleanString(player.name)}
-                                    </AppLink>
-                                }
-                                {...player}
-                            />
+                <div className="rounded-lg overflow-hidden border border-bg mb-4 flex flex-col">
+                    {rankings1v1
+                        ?.filter((player) =>
+                            player.name
+                                .toLowerCase()
+                                .startsWith(immediateSearch),
                         )
-                    })}
+                        .map((player, i) => {
+                            const legend = legendsMap[player.best_legend]
+
+                            return (
+                                <RankingsTableItem
+                                    key={player.brawlhalla_id}
+                                    index={i}
+                                    content={
+                                        <AppLink
+                                            href={`/stats/player/${player.brawlhalla_id}`}
+                                            className="flex flex-1 items-center gap-2 md:gap-3"
+                                        >
+                                            <div className="relative w-6 h-6 rounded-lg overflow-hidden">
+                                                {legend && (
+                                                    <Image
+                                                        src={`/images/icons/roster/legends/${legend.bio_name}.png`}
+                                                        alt={legend.bio_name}
+                                                        layout="fill"
+                                                        objectFit="cover"
+                                                        objectPosition="center"
+                                                    />
+                                                )}
+                                            </div>
+                                            {cleanString(player.name)}
+                                        </AppLink>
+                                    }
+                                    {...player}
+                                />
+                            )
+                        })}
                 </div>
             )}
         </RankingsLayout>

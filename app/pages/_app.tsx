@@ -13,6 +13,7 @@ import { Layout } from "@components/layout/Layout"
 import { PageLoader } from "ui/base/PageLoader"
 import { SEO } from "@components/SEO"
 import { Searchbox } from "@components/search/Searchbox"
+import { SideNavProvider } from "@ctx/SideNavProvider"
 import { Toaster } from "react-hot-toast"
 import Head from "next/head"
 import type { AppProps } from "next/app"
@@ -49,17 +50,21 @@ const App = ({
                 <Hydrate state={pageProps.dehydratedState}>
                     <AuthProvider>
                         <KBarProvider actions={[]} options={{}}>
-                            <PageLoader>
-                                <div className="flex items-center gap-4">
-                                    <span className="text-sm">Loading...</span>
-                                    <AnimatedLogo size={32} />
-                                </div>
-                            </PageLoader>
-                            <Toaster />
-                            <Layout>
-                                <Component {...pageProps} />
-                            </Layout>
-                            <Searchbox />
+                            <SideNavProvider>
+                                <PageLoader>
+                                    <div className="flex items-center gap-4">
+                                        <span className="text-sm">
+                                            Loading...
+                                        </span>
+                                        <AnimatedLogo size={32} />
+                                    </div>
+                                </PageLoader>
+                                <Toaster />
+                                <Layout>
+                                    <Component {...pageProps} />
+                                </Layout>
+                                <Searchbox />
+                            </SideNavProvider>
                         </KBarProvider>
                     </AuthProvider>
                 </Hydrate>

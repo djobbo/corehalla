@@ -6,9 +6,14 @@ import { useKBar } from "kbar"
 type SearchButtonProps = {
     className?: string
     bg?: string
+    customWidth?: boolean
 }
 
-export const SearchButton = ({ className, bg }: SearchButtonProps) => {
+export const SearchButton = ({
+    className,
+    bg,
+    customWidth,
+}: SearchButtonProps) => {
     const { query } = useKBar()
     const device = useDevice()
 
@@ -17,7 +22,10 @@ export const SearchButton = ({ className, bg }: SearchButtonProps) => {
             type="button"
             className={cn(
                 className,
-                "rounded-xl py-2 px-4 w-64 cursor-text text-sm flex items-center justify-between border border-bg text-textVar1 hover:text-text hover:border-textVar1",
+                "rounded-xl py-2 px-4 cursor-text text-sm flex items-center justify-between border border-bg text-textVar1 hover:text-text hover:border-textVar1",
+                {
+                    "w-60": !customWidth,
+                },
                 bg ?? "bg-bgVar2",
             )}
             onClick={query.toggle}

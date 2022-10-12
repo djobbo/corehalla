@@ -20,7 +20,7 @@ export const MiscStatGroup = ({
     fit = "fill",
     className,
     stats,
-    minItemWidth = "10rem",
+    minItemWidth = "8rem",
 }: MiscStatGroupProps) => {
     const containerClassName = css({
         gridTemplateColumns: `repeat(auto-${fit}, minmax(${minItemWidth}, 1fr))`,
