@@ -1,4 +1,5 @@
 import { supabase } from "db/supabase/client"
+import { toast } from "react-hot-toast"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import type { Prisma, UserFavorite } from "db/generated/client"
 import type { Session } from "db/supabase/client"
@@ -42,20 +43,32 @@ export const useUserFavorites = (session: Session | null) => {
             .from<UserFavorite>("UserFavorite")
             .upsert({ ...favorite, userId })
 
-        if (error) throw error
+        if (error) {
+            toast.error(`Failed to add favorite`)
+            throw error
+        }
+
+        toast.success(favorite.name, {
+            icon: "❤️",
+        })
     }
 
     const removeFavorite = async ({ id, type, name }: Favorite) => {
         if (!userId) return
-        if (!window.confirm(`Remove ${name} from your favorite ${type}s ?`))
-            return
 
         const { error } = await supabase
             .from<UserFavorite>("UserFavorite")
             .delete()
             .match({ userId, id, type })
 
-        if (error) throw error
+        if (error) {
+            toast.error(`Failed to remove favorite`)
+            throw error
+        }
+
+        toast.success(name, {
+            icon: "💔",
+        })
     }
 
     const editFavorite = async (favorite: Favorite) => {
@@ -65,7 +78,14 @@ export const useUserFavorites = (session: Session | null) => {
             .from<UserFavorite>("UserFavorite")
             .upsert({ ...favorite, userId })
 
-        if (error) throw error
+        if (error) {
+            toast.error(`Failed to edit favorite, please try again.`)
+            throw error
+        }
+
+        toast.success(`${favorite.name} updated`, {
+            icon: "✏️",
+        })
     }
 
     const fetchInitialFavorites = useCallback(async () => {
