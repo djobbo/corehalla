@@ -34,7 +34,7 @@ const Page: NextPage = () => {
     )
 
     useEffect(() => {
-        window.history.pushState(
+        window.history.replaceState(
             "",
             "",
             `/rankings/1v1/${region}/${page}?player=${search}`,
@@ -85,7 +85,7 @@ const Page: NextPage = () => {
                     search ? ` - ${search}` : ""
                 } • Corehalla`}
             />
-            <div className="py-4 w-full h-full flex items-center gap-4">
+            <div className="py-4 w-full h-full items-center gap-4 hidden md:flex">
                 <p className="w-16 text-center">Rank</p>
                 <p className="w-16 text-center">Region</p>
                 <p className="flex-1">Name</p>
@@ -99,7 +99,7 @@ const Page: NextPage = () => {
                     <Spinner size="4rem" />
                 </div>
             ) : (
-                <div className="rounded-lg overflow-hidden border border-bg mb-4">
+                <div className="rounded-lg overflow-hidden border border-bg mb-4 flex flex-col">
                     {rankings1v1
                         ?.filter((player) =>
                             player.name
@@ -116,7 +116,7 @@ const Page: NextPage = () => {
                                     content={
                                         <AppLink
                                             href={`/stats/player/${player.brawlhalla_id}`}
-                                            className="flex flex-1 items-center gap-3"
+                                            className="flex flex-1 items-center gap-2 md:gap-3"
                                         >
                                             <div className="relative w-6 h-6 rounded-lg overflow-hidden">
                                                 {legend && (
