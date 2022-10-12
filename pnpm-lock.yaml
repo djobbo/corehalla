@@ -37,6 +37,7 @@ importers:
       '@radix-ui/react-tabs': ^1.0.0
       '@stitches/react': ^1.2.8
       '@types/node': ^18.8.3
+      '@types/nprogress': ^0.2.0
       '@types/react': ^18.0.21
       autoprefixer: ^10.4.12
       axios: ^1.1.2
@@ -48,6 +49,7 @@ importers:
       next: ^12.3.1
       next-sitemap: ^3.1.24
       next-transpile-modules: 9.0.0
+      nprogress: ^0.2.0
       postcss: ^8.4.17
       react: ^18.2.0
       react-dom: ^18.2.0
@@ -71,6 +73,7 @@ importers:
       logger: link:../packages/logger
       next: 12.3.1_biqbaboplfbrettd7655fr4n2y
       next-sitemap: 3.1.24_mna6xsgplvxkrmeg4ftolwenke
+      nprogress: 0.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-icons: 4.4.0_react@18.2.0
@@ -79,6 +82,7 @@ importers:
       web-parser: link:../packages/web-parser
     devDependencies:
       '@types/node': 18.8.3
+      '@types/nprogress': 0.2.0
       '@types/react': 18.0.21
       autoprefixer: 10.4.12_postcss@8.4.17
       next-transpile-modules: 9.0.0
@@ -1737,6 +1741,10 @@ packages:
 
   /@types/node/18.8.3:
     resolution: {integrity: sha512-0os9vz6BpGwxGe9LOhgP/ncvYN5Tx1fNcd2TM3rD/aCGBkysb+ZWpXEocG24h6ZzOi13+VB8HndAQFezsSOw1w==}
+    dev: true
+
+  /@types/nprogress/0.2.0:
+    resolution: {integrity: sha512-1cYJrqq9GezNFPsWTZpFut/d4CjpZqA0vhqDUPFWYKF1oIyBz5qnoYMzR+0C/T96t3ebLAC1SSnwrVOm5/j74A==}
     dev: true
 
   /@types/parse-json/4.0.0:
@@ -3849,6 +3857,10 @@ packages:
     resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /nprogress/0.2.0:
+    resolution: {integrity: sha512-I19aIingLgR1fmhftnbWWO3dXc0hSxqHQHQb3H8m+K3TnEn/iSeTZZOyvKXWqQESMwuUVnatlCnZdLBZZt2VSA==}
+    dev: false
 
   /nth-check/2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}

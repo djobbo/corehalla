@@ -33,7 +33,7 @@ const showVersion = async () => {
 const build = async () => {
     log("Building...")
     try {
-        await $`docker compose -f ${composeFilePath} build --no-cache`
+        await $`sudo docker compose -f ${composeFilePath} build --no-cache`
         log("Build complete")
     } catch (e) {
         log("Build failed")
@@ -43,7 +43,7 @@ const build = async () => {
 const start = async () => {
     log("Starting...")
     try {
-        await $`docker compose -f ${composeFilePath} up -d`
+        await $`sudo docker compose -f ${composeFilePath} up -d`
         log("Waiting for database to start...")
         cd("packages/db")
         const MAX_RETRIES = 10
@@ -63,7 +63,7 @@ const start = async () => {
                     }/${MAX_RETRIES})`,
                 )
                 retries++
-                await sleep(2500)
+                await sleep(5000)
             }
         }
         log("Started dev environment")
@@ -76,14 +76,14 @@ const start = async () => {
         )
     } catch (e) {
         log(chalk.red("Failed to start"))
-        await $`docker compose -f ${composeFilePath} down`
+        await $`sudo docker compose -f ${composeFilePath} down`
     }
 }
 
 const stop = async () => {
     log("Stopping...")
     try {
-        await $`docker compose -f ${composeFilePath} stop`
+        await $`sudo docker compose -f ${composeFilePath} stop`
         log("Stopped")
     } catch (e) {
         log("Failed to stop")
@@ -94,10 +94,10 @@ const showLogs = async (follow) => {
     log("Showing logs...")
     try {
         if (follow) {
-            await $`docker logs corehalla-app -f --tail 200`
+            await $`sudo docker logs corehalla-app -f --tail 200`
             return
         }
-        await $`docker logs corehalla-app`
+        await $`sudo docker logs corehalla-app`
     } catch (e) {
         log("Failed to get logs")
     }
@@ -106,7 +106,7 @@ const showLogs = async (follow) => {
 const exec = async (cmd) => {
     log(`Running command ${cmd}...`)
     try {
-        await $`docker exec -it corehalla-app ${cmd}`
+        await $`sudo docker exec -it corehalla-app ${cmd}`
     } catch (e) {
         log("Failed to run command")
     }
@@ -124,7 +124,7 @@ const runPnpm = async (cmd) => {
 const restart = async () => {
     log("Restarting...")
     try {
-        await $`docker compose -f ${composeFilePath} restart`
+        await $`sudo docker compose -f ${composeFilePath} restart`
         log("Restarted")
     } catch (e) {
         log("Failed to restart")
@@ -135,7 +135,7 @@ const remove = async () => {
     await stop()
     log("Removing...")
     try {
-        await $`docker compose -f ${composeFilePath} rm -f`
+        await $`sudo docker compose -f ${composeFilePath} rm -f`
         log("Removed all containers")
     } catch (e) {
         log("Failed to remove containers")
