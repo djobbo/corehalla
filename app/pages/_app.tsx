@@ -13,14 +13,10 @@ import { Layout } from "@components/layout/Layout"
 import { PageLoader } from "ui/base/PageLoader"
 import { SEO } from "@components/SEO"
 import { Searchbox } from "@components/search/Searchbox"
-import { useEffect } from "react"
-import { useRouter } from "next/router"
+import { Toaster } from "react-hot-toast"
 import Head from "next/head"
-import NProgress from "nprogress"
 import type { AppProps } from "next/app"
 import type { QueryClientConfig } from "react-query"
-
-NProgress.configure({ showSpinner: false })
 
 const queryClientConfig: QueryClientConfig = {
     defaultOptions: {
@@ -37,23 +33,6 @@ const App = ({
     Component,
     pageProps,
 }: AppProps<{ dehydratedState: unknown }>) => {
-    const router = useRouter()
-
-    useEffect(() => {
-        const handleRouteStart = () => NProgress.start()
-        const handleRouteDone = () => NProgress.done()
-
-        router.events.on("routeChangeStart", handleRouteStart)
-        router.events.on("routeChangeComplete", handleRouteDone)
-        router.events.on("routeChangeError", handleRouteDone)
-
-        return () => {
-            router.events.off("routeChangeStart", handleRouteStart)
-            router.events.off("routeChangeComplete", handleRouteDone)
-            router.events.off("routeChangeError", handleRouteDone)
-        }
-    }, [])
-
     return (
         <>
             <Head>
@@ -76,6 +55,7 @@ const App = ({
                                     <AnimatedLogo size={32} />
                                 </div>
                             </PageLoader>
+                            <Toaster />
                             <Layout>
                                 <Component {...pageProps} />
                             </Layout>

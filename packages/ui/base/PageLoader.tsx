@@ -1,11 +1,14 @@
 import { theme } from "../theme"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
+import NProgress from "nprogress"
 import type { ReactNode } from "react"
 
 type PageLoaderProps = {
     children: ReactNode
 }
+
+NProgress.configure({ showSpinner: false })
 
 export const PageLoader = ({ children }: PageLoaderProps) => {
     const router = useRouter()
@@ -13,8 +16,14 @@ export const PageLoader = ({ children }: PageLoaderProps) => {
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        const handleStart = () => setLoading(true)
-        const handleComplete = () => setLoading(false)
+        const handleStart = () => {
+            NProgress.start()
+            setLoading(true)
+        }
+        const handleComplete = () => {
+            NProgress.done()
+            setLoading(false)
+        }
 
         router.events.on("routeChangeStart", handleStart)
         router.events.on("routeChangeComplete", handleComplete)

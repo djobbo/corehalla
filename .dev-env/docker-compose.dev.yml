@@ -76,6 +76,11 @@ services:
       GOTRUE_EXTERNAL_PHONE_ENABLED: ${ENABLE_PHONE_SIGNUP}
       GOTRUE_SMS_AUTOCONFIRM: ${ENABLE_PHONE_AUTOCONFIRM}
 
+      GOTRUE_EXTERNAL_DISCORD_ENABLED: ${DISCORD_AUTH_ENABLED}
+      GOTRUE_EXTERNAL_DISCORD_CLIENT_ID: ${DISCORD_AUTH_CLIENT_ID}
+      GOTRUE_EXTERNAL_DISCORD_SECRET: ${DISCORD_AUTH_SECRET}
+      GOTRUE_EXTERNAL_DISCORD_REDIRECT_URI: http://localhost:${KONG_HTTP_PORT}/auth/v1/callback
+
   rest:
     container_name: supabase-rest
     image: postgrest/postgrest:v9.0.1
@@ -177,9 +182,7 @@ services:
         - "3000:3000"
     stdin_open: true
     volumes:
-        - ../:/usr/src/app
-        - /usr/src/app/node_modules
-        - /usr/src/app/app/node_modules
+        - ../:/usr/src
     environment:
         NEXT_PUBLIC_SUPABASE_URL: http://localhost:${KONG_HTTP_PORT}
         NEXT_PUBLIC_SUPABASE_ANON_KEY: ${ANON_KEY}

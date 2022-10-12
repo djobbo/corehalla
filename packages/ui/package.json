@@ -4,6 +4,7 @@
     "main": "./index.tsx",
     "types": "./index.tsx",
     "devDependencies": {
+        "@types/nprogress": "^0.2.0",
         "@types/react": "^18.0.21",
         "@types/react-dom": "^18.0.6",
         "@types/react-table": "^7.7.12",
@@ -32,6 +33,7 @@
         "kbar": "0.1.0-beta.36",
         "logger": "workspace:*",
         "next": "^12.3.1",
+        "nprogress": "^0.2.0",
         "react-icons": "^4.4.0",
         "react-phone-input-2": "^2.15.1",
         "react-select": "^5.4.0",

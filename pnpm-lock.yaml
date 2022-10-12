@@ -37,7 +37,6 @@ importers:
       '@radix-ui/react-tabs': ^1.0.0
       '@stitches/react': ^1.2.8
       '@types/node': ^18.8.3
-      '@types/nprogress': ^0.2.0
       '@types/react': ^18.0.21
       autoprefixer: ^10.4.12
       axios: ^1.1.2
@@ -49,10 +48,10 @@ importers:
       next: ^12.3.1
       next-sitemap: ^3.1.24
       next-transpile-modules: 9.0.0
-      nprogress: ^0.2.0
       postcss: ^8.4.17
       react: ^18.2.0
       react-dom: ^18.2.0
+      react-hot-toast: ^2.4.0
       react-icons: ^4.4.0
       react-query: ^3.39.2
       tailwindcss: ^3.1.8
@@ -73,16 +72,15 @@ importers:
       logger: link:../packages/logger
       next: 12.3.1_biqbaboplfbrettd7655fr4n2y
       next-sitemap: 3.1.24_mna6xsgplvxkrmeg4ftolwenke
-      nprogress: 0.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      react-hot-toast: 2.4.0_owo25xnefcwdq3zjgtohz6dbju
       react-icons: 4.4.0_react@18.2.0
       react-query: 3.39.2_biqbaboplfbrettd7655fr4n2y
       ui: link:../packages/ui
       web-parser: link:../packages/web-parser
     devDependencies:
       '@types/node': 18.8.3
-      '@types/nprogress': 0.2.0
       '@types/react': 18.0.21
       autoprefixer: 10.4.12_postcss@8.4.17
       next-transpile-modules: 9.0.0
@@ -207,6 +205,7 @@ importers:
       '@radix-ui/react-tooltip': ^1.0.0
       '@stitches/react': ^1.2.8
       '@tippyjs/react': ^4.2.6
+      '@types/nprogress': ^0.2.0
       '@types/react': ^18.0.21
       '@types/react-dom': ^18.0.6
       '@types/react-table': ^7.7.12
@@ -217,6 +216,7 @@ importers:
       kbar: 0.1.0-beta.36
       logger: workspace:*
       next: ^12.3.1
+      nprogress: ^0.2.0
       postcss: ^8.4.17
       react-icons: ^4.4.0
       react-phone-input-2: ^2.15.1
@@ -244,11 +244,13 @@ importers:
       kbar: 0.1.0-beta.36_6zaz4vcngc7ijlbmvfrkxj5nyi
       logger: link:../logger
       next: 12.3.1_5uwy4lmpgbohx7e7fzhtobvtxy
+      nprogress: 0.2.0
       react-icons: 4.4.0_4jdp6okly7h64wr46jw5nzsnhe
       react-phone-input-2: 2.15.1_6zaz4vcngc7ijlbmvfrkxj5nyi
       react-select: 5.4.0_xyngicebebd5bsx6camphis3n4
       react-table: 7.8.0_4jdp6okly7h64wr46jw5nzsnhe
     devDependencies:
+      '@types/nprogress': 0.2.0
       '@types/react': 18.0.21
       '@types/react-dom': 18.0.6
       '@types/react-table': 7.7.12
@@ -3239,6 +3241,14 @@ packages:
       slash: 4.0.0
     dev: true
 
+  /goober/2.1.11_csstype@3.1.1:
+    resolution: {integrity: sha512-5SS2lmxbhqH0u9ABEWq7WPU69a4i2pYcHeCxqaNq6Cw3mnrF0ghWNM4tEGid4dKy8XNIAUbuThuozDHHKJVh3A==}
+    peerDependencies:
+      csstype: ^3.0.10
+    dependencies:
+      csstype: 3.1.1
+    dev: false
+
   /graceful-fs/4.2.10:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
     dev: true
@@ -4188,6 +4198,20 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
+    dev: false
+
+  /react-hot-toast/2.4.0_owo25xnefcwdq3zjgtohz6dbju:
+    resolution: {integrity: sha512-qnnVbXropKuwUpriVVosgo8QrB+IaPJCpL8oBI6Ov84uvHZ5QQcTp2qg6ku2wNfgJl6rlQXJIQU5q+5lmPOutA==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      goober: 2.1.11_csstype@3.1.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    transitivePeerDependencies:
+      - csstype
     dev: false
 
   /react-icons/4.4.0_4jdp6okly7h64wr46jw5nzsnhe:
