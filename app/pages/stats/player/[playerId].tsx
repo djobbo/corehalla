@@ -323,6 +323,11 @@ export const getServerSideProps: GetServerSideProps = async ({
         supabaseService
             .from<BHPlayerAlias>("BHPlayerAlias")
             .upsert(curratedAliases),
+        queryClient.prefetchQuery(["playerAliases", playerId], async () =>
+            curratedAliases
+                .filter((alias) => alias.playerId === playerId)
+                .map((alias) => alias.alias),
+        ),
     ])
 
     return {

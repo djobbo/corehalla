@@ -99,7 +99,7 @@ export const StatsHeader = ({
                     #{id}
                 </span>
             </div>
-            {aliases && aliases.length > 1 && (
+            {!!aliases && aliases.length > 1 && (
                 <div className="flex flex-wrap gap-2 mt-4 justify-center">
                     {aliases.map((alias) => (
                         <p

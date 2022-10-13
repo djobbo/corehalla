@@ -12,8 +12,6 @@ const handler: NextApiHandler = async (req, res) => {
         const data = await getPlayerRanked(playerId as string)
         res.status(200).json(data)
     } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error)
         res.status(500).json({ error: "something went wrong" })
     }
 }

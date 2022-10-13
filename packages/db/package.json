@@ -16,7 +16,8 @@
         "db:studio": "prisma studio",
         "ts:check": "tsc --noEmit",
         "build": "prisma generate",
-        "postinstall": "pnpm build"
+        "postinstall": "pnpm build",
+        "prisma": "prisma"
     },
     "devDependencies": {
         "@types/react": "^18.0.21",

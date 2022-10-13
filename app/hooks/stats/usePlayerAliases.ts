@@ -1,19 +1,16 @@
-import { supabase } from "db/supabase/client"
 import { useQuery } from "react-query"
-import type { BHPlayerAlias } from "db/generated/client"
+import axios from "axios"
 
 export const usePlayerAliases = (playerId: string) => {
     const { data: playerAliases, ...query } = useQuery(
         ["playerAliases", playerId],
         async () => {
-            const { data, error } = await supabase
-                .from<BHPlayerAlias>("BHPlayerAlias")
-                .select("*")
-                .match({ playerId })
+            const { data } = await axios.get<string[]>(
+                `/api/stats/player/${playerId}/aliases`,
+            )
 
-            if (error) throw error
-
-            return data.map(({ alias }) => alias)
+            if (!data) throw new Error("Player not found")
+            return data
         },
         { enabled: !!playerId },
     )

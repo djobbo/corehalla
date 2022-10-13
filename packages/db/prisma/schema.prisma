@@ -45,13 +45,11 @@ model UserConnection {
 model BHPlayer {
   id      String          @id
   name    String
-  aliases BHPlayerAlias[]
 }
 
 model BHPlayerAlias {
   playerId String
   alias    String
-  player   BHPlayer @relation(fields: [playerId], references: [id])
 
   @@id([playerId, alias])
 }
