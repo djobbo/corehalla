@@ -56,7 +56,7 @@ export const Legend = ({ legend, matchtime, games }: LegendProps) => {
                 <>
                     <span className="relative w-6 h-6 rounded-lg overflow-hidden mr-1">
                         <Image
-                            src={`/images/icons/roster/legends/${legend.bio_name}.png`}
+                            src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
                             alt={legend.bio_name}
                             layout="fill"
                             objectFit="contain"

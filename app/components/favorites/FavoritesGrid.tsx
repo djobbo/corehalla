@@ -36,7 +36,7 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                         icon = (
                             <div className="relative w-8 h-8">
                                 <Image
-                                    src={`/images/icons/roster/legends/${legend.bio_name}.png`}
+                                    src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
                                     alt={`player ${cleanString(fav.name)} icon`}
                                     layout="fill"
                                     objectFit="contain"

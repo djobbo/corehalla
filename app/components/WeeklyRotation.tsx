@@ -29,7 +29,7 @@ export const WeeklyRotation = ({ weeklyRotation }: WeeklyRotationProps) => {
                 <Tooltip key={legend.legend_id} content={legend.bio_name}>
                     <div className="relative w-16 h-16 rounded-md">
                         <Image
-                            src={`/images/icons/roster/legends/${legend.bio_name}.png`}
+                            src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
                             alt={legend.bio_name}
                             layout="fill"
                             objectFit="contain"

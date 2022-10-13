@@ -41,12 +41,12 @@ export const PlayerOverviewClanContent = ({
                         desc: "XP earned by the clan members since creation",
                     },
                     {
-                        name: "Clan XP Contribution",
+                        name: "Contribution",
                         value: `${(
                             (clan.personal_xp / parseInt(clan.clan_xp)) *
                             100
                         ).toFixed(2)}%`,
-                        desc: `Percentage of the clan XP earned by the ${cleanString(
+                        desc: `Percentage of the clan XP earned by ${cleanString(
                             playerName,
                         )}`,
                     },

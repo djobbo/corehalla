@@ -1,5 +1,6 @@
 import { downloadImage } from "./downloadImage"
 import { existsSync, mkdirSync, rmdirSync } from "fs"
+import { legends } from "bhapi/legends"
 import { load } from "cheerio"
 import { logInfo } from "logger"
 import axios from "axios"
@@ -31,12 +32,21 @@ export const downloadImages = async () => {
     imgs.forEach((img, i) => {
         if (!img.src || !img.name) return
 
-        const prefix = i < NUM_LEGENDS ? "legend" : "crossover"
+        const isLegend = i < NUM_LEGENDS
+        const prefix = isLegend ? "legend" : "crossover"
 
         // eslint-disable-next-line no-console
         console.log(`Downloading: ${prefix} => ${img.name}`)
 
-        downloadImage(img.src, `${OUT_DIR}/${prefix}s/${img.name}.png`)
+        downloadImage(
+            img.src,
+            `${OUT_DIR}/${prefix}s/${
+                isLegend
+                    ? legends.find((l) => l.bio_name === img.name)
+                          ?.legend_name_key ?? img.name
+                    : img.name
+            }.png`,
+        )
     })
 
     logInfo("Downloaded roster images!")

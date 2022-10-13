@@ -162,6 +162,7 @@ importers:
     specifiers:
       '@types/node': ^18.8.3
       axios: ^1.1.2
+      bhapi: workspace:*
       cheerio: 1.0.0-rc.12
       logger: workspace:*
       ts-node: ^10.9.1
@@ -170,6 +171,7 @@ importers:
       typescript: ^4.8.4
     dependencies:
       axios: 1.1.2
+      bhapi: link:../bhapi
       cheerio: 1.0.0-rc.12
       logger: link:../logger
     devDependencies:

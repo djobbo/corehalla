@@ -49,7 +49,7 @@ export const PlayerOverviewRankedContent = ({
             desc: "Total glory earned this season (wins + best rating)",
         },
         {
-            name: "Glory from best rating",
+            name: "Glory from rating",
             value: gloryFromBestRating,
             desc: `Glory earned from best rating (${bestRating} Elo)`,
         },
