@@ -50,7 +50,8 @@ const start = async () => {
         let retries = 0
         while (true) {
             try {
-                await $`DATABASE_URL="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_LOCAL_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}" pnpm db:migrate up`
+                process.env.DATABASE_URL=`postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_LOCAL_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}`
+                await $`pnpm db:migrate up`
                 log("Sucessfully migrated database")
                 break
             } catch {
