@@ -75,7 +75,6 @@ export const RankingsLayout = ({
                     />
                 )}
             </div>
-            {pagination}
             {hasSearch && (
                 <>
                     <input
@@ -93,6 +92,7 @@ export const RankingsLayout = ({
                     )}
                 </>
             )}
+            {pagination}
             <div className="py-4">{children}</div>
             {pagination}
         </>

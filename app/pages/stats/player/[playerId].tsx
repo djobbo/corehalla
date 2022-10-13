@@ -132,7 +132,7 @@ const Page: NextPage = () => {
                             key={legend.legend_id}
                         >
                             <Image
-                                src={`/images/icons/roster/legends/${legend.bio_name}.png`}
+                                src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
                                 alt={legend.bio_name}
                                 layout="fill"
                                 objectFit="contain"
@@ -216,10 +216,7 @@ const Page: NextPage = () => {
                 }}
             />
             <Tabs defaultValue="overview">
-                <TabsList
-                    aria-label="Manage your account"
-                    className="relative flex mt-8 before:absolute before:inset-x-0 before:bottom-0 before:h-0.5 before:bg-bgVar1 overflow-scroll"
-                >
+                <TabsList className="relative flex mt-8 before:absolute before:inset-x-0 before:bottom-0 before:h-0.5 before:bg-bgVar1 overflow-x-scroll">
                     <TabsTrigger value="overview" className={tabClassName}>
                         Overview
                     </TabsTrigger>

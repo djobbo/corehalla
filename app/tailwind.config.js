@@ -11,6 +11,9 @@ module.exports = {
     theme: {
         extend: {
             colors,
+            screens: {
+                hashover: { raw: "(hover: hover)" },
+            },
         },
     },
     plugins: [],

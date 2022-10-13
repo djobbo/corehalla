@@ -121,7 +121,7 @@ const Page: NextPage = () => {
                                             <div className="relative w-6 h-6 rounded-lg overflow-hidden">
                                                 {legend && (
                                                     <Image
-                                                        src={`/images/icons/roster/legends/${legend.bio_name}.png`}
+                                                        src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
                                                         alt={legend.bio_name}
                                                         layout="fill"
                                                         objectFit="cover"

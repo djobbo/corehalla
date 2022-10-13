@@ -213,7 +213,7 @@ export const SideNav = ({ className }: SideNavProps) => {
                                 href={`/stats/player/${favorite.id}`}
                                 name={cleanString(favorite.name)}
                                 {...(legend && {
-                                    image: `/images/icons/roster/legends/${legend.bio_name}.png`,
+                                    image: `/images/icons/roster/legends/${legend.legend_name_key}.png`,
                                 })}
                                 active={
                                     pathname === "/stats/player/[playerId]" &&
