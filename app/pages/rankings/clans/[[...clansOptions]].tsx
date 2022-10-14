@@ -51,7 +51,7 @@ const ClansPage: NextPage = () => {
             currentBracket="clans"
             regions={[]}
             currentPage={page}
-            hasPagination
+            hasPagination={!search}
             hasSearch
             search={immediateSearch}
             setSearch={setSearch}
