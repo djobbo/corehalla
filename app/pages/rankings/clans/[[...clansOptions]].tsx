@@ -56,7 +56,7 @@ const ClansPage: NextPage = () => {
             search={immediateSearch}
             setSearch={setSearch}
             searchPlaceholder="Search clan..."
-            searchSubtitle="Search by clan name (exactly as it appears in-game)"
+            searchSubtitle="Search by clan name (exactly as it appears in-game). Clan search/rankings is still in early development."
         >
             <SEO
                 title={`Brawlhalla Clans - Page ${page} • Corehalla`}
