@@ -36,14 +36,14 @@ const Page = () => {
                 )}
             >
                 <span className="text-center text-lg sm:text-2xl font-bold uppercase bg-gradient-to-l from-accent to-accentVar1 bg-clip-text text-fill-none">
-                    Brawlhalla
+                    Welcome to
                 </span>
                 <h1 className="text-center text-3xl sm:text-5xl font-bold uppercase mt-1">
-                    Stats for everyone.
+                    Corehalla
                 </h1>
                 <p className="text-sm sm:text-base mt-3 max-w-lg text-center text-textVar1">
-                    Welcome to Corehalla, the fastest and easiest way to find
-                    your Brawlhalla Stats, and official rankings.
+                    View official rankings, player and clan stats, or find a
+                    community, and join the fight!
                 </p>
                 <div className="mt-8 flex items-center gap-3 sm:gap-6 flex-col sm:flex-row">
                     <SearchButton />

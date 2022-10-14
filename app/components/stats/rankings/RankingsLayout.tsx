@@ -1,5 +1,6 @@
 import { Pagination } from "ui/base/Pagination"
 import { Paginator } from "ui/base/Paginator"
+import { cn } from "common/helpers/classnames"
 import type { Dispatch, ReactNode, SetStateAction } from "react"
 import type { PaginatorPage } from "ui/base/Paginator"
 
@@ -14,6 +15,7 @@ type RankingsLayoutProps = {
     hasSearch?: boolean
     search?: string
     setSearch?: Dispatch<SetStateAction<string>>
+    searchClassName?: string
     searchPlaceholder?: string
     searchSubtitle?: string
     defaultRegion?: string
@@ -31,6 +33,7 @@ export const RankingsLayout = ({
     hasSearch = false,
     search,
     setSearch,
+    searchClassName,
     searchPlaceholder = "Search...",
     searchSubtitle,
     defaultRegion = "all",
@@ -82,7 +85,10 @@ export const RankingsLayout = ({
                         onChange={(e) => {
                             setSearch?.(e.target.value)
                         }}
-                        className="w-full mt-4 px-4 py-2 border bg-bgVar2 border-bg rounded-lg"
+                        className={cn(
+                            "w-full mt-4 px-4 py-2 border bg-bgVar2 border-bg rounded-lg",
+                            searchClassName,
+                        )}
                         placeholder={searchPlaceholder}
                     />
                     {searchSubtitle && (
