@@ -100,7 +100,7 @@ export const getServerSideProps: GetServerSideProps = async ({
             id: clan.clan_id.toString(),
             name: clan.clan_name,
             created: clan.clan_create_date,
-            xp: clan.clan_xp,
+            xp: parseInt(clan.clan_xp),
         }),
     ])
 
