@@ -4,6 +4,7 @@ import { HiShare } from "react-icons/hi"
 import { HiUserAdd, HiUserRemove } from "react-icons/hi"
 import { MiscStatGroup } from "./MiscStatGroup"
 import { SiDiscord } from "react-icons/si"
+import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { useAuth, useFavorites } from "@ctx/auth/AuthProvider"
 import { useCopyToClipboard } from "common/hooks/useCopyToClipboard"
@@ -106,7 +107,7 @@ export const StatsHeader = ({
                             key={alias}
                             className={cn("rounded-lg py-0.5 px-3 bg-bg")}
                         >
-                            {alias}
+                            {cleanString(alias)}
                         </p>
                     ))}
                 </div>

@@ -66,7 +66,7 @@ const Page: NextPage = () => {
             ]}
             currentRegion={region}
             currentPage={page}
-            hasPagination={!player}
+            hasPagination={!search}
             hasSearch
             search={immediateSearch}
             setSearch={setSearch}
@@ -94,7 +94,7 @@ const Page: NextPage = () => {
                 <p className="w-20 text-center">Winrate</p>
                 <p className="w-40 pl-1">Elo</p>
             </div>
-            {isLoading ? (
+            {isLoading && !rankings1v1 ? (
                 <div className="flex items-center justify-center h-48">
                     <Spinner size="4rem" />
                 </div>

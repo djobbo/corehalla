@@ -1,3 +1,4 @@
+import { cleanString } from "common/helpers/cleanString"
 import Head from "next/head"
 
 type SEOProps = {
@@ -70,12 +71,15 @@ const getSocialTags = ({
 export const SEO = (props: SEOProps) => {
     const { title, description, image } = props
 
+    const cleanTitle = cleanString(title)
+    const cleanDescription = cleanString(description ?? "")
+
     return (
         <Head>
-            <title>{title}</title>
-            <meta name="description" content={description} />
-            <meta itemProp="name" content={title} />
-            <meta itemProp="description" content={description} />
+            <title>{cleanTitle}</title>
+            <meta name="description" content={cleanDescription} />
+            <meta itemProp="name" content={cleanTitle} />
+            <meta itemProp="description" content={cleanDescription} />
             <meta itemProp="image" content={image} />
             {getSocialTags(props).map(({ name, content }) => {
                 return content ? (
