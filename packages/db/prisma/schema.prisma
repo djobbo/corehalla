@@ -58,5 +58,5 @@ model BHClan {
   id      String @id
   name    String
   created Int
-  xp      String
+  xp      Int
 }
