@@ -8,6 +8,7 @@ import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { useAuth, useFavorites } from "@ctx/auth/AuthProvider"
 import { useCopyToClipboard } from "common/hooks/useCopyToClipboard"
+import toast from "react-hot-toast"
 import type { Favorite } from "@ctx/auth/useUserFavorites"
 import type { MiscStat } from "./MiscStatGroup"
 import type { ReactNode } from "react"
@@ -81,6 +82,9 @@ export const StatsHeader = ({
                     buttonStyle="outline"
                     onClick={() => {
                         copyToClipboard(window.location.href)
+                        toast("Copied link to clipboard!", {
+                            icon: "📋",
+                        })
                     }}
                 >
                     <HiShare size="16" className="mr-2" /> Share
