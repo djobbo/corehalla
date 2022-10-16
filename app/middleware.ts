@@ -1,10 +1,11 @@
+import {
+    BRAWLHALLA_WIKI_URL,
+    COREHALLA_DISCORD_URL,
+    COREHALLA_GITHUB_URL,
+    COREHALLA_TWITTER_URL,
+} from "@util/constants"
 import { NextResponse } from "next/server"
 import type { NextMiddleware } from "next/server"
-
-const BRAWLHALLA_WIKI_URL = "https://brawlhalla.fandom.com/wiki/Brawlhalla_Wiki"
-const COREHALLA_DISCORD_URL = "https://discord.com/invite/eD248ez"
-const COREHALLA_GITHUB_URL = "https://github.com/djobbo/corehalla"
-const COREHALLA_TWITTER_URL = "https://twitter.com/Corehalla"
 
 const handler: NextMiddleware = (req) => {
     if (req.nextUrl.pathname.startsWith("/wiki")) {
