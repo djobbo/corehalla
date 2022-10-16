@@ -24,6 +24,12 @@ const handler: NextMiddleware = (req) => {
         return NextResponse.redirect(COREHALLA_TWITTER_URL)
     }
 
+    if (req.nextUrl.pathname.startsWith("/stats/me")) {
+        const url = req.nextUrl.clone()
+        url.pathname = "/"
+        return NextResponse.redirect(url)
+    }
+
     if (req.nextUrl.pathname === "/rankings") {
         const url = req.nextUrl.clone()
         url.pathname = "/rankings/1v1"
