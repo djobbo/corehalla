@@ -22,7 +22,9 @@
         "env:logs": "zx ./.dev-env/dev-env.zx.mjs logs",
         "env:logs:f": "zx ./.dev-env/dev-env.zx.mjs logs -f",
         "env:restart": "zx ./.dev-env/dev-env.zx.mjs restart",
-        "env:build": "zx ./.dev-env/dev-env.zx.mjs build"
+        "env:build": "zx ./.dev-env/dev-env.zx.mjs build",
+        "dev:app": "turbo run dev --filter=app --include-dependencies --no-deps",
+        "dev:discord-manager": "turbo run dev --filter=discord-manager --include-dependencies --no-deps"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^5.39.0",

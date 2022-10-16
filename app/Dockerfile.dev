@@ -1,0 +1,21 @@
+FROM node:16-alpine
+
+ENV NODE_ENV development
+
+RUN mkdir -p /usr/src
+WORKDIR /usr/src
+
+COPY ../package.json .
+COPY ../pnpm-lock.yaml .
+
+COPY .. /usr/src
+
+RUN npm i -g pnpm
+
+RUN pnpm --filter "app^..." install     
+
+EXPOSE 3000
+
+RUN cd /usr/src/app
+
+CMD ["pnpm", "dev:app"]
