@@ -25,7 +25,7 @@ const handler: NextApiHandler = async (req, res) => {
 
         const { data, error } = await query.range(
             (pageNum - 1) * CLANS_PER_PAGE,
-            pageNum * CLANS_PER_PAGE,
+            pageNum * CLANS_PER_PAGE - 1,
         )
 
         if (error) throw error
