@@ -17,6 +17,7 @@
         "db:migrate": "turbo run db:migrate",
         "db:migrate:prod": "turbo run db:migrate:prod --scope=db --include-dependencies --no-deps",
         "build:prod": "pnpm db:migrate:prod && turbo run build --scope=app --include-dependencies --no-deps",
+        "env:start": "zx ./.dev-env/dev-env.zx.mjs start",
         "env:up": "zx ./.dev-env/dev-env.zx.mjs up",
         "env:down": "zx ./.dev-env/dev-env.zx.mjs down",
         "env:logs": "zx ./.dev-env/dev-env.zx.mjs logs",

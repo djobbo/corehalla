@@ -50,7 +50,7 @@ const start = async () => {
         let retries = 0
         while (true) {
             try {
-                process.env.DATABASE_URL=`postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_LOCAL_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}`
+                process.env.DATABASE_URL = `postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_LOCAL_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}`
                 await $`pnpm db:migrate up`
                 log("Sucessfully migrated database")
                 break
@@ -143,37 +143,44 @@ const remove = async () => {
     }
 }
 
-switch (command) {
-    case "version":
-        showVersion()
-        break
-    case "build":
-        build()
-        break
-    case "up":
-    case "start":
-        start()
-        break
-    case "down":
-    case "stop":
-        stop()
-        break
-    case "logs":
-        showLogs(args[0] === "-f")
-        break
-    case "pnpm":
-        runPnpm(args.join(" "))
-        break
-    case "exec":
-        exec(args.join(" "))
-        break
-    case "restart":
-        restart()
-        break
-    case "rm":
-        remove()
-        break
-    default:
-        log("Unknown command")
-        break
+const main = async () => {
+    switch (command) {
+        case "version":
+            await showVersion()
+            break
+        case "build":
+            await build()
+            break
+        case "up":
+            await build()
+            await start()
+            break
+        case "start":
+            await start()
+            break
+        case "down":
+        case "stop":
+            await stop()
+            break
+        case "logs":
+            await showLogs(args[0] === "-f")
+            break
+        case "pnpm":
+            await runPnpm(args.join(" "))
+            break
+        case "exec":
+            await exec(args.join(" "))
+            break
+        case "restart":
+            await restart()
+            break
+        case "rm":
+            await remove()
+            break
+        default:
+            log("Unknown command")
+            break
+    }
 }
+
+main()
