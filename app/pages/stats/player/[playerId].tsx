@@ -298,6 +298,7 @@ export const getServerSideProps: GetServerSideProps = async ({
         },
         ...(ranked["2v2"]?.map(getTeamPlayers).flat() ?? []),
     ]
+
     const curratedAliases = aliases
         .filter(
             (alias, i) =>
