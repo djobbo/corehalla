@@ -1,15 +1,26 @@
 import { AppLink } from "ui/base/AppLink"
 import { Card } from "ui/base/Card"
+import { FaCrown } from "react-icons/fa"
+import { HiStar, HiUser, HiUserAdd } from "react-icons/hi"
 import { MiscStatGroup } from "../MiscStatGroup"
 import { cleanString } from "common/helpers/cleanString"
 import { formatUnixTime } from "common/helpers/date"
 import type { Clan } from "bhapi/types"
+import type { ClanRank } from "bhapi/constants"
+import type { IconType } from "react-icons"
 import type { MiscStat } from "../MiscStatGroup"
 
 type ClanMemberProps = {
     member: Clan["clan"][number]
     clan: Clan
 }
+
+const memberIcons: Record<ClanRank, IconType> = {
+    Leader: FaCrown,
+    Officer: HiStar,
+    Member: HiUser,
+    Recruit: HiUserAdd,
+} as const
 
 export const ClanMember = ({ member, clan }: ClanMemberProps) => {
     const memberStats: MiscStat[] = [
@@ -31,6 +42,8 @@ export const ClanMember = ({ member, clan }: ClanMemberProps) => {
         },
     ]
 
+    const Icon = memberIcons[member.rank]
+
     return (
         <AppLink
             href={`/stats/player/${member.brawlhalla_id}`}
@@ -38,7 +51,15 @@ export const ClanMember = ({ member, clan }: ClanMemberProps) => {
         >
             <Card
                 key={member.brawlhalla_id}
-                title={`${cleanString(member.name)} (${member.rank})`}
+                title={
+                    <span className="flex items-center gap-1">
+                        <Icon size={12} />
+                        {cleanString(member.name)}
+                        <span className="text-xs text-textVar1">
+                            ({member.rank})
+                        </span>
+                    </span>
+                }
                 className="hover:bg-bgVar2"
             >
                 <MiscStatGroup

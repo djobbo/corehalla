@@ -6,7 +6,6 @@
     "author": "Djobbo Maïga <4998293+djobbo@users.noreply.github.com>",
     "scripts": {
         "build": "turbo run build",
-        "dev": "turbo run dev --parallel",
         "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
         "format": "prettier --write \"**/*.{ts,tsx,md}\" && turbo run format",
         "ts:check": "turbo run ts:check",
@@ -17,15 +16,8 @@
         "db:migrate": "turbo run db:migrate",
         "db:migrate:prod": "turbo run db:migrate:prod --scope=db --include-dependencies --no-deps",
         "build:prod": "pnpm db:migrate:prod && turbo run build --scope=app --include-dependencies --no-deps",
-        "env:start": "zx ./.dev-env/dev-env.zx.mjs start",
-        "env:up": "zx ./.dev-env/dev-env.zx.mjs up",
-        "env:down": "zx ./.dev-env/dev-env.zx.mjs down",
-        "env:logs": "zx ./.dev-env/dev-env.zx.mjs logs",
-        "env:logs:f": "zx ./.dev-env/dev-env.zx.mjs logs -f",
-        "env:restart": "zx ./.dev-env/dev-env.zx.mjs restart",
-        "env:build": "zx ./.dev-env/dev-env.zx.mjs build",
-        "dev:app": "turbo run dev --filter=app --include-dependencies --no-deps",
-        "dev:discord-manager": "turbo run dev --filter=discord-manager --include-dependencies --no-deps"
+        "dev:start": "turbo run dev --parallel",
+        "dev": "zx ./.dev-env/dev-env.zx.mjs"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^5.39.0",

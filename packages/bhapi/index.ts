@@ -24,7 +24,7 @@ const getBhApi = async <T>(
 ) => {
     return (
         await axios.get<T>(`${BH_API_BASE}${path}`, {
-            params: { ...params, api_key: process.env.BH_API_KEY },
+            params: { ...params, api_key: process.env.BRAWLHALLA_API_KEY },
         })
     ).data
 }

@@ -5,10 +5,10 @@ ENV NODE_ENV development
 RUN mkdir -p /usr/src
 WORKDIR /usr/src
 
-COPY ../package.json .
-COPY ../pnpm-lock.yaml .
+COPY package.json .
+COPY pnpm-lock.yaml .
 
-COPY .. /usr/src
+COPY . /usr/src
 
 RUN npm i -g pnpm
 
@@ -16,4 +16,4 @@ RUN pnpm install
 
 EXPOSE 3000
 
-CMD ["pnpm", "dev:discord-manager"]
+CMD ["pnpm", "dev:start"]

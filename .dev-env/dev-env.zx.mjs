@@ -1,12 +1,15 @@
 #!/usr/bin/env zx
 
-import { $, fs, chalk, cd, sleep } from "zx"
-import { config as loadEnv } from "dotenv"
+import { $, cd, chalk, fs, sleep } from "zx"
 import { join } from "node:path"
+import { config as loadEnv } from "dotenv"
+
 
 const DEV_ENV_PATH = __dirname
 
-loadEnv({ path: join(DEV_ENV_PATH, ".env") })
+const envPath = join(DEV_ENV_PATH, ".env")
+
+loadEnv({ path: envPath })
 
 const {
     POSTGRES_USER,
@@ -19,11 +22,18 @@ const {
     STUDIO_PORT,
 } = process.env
 
+process.env.DATABASE_URL = `postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_LOCAL_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}`
+
 const [, , , command, ...args] = process.argv
+
+if (!args.includes('--verbose')) {
+    $.verbose = false
+}
 
 const composeFilePath = `${DEV_ENV_PATH}/docker-compose.dev.yml`
 
-const log = (msg) => console.log(`${chalk.green("dev-env")} ${msg}`)
+//eslint-disable-next-line no-console
+const log = (msg) => console.log(`${chalk.green("[dev-env]")} ${msg}`)
 
 const showVersion = async () => {
     const { version } = await fs.readJson("./package.json")
@@ -31,10 +41,10 @@ const showVersion = async () => {
 }
 
 const build = async () => {
-    log("Building...")
+    log(chalk.bold("Docker images"))
     try {
         await $`sudo docker compose -f ${composeFilePath} build --no-cache`
-        log("Build complete")
+        log("✔️ Built docker images")
     } catch (e) {
         log("Build failed")
     }
@@ -43,31 +53,40 @@ const build = async () => {
 const start = async () => {
     log("Starting...")
     try {
+        log(chalk.bold("Dependencies"))
+        await $`pnpm install`
+        log("✔️ Installed dependencies")
+
+        log(chalk.bold("Containers"))
         await $`sudo docker compose -f ${composeFilePath} up -d`
-        log("Waiting for database to start...")
+        log("✔️ Started containers")
+
+        log(chalk.italic("Waiting for database to start..."))
         cd("packages/db")
-        const MAX_RETRIES = 10
-        let retries = 0
-        while (true) {
+        let retriesLeft = 10
+        let dbReady = false
+
+        while (retriesLeft > 0 && !dbReady) {
             try {
-                process.env.DATABASE_URL = `postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_LOCAL_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}`
                 await $`pnpm db:migrate up`
-                log("Sucessfully migrated database")
-                break
+                log("✔️ Migrated database")
+                dbReady = true
             } catch {
-                if (retries >= MAX_RETRIES) {
-                    throw new Error("Max retries exceeded")
-                }
                 log(
                     `Waiting for database to start... (retry ${
                         retries + 1
                     }/${MAX_RETRIES})`,
                 )
-                retries++
+                retries--
                 await sleep(5000)
             }
         }
-        log("Started dev environment")
+
+        if (!dbReady) {
+            throw new Error("Max retries exceeded, database not ready.")
+        }
+
+        log("✔️ Dev environment ready")
         log(`App is running at: ${chalk.blue(SITE_URL)}`)
         log(`Public API is running at: ${chalk.blue(PUBLIC_REST_URL)}`)
         log(
@@ -76,7 +95,7 @@ const start = async () => {
             )}`,
         )
     } catch (e) {
-        log(chalk.red("Failed to start"))
+        log(chalk.red("Failed to start dev environment"))
         await $`sudo docker compose -f ${composeFilePath} down`
     }
 }
@@ -85,13 +104,14 @@ const stop = async () => {
     log("Stopping...")
     try {
         await $`sudo docker compose -f ${composeFilePath} stop`
-        log("Stopped")
+        log("✔️ Dev environment stopped")
     } catch (e) {
-        log("Failed to stop")
+        log("Failed to stop dev environment")
     }
 }
 
 const showLogs = async (follow) => {
+    $.verbose = true
     log("Showing logs...")
     try {
         if (follow) {
@@ -172,6 +192,7 @@ const main = async () => {
             await exec(args.join(" "))
             break
         case "restart":
+        case "reload":
             await restart()
             break
         case "rm":
