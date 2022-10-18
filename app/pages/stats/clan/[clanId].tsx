@@ -94,15 +94,23 @@ export const getServerSideProps: GetServerSideProps = async ({
     // TODO: Error handling
     const clan = await getClan(clanId)
 
-    await Promise.all([
-        queryClient.prefetchQuery(["clanStats", clanId], async () => clan),
-        supabaseService.from<BHClan>("BHClan").upsert({
-            id: clan.clan_id.toString(),
-            name: clan.clan_name,
-            created: clan.clan_create_date,
-            xp: parseInt(clan.clan_xp),
-        }),
-    ])
+    if (!clan || !clan.clan_id) {
+        return { notFound: true }
+    }
+
+    try {
+        await Promise.all([
+            queryClient.prefetchQuery(["clanStats", clanId], async () => clan),
+            supabaseService.from<BHClan>("BHClan").upsert({
+                id: clan.clan_id.toString(),
+                name: clan.clan_name,
+                created: clan.clan_create_date,
+                xp: parseInt(clan.clan_xp),
+            }),
+        ])
+    } catch {
+        return { notFound: true }
+    }
 
     return {
         props: {
