@@ -83,6 +83,13 @@ export const Header = ({ className }: HeaderProps) => {
                     <div className="hidden md:flex items-center gap-1 ml-2">
                         <AppLink
                             className="text-textVar1 hover:text-text"
+                            href="/discord"
+                            target="_blank"
+                        >
+                            <SiDiscord size="16" className="mr-2" />
+                        </AppLink>
+                        <AppLink
+                            className="text-textVar1 hover:text-text"
                             href="/twitter"
                             target="_blank"
                         >
@@ -94,13 +101,6 @@ export const Header = ({ className }: HeaderProps) => {
                             target="_blank"
                         >
                             <SiGithub size="16" className="mr-2" />
-                        </AppLink>
-                        <AppLink
-                            className="text-textVar1 hover:text-text"
-                            href="/discord"
-                            target="_blank"
-                        >
-                            <SiDiscord size="16" className="mr-2" />
                         </AppLink>
                     </div>
                 </div>

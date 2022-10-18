@@ -4,6 +4,11 @@ import { Tooltip } from "ui/base/Tooltip"
 
 const socialLinks = [
     {
+        href: "/discord",
+        Icon: SiDiscord,
+        name: "Discord",
+    },
+    {
         href: "/twitter",
         Icon: SiTwitter,
         name: "Twitter",
@@ -12,11 +17,6 @@ const socialLinks = [
         href: "/github",
         Icon: SiGithub,
         name: "Github",
-    },
-    {
-        href: "/discord",
-        Icon: SiDiscord,
-        name: "Discord",
     },
 ]
 

@@ -1,3 +1,4 @@
+import { FirstTimePopup } from "@components/FirstTimePopup"
 import { Footer } from "./Footer"
 import { Header } from "./Header"
 import { LandingBackground } from "./LandingBackground"
@@ -32,6 +33,7 @@ export const Layout = ({ children }: LayoutProps) => {
                     <Footer className="bg-bgVar2 mt-16" />
                 </div>
             </div>
+            <FirstTimePopup />
         </>
     )
 }
