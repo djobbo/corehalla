@@ -8,9 +8,17 @@ import { getClan } from "bhapi"
 import { supabaseService } from "db/supabase/service"
 import { useClan } from "@hooks/stats/useClan"
 import { useRouter } from "next/router"
-import type { BHClan } from "db/generated/client"
+import type { BHClan, BHPlayerAlias } from "db/generated/client"
+import type { ClanRank } from "bhapi/constants"
 import type { GetServerSideProps, NextPage } from "next"
 import type { MiscStat } from "@components/stats/MiscStatGroup"
+
+const clanRankWeights: Record<ClanRank, number> = {
+    Leader: 0,
+    Officer: 1,
+    Member: 2,
+    Recruit: 3,
+} as const
 
 const Page: NextPage = () => {
     const router = useRouter()
@@ -46,6 +54,14 @@ const Page: NextPage = () => {
         },
     ]
 
+    const sortedMembers = clan.clan.sort((a, b) => {
+        if (a.rank === b.rank) {
+            return a.join_date - b.join_date
+        }
+
+        return clanRankWeights[a.rank] - clanRankWeights[b.rank]
+    })
+
     return (
         <>
             <SEO
@@ -64,7 +80,7 @@ const Page: NextPage = () => {
                 }}
             />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
-                {clan.clan.map((member) => (
+                {sortedMembers.map((member) => (
                     <ClanMember
                         key={member.brawlhalla_id}
                         member={member}
@@ -107,6 +123,12 @@ export const getServerSideProps: GetServerSideProps = async ({
                 created: clan.clan_create_date,
                 xp: parseInt(clan.clan_xp),
             }),
+            supabaseService.from<BHPlayerAlias>("BHPlayerAlias").upsert(
+                clan.clan.map((member) => ({
+                    playerId: member.brawlhalla_id.toString(),
+                    alias: member.name,
+                })),
+            ),
         ])
     } catch {
         return { notFound: true }

@@ -176,44 +176,26 @@ services:
     container_name: corehalla-app
     build:
         context: ../
-        dockerfile: ./app/Dockerfile.dev
+        dockerfile: Dockerfile.dev
     restart: unless-stopped
     ports:
         - "3000:3000"
     stdin_open: true
     volumes:
         - ../:/usr/src
-        - shared-deps:/usr/src/node_modules
+        - /usr/src/node_modules
         - /usr/src/app/node_modules
     environment:
+        # Common
         NEXT_PUBLIC_SUPABASE_URL: http://localhost:${KONG_HTTP_PORT}
         NEXT_PUBLIC_SUPABASE_ANON_KEY: ${ANON_KEY}
-        SUPABASE_URL: http://kong:8000
         SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
-        BH_API_KEY: ${BH_API_KEY}
+        SUPABASE_URL: http://kong:8000
+        BRAWLHALLA_API_KEY: ${BRAWLHALLA_API_KEY}
+        # App
         NEXT_PUBLIC_GA_TRACKING_ID: ${GA_TRACKING_ID}
         NEXT_PUBLIC_ADSENSE_ID: ${ADSENSE_ID}
-    depends_on:
-        - db
-        - rest
-        - auth
-        - storage
-  
-  discord-manager:
-    container_name: corehalla-discord-manager
-    build:
-        context: ../
-        dockerfile: ./discord-manager/Dockerfile.dev
-    restart: unless-stopped
-    stdin_open: true
-    volumes:
-        - ../:/usr/src
-        - shared-deps:/usr/src/node_modules
-        - /usr/src/discord-manager/node_modules
-    environment:
-        SUPABASE_URL: http://kong:8000
-        SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
-        BH_API_KEY: ${BH_API_KEY}
+        # Discord Manager
         DISCORD_MANAGER_BOT_TOKEN: ${DISCORD_MANAGER_BOT_TOKEN}
         DISCORD_MANAGER_BOT_DEV_GUILD_ID: ${DISCORD_MANAGER_BOT_DEV_GUILD_ID}
         DISCORD_MANAGER_BOT_CLIENT_ID: ${DISCORD_MANAGER_BOT_CLIENT_ID}
@@ -223,6 +205,3 @@ services:
         - rest
         - auth
         - storage
-
-volumes:
-  shared-deps:
