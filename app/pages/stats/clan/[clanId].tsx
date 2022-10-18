@@ -123,12 +123,12 @@ export const getServerSideProps: GetServerSideProps = async ({
                 created: clan.clan_create_date,
                 xp: parseInt(clan.clan_xp),
             }),
-            supabaseService.from<BHPlayerAlias>("BHPlayerAlias").upsert(
-                clan.clan.map((member) => ({
-                    playerId: member.brawlhalla_id.toString(),
-                    alias: member.name,
-                })),
-            ),
+            // supabaseService.from<BHPlayerAlias>("BHPlayerAlias").upsert(
+            //     clan.clan.map((member) => ({
+            //         playerId: member.brawlhalla_id.toString(),
+            //         alias: member.name,
+            //     })),
+            // ),
         ])
     } catch {
         return { notFound: true }
