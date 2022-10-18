@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "esModuleInterop": true,
+        "allowJs": true,
+        "lib": ["esnext"],
+        "moduleResolution": "node",
+        "jsx": "react-jsx",
+        "target": "es6",
+        "skipLibCheck": true,
+        "sourceMap": true
+    },
+    "include": ["src"],
+    "exclude": ["node_modules"]
+}

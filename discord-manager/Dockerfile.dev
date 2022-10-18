@@ -12,7 +12,7 @@ COPY .. /usr/src
 
 RUN npm i -g pnpm
 
-RUN pnpm --filter "discord-manager^..." install     
+RUN pnpm install     
 
 EXPOSE 3000
 
