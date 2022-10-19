@@ -46,6 +46,8 @@ const Page: NextPage = () => {
                 { page: "aus", label: "AUS" },
                 { page: "us-w", label: "US-W" },
                 { page: "jpn", label: "JPN" },
+                { page: "sa", label: "SA" },
+                { page: "me", label: "ME" },
             ]}
             currentRegion={region}
             currentPage={page}
