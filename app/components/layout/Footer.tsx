@@ -28,9 +28,21 @@ export const Footer = ({ className }) => {
             <p className="text-center text-xs border-t border-bg py-8">
                 <span className="block max-w-screen-sm mx-auto">
                     Visual assets courtesy of{" "}
-                    <a className="p-link" href="https://www.bluemammoth.com">
+                    <AppLink
+                        className="p-link"
+                        href="https://www.bluemammoth.com"
+                        target="_blank"
+                    >
                         Blue Mammoth Games
-                    </a>
+                    </AppLink>{" "}
+                    &{" "}
+                    <AppLink
+                        className="p-link"
+                        href="https://www.flaticon.com/fr/packs/square-country-simple-flags"
+                        target="_blank"
+                    >
+                        Freepik - Flaticon
+                    </AppLink>
                     .
                     <br />
                     Corehalla is neither associated nor endorsed by Blue Mammoth

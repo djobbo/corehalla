@@ -58,6 +58,8 @@ export const rankedRegions = [
     "aus",
     "us-w",
     "jpn",
+    "sa",
+    "me",
 ] as const
 
 export type RankedRegion = typeof rankedRegions[number]
