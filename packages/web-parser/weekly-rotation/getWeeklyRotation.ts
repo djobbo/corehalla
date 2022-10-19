@@ -37,4 +37,6 @@ export const getWeeklyRotation = async () => {
             .map((name) => legends.find((l) => l.bio_name === name))
             .filter(Boolean) as Legend[]
     }
+
+    return []
 }

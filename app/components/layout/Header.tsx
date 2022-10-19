@@ -1,7 +1,7 @@
+import { AlertBar } from "./AlertBar"
 import { AppLink } from "ui/base/AppLink"
 import { Button } from "ui/base/Button"
 import { HiMenu } from "react-icons/hi"
-import { InfoBar } from "./InfoBar"
 import { SearchButton } from "../search/SearchButton"
 import { SiDiscord, SiGithub, SiTwitter } from "react-icons/si"
 import { cn } from "common/helpers/classnames"
@@ -24,19 +24,7 @@ export const Header = ({ className }: HeaderProps) => {
 
     return (
         <>
-            <InfoBar>
-                <span>
-                    Brawlhalla maintenance ongoing. More info{" "}
-                    <AppLink
-                        href="/discord"
-                        target="_blank"
-                        className="text-accentAlt font-semibold hover:text-text"
-                    >
-                        here
-                    </AppLink>{" "}
-                    !
-                </span>
-            </InfoBar>
+            <AlertBar />
             <header className={cn({ "bg-bgVar2": !isLandingPage })}>
                 <div
                     className={cn(
