@@ -6,7 +6,7 @@ type ArticlePreviewProps = {
 }
 
 export const ArticlePreview = ({ article }: ArticlePreviewProps) => {
-    const { title, thumb, href } = article
+    const { title, thumb, href, tags } = article
 
     return (
         <div className="flex flex-col">
@@ -24,6 +24,16 @@ export const ArticlePreview = ({ article }: ArticlePreviewProps) => {
                     objectPosition="center"
                 />
             </a>
+            <div className="flex justify-start items-center gap-2 mt-2">
+                {tags.map((tag) => (
+                    <span
+                        key={tag.type}
+                        className="px-2 py-1 text-xs rounded-md bg-bgVar2 text-textVar1"
+                    >
+                        {tag.label}
+                    </span>
+                ))}
+            </div>
             <h4 className="mt-4 font-bold">
                 <a href={href} target="_blank" rel="noreferrer">
                     {title}
