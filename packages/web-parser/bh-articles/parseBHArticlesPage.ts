@@ -21,11 +21,13 @@ export type BHArticle = {
 
 export const parseBHArticlesPage = async (
     pageId: number,
-    articleType = "patch-notes",
+    articleType = "",
 ): Promise<BHArticle[]> => {
     if (__DEV) return bhArticlesMock
 
-    const page = `${BH_ARTICLES_BASE_URL}/${articleType}/page/${pageId}`
+    const page = `${BH_ARTICLES_BASE_URL}/${
+        articleType ? `${articleType}/` : ""
+    }page/${pageId}`
     const { data } = await axios.get<string>(page)
 
     const $ = load(data)

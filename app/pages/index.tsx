@@ -20,7 +20,7 @@ const landingClassName = css({
 const Page = () => {
     const { isLoggedIn, signIn } = useAuth()
     const { favorites } = useFavorites()
-    const { articles } = useBrawlhallaArticles(1, "patch-notes", 3)
+    const { articles } = useBrawlhallaArticles(1, "", 3)
     const { weeklyRotation } = useWeeklyRotation()
 
     return (
@@ -101,7 +101,7 @@ const Page = () => {
 
             {articles.length > 0 && (
                 <>
-                    <SectionTitle>Latest Patches</SectionTitle>
+                    <SectionTitle>Latest News</SectionTitle>
                     <ArticlePreviewGrid articles={articles} />
                 </>
             )}
