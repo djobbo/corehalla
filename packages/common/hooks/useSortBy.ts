@@ -2,7 +2,8 @@ import { useMemo, useState } from "react"
 
 type CompareFn<ElementType> = {
     label: string
-    fn: (a: ElementType, b: ElementType) => number
+    sortFn: (a: ElementType, b: ElementType) => number
+    displayFn?: (element: ElementType) => JSX.Element
 }
 
 export enum SortDirection {
@@ -24,7 +25,9 @@ export const useSortBy = <ElementType, Option extends string>(
         () =>
             array
                 .slice(0)
-                .sort((a, b) => compareFns[sortBy].fn(a, b) * sortDirection),
+                .sort(
+                    (a, b) => compareFns[sortBy].sortFn(a, b) * sortDirection,
+                ),
         [sortBy, array, compareFns, sortDirection],
     )
 
@@ -49,5 +52,6 @@ export const useSortBy = <ElementType, Option extends string>(
         sortDirection,
         setSortDirection,
         changeSortDirection,
-    }
+        displaySortFn: compareFns[sortBy].displayFn,
+    } as const
 }

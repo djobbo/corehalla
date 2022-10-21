@@ -43,8 +43,8 @@ model UserConnection {
 }
 
 model BHPlayer {
-  id      String          @id
-  name    String
+  id   String @id
+  name String
 }
 
 model BHPlayerAlias {
