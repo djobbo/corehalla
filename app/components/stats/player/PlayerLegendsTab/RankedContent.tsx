@@ -2,22 +2,22 @@ import { MiscStatGroup } from "../../MiscStatGroup"
 import { RatingDisplay } from "../../RatingDisplay"
 import { SectionTitle } from "../../../layout/SectionTitle"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
-import { getGlory, getPersonalEloReset } from "bhapi/calculator"
+import { getLegendEloReset } from "bhapi/calculator"
 import { getTierFromRating } from "bhapi/helpers/getTierFromRating"
 import Image from "next/image"
+import type { FullLegend } from "bhapi/legends"
 import type { MiscStat } from "../../MiscStatGroup"
-import type { PlayerRanked } from "bhapi/types"
 
-type PlayerOverviewRankedContentProps = {
-    ranked: PlayerRanked
+type PlayerLegendRankedContentProps = {
+    ranked: FullLegend["ranked"]
 }
 
-export const PlayerOverviewRankedContent = ({
+export const PlayerLegendRankedContent = ({
     ranked,
-}: PlayerOverviewRankedContentProps) => {
-    const glory = getGlory(ranked)
+}: PlayerLegendRankedContentProps) => {
+    if (!ranked) return null
 
-    const eloReset = getPersonalEloReset(ranked.rating)
+    const eloReset = getLegendEloReset(ranked?.rating)
 
     const rankedStats: MiscStat[] = [
         {
@@ -25,46 +25,22 @@ export const PlayerOverviewRankedContent = ({
             value: ranked.games,
             desc: "1v1 Ranked games played this season",
         },
-        // {
-        //     name: "Total Games",
-        //     value: totalGames,
-        //     desc: "Total ranked games played this season (all gamemodes)",
-        // },
         {
             name: "Winrate",
             value: `${calculateWinrate(ranked.wins, ranked.games).toFixed(2)}%`,
             desc: "Ranked winrate (ranked wins / ranked games)",
         },
-        ...(glory.hasPlayedEnoughGames
+        ...(eloReset
             ? [
                   {
-                      name: "Total Glory",
-                      value: glory.totalGlory,
-                      desc: "Total glory earned this season (wins + best rating)",
-                  },
-                  {
-                      name: "Glory from rating",
-                      value: glory.gloryFromBestRating,
-                      desc: `Glory earned from best rating (${glory.bestRating} Elo)`,
-                  },
-                  {
-                      name: "Glory from wins",
-                      value: glory.gloryFromWins,
-                      desc: `Glory earned from wins (${glory.totalWins} Wins)`,
+                      name: "Elo reset",
+                      value: <>{eloReset}</>,
+                      desc: `Elo reset for next season (${getTierFromRating(
+                          eloReset,
+                      )})`,
                   },
               ]
-            : [
-                  {
-                      name: "Total Glory",
-                      value: "N/A (not enough games)",
-                      desc: "Total glory earned this season (wins + best rating)",
-                  },
-              ]),
-        {
-            name: "Elo reset",
-            value: <>{eloReset}</>,
-            desc: `Elo reset for next season (${getTierFromRating(eloReset)})`,
-        },
+            : []),
     ]
 
     return (
