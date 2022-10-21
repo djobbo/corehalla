@@ -4,7 +4,6 @@ import { $, cd, chalk, fs, sleep } from "zx"
 import { join } from "node:path"
 import { config as loadEnv } from "dotenv"
 
-
 const DEV_ENV_PATH = __dirname
 
 const envPath = join(DEV_ENV_PATH, ".env")
@@ -26,7 +25,7 @@ process.env.DATABASE_URL = `postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${P
 
 const [, , , command, ...args] = process.argv
 
-if (!args.includes('--verbose')) {
+if (!args.includes("--verbose")) {
     $.verbose = false
 }
 

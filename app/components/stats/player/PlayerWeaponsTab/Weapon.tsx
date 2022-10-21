@@ -7,21 +7,31 @@ import Image from "next/image"
 import type { FullWeapon } from "bhapi/legends"
 import type { MiscStat } from "../../MiscStatGroup"
 
-type WeaponProps = {
-    weapon: FullWeapon & {
-        games: number
-        wins: number
-        level: number
-        xp: number
-        kos: number
-        damageDealt: number
-        matchtime: number
-    }
-    matchtime: number
+type Weapon = FullWeapon & {
     games: number
+    wins: number
+    level: number
+    xp: number
+    kos: number
+    damageDealt: number
+    matchtime: number
 }
 
-export const Weapon = ({ weapon, matchtime, games }: WeaponProps) => {
+type WeaponProps = {
+    weapon: Weapon
+    matchtime: number
+    games: number
+    displayedInfoFn?: (weapon: Weapon) => JSX.Element
+    rank: number
+}
+
+export const Weapon = ({
+    weapon,
+    matchtime,
+    games,
+    displayedInfoFn,
+    rank,
+}: WeaponProps) => {
     const { weapon: weaponName } = weapon
     const weaponStats: MiscStat[] = [
         {
@@ -95,18 +105,24 @@ export const Weapon = ({ weapon, matchtime, games }: WeaponProps) => {
             triggerClassName="w-full p-4 flex justify-start items-center gap-2"
             contentClassName="px-4 pb-4"
             trigger={
-                <>
-                    <span className="relative w-6 h-6">
-                        <Image
-                            src={`/images/icons/weapons/${weapon.weapon}.png`}
-                            alt={weapon.weapon}
-                            layout="fill"
-                            objectFit="contain"
-                            objectPosition="center"
-                        />
+                <span className="flex items-center justify-between w-full">
+                    <span className="flex items-center gap-2">
+                        <span className="text-sm text-textVar1">{rank}</span>
+                        <span className="relative block w-6 h-6">
+                            <Image
+                                src={`/images/icons/weapons/${weapon.weapon}.png`}
+                                alt={weapon.weapon}
+                                layout="fill"
+                                objectFit="contain"
+                                objectPosition="center"
+                            />
+                        </span>
+                        {weapon.weapon}
                     </span>
-                    {weapon.weapon}
-                </>
+                    <span className="text-sm text-textVar1">
+                        {displayedInfoFn?.(weapon)}
+                    </span>
+                </span>
             }
         >
             <Card title="Games">

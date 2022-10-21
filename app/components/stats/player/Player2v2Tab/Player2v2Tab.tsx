@@ -1,4 +1,7 @@
+import { HiSortAscending, HiSortDescending } from "react-icons/hi"
 import { MiscStatGroup } from "../../MiscStatGroup"
+import { Select } from "ui/base/Select"
+import { SortDirection, useSortBy } from "common/hooks/useSortBy"
 import { TeamCard } from "../../TeamCard"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
 import type { MiscStat } from "../../MiscStatGroup"
@@ -7,6 +10,14 @@ import type { PlayerRanked } from "bhapi/types"
 type Player2v2TabProps = {
     ranked: PlayerRanked
 }
+
+type TeamSortOption =
+    | "games"
+    | "wins"
+    | "losses"
+    | "winrate"
+    | "rating"
+    | "peak_rating"
 
 export const Player2v2Tab = ({ ranked }: Player2v2TabProps) => {
     const teams = ranked["2v2"]
@@ -25,6 +36,50 @@ export const Player2v2Tab = ({ ranked }: Player2v2TabProps) => {
             totalRating: 0,
             totalPeakRating: 0,
         },
+    )
+
+    const {
+        sortedArray: sortedTeams,
+        sortBy: teamSortBy,
+        setSortBy: sortTeamBy,
+        options: teamSortOptions,
+        changeSortDirection: changeTeamSortDirection,
+        sortDirection: teamSortDirection,
+    } = useSortBy<PlayerRanked["2v2"][number], TeamSortOption>(
+        teams,
+        {
+            games: {
+                label: "Games",
+                sortFn: (a, b) => (a.games ?? 0) - (b.games ?? 0),
+            },
+            wins: {
+                label: "Wins",
+                sortFn: (a, b) => (a.wins ?? 0) - (b.wins ?? 0),
+            },
+            losses: {
+                label: "Losses",
+                sortFn: (a, b) =>
+                    (a.games ?? 0) -
+                    (a.wins ?? 0) -
+                    ((b.games ?? 0) - (b.wins ?? 0)),
+            },
+            winrate: {
+                label: "Winrate",
+                sortFn: (a, b) =>
+                    calculateWinrate(a.wins ?? 0, a.games ?? 0) -
+                    calculateWinrate(b.wins ?? 0, b.games ?? 0),
+            },
+            rating: {
+                label: "Elo",
+                sortFn: (a, b) => (a.rating ?? 0) - (b.rating ?? 0),
+            },
+            peak_rating: {
+                label: "Peak elo",
+                sortFn: (a, b) => (a.peak_rating ?? 0) - (b.peak_rating ?? 0),
+            },
+        },
+        "rating",
+        SortDirection.Descending,
     )
 
     const teamCount = teams.length
@@ -85,17 +140,34 @@ export const Player2v2Tab = ({ ranked }: Player2v2TabProps) => {
     return (
         <>
             <MiscStatGroup className="mt-8" stats={global2v2Stats} />
+            <div className="mt-14 flex-1 flex gap-4 items-center w-full">
+                <Select<TeamSortOption>
+                    className="flex-1"
+                    onChange={sortTeamBy}
+                    value={teamSortBy}
+                    options={teamSortOptions}
+                    label="Sort by"
+                />
+                <button
+                    type="button"
+                    onClick={changeTeamSortDirection}
+                    className="flex items-center hover:text-accent"
+                >
+                    {teamSortDirection === SortDirection.Ascending ? (
+                        <HiSortAscending className="w-6 h-6" />
+                    ) : (
+                        <HiSortDescending className="w-6 h-6" />
+                    )}
+                </button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-8 gap-8">
-                {teams
-                    .slice(0)
-                    .sort((a, b) => b.rating - a.rating)
-                    .map((team) => (
-                        <TeamCard
-                            key={`${team.brawlhalla_id_one}+${team.brawlhalla_id_two}`}
-                            playerId={ranked.brawlhalla_id}
-                            team={team}
-                        />
-                    ))}
+                {sortedTeams.map((team) => (
+                    <TeamCard
+                        key={`${team.brawlhalla_id_one}+${team.brawlhalla_id_two}`}
+                        playerId={ranked.brawlhalla_id}
+                        team={team}
+                    />
+                ))}
             </div>
         </>
     )

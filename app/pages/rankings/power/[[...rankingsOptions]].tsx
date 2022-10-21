@@ -47,17 +47,17 @@ const Page: NextPage = () => {
     } = useSortBy<PR, PRSortOption>(
         powerRankings ?? [],
         {
-            rank: { label: "PR", fn: (a, b) => a.rank - b.rank },
-            name: { label: "Name", fn: (a, b) => a.name.localeCompare(b.name) },
+            rank: { label: "PR", sortFn: (a, b) => a.rank - b.rank },
+            name: { label: "Name", sortFn: (a, b) => a.name.localeCompare(b.name) },
             earnings: {
                 label: "Earnings (Not implemented)",
-                fn: () => 0, // TOODO: Sort by earnings
+                sortFn: () => 0, // TOODO: Sort by earnings
             },
-            t1: { label: "T1", fn: (a, b) => b.t1 - a.t1 },
-            t2: { label: "T2", fn: (a, b) => b.t2 - a.t2 },
-            t3: { label: "T3", fn: (a, b) => b.t3 - a.t3 },
-            t8: { label: "T8", fn: (a, b) => b.t8 - a.t8 },
-            t32: { label: "T32", fn: (a, b) => b.t32 - a.t32 },
+            t1: { label: "T1", sortFn: (a, b) => b.t1 - a.t1 },
+            t2: { label: "T2", sortFn: (a, b) => b.t2 - a.t2 },
+            t3: { label: "T3", sortFn: (a, b) => b.t3 - a.t3 },
+            t8: { label: "T8", sortFn: (a, b) => b.t8 - a.t8 },
+            t32: { label: "T32", sortFn: (a, b) => b.t32 - a.t32 },
         },
         "rank",
     )

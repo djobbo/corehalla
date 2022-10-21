@@ -4,6 +4,7 @@ import { MiscStatGroup } from "../../MiscStatGroup"
 import { Select } from "ui/base/Select"
 import { SortDirection, useSortBy } from "common/hooks/useSortBy"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
+import { formatTime } from "common/helpers/date"
 import { useMemo, useState } from "react"
 import { weapons } from "bhapi/constants"
 import type { FullLegend } from "bhapi/legends"
@@ -25,6 +26,7 @@ type LegendSortOption =
     | "winrate"
     | "rating"
     | "peak_rating"
+    | "matchtime"
 
 export const PlayerLegendsTab = ({
     legends,
@@ -39,46 +41,83 @@ export const PlayerLegendsTab = ({
         options: legendSortOptions,
         changeSortDirection: changeLegendSortDirection,
         sortDirection: legendSortDirection,
+        displaySortFn: displayLegendSortFn,
     } = useSortBy<FullLegend, LegendSortOption>(
         legends,
         {
             name: {
                 label: "Name",
-                fn: (a, b) => a.bio_name.localeCompare(b.bio_name),
+                sortFn: (a, b) => b.bio_name.localeCompare(a.bio_name),
             },
             xp: {
                 label: "Level / XP",
-                fn: (a, b) => (a.stats?.xp ?? 0) - (b.stats?.xp ?? 0),
+                sortFn: (a, b) => (a.stats?.xp ?? 0) - (b.stats?.xp ?? 0),
+                displayFn: (legend) => (
+                    <>
+                        Level {legend.stats?.level ?? 0} (
+                        {legend.stats?.xp ?? 0} xp)
+                    </>
+                ),
+            },
+            matchtime: {
+                label: "Matchtime",
+                sortFn: (a, b) =>
+                    (a.stats?.matchtime ?? 0) - (b.stats?.matchtime ?? 0),
+                displayFn: (legend) => (
+                    <>{formatTime(legend.stats?.matchtime ?? 0)}</>
+                ),
             },
             games: {
                 label: "Games",
-                fn: (a, b) => (a.stats?.games ?? 0) - (b.stats?.games ?? 0),
+                sortFn: (a, b) => (a.stats?.games ?? 0) - (b.stats?.games ?? 0),
+                displayFn: (legend) => <>{legend.stats?.games ?? 0} games</>,
             },
             wins: {
                 label: "Wins",
-                fn: (a, b) => (a.stats?.wins ?? 0) - (b.stats?.wins ?? 0),
+                sortFn: (a, b) => (a.stats?.wins ?? 0) - (b.stats?.wins ?? 0),
+                displayFn: (legend) => <>{legend.stats?.wins ?? 0} wins</>,
             },
             losses: {
                 label: "Losses",
-                fn: (a, b) =>
+                sortFn: (a, b) =>
                     (a.stats?.games ?? 0) -
                     (a.stats?.wins ?? 0) -
                     ((b.stats?.games ?? 0) - (b.stats?.wins ?? 0)),
+                displayFn: (legend) => (
+                    <>
+                        {(legend.stats?.games ?? 0) - (legend.stats?.wins ?? 0)}{" "}
+                        losses
+                    </>
+                ),
             },
             winrate: {
                 label: "Winrate",
-                fn: (a, b) =>
+                sortFn: (a, b) =>
                     calculateWinrate(a.stats?.wins ?? 0, a.stats?.games ?? 0) -
                     calculateWinrate(b.stats?.wins ?? 0, b.stats?.games ?? 0),
+                displayFn: (legend) => (
+                    <>
+                        {calculateWinrate(
+                            legend.stats?.wins ?? 0,
+                            legend.stats?.games ?? 0,
+                        ).toFixed(2)}
+                        % winrate
+                    </>
+                ),
             },
             rating: {
                 label: "Elo",
-                fn: (a, b) => (a.ranked?.rating ?? 0) - (b.ranked?.rating ?? 0),
+                sortFn: (a, b) =>
+                    (a.ranked?.rating ?? 0) - (b.ranked?.rating ?? 0),
+                displayFn: (legend) => <>{legend.ranked?.rating ?? 0} elo</>,
             },
             peak_rating: {
                 label: "Peak elo",
-                fn: (a, b) =>
+                sortFn: (a, b) =>
                     (a.ranked?.peak_rating ?? 0) - (b.ranked?.peak_rating ?? 0),
+                displayFn: (legend) => (
+                    <>{legend.ranked?.peak_rating ?? 0} peak elo</>
+                ),
             },
         },
         "xp",
@@ -162,6 +201,7 @@ export const PlayerLegendsTab = ({
                             value: weapon,
                         })),
                     ]}
+                    label="Filter by weapon"
                 />
                 <div className="flex-1 flex gap-4 items-center w-full">
                     <Select<LegendSortOption>
@@ -169,6 +209,7 @@ export const PlayerLegendsTab = ({
                         onChange={sortLegendBy}
                         value={legendSortBy}
                         options={legendSortOptions}
+                        label="Sort by"
                     />
                     <button
                         type="button"
@@ -185,22 +226,20 @@ export const PlayerLegendsTab = ({
             </div>
             <MiscStatGroup className="mt-8" stats={globalLegendsStats} />
             <div className="flex flex-col gap-2 mt-8">
-                {sortedLegends
-                    .filter(
-                        (legend) =>
-                            !weaponFilter ||
-                            [legend.weapon_one, legend.weapon_two].includes(
-                                weaponFilter,
-                            ),
-                    )
-                    .map((legend) => (
-                        <Legend
-                            key={legend.legend_id}
-                            legend={legend}
-                            matchtime={matchtime}
-                            games={games}
-                        />
-                    ))}
+                {filteredLegends.map((legend, i) => (
+                    <Legend
+                        key={legend.legend_id}
+                        legend={legend}
+                        matchtime={matchtime}
+                        games={games}
+                        displayedInfoFn={displayLegendSortFn}
+                        rank={
+                            legendSortDirection === SortDirection.Ascending
+                                ? filteredLegends.length - i
+                                : i + 1
+                        }
+                    />
+                ))}
             </div>
         </>
     )
