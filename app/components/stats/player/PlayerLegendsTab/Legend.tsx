@@ -1,6 +1,7 @@
 import { CollapsibleSection } from "../../../layout/CollapsibleSection"
 import { GeneralStats } from "../../GeneralStats"
 import { MiscStatGroup } from "../../MiscStatGroup"
+import { PlayerLegendRankedContent } from "./RankedContent"
 import { formatTime } from "common/helpers/date"
 import Image from "next/image"
 import type { FullLegend } from "bhapi/legends"
@@ -10,9 +11,17 @@ type LegendProps = {
     legend: FullLegend
     matchtime: number
     games: number
+    displayedInfoFn?: (legend: FullLegend) => JSX.Element
+    rank: number
 }
 
-export const Legend = ({ legend, matchtime, games }: LegendProps) => {
+export const Legend = ({
+    legend,
+    matchtime,
+    games,
+    displayedInfoFn,
+    rank,
+}: LegendProps) => {
     const legendStats: MiscStat[] = [
         {
             name: "level",
@@ -53,18 +62,24 @@ export const Legend = ({ legend, matchtime, games }: LegendProps) => {
             triggerClassName="w-full p-4 flex justify-start items-center gap-2"
             contentClassName="px-4 pb-4"
             trigger={
-                <>
-                    <span className="relative w-6 h-6 rounded-lg overflow-hidden mr-1">
-                        <Image
-                            src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
-                            alt={legend.bio_name}
-                            layout="fill"
-                            objectFit="contain"
-                            objectPosition="center"
-                        />
+                <span className="flex items-center justify-between w-full">
+                    <span className="flex items-center gap-2">
+                        <span className="text-sm text-textVar1">{rank}</span>
+                        <span className="relative block w-6 h-6 rounded-lg overflow-hidden">
+                            <Image
+                                src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
+                                alt={legend.bio_name}
+                                layout="fill"
+                                objectFit="contain"
+                                objectPosition="center"
+                            />
+                        </span>
+                        {legend.bio_name}
                     </span>
-                    {legend.bio_name}
-                </>
+                    <span className="text-sm text-textVar1">
+                        {displayedInfoFn?.(legend)}
+                    </span>
+                </span>
             }
         >
             <MiscStatGroup className="mt-2" stats={legendStats} />
@@ -80,6 +95,7 @@ export const Legend = ({ legend, matchtime, games }: LegendProps) => {
                 damageTaken={parseInt(legend.stats?.damagetaken ?? "0")}
                 matchtime={legend.stats?.matchtime ?? 0}
             />
+            <PlayerLegendRankedContent ranked={legend.ranked} />
         </CollapsibleSection>
     )
 }
