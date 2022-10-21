@@ -48,7 +48,10 @@ const Page: NextPage = () => {
         powerRankings ?? [],
         {
             rank: { label: "PR", sortFn: (a, b) => a.rank - b.rank },
-            name: { label: "Name", sortFn: (a, b) => a.name.localeCompare(b.name) },
+            name: {
+                label: "Name",
+                sortFn: (a, b) => a.name.localeCompare(b.name),
+            },
             earnings: {
                 label: "Earnings (Not implemented)",
                 sortFn: () => 0, // TOODO: Sort by earnings
