@@ -49,7 +49,7 @@ export const getRankings = async (
 
     switch (bracket) {
         case "1v1":
-            return rankings1v1Mock
+            return rankings1v1Mock.filter((r) => r.name.startsWith(name || ""))
         case "2v2":
             return rankings2v2Mock
         default:

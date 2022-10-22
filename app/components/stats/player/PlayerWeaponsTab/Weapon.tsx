@@ -2,6 +2,7 @@ import { Card } from "ui/base/Card"
 import { CollapsibleSection } from "../../../layout/CollapsibleSection"
 import { GamesDisplay } from "../../GamesDisplay"
 import { MiscStatGroup } from "../../MiscStatGroup"
+import { PlayerWeaponRankedContent } from "./RankedContent"
 import { formatTime } from "common/helpers/date"
 import Image from "next/image"
 import type { FullWeapon } from "bhapi/legends"
@@ -129,6 +130,7 @@ export const Weapon = ({
                 <GamesDisplay games={weapon.games} wins={weapon.wins} />
             </Card>
             <MiscStatGroup className="mt-4" stats={weaponStats} />
+            <PlayerWeaponRankedContent weapon={weapon} />
         </CollapsibleSection>
     )
 }
