@@ -26,8 +26,9 @@ const Page = () => {
     return (
         <>
             <SEO
-                title="Home • Corehalla"
-                description="Brawlhalla Stats, Rankings and more! Corehalla is a community of Brawlhalla players and fans. Join the community and get involved!"
+                title="Corehalla • Brawlhalla stats, rankings, and more"
+                description="With Corehalla you can view official rankings, player and clan stats, or find a
+                community!"
             />
             <div
                 className={cn(
