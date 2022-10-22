@@ -21,7 +21,7 @@ export const PlayerLegendRankedContent = ({
 
     const rankedStats: MiscStat[] = [
         {
-            name: "1v1 Games",
+            name: "Games",
             value: ranked.games,
             desc: "1v1 Ranked games played this season",
         },

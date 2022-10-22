@@ -69,9 +69,19 @@ export const PlayerWeaponRankedContent = memo(
 
         const rankedStats: MiscStat[] = [
             {
-                name: "1v1 Games",
+                name: "Games",
                 value: ranked.games,
                 desc: "1v1 Ranked games played this season",
+            },
+            {
+                name: "Wins",
+                value: ranked.wins,
+                desc: "1v1 Ranked wins this season",
+            },
+            {
+                name: "Losses",
+                value: ranked.games - ranked.wins,
+                desc: "1v1 Ranked losses this season",
             },
             {
                 name: "Winrate",
