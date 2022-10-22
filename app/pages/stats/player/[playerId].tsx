@@ -128,7 +128,7 @@ const Page: NextPage = () => {
                 <div className="flex gap-1">
                     {legendsSortedByLevel.slice(0, 3).map((legend) => (
                         <div
-                            className="w-8 h-8 relative"
+                            className="w-8 h-8 relative overflow-hidden rounded-sm"
                             key={legend.legend_id}
                         >
                             <Image

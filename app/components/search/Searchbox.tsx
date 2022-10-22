@@ -73,7 +73,7 @@ export const Searchbox = () => {
                             )}
                         </div>
                         <ResultsContainer className="h-full overflow-y-auto">
-                            {immediateSearch ? (
+                            {immediateSearch && rankings.length > 0 ? (
                                 rankings
                                     .filter((player) =>
                                         player.name
@@ -92,6 +92,15 @@ export const Searchbox = () => {
                                 <div className="flex items-center justify-center px-4 py-8 w-full gap-2">
                                     <HiArrowUp className="w-4 h-4" />
                                     <p className="text-center text-sm mx-4">
+                                        {!!immediateSearch &&
+                                            !isLoading &&
+                                            !isDebouncingSearch && (
+                                                <>
+                                                    <span className="block text-lg font-semibold mb-2 text-text">
+                                                        No players found
+                                                    </span>
+                                                </>
+                                            )}
                                         Search for a player (must start with
                                         exact match)
                                         <br />
