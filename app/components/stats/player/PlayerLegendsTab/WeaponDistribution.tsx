@@ -14,22 +14,22 @@ export const PlayerLegendWeaponDistribution = ({
 }: PlayerLegendWeaponDistributionProps) => {
     const weaponOne = {
         weapon: legend.weapon_one,
-        kills: legend.stats?.koweaponone ?? 0,
-        damage: legend.stats?.damageweaponone ?? "0",
+        kos: legend.stats?.koweaponone ?? 0,
+        damage: parseInt(legend.stats?.damageweaponone ?? "0"),
         timeheld: legend.stats?.timeheldweaponone ?? 0,
     } as const
 
     const weaponTwo = {
         weapon: legend.weapon_two,
-        kills: legend.stats?.koweapontwo ?? 0,
-        damage: legend.stats?.damageweapontwo ?? "0",
+        kos: legend.stats?.koweapontwo ?? 0,
+        damage: parseInt(legend.stats?.damageweapontwo ?? "0"),
         timeheld: legend.stats?.timeheldweapontwo ?? 0,
     } as const
 
     const unarmed = {
         weapon: "Unarmed",
-        kills: legend.stats?.kounarmed ?? 0,
-        damage: legend.stats?.damageunarmed ?? "0",
+        kos: legend.stats?.kounarmed ?? 0,
+        damage: parseInt(legend.stats?.damageunarmed ?? "0"),
         timeheld: legend.stats
             ? legend.stats.matchtime -
               legend.stats.timeheldweaponone -
@@ -69,12 +69,12 @@ export const PlayerLegendWeaponDistribution = ({
                                     name: "KOs",
                                     value: (
                                         <>
-                                            {weapon.kills}{" "}
+                                            {weapon.kos}{" "}
                                             <span className="text-xs text-textVar1">
                                                 (
                                                 {legend.stats
                                                     ? `${(
-                                                          (weapon.kills /
+                                                          (weapon.kos /
                                                               legend.stats
                                                                   ?.kos) *
                                                           100
@@ -95,9 +95,7 @@ export const PlayerLegendWeaponDistribution = ({
                                                 (
                                                 {legend.stats
                                                     ? `${(
-                                                          (parseInt(
-                                                              weapon.damage,
-                                                          ) /
+                                                          (weapon.damage /
                                                               parseInt(
                                                                   legend.stats
                                                                       .damagedealt,
@@ -131,6 +129,20 @@ export const PlayerLegendWeaponDistribution = ({
                                         </>
                                     ),
                                     desc: "Time held with this weapon",
+                                },
+                                {
+                                    name: "DPS",
+                                    value: `${(
+                                        weapon.damage / weapon.timeheld
+                                    ).toFixed(1)} dmg/s`,
+                                    desc: `Damage dealt per second with this ${weapon.weapon}`,
+                                },
+                                {
+                                    name: "Time to kill",
+                                    value: `${(
+                                        weapon.timeheld / weapon.kos
+                                    ).toFixed(1)}s`,
+                                    desc: "Time between each kill in seconds",
                                 },
                             ]}
                         />
