@@ -8,7 +8,7 @@ html, body {
 }
 
 ::-webkit-scrollbar {
-    width: 0.5rem;
+    @apply w-0 hashover:w-2;
 }
 ::-webkit-scrollbar-track {
     @apply bg-transparent;

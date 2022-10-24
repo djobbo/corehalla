@@ -1,3 +1,4 @@
+import { HiSearch } from "react-icons/hi"
 import { Kbd } from "ui/base/Kbd"
 import { cn } from "common/helpers/classnames"
 import { useDevice } from "common/hooks/useDevice"
@@ -37,6 +38,24 @@ export const SearchButton = ({
                     <Kbd>k</Kbd>
                 </span>
             )}
+        </button>
+    )
+}
+
+type SearchButtonIconProps = {
+    className?: string
+    size?: number
+}
+
+export const SearchButtonIcon = ({
+    className,
+    size,
+}: SearchButtonIconProps) => {
+    const { query } = useKBar()
+
+    return (
+        <button type="button" className={className} onClick={query.toggle}>
+            <HiSearch size={size ?? 20} />
         </button>
     )
 }
