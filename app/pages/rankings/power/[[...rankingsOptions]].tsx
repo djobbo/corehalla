@@ -214,8 +214,12 @@ const Page: NextPage = () => {
                             <p className="w-16 text-center">
                                 {player.t3 ? `${player.t3} 🥉` : "-"}
                             </p>
-                            <p className="w-16 text-center">{player.t8}</p>
-                            <p className="w-16 text-center">{player.t32}</p>
+                            <p className="w-16 text-center">
+                                {player.t8 || "-"}
+                            </p>
+                            <p className="w-16 text-center">
+                                {player.t32 || "-"}
+                            </p>
                         </div>
                     ))}
                 </div>
