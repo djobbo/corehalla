@@ -44,7 +44,7 @@ export const rankedTiers = [
 
 export const rankedTiersComplete = rankedTiers.map(([tier]) => tier)
 
-export type RankedTier = typeof rankedTiersComplete[number]
+export type RankedTier = typeof rankedTiersComplete[number] | "Valhallan"
 
 export const rankedRegions = [
     "all",

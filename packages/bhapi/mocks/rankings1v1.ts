@@ -9,7 +9,7 @@ export const rankings1v1Mock: Ranking1v1[] = [
         best_legend_games: 76,
         best_legend_wins: 71,
         rating: 2511,
-        tier: "Diamond",
+        tier: "Valhallan",
         games: 76,
         wins: 71,
         region: "EU",

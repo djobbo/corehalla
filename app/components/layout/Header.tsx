@@ -71,6 +71,7 @@ export const Header = ({ className }: HeaderProps) => {
                                                 layout="fill"
                                                 objectFit="cover"
                                                 objectPosition="center"
+                                                unoptimized
                                             />
                                         </div>
                                     </>
