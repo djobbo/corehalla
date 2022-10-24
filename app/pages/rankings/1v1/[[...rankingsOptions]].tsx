@@ -73,7 +73,7 @@ const Page: NextPage = () => {
             search={immediateSearch}
             setSearch={setSearch}
             searchPlaceholder="Search player..."
-            searchSubtitle="Must start with exact match. Only players that have completed their 10 placement matches are shown."
+            searchSubtitle="Search must start with exact match. Only players that have completed their 10 placement matches are shown."
         >
             <SEO
                 title={`Brawlhalla ${

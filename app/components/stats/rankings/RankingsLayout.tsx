@@ -92,7 +92,7 @@ export const RankingsLayout = ({
                         placeholder={searchPlaceholder}
                     />
                     {searchSubtitle && (
-                        <p className="text-sm text-gray-400 mt-2">
+                        <p className="text-center sm:text-left text-sm text-gray-400 mt-2">
                             {searchSubtitle}
                         </p>
                     )}
