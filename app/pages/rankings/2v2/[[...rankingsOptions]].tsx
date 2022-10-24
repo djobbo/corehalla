@@ -63,6 +63,7 @@ const Page: NextPage = () => {
             />
             <div className="py-4 w-full h-full hidden md:flex items-center gap-4">
                 <p className="w-16 text-center">Rank</p>
+                <p className="w-8 text-center">Tier</p>
                 <p className="w-16 text-center">Region</p>
                 <p className="flex-1">Player 1</p>
                 <p className="flex-1">Player 2</p>

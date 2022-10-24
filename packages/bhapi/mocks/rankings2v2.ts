@@ -7,7 +7,7 @@ export const rankings2v2Mock: Ranking2v2[] = [
         brawlhalla_id_one: 3138661,
         brawlhalla_id_two: 74980283,
         rating: 2512,
-        tier: "Diamond",
+        tier: "Valhallan",
         wins: 123,
         games: 143,
         region: "US-E",

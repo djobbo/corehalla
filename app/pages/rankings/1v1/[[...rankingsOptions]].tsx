@@ -90,6 +90,7 @@ const Page: NextPage = () => {
             />
             <div className="py-4 w-full h-full items-center gap-4 hidden md:flex">
                 <p className="w-16 text-center">Rank</p>
+                <p className="w-8 text-center">Tier</p>
                 <p className="w-16 text-center">Region</p>
                 <p className="flex-1">Name</p>
                 <p className="w-16 text-center">Games</p>
