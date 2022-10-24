@@ -140,7 +140,7 @@ export const PlayerWeaponsTab = ({
                 ),
             },
         },
-        "xp",
+        "matchtime",
         SortDirection.Descending,
     )
 
