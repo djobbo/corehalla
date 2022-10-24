@@ -1,8 +1,10 @@
+import { CollapsibleSection } from "@components/layout/CollapsibleSection"
+import { FiTarget } from "react-icons/fi"
 import { GeneralStats } from "../../GeneralStats"
+import { HiChartBar, HiFire, HiHand } from "react-icons/hi"
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { PlayerOverviewClanContent } from "./ClanContent"
 import { PlayerOverviewRankedContent } from "./RankedContent"
-import { SectionTitle } from "../../../layout/SectionTitle"
 import { formatTime } from "common/helpers/date"
 import type { FullLegend } from "bhapi/legends"
 import type { MiscStat } from "../../MiscStatGroup"
@@ -169,25 +171,57 @@ export const PlayerOverviewTab = ({
         <>
             {ranked && <PlayerOverviewRankedContent ranked={ranked} />}
             {clan && <PlayerOverviewClanContent playerStats={stats} />}
-            <SectionTitle hasBorder>General Stats</SectionTitle>
-            <GeneralStats
-                className="mt-2"
-                games={stats.games}
-                wins={stats.wins}
-                kos={kos}
-                falls={falls}
-                suicides={suicides}
-                teamkos={teamkos}
-                damageDealt={damageDealt}
-                damageTaken={damageTaken}
-                matchtime={matchtime}
-            />
-            <SectionTitle hasBorder>Unarmed</SectionTitle>
-            <MiscStatGroup className="mt-8" stats={generalStats} />
-            <SectionTitle hasBorder>Weapon Throws</SectionTitle>
-            <MiscStatGroup className="mt-8" stats={throwsStats} />
-            <SectionTitle hasBorder>Gadgets</SectionTitle>
-            <MiscStatGroup className="mt-8" stats={gadgetsStats} />
+            <CollapsibleSection
+                trigger={
+                    <>
+                        <HiChartBar size={20} className="fill-accentVar1" />
+                        General Stats
+                    </>
+                }
+            >
+                <GeneralStats
+                    className="mt-2"
+                    games={stats.games}
+                    wins={stats.wins}
+                    kos={kos}
+                    falls={falls}
+                    suicides={suicides}
+                    teamkos={teamkos}
+                    damageDealt={damageDealt}
+                    damageTaken={damageTaken}
+                    matchtime={matchtime}
+                />
+            </CollapsibleSection>
+            <CollapsibleSection
+                trigger={
+                    <>
+                        <HiHand size={20} className="fill-accentVar1" />
+                        Unarmed
+                    </>
+                }
+            >
+                <MiscStatGroup className="mt-8" stats={generalStats} />
+            </CollapsibleSection>
+            <CollapsibleSection
+                trigger={
+                    <>
+                        <FiTarget size={20} className="stroke-accentVar1" />
+                        Weapon Throws
+                    </>
+                }
+            >
+                <MiscStatGroup className="mt-8" stats={throwsStats} />
+            </CollapsibleSection>
+            <CollapsibleSection
+                trigger={
+                    <>
+                        <HiFire size={20} className="fill-accentVar1" />
+                        Gadgets
+                    </>
+                }
+            >
+                <MiscStatGroup className="mt-8" stats={gadgetsStats} />
+            </CollapsibleSection>
         </>
     )
 }

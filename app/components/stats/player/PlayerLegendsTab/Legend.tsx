@@ -1,7 +1,8 @@
-import { CollapsibleSection } from "../../../layout/CollapsibleSection"
+import { CollapsibleContent } from "../../../layout/CollapsibleContent"
 import { GeneralStats } from "../../GeneralStats"
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { PlayerLegendRankedContent } from "./RankedContent"
+import { PlayerLegendWeaponDistribution } from "./WeaponDistribution"
 import { formatTime } from "common/helpers/date"
 import Image from "next/image"
 import type { FullLegend } from "bhapi/legends"
@@ -56,11 +57,12 @@ export const Legend = ({
     ]
 
     return (
-        <CollapsibleSection
+        <CollapsibleContent
             key={legend.legend_id}
             className="shadow-md border rounded-lg border-bg"
             triggerClassName="w-full p-4 flex justify-start items-center gap-2"
             contentClassName="px-4 pb-4"
+            closingArrow
             trigger={
                 <span className="flex items-center justify-between w-full">
                     <span className="flex items-center gap-2">
@@ -96,6 +98,7 @@ export const Legend = ({
                 matchtime={legend.stats?.matchtime ?? 0}
             />
             <PlayerLegendRankedContent ranked={legend.ranked} />
-        </CollapsibleSection>
+            <PlayerLegendWeaponDistribution legend={legend} />
+        </CollapsibleContent>
     )
 }

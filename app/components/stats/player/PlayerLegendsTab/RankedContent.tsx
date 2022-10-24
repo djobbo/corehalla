@@ -1,6 +1,6 @@
+import { CollapsibleSection } from "@components/layout/CollapsibleSection"
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { RatingDisplay } from "../../RatingDisplay"
-import { SectionTitle } from "../../../layout/SectionTitle"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
 import { getLegendEloReset } from "bhapi/calculator"
 import { getTierFromRating } from "bhapi/helpers/getTierFromRating"
@@ -44,10 +44,7 @@ export const PlayerLegendRankedContent = ({
     ]
 
     return (
-        <>
-            <SectionTitle hasBorder customMargin className="my-4">
-                Ranked Season
-            </SectionTitle>
+        <CollapsibleSection trigger="Ranked Season">
             <div className="flex items-center gap-4">
                 <div className="relative h-24 w-16">
                     <Image
@@ -70,6 +67,6 @@ export const PlayerLegendRankedContent = ({
                 </div>
             </div>
             <MiscStatGroup className="mt-4" stats={rankedStats} />
-        </>
+        </CollapsibleSection>
     )
 }

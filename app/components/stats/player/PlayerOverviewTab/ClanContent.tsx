@@ -1,6 +1,7 @@
 import { AppLink } from "ui/base/AppLink"
+import { CollapsibleSection } from "@components/layout/CollapsibleSection"
+import { HiUserGroup } from "react-icons/hi"
 import { MiscStatGroup } from "../../MiscStatGroup"
-import { SectionTitle } from "../../../layout/SectionTitle"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import type { PlayerStats } from "bhapi/types"
@@ -17,8 +18,14 @@ export const PlayerOverviewClanContent = ({
     if (!clan) return null
 
     return (
-        <>
-            <SectionTitle hasBorder>Clan</SectionTitle>
+        <CollapsibleSection
+            trigger={
+                <>
+                    <HiUserGroup size={20} className="fill-accentVar1" />
+                    Clan
+                </>
+            }
+        >
             <p>
                 <AppLink
                     href={`/stats/clan/${clan.clan_id}`}
@@ -52,6 +59,6 @@ export const PlayerOverviewClanContent = ({
                     },
                 ]}
             />
-        </>
+        </CollapsibleSection>
     )
 }

@@ -1,5 +1,5 @@
 import { Card } from "ui/base/Card"
-import { CollapsibleSection } from "../../../layout/CollapsibleSection"
+import { CollapsibleContent } from "../../../layout/CollapsibleContent"
 import { GamesDisplay } from "../../GamesDisplay"
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { PlayerWeaponRankedContent } from "./RankedContent"
@@ -100,7 +100,7 @@ export const Weapon = ({
     ]
 
     return (
-        <CollapsibleSection
+        <CollapsibleContent
             key={weapon.weapon}
             className="shadow-md border rounded-lg border-bg"
             triggerClassName="w-full p-4 flex justify-start items-center gap-2"
@@ -131,6 +131,6 @@ export const Weapon = ({
             </Card>
             <MiscStatGroup className="mt-4" stats={weaponStats} />
             <PlayerWeaponRankedContent weapon={weapon} />
-        </CollapsibleSection>
+        </CollapsibleContent>
     )
 }
