@@ -1,28 +1,39 @@
-import { Content, Root, Trigger } from "@radix-ui/react-collapsible"
-import { useState } from "react"
+import { CollapsibleContent } from "./CollapsibleContent"
+import { SectionTitle } from "./SectionTitle"
+import { cn } from "common/helpers/classnames"
+import type { CollapsibleContentProps } from "./CollapsibleContent"
 import type { ReactNode } from "react"
 
-type CollapsibleSectionProps = {
-    className?: string
-    triggerClassName?: string
-    contentClassName?: string
-    children: ReactNode
+type CollapsibleSectionProps = Omit<CollapsibleContentProps, "trigger"> & {
     trigger: ReactNode
 }
 
 export const CollapsibleSection = ({
     className,
     triggerClassName,
-    contentClassName,
     trigger,
-    children,
+    defaultOpen = true,
+    ...props
 }: CollapsibleSectionProps) => {
-    const [open, setOpen] = useState(false)
-
     return (
-        <Root open={open} onOpenChange={setOpen} className={className}>
-            <Trigger className={triggerClassName}>{trigger}</Trigger>
-            <Content className={contentClassName}>{children}</Content>
-        </Root>
+        <CollapsibleContent
+            className={cn("w-full", className)}
+            triggerClassName={cn(
+                "w-full text-left border-b border-bg my-4",
+                triggerClassName,
+            )}
+            trigger={(open) => (
+                <SectionTitle
+                    customMargin
+                    className={cn("mt-0 flex items-center gap-2", {
+                        "text-textVar1": !open,
+                    })}
+                >
+                    {trigger}
+                </SectionTitle>
+            )}
+            defaultOpen={defaultOpen}
+            {...props}
+        />
     )
 }

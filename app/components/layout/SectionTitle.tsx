@@ -28,7 +28,7 @@ export const SectionTitle = ({
                 className,
             )}
         >
-            <span className="text-white">{children}</span>
+            {children}
         </h3>
     )
 }

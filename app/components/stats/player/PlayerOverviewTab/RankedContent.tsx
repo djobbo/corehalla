@@ -1,6 +1,7 @@
+import { CollapsibleSection } from "@components/layout/CollapsibleSection"
+import { HiChevronDoubleUp } from "react-icons/hi"
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { RatingDisplay } from "../../RatingDisplay"
-import { SectionTitle } from "../../../layout/SectionTitle"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
 import { getGlory, getPersonalEloReset } from "bhapi/calculator"
 import { getTierFromRating } from "bhapi/helpers/getTierFromRating"
@@ -68,10 +69,14 @@ export const PlayerOverviewRankedContent = ({
     ]
 
     return (
-        <>
-            <SectionTitle hasBorder customMargin className="my-4">
-                Ranked Season
-            </SectionTitle>
+        <CollapsibleSection
+            trigger={
+                <>
+                    <HiChevronDoubleUp size={20} className="fill-accentVar1" />
+                    Ranked Season
+                </>
+            }
+        >
             <div className="flex items-center gap-4">
                 <div className="relative h-24 w-16">
                     <Image
@@ -94,6 +99,6 @@ export const PlayerOverviewRankedContent = ({
                 </div>
             </div>
             <MiscStatGroup className="mt-4" stats={rankedStats} />
-        </>
+        </CollapsibleSection>
     )
 }
