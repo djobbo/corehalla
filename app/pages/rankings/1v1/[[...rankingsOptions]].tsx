@@ -72,7 +72,6 @@ const Page: NextPage = () => {
             hasSearch
             search={immediateSearch}
             setSearch={setSearch}
-            searchClassName="hidden sm:block"
             searchPlaceholder="Search player..."
             searchSubtitle="Must start with exact match. Only players that have completed their 10 placement matches are shown."
         >

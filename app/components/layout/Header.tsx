@@ -2,7 +2,7 @@ import { AlertBar } from "./AlertBar"
 import { AppLink } from "ui/base/AppLink"
 import { Button } from "ui/base/Button"
 import { HiMenu } from "react-icons/hi"
-import { SearchButton } from "../search/SearchButton"
+import { SearchButton, SearchButtonIcon } from "../search/SearchButton"
 import { SiDiscord, SiGithub, SiTwitter } from "react-icons/si"
 import { cn } from "common/helpers/classnames"
 import { useAuth } from "@ctx/auth/AuthProvider"
@@ -84,6 +84,10 @@ export const Header = ({ className }: HeaderProps) => {
                                 Sign in
                             </Button>
                         )}
+                        <SearchButtonIcon
+                            className="block sm:hidden px-2"
+                            size={22}
+                        />
                         <div className="hidden md:flex items-center gap-1 ml-2">
                             <AppLink
                                 className="text-textVar1 hover:text-text"
@@ -108,13 +112,6 @@ export const Header = ({ className }: HeaderProps) => {
                             </AppLink>
                         </div>
                     </div>
-                </div>
-                <div className="flex sm:hidden justify-center">
-                    <SearchButton
-                        bg={isLandingPage ? "bg-bgVar2" : "bg-bgVar1"}
-                        className="w-full mx-4 mb-4"
-                        customWidth
-                    />
                 </div>
             </header>
         </>
