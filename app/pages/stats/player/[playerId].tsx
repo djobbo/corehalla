@@ -151,11 +151,13 @@ const Page: NextPage = () => {
                     {weapons
                         .map(({ weapon, legends }) => ({
                             weapon,
-                            matchtime: legends.reduce(
-                                (acc, legend) =>
-                                    acc + (legend.stats?.matchtime ?? 0),
-                                0,
-                            ),
+                            matchtime: legends.reduce((acc, legend) => {
+                                const matchtime =
+                                    weapon === legend.weapon_one
+                                        ? legend.stats?.timeheldweaponone
+                                        : legend.stats?.timeheldweapontwo
+                                return acc + (matchtime ?? 0)
+                            }, 0),
                         }))
                         .sort((a, b) => b.matchtime - a.matchtime)
                         .slice(0, 3)
