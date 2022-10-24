@@ -85,7 +85,7 @@ const Page: NextPage = () => {
 
     const globalStats: MiscStat[] = [
         {
-            name: `Players ranked (${region})`,
+            name: `Players ranked`,
             value: filteredlPowerRankings.length,
             desc: `${filteredlPowerRankings.length} players ${
                 search !== "" ? `starting with ${search}` : ""
@@ -205,9 +205,15 @@ const Page: NextPage = () => {
                             <p className="w-16 text-center">{player.rank}</p>
                             <p className="flex-1">{cleanString(player.name)}</p>
                             <p className="w-20">{player.earnings}</p>
-                            <p className="w-16 text-center">{player.t1}</p>
-                            <p className="w-16 text-center">{player.t2}</p>
-                            <p className="w-16 text-center">{player.t3}</p>
+                            <p className="w-16 text-center">
+                                {player.t1 ? `${player.t1} 🏆` : "-"}
+                            </p>
+                            <p className="w-16 text-center">
+                                {player.t2 ? `${player.t2} 🥈` : "-"}
+                            </p>
+                            <p className="w-16 text-center">
+                                {player.t3 ? `${player.t3} 🥉` : "-"}
+                            </p>
                             <p className="w-16 text-center">{player.t8}</p>
                             <p className="w-16 text-center">{player.t32}</p>
                         </div>
