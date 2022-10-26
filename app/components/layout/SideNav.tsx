@@ -9,6 +9,7 @@ import {
     HiUsers,
     HiX,
 } from "react-icons/hi"
+import { Image } from "@components/Image"
 import { Tooltip } from "ui/base/Tooltip"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
@@ -17,7 +18,6 @@ import { legendsMap } from "bhapi/legends"
 import { useFavorites } from "@ctx/auth/AuthProvider"
 import { useRouter } from "next/router"
 import { useSideNav } from "@ctx/SideNavProvider"
-import Image from "next/image"
 import type { ReactNode } from "react"
 
 type SideNavIconProps = {
@@ -55,7 +55,7 @@ const SideNavIcon = ({
 
     const cleanName = cleanString(name)
     return (
-        <Tooltip content={desc ?? cleanName} placement="right">
+        <Tooltip content={desc ?? cleanName} side="right">
             <div className={cn("relative", sideNavIconClassName)}>
                 <AppLink
                     href={href}
@@ -73,18 +73,13 @@ const SideNavIcon = ({
                     }}
                 >
                     {image && (
-                        <span
-                            className="absolute w-8 h-8 text-xs z-0 opacity-50"
-                            aria-hidden
-                        >
-                            <Image
-                                src={image}
-                                alt={`player ${cleanName} icon`}
-                                layout="fill"
-                                objectFit="contain"
-                                objectPosition="center"
-                            />
-                        </span>
+                        <Image
+                            src={image}
+                            alt={`player ${cleanName} icon`}
+                            Container="span"
+                            containerClassName="absolute w-8 h-8 text-xs z-0 opacity-50"
+                            className="object-contain object-center"
+                        />
                     )}
                     <span className="font-semibold text-sm z-10">
                         {content ?? cleanName.slice(0, 3)}

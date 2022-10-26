@@ -1,8 +1,8 @@
 import { Card } from "ui/base/Card"
 import { CollapsibleSection } from "@components/layout/CollapsibleSection"
+import { Image } from "@components/Image"
 import { MiscStatGroup } from "@components/stats/MiscStatGroup"
 import { formatTime } from "common/helpers/date"
-import Image from "next/image"
 import type { FullLegend } from "bhapi/legends"
 
 type PlayerLegendWeaponDistributionProps = {
@@ -45,18 +45,14 @@ export const PlayerLegendWeaponDistribution = ({
                         key={weapon.weapon}
                         title={
                             <span className="flex gap-2 items-center">
-                                <span
-                                    className="block w-6 h-6 relative"
+                                <Image
                                     key={weapon.weapon}
-                                >
-                                    <Image
-                                        src={`/images/icons/weapons/${weapon.weapon}.png`}
-                                        alt={weapon.weapon}
-                                        layout="fill"
-                                        objectFit="contain"
-                                        objectPosition="center"
-                                    />
-                                </span>
+                                    src={`/images/icons/weapons/${weapon.weapon}.png`}
+                                    alt={weapon.weapon}
+                                    Container="span"
+                                    containerClassName="block w-6 h-6"
+                                    className="object-contain object-center"
+                                />
                                 {weapon.weapon}
                             </span>
                         }

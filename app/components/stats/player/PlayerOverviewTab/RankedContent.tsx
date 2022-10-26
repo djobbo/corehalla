@@ -1,11 +1,11 @@
 import { CollapsibleSection } from "@components/layout/CollapsibleSection"
 import { HiChevronDoubleUp } from "react-icons/hi"
+import { Image } from "@components/Image"
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { RatingDisplay } from "../../RatingDisplay"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
 import { getGlory, getPersonalEloReset } from "bhapi/calculator"
 import { getTierFromRating } from "bhapi/helpers/getTierFromRating"
-import Image from "next/image"
 import type { MiscStat } from "../../MiscStatGroup"
 import type { PlayerRanked } from "bhapi/types"
 
@@ -78,15 +78,12 @@ export const PlayerOverviewRankedContent = ({
             }
         >
             <div className="flex items-center gap-4">
-                <div className="relative h-24 w-16">
-                    <Image
-                        src={`/images/ranked-banners/${ranked.tier}.png`}
-                        alt={ranked.tier ?? "Valhallan"}
-                        layout="fill"
-                        objectFit="contain"
-                        objectPosition="center"
-                    />
-                </div>
+                <Image
+                    src={`/images/ranked-banners/${ranked.tier}.png`}
+                    alt={ranked.tier ?? "Valhallan"}
+                    containerClassName="h-24 w-16"
+                    className="object-contain object-center"
+                />
                 <div>
                     <span className="text-sm font-light">{ranked.tier}</span>
                     <RatingDisplay

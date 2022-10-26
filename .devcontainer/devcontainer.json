@@ -1,0 +1,25 @@
+{
+	"name": "Corehalla",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspace",
+
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"dbaeumer.vscode-eslint",
+				"bradlc.vscode-tailwindcss"
+			]
+		}
+	},
+
+	"forwardPorts": [3000, 3001, 5432],
+
+	"portsAttributes": {
+		"3000": {
+			"label": "Hello Corehalla!",
+			"onAutoForward": "notify"
+		}
+	},
+	"postCreateCommand": "pnpm setup:env"
+}

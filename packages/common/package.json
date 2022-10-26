@@ -2,8 +2,8 @@
     "name": "common",
     "version": "0.0.0",
     "devDependencies": {
-        "@types/node": "^18.8.3",
-        "@types/react": "^18.0.21",
+        "@types/node": "^18.11.6",
+        "@types/react": "^18.0.23",
         "tsconfig": "workspace:*",
         "typescript": "^4.8.4"
     },
@@ -12,8 +12,8 @@
     },
     "dependencies": {
         "classnames": "^2.3.2",
-        "dayjs": "^1.11.5",
-        "next": "^12.3.1",
+        "dayjs": "^1.11.6",
+        "next": "^13.0.0",
         "react-query": "^3.39.2"
     }
 }

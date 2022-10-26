@@ -2,13 +2,13 @@ import { AlertBar } from "./AlertBar"
 import { AppLink } from "ui/base/AppLink"
 import { Button } from "ui/base/Button"
 import { HiMenu } from "react-icons/hi"
+import { Image } from "@components/Image"
 import { SearchButton, SearchButtonIcon } from "../search/SearchButton"
 import { SiDiscord, SiGithub, SiTwitter } from "react-icons/si"
 import { cn } from "common/helpers/classnames"
 import { useAuth } from "@ctx/auth/AuthProvider"
 import { useRouter } from "next/router"
 import { useSideNav } from "@ctx/SideNavProvider"
-import Image from "next/image"
 
 type HeaderProps = {
     className?: string
@@ -49,9 +49,8 @@ export const Header = ({ className }: HeaderProps) => {
                             <Image
                                 src="/images/logo.png"
                                 alt="Corehalla logo"
-                                layout="fill"
-                                objectFit="contain"
-                                objectPosition="center"
+                                className="object-contain object-center"
+                                Container={null}
                             />
                         </AppLink>
                     </div>
@@ -64,13 +63,12 @@ export const Header = ({ className }: HeaderProps) => {
                             <>
                                 {userProfile && (
                                     <>
-                                        <div className="relative rounded-lg w-8 h-8 overflow-hidden">
+                                        <div className="relative ">
                                             <Image
                                                 src={userProfile.avatarUrl}
                                                 alt={userProfile.username}
-                                                layout="fill"
-                                                objectFit="cover"
-                                                objectPosition="center"
+                                                containerClassName="rounded-lg w-8 h-8 overflow-hidden"
+                                                className="object-cover object-center"
                                                 unoptimized
                                             />
                                         </div>

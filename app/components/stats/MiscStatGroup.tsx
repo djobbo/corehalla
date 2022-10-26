@@ -44,7 +44,7 @@ export const MiscStatGroup = ({
                         "flex items-center gap-2": column,
                     })}
                 >
-                    <Tooltip content={desc} placement="top">
+                    <Tooltip content={desc}>
                         <p className="text-sm text-textVar1">{name}</p>
                     </Tooltip>
                     <div
