@@ -1,4 +1,4 @@
-import Image from "next/image"
+import { Image } from "@components/Image"
 import type { BHArticle } from "web-parser/bh-articles/parseBHArticlesPage"
 
 type ArticlePreviewProps = {
@@ -19,9 +19,8 @@ export const ArticlePreview = ({ article }: ArticlePreviewProps) => {
                 <Image
                     src={thumb}
                     alt={title}
-                    layout="fill"
-                    objectFit="cover"
-                    objectPosition="center"
+                    className="object-cover object-center"
+                    Container={null}
                     unoptimized
                 />
             </a>

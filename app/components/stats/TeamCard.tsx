@@ -4,6 +4,7 @@ import type { PlayerRanked } from "bhapi/types"
 
 import { AppLink } from "ui/base/AppLink"
 import { Card } from "ui/base/Card"
+import { Image } from "@components/Image"
 import { MiscStatGroup } from "./MiscStatGroup"
 import { RatingDisplay } from "./RatingDisplay"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
@@ -12,7 +13,6 @@ import { cn } from "common/helpers/classnames"
 import { css } from "ui/theme"
 import { getLegendEloReset } from "bhapi/calculator"
 import { getTierFromRating } from "bhapi/helpers/getTierFromRating"
-import Image from "next/image"
 
 type TeamCardProps = {
     playerId: number
@@ -39,29 +39,25 @@ export const TeamCard = ({ playerId, team }: TeamCardProps) => {
                 className="relative overflow-hidden z-0 hover:bg-bgVar2 border border-bg"
                 title={
                     <span className="flex items-center">
-                        <span className="block relative w-4 h-4 rounded overflow-hidden mr-2">
-                            <Image
-                                src={`/images/icons/flags/${regionTxt}.png`}
-                                alt={regionTxt}
-                                layout="fill"
-                                objectFit="contain"
-                                objectPosition="center"
-                            />
-                        </span>
+                        <Image
+                            src={`/images/icons/flags/${regionTxt}.png`}
+                            alt={regionTxt}
+                            Container="span"
+                            containerClassName="block w-4 h-4 rounded overflow-hidden mr-2"
+                            className="object-contain object-center"
+                        />
                         {cleanString(playerName)} {"&"}{" "}
                         {cleanString(teammate.name)}
                     </span>
                 }
             >
-                <div className={cn("absolute w-full", rankedBannerClassName)}>
-                    <Image
-                        src={`/images/ranked-banners/${team.tier}.png`}
-                        alt={team.tier}
-                        layout="fill"
-                        objectFit="contain"
-                        objectPosition="center"
-                    />
-                </div>
+                <Image
+                    src={`/images/ranked-banners/${team.tier}.png`}
+                    alt={team.tier}
+                    containerClassName={cn(" w-full", rankedBannerClassName)}
+                    position="absolute"
+                    className="object-contain object-center"
+                />
                 <RatingDisplay
                     games={team.games}
                     wins={team.wins}

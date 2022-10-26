@@ -3,7 +3,7 @@
     "version": "0.0.0",
     "main": "index.ts",
     "devDependencies": {
-        "@types/node": "^18.8.3",
+        "@types/node": "^18.11.6",
         "tsconfig": "workspace:*",
         "typescript": "^4.8.4"
     },
