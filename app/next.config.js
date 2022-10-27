@@ -13,7 +13,8 @@ const withTM = require("next-transpile-modules")([
     "web-parser",
 ])
 
-module.exports = withTM({
+/** @type {import('next').NextConfig} */
+const nextConfig = {
     reactStrictMode: true,
     images: {
         domains: ["cdn.discordapp.com", "www.brawlhalla.com"],
@@ -67,4 +68,6 @@ module.exports = withTM({
             },
         ]
     },
-})
+}
+
+module.exports = withTM(nextConfig)

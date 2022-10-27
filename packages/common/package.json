@@ -2,7 +2,7 @@
     "name": "common",
     "version": "0.0.0",
     "devDependencies": {
-        "@types/node": "^18.11.6",
+        "@types/node": "^18.11.7",
         "@types/react": "^18.0.23",
         "tsconfig": "workspace:*",
         "typescript": "^4.8.4"

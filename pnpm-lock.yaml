@@ -34,7 +34,7 @@ importers:
       '@radix-ui/react-collapsible': ^1.0.1
       '@radix-ui/react-tabs': ^1.0.1
       '@stitches/react': ^1.2.8
-      '@types/node': ^18.11.6
+      '@types/node': ^18.11.7
       '@types/react': ^18.0.23
       autoprefixer: ^10.4.12
       axios: ^1.1.3
@@ -78,7 +78,7 @@ importers:
       ui: link:../packages/ui
       web-parser: link:../packages/web-parser
     devDependencies:
-      '@types/node': 18.11.6
+      '@types/node': 18.11.7
       '@types/react': 18.0.23
       autoprefixer: 10.4.12_postcss@8.4.18
       next-transpile-modules: 9.1.0
@@ -104,7 +104,7 @@ importers:
 
   packages/bhapi:
     specifiers:
-      '@types/node': ^18.11.6
+      '@types/node': ^18.11.7
       axios: ^1.1.3
       common: workspace:*
       react: ^18.2.0
@@ -119,13 +119,13 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       react-query: 3.39.2_biqbaboplfbrettd7655fr4n2y
     devDependencies:
-      '@types/node': 18.11.6
+      '@types/node': 18.11.7
       tsconfig: link:../tsconfig
       typescript: 4.8.4
 
   packages/common:
     specifiers:
-      '@types/node': ^18.11.6
+      '@types/node': ^18.11.7
       '@types/react': ^18.0.23
       classnames: ^2.3.2
       dayjs: ^1.11.6
@@ -139,7 +139,7 @@ importers:
       next: 13.0.0_biqbaboplfbrettd7655fr4n2y
       react-query: 3.39.2_biqbaboplfbrettd7655fr4n2y
     devDependencies:
-      '@types/node': 18.11.6
+      '@types/node': 18.11.7
       '@types/react': 18.0.23
       tsconfig: link:../tsconfig
       typescript: 4.8.4
@@ -173,7 +173,7 @@ importers:
 
   packages/dl-roster-images:
     specifiers:
-      '@types/node': ^18.11.6
+      '@types/node': ^18.11.7
       axios: ^1.1.3
       bhapi: workspace:*
       cheerio: 1.0.0-rc.12
@@ -188,19 +188,19 @@ importers:
       cheerio: 1.0.0-rc.12
       logger: link:../logger
     devDependencies:
-      '@types/node': 18.11.6
-      ts-node: 10.9.1_i7h6rytxt6mnf2cd4ja4puifuq
-      ts-node-dev: 2.0.0_i7h6rytxt6mnf2cd4ja4puifuq
+      '@types/node': 18.11.7
+      ts-node: 10.9.1_evej5wzm4hojmu6uzxwpspdmsu
+      ts-node-dev: 2.0.0_evej5wzm4hojmu6uzxwpspdmsu
       tsconfig: link:../tsconfig
       typescript: 4.8.4
 
   packages/logger:
     specifiers:
-      '@types/node': ^18.11.6
+      '@types/node': ^18.11.7
       tsconfig: workspace:*
       typescript: ^4.8.4
     devDependencies:
-      '@types/node': 18.11.6
+      '@types/node': 18.11.7
       tsconfig: link:../tsconfig
       typescript: 4.8.4
 
@@ -237,7 +237,7 @@ importers:
       react-icons: ^4.6.0
       react-phone-input-2: ^2.15.1
       react-query: ^3.39.2
-      react-select: ^5.5.6
+      react-select: ^5.5.7
       react-table: ^7.8.0
       tailwindcss: ^3.2.1
       tsconfig: workspace:*
@@ -264,7 +264,7 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       react-icons: 4.6.0_react@18.2.0
       react-phone-input-2: 2.15.1_biqbaboplfbrettd7655fr4n2y
-      react-select: 5.5.6_vnvdmfcxjday5vq72djusdct5q
+      react-select: 5.5.7_vnvdmfcxjday5vq72djusdct5q
       react-table: 7.8.0_react@18.2.0
     devDependencies:
       '@types/nprogress': 0.2.0
@@ -280,7 +280,7 @@ importers:
 
   packages/web-parser:
     specifiers:
-      '@types/node': ^18.11.6
+      '@types/node': ^18.11.7
       axios: ^1.1.3
       bhapi: workspace:*
       cheerio: 1.0.0-rc.12
@@ -295,9 +295,9 @@ importers:
       cheerio: 1.0.0-rc.12
       logger: link:../logger
     devDependencies:
-      '@types/node': 18.11.6
-      ts-node: 10.9.1_i7h6rytxt6mnf2cd4ja4puifuq
-      ts-node-dev: 2.0.0_i7h6rytxt6mnf2cd4ja4puifuq
+      '@types/node': 18.11.7
+      ts-node: 10.9.1_evej5wzm4hojmu6uzxwpspdmsu
+      ts-node-dev: 2.0.0_evej5wzm4hojmu6uzxwpspdmsu
       tsconfig: link:../tsconfig
       typescript: 4.8.4
 
@@ -1724,8 +1724,8 @@ packages:
   /@types/node/18.11.5:
     resolution: {integrity: sha512-3JRwhbjI+cHLAkUorhf8RnqUbFXajvzX4q6fMn5JwkgtuwfYtRQYI3u4V92vI6NJuTsbBQWWh3RZjFsuevyMGQ==}
 
-  /@types/node/18.11.6:
-    resolution: {integrity: sha512-j3CEDa2vd96K0AXF8Wur7UucACvnjkk8hYyQAHhUNciabZLDl9nfAEVUSwmh245OOZV15bRA3Y590Gi5jUcDJg==}
+  /@types/node/18.11.7:
+    resolution: {integrity: sha512-LhFTglglr63mNXUSRYD8A+ZAIu5sFqNJ4Y2fPuY7UlrySJH87rRRlhtVmMHplmfk5WkoJGmDjE9oiTfyX94CpQ==}
     dev: true
 
   /@types/nprogress/0.2.0:
@@ -4681,8 +4681,8 @@ packages:
       use-sidecar: 1.1.2_i2izv7j3km4zzxbpzq2d4xtojy
     dev: false
 
-  /react-select/5.5.6_vnvdmfcxjday5vq72djusdct5q:
-    resolution: {integrity: sha512-1pynAh7scLBmrNEeDrYVYTImXowmEPzGqVlG7xdvXmBUSD6gVhNMPKdhlpwAHfPANcTwGIqms0Xerm0n5o2WxA==}
+  /react-select/5.5.7_vnvdmfcxjday5vq72djusdct5q:
+    resolution: {integrity: sha512-izQBXNhTPqXDw4gxzTbc9aLII4tCJ2pdMm6l/WVzKhfHm3RLErheqDNgeenU0XxzqbwT9swYO4CAYk5IzqLlYw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -5263,7 +5263,7 @@ packages:
     resolution: {integrity: sha512-hvE+ZYXuINrx6Ei6D6hz+PTim0Uf++dYbK9FFifLNwQj+RwKquhQpn868yZsCtJYiclZF1u8l6WZxxKi+vv7Rg==}
     dev: false
 
-  /ts-node-dev/2.0.0_i7h6rytxt6mnf2cd4ja4puifuq:
+  /ts-node-dev/2.0.0_evej5wzm4hojmu6uzxwpspdmsu:
     resolution: {integrity: sha512-ywMrhCfH6M75yftYvrvNarLEY+SUXtUvU8/0Z6llrHQVBx12GiFk5sStF8UdfE/yfzk9IAq7O5EEbTQsxlBI8w==}
     engines: {node: '>=0.8.0'}
     hasBin: true
@@ -5282,7 +5282,7 @@ packages:
       rimraf: 2.7.1
       source-map-support: 0.5.21
       tree-kill: 1.2.2
-      ts-node: 10.9.1_i7h6rytxt6mnf2cd4ja4puifuq
+      ts-node: 10.9.1_evej5wzm4hojmu6uzxwpspdmsu
       tsconfig: 7.0.0
       typescript: 4.8.4
     transitivePeerDependencies:
@@ -5291,7 +5291,7 @@ packages:
       - '@types/node'
     dev: true
 
-  /ts-node/10.9.1_i7h6rytxt6mnf2cd4ja4puifuq:
+  /ts-node/10.9.1_evej5wzm4hojmu6uzxwpspdmsu:
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -5310,7 +5310,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
-      '@types/node': 18.11.6
+      '@types/node': 18.11.7
       acorn: 8.8.1
       acorn-walk: 8.2.0
       arg: 4.1.3
