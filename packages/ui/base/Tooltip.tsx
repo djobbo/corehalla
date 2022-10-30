@@ -1,4 +1,5 @@
 import * as RadixTooltip from "@radix-ui/react-tooltip"
+import { cn } from "common/helpers/classnames"
 import type { ReactNode } from "react"
 
 type TooltipProps = {
@@ -7,6 +8,7 @@ type TooltipProps = {
     delay?: number
     side?: RadixTooltip.TooltipContentProps["side"]
     align?: RadixTooltip.TooltipContentProps["align"]
+    className?: string
 }
 
 export const Tooltip = ({
@@ -15,6 +17,7 @@ export const Tooltip = ({
     children,
     side = "top",
     align = "center",
+    className,
 }: TooltipProps) => {
     return (
         <RadixTooltip.Provider delayDuration={delay}>
@@ -26,7 +29,10 @@ export const Tooltip = ({
                     <RadixTooltip.Content
                         side={side}
                         align={align}
-                        className="px-4 py-2 bg-bgVar2 border border-bg rounded-lg shadow-md hidden hashover:block z-50"
+                        className={cn(
+                            className,
+                            "px-4 py-2 bg-bgVar2 border border-bg rounded-lg shadow-md hidden hashover:block z-50",
+                        )}
                     >
                         {content}
                         <RadixTooltip.Arrow className="mb-2 fill-bg" />

@@ -18,6 +18,7 @@
         "bhapi": "workspace:*",
         "common": "workspace:*",
         "db": "workspace:*",
+        "encoding": "^0.1.13",
         "kbar": "0.1.0-beta.36",
         "logger": "workspace:*",
         "next": "^13.0.0",

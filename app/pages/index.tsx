@@ -26,9 +26,10 @@ const Page = () => {
     return (
         <>
             <SEO
-                title="Brawlhalla stats, rankings, and more! • Corehalla"
-                description="With Corehalla you can view official rankings, player and clan stats, or find a
-                community!"
+                title="Track your Brawlhalla stats, view rankings, and more! • Corehalla"
+                description="Track your stats now! View official rankings, and navigate
+                through a database of millions of Brawlhalla players and
+                clans."
             />
             <div
                 className={cn(
@@ -43,8 +44,9 @@ const Page = () => {
                     Corehalla
                 </h1>
                 <p className="text-sm sm:text-base mt-3 max-w-lg text-center text-textVar1">
-                    View official rankings, player and clan stats, or find a
-                    community, and join the fight!
+                    Track your stats now! View official rankings, and navigate
+                    through a database of millions of Brawlhalla players and
+                    clans.
                 </p>
                 <div className="mt-8 flex items-center gap-3 sm:gap-6 flex-col sm:flex-row">
                     <SearchButton />

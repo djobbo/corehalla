@@ -10,9 +10,11 @@ html, body {
 ::-webkit-scrollbar {
     @apply w-0 hashover:w-2;
 }
+
 ::-webkit-scrollbar-track {
     @apply bg-transparent;
 }
+
 ::-webkit-scrollbar-thumb {
     @apply bg-bg rounded-full hover:bg-accent;
 }
