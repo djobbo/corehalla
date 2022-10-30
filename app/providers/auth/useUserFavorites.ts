@@ -1,6 +1,7 @@
 import { supabase } from "db/supabase/client"
 import { toast } from "react-hot-toast"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { useFeatureFlags } from "@hooks/useFeatures"
 import type { Prisma, UserFavorite } from "db/generated/client"
 import type { Session } from "db/supabase/client"
 
@@ -34,6 +35,7 @@ const isFavoriteClan = (favorite: Favorite): favorite is ClanFavorite =>
 
 export const useUserFavorites = (session: Session | null) => {
     const [favorites, setFavorites] = useState<Favorite[]>([])
+    const { shouldShowDummyFavorites } = useFeatureFlags()
     const userId = session?.user?.id
 
     const addFavorite = async (favorite: Favorite) => {
@@ -174,7 +176,27 @@ export const useUserFavorites = (session: Session | null) => {
     )
 
     return {
-        favorites,
+        favorites: shouldShowDummyFavorites
+            ? ([
+                  {
+                      id: "4281946",
+                      name: "Test Player",
+                      type: "player",
+                      meta: {
+                          icon: {
+                              type: "legend",
+                              legend_id: 14,
+                          },
+                      },
+                  },
+                  {
+                      id: "3",
+                      name: "Test Clan",
+                      type: "clan",
+                      meta: {},
+                  },
+              ] as Favorite[])
+            : favorites,
         addFavorite,
         removeFavorite,
         editFavorite,

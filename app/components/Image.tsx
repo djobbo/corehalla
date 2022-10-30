@@ -5,7 +5,7 @@ import type { ImageProps as NextImageProps } from "next/image"
 type ImageProps = NextImageProps & {
     containerClassName?: string
     Container?: "div" | "span" | null
-    position?: "absolute" | "relative" | "fixed"
+    position?: "absolute" | "relative" | "fixed" | string
 }
 
 export const Image = ({
