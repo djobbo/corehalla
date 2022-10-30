@@ -214,7 +214,11 @@ export const SideNav = ({ className }: SideNavProps) => {
                             external={nav.external}
                         />
                     ))}
-                    <hr className="border-b border-bg rounded-full mx-2" />
+                    <hr
+                        className={cn("border-b border-bg rounded-full mx-2", {
+                            hidden: favorites.length <= 0,
+                        })}
+                    />
                     {favorites.map((favorite) => {
                         switch (favorite.type) {
                             case "player": {

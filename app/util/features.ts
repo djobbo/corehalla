@@ -10,7 +10,7 @@ export const getFeatureFlags = ({
     authContext?: AuthContext
 }) => {
     return {
-        shouldUseVercelImageOptimization: false,
-        shouldShowDummyFavorites: __DEV && !authContext?.isLoggedIn,
+        // shouldUseVercelImageOptimization: false,
+        shouldShowDummyFavorites: false && __DEV && !authContext?.isLoggedIn,
     } as const
 }

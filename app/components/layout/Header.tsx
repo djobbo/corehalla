@@ -1,10 +1,10 @@
 import { AlertBar } from "./AlertBar"
 import { AppLink } from "ui/base/AppLink"
 import { Button } from "ui/base/Button"
-import { HiMenu } from "react-icons/hi"
+import { DiscordIcon, GithubIcon, TwitterIcon } from "ui/icons"
+import { HamburgerMenuIcon } from "ui/icons"
 import { Image } from "@components/Image"
 import { SearchButton, SearchButtonIcon } from "../search/SearchButton"
-import { SiDiscord, SiGithub, SiTwitter } from "react-icons/si"
 import { cn } from "common/helpers/classnames"
 import { useAuth } from "@ctx/auth/AuthProvider"
 import { useRouter } from "next/router"
@@ -40,7 +40,7 @@ export const Header = ({ className }: HeaderProps) => {
                                 openSideNav()
                             }}
                         >
-                            <HiMenu size={24} />
+                            <HamburgerMenuIcon size={24} />
                         </button>
                         <AppLink
                             href="/"
@@ -78,7 +78,7 @@ export const Header = ({ className }: HeaderProps) => {
                             </>
                         ) : (
                             <Button onClick={signIn}>
-                                <SiDiscord size="16" className="mr-2" />
+                                <DiscordIcon size="16" className="mr-2" />
                                 Sign in
                             </Button>
                         )}
@@ -92,21 +92,21 @@ export const Header = ({ className }: HeaderProps) => {
                                 href="/discord"
                                 target="_blank"
                             >
-                                <SiDiscord size="16" className="mr-2" />
+                                <DiscordIcon size="16" className="mr-2" />
                             </AppLink>
                             <AppLink
                                 className="text-textVar1 hover:text-text"
                                 href="/twitter"
                                 target="_blank"
                             >
-                                <SiTwitter size="16" className="mr-2" />
+                                <TwitterIcon size="16" className="mr-2" />
                             </AppLink>
                             <AppLink
                                 className="text-textVar1 hover:text-text"
                                 href="/github"
                                 target="_blank"
                             >
-                                <SiGithub size="16" className="mr-2" />
+                                <GithubIcon size="16" className="mr-2" />
                             </AppLink>
                         </div>
                     </div>

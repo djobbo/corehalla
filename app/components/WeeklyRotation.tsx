@@ -1,6 +1,6 @@
-import { HiOutlineQuestionMarkCircle } from "react-icons/hi"
 import { Image } from "@components/Image"
 import { Tooltip } from "ui/base/Tooltip"
+import { UnknownIcon } from "ui/icons"
 import type { Legend } from "bhapi/types"
 
 type WeeklyRotationProps = {
@@ -16,7 +16,7 @@ export const WeeklyRotation = ({ weeklyRotation }: WeeklyRotationProps) => {
                         key={i}
                         className="relative w-16 h-16 rounded-md bg-bg flex justify-center items-center"
                     >
-                        <HiOutlineQuestionMarkCircle className="w-12 h-12 stroke-bgVar2" />
+                        <UnknownIcon className="w-12 h-12 stroke-bgVar2" />
                     </div>
                 ))}
             </div>

@@ -1,10 +1,10 @@
 import { ArticlePreviewGrid } from "@components/articles/ArticlePreviewGrid"
 import { Button } from "ui/base/Button"
+import { DiscordIcon } from "ui/icons"
 import { FavoritesGrid } from "@components/favorites/FavoritesGrid"
 import { SEO } from "@components/SEO"
 import { SearchButton } from "@components/search/SearchButton"
 import { SectionTitle } from "@components/layout/SectionTitle"
-import { SiDiscord } from "react-icons/si"
 import { WeeklyRotation } from "@components/WeeklyRotation"
 import { cn } from "common/helpers/classnames"
 import { css } from "ui/theme"
@@ -92,7 +92,7 @@ const Page = () => {
                         <>
                             Log in to save your favorite players and clans.
                             <Button onClick={signIn} className="mt-2">
-                                <SiDiscord size="16" className="mr-2" />
+                                <DiscordIcon size="16" className="mr-2" />
                                 Sign in
                             </Button>
                         </>
