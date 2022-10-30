@@ -1,5 +1,5 @@
+import { CollapseSectionIcon, ExpandSectionIcon } from "ui/icons"
 import { Content, Root, Trigger } from "@radix-ui/react-collapsible"
-import { HiChevronDown, HiChevronUp } from "react-icons/hi"
 import { cn } from "common/helpers/classnames"
 import { useState } from "react"
 import type { ReactNode } from "react"
@@ -42,9 +42,9 @@ export const CollapsibleContent = ({
                 </span>
                 {hasArrow &&
                     (open ? (
-                        <HiChevronUp className={arrowClassName} />
+                        <CollapseSectionIcon className={arrowClassName} />
                     ) : (
-                        <HiChevronDown className={arrowClassName} />
+                        <ExpandSectionIcon className={arrowClassName} />
                     ))}
             </Trigger>
             <Content className={contentClassName}>
@@ -55,7 +55,7 @@ export const CollapsibleContent = ({
                         className="w-full flex items-center justify-center mt-4 text-textVar1"
                         onClick={() => setOpen(false)}
                     >
-                        <HiChevronUp />
+                        <CollapseSectionIcon />
                     </button>
                 )}
             </Content>

@@ -1,9 +1,9 @@
 import { AdsenseStatsHeader } from "common/analytics/Adsense"
 import { Button } from "ui/base/Button"
-import { HiShare } from "react-icons/hi"
+import { DiscordIcon } from "ui/icons"
 import { HiUserAdd, HiUserRemove } from "react-icons/hi"
 import { MiscStatGroup } from "./MiscStatGroup"
-import { SiDiscord } from "react-icons/si"
+import { ShareIcon } from "ui/icons"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { useAuth, useFavorites } from "@ctx/auth/AuthProvider"
@@ -74,8 +74,8 @@ export const StatsHeader = ({
                     )
                 ) : (
                     <Button buttonStyle="primary" onClick={signIn}>
-                        <SiDiscord size="16" className="mr-2" /> Sign in to add
-                        favorites
+                        <DiscordIcon size="16" className="mr-2" /> Sign in to
+                        add favorites
                     </Button>
                 )}
                 <Button
@@ -87,7 +87,7 @@ export const StatsHeader = ({
                         })
                     }}
                 >
-                    <HiShare size="16" className="mr-2" /> Share
+                    <ShareIcon size="16" className="mr-2" /> Share
                 </Button>
             </div>
             <div

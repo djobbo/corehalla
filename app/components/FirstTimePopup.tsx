@@ -1,7 +1,6 @@
 import { AppLink } from "ui/base/AppLink"
 import { Button } from "ui/base/Button"
-import { HiX } from "react-icons/hi"
-import { SiDiscord, SiGithub, SiTwitter } from "react-icons/si"
+import { CloseIcon, DiscordIcon, GithubIcon, TwitterIcon } from "ui/icons"
 import { useLocalStorageState } from "common/hooks/useLocalStorageState"
 
 export const FirstTimePopup = () => {
@@ -26,21 +25,21 @@ export const FirstTimePopup = () => {
                         href="/discord"
                         target="_blank"
                     >
-                        <SiDiscord size="24" />
+                        <DiscordIcon size="24" />
                     </AppLink>
                     <AppLink
                         className="text-textVar1 hover:text-text"
                         href="/twitter"
                         target="_blank"
                     >
-                        <SiTwitter size="24" />
+                        <TwitterIcon size="24" />
                     </AppLink>
                     <AppLink
                         className="text-textVar1 hover:text-text"
                         href="/github"
                         target="_blank"
                     >
-                        <SiGithub size="24" />
+                        <GithubIcon size="24" />
                     </AppLink>
                 </span>
                 <span className="block text-xs text-textVar1">
@@ -68,7 +67,7 @@ export const FirstTimePopup = () => {
                     setShowPopup(false)
                 }}
             >
-                <HiX size={16} />
+                <CloseIcon size={16} />
             </button>
         </div>
     )

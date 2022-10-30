@@ -1,7 +1,7 @@
 import { Button } from "ui/base/Button"
+import { DiscordIcon, GithubIcon } from "ui/icons"
 import { Image } from "@components/Image"
 import { SectionTitle } from "./SectionTitle"
-import { SiDiscord, SiGithub } from "react-icons/si"
 import { useRouter } from "next/router"
 
 type ErrorPageContentProps = {
@@ -40,7 +40,7 @@ export const ErrorPageContent = ({
                         }}
                         className="flex items-center gap-2"
                     >
-                        <SiDiscord size={16} /> Report bug
+                        <DiscordIcon size={16} /> Report bug
                     </Button>
                     <Button
                         buttonStyle="outline"
@@ -51,7 +51,7 @@ export const ErrorPageContent = ({
                         }}
                         className="flex items-center gap-2"
                     >
-                        <SiGithub size={16} /> Contribute
+                        <GithubIcon size={16} /> Contribute
                     </Button>
                 </div>
             </div>

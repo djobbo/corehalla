@@ -1,5 +1,5 @@
 import { AppLink } from "ui/base/AppLink"
-import { HiUserGroup, HiX } from "react-icons/hi"
+import { ClanIcon, CloseIcon } from "ui/icons"
 import { Image } from "@components/Image"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
@@ -42,7 +42,7 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                             />
                         )
                 } else if (fav.type === "clan") {
-                    icon = <HiUserGroup className="w-8 h-8" />
+                    icon = <ClanIcon className="w-8 h-8" />
                 }
 
                 return (
@@ -71,7 +71,7 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                             className="hidden remove-btn absolute w-5 h-5 p-0.5 rounded-full overflow-hidden shadow-md bg-accent hover:bg-text hover:text-bgVar2"
                             onClick={() => removeFavorite(fav)}
                         >
-                            <HiX />
+                            <CloseIcon />
                         </button>
                     </div>
                 )
