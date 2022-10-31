@@ -6,6 +6,7 @@ import "@fontsource/montserrat/700.css"
 
 import { AnimatedLogo } from "ui/base/AnimatedLogo"
 import { AuthProvider } from "@ctx/auth/AuthProvider"
+import { BackToTopButton } from "@components/BackToTopButton"
 import { GAScripts } from "common/analytics/GAScripts"
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query"
 import { KBarProvider } from "kbar"
@@ -64,6 +65,7 @@ const App = ({
                                     <Component {...pageProps} />
                                 </Layout>
                                 <Searchbox />
+                                <BackToTopButton />
                             </SideNavProvider>
                         </KBarProvider>
                     </AuthProvider>

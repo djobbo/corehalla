@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+    scroll-behavior: smooth;
+}
+
 html, body {
     @apply bg-bgVar1 text-text;
     font-family: "Montserrat", sans-serif;

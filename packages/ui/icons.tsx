@@ -22,6 +22,7 @@ export const UnknownIcon = HiOutlineQuestionMarkCircle
 export const InfoIcon = HiOutlineInformationCircle
 export const CollapseSectionIcon = HiChevronUp
 export const ExpandSectionIcon = HiChevronDown
+export const BackToTopIcon = HiChevronUp
 export const HamburgerMenuIcon = HiMenu
 export const SearchIcon = HiSearch
 export const ShareIcon = HiShare
