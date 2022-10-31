@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
+        "dev:prod": "NEXT_PUBLIC_FORCE_PRODUCTION_WEBSITE=true next dev",
         "build": "next build && pnpm gen:sitemap",
         "start": "next start",
         "ts:check": "tsc --noEmit",

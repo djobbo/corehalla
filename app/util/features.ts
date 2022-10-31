@@ -9,10 +9,17 @@ export const getFeatureFlags = ({
 }: {
     authContext?: AuthContext
 }) => {
+    const isSSR = typeof window === "undefined"
+    const isProductionWebsite =
+        process.env.NEXT_PUBLIC_FORCE_PRODUCTION_WEBSITE ||
+        (!isSSR && window.location.hostname === "corehalla.com")
+
+    console.log("TODO: fix hydration error caused by feature flags")
     return {
         // shouldUseVercelImageOptimization: false,
         shouldShowDummyFavorites: false && __DEV && !authContext?.isLoggedIn,
-        shouldShowBackToTop: true, // TODO: Add setting to toggle this
+        shouldShowBackToTop: !isProductionWebsite && true, // TODO: Add setting to toggle this
         shouldShowInfoTooltips: true, // TODO: Add setting to toggle this
+        shouldShowAds: !isProductionWebsite, // TODO: premium??
     } as const
 }

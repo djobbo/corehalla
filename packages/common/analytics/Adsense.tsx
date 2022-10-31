@@ -46,5 +46,7 @@ export const Adsense = ({
 }
 
 export const AdsenseStatsHeader = () => {
-    return <Adsense slot="8570143014" responsive className="block" />
+    return (
+        <Adsense slot="8570143014" responsive className="block w-full h-full" />
+    )
 }
