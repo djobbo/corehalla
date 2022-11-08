@@ -9,7 +9,7 @@ type RankingsLayoutProps = {
     currentBracket: string
     brackets: PaginatorPage[]
     currentRegion?: string
-    regions: PaginatorPage[]
+    regions: PaginatorPage[] | null
     currentPage?: string
     hasPagination?: boolean
     hasSearch?: boolean
@@ -39,9 +39,11 @@ export const RankingsLayout = ({
     defaultRegion = "all",
     defaultBracket = "1v1",
 }: RankingsLayoutProps) => {
-    const region = regions.map(({ page }) => page).includes(currentRegion ?? "")
-        ? currentRegion
-        : defaultRegion
+    const region = regions
+        ? regions.map(({ page }) => page).includes(currentRegion ?? "")
+            ? currentRegion
+            : defaultRegion
+        : null
     const bracket = brackets.map(({ page }) => page).includes(currentBracket)
         ? currentBracket
         : defaultBracket
@@ -49,7 +51,11 @@ export const RankingsLayout = ({
         (currentPage && hasPagination && (
             <Pagination
                 getPageHref={(page) =>
-                    `/rankings/${bracket}/${region}${page ? `/${page}` : ""}`
+                    region
+                        ? `/rankings/${bracket}/${region}${
+                              page ? `/${page}` : ""
+                          }`
+                        : `/rankings/${bracket}${page ? `/${page}` : ""}`
                 }
                 currentPage={parseInt(currentPage)}
                 firstPage={1}
@@ -64,10 +70,19 @@ export const RankingsLayout = ({
                 <Paginator
                     pages={brackets}
                     currentPage={bracket}
-                    getPageHref={(bracket) => `/rankings/${bracket}/${region}`}
+                    getPageHref={(bracket) => (
+                        console.log(
+                            region
+                                ? `/rankings/${bracket}/${region}`
+                                : `/rankings/${bracket}`,
+                        ),
+                        region
+                            ? `/rankings/${bracket}/${region}`
+                            : `/rankings/${bracket}`
+                    )}
                     responsive
                 />
-                {regions.length > 0 && (
+                {regions && regions.length > 0 && (
                     <Paginator
                         pages={regions}
                         currentPage={region ?? ""}
