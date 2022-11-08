@@ -49,7 +49,7 @@ const ClansPage: NextPage = () => {
                 { page: "clans", label: "Clans" },
             ]}
             currentBracket="clans"
-            regions={[]}
+            regions={null}
             currentPage={page}
             hasPagination={!search}
             hasSearch
