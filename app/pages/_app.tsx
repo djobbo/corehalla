@@ -6,7 +6,15 @@ import "@fontsource/montserrat/700.css"
 
 import { AnimatedLogo } from "ui/base/AnimatedLogo"
 import { AuthProvider } from "@ctx/auth/AuthProvider"
-import { BackToTopButton } from "@components/BackToTopButton"
+const BackToTopButton = dynamic(
+    () =>
+        import("@components/BackToTopButton").then(
+            (mod) => mod.BackToTopButton,
+        ),
+    {
+        ssr: false,
+    },
+)
 import { GAScripts } from "common/analytics/GAScripts"
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query"
 import { KBarProvider } from "kbar"
@@ -17,6 +25,7 @@ import { Searchbox } from "@components/search/Searchbox"
 import { SideNavProvider } from "@ctx/SideNavProvider"
 import { Toaster } from "react-hot-toast"
 import Head from "next/head"
+import dynamic from "next/dynamic"
 import type { AppProps } from "next/app"
 import type { QueryClientConfig } from "react-query"
 

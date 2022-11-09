@@ -14,7 +14,6 @@ export const getFeatureFlags = ({
         process.env.NEXT_PUBLIC_FORCE_PRODUCTION_WEBSITE ||
         (!isSSR && window.location.hostname === "corehalla.com")
 
-    console.log("TODO: fix hydration error caused by feature flags")
     return {
         // shouldUseVercelImageOptimization: false,
         shouldShowDummyFavorites: false && __DEV && !authContext?.isLoggedIn,
