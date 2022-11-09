@@ -1,5 +1,12 @@
+import { AppLink } from "ui/base/AppLink"
 import { HiArrowUp } from "react-icons/hi"
-import { KBarAnimator, KBarPortal, KBarPositioner, KBarSearch } from "kbar"
+import {
+    KBarAnimator,
+    KBarPortal,
+    KBarPositioner,
+    KBarSearch,
+    useKBar,
+} from "kbar"
 import { SearchboxItem } from "./SearchboxItem"
 import { Spinner } from "ui/base/Spinner"
 import { cn } from "common/helpers/classnames"
@@ -8,7 +15,7 @@ import { gaEvent } from "common/analytics/gtag"
 import { styled, theme } from "ui/theme"
 import { useDebouncedState } from "common/hooks/useDebouncedState"
 import { useEffect, useState } from "react"
-import { useRankings1v1 } from "@hooks/stats/useRankings"
+import { usePlayerSearch } from "@hooks/stats/search/usePlayerSearch"
 import type { Ranking1v1 } from "bhapi/types"
 
 const __DEV = process.env.NODE_ENV === "development"
@@ -22,9 +29,9 @@ export const Searchbox = () => {
     const [search, setSearch, immediateSearch, isDebouncingSearch] =
         useDebouncedState("", __DEV ? 250 : 750)
 
-    const { rankings1v1, isLoading } = useRankings1v1("all", "1", search, {
-        enabled: !!search,
-    })
+    const { rankings1v1, aliases, isLoading } = usePlayerSearch(search)
+
+    const isPotentialBrawlhallaId = !!search.match(/^\d+$/g)
 
     useEffect(() => {
         if (isLoading) return
@@ -37,6 +44,10 @@ export const Searchbox = () => {
 
         setRankings(rankings1v1 ?? [])
     }, [rankings1v1, isLoading, search])
+
+    const {
+        query: { toggle },
+    } = useKBar()
 
     return (
         <KBarPortal>
@@ -51,7 +62,7 @@ export const Searchbox = () => {
                         <div className="relative">
                             <KBarSearch
                                 className="px-4 py-3 w-full text-bgVar2"
-                                defaultPlaceholder="Search player..."
+                                defaultPlaceholder="Search player by name or brawlhalla id..."
                                 onChange={(e) => {
                                     setSearch(e.target.value)
                                 }}
@@ -73,21 +84,67 @@ export const Searchbox = () => {
                             )}
                         </div>
                         <ResultsContainer className="h-full overflow-y-auto">
-                            {immediateSearch && rankings.length > 0 ? (
-                                rankings
-                                    .filter((player) =>
-                                        player.name
-                                            .toLowerCase()
-                                            .startsWith(
-                                                immediateSearch.toLowerCase(),
-                                            ),
-                                    )
-                                    .map((player) => (
-                                        <SearchboxItem
-                                            key={player.brawlhalla_id}
-                                            player={player}
-                                        />
-                                    ))
+                            {immediateSearch &&
+                            (rankings.length > 0 ||
+                                aliases.length > 0 ||
+                                isPotentialBrawlhallaId) ? (
+                                <>
+                                    {isPotentialBrawlhallaId && (
+                                        <AppLink
+                                            href={`/stats/player/${search}`}
+                                            onClick={() => toggle()}
+                                            className="block p-4 gap-2"
+                                        >
+                                            <span className="px-2 py-1 bg-bg rounded-md">
+                                                View Player#{search} stats
+                                            </span>
+                                        </AppLink>
+                                    )}
+                                    {rankings
+                                        .filter((player) =>
+                                            player.name
+                                                .toLowerCase()
+                                                .startsWith(
+                                                    immediateSearch.toLowerCase(),
+                                                ),
+                                        )
+                                        .map((player) => (
+                                            <SearchboxItem
+                                                key={player.brawlhalla_id}
+                                                player={player}
+                                            />
+                                        ))}
+                                    {aliases.length > 0 && (
+                                        <div className="border-t border-bg">
+                                            <span className="px-4 text-xs text-textVar1">
+                                                players that used{" "}
+                                                <span className="bg-bgVar2 p-0.5">
+                                                    {search}
+                                                </span>{" "}
+                                                as an alias
+                                            </span>
+                                            <div className="flex flex-wrap px-4 py-2 gap-2">
+                                                {aliases.map(
+                                                    ({ alias, playerId }) => (
+                                                        <AppLink
+                                                            href={`/stats/player/${playerId}`}
+                                                            onClick={() =>
+                                                                toggle()
+                                                            }
+                                                            key={playerId}
+                                                            className="px-2 py-1 bg-bg rounded-md"
+                                                        >
+                                                            {alias}{" "}
+                                                            <span className="uppercase text-xs text-textVar1">
+                                                                (id: {playerId})
+                                                            </span>
+                                                        </AppLink>
+                                                    ),
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                </>
                             ) : (
                                 <div className="flex items-center justify-center px-4 py-8 w-full gap-2">
                                     <HiArrowUp className="w-4 h-4" />

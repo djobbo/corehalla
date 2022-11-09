@@ -70,16 +70,11 @@ export const RankingsLayout = ({
                 <Paginator
                     pages={brackets}
                     currentPage={bracket}
-                    getPageHref={(bracket) => (
-                        console.log(
-                            region
-                                ? `/rankings/${bracket}/${region}`
-                                : `/rankings/${bracket}`,
-                        ),
+                    getPageHref={(bracket) =>
                         region
                             ? `/rankings/${bracket}/${region}`
                             : `/rankings/${bracket}`
-                    )}
+                    }
                     responsive
                 />
                 {regions && regions.length > 0 && (
