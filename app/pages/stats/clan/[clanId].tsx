@@ -100,7 +100,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 }) => {
     res.setHeader(
         "Cache-Control",
-        "public, s-maxage=300, stale-while-revalidate=480",
+        "public, s-maxage=480, stale-while-revalidate=600",
     )
 
     const { clanId } = query

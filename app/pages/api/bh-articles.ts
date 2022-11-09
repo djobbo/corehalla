@@ -10,7 +10,7 @@ const handler: NextApiHandler = async (req, res) => {
 
         res.setHeader(
             "Cache-Control",
-            "public, s-maxage=3600, stale-while-revalidate=7200",
+            "public, s-maxage=7200, stale-while-revalidate=10800",
         )
 
         if (max) {
