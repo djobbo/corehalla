@@ -1,21 +1,21 @@
 import { AppLink } from "ui/base/AppLink"
-import { SiDiscord, SiGithub, SiTwitter } from "react-icons/si"
+import { DiscordIcon, GithubIcon, TwitterIcon } from "ui/icons"
 import { Tooltip } from "ui/base/Tooltip"
 
 const socialLinks = [
     {
         href: "/discord",
-        Icon: SiDiscord,
+        Icon: DiscordIcon,
         name: "Discord",
     },
     {
         href: "/twitter",
-        Icon: SiTwitter,
+        Icon: TwitterIcon,
         name: "Twitter",
     },
     {
         href: "/github",
-        Icon: SiGithub,
+        Icon: GithubIcon,
         name: "Github",
     },
 ]

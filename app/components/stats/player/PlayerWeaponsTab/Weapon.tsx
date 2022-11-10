@@ -1,10 +1,10 @@
 import { Card } from "ui/base/Card"
 import { CollapsibleContent } from "../../../layout/CollapsibleContent"
 import { GamesDisplay } from "../../GamesDisplay"
+import { Image } from "@components/Image"
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { PlayerWeaponRankedContent } from "./RankedContent"
 import { formatTime } from "common/helpers/date"
-import Image from "next/image"
 import type { FullWeapon } from "bhapi/legends"
 import type { MiscStat } from "../../MiscStatGroup"
 
@@ -109,15 +109,13 @@ export const Weapon = ({
                 <span className="flex items-center justify-between w-full">
                     <span className="flex items-center gap-2">
                         <span className="text-sm text-textVar1">{rank}</span>
-                        <span className="relative block w-6 h-6">
-                            <Image
-                                src={`/images/icons/weapons/${weapon.weapon}.png`}
-                                alt={weapon.weapon}
-                                layout="fill"
-                                objectFit="contain"
-                                objectPosition="center"
-                            />
-                        </span>
+                        <Image
+                            src={`/images/icons/weapons/${weapon.weapon}.png`}
+                            alt={weapon.weapon}
+                            Container="span"
+                            containerClassName="block w-6 h-6"
+                            className="object-contain object-center"
+                        />
                         {weapon.weapon}
                     </span>
                     <span className="text-sm text-textVar1">

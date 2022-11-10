@@ -1,7 +1,7 @@
+import { Image } from "@components/Image"
 import { Progress } from "ui/base/Progress"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
 import { cn } from "common/helpers/classnames"
-import Image from "next/image"
 import type { Ranking } from "bhapi/types"
 import type { ReactNode } from "react"
 
@@ -46,29 +46,23 @@ export const RankingsTableItem = ({
                         {rank} -
                     </span>
                     {content}
-                    <div className="relative w-6 h-6 rounded-md overflow-hidden">
-                        <Image
-                            src={`/images/icons/ranked/${tier}${
-                                tier === "Valhallan" ? ".webp" : ".png"
-                            }`}
-                            alt={region}
-                            layout="fill"
-                            objectFit="contain"
-                            objectPosition="center"
-                        />
-                    </div>
+                    <Image
+                        src={`/images/icons/ranked/${tier}${
+                            tier === "Valhallan" ? ".webp" : ".png"
+                        }`}
+                        alt={region}
+                        containerClassName="w-6 h-6 rounded-md overflow-hidden"
+                        className="object-contain object-center"
+                    />
                 </div>
                 <div className={cn("mt-2 flex flex-col", className)}>
                     <p className="flex gap-2 items-baseline text-2xl font-bold">
-                        <div className="relative w-4 h-4 rounded-sm overflow-hidden">
-                            <Image
-                                src={`/images/icons/flags/${region}.png`}
-                                alt={region}
-                                layout="fill"
-                                objectFit="contain"
-                                objectPosition="center"
-                            />
-                        </div>
+                        <Image
+                            src={`/images/icons/flags/${region}.png`}
+                            alt={region}
+                            containerClassName="w-4 h-4 rounded-sm overflow-hidden"
+                            className="object-contain object-center"
+                        />
                         {rating}
                         <span>/</span>
                         <span className="text-textVar1 text-sm">
@@ -119,17 +113,14 @@ export const RankingsTableItem = ({
                     {rank}
                 </p>
                 <p className="w-8 h-full flex items-center justify-center text-xs">
-                    <div className="relative w-8 h-8 rounded-md overflow-hidden">
-                        <Image
-                            src={`/images/icons/ranked/${tier}${
-                                tier === "Valhallan" ? ".webp" : ".png"
-                            }`}
-                            alt={region}
-                            layout="fill"
-                            objectFit="contain"
-                            objectPosition="center"
-                        />
-                    </div>
+                    <Image
+                        src={`/images/icons/ranked/${tier}${
+                            tier === "Valhallan" ? ".webp" : ".png"
+                        }`}
+                        alt={region}
+                        containerClassName="w-8 h-8 rounded-md overflow-hidden"
+                        className="object-contain object-center"
+                    />
                 </p>
                 <p className="w-16 h-full flex items-center justify-center text-xs">
                     {region}

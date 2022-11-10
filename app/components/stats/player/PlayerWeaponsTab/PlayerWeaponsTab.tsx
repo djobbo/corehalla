@@ -1,5 +1,5 @@
-import { HiSortAscending, HiSortDescending } from "react-icons/hi"
 import { Select } from "ui/base/Select"
+import { SortAscendingIcon, SortDescendingIcon } from "ui/icons"
 import { SortDirection, useSortBy } from "common/hooks/useSortBy"
 import { Weapon } from "./Weapon"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
@@ -160,9 +160,9 @@ export const PlayerWeaponsTab = ({
                     className="flex items-center hover:text-accent"
                 >
                     {weaponSortDirection === SortDirection.Ascending ? (
-                        <HiSortAscending className="w-6 h-6" />
+                        <SortAscendingIcon className="w-6 h-6" />
                     ) : (
-                        <HiSortDescending className="w-6 h-6" />
+                        <SortDescendingIcon className="w-6 h-6" />
                     )}
                 </button>
             </div>

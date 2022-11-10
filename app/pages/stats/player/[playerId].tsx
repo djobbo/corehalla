@@ -1,3 +1,4 @@
+import { Image } from "@components/Image"
 import { Player2v2Tab } from "@components/stats/player/Player2v2Tab"
 import { PlayerLegendsTab } from "@components/stats/player/PlayerLegendsTab"
 import { PlayerOverviewTab } from "@components/stats/player/PlayerOverviewTab"
@@ -23,7 +24,6 @@ import { usePlayerAliases } from "@hooks/stats/usePlayerAliases"
 import { usePlayerRanked } from "@hooks/stats/usePlayerRanked"
 import { usePlayerStats } from "@hooks/stats/usePlayerStats"
 import { useRouter } from "next/router"
-import Image from "next/image"
 import type { BHPlayer, BHPlayerAlias } from "db/generated/client"
 import type { GetServerSideProps, NextPage } from "next"
 import type { MiscStat } from "@components/stats/MiscStatGroup"
@@ -127,18 +127,13 @@ const Page: NextPage = () => {
             value: (
                 <div className="flex gap-1">
                     {legendsSortedByLevel.slice(0, 3).map((legend) => (
-                        <div
-                            className="w-8 h-8 relative overflow-hidden rounded-sm"
+                        <Image
                             key={legend.legend_id}
-                        >
-                            <Image
-                                src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
-                                alt={legend.bio_name}
-                                layout="fill"
-                                objectFit="contain"
-                                objectPosition="center"
-                            />
-                        </div>
+                            src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
+                            alt={legend.bio_name}
+                            containerClassName="w-8 h-8 overflow-hidden rounded-sm"
+                            className="object-contain object-center"
+                        />
                     ))}
                 </div>
             ),
@@ -162,18 +157,13 @@ const Page: NextPage = () => {
                         .sort((a, b) => b.matchtime - a.matchtime)
                         .slice(0, 3)
                         .map((weapon) => (
-                            <div
-                                className="w-8 h-8 relative"
+                            <Image
                                 key={weapon.weapon}
-                            >
-                                <Image
-                                    src={`/images/icons/weapons/${weapon.weapon}.png`}
-                                    alt={weapon.weapon}
-                                    layout="fill"
-                                    objectFit="contain"
-                                    objectPosition="center"
-                                />
-                            </div>
+                                src={`/images/icons/weapons/${weapon.weapon}.png`}
+                                alt={weapon.weapon}
+                                containerClassName="w-8 h-8"
+                                className="object-contain object-center"
+                            />
                         ))}
                 </div>
             ),
@@ -194,15 +184,12 @@ const Page: NextPage = () => {
                 miscStats={accountStats}
                 icon={
                     playerRanked?.region && (
-                        <div className="relative mt-2 w-6 h-6 rounded overflow-hidden mr-2">
-                            <Image
-                                src={`/images/icons/flags/${playerRanked.region}.png`}
-                                alt="Region Flag"
-                                layout="fill"
-                                objectFit="contain"
-                                objectPosition="center"
-                            />
-                        </div>
+                        <Image
+                            src={`/images/icons/flags/${playerRanked.region}.png`}
+                            alt="Region Flag"
+                            containerClassName="mt-2 w-6 h-6 rounded overflow-hidden mr-2"
+                            className="object-contain object-center"
+                        />
                     )
                 }
                 favorite={{

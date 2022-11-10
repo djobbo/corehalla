@@ -1,31 +1,31 @@
 import {
-    HiChevronDoubleUp,
-    HiLightningBolt,
-    HiUserGroup,
-    HiUsers,
-} from "react-icons/hi"
+    ClanIcon,
+    Rankings1v1Icon,
+    Rankings2v2Icon,
+    RankingsPowerIcon,
+} from "ui/icons"
 import { cn } from "common/helpers/classnames"
 
 const subHeaderNavigation = [
     {
         title: "1v1 Rankings",
         href: "/rankings",
-        icon: <HiChevronDoubleUp className="w-6 h-6" strokeWidth={1} />,
+        icon: <Rankings1v1Icon className="w-6 h-6" strokeWidth={1} />,
     },
     {
         title: "2v2 Rankings",
         href: "/rankings/2v2",
-        icon: <HiUsers className="w-6 h-6" strokeWidth={1} />,
+        icon: <Rankings2v2Icon className="w-6 h-6" strokeWidth={1} />,
     },
     {
         title: "Power Rankings",
         href: "/rankings/power",
-        icon: <HiLightningBolt className="w-6 h-6" strokeWidth={1} />,
+        icon: <RankingsPowerIcon className="w-6 h-6" strokeWidth={1} />,
     },
     {
         title: "Clans",
         href: "/clans",
-        icon: <HiUserGroup className="w-6 h-6" strokeWidth={1} />,
+        icon: <ClanIcon className="w-6 h-6" strokeWidth={1} />,
     },
 ]
 

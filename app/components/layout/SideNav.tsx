@@ -9,6 +9,7 @@ import {
     HiUsers,
     HiX,
 } from "react-icons/hi"
+import { Image } from "@components/Image"
 import { Tooltip } from "ui/base/Tooltip"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
@@ -17,7 +18,6 @@ import { legendsMap } from "bhapi/legends"
 import { useFavorites } from "@ctx/auth/AuthProvider"
 import { useRouter } from "next/router"
 import { useSideNav } from "@ctx/SideNavProvider"
-import Image from "next/image"
 import type { ReactNode } from "react"
 
 type SideNavIconProps = {
@@ -52,19 +52,20 @@ const SideNavIcon = ({
     external = false,
 }: SideNavIconProps) => {
     const { closeSideNav } = useSideNav()
-
     const cleanName = cleanString(name)
+
     return (
-        <Tooltip content={desc ?? cleanName} placement="right">
+        <Tooltip content={desc ?? cleanName} side="right">
             <div className={cn("relative", sideNavIconClassName)}>
                 <AppLink
                     href={href}
                     className={cn(
                         className,
-                        "w-10 h-10 rounded-lg flex justify-center items-center uppercase cursor-pointer",
+                        "w-full sm:w-10 h-10 rounded-lg flex gap-2 px-2 sm:uppercase cursor-pointer border border-transparent",
+                        "justify-start sm:justify-center items-center",
                         {
                             "bg-accent": active,
-                            "bg-bg hover:border hover:border-text": !active,
+                            "bg-bg hover:border-text": !active,
                         },
                     )}
                     target={external ? "_blank" : undefined}
@@ -73,21 +74,21 @@ const SideNavIcon = ({
                     }}
                 >
                     {image && (
-                        <span
-                            className="absolute w-8 h-8 text-xs z-0 opacity-50"
-                            aria-hidden
-                        >
-                            <Image
-                                src={image}
-                                alt={`player ${cleanName} icon`}
-                                layout="fill"
-                                objectFit="contain"
-                                objectPosition="center"
-                            />
-                        </span>
+                        <Image
+                            src={image}
+                            alt={`player ${cleanName} icon`}
+                            Container="span"
+                            containerClassName="w-8 h-8 text-xs z-0 opacity-50 rounded-md overflow-hidden"
+                            position="relative sm:absolute"
+                            className="object-contain object-center"
+                        />
                     )}
-                    <span className="font-semibold text-sm z-10">
+                    <span className="font-semibold text-sm z-10 hidden sm:inline-block whitespace-nowrap">
                         {content ?? cleanName.slice(0, 3)}
+                    </span>
+                    <span className="text-sm inline-flex items-center gap-2 sm:hidden whitespace-nowrap">
+                        {content}
+                        {cleanName.slice(0, 20)}
                     </span>
                 </AppLink>
                 {onRemove && (
@@ -173,77 +174,98 @@ export const SideNav = ({ className }: SideNavProps) => {
     )
 
     return (
-        <div
-            className={cn(
-                "fixed sm:sticky top-0 p-2 flex flex-col gap-2 border-r border-bg h-screen overflow-y-auto bg-bgVar2 z-50",
-                className,
-                {
-                    "hidden sm:flex": !isSideNavOpen,
-                },
-            )}
-        >
+        <div className="z-50">
             <button
-                className="fixed sm:hidden w-full h-full inset-0 bg-bgVar2 opacity-50 cursor-default"
+                className={cn(
+                    "fixed w-full h-full inset-0 bg-bgVar2 opacity-50 cursor-default",
+                    {
+                        hidden: !isSideNavOpen,
+                    },
+                )}
                 onClick={() => {
                     closeSideNav()
                 }}
             />
-            {nav.map((nav) => (
-                <SideNavIcon
-                    key={nav.name}
-                    name={nav.name}
-                    content={nav.icon}
-                    href={nav.href}
-                    active={
-                        nav.exact
-                            ? pathname === nav.href
-                            : pathname.startsWith(nav.href)
-                    }
-                    external={nav.external}
-                />
-            ))}
-            {favorites.map((favorite) => {
-                switch (favorite.type) {
-                    case "player": {
-                        const legendId = favorite.meta.icon?.legend_id
-                        const legend = !!legendId && legendsMap[legendId]
-                        return (
-                            <SideNavIcon
-                                key={favorite.id}
-                                href={`/stats/player/${favorite.id}`}
-                                name={cleanString(favorite.name)}
-                                {...(legend && {
-                                    image: `/images/icons/roster/legends/${legend.legend_name_key}.png`,
-                                })}
-                                active={
-                                    pathname === "/stats/player/[playerId]" &&
-                                    playerId === favorite.id.toString()
-                                }
-                                onRemove={() => {
-                                    removeFavorite(favorite)
-                                }}
-                            />
-                        )
-                    }
-                    case "clan":
-                        return (
-                            <SideNavIcon
-                                key={favorite.id}
-                                href={`/stats/clan/${favorite.id}`}
-                                name={cleanString(favorite.name)}
-                                active={
-                                    pathname === "/stats/clan/[clanId]" &&
-                                    clanId === favorite.id.toString()
-                                }
-                                onRemove={() => {
-                                    removeFavorite(favorite)
-                                }}
-                            />
-                        )
-                    default:
-                        return null
-                }
-            })}
+            <div
+                className={cn(
+                    "fixed w-64 sm:w-auto sm:sticky top-0 flex-col border-r border-bg h-screen bg-bgVar2 z-50",
+                    className,
+                    {
+                        "-translate-x-full sm:translate-x-0": !isSideNavOpen,
+                        "translate-x-0": isSideNavOpen,
+                    },
+                )}
+                style={{
+                    transition: "0.15s all ease",
+                }}
+            >
+                <div className="flex flex-col gap-2 flex-1 p-2 overflow-y-auto">
+                    {nav.map((nav) => (
+                        <SideNavIcon
+                            key={nav.name}
+                            name={nav.name}
+                            content={nav.icon}
+                            href={nav.href}
+                            active={
+                                nav.exact
+                                    ? pathname === nav.href
+                                    : pathname.startsWith(nav.href)
+                            }
+                            external={nav.external}
+                        />
+                    ))}
+                    <hr
+                        className={cn("border-b border-bg rounded-full mx-2", {
+                            hidden: favorites.length <= 0,
+                        })}
+                    />
+                    {favorites.map((favorite) => {
+                        switch (favorite.type) {
+                            case "player": {
+                                const legendId = favorite.meta.icon?.legend_id
+                                const legend =
+                                    !!legendId && legendsMap[legendId]
+                                return (
+                                    <SideNavIcon
+                                        key={favorite.id}
+                                        href={`/stats/player/${favorite.id}`}
+                                        name={cleanString(favorite.name)}
+                                        {...(legend && {
+                                            image: `/images/icons/roster/legends/${legend.legend_name_key}.png`,
+                                        })}
+                                        active={
+                                            pathname ===
+                                                "/stats/player/[playerId]" &&
+                                            playerId === favorite.id.toString()
+                                        }
+                                        onRemove={() => {
+                                            removeFavorite(favorite)
+                                        }}
+                                    />
+                                )
+                            }
+                            case "clan":
+                                return (
+                                    <SideNavIcon
+                                        key={favorite.id}
+                                        href={`/stats/clan/${favorite.id}`}
+                                        name={cleanString(favorite.name)}
+                                        active={
+                                            pathname ===
+                                                "/stats/clan/[clanId]" &&
+                                            clanId === favorite.id.toString()
+                                        }
+                                        onRemove={() => {
+                                            removeFavorite(favorite)
+                                        }}
+                                    />
+                                )
+                            default:
+                                return null
+                        }
+                    })}
+                </div>
+            </div>
         </div>
     )
 }
