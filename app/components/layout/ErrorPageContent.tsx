@@ -1,8 +1,8 @@
 import { Button } from "ui/base/Button"
+import { DiscordIcon, GithubIcon } from "ui/icons"
+import { Image } from "@components/Image"
 import { SectionTitle } from "./SectionTitle"
-import { SiDiscord, SiGithub } from "react-icons/si"
 import { useRouter } from "next/router"
-import Image from "next/image"
 
 type ErrorPageContentProps = {
     title?: string
@@ -19,15 +19,12 @@ export const ErrorPageContent = ({
         <div>
             <SectionTitle className="text-center">{title}</SectionTitle>
             {statusCode && (
-                <div className="relative w-full h-full min-h-[240px] md:min-h-[400px]">
-                    <Image
-                        src={`/images/errors/${statusCode}.png`}
-                        alt={`${statusCode} Error`}
-                        layout="fill"
-                        objectFit="contain"
-                        objectPosition="center"
-                    />
-                </div>
+                <Image
+                    src={`/images/errors/${statusCode}.png`}
+                    alt={`${statusCode} Error`}
+                    containerClassName="w-full h-full min-h-[240px] md:min-h-[400px]"
+                    className="object-contain object-center"
+                />
             )}
             <div className="flex flex-col justify-center items-center gap-4">
                 <Button buttonStyle="primary" onClick={() => router.push("/")}>
@@ -43,7 +40,7 @@ export const ErrorPageContent = ({
                         }}
                         className="flex items-center gap-2"
                     >
-                        <SiDiscord size={16} /> Report bug
+                        <DiscordIcon size={16} /> Report bug
                     </Button>
                     <Button
                         buttonStyle="outline"
@@ -54,7 +51,7 @@ export const ErrorPageContent = ({
                         }}
                         className="flex items-center gap-2"
                     >
-                        <SiGithub size={16} /> Contribute
+                        <GithubIcon size={16} /> Contribute
                     </Button>
                 </div>
             </div>

@@ -1,5 +1,5 @@
-import { HiSearch } from "react-icons/hi"
 import { Kbd } from "ui/base/Kbd"
+import { SearchIcon } from "ui/icons"
 import { cn } from "common/helpers/classnames"
 import { useDevice } from "common/hooks/useDevice"
 import { useKBar } from "kbar"
@@ -55,7 +55,7 @@ export const SearchButtonIcon = ({
 
     return (
         <button type="button" className={className} onClick={query.toggle}>
-            <HiSearch size={size ?? 20} />
+            <SearchIcon size={size ?? 20} />
         </button>
     )
 }

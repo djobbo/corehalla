@@ -1,11 +1,11 @@
 import { AppLink } from "ui/base/AppLink"
-import { HiUserGroup, HiX } from "react-icons/hi"
+import { ClanIcon, CloseIcon } from "ui/icons"
+import { Image } from "@components/Image"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { css } from "ui/theme"
 import { legendsMap } from "bhapi/legends"
 import { useFavorites } from "@ctx/auth/AuthProvider"
-import Image from "next/image"
 import type { Favorite } from "@ctx/auth/useUserFavorites"
 import type { ReactNode } from "react"
 
@@ -34,18 +34,15 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                     const legend = !!legendId && legendsMap[legendId]
                     if (legend)
                         icon = (
-                            <div className="relative w-8 h-8">
-                                <Image
-                                    src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
-                                    alt={`player ${cleanString(fav.name)} icon`}
-                                    layout="fill"
-                                    objectFit="contain"
-                                    objectPosition="center"
-                                />
-                            </div>
+                            <Image
+                                src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
+                                alt={`player ${cleanString(fav.name)} icon`}
+                                containerClassName="w-8 h-8"
+                                className="object-contain object-center"
+                            />
                         )
                 } else if (fav.type === "clan") {
-                    icon = <HiUserGroup className="w-8 h-8" />
+                    icon = <ClanIcon className="w-8 h-8" />
                 }
 
                 return (
@@ -74,7 +71,7 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                             className="hidden remove-btn absolute w-5 h-5 p-0.5 rounded-full overflow-hidden shadow-md bg-accent hover:bg-text hover:text-bgVar2"
                             onClick={() => removeFavorite(fav)}
                         >
-                            <HiX />
+                            <CloseIcon />
                         </button>
                     </div>
                 )

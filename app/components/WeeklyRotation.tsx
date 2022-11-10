@@ -1,6 +1,6 @@
-import { HiOutlineQuestionMarkCircle } from "react-icons/hi"
+import { Image } from "@components/Image"
 import { Tooltip } from "ui/base/Tooltip"
-import Image from "next/image"
+import { UnknownIcon } from "ui/icons"
 import type { Legend } from "bhapi/types"
 
 type WeeklyRotationProps = {
@@ -16,7 +16,7 @@ export const WeeklyRotation = ({ weeklyRotation }: WeeklyRotationProps) => {
                         key={i}
                         className="relative w-16 h-16 rounded-md bg-bg flex justify-center items-center"
                     >
-                        <HiOutlineQuestionMarkCircle className="w-12 h-12 stroke-bgVar2" />
+                        <UnknownIcon className="w-12 h-12 stroke-bgVar2" />
                     </div>
                 ))}
             </div>
@@ -27,15 +27,12 @@ export const WeeklyRotation = ({ weeklyRotation }: WeeklyRotationProps) => {
         <div className="flex gap-2">
             {weeklyRotation.map((legend) => (
                 <Tooltip key={legend.legend_id} content={legend.bio_name}>
-                    <div className="relative w-16 h-16 rounded-md">
-                        <Image
-                            src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
-                            alt={legend.bio_name}
-                            layout="fill"
-                            objectFit="contain"
-                            objectPosition="center"
-                        />
-                    </div>
+                    <Image
+                        src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
+                        alt={legend.bio_name}
+                        containerClassName="w-16 h-16 rounded-md"
+                        className="object-contain object-center"
+                    />
                 </Tooltip>
             ))}
         </div>

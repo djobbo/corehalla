@@ -1,8 +1,8 @@
+import { Image } from "@components/Image"
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { SectionTitle } from "../../../layout/SectionTitle"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
 import { memo } from "react"
-import Image from "next/image"
 import type { FullLegend, FullWeapon } from "bhapi/legends"
 import type { MiscStat } from "../../MiscStatGroup"
 
@@ -94,15 +94,12 @@ export const PlayerWeaponRankedContent = memo(
                 name: "Most played",
                 value: ranked.mostPlayedLegend ? (
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 relative overflow-hidden rounded-sm">
-                            <Image
-                                src={`/images/icons/roster/legends/${ranked.mostPlayedLegend.legend_name_key}.png`}
-                                alt={ranked.mostPlayedLegend.bio_name}
-                                layout="fill"
-                                objectFit="contain"
-                                objectPosition="center"
-                            />
-                        </div>
+                        <Image
+                            src={`/images/icons/roster/legends/${ranked.mostPlayedLegend.legend_name_key}.png`}
+                            alt={ranked.mostPlayedLegend.bio_name}
+                            containerClassName="w-8 h-8 overflow-hidden rounded-sm"
+                            className="object-contain object-center"
+                        />
                         {ranked.mostPlayedLegend.ranked?.games} games
                     </div>
                 ) : (
@@ -114,13 +111,12 @@ export const PlayerWeaponRankedContent = memo(
                 name: "Highest elo",
                 value: ranked.highestRatedLegend ? (
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 relative overflow-hidden rounded-sm">
+                        <div className="">
                             <Image
                                 src={`/images/icons/roster/legends/${ranked.highestRatedLegend.legend_name_key}.png`}
                                 alt={ranked.highestRatedLegend.bio_name}
-                                layout="fill"
-                                objectFit="contain"
-                                objectPosition="center"
+                                containerClassName="w-8 h-8 overflow-hidden rounded-sm"
+                                className="object-contain object-center"
                             />
                         </div>
                         {ranked.highestRatedLegend.ranked?.rating} elo
@@ -134,15 +130,12 @@ export const PlayerWeaponRankedContent = memo(
                 name: "Highest peak elo",
                 value: ranked.highestPeakRatedLegend ? (
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 relative overflow-hidden rounded-sm">
-                            <Image
-                                src={`/images/icons/roster/legends/${ranked.highestPeakRatedLegend.legend_name_key}.png`}
-                                alt={ranked.highestPeakRatedLegend.bio_name}
-                                layout="fill"
-                                objectFit="contain"
-                                objectPosition="center"
-                            />
-                        </div>
+                        <Image
+                            src={`/images/icons/roster/legends/${ranked.highestPeakRatedLegend.legend_name_key}.png`}
+                            alt={ranked.highestPeakRatedLegend.bio_name}
+                            containerClassName="w-8 h-8 overflow-hidden rounded-sm"
+                            className="object-contain object-center"
+                        />
                         {ranked.highestPeakRatedLegend.ranked?.rating} elo
                     </div>
                 ) : (

@@ -1,8 +1,8 @@
 import { AppLink } from "ui/base/AppLink"
+import { Image } from "@components/Image"
 import { cleanString } from "common/helpers/cleanString"
 import { legendsMap } from "bhapi/legends"
 import { useKBar } from "kbar"
-import Image from "next/image"
 import type { Ranking1v1 } from "bhapi/types"
 
 type SearchboxItemProps = {
@@ -16,18 +16,13 @@ export const SearchboxItem = ({ player }: SearchboxItemProps) => {
     } = useKBar()
 
     const icon = legend && (
-        <div
-            className="w-8 h-8 relative rounded-lg overflow-hidden border border-textVar1"
+        <Image
             key={legend.legend_id}
-        >
-            <Image
-                src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
-                alt={legend.bio_name}
-                layout="fill"
-                objectFit="contain"
-                objectPosition="center"
-            />
-        </div>
+            src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
+            alt={legend.bio_name}
+            containerClassName="w-8 h-8 rounded-lg overflow-hidden border border-textVar1"
+            className="object-contain object-center"
+        />
     )
 
     return (

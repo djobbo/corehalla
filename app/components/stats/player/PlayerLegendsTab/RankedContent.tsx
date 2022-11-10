@@ -1,10 +1,10 @@
 import { CollapsibleSection } from "@components/layout/CollapsibleSection"
+import { Image } from "@components/Image"
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { RatingDisplay } from "../../RatingDisplay"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
 import { getLegendEloReset } from "bhapi/calculator"
 import { getTierFromRating } from "bhapi/helpers/getTierFromRating"
-import Image from "next/image"
 import type { FullLegend } from "bhapi/legends"
 import type { MiscStat } from "../../MiscStatGroup"
 
@@ -46,15 +46,12 @@ export const PlayerLegendRankedContent = ({
     return (
         <CollapsibleSection trigger="Ranked Season">
             <div className="flex items-center gap-4">
-                <div className="relative h-24 w-16">
-                    <Image
-                        src={`/images/ranked-banners/${ranked.tier}.png`}
-                        alt={ranked.tier ?? "Valhallan"}
-                        layout="fill"
-                        objectFit="contain"
-                        objectPosition="center"
-                    />
-                </div>
+                <Image
+                    src={`/images/ranked-banners/${ranked.tier}.png`}
+                    alt={ranked.tier ?? "Valhallan"}
+                    containerClassName="h-24 w-16"
+                    className="object-contain object-center"
+                />
                 <div>
                     <span className="text-sm font-light">{ranked.tier}</span>
                     <RatingDisplay

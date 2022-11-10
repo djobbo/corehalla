@@ -1,5 +1,4 @@
-version: "3.8"
-name: corehalla
+version: '3.8'
 
 services:
   studio:
@@ -156,7 +155,6 @@ services:
       PG_META_DB_USER: ${POSTGRES_USER}
       PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD}
 
-  # Comment out everything below this point if you are using an external Postgres database
   db:
     container_name: supabase-db
     image: supabase/postgres:14.1.0.21
@@ -173,35 +171,33 @@ services:
       - ./volumes/db/init:/docker-entrypoint-initdb.d
 
   app:
-    container_name: corehalla-app
-    build:
-        context: ../
-        dockerfile: Dockerfile.dev
-    restart: unless-stopped
-    ports:
-        - "3000:3000"
-    stdin_open: true
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VARIANT: 16-bullseye
     volumes:
-        - ../:/usr/src
-        - /usr/src/node_modules
-        - /usr/src/app/node_modules
+      - ..:/workspace:cached
+    command: sleep infinity
     environment:
-        # Common
-        NEXT_PUBLIC_SUPABASE_URL: http://localhost:${KONG_HTTP_PORT}
-        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${ANON_KEY}
-        SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
-        SUPABASE_URL: http://kong:8000
-        BRAWLHALLA_API_KEY: ${BRAWLHALLA_API_KEY}
-        # App
-        NEXT_PUBLIC_GA_TRACKING_ID: ${GA_TRACKING_ID}
-        NEXT_PUBLIC_ADSENSE_ID: ${ADSENSE_ID}
-        # Discord Manager
-        DISCORD_MANAGER_BOT_TOKEN: ${DISCORD_MANAGER_BOT_TOKEN}
-        DISCORD_MANAGER_BOT_DEV_GUILD_ID: ${DISCORD_MANAGER_BOT_DEV_GUILD_ID}
-        DISCORD_MANAGER_BOT_CLIENT_ID: ${DISCORD_MANAGER_BOT_CLIENT_ID}
-        DISCORD_MANAGER_BOT_WELCOME_ROLES: ${DISCORD_MANAGER_BOT_WELCOME_ROLES}
+      # Common
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+      NEXT_PUBLIC_SUPABASE_URL: http://localhost:${KONG_HTTP_PORT}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
+      SUPABASE_URL: http://kong:8000
+      BRAWLHALLA_API_KEY: ${BRAWLHALLA_API_KEY}
+      STUDIO_PORT: ${STUDIO_PORT}
+      # App
+      NEXT_PUBLIC_GA_TRACKING_ID: ${GA_TRACKING_ID}
+      NEXT_PUBLIC_ADSENSE_ID: ${ADSENSE_ID}
+      # Discord Manager
+      DISCORD_MANAGER_BOT_TOKEN: ${DISCORD_MANAGER_BOT_TOKEN}
+      DISCORD_MANAGER_BOT_DEV_GUILD_ID: ${DISCORD_MANAGER_BOT_DEV_GUILD_ID}
+      DISCORD_MANAGER_BOT_CLIENT_ID: ${DISCORD_MANAGER_BOT_CLIENT_ID}
+      DISCORD_MANAGER_BOT_WELCOME_ROLES: ${DISCORD_MANAGER_BOT_WELCOME_ROLES}
     depends_on:
-        - db
-        - rest
-        - auth
-        - storage
+      - rest
+      - auth
+      - storage
+      - realtime

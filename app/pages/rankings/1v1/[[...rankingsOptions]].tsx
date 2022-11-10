@@ -1,4 +1,5 @@
 import { AppLink } from "ui/base/AppLink"
+import { Image } from "@components/Image"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
 import { RankingsTableItem } from "@components/stats/RankingsTableItem"
 import { SEO } from "@components/SEO"
@@ -9,7 +10,6 @@ import { useDebouncedState } from "common/hooks/useDebouncedState"
 import { useEffect } from "react"
 import { useRankings1v1 } from "@hooks/stats/useRankings"
 import { useRouter } from "next/router"
-import Image from "next/image"
 import type { NextPage } from "next"
 
 const Page: NextPage = () => {
@@ -121,17 +121,14 @@ const Page: NextPage = () => {
                                             href={`/stats/player/${player.brawlhalla_id}`}
                                             className="flex flex-1 items-center gap-2 md:gap-3"
                                         >
-                                            <div className="relative w-6 h-6 rounded-lg overflow-hidden">
-                                                {legend && (
-                                                    <Image
-                                                        src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
-                                                        alt={legend.bio_name}
-                                                        layout="fill"
-                                                        objectFit="cover"
-                                                        objectPosition="center"
-                                                    />
-                                                )}
-                                            </div>
+                                            {legend && (
+                                                <Image
+                                                    src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
+                                                    alt={legend.bio_name}
+                                                    containerClassName="w-6 h-6 rounded-lg overflow-hidden"
+                                                    className="object-cover object-center"
+                                                />
+                                            )}
                                             {cleanString(player.name)}
                                         </AppLink>
                                     }

@@ -1,6 +1,6 @@
-import { HiSortAscending, HiSortDescending } from "react-icons/hi"
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { Select } from "ui/base/Select"
+import { SortAscendingIcon, SortDescendingIcon } from "ui/icons"
 import { SortDirection, useSortBy } from "common/hooks/useSortBy"
 import { TeamCard } from "../../TeamCard"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
@@ -154,9 +154,9 @@ export const Player2v2Tab = ({ ranked }: Player2v2TabProps) => {
                     className="flex items-center hover:text-accent"
                 >
                     {teamSortDirection === SortDirection.Ascending ? (
-                        <HiSortAscending className="w-6 h-6" />
+                        <SortAscendingIcon className="w-6 h-6" />
                     ) : (
-                        <HiSortDescending className="w-6 h-6" />
+                        <SortDescendingIcon className="w-6 h-6" />
                     )}
                 </button>
             </div>

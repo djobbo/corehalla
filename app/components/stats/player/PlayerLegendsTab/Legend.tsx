@@ -1,10 +1,10 @@
 import { CollapsibleContent } from "../../../layout/CollapsibleContent"
 import { GeneralStats } from "../../GeneralStats"
+import { Image } from "@components/Image"
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { PlayerLegendRankedContent } from "./RankedContent"
 import { PlayerLegendWeaponDistribution } from "./WeaponDistribution"
 import { formatTime } from "common/helpers/date"
-import Image from "next/image"
 import type { FullLegend } from "bhapi/legends"
 import type { MiscStat } from "../../MiscStatGroup"
 
@@ -67,15 +67,13 @@ export const Legend = ({
                 <span className="flex items-center justify-between w-full">
                     <span className="flex items-center gap-2">
                         <span className="text-sm text-textVar1">{rank}</span>
-                        <span className="relative block w-6 h-6 rounded-lg overflow-hidden">
-                            <Image
-                                src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
-                                alt={legend.bio_name}
-                                layout="fill"
-                                objectFit="contain"
-                                objectPosition="center"
-                            />
-                        </span>
+                        <Image
+                            src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
+                            alt={legend.bio_name}
+                            Container="span"
+                            containerClassName="block w-6 h-6 rounded-lg overflow-hidden"
+                            className="object-contain object-center"
+                        />
                         {legend.bio_name}
                     </span>
                     <span className="text-sm text-textVar1">
