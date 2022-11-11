@@ -4,7 +4,7 @@ import type { NextApiHandler } from "next"
 const handler: NextApiHandler = async (req, res) => {
     res.setHeader(
         "Cache-Control",
-        "public, s-maxage=480, stale-while-revalidate=600",
+        "public, s-maxage=300, stale-while-revalidate=480",
     )
 
     try {

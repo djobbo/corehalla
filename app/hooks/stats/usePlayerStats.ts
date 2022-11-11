@@ -10,7 +10,7 @@ export const usePlayerStats = (playerId: string) => {
                 `/api/stats/player/${playerId}/stats`,
             )
 
-            if (!data.brawlhalla_id) throw new Error("Player not found")
+            if (!data.brawlhalla_id) throw new Error("Player stats not found")
             return data
         },
         { enabled: !!playerId },

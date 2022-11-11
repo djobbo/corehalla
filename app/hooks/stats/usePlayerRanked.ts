@@ -10,7 +10,7 @@ export const usePlayerRanked = (playerId: string) => {
                 `/api/stats/player/${playerId}/ranked`,
             )
 
-            if (!data.brawlhalla_id) throw new Error("Player not found")
+            if (!data.brawlhalla_id) throw new Error("Player ranked not found")
             return data
         },
         { enabled: !!playerId },
