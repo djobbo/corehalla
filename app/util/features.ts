@@ -16,7 +16,7 @@ export const getFeatureFlags = ({
 
     return {
         // shouldUseVercelImageOptimization: false,
-        shouldShowDummyFavorites: true && __DEV && !authContext?.isLoggedIn,
+        shouldShowDummyFavorites: false && __DEV && !authContext?.isLoggedIn,
         shouldShowBackToTop: true, // TODO: Add setting to toggle this
         shouldShowInfoTooltips: true, // TODO: Add setting to toggle this
         shouldShowAds: true, // TODO: premium??
