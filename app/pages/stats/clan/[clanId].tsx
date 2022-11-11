@@ -5,6 +5,7 @@ import { StatsHeader } from "@components/stats/StatsHeader"
 import { cleanString } from "common/helpers/cleanString"
 import { formatUnixTime } from "common/helpers/date"
 import { getClan } from "bhapi"
+import { queryClient } from "@util/queryClient"
 import { supabaseService } from "db/supabase/service"
 import { useClan } from "@hooks/stats/useClan"
 import { useRouter } from "next/router"
@@ -105,7 +106,6 @@ export const getServerSideProps: GetServerSideProps = async ({
 
     const { clanId } = query
     if (!clanId || typeof clanId !== "string") return { notFound: true }
-    const queryClient = new QueryClient()
 
     // TODO: Error handling
     const clan = await getClan(clanId)

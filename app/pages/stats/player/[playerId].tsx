@@ -19,6 +19,7 @@ import { formatTime } from "common/helpers/date"
 import { getFullLegends, getFullWeapons } from "bhapi/legends"
 import { getPlayerRanked, getPlayerStats } from "bhapi"
 import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
+import { queryClient } from "@util/queryClient"
 import { supabaseService } from "db/supabase/service"
 import { usePlayerAliases } from "@hooks/stats/usePlayerAliases"
 import { usePlayerRanked } from "@hooks/stats/usePlayerRanked"
@@ -272,7 +273,6 @@ export const getServerSideProps: GetServerSideProps = async ({
 
     const { playerId } = query
     if (!playerId || typeof playerId !== "string") return { notFound: true }
-    const queryClient = new QueryClient()
 
     // TODO: Error handling
     const [stats, ranked] = await Promise.all([
