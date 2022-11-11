@@ -7,7 +7,7 @@ const queryClientConfig: QueryClientConfig = {
             refetchOnWindowFocus: true,
             retry: 4,
             retryDelay: (attemptIndex) =>
-                Math.min(1000 * 2 ** attemptIndex, 30000),
+                Math.min(500 + 250 * 2 ** attemptIndex, 30000),
         },
     },
 }
