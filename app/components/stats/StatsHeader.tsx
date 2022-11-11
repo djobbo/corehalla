@@ -42,15 +42,11 @@ export const StatsHeader = ({
         <>
             <div
                 className="w-full h-28 relative rounded-md overflow-hidden shadow-md"
-                style={
-                    shouldShowAds
-                        ? {}
-                        : {
-                              background: "url(/images/backgrounds/orion.jpg)",
-                              backgroundPosition: "center",
-                              backgroundSize: "cover",
-                          }
-                }
+                style={{
+                    background: "url(/images/backgrounds/orion.jpg)",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                }}
             >
                 {shouldShowAds && <AdsenseStatsHeader />}
             </div>
