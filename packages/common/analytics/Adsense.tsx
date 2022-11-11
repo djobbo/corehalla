@@ -19,10 +19,10 @@ type AdsenseProps = {
 
 export const Adsense = ({
     slot,
-    format = "auto",
+    // format = "auto",
     layout = "",
     layoutKey = "",
-    responsive = false,
+    // responsive = false,
     className = "",
 }: AdsenseProps) => {
     useEffect(() => {
@@ -39,8 +39,8 @@ export const Adsense = ({
             data-ad-slot={slot}
             data-ad-layout={layout}
             data-ad-layout-key={layoutKey}
-            data-ad-format={format}
-            data-full-width-responsive={responsive}
+            // data-ad-format={format}
+            // data-full-width-responsive={responsive}
         ></ins>
     )
 }
