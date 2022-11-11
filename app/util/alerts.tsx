@@ -14,4 +14,18 @@ export const alerts = {
             !
         </span>
     ),
+    BH_SERVER_ISSUE: (
+        <span>
+            Known issues with fetching stats from Brawlhalla{"'"}s servers, don
+            {"'"}t panic. Updates{" "}
+            <AppLink
+                href="/discord"
+                target="_blank"
+                className="text-accentAlt font-semibold hover:text-text"
+            >
+                here
+            </AppLink>{" "}
+            !
+        </span>
+    ),
 } as const
