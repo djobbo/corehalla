@@ -41,7 +41,7 @@ export const StatsHeader = ({
     return (
         <>
             <div
-                className="w-full h-28 relative rounded-md overflow-hidden shadow-md"
+                className="w-full h-28 max-h-28 relative rounded-md overflow-hidden shadow-md"
                 style={{
                     background: "url(/images/backgrounds/orion.jpg)",
                     backgroundPosition: "center",
