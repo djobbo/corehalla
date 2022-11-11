@@ -188,7 +188,7 @@ export const SideNav = ({ className }: SideNavProps) => {
             />
             <div
                 className={cn(
-                    "fixed w-64 sm:w-auto sm:sticky top-0 flex-col border-r border-bg h-screen bg-bgVar2 z-50",
+                    "fixed w-64 sm:w-auto sm:sticky top-0 flex-col border-r border-bg h-screen bg-bgVar2 z-50 overflow-y-auto",
                     className,
                     {
                         "-translate-x-full sm:translate-x-0": !isSideNavOpen,
@@ -199,7 +199,7 @@ export const SideNav = ({ className }: SideNavProps) => {
                     transition: "0.15s all ease",
                 }}
             >
-                <div className="flex flex-col gap-2 flex-1 p-2 overflow-y-auto">
+                <div className="flex flex-col gap-2 flex-1 p-2">
                     {nav.map((nav) => (
                         <SideNavIcon
                             key={nav.name}
