@@ -16,7 +16,7 @@ const BackToTopButton = dynamic(
     },
 )
 import { GAScripts } from "common/analytics/GAScripts"
-import { Hydrate, QueryClient, QueryClientProvider } from "react-query"
+import { Hydrate, QueryClientProvider } from "react-query"
 import { KBarProvider } from "kbar"
 import { Layout } from "@components/layout/Layout"
 import { PageLoader } from "ui/base/PageLoader"
@@ -24,23 +24,10 @@ import { SEO } from "@components/SEO"
 import { Searchbox } from "@components/search/Searchbox"
 import { SideNavProvider } from "@ctx/SideNavProvider"
 import { Toaster } from "react-hot-toast"
+import { queryClient } from "@util/queryClient"
 import Head from "next/head"
 import dynamic from "next/dynamic"
 import type { AppProps } from "next/app"
-import type { QueryClientConfig } from "react-query"
-
-const queryClientConfig: QueryClientConfig = {
-    defaultOptions: {
-        queries: {
-            refetchOnWindowFocus: true,
-            retry: 4,
-            retryDelay: (attemptIndex) =>
-                Math.min(1000 * 2 ** attemptIndex, 30000),
-        },
-    },
-}
-
-const queryClient = new QueryClient(queryClientConfig)
 
 const App = ({
     Component,
