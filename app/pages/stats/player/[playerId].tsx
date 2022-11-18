@@ -21,7 +21,7 @@ import { getPlayerRanked, getPlayerStats } from "bhapi"
 import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
 import { ssrQueryClient as queryClient } from "@util/queryClient"
 // import { supabaseService } from "db/supabase/service"
-import { usePlayerAliases } from "@hooks/stats/usePlayerAliases"
+// import { usePlayerAliases } from "@hooks/stats/usePlayerAliases"
 import { usePlayerRanked } from "@hooks/stats/usePlayerRanked"
 import { usePlayerStats } from "@hooks/stats/usePlayerStats"
 import { useRouter } from "next/router"
@@ -53,7 +53,8 @@ const Page: NextPage = () => {
         playerId as string,
     )
     const { playerRanked } = usePlayerRanked(playerId as string)
-    const { playerAliases } = usePlayerAliases(playerId as string)
+    // const { playerAliases } = usePlayerAliases(playerId as string)
+    const playerAliases = []
 
     if (isLoading) return <p>Loading...</p>
 
