@@ -42,4 +42,18 @@ export const alerts = {
             !
         </span>
     ),
+    AUTH_ISSUES_RESOLVED: (
+        <span>
+            Authentication server is back online, you can reconnect! Don{"'"}t
+            forget to join our{" "}
+            <AppLink
+                href="/discord"
+                target="_blank"
+                className="text-accentAlt font-semibold hover:text-text"
+            >
+                Discord
+            </AppLink>{" "}
+            !
+        </span>
+    ),
 } as const
