@@ -6,10 +6,10 @@ import { dehydrate } from "react-query"
 import { formatUnixTime } from "common/helpers/date"
 import { getClan } from "bhapi"
 import { ssrQueryClient as queryClient } from "@util/queryClient"
-// import { supabaseService } from "db/supabase/service"
+import { supabaseService } from "db/supabase/service"
 import { useClan } from "@hooks/stats/useClan"
 import { useRouter } from "next/router"
-// import type { BHClan, BHPlayerAlias } from "db/generated/client"
+import type { BHClan, BHPlayerAlias } from "db/generated/client"
 import type { ClanRank } from "bhapi/constants"
 import type { GetServerSideProps, NextPage } from "next"
 import type { MiscStat } from "@components/stats/MiscStatGroup"
@@ -101,7 +101,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 }) => {
     res.setHeader(
         "Cache-Control",
-        "public, s-maxage=300, stale-while-revalidate=480",
+        "public, s-maxage=480, stale-while-revalidate=600",
     )
 
     const { clanId } = query
@@ -120,18 +120,18 @@ export const getServerSideProps: GetServerSideProps = async ({
                     ["clanStats", clanId],
                     async () => clan,
                 ),
-                // supabaseService.from<BHClan>("BHClan").upsert({
-                //     id: clan.clan_id.toString(),
-                //     name: clan.clan_name,
-                //     created: clan.clan_create_date,
-                //     xp: parseInt(clan.clan_xp),
-                // }),
-                // supabaseService.from<BHPlayerAlias>("BHPlayerAlias").upsert(
-                //     clan.clan.map((member) => ({
-                //         playerId: member.brawlhalla_id.toString(),
-                //         alias: member.name,
-                //     })),
-                // ),
+                supabaseService.from<BHClan>("BHClan").upsert({
+                    id: clan.clan_id.toString(),
+                    name: clan.clan_name,
+                    created: clan.clan_create_date,
+                    xp: parseInt(clan.clan_xp),
+                }),
+                supabaseService.from<BHPlayerAlias>("BHPlayerAlias").upsert(
+                    clan.clan.map((member) => ({
+                        playerId: member.brawlhalla_id.toString(),
+                        alias: member.name,
+                    })),
+                ),
             ])
         } catch {
             return { notFound: true }
