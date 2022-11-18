@@ -28,4 +28,18 @@ export const alerts = {
             !
         </span>
     ),
+    AUTH_ISSUES: (
+        <span>
+            Authentication server is down, and so favorites aren{"'"}t
+            accessible, sorry for the inconvenience. Updates{" "}
+            <AppLink
+                href="/discord"
+                target="_blank"
+                className="text-accentAlt font-semibold hover:text-text"
+            >
+                here
+            </AppLink>{" "}
+            !
+        </span>
+    ),
 } as const
