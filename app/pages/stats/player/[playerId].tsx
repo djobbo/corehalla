@@ -20,12 +20,12 @@ import { getFullLegends, getFullWeapons } from "bhapi/legends"
 import { getPlayerRanked, getPlayerStats } from "bhapi"
 import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
 import { ssrQueryClient as queryClient } from "@util/queryClient"
-// import { supabaseService } from "db/supabase/service"
-// import { usePlayerAliases } from "@hooks/stats/usePlayerAliases"
+import { supabaseService } from "db/supabase/service"
+import { usePlayerAliases } from "@hooks/stats/usePlayerAliases"
 import { usePlayerRanked } from "@hooks/stats/usePlayerRanked"
 import { usePlayerStats } from "@hooks/stats/usePlayerStats"
 import { useRouter } from "next/router"
-import type { BHPlayerAlias } from "db/generated/client"
+import type { BHPlayer, BHPlayerAlias } from "db/generated/client"
 import type { GetServerSideProps, NextPage } from "next"
 import type { MiscStat } from "@components/stats/MiscStatGroup"
 
@@ -53,8 +53,7 @@ const Page: NextPage = () => {
         playerId as string,
     )
     const { playerRanked } = usePlayerRanked(playerId as string)
-    // const { playerAliases } = usePlayerAliases(playerId as string)
-    const playerAliases = []
+    const { playerAliases } = usePlayerAliases(playerId as string)
 
     if (isLoading) return <p>Loading...</p>
 
@@ -269,7 +268,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 }) => {
     res.setHeader(
         "Cache-Control",
-        "public, s-maxage=300, stale-while-revalidate=480",
+        "public, s-maxage=480, stale-while-revalidate=600",
     )
 
     const { playerId } = query
@@ -310,13 +309,13 @@ export const getServerSideProps: GetServerSideProps = async ({
                 if (!ranked?.brawlhalla_id) throw new Error("Player not ranked")
                 return ranked
             }),
-            // supabaseService.from<BHPlayer>("BHPlayer").upsert({
-            //     id: stats.brawlhalla_id.toString(),
-            //     name: stats.name,
-            // }),
-            // supabaseService
-            //     .from<BHPlayerAlias>("BHPlayerAlias")
-            //     .upsert(curratedAliases),
+            supabaseService.from<BHPlayer>("BHPlayer").upsert({
+                id: stats.brawlhalla_id.toString(),
+                name: stats.name,
+            }),
+            supabaseService
+                .from<BHPlayerAlias>("BHPlayerAlias")
+                .upsert(curratedAliases),
             queryClient.prefetchQuery(["playerAliases", playerId], async () =>
                 curratedAliases
                     .filter((alias) => alias.playerId === playerId)
