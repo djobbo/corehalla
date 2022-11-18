@@ -1,10 +1,10 @@
 {
-  "name": "discord-manager",
+  "name": "worker",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "reaccord dev",
+    "dev": "tsnd --respawn src/index.ts",
     "build": "reaccord build",
     "start": "reaccord start"
   },
@@ -12,12 +12,17 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/express": "^4.17.14",
+    "@types/node": "^18.11.7",
     "@types/react": "^18.0.23",
     "typescript": "^4.8.4"
   },
   "dependencies": {
+    "bhapi": "workspace:*",
     "discord.js": "^14.6.0",
+    "express": "^4.18.2",
     "reaccord": "0.0.1-dev.1662751121068.0fe298a",
-    "react": "^18.2.0"
+    "react": "^18.2.0",
+    "ts-node-dev": "^2.0.0"
   }
 }
