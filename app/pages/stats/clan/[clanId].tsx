@@ -99,11 +99,6 @@ export const getServerSideProps: GetServerSideProps = async ({
     query,
     res,
 }) => {
-    res.setHeader(
-        "Cache-Control",
-        "public, s-maxage=480, stale-while-revalidate=600",
-    )
-
     const { clanId } = query
     if (!clanId || typeof clanId !== "string") return { notFound: true }
 
@@ -136,6 +131,11 @@ export const getServerSideProps: GetServerSideProps = async ({
         } catch {
             return { notFound: true }
         }
+
+        res.setHeader(
+            "Cache-Control",
+            "public, s-maxage=480, stale-while-revalidate=600",
+        )
 
         return {
             props: {
