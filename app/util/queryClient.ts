@@ -1,7 +1,6 @@
 import { QueryClient } from "react-query"
-import type { QueryClientConfig } from "react-query"
 
-const queryClientConfig: QueryClientConfig = {
+export const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
             refetchOnWindowFocus: true,
@@ -10,6 +9,12 @@ const queryClientConfig: QueryClientConfig = {
                 Math.min(500 + 250 * 2 ** attemptIndex, 30000),
         },
     },
-}
+})
 
-export const queryClient = new QueryClient(queryClientConfig)
+export const ssrQueryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            retry: false,
+        },
+    },
+})

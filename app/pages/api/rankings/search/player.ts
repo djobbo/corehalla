@@ -6,7 +6,7 @@ import type { NextApiHandler } from "next"
 const handler: NextApiHandler = async (req, res) => {
     res.setHeader(
         "Cache-Control",
-        "public, s-maxage=300, stale-while-revalidate=480",
+        "public, s-maxage=600, stale-while-revalidate=3600",
     )
 
     const { search, page = "1" } = req.query

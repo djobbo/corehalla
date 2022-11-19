@@ -4,11 +4,6 @@ import type { BHClan } from "db/generated/client"
 import type { NextApiHandler } from "next"
 
 const handler: NextApiHandler = async (req, res) => {
-    res.setHeader(
-        "Cache-Control",
-        "public, s-maxage=300, stale-while-revalidate=480",
-    )
-
     const { name = "", page = "1" } = req.query
 
     try {
@@ -29,6 +24,11 @@ const handler: NextApiHandler = async (req, res) => {
         )
 
         if (error) throw error
+
+        res.setHeader(
+            "Cache-Control",
+            "public, s-maxage=300, stale-while-revalidate=480",
+        )
 
         res.status(200).json(data ?? [])
     } catch (error) {
