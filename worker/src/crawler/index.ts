@@ -1,3 +1,4 @@
+import { formatTime } from "common/helpers/date"
 import { getPlayerStats, getRankings } from "bhapi"
 
 type CrawlerConfig = {
@@ -6,9 +7,11 @@ type CrawlerConfig = {
 }
 
 const defaultConfig: CrawlerConfig = {
-    maxRequestsPer15Minutes: 5000,
+    maxRequestsPer15Minutes: 100,
     maxPages: 3,
 }
+
+const MAX_PLAYERS_PER_PAGE = 50
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -30,13 +33,20 @@ const sendRequestsWithRateLimit = async <T>(
 }
 
 const createCrawlerQueue = async (config: CrawlerConfig) => {
-    const delay = (15 * 60 * 1000) / config.maxRequestsPer15Minutes
+    const delay = (15 * 60) / config.maxRequestsPer15Minutes
+    const delayMs = delay * 1000
+    const crawlDuration = delay * config.maxPages * (MAX_PLAYERS_PER_PAGE + 1)
+    console.log(
+        `Crawl duration: ${crawlDuration} seconds (${formatTime(
+            crawlDuration,
+        )})`,
+    )
     const requests = Array.from({ length: config.maxPages }).map((_, i) => {
         return async () => {
             console.log("Crawling leaderboard page", i + 1)
             const players = await requestWithMinimumDelay(
                 () => getRankings("1v1", "all", i + 1),
-                delay,
+                delayMs,
             )
 
             const playerRequests = players.map((player) => async () => {
@@ -57,12 +67,12 @@ const createCrawlerQueue = async (config: CrawlerConfig) => {
             })
             const playerData = await sendRequestsWithRateLimit(
                 playerRequests,
-                delay,
+                delayMs,
             )
             return playerData
         }
     })
-    const players = (await sendRequestsWithRateLimit(requests, delay)).flat(1)
+    const players = (await sendRequestsWithRateLimit(requests, delayMs)).flat(1)
     return players
 }
 

@@ -34,6 +34,12 @@ importers:
       '@radix-ui/react-collapsible': ^1.0.1
       '@radix-ui/react-tabs': ^1.0.1
       '@stitches/react': ^1.2.8
+      '@tanstack/query-core': ^4.15.1
+      '@tanstack/react-query': ^4.16.1
+      '@trpc/client': 10.0.0-rc.8
+      '@trpc/next': 10.0.0-rc.8
+      '@trpc/react-query': 10.0.0-rc.8
+      '@trpc/server': 10.0.0-rc.8
       '@types/node': ^18.11.7
       '@types/react': ^18.0.23
       autoprefixer: ^10.4.12
@@ -58,11 +64,17 @@ importers:
       typescript: ^4.8.4
       ui: workspace:*
       web-parser: workspace:*
+      worker: workspace:*
+      zod: ^3.19.1
     dependencies:
       '@fontsource/montserrat': 4.5.13
       '@radix-ui/react-collapsible': 1.0.1_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-tabs': 1.0.1_biqbaboplfbrettd7655fr4n2y
       '@stitches/react': 1.2.8_react@18.2.0
+      '@tanstack/react-query': 4.16.1_biqbaboplfbrettd7655fr4n2y
+      '@trpc/client': 10.0.0-rc.8_@trpc+server@10.0.0-rc.8
+      '@trpc/next': 10.0.0-rc.8_lewbo2sxcps7nprfjf2i7c4rr4
+      '@trpc/react-query': 10.0.0-rc.8_bd5nqhlee2rdtlo5aa5wyumt5u
       axios: 1.1.3
       bhapi: link:../packages/bhapi
       common: link:../packages/common
@@ -79,7 +91,11 @@ importers:
       react-query: 3.39.2_biqbaboplfbrettd7655fr4n2y
       ui: link:../packages/ui
       web-parser: link:../packages/web-parser
+      worker: link:../worker
+      zod: 3.19.1
     devDependencies:
+      '@tanstack/query-core': 4.15.1
+      '@trpc/server': 10.0.0-rc.8
       '@types/node': 18.11.7
       '@types/react': 18.0.23
       autoprefixer: 10.4.12_postcss@8.4.18
@@ -99,12 +115,14 @@ importers:
       react-query: ^3.39.2
       tsconfig: workspace:*
       typescript: ^4.8.4
+      zod: ^3.19.1
     dependencies:
       axios: 1.1.3
       common: link:../common
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-query: 3.39.2_biqbaboplfbrettd7655fr4n2y
+      zod: 3.19.1
     devDependencies:
       '@types/node': 18.11.7
       tsconfig: link:../tsconfig
@@ -123,6 +141,7 @@ importers:
       react-use: ^17.4.0
       tsconfig: workspace:*
       typescript: ^4.8.4
+      zod: ^3.19.1
     dependencies:
       classnames: 2.3.2
       dayjs: 1.11.6
@@ -131,6 +150,7 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       react-query: 3.39.2_biqbaboplfbrettd7655fr4n2y
       react-use: 17.4.0_biqbaboplfbrettd7655fr4n2y
+      zod: 3.19.1
     devDependencies:
       '@types/node': 18.11.7
       '@types/react': 18.0.23
@@ -282,11 +302,13 @@ importers:
       ts-node-dev: ^2.0.0
       tsconfig: workspace:*
       typescript: ^4.8.4
+      zod: ^3.19.1
     dependencies:
       axios: 1.1.3
       bhapi: link:../bhapi
       cheerio: 1.0.0-rc.12
       logger: link:../logger
+      zod: 3.19.1
     devDependencies:
       '@types/node': 18.11.7
       ts-node: 10.9.1_evej5wzm4hojmu6uzxwpspdmsu
@@ -296,24 +318,38 @@ importers:
 
   worker:
     specifiers:
+      '@trpc/server': 10.0.0-rc.8
+      '@types/cors': ^2.8.12
       '@types/express': ^4.17.14
       '@types/node': ^18.11.7
       '@types/react': ^18.0.23
       bhapi: workspace:*
+      common: workspace:*
+      cors: ^2.8.5
+      db: workspace:*
       discord.js: ^14.6.0
       express: ^4.18.2
       reaccord: 0.0.1-dev.1662751121068.0fe298a
       react: ^18.2.0
       ts-node-dev: ^2.0.0
       typescript: ^4.8.4
+      web-parser: workspace:*
+      zod: ^3.19.1
     dependencies:
+      '@trpc/server': 10.0.0-rc.8
       bhapi: link:../packages/bhapi
+      common: link:../packages/common
+      cors: 2.8.5
+      db: link:../packages/db
       discord.js: 14.6.0
       express: 4.18.2
       reaccord: 0.0.1-dev.1662751121068.0fe298a_cexvs5fgsfozg2dkokn6qd7afa
       react: 18.2.0
       ts-node-dev: 2.0.0_evej5wzm4hojmu6uzxwpspdmsu
+      web-parser: link:../packages/web-parser
+      zod: 3.19.1
     devDependencies:
+      '@types/cors': 2.8.12
       '@types/express': 4.17.14
       '@types/node': 18.11.7
       '@types/react': 18.0.23
@@ -1678,9 +1714,78 @@ packages:
       tslib: 2.4.1
     dev: false
 
+  /@tanstack/query-core/4.15.1:
+    resolution: {integrity: sha512-+UfqJsNbPIVo0a9ANW0ZxtjiMfGLaaoIaL9vZeVycvmBuWywJGtSi7fgPVMCPdZQFOzMsaXaOsDtSKQD5xLRVQ==}
+
+  /@tanstack/react-query/4.16.1_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-PDE9u49wSDykPazlCoLFevUpceLjQ0Mm8i6038HgtTEKb/aoVnUZdlUP7C392ds3Cd75+EGlHU7qpEX06R7d9Q==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      '@tanstack/query-core': 4.15.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      use-sync-external-store: 1.2.0_react@18.2.0
+    dev: false
+
   /@tokenizer/token/0.3.0:
     resolution: {integrity: sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==}
     dev: false
+
+  /@trpc/client/10.0.0-rc.8_@trpc+server@10.0.0-rc.8:
+    resolution: {integrity: sha512-NuQl7g1tkfFYn6P6dZJJkVsxnxutYpaxmpG/w5ZKW3QVu6cY1joUOrWakunKrghh3HS+svgLaPz0Xl0PlmdSlw==}
+    peerDependencies:
+      '@trpc/server': 10.0.0-rc.8
+    dependencies:
+      '@trpc/server': 10.0.0-rc.8
+    dev: false
+
+  /@trpc/next/10.0.0-rc.8_lewbo2sxcps7nprfjf2i7c4rr4:
+    resolution: {integrity: sha512-l2TZF22virmC3RROD7qu0dnc3sdYfVvkOhAu1qP5+8fRgs4cgHKBFdalQ+SKBnU0RNuVLYVw0CkyvU+gHo5u2w==}
+    peerDependencies:
+      '@tanstack/react-query': ^4.3.8
+      '@trpc/client': 10.0.0-rc.8
+      '@trpc/react-query': ^10.0.0-proxy-beta.21
+      '@trpc/server': 10.0.0-rc.8
+      next: '*'
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      '@tanstack/react-query': 4.16.1_biqbaboplfbrettd7655fr4n2y
+      '@trpc/client': 10.0.0-rc.8_@trpc+server@10.0.0-rc.8
+      '@trpc/react-query': 10.0.0-rc.8_bd5nqhlee2rdtlo5aa5wyumt5u
+      '@trpc/server': 10.0.0-rc.8
+      next: 13.0.0_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-ssr-prepass: 1.5.0_react@18.2.0
+    dev: false
+
+  /@trpc/react-query/10.0.0-rc.8_bd5nqhlee2rdtlo5aa5wyumt5u:
+    resolution: {integrity: sha512-LKL29llvGtwYmfKGuCYSgNNChOL8/6PInY90i+ZgI8TLO6ZCJaVrPBSvqtxKj3MSezbK3kOxWIviKVFwV35L0A==}
+    peerDependencies:
+      '@tanstack/react-query': ^4.3.8
+      '@trpc/client': 10.0.0-rc.8
+      '@trpc/server': 10.0.0-rc.8
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      '@tanstack/react-query': 4.16.1_biqbaboplfbrettd7655fr4n2y
+      '@trpc/client': 10.0.0-rc.8_@trpc+server@10.0.0-rc.8
+      '@trpc/server': 10.0.0-rc.8
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /@trpc/server/10.0.0-rc.8:
+    resolution: {integrity: sha512-+NsQqaJGHTiiBcOesH1bIictnnSO+SXaCOy5pM/324QBnJRt9VOO8oYDLcHSwAbJpAbOA+vl6YHs8OoykW6D2g==}
 
   /@tsconfig/node10/1.0.9:
     resolution: {integrity: sha512-jNsYVVxU8v5g43Erja32laIDHXeoNvFEpX33OK4d6hljo3jDhCBDhx5dhCCTMWUojscpAagGiRkBKxpdl9fxqA==}
@@ -1705,6 +1810,10 @@ packages:
     resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==}
     dependencies:
       '@types/node': 18.11.7
+    dev: true
+
+  /@types/cors/2.8.12:
+    resolution: {integrity: sha512-vt+kDhq/M2ayberEtJcIN/hxXy1Pk+59g2FV/ZQceeaTyCtCucjL2Q7FXlFjtWn4n15KCr1NE2lNNFhp0lEThw==}
     dev: true
 
   /@types/eslint-scope/3.7.4:
@@ -2615,6 +2724,14 @@ packages:
   /core-js-pure/3.26.0:
     resolution: {integrity: sha512-LiN6fylpVBVwT8twhhluD9TzXmZQQsr2I2eIKtWNbZI1XMfBT7CV18itaN6RA7EtQd/SDdRx/wzvAShX2HvhQA==}
     requiresBuild: true
+
+  /cors/2.8.5:
+    resolution: {integrity: sha512-KIHbLJqu73RGr/hnbrO9uBeixNGuvSQjul/jdFvS/KFSIH1hWVd1ng7zOHx+YrEfInLG7q4n6GHQ9cDtxv/P6g==}
+    engines: {node: '>= 0.10'}
+    dependencies:
+      object-assign: 4.1.1
+      vary: 1.1.2
+    dev: false
 
   /cosmiconfig/7.0.1:
     resolution: {integrity: sha512-a1YWNUV2HwGimB7dU2s1wUMurNKjpx60HxBB6xUM8Re+2s1g1IIfJvFR0/iCF+XHdE0GMTKTuLR32UQff4TEyQ==}
@@ -5073,6 +5190,14 @@ packages:
       - '@types/react'
     dev: false
 
+  /react-ssr-prepass/1.5.0_react@18.2.0:
+    resolution: {integrity: sha512-yFNHrlVEReVYKsLI5lF05tZoHveA5pGzjFbFJY/3pOqqjGOmMmqx83N4hIjN2n6E1AOa+eQEUxs3CgRnPmT0RQ==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /react-style-singleton/2.2.1_i2izv7j3km4zzxbpzq2d4xtojy:
     resolution: {integrity: sha512-ZWj0fHEMyWkHzKYUr2Bs/4zU6XLmq9HsgBURm7g5pAVfyn49DgUiNgY2d4lXRlYSiCif9YBGpQleewkcqddc7g==}
     engines: {node: '>=10'}
@@ -6290,6 +6415,10 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  /zod/3.19.1:
+    resolution: {integrity: sha512-LYjZsEDhCdYET9ikFu6dVPGp2YH9DegXjdJToSzD9rO6fy4qiRYFoyEYwps88OseJlPyl2NOe2iJuhEhL7IpEA==}
+    dev: false
 
   /zx/7.1.1:
     resolution: {integrity: sha512-5YlTO2AJ+Ku2YuZKSSSqnUKuagcM/f/j4LmHs15O84Ch80Z9gzR09ZK3gR7GV+rc8IFpz2H/XNFtFVmj31yrZA==}

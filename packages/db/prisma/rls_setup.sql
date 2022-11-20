@@ -70,7 +70,11 @@ create policy "User can delete own favorites"
 -- Brawlhalla
 
 -- Player
-alter table public."BHPlayer"
+alter table public."BHPlayerData"
+  enable row level security;
+alter table public."BHPlayerLegend"
+  enable row level security;
+alter table public."BHPlayerWeapon"
   enable row level security;
 
 alter table public."BHPlayerAlias"
@@ -78,4 +82,8 @@ alter table public."BHPlayerAlias"
 
 -- Clan
 alter table public."BHClan"
+  enable row level security;
+
+-- Crawler
+alter table public."CrawlProgress"
   enable row level security;

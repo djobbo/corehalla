@@ -25,6 +25,7 @@ import { Searchbox } from "@components/search/Searchbox"
 import { SideNavProvider } from "@ctx/SideNavProvider"
 import { Toaster } from "react-hot-toast"
 import { queryClient } from "@util/queryClient"
+import { trpc } from "@util/trpc"
 import Head from "next/head"
 import dynamic from "next/dynamic"
 import type { AppProps } from "next/app"
@@ -73,4 +74,4 @@ const App = ({
     )
 }
 
-export default App
+export default trpc.withTRPC(App)

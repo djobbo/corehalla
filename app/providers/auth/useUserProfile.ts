@@ -22,6 +22,12 @@ export const useUserProfile = (session: Session | null) => {
 
             return data
         },
+        {
+            enabled: !!userId,
+            retry(failureCount) {
+                return failureCount < 2
+            },
+        },
     )
 
     useQuery(
@@ -43,10 +49,14 @@ export const useUserProfile = (session: Session | null) => {
                 })
                 .throwOnError()
         },
-        { enabled: !!discordToken && !!userId && failedToFetchUserProfile },
+        {
+            enabled: !!discordToken && !!userId && failedToFetchUserProfile,
+        },
     )
 
     useEffect(() => {
+        if (!userId) return
+
         const subscription = supabase
             .from<UserProfile>("UserProfile")
             .on("*", (payload) => {

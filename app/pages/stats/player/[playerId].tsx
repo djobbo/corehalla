@@ -25,7 +25,7 @@ import { usePlayerAliases } from "@hooks/stats/usePlayerAliases"
 import { usePlayerRanked } from "@hooks/stats/usePlayerRanked"
 import { usePlayerStats } from "@hooks/stats/usePlayerStats"
 import { useRouter } from "next/router"
-import type { BHPlayer, BHPlayerAlias } from "db/generated/client"
+import type { BHPlayerAlias } from "db/generated/client"
 import type { GetServerSideProps, NextPage } from "next"
 import type { MiscStat } from "@components/stats/MiscStatGroup"
 
