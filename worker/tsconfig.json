@@ -10,6 +10,6 @@
         "skipLibCheck": true,
         "sourceMap": true
     },
-    "include": ["src"],
+    "include": ["src", "../packages/common/constants.ts"],
     "exclude": ["node_modules"]
 }
