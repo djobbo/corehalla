@@ -17,7 +17,7 @@ const BackToTopButton = dynamic(
 )
 import { Analytics } from "@vercel/analytics/react"
 import { GAScripts } from "common/analytics/GAScripts"
-import { Hydrate, QueryClientProvider } from "react-query"
+import { Hydrate, QueryClientProvider } from "@tanstack/react-query"
 import { KBarProvider } from "kbar"
 import { Layout } from "@components/layout/Layout"
 import { PageLoader } from "ui/base/PageLoader"
