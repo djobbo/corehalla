@@ -4,7 +4,7 @@ import type { NextApiHandler } from "next"
 const handler: NextApiHandler = async (req, res) => {
     try {
         const { playerId } = req.query
-        const data = await getPlayerRanked(playerId as string)
+        const data = await getPlayerRanked(parseInt(playerId as string))
 
         res.setHeader(
             "Cache-Control",

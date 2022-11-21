@@ -1,4 +1,5 @@
 import { parseBHArticlesPage } from "web-parser/bh-articles/parseBHArticlesPage"
+import type { BHArticleType } from "web-parser/bh-articles/parseBHArticlesPage"
 import type { NextApiHandler } from "next"
 
 const handler: NextApiHandler = async (req, res) => {
@@ -6,7 +7,10 @@ const handler: NextApiHandler = async (req, res) => {
 
     try {
         const pageNum = parseInt(page as string)
-        const articles = await parseBHArticlesPage(pageNum, type.toString())
+        const articles = await parseBHArticlesPage(
+            pageNum,
+            type.toString() as BHArticleType,
+        )
 
         res.setHeader(
             "Cache-Control",
