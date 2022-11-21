@@ -1,5 +1,6 @@
 import { bhArticlesMock } from "./bhArticlesMock"
 import { load } from "cheerio"
+import { z } from "zod"
 import axios from "axios"
 
 const __DEV = process.env.NODE_ENV === "development"
@@ -19,9 +20,19 @@ export type BHArticle = {
     content: string
 }
 
+export const bhArticleTypeValidator = z.optional(
+    z.union([
+        z.literal(""),
+        z.literal("weekly-rotation"),
+        z.literal("patch-notes"),
+    ]),
+)
+
+export type BHArticleType = z.infer<typeof bhArticleTypeValidator>
+
 export const parseBHArticlesPage = async (
     pageId: number,
-    articleType = "",
+    articleType?: BHArticleType,
 ): Promise<BHArticle[]> => {
     if (__DEV) return bhArticlesMock
 

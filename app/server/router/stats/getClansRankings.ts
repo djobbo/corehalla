@@ -1,6 +1,6 @@
-import { CLANS_RANKINGS_PER_PAGE } from "common/constants"
-import { pageStringValidator } from "common/helpers/validators"
-import { publicProcedure } from "../../../helpers/trpc"
+import { CLANS_RANKINGS_PER_PAGE } from "@util/constants"
+import { numericLiteralValidator } from "common/helpers/validators"
+import { publicProcedure } from "../../trpc"
 import { supabaseService } from "db/supabase/service"
 import { z } from "zod"
 import type { BHClan } from "db/generated/client"
@@ -9,7 +9,7 @@ export const getClansRankings = publicProcedure
     .input(
         z.object({
             name: z.string(),
-            page: pageStringValidator,
+            page: numericLiteralValidator,
         }),
     )
     .query(async (req) => {

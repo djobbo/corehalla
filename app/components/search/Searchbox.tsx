@@ -15,7 +15,7 @@ import { gaEvent } from "common/analytics/gtag"
 import { styled, theme } from "ui/theme"
 import { useDebouncedState } from "common/hooks/useDebouncedState"
 import { useEffect, useState } from "react"
-import { usePlayerSearch } from "@hooks/stats/search/usePlayerSearch"
+import { usePlayerSearch } from "@hooks/stats/usePlayerSearch"
 import type { Ranking1v1 } from "bhapi/types"
 
 const __DEV = process.env.NODE_ENV === "development"

@@ -3,7 +3,7 @@ import {
     powerRankingsBracketValidator,
     powerRankingsRegionValidator,
 } from "web-parser/power-rankings/parsePowerRankingsPage"
-import { publicProcedure } from "../../../helpers/trpc"
+import { publicProcedure } from "../../trpc"
 import { z } from "zod"
 
 export const getPowerRankings = publicProcedure
@@ -13,7 +13,7 @@ export const getPowerRankings = publicProcedure
             region: powerRankingsRegionValidator,
         }),
     )
-    .query(async (req) => {
+    .query((req) => {
         const { bracket, region } = req.input
         console.log("getPowerRankings", req.input)
 

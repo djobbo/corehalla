@@ -1,53 +1,50 @@
 import { createTRPCNext } from "@trpc/next"
-import { httpBatchLink } from "@trpc/client"
+import { httpLink } from "@trpc/client"
+import type { AppRouter } from "../server/router"
 // TS2742: https://github.com/microsoft/TypeScript/issues/47663
 import type {} from "@trpc/react-query"
-import type {} from "@trpc/server"
-import type { WorkerAPI } from "worker"
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://api.corehalla.com"
+const getBaseUrl = () => {
+    if (typeof window !== "undefined")
+        // browser should use relative path
+        return ""
 
-export const trpc = createTRPCNext<WorkerAPI>({
-    config({ ctx }) {
-        if (typeof window !== "undefined") {
-            // during client requests
-            return {
-                links: [
-                    httpBatchLink({
-                        url: API_URL,
-                    }),
-                ],
-            }
-        }
+    if (process.env.VERCEL_URL)
+        // reference for vercel.com
+        return `https://${process.env.VERCEL_URL}`
 
+    // fallback to localhost
+    return `http://localhost:${process.env.PORT ?? 3000}`
+}
+
+export const trpc = createTRPCNext<AppRouter>({
+    config() {
         return {
             links: [
-                httpBatchLink({
-                    url: API_URL,
+                httpLink({
                     /**
-                     * Set custom request headers on every request from tRPC
-                     * @link https://trpc.io/docs/v10/header
-                     */
-                    headers() {
-                        if (ctx?.req) {
-                            // TODO: Node 18 - omit the "connection" header
-                            const {
-                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                                // connection: _connection,
-                                ...headers
-                            } = ctx.req.headers
-                            return {
-                                ...headers,
-                                // Optional: inform server that it's an SSR request
-                                "x-ssr": "1",
-                            }
-                        }
-                        return {}
-                    },
+                     * If you want to use SSR, you need to use the server's full URL
+                     * @link https://trpc.io/docs/ssr
+                     **/
+                    url: `${getBaseUrl()}/api/trpc`,
                 }),
             ],
+            /**
+             * @link https://tanstack.com/query/v4/docs/reference/QueryClient
+             **/
+            queryClientConfig: {
+                defaultOptions: {
+                    queries: {
+                        staleTime: 60,
+                        refetchOnWindowFocus: false,
+                    },
+                },
+            },
         }
     },
+    /**
+     * @link https://trpc.io/docs/ssr
+     **/
     ssr: true,
     responseMeta({ clientErrors }) {
         if (clientErrors.length) {
@@ -56,10 +53,11 @@ export const trpc = createTRPCNext<WorkerAPI>({
                 status: clientErrors[0].data?.httpStatus ?? 500,
             }
         }
+
         // cache full page for 1 day + revalidate once every second
         const ONE_DAY_IN_SECONDS = 60 * 60 * 24
         return {
-            "Cache-Control": `s-maxage=1, stale-while-revalidate=${ONE_DAY_IN_SECONDS}`,
+            "Cache-Control": `s-maxage=480, stale-while-revalidate=${ONE_DAY_IN_SECONDS}`,
         }
     },
 })

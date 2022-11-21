@@ -1,1 +1,2 @@
-export const PLAYERS_PER_PAGE = 50
+export const SEARCH_PLAYERS_ALIASES_PER_PAGE = 50
+export const CLANS_RANKINGS_PER_PAGE = 3

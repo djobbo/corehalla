@@ -64,15 +64,15 @@ export const getRankings = async <
     }
 }
 
-export const getPlayerStats = async (playerId: string) =>
+export const getPlayerStats = async (playerId: number) =>
     __DEV ? playerStatsMock : getBhApi<PlayerStats>(`/player/${playerId}/stats`)
 
-export const getPlayerRanked = async (playerId: string) =>
+export const getPlayerRanked = async (playerId: number) =>
     __DEV
         ? playerRankedMock
         : getBhApi<PlayerRanked>(`/player/${playerId}/ranked`)
 
-export const getClan = async (clanId: string) =>
+export const getClan = async (clanId: number) =>
     __DEV ? clanMock : getBhApi<Clan>(`/clan/${clanId}`)
 
 export const getAllLegends = async () => getBhApi("/legend/all")

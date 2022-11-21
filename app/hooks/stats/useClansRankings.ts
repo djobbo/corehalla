@@ -1,7 +1,7 @@
 import { trpc } from "@util/trpc"
 
 export const useClansRankings = (page: string, name: string) => {
-    const { data, ...query } = trpc.v1.rankings.getClansRankings.useQuery({
+    const { data, ...query } = trpc.getClansRankings.useQuery({
         name,
         page,
     })

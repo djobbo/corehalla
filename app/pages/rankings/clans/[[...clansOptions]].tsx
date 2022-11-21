@@ -1,5 +1,5 @@
 import { AppLink } from "ui/base/AppLink"
-import { CLANS_RANKINGS_PER_PAGE } from "common/constants"
+import { CLANS_RANKINGS_PER_PAGE } from "@util/constants"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
 import { SEO } from "@components/SEO"
 import { Spinner } from "ui/base/Spinner"
@@ -79,7 +79,7 @@ const ClansPage: NextPage = () => {
             <div className="p-4 w-full h-full flex items-center gap-4">
                 {showClanRank && <p className="w-16 text-center">Rank</p>}
                 <p className="flex-1">Name</p>
-                <p className="w-40 pl-1 text-center">Created</p>
+                <p className="w-40 pl-1 text-center">Created on</p>
                 <p className="w-20 pl-1 text-center">XP</p>
             </div>
             {isLoading ? (
@@ -109,8 +109,10 @@ const ClansPage: NextPage = () => {
                                     {cleanString(clan.name)}
                                 </AppLink>
                             </p>
-                            <div className="w-40 flex items-center justify-start">
-                                {formatUnixTime(clan.created)}
+                            <div className="w-40 flex items-center justify-center">
+                                {clan.created > 0
+                                    ? formatUnixTime(clan.created)
+                                    : "N/A"}
                             </div>
                             <p className="w-20 text-center">{clan.xp}</p>
                         </div>
