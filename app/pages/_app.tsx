@@ -15,6 +15,7 @@ const BackToTopButton = dynamic(
         ssr: false,
     },
 )
+import { Analytics } from "@vercel/analytics/react"
 import { GAScripts } from "common/analytics/GAScripts"
 import { Hydrate, QueryClientProvider } from "react-query"
 import { KBarProvider } from "kbar"
@@ -70,6 +71,7 @@ const App = ({
                     </AuthProvider>
                 </Hydrate>
             </QueryClientProvider>
+            <Analytics />
         </>
     )
 }

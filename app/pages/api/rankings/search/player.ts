@@ -1,4 +1,4 @@
-import { PLAYERS_PER_PAGE } from "@util/constants"
+import { SEARCH_PLAYERS_ALIASES_PER_PAGE } from "@util/constants"
 import { supabaseService } from "db/supabase/service"
 import type { BHPlayerAlias } from "db/generated/client"
 import type { NextApiHandler } from "next"
@@ -28,8 +28,8 @@ const handler: NextApiHandler = async (req, res) => {
         const pageNum = parseInt(page as string)
 
         const { data, error } = await query.range(
-            (pageNum - 1) * PLAYERS_PER_PAGE,
-            pageNum * PLAYERS_PER_PAGE - 1,
+            (pageNum - 1) * SEARCH_PLAYERS_ALIASES_PER_PAGE,
+            pageNum * SEARCH_PLAYERS_ALIASES_PER_PAGE - 1,
         )
 
         if (error) throw error

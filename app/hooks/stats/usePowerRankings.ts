@@ -10,11 +10,10 @@ export const usePowerRankings = (
     bracket: PowerRankingsBracket,
     region: PowerRankingsRegion,
 ) => {
-    const { data: powerRankings, ...query } =
-        trpc.v1.rankings.getPowerRankings.useQuery({
-            bracket,
-            region,
-        })
+    const { data: powerRankings, ...query } = trpc.getPowerRankings.useQuery({
+        bracket,
+        region,
+    })
 
     return {
         powerRankings,

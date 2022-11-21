@@ -42,6 +42,7 @@ importers:
       '@trpc/server': 10.0.0-rc.8
       '@types/node': ^18.11.7
       '@types/react': ^18.0.23
+      '@vercel/analytics': ^0.1.5
       autoprefixer: ^10.4.12
       axios: ^1.1.3
       bhapi: workspace:*
@@ -75,6 +76,7 @@ importers:
       '@trpc/client': 10.0.0-rc.8_@trpc+server@10.0.0-rc.8
       '@trpc/next': 10.0.0-rc.8_lewbo2sxcps7nprfjf2i7c4rr4
       '@trpc/react-query': 10.0.0-rc.8_bd5nqhlee2rdtlo5aa5wyumt5u
+      '@vercel/analytics': 0.1.5_react@18.2.0
       axios: 1.1.3
       bhapi: link:../packages/bhapi
       common: link:../packages/common
@@ -2092,6 +2094,14 @@ packages:
       '@typescript-eslint/types': 5.41.0
       eslint-visitor-keys: 3.3.0
     dev: true
+
+  /@vercel/analytics/0.1.5_react@18.2.0:
+    resolution: {integrity: sha512-/k9N8Ea3Yc5A52GlkjzUEbi2vE/izClrOf++ryBkxEfrZM/OZwtHkdNw/QExZ1h/B67RCZLK7bCOnKKrhG7gTg==}
+    peerDependencies:
+      react: ^16.8||^17||^18
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /@webassemblyjs/ast/1.11.1:
     resolution: {integrity: sha512-ukBh14qFLjxTQNTXocdyksN5QdM28S1CxHt2rdskFyL+xFV7VremuBLVbmCePj+URalXBENx/9Lm7lnhihtCSw==}
