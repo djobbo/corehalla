@@ -1,6 +1,6 @@
 import { getClan } from "bhapi"
 import { numericLiteralValidator } from "common/helpers/validators"
-import { publicProcedure } from "../../trpc"
+import { publicProcedure } from "@server/trpc"
 import { updateDBClanData } from "server/helpers/updateDBClanData"
 import { updateDBPlayerAliases } from "server/helpers/updateDBPlayerAliases"
 import { z } from "zod"

@@ -1,5 +1,5 @@
 import { numericLiteralValidator } from "common/helpers/validators"
-import { publicProcedure } from "../../trpc"
+import { publicProcedure } from "@server/trpc"
 import { supabaseService } from "db/supabase/service"
 import { z } from "zod"
 import type { BHPlayerAlias } from "db/generated/client"

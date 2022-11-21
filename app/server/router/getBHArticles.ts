@@ -3,7 +3,7 @@ import {
     parseBHArticlesPage,
 } from "web-parser/bh-articles/parseBHArticlesPage"
 import { numericLiteralValidator } from "common/helpers/validators"
-import { publicProcedure } from "../trpc"
+import { publicProcedure } from "@server/trpc"
 import { z } from "zod"
 
 export const getBHArticles = publicProcedure //

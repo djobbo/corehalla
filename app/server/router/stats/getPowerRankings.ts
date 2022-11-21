@@ -3,7 +3,7 @@ import {
     powerRankingsBracketValidator,
     powerRankingsRegionValidator,
 } from "web-parser/power-rankings/parsePowerRankingsPage"
-import { publicProcedure } from "../../trpc"
+import { publicProcedure } from "@server/trpc"
 import { z } from "zod"
 
 export const getPowerRankings = publicProcedure
