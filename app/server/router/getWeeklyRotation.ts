@@ -1,5 +1,5 @@
 import { getWeeklyRotation as getWeeklyRotationFn } from "web-parser/weekly-rotation/getWeeklyRotation"
-import { publicProcedure } from "../trpc"
+import { publicProcedure } from "@server/trpc"
 
 export const getWeeklyRotation = publicProcedure //
     .query(() => {
