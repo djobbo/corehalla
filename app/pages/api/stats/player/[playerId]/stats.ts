@@ -9,7 +9,7 @@ const handler: NextApiHandler = async (req, res) => {
 
     try {
         const { playerId } = req.query
-        const data = await getPlayerStats(playerId as string)
+        const data = await getPlayerStats(parseInt(playerId as string))
         res.status(200).json(data)
     } catch (error) {
         res.status(500).json({ error: "something went wrong" })

@@ -20,7 +20,11 @@ const socialLinks = [
     },
 ]
 
-export const Footer = ({ className }) => {
+type FooterProps = {
+    className?: string
+}
+
+export const Footer = ({ className }: FooterProps) => {
     const currentYear = new Date().getFullYear()
 
     return (
