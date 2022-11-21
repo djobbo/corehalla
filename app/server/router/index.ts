@@ -1,3 +1,4 @@
+import { get1v1Rankings, get2v2Rankings } from "./stats/getRankings"
 import { getBHArticles } from "./getBHArticles"
 import { getClanStats } from "./stats/getClanStats"
 import { getClansRankings } from "./stats/getClansRankings"
@@ -10,6 +11,8 @@ import { router } from "../trpc"
 import { searchPlayerAlias } from "./stats/searchPlayerAlias"
 
 export const appRouter = router({
+    get1v1Rankings,
+    get2v2Rankings,
     getClansRankings,
     getPowerRankings,
     getPlayerStats,
