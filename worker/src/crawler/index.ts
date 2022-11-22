@@ -1,5 +1,6 @@
 import { formatTime } from "common/helpers/date"
 import { getPlayerStats, getRankings } from "bhapi"
+import { logInfo, logWarning } from "logger"
 import { updateDBPlayerData } from "db-utils/mutations/updateDBPlayerData"
 import type { RankedRegion } from "bhapi/constants"
 
@@ -14,6 +15,7 @@ const defaultConfig: CrawlerConfig = {
 }
 
 const MAX_PLAYERS_PER_PAGE = 50
+const ENABLED = process.env.CRAWLER_ENABLED === "true"
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -38,21 +40,23 @@ const createCrawlerQueue = async (config: CrawlerConfig) => {
     const delay = (15 * 60) / config.maxRequestsPer15Minutes
     const delayMs = delay * 1000
     const crawlDuration = delay * config.maxPages * (MAX_PLAYERS_PER_PAGE + 1)
-    console.log(
+
+    logInfo(
         `Crawl duration: ${crawlDuration} seconds (${formatTime(
             crawlDuration,
         )})`,
     )
+
     const requests = Array.from({ length: config.maxPages }).map((_, i) => {
         return async () => {
-            console.log("Crawling leaderboard page", i + 1)
+            logInfo("Crawling leaderboard page", i + 1)
             const players = await requestWithMinimumDelay(
                 () => getRankings("1v1", "all", i + 1),
                 delayMs,
             )
 
             const playerRequests = players.map((player) => async () => {
-                console.log(`Fetching player#${player.brawlhalla_id} stats`)
+                logInfo(`Fetching player#${player.brawlhalla_id} stats`)
                 try {
                     const stats = await getPlayerStats(player.brawlhalla_id)
 
@@ -65,41 +69,30 @@ const createCrawlerQueue = async (config: CrawlerConfig) => {
                         region: player.region.toLowerCase() as RankedRegion, // TODO: better type check
                     })
 
-                    return {
-                        ranked: player,
-                        stats,
-                    }
+                    logInfo(`Fetched player#${player.brawlhalla_id} stats`)
                 } catch {
-                    return {
-                        ranked: player,
-                    }
+                    logInfo(
+                        `Failed to fetch player#${player.brawlhalla_id} stats`,
+                    )
                 }
             })
-            const playerData = await sendRequestsWithRateLimit(
-                playerRequests,
-                delayMs,
-            )
 
-            return playerData
+            await sendRequestsWithRateLimit(playerRequests, delayMs)
         }
     })
-    const players = (await sendRequestsWithRateLimit(requests, delayMs)).flat(1)
-    return players
+
+    await sendRequestsWithRateLimit(requests, delayMs)
 }
 
 export const startCrawler = async (config: CrawlerConfig = defaultConfig) => {
-    const playerData = await createCrawlerQueue(config)
-    console.log(
-        playerData.map(({ stats }) => {
-            if (!stats) return null
-            return [
-                stats.name,
-                stats.legends.map((legend) => [
-                    legend.legend_name_key,
-                    legend.level,
-                    legend.xp,
-                ]),
-            ]
-        }),
-    )
+    logInfo("Starting crawler")
+    logInfo("Crawler enabled:", ENABLED)
+    if (!ENABLED) {
+        logWarning("Crawler disabled, exiting")
+        return
+    }
+    while (ENABLED) {
+        await createCrawlerQueue(config)
+        await sleep(1000 * 30)
+    }
 }

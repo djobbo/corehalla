@@ -1,4 +1,5 @@
 import { CLANS_RANKINGS_PER_PAGE } from "@util/constants"
+import { logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "@server/trpc"
 import { supabaseService } from "db/supabase/service"
@@ -14,7 +15,7 @@ export const getClansRankings = publicProcedure
     )
     .query(async (req) => {
         const { name, page } = req.input
-        console.log("getClansRankings", req.input)
+        logInfo("getClansRankings", req.input)
 
         let query = supabaseService
             .from<BHClan>("BHClan")

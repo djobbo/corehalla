@@ -1,4 +1,5 @@
 import { SEARCH_PLAYERS_ALIASES_PER_PAGE } from "@util/constants"
+import { logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "@server/trpc"
 import { supabaseService } from "db/supabase/service"
@@ -14,7 +15,7 @@ export const searchPlayerAlias = publicProcedure //
     )
     .query(async (req) => {
         const { alias, page } = req.input
-        console.log("searchPlayerAlias", req.input)
+        logInfo("searchPlayerAlias", req.input)
 
         const query = supabaseService
             .from<BHPlayerAlias>("BHPlayerAlias")

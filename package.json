@@ -20,8 +20,8 @@
         "setup:env": "zx setup.zx.mjs"
     },
     "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^5.43.0",
-        "@typescript-eslint/parser": "^5.43.0",
+        "@typescript-eslint/eslint-plugin": "^5.44.0",
+        "@typescript-eslint/parser": "^5.44.0",
         "eslint": "^8.28.0",
         "eslint-config-next": "^13.0.4",
         "eslint-plugin-jsx-a11y": "^6.6.1",

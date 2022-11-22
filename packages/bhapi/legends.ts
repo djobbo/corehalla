@@ -685,7 +685,7 @@ export const legends: Legend[] = [
 export const legendsMap = arrayToMap(legends, "legend_id")
 
 export type FullLegend = Legend & {
-    stats: PlayerStats["legends"][number]
+    stats?: PlayerStats["legends"][number]
     ranked?: PlayerRanked["legends"][number]
 }
 
@@ -724,6 +724,8 @@ export const getLegendsAccumulativeData = (fullLegends: FullLegend[]) => {
         damagetaken: number
     }>(
         (acc, legend) => {
+            if (!legend.stats) return acc
+
             return {
                 matchtime: acc.matchtime + legend.stats.matchtime,
                 kos: acc.kos + legend.stats.kos,
