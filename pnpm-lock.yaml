@@ -48,6 +48,7 @@ importers:
       bhapi: workspace:*
       common: workspace:*
       db: workspace:*
+      db-utils: workspace:*
       encoding: ^0.1.13
       kbar: 0.1.0-beta.38
       logger: workspace:*
@@ -64,7 +65,6 @@ importers:
       typescript: ^4.9.3
       ui: workspace:*
       web-parser: workspace:*
-      worker: workspace:*
       zod: ^3.19.1
     dependencies:
       '@fontsource/montserrat': 4.5.13
@@ -81,6 +81,7 @@ importers:
       bhapi: link:../packages/bhapi
       common: link:../packages/common
       db: link:../packages/db
+      db-utils: link:../packages/db-utils
       encoding: 0.1.13
       kbar: 0.1.0-beta.38_biqbaboplfbrettd7655fr4n2y
       logger: link:../packages/logger
@@ -92,7 +93,6 @@ importers:
       react-icons: 4.6.0_react@18.2.0
       ui: link:../packages/ui
       web-parser: link:../packages/web-parser
-      worker: link:../worker
       zod: 3.19.1
     devDependencies:
       '@tanstack/query-core': 4.15.1
@@ -175,6 +175,23 @@ importers:
       '@types/react': 18.0.25
       discord-api-types: 0.37.18
       prisma: 4.6.1
+      tsconfig: link:../tsconfig
+      typescript: 4.9.3
+
+  packages/db-utils:
+    specifiers:
+      '@types/node': ^18.11.9
+      bhapi: workspace:*
+      db: workspace:*
+      tsconfig: workspace:*
+      typescript: ^4.9.3
+      zod: ^3.19.1
+    dependencies:
+      bhapi: link:../bhapi
+      db: link:../db
+      zod: 3.19.1
+    devDependencies:
+      '@types/node': 18.11.9
       tsconfig: link:../tsconfig
       typescript: 4.9.3
 
@@ -317,6 +334,7 @@ importers:
       common: workspace:*
       cors: ^2.8.5
       db: workspace:*
+      db-utils: workspace:*
       discord.js: ^14.6.0
       express: ^4.18.2
       reaccord: 0.0.1-dev.1662751121068.0fe298a
@@ -331,6 +349,7 @@ importers:
       common: link:../packages/common
       cors: 2.8.5
       db: link:../packages/db
+      db-utils: link:../packages/db-utils
       discord.js: 14.6.0
       express: 4.18.2
       reaccord: 0.0.1-dev.1662751121068.0fe298a_6yxiqgctsrlnvi4q3fmzwx4b6i

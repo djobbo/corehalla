@@ -3,7 +3,7 @@ import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
 import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "@server/trpc"
 import { rankedRegionValidator } from "bhapi/constants"
-import { updateDBPlayerAliases } from "server/helpers/updateDBPlayerAliases"
+import { updateDBPlayerAliases } from "db-utils/mutations/updateDBPlayerAliases"
 import { z } from "zod"
 
 export const get1v1Rankings = publicProcedure //
