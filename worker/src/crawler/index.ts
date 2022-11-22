@@ -1,5 +1,7 @@
 import { formatTime } from "common/helpers/date"
 import { getPlayerStats, getRankings } from "bhapi"
+import { updateDBPlayerData } from "db-utils/mutations/updateDBPlayerData"
+import type { RankedRegion } from "bhapi/constants"
 
 type CrawlerConfig = {
     maxRequestsPer15Minutes: number
@@ -52,9 +54,17 @@ const createCrawlerQueue = async (config: CrawlerConfig) => {
             const playerRequests = players.map((player) => async () => {
                 console.log(`Fetching player#${player.brawlhalla_id} stats`)
                 try {
-                    const stats = await getPlayerStats(
-                        player.brawlhalla_id.toString(),
-                    )
+                    const stats = await getPlayerStats(player.brawlhalla_id)
+
+                    await updateDBPlayerData(stats, {
+                        rating: player.rating,
+                        peak: player.peak_rating,
+                        games: player.games,
+                        wins: player.wins,
+                        tier: player.tier,
+                        region: player.region.toLowerCase() as RankedRegion, // TODO: better type check
+                    })
+
                     return {
                         ranked: player,
                         stats,
@@ -69,6 +79,7 @@ const createCrawlerQueue = async (config: CrawlerConfig) => {
                 playerRequests,
                 delayMs,
             )
+
             return playerData
         }
     })

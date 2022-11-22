@@ -36,7 +36,7 @@
         "react-icons": "^4.6.0",
         "ui": "workspace:*",
         "web-parser": "workspace:*",
-        "worker": "workspace:*",
+        "db-utils": "workspace:*",
         "zod": "^3.19.1"
     },
     "devDependencies": {

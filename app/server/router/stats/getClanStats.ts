@@ -1,8 +1,8 @@
 import { getClan } from "bhapi"
 import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "@server/trpc"
-import { updateDBClanData } from "server/helpers/updateDBClanData"
-import { updateDBPlayerAliases } from "server/helpers/updateDBPlayerAliases"
+import { updateDBClanData } from "db-utils/mutations/updateDBClanData"
+import { updateDBPlayerAliases } from "db-utils/mutations/updateDBPlayerAliases"
 import { z } from "zod"
 
 export const getClanStats = publicProcedure //

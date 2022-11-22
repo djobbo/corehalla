@@ -15,7 +15,11 @@ import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { css, theme } from "ui/theme"
 import { formatTime } from "common/helpers/date"
-import { getFullLegends, getFullWeapons } from "bhapi/legends"
+import {
+    getFullLegends,
+    getFullWeapons,
+    getLegendsAccumulativeData,
+} from "bhapi/legends"
 import { usePlayerAliases } from "@hooks/stats/usePlayerAliases"
 import { usePlayerRanked } from "@hooks/stats/usePlayerRanked"
 import { usePlayerStats } from "@hooks/stats/usePlayerStats"
@@ -58,8 +62,6 @@ const Page: NextPage = () => {
         playerRanked?.legends,
     )
 
-    const weapons = getFullWeapons(fullLegends)
-
     const {
         matchtime,
         kos,
@@ -68,34 +70,9 @@ const Page: NextPage = () => {
         teamkos,
         damagedealt,
         damagetaken,
-    } = playerStats.legends.reduce<{
-        matchtime: number
-        kos: number
-        falls: number
-        suicides: number
-        teamkos: number
-        damagedealt: number
-        damagetaken: number
-    }>(
-        (acc, legend) => ({
-            matchtime: acc.matchtime + legend.matchtime,
-            kos: acc.kos + legend.kos,
-            falls: acc.falls + legend.falls,
-            suicides: acc.suicides + legend.suicides,
-            teamkos: acc.teamkos + legend.teamkos,
-            damagedealt: acc.damagedealt + parseInt(legend.damagedealt),
-            damagetaken: acc.damagetaken + parseInt(legend.damagetaken),
-        }),
-        {
-            matchtime: 0,
-            kos: 0,
-            falls: 0,
-            suicides: 0,
-            teamkos: 0,
-            damagedealt: 0,
-            damagetaken: 0,
-        },
-    )
+    } = getLegendsAccumulativeData(fullLegends)
+
+    const weapons = getFullWeapons(fullLegends)
 
     const legendsSortedByLevel = fullLegends
         .slice(0)
