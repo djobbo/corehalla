@@ -24,7 +24,7 @@ export const Header = ({ className }: HeaderProps) => {
 
     return (
         <>
-            <AlertBar alert="AUTH_ISSUES_RESOLVED" />
+            <AlertBar />
             <header className={cn({ "bg-bgVar2": !isLandingPage })}>
                 <div
                     className={cn(
