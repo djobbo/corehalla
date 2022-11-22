@@ -1,5 +1,6 @@
 import { GatewayIntentBits } from "discord.js"
 import { createClient, createSlashCommand } from "reaccord"
+import { logInfo } from "logger"
 
 const {
     DISCORD_MANAGER_BOT_TOKEN = "",
@@ -56,7 +57,6 @@ export const startBot = async () => {
     await client //
         .registerCommand(infoCommand)
         .connect(() =>
-            // eslint-disable-next-line no-console
-            console.log(`🚀 Client connected as ${client.user?.username}!`),
+            logInfo(`🚀 Client connected as ${client.user?.username}!`),
         )
 }

@@ -2,6 +2,7 @@ import { get1v1Rankings, get2v2Rankings } from "./stats/getRankings"
 import { getBHArticles } from "./getBHArticles"
 import { getClanStats } from "./stats/getClanStats"
 import { getClansRankings } from "./stats/getClansRankings"
+import { getGlobalPlayerRankings } from "./stats/getGlobalPlayerRankings"
 import { getPlayerAliases } from "./stats/getPlayerAliases"
 import { getPlayerRanked } from "./stats/getPlayerRanked"
 import { getPlayerStats } from "./stats/getPlayerStats"
@@ -22,6 +23,7 @@ export const appRouter = router({
     searchPlayerAlias,
     getWeeklyRotation,
     getBHArticles,
+    getGlobalPlayerRankings,
 })
 
 export type AppRouter = typeof appRouter

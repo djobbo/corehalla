@@ -12,6 +12,7 @@
     "dependencies": {
         "zod": "^3.19.1",
         "db": "workspace:*",
-        "bhapi": "workspace:*"
+        "bhapi": "workspace:*",
+        "logger": "workspace:*"
     }
 }

@@ -1,3 +1,4 @@
+import { logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "@server/trpc"
 import { supabaseService } from "db/supabase/service"
@@ -12,7 +13,7 @@ export const getPlayerAliases = publicProcedure //
     )
     .query(async (req) => {
         const { playerId } = req.input
-        console.log("getPlayerAliases", req.input)
+        logInfo("getPlayerAliases", req.input)
 
         const { data, error } = await supabaseService
             .from<BHPlayerAlias>("BHPlayerAlias")

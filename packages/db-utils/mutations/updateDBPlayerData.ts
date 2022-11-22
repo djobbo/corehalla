@@ -1,13 +1,15 @@
 import {
+    BHPlayerData} from "db/generated/client";
+import {
     getFullLegends,
     getFullWeapons,
     getLegendsAccumulativeData,
     getWeaponlessData,
     getWeaponsAccumulativeData,
 } from "bhapi/legends"
+import { logError, logInfo } from "logger"
 import { supabaseService } from "db/supabase/service"
 import type {
-    BHPlayerData,
     BHPlayerLegend,
     BHPlayerWeapon,
 } from "db/generated/client"
@@ -15,8 +17,33 @@ import type { FullLegend, FullWeapon } from "bhapi/legends"
 import type { PlayerStats } from "bhapi/types"
 import type { RankedRegion, RankedTier } from "bhapi/constants"
 
+
 const MAX_LEGENDS_PER_PLAYER = 3
 const MAX_WEAPONS_PER_PLAYER = 3
+
+export const sortablePlayerProps =
+["xp"
+,"games"
+,"wins"
+,"rankedGames"
+,"rankedWins"
+,"damageDealt"
+,"damageTaken"
+,"kos"
+,"falls"
+,"suicides"
+,"teamKos"
+,"matchTime"
+,"damageUnarmed"
+,"koUnarmed"
+,"matchTimeUnarmed"
+,"koThrownItem"
+,"damageThrownItem"
+,"koGadgets"
+,"damageGadgets"] as const satisfies readonly (keyof BHPlayerData)[]
+
+export type SortablePlayerProp = typeof sortablePlayerProps[number]
+
 
 export const updateDBPlayerData = async (
     playerStats: PlayerStats,
@@ -30,7 +57,7 @@ export const updateDBPlayerData = async (
     },
 ) => {
     const playerId = playerStats.brawlhalla_id.toString()
-    console.log("updateDBPlayerData", { playerId })
+    logInfo("updateDBPlayerData", { playerId })
 
     const legends = getFullLegends(playerStats.legends, undefined, false)
 
@@ -82,7 +109,7 @@ export const updateDBPlayerData = async (
     ])
 
     if (error) {
-        console.error(
+        logError(
             `Failed to update player#${playerId}'s data in database`,
             error,
         )
@@ -95,36 +122,66 @@ export const updateDBPlayerLegends = async (
     playerId: string,
     legends: FullLegend[],
 ) => {
-    console.log("updateDBPlayerLegends", { playerId })
+    logInfo("updateDBPlayerLegends", { playerId })
 
-    const dbLegends: BHPlayerLegend[] = legends.map((legend) => ({
-        player_id: playerId,
-        legend_id: legend.legend_id,
-        lastUpdated: new Date(),
-        damageDealt: parseInt(legend.stats.damagedealt),
-        damageTaken: parseInt(legend.stats.damagetaken),
-        kos: legend.stats.kos,
-        falls: legend.stats.falls,
-        suicides: legend.stats.suicides,
-        teamKos: legend.stats.teamkos,
-        matchTime: legend.stats.matchtime,
-        games: legend.stats.games,
-        wins: legend.stats.wins,
-        damageUnarmed: parseInt(legend.stats.damageunarmed),
-        damageThrownItem: parseInt(legend.stats.damagethrownitem),
-        damageWeaponOne: parseInt(legend.stats.damageweaponone),
-        damageWeaponTwo: parseInt(legend.stats.damageweapontwo),
-        damageGadgets: parseInt(legend.stats.damagegadgets),
-        koUnarmed: legend.stats.kounarmed,
-        koThrownItem: legend.stats.kothrownitem,
-        koWeaponOne: legend.stats.koweaponone,
-        koWeaponTwo: legend.stats.koweapontwo,
-        koGadgets: legend.stats.kogadgets,
-        timeHeldWeaponOne: legend.stats.timeheldweaponone,
-        timeHeldWeaponTwo: legend.stats.timeheldweapontwo,
-        xp: legend.stats.xp,
-        level: legend.stats.level,
-    }))
+    const dbLegends: BHPlayerLegend[] = legends.map((legend) => {
+        return {
+            player_id: playerId,
+            legend_id: legend.legend_id,
+            lastUpdated: new Date(),
+            ...(legend.stats
+                ? {
+                      damageDealt: parseInt(legend.stats.damagedealt),
+                      damageTaken: parseInt(legend.stats.damagetaken),
+                      kos: legend.stats.kos,
+                      falls: legend.stats.falls,
+                      suicides: legend.stats.suicides,
+                      teamKos: legend.stats.teamkos,
+                      matchTime: legend.stats.matchtime,
+                      games: legend.stats.games,
+                      wins: legend.stats.wins,
+                      damageUnarmed: parseInt(legend.stats.damageunarmed),
+                      damageThrownItem: parseInt(legend.stats.damagethrownitem),
+                      damageWeaponOne: parseInt(legend.stats.damageweaponone),
+                      damageWeaponTwo: parseInt(legend.stats.damageweapontwo),
+                      damageGadgets: parseInt(legend.stats.damagegadgets),
+                      koUnarmed: legend.stats.kounarmed,
+                      koThrownItem: legend.stats.kothrownitem,
+                      koWeaponOne: legend.stats.koweaponone,
+                      koWeaponTwo: legend.stats.koweapontwo,
+                      koGadgets: legend.stats.kogadgets,
+                      timeHeldWeaponOne: legend.stats.timeheldweaponone,
+                      timeHeldWeaponTwo: legend.stats.timeheldweapontwo,
+                      xp: legend.stats.xp,
+                      level: legend.stats.level,
+                  }
+                : {
+                      damageDealt: 0,
+                      damageTaken: 0,
+                      kos: 0,
+                      falls: 0,
+                      suicides: 0,
+                      teamKos: 0,
+                      matchTime: 0,
+                      games: 0,
+                      wins: 0,
+                      damageUnarmed: 0,
+                      damageThrownItem: 0,
+                      damageWeaponOne: 0,
+                      damageWeaponTwo: 0,
+                      damageGadgets: 0,
+                      koUnarmed: 0,
+                      koThrownItem: 0,
+                      koWeaponOne: 0,
+                      koWeaponTwo: 0,
+                      koGadgets: 0,
+                      timeHeldWeaponOne: 0,
+                      timeHeldWeaponTwo: 0,
+                      xp: 0,
+                      level: 0,
+                  }),
+        }
+    })
 
     const weapons = getFullWeapons(legends)
 
@@ -140,7 +197,7 @@ export const updateDBPlayerLegends = async (
     ])
 
     if (error) {
-        console.error(
+        logError(
             `Failed to update player#${playerId}'s legends in database`,
             error,
         )
@@ -153,7 +210,7 @@ export const updateDBPlayerWeapons = async (
     playerId: string,
     fullWeapons: FullWeapon[],
 ) => {
-    console.log("updateDBPlayerWeapons", { playerId })
+    logInfo("updateDBPlayerWeapons", { playerId })
 
     const weapons = getWeaponsAccumulativeData(fullWeapons)
 
@@ -178,7 +235,7 @@ export const updateDBPlayerWeapons = async (
         )
 
     if (error) {
-        console.error(
+        logError(
             `Failed to update player#${playerId}'s weapons in database`,
             error,
         )

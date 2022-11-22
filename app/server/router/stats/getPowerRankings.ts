@@ -1,3 +1,4 @@
+import { logInfo } from "logger"
 import {
     parsePowerRankingsPage,
     powerRankingsBracketValidator,
@@ -15,7 +16,7 @@ export const getPowerRankings = publicProcedure
     )
     .query((req) => {
         const { bracket, region } = req.input
-        console.log("getPowerRankings", req.input)
+        logInfo("getPowerRankings", req.input)
 
         return parsePowerRankingsPage(bracket ?? "1v1", region ?? "us-e")
     })

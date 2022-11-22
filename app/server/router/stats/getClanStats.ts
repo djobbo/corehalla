@@ -1,4 +1,5 @@
 import { getClan } from "bhapi"
+import { logError, logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "@server/trpc"
 import { updateDBClanData } from "db-utils/mutations/updateDBClanData"
@@ -13,7 +14,7 @@ export const getClanStats = publicProcedure //
     )
     .query(async (req) => {
         const { clanId } = req.input
-        console.log("getClanStats", req.input)
+        logInfo("getClanStats", req.input)
 
         const clan = await getClan(clanId)
 
@@ -24,10 +25,7 @@ export const getClanStats = publicProcedure //
                 created: clan.clan_create_date,
                 xp: parseInt(clan.clan_xp),
             }).catch((e) => {
-                console.error(
-                    `Failed to update clan#${clan.clan_id} in database`,
-                    e,
-                )
+                logError(`Failed to update clan#${clan.clan_id} in database`, e)
             }),
             updateDBPlayerAliases(
                 clan.clan.map((member) => ({
@@ -35,7 +33,7 @@ export const getClanStats = publicProcedure //
                     alias: member.name,
                 })),
             ).catch((e) => {
-                console.error(
+                logError(
                     `Error updating player aliases for clan#${clan.clan_id}`,
                     e,
                 )

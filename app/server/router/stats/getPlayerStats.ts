@@ -1,4 +1,5 @@
 import { getPlayerStats as getPlayerStatsFn } from "bhapi"
+import { logError, logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "@server/trpc"
 import { updateDBClanData } from "db-utils/mutations/updateDBClanData"
@@ -13,7 +14,7 @@ export const getPlayerStats = publicProcedure //
     )
     .query(async (req) => {
         const { playerId } = req.input
-        console.log("getPlayerStats", req.input)
+        logInfo("getPlayerStats", req.input)
 
         const stats = await getPlayerStatsFn(playerId)
 
@@ -28,7 +29,7 @@ export const getPlayerStats = publicProcedure //
                 created: -1,
                 xp: parseInt(clan.clan_xp),
             }).catch((e) => {
-                console.error(
+                logError(
                     `Failed to update clan#${clan.clan_id} for player#${playerId} in database`,
                     e,
                 )
@@ -39,7 +40,7 @@ export const getPlayerStats = publicProcedure //
             updateDBPlayerAliases([
                 { playerId: stats.brawlhalla_id.toString(), alias: stats.name },
             ]).catch((e) => {
-                console.error("Error updating player aliases", e)
+                logError("Error updating player aliases", e)
             }),
             updateClanData(),
         ])

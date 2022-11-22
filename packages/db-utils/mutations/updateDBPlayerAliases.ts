@@ -1,8 +1,9 @@
+import { logInfo } from "logger"
 import { supabaseService } from "db/supabase/service"
 import type { BHPlayerAlias } from "db/generated/client"
 
 export const updateDBPlayerAliases = async (aliases: BHPlayerAlias[]) => {
-    console.log("updateDBPlayerAliases", aliases)
+    logInfo("updateDBPlayerAliases", aliases)
 
     await supabaseService //
         .from<BHPlayerAlias>("BHPlayerAlias")

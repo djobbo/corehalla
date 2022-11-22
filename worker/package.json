@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "dev": "tsnd --respawn src/index.ts",
+    "dev": "CRAWLER_ENABLED=true tsnd --respawn src/index.ts",
     "build": "reaccord build",
     "start": "reaccord start"
   },
@@ -31,6 +31,7 @@
     "ts-node-dev": "^2.0.0",
     "web-parser": "workspace:*",
     "zod": "^3.19.1",   
-    "db-utils": "workspace:*"
+    "db-utils": "workspace:*",
+    "logger": "workspace:*"
   }
 }

@@ -1,5 +1,6 @@
 import { getRankings } from "bhapi"
 import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
+import { logError, logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "@server/trpc"
 import { rankedRegionValidator } from "bhapi/constants"
@@ -16,7 +17,7 @@ export const get1v1Rankings = publicProcedure //
     )
     .query(async (req) => {
         const { region, page, name } = req.input
-        console.log("get1v1Rankings", req.input)
+        logInfo("get1v1Rankings", req.input)
 
         const rankings = await getRankings("1v1", region, page, name)
 
@@ -26,7 +27,7 @@ export const get1v1Rankings = publicProcedure //
                 alias: player.name,
             })),
         ).catch((e) => {
-            console.error("Error updating player aliases", e)
+            logError("Error updating player aliases", e)
         })
 
         return rankings
@@ -41,7 +42,7 @@ export const get2v2Rankings = publicProcedure //
     )
     .query(async (req) => {
         const { region, page } = req.input
-        console.log("get2v2Rankings", req.input)
+        logInfo("get2v2Rankings", req.input)
 
         const rankings = await getRankings("2v2", region, page)
 
@@ -55,7 +56,7 @@ export const get2v2Rankings = publicProcedure //
                 }))
                 .flat(),
         ).catch((e) => {
-            console.error("Error updating player aliases", e)
+            logError("Error updating player aliases", e)
         })
 
         return rankings
