@@ -29,7 +29,7 @@
         "db": "workspace:*",
         "kbar": "0.1.0-beta.38",
         "logger": "workspace:*",
-        "next": "^13.0.4",
+        "next": "^13.0.5",
         "nprogress": "^0.2.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
