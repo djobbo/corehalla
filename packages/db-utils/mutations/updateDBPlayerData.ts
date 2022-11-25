@@ -1,5 +1,4 @@
-import {
-    BHPlayerData} from "db/generated/client";
+import { BHPlayerData } from "db/generated/client"
 import {
     getFullLegends,
     getFullWeapons,
@@ -9,41 +8,37 @@ import {
 } from "bhapi/legends"
 import { logError, logInfo } from "logger"
 import { supabaseService } from "db/supabase/service"
-import type {
-    BHPlayerLegend,
-    BHPlayerWeapon,
-} from "db/generated/client"
+import type { BHPlayerLegend, BHPlayerWeapon } from "db/generated/client"
 import type { FullLegend, FullWeapon } from "bhapi/legends"
 import type { PlayerStats } from "bhapi/types"
 import type { RankedRegion, RankedTier } from "bhapi/constants"
 
-
 const MAX_LEGENDS_PER_PLAYER = 3
 const MAX_WEAPONS_PER_PLAYER = 3
 
-export const sortablePlayerProps =
-["xp"
-,"games"
-,"wins"
-,"rankedGames"
-,"rankedWins"
-,"damageDealt"
-,"damageTaken"
-,"kos"
-,"falls"
-,"suicides"
-,"teamKos"
-,"matchTime"
-,"damageUnarmed"
-,"koUnarmed"
-,"matchTimeUnarmed"
-,"koThrownItem"
-,"damageThrownItem"
-,"koGadgets"
-,"damageGadgets"] as const satisfies readonly (keyof BHPlayerData)[]
+export const sortablePlayerProps = [
+    "xp",
+    "games",
+    "wins",
+    "rankedGames",
+    "rankedWins",
+    "damageDealt",
+    "damageTaken",
+    "kos",
+    "falls",
+    "suicides",
+    "teamKos",
+    "matchTime",
+    "damageUnarmed",
+    "koUnarmed",
+    "matchTimeUnarmed",
+    "koThrownItem",
+    "damageThrownItem",
+    "koGadgets",
+    "damageGadgets",
+] as const satisfies readonly (keyof BHPlayerData)[]
 
 export type SortablePlayerProp = typeof sortablePlayerProps[number]
-
 
 export const updateDBPlayerData = async (
     playerStats: PlayerStats,

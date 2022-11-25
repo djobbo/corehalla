@@ -19,19 +19,19 @@
     "typescript": "^4.9.3"
   },
   "dependencies": {
-    "@trpc/server": "10.0.0",
+    "@trpc/server": "10.1.0",
     "bhapi": "workspace:*",
     "common": "workspace:*",
     "cors": "^2.8.5",
     "db": "workspace:*",
+    "db-utils": "workspace:*",
     "discord.js": "^14.6.0",
     "express": "^4.18.2",
+    "logger": "workspace:*",
     "reaccord": "0.0.1-dev.1662751121068.0fe298a",
     "react": "^18.2.0",
     "ts-node-dev": "^2.0.0",
     "web-parser": "workspace:*",
-    "zod": "^3.19.1",   
-    "db-utils": "workspace:*",
-    "logger": "workspace:*"
+    "zod": "^3.19.1"
   }
 }

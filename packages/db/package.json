@@ -21,7 +21,7 @@
     },
     "devDependencies": {
         "@types/react": "^18.0.25",
-        "discord-api-types": "^0.37.19",
+        "discord-api-types": "^0.37.20",
         "prisma": "^4.6.1",
         "tsconfig": "workspace:*",
         "typescript": "^4.9.3"
