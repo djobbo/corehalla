@@ -1,7 +1,6 @@
 import { logError, logInfo } from "logger"
 import { startCrawler } from "./crawler"
-
-// import { startBot as startDiscordManagerBot } from "./discord-manager-bot"
+import { startBot as startDiscordManagerBot } from "./discord-manager-bot"
 
 const __DEV = process.env.NODE_ENV === "development"
 
@@ -12,7 +11,7 @@ const crawlerMaxRequestsPer15Minutes = parseInt(
 const crawlerMaxPages = parseInt(process.env.CRAWLER_MAX_PAGES || "100")
 
 const main = async () => {
-    // await startDiscordManagerBot()
+    await startDiscordManagerBot()
 
     const crawler = startCrawler(
         __DEV

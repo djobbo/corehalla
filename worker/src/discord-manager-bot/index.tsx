@@ -1,5 +1,5 @@
+import { Embed, createClient, createSlashCommand } from "reaccord"
 import { GatewayIntentBits } from "discord.js"
-import { createClient, createSlashCommand } from "reaccord"
 import { logInfo } from "logger"
 
 const {
@@ -48,15 +48,23 @@ export const startBot = async () => {
     })
 
     const infoCommand = createSlashCommand("info", "Get info about Corehalla") //
-        .exec(async (_, interaction) => {
-            await interaction.reply({
-                content: "Corehalla",
-            })
-        })
+        .render(
+            () => {
+                return (
+                    <Embed color="Blurple">
+                        <Embed.Title>Corehalla</Embed.Title>
+                    </Embed>
+                )
+            },
+            { unmountAfter: 0 },
+        )
 
     await client //
         .registerCommand(infoCommand)
         .connect(() =>
             logInfo(`🚀 Client connected as ${client.user?.username}!`),
         )
+        .catch((error) => {
+            logInfo(`❌ Client failed to connect: ${error}`)
+        })
 }

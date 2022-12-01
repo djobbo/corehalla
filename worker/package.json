@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "CRAWLER_ENABLED=true tsnd --respawn src/index.ts",
+    "bot:dev": "CRAWLER_ENABLED=false tsnd --respawn src/index.ts",
     "build": "reaccord build",
     "start": "reaccord start"
   },
@@ -28,7 +29,7 @@
     "discord.js": "^14.6.0",
     "express": "^4.18.2",
     "logger": "workspace:*",
-    "reaccord": "0.0.1-dev.1662751121068.0fe298a",
+    "reaccord": "0.0.1-dev.1669574009268.5e1ad62",
     "react": "^18.2.0",
     "ts-node-dev": "^2.0.0",
     "web-parser": "workspace:*",

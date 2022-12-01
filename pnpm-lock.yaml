@@ -340,7 +340,7 @@ importers:
       discord.js: ^14.6.0
       express: ^4.18.2
       logger: workspace:*
-      reaccord: 0.0.1-dev.1662751121068.0fe298a
+      reaccord: 0.0.1-dev.1669574009268.5e1ad62
       react: ^18.2.0
       ts-node-dev: ^2.0.0
       typescript: ^4.9.3
@@ -356,7 +356,7 @@ importers:
       discord.js: 14.6.0
       express: 4.18.2
       logger: link:../packages/logger
-      reaccord: 0.0.1-dev.1662751121068.0fe298a_6yxiqgctsrlnvi4q3fmzwx4b6i
+      reaccord: 0.0.1-dev.1669574009268.5e1ad62_6yxiqgctsrlnvi4q3fmzwx4b6i
       react: 18.2.0
       ts-node-dev: 2.0.0_wup25etrarvlqkprac7h35hj7u
       web-parser: link:../packages/web-parser
@@ -623,7 +623,7 @@ packages:
     dependencies:
       '@discordjs/util': 0.1.0
       '@sapphire/shapeshift': 3.7.0
-      discord-api-types: 0.37.14
+      discord-api-types: 0.37.20
       fast-deep-equal: 3.1.3
       ts-mixer: 6.0.2
       tslib: 2.4.1
@@ -642,7 +642,7 @@ packages:
       '@discordjs/util': 0.1.0
       '@sapphire/async-queue': 1.5.0
       '@sapphire/snowflake': 3.2.2
-      discord-api-types: 0.37.14
+      discord-api-types: 0.37.20
       file-type: 18.0.0
       tslib: 2.4.1
       undici: 5.12.0
@@ -2965,7 +2965,6 @@ packages:
 
   /discord-api-types/0.37.20:
     resolution: {integrity: sha512-uAO+55E11rMkYR36/paE1vKN8c2bZa1mgrIaiQIBgIZRKZTDIGOZB+8I5eMRPFJcGxrg16riUu+0aTu2JQEPew==}
-    dev: true
 
   /discord.js/14.6.0:
     resolution: {integrity: sha512-On1K7xpJZRe0KsziIaDih2ksYPhgxym/ZqV45i1f3yig4vUotikqs7qp5oXiTzQ/UTiNRCixUWFTh7vA1YBCqw==}
@@ -5065,8 +5064,8 @@ packages:
       unpipe: 1.0.0
     dev: false
 
-  /reaccord/0.0.1-dev.1662751121068.0fe298a_6yxiqgctsrlnvi4q3fmzwx4b6i:
-    resolution: {integrity: sha512-mDT2uTy+cRjMZr4pkCNCbnhwaCURPtq5OZBmoyrpkl0AGZ7U5mzU9HZEjzFqPG9385LyZkvUA3U3pm2ibHCw6g==}
+  /reaccord/0.0.1-dev.1669574009268.5e1ad62_6yxiqgctsrlnvi4q3fmzwx4b6i:
+    resolution: {integrity: sha512-cF/Gy5+EL2u1LM7LTkDRDzlFcCLW7RXwc02Bkm78u/KSIR7YPgviqS0QpEguyPJ4brM3hBIpSwbyxGzRI89Jbw==}
     hasBin: true
     peerDependencies:
       discord.js: ^14.3.0
@@ -5075,7 +5074,7 @@ packages:
       '@pmmmwh/react-refresh-webpack-plugin': 0.5.9_xsftmjzvfioxqs4ify53ibh7ay
       '@rollup/plugin-typescript': 8.5.0_aalyefftcnrin63wtgzqkmrdqa
       babel-loader: 8.2.5_npabyccmuonwo2rku4k53xo3hi
-      discord-api-types: 0.37.14
+      discord-api-types: 0.37.20
       discord.js: 14.6.0
       react: 18.2.0
       react-reconciler: 0.29.0_react@18.2.0
