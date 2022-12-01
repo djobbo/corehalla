@@ -3,13 +3,13 @@
         "strict": true,
         "esModuleInterop": true,
         "allowJs": true,
-        "lib": ["esnext"],
+        "lib": ["esnext", "dom"],
         "moduleResolution": "node",
         "jsx": "react-jsx",
         "target": "es6",
         "skipLibCheck": true,
         "sourceMap": true
     },
-    "include": ["src", "../packages/common/constants.ts"],
+    "include": ["src"],
     "exclude": ["node_modules"]
 }

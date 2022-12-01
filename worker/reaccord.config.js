@@ -1,4 +1,4 @@
 /** @type {import('reaccord').ReaccordConfig} */
 module.exports = {
-    entry: "./src/index.tsx",
+    entry: "./src/index.ts",
 }
