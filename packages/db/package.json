@@ -20,16 +20,16 @@
         "prisma": "prisma"
     },
     "devDependencies": {
-        "@types/react": "^18.0.25",
+        "@types/react": "^18.0.26",
         "discord-api-types": "^0.37.20",
         "prisma": "^4.6.1",
         "tsconfig": "workspace:*",
-        "typescript": "^4.9.3"
+        "typescript": "^4.9.4"
     },
     "dependencies": {
         "@prisma/client": "^4.6.1",
         "@supabase/supabase-js": "^1.35.7",
-        "axios": "^1.2.0",
+        "axios": "^1.2.1",
         "logger": "workspace:*",
         "react": "^18.2.0"
     }
