@@ -18,7 +18,8 @@ export const getClanStats = publicProcedure //
 
         const clan = await getClan(clanId)
 
-        await Promise.all([
+        // Fire and forget
+        Promise.all([
             updateDBClanData({
                 id: clan.clan_id.toString(),
                 name: clan.clan_name,
@@ -31,6 +32,8 @@ export const getClanStats = publicProcedure //
                 clan.clan.map((member) => ({
                     playerId: member.brawlhalla_id.toString(),
                     alias: member.name,
+                    createdAt: new Date(),
+                    public: true,
                 })),
             ).catch((e) => {
                 logError(

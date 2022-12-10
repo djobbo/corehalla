@@ -36,9 +36,15 @@ export const getPlayerStats = publicProcedure //
             })
         }
 
-        await Promise.all([
+        // Fire and forget
+        Promise.all([
             updateDBPlayerAliases([
-                { playerId: stats.brawlhalla_id.toString(), alias: stats.name },
+                {
+                    playerId: stats.brawlhalla_id.toString(),
+                    alias: stats.name,
+                    createdAt: new Date(),
+                    public: true,
+                },
             ]).catch((e) => {
                 logError("Error updating player aliases", e)
             }),

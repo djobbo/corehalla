@@ -125,6 +125,8 @@ model BHPlayerWeapon {
 model BHPlayerAlias {
   playerId String
   alias    String
+  createdAt DateTime @default(now())
+  public  Boolean  @default(true)
 
   @@id([playerId, alias])
 }
