@@ -1,15 +1,8 @@
-import { useEffect } from "react"
-import { useRouter } from "next/router"
+import { ErrorPageContent } from "@components/layout/ErrorPageContent"
 import type { NextPage } from "next"
 
 const ErrorPage: NextPage = () => {
-    const router = useRouter()
-
-    useEffect(() => {
-        router.replace("/")
-    })
-
-    return null
+    return <ErrorPageContent title="Page not found" statusCode={404} />
 }
 
 export default ErrorPage
