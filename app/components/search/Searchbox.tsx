@@ -165,7 +165,6 @@ export const Searchbox = () => {
                                             Only players that have completed
                                             their 10 placement matches are
                                             shown.
-                                            <br />
                                         </span>
                                     </p>
                                     <HiArrowUp className="w-4 h-4" />
