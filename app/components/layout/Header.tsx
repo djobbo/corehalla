@@ -4,7 +4,7 @@ import { Button } from "ui/base/Button"
 import { DiscordIcon, GithubIcon, TwitterIcon } from "ui/icons"
 import { HamburgerMenuIcon } from "ui/icons"
 import { Image } from "@components/Image"
-import { SearchButtonIcon } from "../search/SearchButton"
+import { SearchButton, SearchButtonIcon } from "../search/SearchButton"
 import { cn } from "common/helpers/classnames"
 import { useAuth } from "@ctx/auth/AuthProvider"
 import { useRouter } from "next/router"
@@ -55,10 +55,10 @@ export const Header = ({ className }: HeaderProps) => {
                         </AppLink>
                     </div>
                     <div className="flex items-center gap-2">
-                        {/* <SearchButton
+                        <SearchButton
                             bg={isLandingPage ? "bg-bgVar2" : "bg-bgVar1"}
                             className="hidden sm:flex mr-2"
-                        /> */}
+                        />
                         {isLoggedIn ? (
                             <>
                                 {userProfile && (
