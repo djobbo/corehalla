@@ -1,8 +1,3 @@
-import "../styles/globals.css"
-import "../styles/nprogress.css"
-import "@fontsource/montserrat/400.css"
-import "@fontsource/montserrat/600.css"
-import "@fontsource/montserrat/700.css"
 import { Button } from "ui/base/Button"
 import { DiscordIcon, GithubIcon } from "ui/icons"
 import { SectionTitle } from "@components/layout/SectionTitle"
@@ -24,7 +19,7 @@ const Page = () => {
                         }}
                         className="flex items-center gap-2"
                     >
-                        <DiscordIcon size={16} /> Report bug
+                        <DiscordIcon size={16} /> Discord server
                     </Button>
                     <Button
                         buttonStyle="outline"
