@@ -1,26 +1,13 @@
-import { useQuery } from "react-query"
-import axios from "axios"
-import type { BHClan } from "db/generated/client"
+import { trpc } from "@util/trpc"
 
-export const useClansRankings = (page = "1", name = "") => {
-    const { data: clans, ...query } = useQuery(
-        ["clansRankings", page, name],
-        async () => {
-            const { data } = await axios.get<BHClan[]>(`/api/rankings/clans`, {
-                params: {
-                    page,
-                    name,
-                },
-            })
-
-            if (!data) throw new Error("No data")
-
-            return data
-        },
-    )
+export const useClansRankings = (page: string, name: string) => {
+    const { data, ...query } = trpc.getClansRankings.useQuery({
+        name,
+        page,
+    })
 
     return {
-        clans: clans ?? [],
+        clans: data ?? [],
         ...query,
     }
 }

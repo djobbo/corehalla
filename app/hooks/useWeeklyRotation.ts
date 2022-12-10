@@ -1,21 +1,14 @@
-import { useQuery } from "react-query"
-import axios from "axios"
-import type { Legend } from "bhapi/types"
+import { trpc } from "@util/trpc"
 
 export const useWeeklyRotation = () => {
-    const { data: weeklyRotation, ...query } = useQuery(
-        ["weekly-rotation"],
-        async () => {
-            const { data } = await axios.get<Legend[]>(`/api/weekly-rotation`)
-
-            if (!data) throw new Error("No data")
-
-            return data
+    const { data, ...query } = trpc.getWeeklyRotation.useQuery(void 0, {
+        trpc: {
+            ssr: false,
         },
-    )
+    })
 
     return {
-        weeklyRotation: weeklyRotation ?? [],
+        weeklyRotation: data ?? [],
         ...query,
     }
 }

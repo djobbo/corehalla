@@ -1,21 +1,10 @@
-import { useQuery } from "react-query"
-import axios from "axios"
-import type { Clan } from "bhapi/types"
+import { trpc } from "@util/trpc"
 
 export const useClan = (clanId: string) => {
-    const { data: clan, ...query } = useQuery(
-        ["clanStats", clanId],
-        async () => {
-            const { data } = await axios.get<Clan>(`/api/stats/clan/${clanId}`)
-
-            if (!data.clan_id) throw new Error("Clan not found")
-            return data
-        },
-        { enabled: !!clanId },
-    )
+    const { data, ...query } = trpc.getClanStats.useQuery({ clanId })
 
     return {
-        clan,
+        clan: data,
         ...query,
     }
 }

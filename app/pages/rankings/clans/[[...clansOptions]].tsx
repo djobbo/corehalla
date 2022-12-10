@@ -1,5 +1,5 @@
 import { AppLink } from "ui/base/AppLink"
-import { CLANS_PER_PAGE } from "@util/constants"
+import { CLANS_RANKINGS_PER_PAGE } from "@util/constants"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
 import { SEO } from "@components/SEO"
 import { Spinner } from "ui/base/Spinner"
@@ -8,31 +8,45 @@ import { cn } from "common/helpers/classnames"
 import { formatUnixTime } from "common/helpers/date"
 import { useClansRankings } from "@hooks/stats/useClansRankings"
 import { useDebouncedState } from "common/hooks/useDebouncedState"
-import { useEffect } from "react"
 import { useRouter } from "next/router"
+import { z } from "zod"
 import type { NextPage } from "next"
 
 const ClansPage: NextPage = () => {
     const router = useRouter()
 
-    const { clansOptions, clan = "" } = router.query
+    const { clansOptions, clan } = router.query
+
+    let clanName = ""
+    let page = "1"
+
+    // TODO: ZOD (next version) will allow us to do this:
+    // const clanName = z.string().catch("").parse(clan)
+    try {
+        clanName = z.string().parse(clan)
+    } catch {
+        // do nothing, we use the default value
+    }
+
+    try {
+        const validClanOptions = z.array(z.string()).parse(clansOptions)
+        const [pageToValidate] = validClanOptions
+
+        // TODO: ZOD (next version) will allow us to do this:
+        // const validPage = z.string().regex(/^\d+$/).catch("1").parse(pageToValidate)
+        const validPage = z.string().regex(/^\d+$/).parse(pageToValidate)
+
+        page = validPage
+    } catch {
+        // do nothing, we use the default value
+    }
 
     const [search, setSearch, immediateSearch] = useDebouncedState(
-        clan.toString(),
+        clanName.toString(),
         500,
     )
 
-    const [page = "1"] = Array.isArray(clansOptions) ? clansOptions : []
-
     const { clans, isLoading, isError } = useClansRankings(page, search)
-
-    useEffect(() => {
-        window.history.replaceState(
-            "",
-            "",
-            `/rankings/clans/${page}?clan=${search}`,
-        )
-    }, [page, search])
 
     if (isError || (!isLoading && !clans)) return <div>Error</div>
 
@@ -65,7 +79,7 @@ const ClansPage: NextPage = () => {
             <div className="p-4 w-full h-full flex items-center gap-4">
                 {showClanRank && <p className="w-16 text-center">Rank</p>}
                 <p className="flex-1">Name</p>
-                <p className="w-40 pl-1 text-center">Created</p>
+                <p className="w-40 pl-1 text-center">Created on</p>
                 <p className="w-20 pl-1 text-center">XP</p>
             </div>
             {isLoading ? (
@@ -84,7 +98,8 @@ const ClansPage: NextPage = () => {
                         >
                             {showClanRank && (
                                 <p className="w-16 h-full flex items-center justify-center text-xs">
-                                    {(parseInt(page, 10) - 1) * CLANS_PER_PAGE +
+                                    {(parseInt(page, 10) - 1) *
+                                        CLANS_RANKINGS_PER_PAGE +
                                         index +
                                         1}
                                 </p>
@@ -94,8 +109,10 @@ const ClansPage: NextPage = () => {
                                     {cleanString(clan.name)}
                                 </AppLink>
                             </p>
-                            <div className="w-40 flex items-center justify-start">
-                                {formatUnixTime(clan.created)}
+                            <div className="w-40 flex items-center justify-center">
+                                {clan.created > 0
+                                    ? formatUnixTime(clan.created)
+                                    : "N/A"}
                             </div>
                             <p className="w-20 text-center">{clan.xp}</p>
                         </div>

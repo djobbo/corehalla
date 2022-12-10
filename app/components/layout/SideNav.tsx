@@ -1,4 +1,5 @@
 import { AppLink } from "ui/base/AppLink"
+import { DiscordIcon } from "ui/icons"
 import {
     HiBookOpen,
     HiChevronDoubleUp,
@@ -138,6 +139,12 @@ const defaultNav: {
         name: "Clans",
         href: "/rankings/clans",
         icon: <HiUserGroup className="w-6 h-6" />,
+    },
+    {
+        name: "Discord Server",
+        href: "/discord",
+        icon: <DiscordIcon className="w-6 h-6" />,
+        external: true,
     },
     {
         name: "Wiki",

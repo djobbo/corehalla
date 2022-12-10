@@ -8,16 +8,25 @@
 		"vscode": {
 			"extensions": [
 				"dbaeumer.vscode-eslint",
-				"bradlc.vscode-tailwindcss"
+				"bradlc.vscode-tailwindcss",
+				"Prisma.prisma"
 			]
 		}
 	},
 
-	"forwardPorts": [3000, 3001, 5432],
+	"forwardPorts": [3000, 3001, 3002],
 
 	"portsAttributes": {
 		"3000": {
-			"label": "Hello Corehalla!",
+			"label": "Corehalla Web",
+			"onAutoForward": "notify"
+		},
+		"3001": {
+			"label": "Supabase Studio",
+			"onAutoForward": "notify"
+		},
+		"3002": {
+			"label": "Corehalla Worker",
 			"onAutoForward": "notify"
 		}
 	},

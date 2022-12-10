@@ -1,22 +1,10 @@
-import { useQuery } from "react-query"
-import axios from "axios"
+import { trpc } from "@util/trpc"
 
 export const usePlayerAliases = (playerId: string) => {
-    const { data: playerAliases, ...query } = useQuery(
-        ["playerAliases", playerId],
-        async () => {
-            const { data } = await axios.get<string[]>(
-                `/api/stats/player/${playerId}/aliases`,
-            )
-
-            if (!data) throw new Error("Player not found")
-            return data
-        },
-        { enabled: !!playerId },
-    )
+    const { data, ...query } = trpc.getPlayerAliases.useQuery({ playerId })
 
     return {
-        playerAliases: playerAliases || [],
+        playerAliases: data ?? [],
         ...query,
     }
 }

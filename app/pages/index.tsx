@@ -20,7 +20,7 @@ const landingClassName = css({
 const Page = () => {
     const { isLoggedIn, signIn } = useAuth()
     const { favorites } = useFavorites()
-    const { articles } = useBrawlhallaArticles(1, "", 3)
+    const { articles } = useBrawlhallaArticles("1", "", 3)
     const { weeklyRotation } = useWeeklyRotation()
 
     return (

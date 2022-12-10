@@ -4,6 +4,7 @@ import { SortDirection, useSortBy } from "common/hooks/useSortBy"
 import { Weapon } from "./Weapon"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
 import { formatTime } from "common/helpers/date"
+import { getWeaponsAccumulativeData } from "bhapi/legends"
 import { useMemo } from "react"
 import type { FullWeapon } from "bhapi/legends"
 
@@ -28,50 +29,7 @@ export const PlayerWeaponsTab = ({
     games,
 }: PlayerWeaponsTabProps) => {
     const weaponsStats = useMemo(
-        () =>
-            weapons.map((weapon) => {
-                const data = weapon.legends.reduce(
-                    (acc, legend) => {
-                        const isWeaponOne = legend.weapon_one === weapon.weapon
-                        return {
-                            games: acc.games + (legend.stats?.games ?? 0),
-                            wins: acc.wins + (legend.stats?.wins ?? 0),
-                            kos:
-                                acc.kos +
-                                ((isWeaponOne
-                                    ? legend.stats?.koweaponone
-                                    : legend.stats?.koweapontwo) ?? 0),
-                            damageDealt:
-                                acc.damageDealt +
-                                parseInt(
-                                    (isWeaponOne
-                                        ? legend.stats?.damageweapontwo
-                                        : legend.stats?.damageweapontwo) ?? "0",
-                                ),
-                            matchtime:
-                                acc.matchtime +
-                                ((isWeaponOne
-                                    ? legend.stats?.timeheldweaponone
-                                    : legend.stats?.timeheldweapontwo) ?? 0),
-                            level: acc.level + (legend.stats?.level ?? 0),
-                            xp: acc.xp + (legend.stats?.xp ?? 0),
-                        }
-                    },
-                    {
-                        games: 0,
-                        wins: 0,
-                        kos: 0,
-                        damageDealt: 0,
-                        matchtime: 0,
-                        level: 0,
-                        xp: 0,
-                    },
-                )
-                return {
-                    ...weapon,
-                    ...data,
-                }
-            }),
+        () => getWeaponsAccumulativeData(weapons),
         [weapons],
     )
 

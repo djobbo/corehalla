@@ -1,4 +1,4 @@
+import { logInfo } from "logger"
 import { parseBHArticlesPage } from "./parseBHArticlesPage"
 
-// eslint-disable-next-line no-console
-parseBHArticlesPage(1, "patch-notes").then((data) => console.log(data[0]))
+parseBHArticlesPage(1, "patch-notes").then((data) => logInfo(data[0]))

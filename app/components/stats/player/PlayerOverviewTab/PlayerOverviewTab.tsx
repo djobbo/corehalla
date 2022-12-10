@@ -6,6 +6,7 @@ import { MiscStatGroup } from "../../MiscStatGroup"
 import { PlayerOverviewClanContent } from "./ClanContent"
 import { PlayerOverviewRankedContent } from "./RankedContent"
 import { formatTime } from "common/helpers/date"
+import { getWeaponlessData } from "bhapi/legends"
 import type { FullLegend } from "bhapi/legends"
 import type { MiscStat } from "../../MiscStatGroup"
 import type { PlayerRanked, PlayerStats } from "bhapi/types"
@@ -36,50 +37,7 @@ export const PlayerOverviewTab = ({
     matchtime,
 }: PlayerOverviewTabProps) => {
     const { clan } = stats
-    const { unarmed, gadgets, throws } = legends.reduce(
-        (acc, legend) => ({
-            unarmed: {
-                kos: acc.unarmed.kos + (legend.stats?.kounarmed ?? 0),
-                damageDealt:
-                    acc.unarmed.damageDealt +
-                    parseInt(legend.stats?.damageunarmed ?? "0"),
-                matchtime:
-                    acc.unarmed.matchtime +
-                    (legend.stats
-                        ? legend.stats.matchtime -
-                          legend.stats.timeheldweaponone -
-                          legend.stats.timeheldweapontwo
-                        : 0),
-            },
-            gadgets: {
-                kos: acc.gadgets.kos + (legend.stats?.kogadgets ?? 0),
-                damageDealt:
-                    acc.gadgets.damageDealt +
-                    parseInt(legend.stats?.damagegadgets ?? "0"),
-            },
-            throws: {
-                kos: acc.throws.kos + (legend.stats?.kothrownitem ?? 0),
-                damageDealt:
-                    acc.throws.damageDealt +
-                    parseInt(legend.stats?.damagethrownitem ?? "0"),
-            },
-        }),
-        {
-            unarmed: {
-                kos: 0,
-                damageDealt: 0,
-                matchtime: 0,
-            },
-            gadgets: {
-                kos: 0,
-                damageDealt: 0,
-            },
-            throws: {
-                kos: 0,
-                damageDealt: 0,
-            },
-        },
-    )
+    const { unarmed, gadgets, throws } = getWeaponlessData(legends)
 
     const generalStats: MiscStat[] = [
         {

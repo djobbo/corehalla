@@ -1,4 +1,4 @@
-import { CLANS_PER_PAGE } from "@util/constants"
+import { CLANS_RANKINGS_PER_PAGE } from "@util/constants"
 import { supabaseService } from "db/supabase/service"
 import type { BHClan } from "db/generated/client"
 import type { NextApiHandler } from "next"
@@ -19,8 +19,8 @@ const handler: NextApiHandler = async (req, res) => {
         const pageNum = parseInt(page as string)
 
         const { data, error } = await query.range(
-            (pageNum - 1) * CLANS_PER_PAGE,
-            pageNum * CLANS_PER_PAGE - 1,
+            (pageNum - 1) * CLANS_RANKINGS_PER_PAGE,
+            pageNum * CLANS_RANKINGS_PER_PAGE - 1,
         )
 
         if (error) throw error
