@@ -6,7 +6,7 @@
         "lib": ["esnext", "dom"],
         "moduleResolution": "node",
         "jsx": "react-jsx",
-        "target": "es6",
+        "target": "es5",
         "skipLibCheck": true,
         "sourceMap": false,
         "outDir": "dist",
