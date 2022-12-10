@@ -134,7 +134,7 @@ model BHPlayerAlias {
 model BHClan {
   id      String @id
   name    String
-  created Int
+  created Int? @default(-1)
   xp      Int
 }
 

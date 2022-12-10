@@ -26,7 +26,6 @@ export const getPlayerStats = publicProcedure //
             await updateDBClanData({
                 id: clan.clan_id.toString(),
                 name: clan.clan_name,
-                created: -1,
                 xp: parseInt(clan.clan_xp),
             }).catch((e) => {
                 logError(
