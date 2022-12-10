@@ -8,7 +8,8 @@
         "jsx": "react-jsx",
         "target": "es6",
         "skipLibCheck": true,
-        "sourceMap": true
+        "sourceMap": false,
+        "outDir": "dist",
     },
     "include": ["src"],
     "exclude": ["node_modules"]

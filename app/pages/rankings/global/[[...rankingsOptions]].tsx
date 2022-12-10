@@ -16,25 +16,7 @@ const Page: NextPage = () => {
         page,
         sortBy,
     })
-    // "xp"
-    // ,"games"
-    // ,"wins"
-    // ,"rankedGames"
-    // ,"rankedWins"
-    // ,"damageDealt"
-    // ,"damageTaken"
-    // ,"kos"
-    // ,"falls"
-    // ,"suicides"
-    // ,"teamKos"
-    // ,"matchTime"
-    // ,"damageUnarmed"
-    // ,"koUnarmed"
-    // ,"matchTimeUnarmed"
-    // ,"koThrownItem"
-    // ,"damageThrownItem"
-    // ,"koGadgets"
-    // ,"damageGadgets"
+
     return (
         <>
             <Select<SortablePlayerProp>
