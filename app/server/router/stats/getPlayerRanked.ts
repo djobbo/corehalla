@@ -36,6 +36,8 @@ export const getPlayerRanked = publicProcedure //
         ].map<BHPlayerAlias>(({ name, id }) => ({
             playerId: id.toString(),
             alias: name,
+            createdAt: new Date(),
+            public: true,
         }))
 
         await updateDBPlayerAliases(aliases).catch((e) => {

@@ -7,9 +7,7 @@ export const usePlayerSearch = (search: string) => {
     })
     const { data: aliases } = trpc.searchPlayerAlias.useQuery(
         { alias: search, page: "1" },
-        {
-            enabled: !!search,
-        },
+        { enabled: !!search },
     )
 
     return {

@@ -62,7 +62,8 @@ export const Footer = ({ className }: FooterProps) => {
                 </span>
             </p>
             <div className="max-w-screen-lg mx-auto flex flex-col justify-center items-center border-t p-12 border-bg">
-                <div className="flex items-center gap-8">
+                <span className="text-sm">Join the community:</span>
+                <div className="flex items-center gap-8 mt-4">
                     {socialLinks.map(({ Icon, href, name }) => (
                         <Tooltip content={name} key={name}>
                             <AppLink

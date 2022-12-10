@@ -21,10 +21,13 @@ export const get1v1Rankings = publicProcedure //
 
         const rankings = await getRankings("1v1", region, page, name)
 
-        await updateDBPlayerAliases(
+        // Fire and forget
+        updateDBPlayerAliases(
             rankings.map((player) => ({
                 playerId: player.brawlhalla_id.toString(),
                 alias: player.name,
+                createdAt: new Date(),
+                public: true,
             })),
         ).catch((e) => {
             logError("Error updating player aliases", e)
@@ -46,13 +49,16 @@ export const get2v2Rankings = publicProcedure //
 
         const rankings = await getRankings("2v2", region, page)
 
-        await updateDBPlayerAliases(
+        // Fire and forget
+        updateDBPlayerAliases(
             rankings
                 .map(getTeamPlayers)
                 .flat()
                 .map((player) => ({
                     playerId: player.id.toString(),
                     alias: player.name,
+                    createdAt: new Date(),
+                    public: true,
                 }))
                 .flat(),
         ).catch((e) => {

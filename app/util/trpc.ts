@@ -54,10 +54,11 @@ export const trpc = createTRPCNext<AppRouter>({
             }
         }
 
-        // cache full page for 1 day + revalidate once every second
+        // cache full page for 1 day + revalidate once every 5 minutes
         const ONE_DAY_IN_SECONDS = 60 * 60 * 24
+        const FIVE_MINUTES_IN_SECONDS = 60 * 5
         return {
-            "Cache-Control": `s-maxage=480, stale-while-revalidate=${ONE_DAY_IN_SECONDS}`,
+            "Cache-Control": `s-maxage=${FIVE_MINUTES_IN_SECONDS}, stale-while-revalidate=${ONE_DAY_IN_SECONDS}`,
         }
     },
 })
