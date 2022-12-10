@@ -110,7 +110,7 @@ const ClansPage: NextPage = () => {
                                 </AppLink>
                             </p>
                             <div className="w-40 flex items-center justify-center">
-                                {clan.created > 0
+                                {!!clan.created && clan.created > 0
                                     ? formatUnixTime(clan.created)
                                     : "N/A"}
                             </div>
