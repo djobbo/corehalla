@@ -59,7 +59,12 @@ const createCrawlerQueue = async (config: CrawlerConfig) => {
                 logInfo("Save crawl progress", currentPage)
                 await supabaseService
                     .from<CrawlProgress>("CrawlProgress")
-                    .insert({ id: "Crawler", progress: currentPage })
+                    .upsert({
+                        id: "Crawler",
+                        progress: currentPage,
+                        lastUpdated: new Date(),
+                        name: "Crawler",
+                    })
 
                 logInfo("Crawling leaderboard page", currentPage)
                 const players = await requestWithMinimumDelay(
