@@ -55,9 +55,15 @@ const createCrawlerQueue = async (config: CrawlerConfig) => {
         { length: config.maxPages - (config.startPage ?? 1) + 1 },
         (_, i) => {
             return async () => {
-                logInfo("Crawling leaderboard page", i + 1)
+                const currentPage = i + (config.startPage ?? 1)
+                logInfo("Save crawl progress", currentPage)
+                await supabaseService
+                    .from<CrawlProgress>("CrawlProgress")
+                    .insert({ id: "Crawler", progress: currentPage })
+
+                logInfo("Crawling leaderboard page", currentPage)
                 const players = await requestWithMinimumDelay(
-                    () => getRankings("1v1", "all", i + 1),
+                    () => getRankings("1v1", "all", currentPage),
                     delayMs,
                 )
 
@@ -99,8 +105,12 @@ export const startCrawler = async (config: CrawlerConfig = defaultConfig) => {
         return
     }
 
-    let iteration = 1
+    let iteration = 0
     while (ENABLED) {
+        iteration++
+        await sleep(1000 * 30)
+        let startPage = 1
+
         logInfo("Crawler iteration:", iteration)
         if (iteration === 1) {
             const { data, error } = await supabaseService
@@ -109,30 +119,20 @@ export const startCrawler = async (config: CrawlerConfig = defaultConfig) => {
                 .match({ id: "Crawler" })
                 .single()
 
-            if (error || !data) {
+            if (!error && !!data?.progress) {
                 logWarning("Failed to fetch crawl progress")
                 logInfo("Starting from page 1")
 
-                await supabaseService
-                    .from<CrawlProgress>("CrawlProgress")
-                    .insert({ id: "Crawler", progress: 1 })
-
-                await createCrawlerQueue({
-                    ...config,
-                    startPage: 1,
-                })
+                startPage = data.progress
                 return
             }
 
-            logInfo("Starting from page", data.progress)
-            await createCrawlerQueue(config)
-        } else {
-            await createCrawlerQueue({
-                ...config,
-                startPage: 1,
-            })
+            logInfo("Starting from page", startPage)
         }
-        await sleep(1000 * 30)
-        iteration++
+
+        await createCrawlerQueue({
+            ...config,
+            startPage,
+        })
     }
 }
