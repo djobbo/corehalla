@@ -1,5 +1,6 @@
 import { load } from "cheerio"
 import { powerRankingsMock } from "./powerRankingsMock"
+import { z } from "zod"
 import axios from "axios"
 import type { Bracket } from "bhapi/types"
 
@@ -22,9 +23,26 @@ export type PR = {
     }
 }
 
+export const powerRankingsBracketValidator = z.union([
+    z.literal("1v1"),
+    z.literal("2v2"),
+])
+
+export type PowerRankingsBracket = z.infer<typeof powerRankingsBracketValidator>
+
+export const powerRankingsRegionValidator = z.union([
+    z.literal("us-e"),
+    z.literal("eu"),
+    z.literal("sea"),
+    z.literal("brz"),
+    z.literal("aus"),
+])
+
+export type PowerRankingsRegion = z.infer<typeof powerRankingsRegionValidator>
+
 export const parsePowerRankingsPage = async (
     bracket: Bracket,
-    region: "us-e" | "eu" | "sea" | "brz" | "aus" | "us-w",
+    region: "us-e" | "eu" | "sea" | "brz" | "aus",
 ): Promise<PR[]> => {
     if (__DEV) return powerRankingsMock
 

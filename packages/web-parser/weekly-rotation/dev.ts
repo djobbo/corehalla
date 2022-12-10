@@ -1,4 +1,4 @@
 import { getWeeklyRotation } from "./getWeeklyRotation"
+import { logInfo } from "logger"
 
-// eslint-disable-next-line no-console
-getWeeklyRotation().then(console.log)
+getWeeklyRotation().then(logInfo)

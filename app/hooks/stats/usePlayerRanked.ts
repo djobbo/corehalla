@@ -1,23 +1,10 @@
-import { useQuery } from "react-query"
-import axios from "axios"
-import type { PlayerRanked } from "bhapi/types"
+import { trpc } from "@util/trpc"
 
 export const usePlayerRanked = (playerId: string) => {
-    const { data: playerRanked, ...query } = useQuery(
-        ["playerRanked", playerId],
-        async () => {
-            const { data } = await axios.get<PlayerRanked>(
-                `/api/stats/player/${playerId}/ranked`,
-            )
-
-            if (!data.brawlhalla_id) throw new Error("Player ranked not found")
-            return data
-        },
-        { enabled: !!playerId },
-    )
+    const { data, ...query } = trpc.getPlayerRanked.useQuery({ playerId })
 
     return {
-        playerRanked,
+        playerRanked: data,
         ...query,
     }
 }

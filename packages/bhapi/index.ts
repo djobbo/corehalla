@@ -35,37 +35,44 @@ export const getIdBySteamId = (steamId: string) =>
         name: string
     }>("/search", { steamid: steamId })
 
-export const getRankings = async (
-    bracket: Bracket = "1v1",
-    region: RankedRegion = "all",
-    page = "1",
+export const getRankings = async <
+    BracketType extends Bracket,
+    RankingType extends BracketType extends "1v1" ? Ranking1v1 : Ranking2v2,
+>(
+    bracket: BracketType,
+    region: RankedRegion,
+    page: string | number,
     name?: string,
 ) => {
     if (!__DEV)
-        return getBhApi<Ranking1v1[] | Ranking2v2[]>(
+        return getBhApi<RankingType[]>(
             `/rankings/${bracket}/${region}/${page}`,
-            { name },
+            {
+                name,
+            },
         )
 
     switch (bracket) {
         case "1v1":
-            return rankings1v1Mock.filter((r) => r.name.startsWith(name || ""))
+            return rankings1v1Mock.filter((r) =>
+                r.name.toLowerCase().startsWith(name?.toLowerCase() || ""),
+            ) as RankingType[]
         case "2v2":
-            return rankings2v2Mock
+            return rankings2v2Mock as RankingType[]
         default:
             return []
     }
 }
 
-export const getPlayerStats = async (playerId: string) =>
+export const getPlayerStats = async (playerId: number) =>
     __DEV ? playerStatsMock : getBhApi<PlayerStats>(`/player/${playerId}/stats`)
 
-export const getPlayerRanked = async (playerId: string) =>
+export const getPlayerRanked = async (playerId: number) =>
     __DEV
         ? playerRankedMock
         : getBhApi<PlayerRanked>(`/player/${playerId}/ranked`)
 
-export const getClan = async (clanId: string) =>
+export const getClan = async (clanId: number) =>
     __DEV ? clanMock : getBhApi<Clan>(`/clan/${clanId}`)
 
 export const getAllLegends = async () => getBhApi("/legend/all")

@@ -15,7 +15,7 @@ import { gaEvent } from "common/analytics/gtag"
 import { styled, theme } from "ui/theme"
 import { useDebouncedState } from "common/hooks/useDebouncedState"
 import { useEffect, useState } from "react"
-import { usePlayerSearch } from "@hooks/stats/search/usePlayerSearch"
+import { usePlayerSearch } from "@hooks/stats/usePlayerSearch"
 import type { Ranking1v1 } from "bhapi/types"
 
 const __DEV = process.env.NODE_ENV === "development"
@@ -170,6 +170,21 @@ export const Searchbox = () => {
                                     <HiArrowUp className="w-4 h-4" />
                                 </div>
                             )}
+                            <p className="text-center text-xs text-textVar1 italic p-2">
+                                If you{"'"}re having trouble finding a player by
+                                name, trying using their brawlhalla id instead.
+                                <br />
+                                Join our{" "}
+                                <a
+                                    href="/discord"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-textVar1 underline"
+                                >
+                                    Discord
+                                </a>{" "}
+                                for help.
+                            </p>
                         </ResultsContainer>
                     </div>
                 </KBarAnimator>

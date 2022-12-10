@@ -42,14 +42,91 @@ model UserConnection {
   @@id([userId, type, appId])
 }
 
-model BHPlayer {
-  id   String @id
-  name String
+model BHPlayerData {
+  id               String           @id
+  name             String
+  lastUpdated      DateTime
+  xp               Int
+  level            Int
+  tier             String
+  games            Int
+  wins             Int
+  rating           Int
+  peakRating       Int
+  rankedGames      Int
+  rankedWins       Int
+  region           String
+  damageDealt      Int
+  damageTaken      Int
+  kos              Int
+  falls            Int
+  suicides         Int
+  teamKos          Int
+  matchTime        Int
+  damageUnarmed    Int
+  koUnarmed        Int
+  matchTimeUnarmed Int
+  koThrownItem     Int
+  damageThrownItem Int
+  koGadgets        Int
+  damageGadgets    Int
+  legends          BHPlayerLegend[]
+  weapons          BHPlayerWeapon[]
+}
+
+model BHPlayerLegend {
+  player_id         String
+  player            BHPlayerData @relation(fields: [player_id], references: [id])
+  lastUpdated      DateTime
+  legend_id         Int
+  damageDealt       Int
+  damageTaken       Int
+  kos               Int
+  falls             Int
+  suicides          Int
+  teamKos           Int
+  matchTime         Int
+  games             Int
+  wins              Int
+  damageUnarmed     Int
+  damageThrownItem  Int
+  damageWeaponOne   Int
+  damageWeaponTwo   Int
+  damageGadgets     Int
+  koUnarmed         Int
+  koThrownItem      Int
+  koWeaponOne       Int
+  koWeaponTwo       Int
+  koGadgets         Int
+  timeHeldWeaponOne Int
+  timeHeldWeaponTwo Int
+  xp                Int
+  level             Int
+
+  @@id([player_id, legend_id])
+}
+
+model BHPlayerWeapon {
+  player_id   String
+  player      BHPlayerData @relation(fields: [player_id], references: [id])
+  lastUpdated      DateTime
+  weapon_name String
+  kos         Int
+  matchTime   Int
+  games       Int
+  wins        Int
+  damageDealt Int
+  xp          Int
+  level       Int
+
+  @@id([player_id, weapon_name])
 }
 
 model BHPlayerAlias {
   playerId String
   alias    String
+  createdAt DateTime @default(now())
+  public  Boolean  @default(true)
 
   @@id([playerId, alias])
 }
@@ -59,4 +136,11 @@ model BHClan {
   name    String
   created Int
   xp      Int
+}
+
+model CrawlProgress {
+  id          String   @id
+  name        String
+  lastUpdated DateTime
+  progress    Int
 }

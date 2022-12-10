@@ -6,13 +6,22 @@ import { Spinner } from "ui/base/Spinner"
 import { Tooltip } from "ui/base/Tooltip"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
+import {
+    powerRankingsBracketValidator,
+    powerRankingsRegionValidator,
+} from "web-parser/power-rankings/parsePowerRankingsPage"
 import { useDebouncedState } from "common/hooks/useDebouncedState"
 import { usePowerRankings } from "@hooks/stats/usePowerRankings"
 import { useRouter } from "next/router"
 import { useSortBy } from "common/hooks/useSortBy"
+import { z } from "zod"
 import type { MiscStat } from "@components/stats/MiscStatGroup"
 import type { NextPage } from "next"
-import type { PR } from "web-parser/power-rankings/parsePowerRankingsPage"
+import type {
+    PR,
+    PowerRankingsBracket,
+    PowerRankingsRegion,
+} from "web-parser/power-rankings/parsePowerRankingsPage"
 
 type PRSortOption =
     | "rank"
@@ -29,12 +38,37 @@ const Page: NextPage = () => {
 
     const { rankingsOptions } = router.query
 
-    const [bracket = "1v1", region = "us-e"] = Array.isArray(rankingsOptions)
-        ? rankingsOptions
-        : []
+    let bracket: PowerRankingsBracket = "1v1",
+        region: PowerRankingsRegion = "us-e"
+
+    // TODO: ZOD (next version) will allow us to do this:
+    // const bracket = powerRankingsBracketValidator.catch("1v1").parse(bracket)
+    // const region = powerRankingsRegionValidator.catch("us-e").parse(region)
+    try {
+        const validRankingsOptions = z.array(z.string()).parse(rankingsOptions)
+        const [bracketToValidate, regionToValidate] = validRankingsOptions
+
+        try {
+            const validBracket =
+                powerRankingsBracketValidator.parse(bracketToValidate)
+
+            bracket = validBracket
+        } catch {
+            // do nothing, we use the default value
+        }
+        try {
+            const validRegion =
+                powerRankingsRegionValidator.parse(regionToValidate)
+
+            region = validRegion
+        } catch {
+            // do nothing, we use the default value
+        }
+    } catch {
+        // do nothing, we use the default values
+    }
 
     const { powerRankings, isLoading, isError } = usePowerRankings(
-        // @ts-expect-error TODO: Typecheck this
         bracket,
         region,
     )
@@ -162,12 +196,8 @@ const Page: NextPage = () => {
             defaultRegion="us-e"
         >
             <SEO
-                title={`Brawlhalla ${
-                    region === "all" ? "Global" : region.toUpperCase()
-                } ${bracket} Power Rankings • Corehalla`}
-                description={`Brawhalla ${
-                    region === "all" ? "Global" : region.toUpperCase()
-                } ${bracket} Power Rankings • Corehalla`}
+                title={`Brawlhalla ${region.toUpperCase()} ${bracket} Power Rankings • Corehalla`}
+                description={`Brawhalla ${region.toUpperCase()} ${bracket} Power Rankings • Corehalla`}
             />
             <Select<PRSortOption>
                 className="flex-1"

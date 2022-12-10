@@ -2,17 +2,12 @@ import { ClanMember } from "@components/stats/clan/ClanMember"
 import { SEO } from "@components/SEO"
 import { StatsHeader } from "@components/stats/StatsHeader"
 import { cleanString } from "common/helpers/cleanString"
-import { dehydrate } from "react-query"
 import { formatUnixTime } from "common/helpers/date"
-import { getClan } from "bhapi"
-import { ssrQueryClient as queryClient } from "@util/queryClient"
-import { supabaseService } from "db/supabase/service"
 import { useClan } from "@hooks/stats/useClan"
 import { useRouter } from "next/router"
-import type { BHClan, BHPlayerAlias } from "db/generated/client"
 import type { ClanRank } from "bhapi/constants"
-import type { GetServerSideProps, NextPage } from "next"
 import type { MiscStat } from "@components/stats/MiscStatGroup"
+import type { NextPage } from "next"
 
 const clanRankWeights: Record<ClanRank, number> = {
     Leader: 0,
@@ -94,55 +89,3 @@ const Page: NextPage = () => {
 }
 
 export default Page
-
-export const getServerSideProps: GetServerSideProps = async ({
-    query,
-    res,
-}) => {
-    const { clanId } = query
-    if (!clanId || typeof clanId !== "string") return { notFound: true }
-
-    try {
-        const clan = await getClan(clanId)
-
-        if (!clan || !clan.clan_id) {
-            return { notFound: true }
-        }
-
-        try {
-            await Promise.all([
-                queryClient.prefetchQuery(
-                    ["clanStats", clanId],
-                    async () => clan,
-                ),
-                supabaseService.from<BHClan>("BHClan").upsert({
-                    id: clan.clan_id.toString(),
-                    name: clan.clan_name,
-                    created: clan.clan_create_date,
-                    xp: parseInt(clan.clan_xp),
-                }),
-                supabaseService.from<BHPlayerAlias>("BHPlayerAlias").upsert(
-                    clan.clan.map((member) => ({
-                        playerId: member.brawlhalla_id.toString(),
-                        alias: member.name,
-                    })),
-                ),
-            ])
-        } catch {
-            return { notFound: true }
-        }
-
-        res.setHeader(
-            "Cache-Control",
-            "public, s-maxage=480, stale-while-revalidate=600",
-        )
-
-        return {
-            props: {
-                dehydratedState: dehydrate(queryClient),
-            },
-        }
-    } catch {
-        return { notFound: true }
-    }
-}

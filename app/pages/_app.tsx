@@ -15,8 +15,9 @@ const BackToTopButton = dynamic(
         ssr: false,
     },
 )
+import { Analytics } from "@vercel/analytics/react"
 import { GAScripts } from "common/analytics/GAScripts"
-import { Hydrate, QueryClientProvider } from "react-query"
+import { Hydrate, QueryClientProvider } from "@tanstack/react-query"
 import { KBarProvider } from "kbar"
 import { Layout } from "@components/layout/Layout"
 import { PageLoader } from "ui/base/PageLoader"
@@ -25,6 +26,7 @@ import { Searchbox } from "@components/search/Searchbox"
 import { SideNavProvider } from "@ctx/SideNavProvider"
 import { Toaster } from "react-hot-toast"
 import { queryClient } from "@util/queryClient"
+import { trpc } from "@util/trpc"
 import Head from "next/head"
 import dynamic from "next/dynamic"
 import type { AppProps } from "next/app"
@@ -69,8 +71,9 @@ const App = ({
                     </AuthProvider>
                 </Hydrate>
             </QueryClientProvider>
+            <Analytics />
         </>
     )
 }
 
-export default App
+export default trpc.withTRPC(App)
