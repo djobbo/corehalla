@@ -9,7 +9,9 @@
 			"extensions": [
 				"dbaeumer.vscode-eslint",
 				"bradlc.vscode-tailwindcss",
-				"Prisma.prisma"
+				"Prisma.prisma",
+				"eamodio.gitlens",
+				"mhutchie.git-graph"
 			]
 		}
 	},
