@@ -1,6 +1,6 @@
 import { logError, logInfo } from "logger"
 import { startCrawler } from "./crawler"
-import { startBot as startDiscordManagerBot } from "./discord-manager-bot"
+import { startBot as startDiscordManagerBot } from "./appa-bot"
 
 const __DEV = process.env.NODE_ENV === "development"
 
