@@ -24,7 +24,6 @@ export const startBot = async () => {
     client.listenTo("guildMemberAdd", async (member) => {
         member.guild.systemChannel?.send({
             content: `👀 Welcome **${member}** to Corehalla!`,
-            allowedMentions: { users: [] },
         })
 
         if (DISCORD_MANAGER_BOT_WELCOME_ROLES) {
@@ -43,7 +42,6 @@ export const startBot = async () => {
     client.listenTo("guildMemberRemove", async (member) => {
         member.guild.systemChannel?.send({
             content: `👋 Goodbye ${member}!`,
-            allowedMentions: { users: [] },
         })
     })
 
