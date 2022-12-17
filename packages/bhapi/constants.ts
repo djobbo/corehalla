@@ -70,7 +70,7 @@ export const rankedRegions = rankedRegionsValidators.map(
 export type RankedRegion = z.infer<typeof rankedRegionValidator>
 
 export const weapons = [
-    "Hammer",
+    "Grapple Hammer",
     "Sword",
     "Blasters",
     "Rocket Lance",
@@ -83,6 +83,7 @@ export const weapons = [
     "Cannon",
     "Orb",
     "Greatsword",
+    "Battle Boots",
 ] as const
 
 export type Weapon = typeof weapons[number]
