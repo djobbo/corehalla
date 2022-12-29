@@ -5,6 +5,7 @@ import {
     powerRankingsRegionValidator,
 } from "web-parser/power-rankings/parsePowerRankingsPage"
 import { publicProcedure } from "@server/trpc"
+import { withTimeLog } from "@server/helpers/withTimeLog"
 import { z } from "zod"
 
 export const getPowerRankings = publicProcedure
@@ -14,9 +15,14 @@ export const getPowerRankings = publicProcedure
             region: powerRankingsRegionValidator,
         }),
     )
-    .query((req) => {
-        const { bracket, region } = req.input
-        logInfo("getPowerRankings", req.input)
+    .query(
+        withTimeLog((req) => {
+            const { bracket, region } = req.input
+            logInfo("getPowerRankings", req.input)
 
-        return parsePowerRankingsPage(bracket ?? "1v1", region ?? "us-e")
-    })
+            return withTimeLog(
+                parsePowerRankingsPage,
+                "parsePowerRankingsPage",
+            )(bracket ?? "1v1", region ?? "us-e")
+        }, "getPowerRankings"),
+    )

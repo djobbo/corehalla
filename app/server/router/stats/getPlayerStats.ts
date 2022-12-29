@@ -4,6 +4,7 @@ import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "@server/trpc"
 import { updateDBClanData } from "db-utils/mutations/updateDBClanData"
 import { updateDBPlayerAliases } from "db-utils/mutations/updateDBPlayerAliases"
+import { withTimeLog } from "@server/helpers/withTimeLog"
 import { z } from "zod"
 
 export const getPlayerStats = publicProcedure //
@@ -12,43 +13,54 @@ export const getPlayerStats = publicProcedure //
             playerId: numericLiteralValidator,
         }),
     )
-    .query(async (req) => {
-        const { playerId } = req.input
-        logInfo("getPlayerStats", req.input)
+    .query(
+        withTimeLog(async (req) => {
+            const { playerId } = req.input
+            logInfo("getPlayerStats", req.input)
 
-        const stats = await getPlayerStatsFn(playerId)
+            const stats = await withTimeLog(
+                getPlayerStatsFn,
+                "BHAPI:playerStats",
+            )(playerId)
 
-        const updateClanData = async () => {
-            if (!stats.clan) return
+            const updateClanData = async () => {
+                if (!stats.clan) return
 
-            const clan = stats.clan
+                const clan = stats.clan
 
-            await updateDBClanData({
-                id: clan.clan_id.toString(),
-                name: clan.clan_name,
-                xp: parseInt(clan.clan_xp),
-            }).catch((e) => {
-                logError(
-                    `Failed to update clan#${clan.clan_id} for player#${playerId} in database`,
-                    e,
-                )
-            })
-        }
+                await withTimeLog(
+                    updateDBClanData,
+                    "updateDBClanData",
+                )({
+                    id: clan.clan_id.toString(),
+                    name: clan.clan_name,
+                    xp: parseInt(clan.clan_xp),
+                }).catch((e) => {
+                    logError(
+                        `Failed to update clan#${clan.clan_id} for player#${playerId} in database`,
+                        e,
+                    )
+                })
+            }
 
-        // Fire and forget
-        Promise.all([
-            updateDBPlayerAliases([
-                {
-                    playerId: stats.brawlhalla_id.toString(),
-                    alias: stats.name,
-                    createdAt: new Date(),
-                    public: true,
-                },
-            ]).catch((e) => {
-                logError("Error updating player aliases", e)
-            }),
-            updateClanData(),
-        ])
+            // Fire and forget
+            Promise.all([
+                withTimeLog(
+                    updateDBPlayerAliases,
+                    "updateDBPlayerAliases",
+                )([
+                    {
+                        playerId: stats.brawlhalla_id.toString(),
+                        alias: stats.name,
+                        createdAt: new Date(),
+                        public: true,
+                    },
+                ]).catch((e) => {
+                    logError("Error updating player aliases", e)
+                }),
+                updateClanData(),
+            ])
 
-        return stats
-    })
+            return stats
+        }, "getPlayerStats"),
+    )
