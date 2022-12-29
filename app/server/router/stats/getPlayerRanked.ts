@@ -4,6 +4,7 @@ import { logError, logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "@server/trpc"
 import { updateDBPlayerAliases } from "db-utils/mutations/updateDBPlayerAliases"
+import { withTimeLog } from "@server/helpers/withTimeLog"
 import { z } from "zod"
 import type { BHPlayerAlias } from "db/generated/client"
 
@@ -13,36 +14,45 @@ export const getPlayerRanked = publicProcedure //
             playerId: numericLiteralValidator,
         }),
     )
-    .query(async (req) => {
-        const { playerId } = req.input
-        logInfo("getPlayerRanked", req.input)
+    .query(
+        withTimeLog(async (req) => {
+            const { playerId } = req.input
+            logInfo("getPlayerRanked", req.input)
 
-        const ranked = await getPlayerRankedFn(playerId)
+            const ranked = await withTimeLog(
+                getPlayerRankedFn,
+                "BHAPI:playerRanked",
+            )(playerId)
 
-        // TODO: check whole object with zod
-        try {
-            z.undefined().or(z.object({}).strict()).parse(ranked)
-            throw new Error("Player ranked not found")
-        } catch {
-            // do nothing, continue
-        }
+            // TODO: check whole object with zod
+            try {
+                z.undefined().or(z.object({}).strict()).parse(ranked)
+                throw new Error("Player ranked not found")
+            } catch {
+                // do nothing, continue
+            }
 
-        const aliases = [
-            {
-                id: ranked.brawlhalla_id,
-                name: ranked.name,
-            },
-            ...(ranked["2v2"]?.map(getTeamPlayers).flat() ?? []),
-        ].map<BHPlayerAlias>(({ name, id }) => ({
-            playerId: id.toString(),
-            alias: name,
-            createdAt: new Date(),
-            public: true,
-        }))
+            const aliases = [
+                {
+                    id: ranked.brawlhalla_id,
+                    name: ranked.name,
+                },
+                ...(ranked["2v2"]?.map(getTeamPlayers).flat() ?? []),
+            ].map<BHPlayerAlias>(({ name, id }) => ({
+                playerId: id.toString(),
+                alias: name,
+                createdAt: new Date(),
+                public: true,
+            }))
 
-        await updateDBPlayerAliases(aliases).catch((e) => {
-            logError("Error updating player aliases", e)
-        })
+            // Fire and forget
+            withTimeLog(
+                updateDBPlayerAliases,
+                "updateDBPlayerAliases",
+            )(aliases).catch((e) => {
+                logError("Error updating player aliases", e)
+            })
 
-        return ranked
-    })
+            return ranked
+        }, "getPlayerRanked"),
+    )

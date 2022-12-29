@@ -5,6 +5,7 @@ import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "@server/trpc"
 import { rankedRegionValidator } from "bhapi/constants"
 import { updateDBPlayerAliases } from "db-utils/mutations/updateDBPlayerAliases"
+import { withTimeLog } from "@server/helpers/withTimeLog"
 import { z } from "zod"
 
 export const get1v1Rankings = publicProcedure //
@@ -15,26 +16,34 @@ export const get1v1Rankings = publicProcedure //
             name: z.optional(z.string()),
         }),
     )
-    .query(async (req) => {
-        const { region, page, name } = req.input
-        logInfo("get1v1Rankings", req.input)
+    .query(
+        withTimeLog(async (req) => {
+            const { region, page, name } = req.input
+            logInfo("get1v1Rankings", req.input)
 
-        const rankings = await getRankings("1v1", region, page, name)
+            const rankings = await withTimeLog(
+                getRankings,
+                "BHAPI:rankings1v1",
+            )("1v1", region, page, name)
 
-        // Fire and forget
-        updateDBPlayerAliases(
-            rankings.map((player) => ({
-                playerId: player.brawlhalla_id.toString(),
-                alias: player.name,
-                createdAt: new Date(),
-                public: true,
-            })),
-        ).catch((e) => {
-            logError("Error updating player aliases", e)
-        })
+            // Fire and forget
+            withTimeLog(
+                updateDBPlayerAliases,
+                "updateDBPlayerAliases",
+            )(
+                rankings.map((player) => ({
+                    playerId: player.brawlhalla_id.toString(),
+                    alias: player.name,
+                    createdAt: new Date(),
+                    public: true,
+                })),
+            ).catch((e) => {
+                logError("Error updating player aliases", e)
+            })
 
-        return rankings
-    })
+            return rankings
+        }, "get1v1Rankings"),
+    )
 
 export const get2v2Rankings = publicProcedure //
     .input(
@@ -43,27 +52,35 @@ export const get2v2Rankings = publicProcedure //
             page: numericLiteralValidator,
         }),
     )
-    .query(async (req) => {
-        const { region, page } = req.input
-        logInfo("get2v2Rankings", req.input)
+    .query(
+        withTimeLog(async (req) => {
+            const { region, page } = req.input
+            logInfo("get2v2Rankings", req.input)
 
-        const rankings = await getRankings("2v2", region, page)
+            const rankings = await withTimeLog(
+                getRankings,
+                "BHAPI:rankings2v2",
+            )("2v2", region, page)
 
-        // Fire and forget
-        updateDBPlayerAliases(
-            rankings
-                .map(getTeamPlayers)
-                .flat()
-                .map((player) => ({
-                    playerId: player.id.toString(),
-                    alias: player.name,
-                    createdAt: new Date(),
-                    public: true,
-                }))
-                .flat(),
-        ).catch((e) => {
-            logError("Error updating player aliases", e)
-        })
+            // Fire and forget
+            withTimeLog(
+                updateDBPlayerAliases,
+                "updateDBPlayerAliases",
+            )(
+                rankings
+                    .map(getTeamPlayers)
+                    .flat()
+                    .map((player) => ({
+                        playerId: player.id.toString(),
+                        alias: player.name,
+                        createdAt: new Date(),
+                        public: true,
+                    }))
+                    .flat(),
+            ).catch((e) => {
+                logError("Error updating player aliases", e)
+            })
 
-        return rankings
-    })
+            return rankings
+        }, "get2v2Rankings"),
+    )
