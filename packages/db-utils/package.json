@@ -2,7 +2,7 @@
     "name": "db-utils",
     "version": "0.0.0",
     "devDependencies": {
-        "@types/node": "^18.11.12",
+        "@types/node": "^18.11.18",
         "tsconfig": "workspace:*",
         "typescript": "^4.9.4"
     },
@@ -13,6 +13,6 @@
         "bhapi": "workspace:*",
         "db": "workspace:*",
         "logger": "workspace:*",
-        "zod": "^3.19.1"
+        "zod": "^3.20.2"
     }
 }

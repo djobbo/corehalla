@@ -1,10 +1,7 @@
 import { logInfo } from "logger"
 
-export const withTimeLog = <
-    TArgs extends unknown[],
-    TReturnType extends Promise<unknown>,
->(
-    request: (...args: TArgs) => TReturnType,
+export const withTimeLog = <TArgs extends unknown[], TReturnType>(
+    request: (...args: TArgs) => Promise<TReturnType>,
     name: string,
 ) => {
     return async (...args: TArgs) => {
