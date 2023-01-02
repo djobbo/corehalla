@@ -1,5 +1,5 @@
 import { trpc } from "@util/trpc"
-import type { RankedRegion } from "bhapi/constants"
+import type { RankedRegion } from "@ch/bhapi/constants"
 
 export const useRankings1v1 = (
     region: RankedRegion,

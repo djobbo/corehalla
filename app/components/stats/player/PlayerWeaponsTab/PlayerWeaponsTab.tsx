@@ -1,12 +1,12 @@
-import { Select } from "ui/base/Select"
-import { SortAscendingIcon, SortDescendingIcon } from "ui/icons"
-import { SortDirection, useSortBy } from "common/hooks/useSortBy"
+import { Select } from "@ch/ui/base/Select"
+import { SortAscendingIcon, SortDescendingIcon } from "@ch/ui/icons"
+import { SortDirection, useSortBy } from "@ch/common/hooks/useSortBy"
 import { Weapon } from "./Weapon"
-import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
-import { formatTime } from "common/helpers/date"
-import { getWeaponsAccumulativeData } from "bhapi/legends"
+import { calculateWinrate } from "@ch/bhapi/helpers/calculateWinrate"
+import { formatTime } from "@ch/common/helpers/date"
+import { getWeaponsAccumulativeData } from "@ch/bhapi/legends"
 import { useMemo } from "react"
-import type { FullWeapon } from "bhapi/legends"
+import type { FullWeapon } from "@ch/bhapi/legends"
 
 type PlayerWeaponsTabProps = {
     weapons: FullWeapon[]

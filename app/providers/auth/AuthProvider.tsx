@@ -1,12 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react"
-import { signIn, signOut } from "db/supabase/auth"
-import { supabase } from "db/supabase/client"
+import { signIn, signOut } from "@ch/db/supabase/auth"
+import { supabase } from "@ch/db/supabase/client"
 import { useUserConnections } from "./useUserConnections"
 import { useUserFavorites } from "./useUserFavorites"
 import { useUserProfile } from "./useUserProfile"
 import type { ReactNode } from "react"
-import type { Session, User } from "db/supabase/client"
-import type { UserConnection, UserProfile } from "db/generated/client"
+import type { Session, User } from "@ch/db/supabase/client"
+import type { UserConnection, UserProfile } from "@ch/db/generated/client"
 
 export type AuthContext = {
     isLoggedIn: boolean

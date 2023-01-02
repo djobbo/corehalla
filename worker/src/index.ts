@@ -1,4 +1,4 @@
-import { logError, logInfo } from "logger"
+import { logError, logInfo } from "@ch/logger"
 import { startCrawler } from "./crawler"
 import { startBot as startDiscordManagerBot } from "./appa-bot"
 

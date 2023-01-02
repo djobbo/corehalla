@@ -1,4 +1,4 @@
-import { cn } from "common/helpers/classnames"
+import { cn } from "@ch/common/helpers/classnames"
 import { theme } from "../theme"
 import { useId } from "react"
 import ReactSelect from "react-select"

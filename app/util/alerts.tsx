@@ -1,4 +1,4 @@
-import { AppLink } from "ui/base/AppLink"
+import { AppLink } from "@ch/ui/base/AppLink"
 
 export const alerts = {
     BH_MAINTENANCE: (

@@ -11,15 +11,15 @@ import {
     TabsList,
     TabsTrigger,
 } from "@radix-ui/react-tabs"
-import { cleanString } from "common/helpers/cleanString"
-import { cn } from "common/helpers/classnames"
-import { css, theme } from "ui/theme"
-import { formatTime } from "common/helpers/date"
+import { cleanString } from "@ch/common/helpers/cleanString"
+import { cn } from "@ch/common/helpers/classnames"
+import { css, theme } from "@ch/ui/theme"
+import { formatTime } from "@ch/common/helpers/date"
 import {
     getFullLegends,
     getFullWeapons,
     getLegendsAccumulativeData,
-} from "bhapi/legends"
+} from "@ch/bhapi/legends"
 import { usePlayerAliases } from "@hooks/stats/usePlayerAliases"
 import { usePlayerRanked } from "@hooks/stats/usePlayerRanked"
 import { usePlayerStats } from "@hooks/stats/usePlayerStats"

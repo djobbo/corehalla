@@ -1,5 +1,5 @@
-import { Card } from "ui/base/Card"
-import { Progress } from "ui/base/Progress"
+import { Card } from "@ch/ui/base/Card"
+import { Progress } from "@ch/ui/base/Progress"
 
 type ProgressCardProps = {
     title?: string

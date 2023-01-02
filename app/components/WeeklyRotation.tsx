@@ -1,7 +1,7 @@
 import { Image } from "@components/Image"
-import { Tooltip } from "ui/base/Tooltip"
-import { UnknownIcon } from "ui/icons"
-import type { Legend } from "bhapi/types"
+import { Tooltip } from "@ch/ui/base/Tooltip"
+import { UnknownIcon } from "@ch/ui/icons"
+import type { Legend } from "@ch/bhapi/types"
 
 type WeeklyRotationProps = {
     weeklyRotation: Legend[]

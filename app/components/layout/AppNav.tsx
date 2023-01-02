@@ -3,8 +3,8 @@ import {
     Rankings1v1Icon,
     Rankings2v2Icon,
     RankingsPowerIcon,
-} from "ui/icons"
-import { cn } from "common/helpers/classnames"
+} from "@ch/ui/icons"
+import { cn } from "@ch/common/helpers/classnames"
 
 const subHeaderNavigation = [
     {

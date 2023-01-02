@@ -1,9 +1,9 @@
-import { AppLink } from "ui/base/AppLink"
+import { AppLink } from "@ch/ui/base/AppLink"
 import { Image } from "@components/Image"
-import { cleanString } from "common/helpers/cleanString"
-import { legendsMap } from "bhapi/legends"
+import { cleanString } from "@ch/common/helpers/cleanString"
+import { legendsMap } from "@ch/bhapi/legends"
 import { useKBar } from "kbar"
-import type { Ranking1v1 } from "bhapi/types"
+import type { Ranking1v1 } from "@ch/bhapi/types"
 
 type SearchboxItemProps = {
     player: Ranking1v1

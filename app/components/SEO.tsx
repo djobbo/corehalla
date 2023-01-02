@@ -1,4 +1,4 @@
-import { cleanString } from "common/helpers/cleanString"
+import { cleanString } from "@ch/common/helpers/cleanString"
 import Head from "next/head"
 
 type SEOProps = {

@@ -1,4 +1,4 @@
-import { logInfo } from "logger"
+import { logInfo } from "@ch/logger"
 
 export const withTimeLog = <TArgs extends unknown[], TReturnType>(
     request: (...args: TArgs) => Promise<TReturnType>,

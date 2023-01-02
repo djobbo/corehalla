@@ -1,4 +1,4 @@
-import { AppLink } from "ui/base/AppLink"
+import { AppLink } from "@ch/ui/base/AppLink"
 import { HiArrowUp } from "react-icons/hi"
 import {
     KBarAnimator,
@@ -8,15 +8,15 @@ import {
     useKBar,
 } from "kbar"
 import { SearchboxItem } from "./SearchboxItem"
-import { Spinner } from "ui/base/Spinner"
-import { cn } from "common/helpers/classnames"
+import { Spinner } from "@ch/ui/base/Spinner"
+import { cn } from "@ch/common/helpers/classnames"
 import { css } from "@stitches/react"
-import { gaEvent } from "common/analytics/gtag"
-import { styled, theme } from "ui/theme"
-import { useDebouncedState } from "common/hooks/useDebouncedState"
+import { gaEvent } from "@ch/common/analytics/gtag"
+import { styled, theme } from "@ch/ui/theme"
+import { useDebouncedState } from "@ch/common/hooks/useDebouncedState"
 import { useEffect, useState } from "react"
 import { usePlayerSearch } from "@hooks/stats/usePlayerSearch"
-import type { Ranking1v1 } from "bhapi/types"
+import type { Ranking1v1 } from "@ch/bhapi/types"
 
 const __DEV = process.env.NODE_ENV === "development"
 

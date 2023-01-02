@@ -1,6 +1,6 @@
 import { Embed, createClient, createSlashCommand } from "reaccord"
 import { GatewayIntentBits } from "discord.js"
-import { logInfo } from "logger"
+import { logInfo } from "@ch/logger"
 
 const {
     DISCORD_MANAGER_BOT_TOKEN = "",

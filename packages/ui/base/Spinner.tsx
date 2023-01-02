@@ -1,4 +1,4 @@
-import { cn } from "common/helpers/classnames"
+import { cn } from "@ch/common/helpers/classnames"
 import { css, keyframes, styled } from "../theme"
 
 const puff = [

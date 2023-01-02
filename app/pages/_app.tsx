@@ -4,7 +4,7 @@ import "@fontsource/montserrat/400.css"
 import "@fontsource/montserrat/600.css"
 import "@fontsource/montserrat/700.css"
 
-import { AnimatedLogo } from "ui/base/AnimatedLogo"
+import { AnimatedLogo } from "@ch/ui/base/AnimatedLogo"
 import { AuthProvider } from "@ctx/auth/AuthProvider"
 const BackToTopButton = dynamic(
     () =>
@@ -16,10 +16,10 @@ const BackToTopButton = dynamic(
     },
 )
 import { Analytics } from "@vercel/analytics/react"
-import { GAScripts } from "common/analytics/GAScripts"
+import { GAScripts } from "@ch/common/analytics/GAScripts"
 import { KBarProvider } from "kbar"
 import { Layout } from "@components/layout/Layout"
-import { PageLoader } from "ui/base/PageLoader"
+import { PageLoader } from "@ch/ui/base/PageLoader"
 import { SEO } from "@components/SEO"
 import { Searchbox } from "@components/search/Searchbox"
 import { SideNavProvider } from "@ctx/SideNavProvider"

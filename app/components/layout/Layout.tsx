@@ -3,8 +3,8 @@ import { Footer } from "./Footer"
 import { Header } from "./Header"
 import { LandingBackground } from "./LandingBackground"
 import { SideNav } from "./SideNav"
-import { bgVar1 } from "ui/theme/theme"
-import { styled } from "ui/theme"
+import { bgVar1 } from "@ch/ui/theme/theme"
+import { styled } from "@ch/ui/theme"
 import type { ReactNode } from "react"
 
 export type LayoutProps = {

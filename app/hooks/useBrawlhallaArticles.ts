@@ -1,5 +1,5 @@
 import { trpc } from "@util/trpc"
-import type { BHArticleType } from "web-parser/bh-articles/parseBHArticlesPage"
+import type { BHArticleType } from "@ch/web-parser/bh-articles/parseBHArticlesPage"
 
 export const useBrawlhallaArticles = (
     page = "1",

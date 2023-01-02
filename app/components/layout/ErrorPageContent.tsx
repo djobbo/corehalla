@@ -1,5 +1,5 @@
-import { Button } from "ui/base/Button"
-import { DiscordIcon, GithubIcon } from "ui/icons"
+import { Button } from "@ch/ui/base/Button"
+import { DiscordIcon, GithubIcon } from "@ch/ui/icons"
 import { Image } from "@components/Image"
 import { SectionTitle } from "./SectionTitle"
 import { useRouter } from "next/router"

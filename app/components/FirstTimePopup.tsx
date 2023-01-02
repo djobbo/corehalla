@@ -1,7 +1,7 @@
-import { AppLink } from "ui/base/AppLink"
-import { Button } from "ui/base/Button"
-import { CloseIcon, DiscordIcon, GithubIcon, TwitterIcon } from "ui/icons"
-import { useLocalStorageState } from "common/hooks/useLocalStorageState"
+import { AppLink } from "@ch/ui/base/AppLink"
+import { Button } from "@ch/ui/base/Button"
+import { CloseIcon, DiscordIcon, GithubIcon, TwitterIcon } from "@ch/ui/icons"
+import { useLocalStorageState } from "@ch/common/hooks/useLocalStorageState"
 
 export const FirstTimePopup = () => {
     const [showPopup, setShowPopup] = useLocalStorageState(

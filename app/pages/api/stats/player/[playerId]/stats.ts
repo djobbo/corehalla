@@ -1,4 +1,4 @@
-import { getPlayerStats } from "bhapi"
+import { getPlayerStats } from "@ch/bhapi"
 import type { NextApiHandler } from "next"
 
 const handler: NextApiHandler = async (req, res) => {

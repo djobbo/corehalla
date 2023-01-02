@@ -1,7 +1,7 @@
-import { getRankings } from "bhapi"
-import type { Bracket } from "bhapi/types"
+import { getRankings } from "@ch/bhapi"
+import type { Bracket } from "@ch/bhapi/types"
 import type { NextApiHandler } from "next"
-import type { RankedRegion } from "bhapi/constants"
+import type { RankedRegion } from "@ch/bhapi/constants"
 
 const handler: NextApiHandler = async (req, res) => {
     res.setHeader(

@@ -1,4 +1,4 @@
-import { getWeeklyRotation } from "web-parser/weekly-rotation/getWeeklyRotation"
+import { getWeeklyRotation } from "@ch/web-parser/weekly-rotation/getWeeklyRotation"
 import type { NextApiHandler } from "next"
 
 const handler: NextApiHandler = async (req, res) => {

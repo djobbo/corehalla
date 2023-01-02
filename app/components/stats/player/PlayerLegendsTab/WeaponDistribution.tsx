@@ -1,9 +1,9 @@
-import { Card } from "ui/base/Card"
+import { Card } from "@ch/ui/base/Card"
 import { CollapsibleSection } from "@components/layout/CollapsibleSection"
 import { Image } from "@components/Image"
 import { MiscStatGroup } from "@components/stats/MiscStatGroup"
-import { formatTime } from "common/helpers/date"
-import type { FullLegend } from "bhapi/legends"
+import { formatTime } from "@ch/common/helpers/date"
+import type { FullLegend } from "@ch/bhapi/legends"
 
 type PlayerLegendWeaponDistributionProps = {
     legend: FullLegend

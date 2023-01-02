@@ -1,12 +1,12 @@
-import { Card } from "ui/base/Card"
+import { Card } from "@ch/ui/base/Card"
 import { SectionTitle } from "@components/layout/SectionTitle"
 import {
     getGloryFromBestRating,
     getGloryFromWins,
     getLegendEloReset,
     getPersonalEloReset,
-} from "bhapi/calculator"
-import { getTierFromRating } from "bhapi/helpers/getTierFromRating"
+} from "@ch/bhapi/calculator"
+import { getTierFromRating } from "@ch/bhapi/helpers/getTierFromRating"
 import { useState } from "react"
 import type { NextPage } from "next"
 

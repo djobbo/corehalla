@@ -4,7 +4,7 @@ import { trpc } from "@util/trpc"
 import type {
     PowerRankingsBracket,
     PowerRankingsRegion,
-} from "web-parser/power-rankings/parsePowerRankingsPage"
+} from "@ch/web-parser/power-rankings/parsePowerRankingsPage"
 
 export const usePowerRankings = (
     bracket: PowerRankingsBracket,

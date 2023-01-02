@@ -30,14 +30,14 @@ importers:
 
   app:
     specifiers:
-      '@corehalla/bhapi': workspace:*
-      '@corehalla/common': workspace:*
-      '@corehalla/db': workspace:*
-      '@corehalla/db-utils': workspace:*
-      '@corehalla/logger': workspace:*
-      '@corehalla/tsconfig': workspace:*
-      '@corehalla/ui': workspace:*
-      '@corehalla/web-parser': workspace:*
+      '@ch/bhapi': workspace:*
+      '@ch/common': workspace:*
+      '@ch/db': workspace:*
+      '@ch/db-utils': workspace:*
+      '@ch/logger': workspace:*
+      '@ch/tsconfig': workspace:*
+      '@ch/ui': workspace:*
+      '@ch/web-parser': workspace:*
       '@fontsource/montserrat': ^4.5.13
       '@radix-ui/react-collapsible': ^1.0.1
       '@radix-ui/react-tabs': ^1.0.1
@@ -66,13 +66,13 @@ importers:
       typescript: ^4.9.4
       zod: ^3.20.2
     dependencies:
-      '@corehalla/bhapi': link:../packages/bhapi
-      '@corehalla/common': link:../packages/common
-      '@corehalla/db': link:../packages/db
-      '@corehalla/db-utils': link:../packages/db-utils
-      '@corehalla/logger': link:../packages/logger
-      '@corehalla/ui': link:../packages/ui
-      '@corehalla/web-parser': link:../packages/web-parser
+      '@ch/bhapi': link:../packages/bhapi
+      '@ch/common': link:../packages/common
+      '@ch/db': link:../packages/db
+      '@ch/db-utils': link:../packages/db-utils
+      '@ch/logger': link:../packages/logger
+      '@ch/ui': link:../packages/ui
+      '@ch/web-parser': link:../packages/web-parser
       '@fontsource/montserrat': 4.5.13
       '@radix-ui/react-collapsible': 1.0.1_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-tabs': 1.0.1_biqbaboplfbrettd7655fr4n2y
@@ -93,7 +93,7 @@ importers:
       react-icons: 4.7.1_react@18.2.0
       zod: 3.20.2
     devDependencies:
-      '@corehalla/tsconfig': link:../packages/tsconfig
+      '@ch/tsconfig': link:../packages/tsconfig
       '@tanstack/query-core': 4.20.4
       '@types/node': 18.11.18
       '@types/react': 18.0.26
@@ -105,8 +105,8 @@ importers:
 
   packages/bhapi:
     specifiers:
-      '@corehalla/common': workspace:*
-      '@corehalla/tsconfig': workspace:*
+      '@ch/common': workspace:*
+      '@ch/tsconfig': workspace:*
       '@types/node': ^18.11.18
       axios: 1.1.3
       react: ^18.2.0
@@ -114,19 +114,19 @@ importers:
       typescript: ^4.9.4
       zod: ^3.20.2
     dependencies:
-      '@corehalla/common': link:../common
+      '@ch/common': link:../common
       axios: 1.1.3
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       zod: 3.20.2
     devDependencies:
-      '@corehalla/tsconfig': link:../tsconfig
+      '@ch/tsconfig': link:../tsconfig
       '@types/node': 18.11.18
       typescript: 4.9.4
 
   packages/common:
     specifiers:
-      '@corehalla/tsconfig': workspace:*
+      '@ch/tsconfig': workspace:*
       '@types/node': ^18.11.18
       '@types/react': ^18.0.26
       classnames: ^2.3.2
@@ -146,15 +146,15 @@ importers:
       react-use: 17.4.0_biqbaboplfbrettd7655fr4n2y
       zod: 3.20.2
     devDependencies:
-      '@corehalla/tsconfig': link:../tsconfig
+      '@ch/tsconfig': link:../tsconfig
       '@types/node': 18.11.18
       '@types/react': 18.0.26
       typescript: 4.9.4
 
   packages/db:
     specifiers:
-      '@corehalla/logger': workspace:*
-      '@corehalla/tsconfig': workspace:*
+      '@ch/logger': workspace:*
+      '@ch/tsconfig': workspace:*
       '@prisma/client': ^4.8.0
       '@supabase/supabase-js': ^1.35.7
       '@types/react': ^18.0.26
@@ -164,13 +164,13 @@ importers:
       react: ^18.2.0
       typescript: ^4.9.4
     dependencies:
-      '@corehalla/logger': link:../logger
+      '@ch/logger': link:../logger
       '@prisma/client': 4.8.0_prisma@4.8.0
       '@supabase/supabase-js': 1.35.7
       axios: 1.1.3
       react: 18.2.0
     devDependencies:
-      '@corehalla/tsconfig': link:../tsconfig
+      '@ch/tsconfig': link:../tsconfig
       '@types/react': 18.0.26
       discord-api-types: 0.37.25
       prisma: 4.8.0
@@ -178,28 +178,28 @@ importers:
 
   packages/db-utils:
     specifiers:
-      '@corehalla/bhapi': workspace:*
-      '@corehalla/db': workspace:*
-      '@corehalla/logger': workspace:*
-      '@corehalla/tsconfig': workspace:*
+      '@ch/bhapi': workspace:*
+      '@ch/db': workspace:*
+      '@ch/logger': workspace:*
+      '@ch/tsconfig': workspace:*
       '@types/node': ^18.11.18
       typescript: ^4.9.4
       zod: ^3.20.2
     dependencies:
-      '@corehalla/bhapi': link:../bhapi
-      '@corehalla/db': link:../db
-      '@corehalla/logger': link:../logger
+      '@ch/bhapi': link:../bhapi
+      '@ch/db': link:../db
+      '@ch/logger': link:../logger
       zod: 3.20.2
     devDependencies:
-      '@corehalla/tsconfig': link:../tsconfig
+      '@ch/tsconfig': link:../tsconfig
       '@types/node': 18.11.18
       typescript: 4.9.4
 
   packages/dl-roster-images:
     specifiers:
-      '@corehalla/bhapi': workspace:*
-      '@corehalla/logger': workspace:*
-      '@corehalla/tsconfig': workspace:*
+      '@ch/bhapi': workspace:*
+      '@ch/logger': workspace:*
+      '@ch/tsconfig': workspace:*
       '@types/node': ^18.11.18
       axios: 1.1.3
       cheerio: 1.0.0-rc.12
@@ -207,12 +207,12 @@ importers:
       ts-node-dev: ^2.0.0
       typescript: ^4.9.4
     dependencies:
-      '@corehalla/bhapi': link:../bhapi
-      '@corehalla/logger': link:../logger
+      '@ch/bhapi': link:../bhapi
+      '@ch/logger': link:../logger
       axios: 1.1.3
       cheerio: 1.0.0-rc.12
     devDependencies:
-      '@corehalla/tsconfig': link:../tsconfig
+      '@ch/tsconfig': link:../tsconfig
       '@types/node': 18.11.18
       ts-node: 10.9.1_awa2wsr5thmg3i7jqycphctjfq
       ts-node-dev: 2.0.0_awa2wsr5thmg3i7jqycphctjfq
@@ -220,11 +220,11 @@ importers:
 
   packages/logger:
     specifiers:
-      '@corehalla/tsconfig': workspace:*
+      '@ch/tsconfig': workspace:*
       '@types/node': ^18.11.18
       typescript: ^4.9.4
     devDependencies:
-      '@corehalla/tsconfig': link:../tsconfig
+      '@ch/tsconfig': link:../tsconfig
       '@types/node': 18.11.18
       typescript: 4.9.4
 
@@ -233,11 +233,11 @@ importers:
 
   packages/ui:
     specifiers:
-      '@corehalla/bhapi': workspace:*
-      '@corehalla/common': workspace:*
-      '@corehalla/db': workspace:*
-      '@corehalla/logger': workspace:*
-      '@corehalla/tsconfig': workspace:*
+      '@ch/bhapi': workspace:*
+      '@ch/common': workspace:*
+      '@ch/db': workspace:*
+      '@ch/logger': workspace:*
+      '@ch/tsconfig': workspace:*
       '@radix-ui/colors': ^0.1.8
       '@radix-ui/react-collapsible': ^1.0.1
       '@radix-ui/react-dialog': ^1.0.2
@@ -265,10 +265,10 @@ importers:
       tailwindcss: ^3.2.4
       typescript: ^4.9.4
     dependencies:
-      '@corehalla/bhapi': link:../bhapi
-      '@corehalla/common': link:../common
-      '@corehalla/db': link:../db
-      '@corehalla/logger': link:../logger
+      '@ch/bhapi': link:../bhapi
+      '@ch/common': link:../common
+      '@ch/db': link:../db
+      '@ch/logger': link:../logger
       '@radix-ui/colors': 0.1.8
       '@radix-ui/react-collapsible': 1.0.1_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-dialog': 1.0.2_ib3m5ricvtkl2cll7qpr2f6lvq
@@ -288,7 +288,7 @@ importers:
       react-select: 5.7.0_77xq4ymqds5h2liqkuci4r3swm
       react-table: 7.8.0_react@18.2.0
     devDependencies:
-      '@corehalla/tsconfig': link:../tsconfig
+      '@ch/tsconfig': link:../tsconfig
       '@types/nprogress': 0.2.0
       '@types/react': 18.0.26
       '@types/react-dom': 18.0.10
@@ -300,9 +300,9 @@ importers:
 
   packages/web-parser:
     specifiers:
-      '@corehalla/bhapi': workspace:*
-      '@corehalla/logger': workspace:*
-      '@corehalla/tsconfig': workspace:*
+      '@ch/bhapi': workspace:*
+      '@ch/logger': workspace:*
+      '@ch/tsconfig': workspace:*
       '@types/node': ^18.11.18
       axios: 1.1.3
       cheerio: 1.0.0-rc.12
@@ -311,13 +311,13 @@ importers:
       typescript: ^4.9.4
       zod: ^3.20.2
     dependencies:
-      '@corehalla/bhapi': link:../bhapi
-      '@corehalla/logger': link:../logger
+      '@ch/bhapi': link:../bhapi
+      '@ch/logger': link:../logger
       axios: 1.1.3
       cheerio: 1.0.0-rc.12
       zod: 3.20.2
     devDependencies:
-      '@corehalla/tsconfig': link:../tsconfig
+      '@ch/tsconfig': link:../tsconfig
       '@types/node': 18.11.18
       ts-node: 10.9.1_awa2wsr5thmg3i7jqycphctjfq
       ts-node-dev: 2.0.0_awa2wsr5thmg3i7jqycphctjfq
@@ -325,12 +325,12 @@ importers:
 
   worker:
     specifiers:
-      '@corehalla/bhapi': workspace:*
-      '@corehalla/common': workspace:*
-      '@corehalla/db': workspace:*
-      '@corehalla/db-utils': workspace:*
-      '@corehalla/logger': workspace:*
-      '@corehalla/web-parser': workspace:*
+      '@ch/bhapi': workspace:*
+      '@ch/common': workspace:*
+      '@ch/db': workspace:*
+      '@ch/db-utils': workspace:*
+      '@ch/logger': workspace:*
+      '@ch/web-parser': workspace:*
       '@trpc/server': 10.7.0
       '@types/cors': ^2.8.13
       '@types/express': ^4.17.15
@@ -346,12 +346,12 @@ importers:
       typescript: ^4.9.4
       zod: ^3.20.2
     dependencies:
-      '@corehalla/bhapi': link:../packages/bhapi
-      '@corehalla/common': link:../packages/common
-      '@corehalla/db': link:../packages/db
-      '@corehalla/db-utils': link:../packages/db-utils
-      '@corehalla/logger': link:../packages/logger
-      '@corehalla/web-parser': link:../packages/web-parser
+      '@ch/bhapi': link:../packages/bhapi
+      '@ch/common': link:../packages/common
+      '@ch/db': link:../packages/db
+      '@ch/db-utils': link:../packages/db-utils
+      '@ch/logger': link:../packages/logger
+      '@ch/web-parser': link:../packages/web-parser
       '@trpc/server': 10.7.0
       cors: 2.8.5
       discord.js: 14.7.1

@@ -5,11 +5,11 @@ import { HiChartBar, HiFire, HiHand } from "react-icons/hi"
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { PlayerOverviewClanContent } from "./ClanContent"
 import { PlayerOverviewRankedContent } from "./RankedContent"
-import { formatTime } from "common/helpers/date"
-import { getWeaponlessData } from "bhapi/legends"
-import type { FullLegend } from "bhapi/legends"
+import { formatTime } from "@ch/common/helpers/date"
+import { getWeaponlessData } from "@ch/bhapi/legends"
+import type { FullLegend } from "@ch/bhapi/legends"
 import type { MiscStat } from "../../MiscStatGroup"
-import type { PlayerRanked, PlayerStats } from "bhapi/types"
+import type { PlayerRanked, PlayerStats } from "@ch/bhapi/types"
 
 type PlayerOverviewTabProps = {
     stats: PlayerStats

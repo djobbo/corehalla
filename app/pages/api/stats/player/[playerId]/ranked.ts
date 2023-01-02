@@ -1,4 +1,4 @@
-import { getPlayerRanked } from "bhapi"
+import { getPlayerRanked } from "@ch/bhapi"
 import type { NextApiHandler } from "next"
 
 const handler: NextApiHandler = async (req, res) => {

@@ -1,12 +1,12 @@
-import { getPlayerRanked as getPlayerRankedFn } from "bhapi"
-import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
-import { logError, logInfo } from "logger"
-import { numericLiteralValidator } from "common/helpers/validators"
+import { getPlayerRanked as getPlayerRankedFn } from "@ch/bhapi"
+import { getTeamPlayers } from "@ch/bhapi/helpers/getTeamPlayers"
+import { logError, logInfo } from "@ch/logger"
+import { numericLiteralValidator } from "@ch/common/helpers/validators"
 import { publicProcedure } from "@server/trpc"
-import { updateDBPlayerAliases } from "db-utils/mutations/updateDBPlayerAliases"
+import { updateDBPlayerAliases } from "@ch/db-utils/mutations/updateDBPlayerAliases"
 import { withTimeLog } from "@server/helpers/withTimeLog"
 import { z } from "zod"
-import type { BHPlayerAlias } from "db/generated/client"
+import type { BHPlayerAlias } from "@ch/db/generated/client"
 
 export const getPlayerRanked = publicProcedure //
     .input(

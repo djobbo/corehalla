@@ -1,4 +1,4 @@
-import { cn } from "common/helpers/classnames"
+import { cn } from "@ch/common/helpers/classnames"
 import NextImage from "next/image"
 import type { ImageProps as NextImageProps } from "next/image"
 

@@ -1,10 +1,10 @@
 {
-    "name": "@corehalla/logger",
+    "name": "@ch/logger",
     "version": "0.0.0",
     "main": "index.ts",
     "devDependencies": {
         "@types/node": "^18.11.18",
-        "@corehalla/tsconfig": "workspace:*",
+        "@ch/tsconfig": "workspace:*",
         "typescript": "^4.9.4"
     },
     "scripts": {

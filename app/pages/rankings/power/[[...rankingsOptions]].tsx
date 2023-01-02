@@ -1,19 +1,19 @@
 import { MiscStatGroup } from "@components/stats/MiscStatGroup"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
 import { SEO } from "@components/SEO"
-import { Select } from "ui/base/Select"
-import { Spinner } from "ui/base/Spinner"
-import { Tooltip } from "ui/base/Tooltip"
-import { cleanString } from "common/helpers/cleanString"
-import { cn } from "common/helpers/classnames"
+import { Select } from "@ch/ui/base/Select"
+import { Spinner } from "@ch/ui/base/Spinner"
+import { Tooltip } from "@ch/ui/base/Tooltip"
+import { cleanString } from "@ch/common/helpers/cleanString"
+import { cn } from "@ch/common/helpers/classnames"
 import {
     powerRankingsBracketValidator,
     powerRankingsRegionValidator,
-} from "web-parser/power-rankings/parsePowerRankingsPage"
-import { useDebouncedState } from "common/hooks/useDebouncedState"
+} from "@ch/web-parser/power-rankings/parsePowerRankingsPage"
+import { useDebouncedState } from "@ch/common/hooks/useDebouncedState"
 import { usePowerRankings } from "@hooks/stats/usePowerRankings"
 import { useRouter } from "next/router"
-import { useSortBy } from "common/hooks/useSortBy"
+import { useSortBy } from "@ch/common/hooks/useSortBy"
 import { z } from "zod"
 import type { MiscStat } from "@components/stats/MiscStatGroup"
 import type { NextPage } from "next"
@@ -21,7 +21,7 @@ import type {
     PR,
     PowerRankingsBracket,
     PowerRankingsRegion,
-} from "web-parser/power-rankings/parsePowerRankingsPage"
+} from "@ch/web-parser/power-rankings/parsePowerRankingsPage"
 
 type PRSortOption =
     | "rank"

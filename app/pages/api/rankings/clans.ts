@@ -1,6 +1,6 @@
 import { CLANS_RANKINGS_PER_PAGE } from "@util/constants"
-import { supabaseService } from "db/supabase/service"
-import type { BHClan } from "db/generated/client"
+import { supabaseService } from "@ch/db/supabase/service"
+import type { BHClan } from "@ch/db/generated/client"
 import type { NextApiHandler } from "next"
 
 const handler: NextApiHandler = async (req, res) => {

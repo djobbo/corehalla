@@ -1,10 +1,10 @@
 {
-    "name": "@corehalla/common",
+    "name": "@ch/common",
     "version": "0.0.0",
     "devDependencies": {
         "@types/node": "^18.11.18",
         "@types/react": "^18.0.26",
-        "@corehalla/tsconfig": "workspace:*",
+        "@ch/tsconfig": "workspace:*",
         "typescript": "^4.9.4"
     },
     "scripts": {

@@ -1,5 +1,5 @@
 import { ArticlePreview } from "./ArticlePreview"
-import type { BHArticle } from "web-parser/bh-articles/parseBHArticlesPage"
+import type { BHArticle } from "@ch/web-parser/bh-articles/parseBHArticlesPage"
 
 type ArticlePreviewGridProps = {
     articles: BHArticle[]

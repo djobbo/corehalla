@@ -1,4 +1,4 @@
-import { InfoIcon } from "ui/icons"
+import { InfoIcon } from "@ch/ui/icons"
 import { alerts } from "@util/alerts"
 
 const CURRENT_ALERT = process.env.NEXT_PUBLIC_ALERT as

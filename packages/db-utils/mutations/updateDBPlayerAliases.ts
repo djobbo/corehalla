@@ -1,6 +1,6 @@
-import { logInfo } from "logger"
-import { supabaseService } from "db/supabase/service"
-import type { BHPlayerAlias } from "db/generated/client"
+import { logInfo } from "@ch/logger"
+import { supabaseService } from "@ch/db/supabase/service"
+import type { BHPlayerAlias } from "@ch/db/generated/client"
 
 export const updateDBPlayerAliases = async (aliases: BHPlayerAlias[]) => {
     const filteredAliases = aliases.filter(

@@ -1,5 +1,5 @@
 import { Image } from "@components/Image"
-import type { BHArticle } from "web-parser/bh-articles/parseBHArticlesPage"
+import type { BHArticle } from "@ch/web-parser/bh-articles/parseBHArticlesPage"
 
 type ArticlePreviewProps = {
     article: BHArticle

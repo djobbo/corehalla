@@ -1,6 +1,6 @@
 import { AppLink } from "./AppLink"
 import { Select } from "./Select"
-import { cn } from "common/helpers/classnames"
+import { cn } from "@ch/common/helpers/classnames"
 import { useRouter } from "next/router"
 import type { ReactNode } from "react"
 

@@ -1,8 +1,8 @@
-import { Card } from "ui/base/Card"
+import { Card } from "@ch/ui/base/Card"
 import { GamesDisplay } from "./GamesDisplay"
 import { MiscStatGroup } from "./MiscStatGroup"
 import { ProgressCard } from "./ProgressCard"
-import { cn } from "common/helpers/classnames"
+import { cn } from "@ch/common/helpers/classnames"
 
 type GeneralStatsProps = {
     className?: string

@@ -1,5 +1,5 @@
-import { parsePowerRankingsPage } from "web-parser/power-rankings/parsePowerRankingsPage"
-import type { Bracket } from "bhapi/types"
+import { parsePowerRankingsPage } from "@ch/web-parser/power-rankings/parsePowerRankingsPage"
+import type { Bracket } from "@ch/bhapi/types"
 import type { NextApiHandler } from "next"
 
 const handler: NextApiHandler = async (req, res) => {

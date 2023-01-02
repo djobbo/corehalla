@@ -1,8 +1,8 @@
 import { downloadImage } from "./downloadImage"
 import { existsSync, mkdirSync, rmdirSync } from "fs"
-import { legends } from "bhapi/legends"
+import { legends } from "@ch/bhapi/legends"
 import { load } from "cheerio"
-import { logInfo } from "logger"
+import { logInfo } from "@ch/logger"
 import axios from "axios"
 
 const APP_DIR = "../../app"

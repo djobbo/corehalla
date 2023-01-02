@@ -1,9 +1,9 @@
-import { logInfo } from "logger"
+import { logInfo } from "@ch/logger"
 import {
     parsePowerRankingsPage,
     powerRankingsBracketValidator,
     powerRankingsRegionValidator,
-} from "web-parser/power-rankings/parsePowerRankingsPage"
+} from "@ch/web-parser/power-rankings/parsePowerRankingsPage"
 import { publicProcedure } from "@server/trpc"
 import { withTimeLog } from "@server/helpers/withTimeLog"
 import { z } from "zod"

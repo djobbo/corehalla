@@ -1,5 +1,5 @@
 import * as RadixTooltip from "@radix-ui/react-tooltip"
-import { cn } from "common/helpers/classnames"
+import { cn } from "@ch/common/helpers/classnames"
 import type { ReactNode } from "react"
 
 type TooltipProps = {

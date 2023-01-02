@@ -4,8 +4,8 @@ import { Image } from "@components/Image"
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { PlayerLegendRankedContent } from "./RankedContent"
 import { PlayerLegendWeaponDistribution } from "./WeaponDistribution"
-import { formatTime } from "common/helpers/date"
-import type { FullLegend } from "bhapi/legends"
+import { formatTime } from "@ch/common/helpers/date"
+import type { FullLegend } from "@ch/bhapi/legends"
 import type { MiscStat } from "../../MiscStatGroup"
 
 type LegendProps = {

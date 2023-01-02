@@ -1,5 +1,5 @@
-import { AppLink } from "ui/base/AppLink"
-import { DiscordIcon } from "ui/icons"
+import { AppLink } from "@ch/ui/base/AppLink"
+import { DiscordIcon } from "@ch/ui/icons"
 import {
     HiBookOpen,
     HiChevronDoubleUp,
@@ -11,11 +11,11 @@ import {
     HiX,
 } from "react-icons/hi"
 import { Image } from "@components/Image"
-import { Tooltip } from "ui/base/Tooltip"
-import { cleanString } from "common/helpers/cleanString"
-import { cn } from "common/helpers/classnames"
-import { css } from "ui/theme"
-import { legendsMap } from "bhapi/legends"
+import { Tooltip } from "@ch/ui/base/Tooltip"
+import { cleanString } from "@ch/common/helpers/cleanString"
+import { cn } from "@ch/common/helpers/classnames"
+import { css } from "@ch/ui/theme"
+import { legendsMap } from "@ch/bhapi/legends"
 import { useFavorites } from "@ctx/auth/AuthProvider"
 import { useRouter } from "next/router"
 import { useSideNav } from "@ctx/SideNavProvider"

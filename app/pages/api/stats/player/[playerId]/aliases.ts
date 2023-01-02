@@ -1,5 +1,5 @@
-import { supabaseService } from "db/supabase/service"
-import type { BHPlayerAlias } from "db/generated/client"
+import { supabaseService } from "@ch/db/supabase/service"
+import type { BHPlayerAlias } from "@ch/db/generated/client"
 import type { NextApiHandler } from "next"
 
 const handler: NextApiHandler = async (req, res) => {

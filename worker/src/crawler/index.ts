@@ -1,10 +1,10 @@
-import { formatTime } from "common/helpers/date"
-import { getPlayerStats, getRankings } from "bhapi"
-import { logInfo, logWarning } from "logger"
-import { supabaseService } from "db/supabase/service"
-import { updateDBPlayerData } from "db-utils/mutations/updateDBPlayerData"
-import type { CrawlProgress } from "db/generated/client"
-import type { RankedRegion } from "bhapi/constants"
+import { formatTime } from "@ch/common/helpers/date"
+import { getPlayerStats, getRankings } from "@ch/bhapi"
+import { logInfo, logWarning } from "@ch/logger"
+import { supabaseService } from "@ch/db/supabase/service"
+import { updateDBPlayerData } from "@ch/db-utils/mutations/updateDBPlayerData"
+import type { CrawlProgress } from "@ch/db/generated/client"
+import type { RankedRegion } from "@ch/bhapi/constants"
 
 type CrawlerConfig = {
     maxRequestsPer15Minutes: number

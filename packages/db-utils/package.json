@@ -1,18 +1,18 @@
 {
-    "name": "@corehalla/db-utils",
+    "name": "@ch/db-utils",
     "version": "0.0.0",
     "devDependencies": {
         "@types/node": "^18.11.18",
-        "@corehalla/tsconfig": "workspace:*",
+        "@ch/tsconfig": "workspace:*",
         "typescript": "^4.9.4"
     },
     "scripts": {
         "ts:check": "tsc --noEmit"
     },
     "dependencies": {
-        "@corehalla/bhapi": "workspace:*",
-        "@corehalla/db": "workspace:*",
-        "@corehalla/logger": "workspace:*",
+        "@ch/bhapi": "workspace:*",
+        "@ch/db": "workspace:*",
+        "@ch/logger": "workspace:*",
         "zod": "^3.20.2"
     }
 }

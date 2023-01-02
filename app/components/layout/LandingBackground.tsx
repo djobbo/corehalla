@@ -1,4 +1,4 @@
-import { theme } from "ui/theme"
+import { theme } from "@ch/ui/theme"
 
 type LandingBackgroundProps = {
     className?: string

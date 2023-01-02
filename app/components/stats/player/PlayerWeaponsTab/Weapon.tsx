@@ -1,11 +1,11 @@
-import { Card } from "ui/base/Card"
+import { Card } from "@ch/ui/base/Card"
 import { CollapsibleContent } from "../../../layout/CollapsibleContent"
 import { GamesDisplay } from "../../GamesDisplay"
 import { Image } from "@components/Image"
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { PlayerWeaponRankedContent } from "./RankedContent"
-import { formatTime } from "common/helpers/date"
-import type { FullWeapon } from "bhapi/legends"
+import { formatTime } from "@ch/common/helpers/date"
+import type { FullWeapon } from "@ch/bhapi/legends"
 import type { MiscStat } from "../../MiscStatGroup"
 
 type Weapon = FullWeapon & {

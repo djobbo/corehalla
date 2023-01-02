@@ -1,9 +1,9 @@
-import { supabaseService } from "db/supabase/service"
+import { supabaseService } from "@ch/db/supabase/service"
 import type {
     BHPlayerData,
     BHPlayerLegend,
     BHPlayerWeapon,
-} from "db/generated/client"
+} from "@ch/db/generated/client"
 
 export const flushOutdatedBPlayerData = async () => {
     const currentTimestamp = new Date().getTime()

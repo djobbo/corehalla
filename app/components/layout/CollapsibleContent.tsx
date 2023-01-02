@@ -1,6 +1,6 @@
-import { CollapseSectionIcon, ExpandSectionIcon } from "ui/icons"
+import { CollapseSectionIcon, ExpandSectionIcon } from "@ch/ui/icons"
 import { Content, Root, Trigger } from "@radix-ui/react-collapsible"
-import { cn } from "common/helpers/classnames"
+import { cn } from "@ch/common/helpers/classnames"
 import { useState } from "react"
 import type { ReactNode } from "react"
 
