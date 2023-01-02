@@ -1,5 +1,5 @@
 {
-    "name": "tsconfig",
+    "name": "@corehalla/tsconfig",
     "version": "0.0.0",
     "private": true,
     "main": "base.json",

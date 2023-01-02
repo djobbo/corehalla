@@ -1,5 +1,5 @@
 {
-    "name": "app",
+    "name": "@corehalla/app",
     "version": "0.0.0",
     "private": true,
     "scripts": {
@@ -21,21 +21,21 @@
         "@trpc/react-query": "10.7.0",
         "@trpc/server": "10.7.0",
         "@vercel/analytics": "^0.1.6",
-        "bhapi": "workspace:*",
-        "common": "workspace:*",
-        "db": "workspace:*",
-        "db-utils": "workspace:*",
+        "@corehalla/bhapi": "workspace:*",
+        "@corehalla/common": "workspace:*",
+        "@corehalla/db": "workspace:*",
+        "@corehalla/db-utils": "workspace:*",
         "encoding": "^0.1.13",
         "kbar": "0.1.0-beta.39",
-        "logger": "workspace:*",
+        "@corehalla/logger": "workspace:*",
         "next": "^13.0.6",
         "next-sitemap": "^3.1.43",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-hot-toast": "^2.4.0",
         "react-icons": "^4.7.1",
-        "ui": "workspace:*",
-        "web-parser": "workspace:*",
+        "@corehalla/ui": "workspace:*",
+        "@corehalla/web-parser": "workspace:*",
         "zod": "^3.20.2"
     },
     "devDependencies": {
@@ -46,7 +46,7 @@
         "next-transpile-modules": "10.0.0",
         "postcss": "^8.4.20",
         "tailwindcss": "^3.2.4",
-        "tsconfig": "workspace:*",
+        "@corehalla/tsconfig": "workspace:*",
         "typescript": "^4.9.4"
     }
 }

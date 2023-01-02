@@ -1,5 +1,5 @@
 {
-    "name": "db",
+    "name": "@corehalla/db",
     "version": "0.0.0",
     "private": true,
     "scripts": {
@@ -23,14 +23,14 @@
         "@types/react": "^18.0.26",
         "discord-api-types": "^0.37.25",
         "prisma": "^4.8.0",
-        "tsconfig": "workspace:*",
+        "@corehalla/tsconfig": "workspace:*",
         "typescript": "^4.9.4"
     },
     "dependencies": {
         "@prisma/client": "^4.8.0",
         "@supabase/supabase-js": "^1.35.7",
         "axios": "1.1.3",
-        "logger": "workspace:*",
+        "@corehalla/logger": "workspace:*",
         "react": "^18.2.0"
     }
 }
