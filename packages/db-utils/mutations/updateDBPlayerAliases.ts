@@ -1,8 +1,12 @@
 import { logInfo } from "logger"
 import { supabaseService } from "db/supabase/service"
 import type { BHPlayerAlias } from "db/generated/client"
+import type { CommonOptions } from "../helpers/commonOptions"
 
-export const updateDBPlayerAliases = async (aliases: BHPlayerAlias[]) => {
+export const updateDBPlayerAliases = async (
+    aliases: BHPlayerAlias[],
+    options: CommonOptions,
+) => {
     const filteredAliases = aliases.filter(
         (alias, i) =>
             aliases.findIndex(
@@ -18,4 +22,5 @@ export const updateDBPlayerAliases = async (aliases: BHPlayerAlias[]) => {
     await supabaseService //
         .from<BHPlayerAlias>("BHPlayerAlias")
         .upsert(filteredAliases)
+        .abortSignal(options.abortSignal)
 }

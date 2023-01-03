@@ -5,6 +5,7 @@ import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "@server/trpc"
 import { rankedRegionValidator } from "bhapi/constants"
 import { updateDBPlayerAliases } from "db-utils/mutations/updateDBPlayerAliases"
+import { waitForRequestTimeout } from "@server/helpers/waitForRequestTimeout"
 import { withTimeLog } from "@server/helpers/withTimeLog"
 import { z } from "zod"
 
@@ -21,13 +22,15 @@ export const get1v1Rankings = publicProcedure //
             const { region, page, name } = req.input
             logInfo("get1v1Rankings", req.input)
 
+            const controller = new AbortController()
+
             const rankings = await withTimeLog(
                 getRankings,
                 "BHAPI:rankings1v1",
             )("1v1", region, page, name)
 
             // Fire and forget
-            withTimeLog(
+            const fireAndForget = withTimeLog(
                 updateDBPlayerAliases,
                 "updateDBPlayerAliases",
             )(
@@ -37,8 +40,15 @@ export const get1v1Rankings = publicProcedure //
                     createdAt: new Date(),
                     public: true,
                 })),
+                {
+                    abortSignal: controller.signal,
+                },
             ).catch((e) => {
                 logError("Error updating player aliases", e)
+            })
+
+            waitForRequestTimeout(fireAndForget, {
+                abortController: controller,
             })
 
             return rankings
@@ -57,13 +67,15 @@ export const get2v2Rankings = publicProcedure //
             const { region, page } = req.input
             logInfo("get2v2Rankings", req.input)
 
+            const controller = new AbortController()
+
             const rankings = await withTimeLog(
                 getRankings,
                 "BHAPI:rankings2v2",
             )("2v2", region, page)
 
             // Fire and forget
-            withTimeLog(
+            const fireAndForget = withTimeLog(
                 updateDBPlayerAliases,
                 "updateDBPlayerAliases",
             )(
@@ -77,8 +89,16 @@ export const get2v2Rankings = publicProcedure //
                         public: true,
                     }))
                     .flat(),
+                {
+                    abortSignal: controller.signal,
+                },
             ).catch((e) => {
                 logError("Error updating player aliases", e)
+            })
+
+            waitForRequestTimeout(fireAndForget, {
+                abortController: controller,
+                timeout: 5000,
             })
 
             return rankings
