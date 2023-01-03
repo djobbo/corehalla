@@ -77,14 +77,20 @@ const createCrawlerQueue = async (config: CrawlerConfig) => {
                     try {
                         const stats = await getPlayerStats(player.brawlhalla_id)
 
-                        await updateDBPlayerData(stats, {
-                            rating: player.rating,
-                            peak: player.peak_rating,
-                            games: player.games,
-                            wins: player.wins,
-                            tier: player.tier,
-                            region: player.region.toLowerCase() as RankedRegion, // TODO: better type check
-                        })
+                        await updateDBPlayerData(
+                            stats,
+                            {
+                                rating: player.rating,
+                                peak: player.peak_rating,
+                                games: player.games,
+                                wins: player.wins,
+                                tier: player.tier,
+                                region: player.region.toLowerCase() as RankedRegion, // TODO: better type check
+                            },
+                            {
+                                abortSignal: new AbortController().signal,
+                            },
+                        )
 
                         logInfo(`Fetched player#${player.brawlhalla_id} stats`)
                     } catch {
