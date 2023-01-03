@@ -1,4 +1,4 @@
-import { CLANS_RANKINGS_PER_PAGE } from "@util/constants"
+import { CLANS_RANKINGS_PER_PAGE } from "server/helpers/constants"
 import { supabaseService } from "db/supabase/service"
 import type { BHClan } from "db/generated/client"
 import type { NextApiHandler } from "next"

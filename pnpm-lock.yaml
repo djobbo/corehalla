@@ -47,7 +47,6 @@ importers:
       bhapi: workspace:*
       common: workspace:*
       db: workspace:*
-      db-utils: workspace:*
       encoding: ^0.1.13
       kbar: 0.1.0-beta.39
       logger: workspace:*
@@ -59,6 +58,7 @@ importers:
       react-dom: ^18.2.0
       react-hot-toast: ^2.4.0
       react-icons: ^4.7.1
+      server: workspace:*
       tailwindcss: ^3.2.4
       tsconfig: workspace:*
       typescript: ^4.9.4
@@ -79,7 +79,6 @@ importers:
       bhapi: link:../packages/bhapi
       common: link:../packages/common
       db: link:../packages/db
-      db-utils: link:../packages/db-utils
       encoding: 0.1.13
       kbar: 0.1.0-beta.39_biqbaboplfbrettd7655fr4n2y
       logger: link:../packages/logger
@@ -89,6 +88,7 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       react-hot-toast: 2.4.0_owo25xnefcwdq3zjgtohz6dbju
       react-icons: 4.7.1_react@18.2.0
+      server: link:../packages/server
       ui: link:../packages/ui
       web-parser: link:../packages/web-parser
       zod: 3.20.2
@@ -176,25 +176,6 @@ importers:
       tsconfig: link:../tsconfig
       typescript: 4.9.4
 
-  packages/db-utils:
-    specifiers:
-      '@types/node': ^18.11.18
-      bhapi: workspace:*
-      db: workspace:*
-      logger: workspace:*
-      tsconfig: workspace:*
-      typescript: ^4.9.4
-      zod: ^3.20.2
-    dependencies:
-      bhapi: link:../bhapi
-      db: link:../db
-      logger: link:../logger
-      zod: 3.20.2
-    devDependencies:
-      '@types/node': 18.11.18
-      tsconfig: link:../tsconfig
-      typescript: 4.9.4
-
   packages/dl-roster-images:
     specifiers:
       '@types/node': ^18.11.18
@@ -227,6 +208,37 @@ importers:
       '@types/node': 18.11.18
       tsconfig: link:../tsconfig
       typescript: 4.9.4
+
+  packages/server:
+    specifiers:
+      '@tanstack/react-query': ^4.20.4
+      '@trpc/client': 10.7.0
+      '@trpc/next': 10.7.0
+      '@trpc/react-query': 10.7.0
+      '@trpc/server': 10.7.0
+      '@types/node': ^18.11.18
+      bhapi: workspace:*
+      common: workspace:*
+      db: workspace:*
+      logger: workspace:*
+      tsconfig: workspace:*
+      web-parser: workspace:*
+      zod: ^3.20.2
+    dependencies:
+      '@tanstack/react-query': 4.20.4_biqbaboplfbrettd7655fr4n2y
+      '@trpc/client': 10.7.0_@trpc+server@10.7.0
+      '@trpc/next': 10.7.0_cffoqpwfhnyefoetsauqkpxt4q
+      '@trpc/react-query': 10.7.0_x4ie6nhblo2vtx2aafrgzlfqy4
+      '@trpc/server': 10.7.0
+      bhapi: link:../bhapi
+      common: link:../common
+      db: link:../db
+      logger: link:../logger
+      web-parser: link:../web-parser
+      zod: 3.20.2
+    devDependencies:
+      '@types/node': 18.11.18
+      tsconfig: link:../tsconfig
 
   packages/tsconfig:
     specifiers: {}
@@ -334,12 +346,12 @@ importers:
       common: workspace:*
       cors: ^2.8.5
       db: workspace:*
-      db-utils: workspace:*
       discord.js: ^14.7.1
       express: ^4.18.2
       logger: workspace:*
       reaccord: 0.0.1-dev.1669742731656.1c2e96f
       react: ^18.2.0
+      server: workspace:*
       ts-node: ^10.9.1
       ts-node-dev: ^2.0.0
       typescript: ^4.9.4
@@ -351,12 +363,12 @@ importers:
       common: link:../packages/common
       cors: 2.8.5
       db: link:../packages/db
-      db-utils: link:../packages/db-utils
       discord.js: 14.7.1
       express: 4.18.2
       logger: link:../packages/logger
       reaccord: 0.0.1-dev.1669742731656.1c2e96f_7uk4nnpm27mqhkyyyoeq4xlcve
       react: 18.2.0
+      server: link:../packages/server
       ts-node: 10.9.1_awa2wsr5thmg3i7jqycphctjfq
       ts-node-dev: 2.0.0_awa2wsr5thmg3i7jqycphctjfq
       web-parser: link:../packages/web-parser
