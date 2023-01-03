@@ -4,6 +4,7 @@ import { logError, logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "@server/trpc"
 import { updateDBPlayerAliases } from "db-utils/mutations/updateDBPlayerAliases"
+import { waitForRequestTimeout } from "@server/helpers/waitForRequestTimeout"
 import { withTimeLog } from "@server/helpers/withTimeLog"
 import { z } from "zod"
 import type { BHPlayerAlias } from "db/generated/client"
@@ -18,6 +19,8 @@ export const getPlayerRanked = publicProcedure //
         withTimeLog(async (req) => {
             const { playerId } = req.input
             logInfo("getPlayerRanked", req.input)
+
+            const controller = new AbortController()
 
             const ranked = await withTimeLog(
                 getPlayerRankedFn,
@@ -46,11 +49,17 @@ export const getPlayerRanked = publicProcedure //
             }))
 
             // Fire and forget
-            withTimeLog(
+            const fireAndForget = withTimeLog(
                 updateDBPlayerAliases,
                 "updateDBPlayerAliases",
-            )(aliases).catch((e) => {
+            )(aliases, {
+                abortSignal: controller.signal,
+            }).catch((e) => {
                 logError("Error updating player aliases", e)
+            })
+
+            waitForRequestTimeout(fireAndForget, {
+                abortController: controller,
             })
 
             return ranked
