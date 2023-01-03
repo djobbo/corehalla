@@ -4,8 +4,8 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "dev": "CRAWLER_ENABLED=true tsnd --respawn src/index.ts",
-    "bot:dev": "CRAWLER_ENABLED=false tsnd --respawn src/index.ts",
+    "dev": "DISCORD_MANAGER_BOT_ENABLED=true CRAWLER_ENABLED=true tsnd --respawn src/index.ts",
+    "bot:dev": "DISCORD_MANAGER_BOT_ENABLED=true CRAWLER_ENABLED=false tsnd --respawn src/index.ts",
     "ts:check": "tsc --noEmit",
     "start": "ts-node --transpile-only src/index.ts"
   },

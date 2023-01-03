@@ -1,15 +1,22 @@
+import { ActivityType, GatewayIntentBits } from "discord.js"
 import { Embed, createClient, createSlashCommand } from "reaccord"
-import { GatewayIntentBits } from "discord.js"
 import { logInfo } from "logger"
 
 const {
+    DISCORD_MANAGER_BOT_ENABLED = "false",
     DISCORD_MANAGER_BOT_TOKEN = "",
     DISCORD_MANAGER_BOT_DEV_GUILD_ID,
     DISCORD_MANAGER_BOT_CLIENT_ID,
-    DISCORD_MANAGER_BOT_WELCOME_ROLES,
 } = process.env
 
+const ENABLED = DISCORD_MANAGER_BOT_ENABLED === "true"
+
 export const startBot = async () => {
+    if (!ENABLED) {
+        logInfo("🤖 Bot disabled")
+        return
+    }
+
     const client = createClient({
         token: DISCORD_MANAGER_BOT_TOKEN,
         intents: [
@@ -21,28 +28,17 @@ export const startBot = async () => {
         clientId: DISCORD_MANAGER_BOT_CLIENT_ID,
     })
 
-    client.listenTo("guildMemberAdd", async (member) => {
-        member.guild.systemChannel?.send({
-            content: `👀 Welcome **${member}** to Corehalla!`,
+    client.on("ready", () => {
+        client.user?.setPresence({
+            activities: [
+                {
+                    name: "over Valhalla",
+                    type: ActivityType.Watching,
+                    url: "https://corehalla.com",
+                },
+            ],
         })
-
-        if (DISCORD_MANAGER_BOT_WELCOME_ROLES) {
-            try {
-                await member.roles.add(
-                    DISCORD_MANAGER_BOT_WELCOME_ROLES?.split(","),
-                )
-            } catch {
-                throw new Error(
-                    `Failed to add roles to ${member.user.tag} (${member.id})`,
-                )
-            }
-        }
-    })
-
-    client.listenTo("guildMemberRemove", async (member) => {
-        member.guild.systemChannel?.send({
-            content: `👋 Goodbye ${member}!`,
-        })
+        logInfo("🤖 Bot ready")
     })
 
     const infoCommand = createSlashCommand("info", "Get info about Corehalla") //
