@@ -1,6 +1,6 @@
 import { createTRPCNext } from "@trpc/next"
 import { httpLink } from "@trpc/client"
-import type { AppRouter } from "../server/router"
+import type { AppRouter } from "server/router"
 // TS2742: https://github.com/microsoft/TypeScript/issues/47663
 import type {} from "@trpc/react-query"
 

@@ -1,4 +1,4 @@
-import { SEARCH_PLAYERS_ALIASES_PER_PAGE } from "@util/constants"
+import { SEARCH_PLAYERS_ALIASES_PER_PAGE } from "server/helpers/constants"
 import { supabaseService } from "db/supabase/service"
 import type { BHPlayerAlias } from "db/generated/client"
 import type { NextApiHandler } from "next"
