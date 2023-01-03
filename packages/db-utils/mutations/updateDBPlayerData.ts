@@ -1,4 +1,3 @@
-import { BHPlayerData } from "db/generated/client"
 import {
     getFullLegends,
     getFullWeapons,
@@ -8,7 +7,9 @@ import {
 } from "bhapi/legends"
 import { logError, logInfo } from "logger"
 import { supabaseService } from "db/supabase/service"
+import type { BHPlayerData } from "db/generated/client"
 import type { BHPlayerLegend, BHPlayerWeapon } from "db/generated/client"
+import type { CommonOptions } from "../helpers/commonOptions"
 import type { FullLegend, FullWeapon } from "bhapi/legends"
 import type { PlayerStats } from "bhapi/types"
 import type { RankedRegion, RankedTier } from "bhapi/constants"
@@ -50,6 +51,7 @@ export const updateDBPlayerData = async (
         tier: RankedTier
         region: RankedRegion
     },
+    options: CommonOptions,
 ) => {
     const playerId = playerStats.brawlhalla_id.toString()
     logInfo("updateDBPlayerData", { playerId })
@@ -99,8 +101,11 @@ export const updateDBPlayerData = async (
     }
 
     const [{ error }] = await Promise.all([
-        supabaseService.from<BHPlayerData>("BHPlayerData").upsert(playerData),
-        updateDBPlayerLegends(playerId, legends),
+        supabaseService
+            .from<BHPlayerData>("BHPlayerData")
+            .upsert(playerData)
+            .abortSignal(options.abortSignal),
+        updateDBPlayerLegends(playerId, legends, options),
     ])
 
     if (error) {
@@ -116,6 +121,7 @@ export const updateDBPlayerData = async (
 export const updateDBPlayerLegends = async (
     playerId: string,
     legends: FullLegend[],
+    options: CommonOptions,
 ) => {
     logInfo("updateDBPlayerLegends", { playerId })
 
@@ -187,8 +193,9 @@ export const updateDBPlayerLegends = async (
                 dbLegends
                     .sort((a, b) => b.xp - a.xp)
                     .slice(0, MAX_LEGENDS_PER_PLAYER),
-            ),
-        updateDBPlayerWeapons(playerId, weapons),
+            )
+            .abortSignal(options.abortSignal),
+        updateDBPlayerWeapons(playerId, weapons, options),
     ])
 
     if (error) {
@@ -204,6 +211,7 @@ export const updateDBPlayerLegends = async (
 export const updateDBPlayerWeapons = async (
     playerId: string,
     fullWeapons: FullWeapon[],
+    options: CommonOptions,
 ) => {
     logInfo("updateDBPlayerWeapons", { playerId })
 
@@ -228,6 +236,7 @@ export const updateDBPlayerWeapons = async (
                 .sort((a, b) => b.matchTime - a.matchTime)
                 .slice(0, MAX_WEAPONS_PER_PLAYER),
         )
+        .abortSignal(options.abortSignal)
 
     if (error) {
         logError(
