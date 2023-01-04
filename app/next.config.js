@@ -6,7 +6,7 @@ const COREHALLA_TWITTER_URL = "https://twitter.com/Corehalla"
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
-    transpileModules: [
+    transpilePackages: [
         "bhapi",
         "ui",
         "logger",
