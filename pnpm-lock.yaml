@@ -337,6 +337,7 @@ importers:
 
   worker:
     specifiers:
+      '@trpc/client': 10.7.0
       '@trpc/server': 10.7.0
       '@types/cors': ^2.8.13
       '@types/express': ^4.17.15
@@ -347,6 +348,7 @@ importers:
       cors: ^2.8.5
       db: workspace:*
       discord.js: ^14.7.1
+      dotenv: ^16.0.3
       express: ^4.18.2
       logger: workspace:*
       reaccord: 0.0.1-dev.1669742731656.1c2e96f
@@ -358,12 +360,14 @@ importers:
       web-parser: workspace:*
       zod: ^3.20.2
     dependencies:
+      '@trpc/client': 10.7.0_@trpc+server@10.7.0
       '@trpc/server': 10.7.0
       bhapi: link:../packages/bhapi
       common: link:../packages/common
       cors: 2.8.5
       db: link:../packages/db
       discord.js: 14.7.1
+      dotenv: 16.0.3
       express: 4.18.2
       logger: link:../packages/logger
       reaccord: 0.0.1-dev.1669742731656.1c2e96f_7uk4nnpm27mqhkyyyoeq4xlcve
@@ -3077,6 +3081,11 @@ packages:
       dom-serializer: 2.0.0
       domelementtype: 2.3.0
       domhandler: 5.0.3
+    dev: false
+
+  /dotenv/16.0.3:
+    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
+    engines: {node: '>=12'}
     dev: false
 
   /duplexer/0.1.2:
