@@ -4,8 +4,8 @@ import {
     powerRankingsBracketValidator,
     powerRankingsRegionValidator,
 } from "web-parser/power-rankings/parsePowerRankingsPage"
-import { publicProcedure } from "@server/trpc"
-import { withTimeLog } from "@server/helpers/withTimeLog"
+import { publicProcedure } from "../../trpc"
+import { withTimeLog } from "../../helpers/withTimeLog"
 import { z } from "zod"
 
 export const getPowerRankings = publicProcedure

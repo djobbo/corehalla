@@ -1,5 +1,5 @@
 import { AppLink } from "ui/base/AppLink"
-import { CLANS_RANKINGS_PER_PAGE } from "@util/constants"
+import { CLANS_RANKINGS_PER_PAGE } from "server/helpers/constants"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
 import { SEO } from "@components/SEO"
 import { Spinner } from "ui/base/Spinner"

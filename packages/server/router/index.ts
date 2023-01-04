@@ -8,7 +8,7 @@ import { getPlayerRanked } from "./stats/getPlayerRanked"
 import { getPlayerStats } from "./stats/getPlayerStats"
 import { getPowerRankings } from "./stats/getPowerRankings"
 import { getWeeklyRotation } from "./getWeeklyRotation"
-import { router } from "@server/trpc"
+import { router } from "../trpc"
 import { searchPlayerAlias } from "./stats/searchPlayerAlias"
 
 export const appRouter = router({

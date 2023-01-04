@@ -1,9 +1,9 @@
-import { SEARCH_PLAYERS_ALIASES_PER_PAGE } from "@util/constants"
+import { SEARCH_PLAYERS_ALIASES_PER_PAGE } from "../../helpers/constants"
 import { logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
-import { publicProcedure } from "@server/trpc"
+import { publicProcedure } from "../../trpc"
 import { supabaseService } from "db/supabase/service"
-import { withTimeLog } from "@server/helpers/withTimeLog"
+import { withTimeLog } from "../../helpers/withTimeLog"
 import { z } from "zod"
 import type { BHPlayerAlias } from "db/generated/client"
 
