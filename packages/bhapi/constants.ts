@@ -48,26 +48,24 @@ export const rankedTiersComplete = rankedTiers.map(([tier]) => tier)
 
 export type RankedTier = typeof rankedTiersComplete[number] | "Valhallan"
 
-const rankedRegionsValidators = [
-    z.literal("all"),
-    z.literal("us-e"),
-    z.literal("eu"),
-    z.literal("sea"),
-    z.literal("brz"),
-    z.literal("aus"),
-    z.literal("us-w"),
-    z.literal("jpn"),
-    z.literal("sa"),
-    z.literal("me"),
+export const rankedRegions = [
+    "all",
+    "us-e",
+    "eu",
+    "sea",
+    "brz",
+    "aus",
+    "us-w",
+    "jpn",
+    "sa",
+    "me",
 ] as const
 
-export const rankedRegionValidator = z.union(rankedRegionsValidators)
-
-export const rankedRegions = rankedRegionsValidators.map(
-    (validator) => validator.value,
+export const rankedRegionsValidator = rankedRegions.map((region) =>
+    z.literal(region),
 )
 
-export type RankedRegion = z.infer<typeof rankedRegionValidator>
+export type RankedRegion = typeof rankedRegions[number]
 
 export const weapons = [
     "Grapple Hammer",

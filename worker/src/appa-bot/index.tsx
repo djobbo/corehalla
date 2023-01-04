@@ -1,31 +1,45 @@
 import { ActivityType, GatewayIntentBits } from "discord.js"
 import { Embed, createClient, createSlashCommand } from "reaccord"
 import { logInfo } from "logger"
+import { startChannelSwitcher } from "./channel-switcher"
 
-const {
-    DISCORD_MANAGER_BOT_ENABLED = "false",
-    DISCORD_MANAGER_BOT_TOKEN = "",
-    DISCORD_MANAGER_BOT_DEV_GUILD_ID,
-    DISCORD_MANAGER_BOT_CLIENT_ID,
-} = process.env
+export type BotOptions = {
+    enabled: boolean
+    token: string
+    devGuildId?: string
+    clientId: string
+    channelSwitcher: {
+        generatorPrefix: string
+        lobbyPrefix: string
+        lobbyCategoryPrefix: string
+        logsChannelId: string
+        regionRolePrefix: string
+        languageRolePrefix: string
+        defaultRegion: string
+        defaultLanguage: string
+    }
+}
 
-const ENABLED = DISCORD_MANAGER_BOT_ENABLED === "true"
+export const startBot = async (options: BotOptions) => {
+    const { enabled, token, devGuildId, clientId } = options
 
-export const startBot = async () => {
-    if (!ENABLED) {
+    if (!enabled) {
         logInfo("🤖 Bot disabled")
         return
     }
 
     const client = createClient({
-        token: DISCORD_MANAGER_BOT_TOKEN,
+        token,
         intents: [
             GatewayIntentBits.Guilds,
-            GatewayIntentBits.GuildMessages,
             GatewayIntentBits.GuildMembers,
+            GatewayIntentBits.GuildMessages,
+            GatewayIntentBits.MessageContent,
+            GatewayIntentBits.GuildVoiceStates,
+            GatewayIntentBits.GuildMessageReactions,
         ],
-        devGuildId: DISCORD_MANAGER_BOT_DEV_GUILD_ID,
-        clientId: DISCORD_MANAGER_BOT_CLIENT_ID,
+        devGuildId,
+        clientId,
     })
 
     client.on("ready", () => {
@@ -40,6 +54,8 @@ export const startBot = async () => {
         })
         logInfo("🤖 Bot ready")
     })
+
+    await startChannelSwitcher(client, options)
 
     const infoCommand = createSlashCommand("info", "Get info about Corehalla") //
         .render(

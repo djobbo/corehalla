@@ -3,19 +3,18 @@ const COREHALLA_DISCORD_URL = "https://discord.com/invite/eD248ez"
 const COREHALLA_GITHUB_URL = "https://github.com/djobbo/corehalla"
 const COREHALLA_TWITTER_URL = "https://twitter.com/Corehalla"
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const withTM = require("next-transpile-modules")([
-    "bhapi",
-    "ui",
-    "logger",
-    "common",
-    "db",
-    "web-parser",
-])
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
+    transpileModules: [
+        "bhapi",
+        "ui",
+        "logger",
+        "common",
+        "db",
+        "web-parser",
+        "server",
+    ],
     images: {
         domains: ["cdn.discordapp.com", "www.brawlhalla.com"],
     },
@@ -70,4 +69,4 @@ const nextConfig = {
     },
 }
 
-module.exports = withTM(nextConfig)
+module.exports = nextConfig
