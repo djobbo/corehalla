@@ -1,6 +1,10 @@
+import { config as loadEnv } from "dotenv"
 import { logError, logInfo } from "logger"
 import { startCrawler } from "./crawler"
 import { startBot as startDiscordManagerBot } from "./appa-bot"
+import { z } from "zod"
+
+loadEnv()
 
 const __DEV = process.env.NODE_ENV === "development"
 
@@ -11,7 +15,37 @@ const crawlerMaxRequestsPer15Minutes = parseInt(
 const crawlerMaxPages = parseInt(process.env.CRAWLER_MAX_PAGES || "100")
 
 const main = async () => {
-    await startDiscordManagerBot()
+    const {
+        DISCORD_MANAGER_BOT_ENABLED = "false",
+        DISCORD_MANAGER_BOT_TOKEN,
+        DISCORD_MANAGER_BOT_DEV_GUILD_ID,
+        DISCORD_MANAGER_BOT_CLIENT_ID,
+        DISCORD_CHANNEL_SWITCHER_VOICE_LOGS_CHANNEL_ID,
+    } = process.env
+
+    await startDiscordManagerBot({
+        enabled: DISCORD_MANAGER_BOT_ENABLED === "true",
+        token: z.string().min(1).parse(DISCORD_MANAGER_BOT_TOKEN),
+        devGuildId: z
+            .string()
+            .min(1)
+            .optional()
+            .parse(DISCORD_MANAGER_BOT_DEV_GUILD_ID),
+        clientId: z.string().min(1).parse(DISCORD_MANAGER_BOT_CLIENT_ID),
+        channelSwitcher: {
+            generatorPrefix: "➕ ",
+            lobbyPrefix: "",
+            lobbyCategoryPrefix: "🎮 ",
+            logsChannelId: z
+                .string()
+                .min(1)
+                .parse(DISCORD_CHANNEL_SWITCHER_VOICE_LOGS_CHANNEL_ID),
+            regionRolePrefix: "region:",
+            languageRolePrefix: "lang:",
+            defaultRegion: "us-e",
+            defaultLanguage: "en",
+        },
+    })
 
     const crawler = startCrawler(
         __DEV

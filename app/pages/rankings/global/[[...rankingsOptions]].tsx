@@ -1,12 +1,12 @@
 import { AppLink } from "ui/base/AppLink"
-import { GLOBAL_PLAYER_RANKINGS_PER_PAGE } from "@util/constants"
+import { GLOBAL_PLAYER_RANKINGS_PER_PAGE } from "server/helpers/constants"
 import { Select } from "ui/base/Select"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { trpc } from "@util/trpc"
 import { useState } from "react"
 import type { NextPage } from "next"
-import type { SortablePlayerProp } from "db-utils/mutations/updateDBPlayerData"
+import type { SortablePlayerProp } from "server/mutations/updateDBPlayerData"
 
 const Page: NextPage = () => {
     const page = "1"
