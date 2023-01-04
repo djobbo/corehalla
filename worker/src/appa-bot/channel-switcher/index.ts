@@ -41,18 +41,16 @@ export const startChannelSwitcher = async (
         if (isValidBrawlhallaRoomNumber(message.content)) {
             saveRoomNumber(channel, message.content)
             message.channel.send(
-                `Le numéro de la room est maintenant: \`${message.content}\`.`,
+                `Room number was changed to: \`${message.content}\`.`,
             )
             return
         } else if (message.content === "room") {
             const roomNumber = getRoomNumber(channel)
             if (roomNumber) {
-                message.channel.send(
-                    `Le numéro de la room est \`${roomNumber}\`.`,
-                )
+                message.channel.send(`Room number is \`${roomNumber}\`.`)
             } else {
                 message.channel.send(
-                    `Le numéro de la room n'est pas encore défini.`,
+                    `Room number is not yet set. Just type the room number in this channel to set it.`,
                 )
             }
             return

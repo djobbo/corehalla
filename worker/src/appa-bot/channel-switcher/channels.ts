@@ -121,13 +121,13 @@ export const deleteChannelIfEmpty = async (
 
     logInfo(
         "╭ " +
-            `${voiceState.member?.user.tag} (${voiceState.member?.user.id}) has left [${channel.name}]`,
+            `${voiceState.member?.user.tag} (${voiceState.member?.user.id}) left [${channel.name}]`,
     )
     const embed = new EmbedBuilder() //
         .setTitle(channel.name)
         .addFields({
-            name: "Événement",
-            value: `${voiceState.member?.user} (${voiceState.member?.user.id}) a quitté le salon`,
+            name: "Event",
+            value: `${voiceState.member?.user} (${voiceState.member?.user.id}) left`,
         })
         .setTimestamp(new Date())
 
@@ -140,10 +140,10 @@ export const deleteChannelIfEmpty = async (
         embed //
             .setColor("Orange")
             .setDescription(
-                `${channel.members.size}/${channel.userLimit} joueurs restants`,
+                `${channel.members.size}/${channel.userLimit} players remaining`,
             )
             .addFields({
-                name: "Joueurs",
+                name: "Players",
                 value: channel.members
                     .map((member) => `${member.user} (${member.user.id})`)
                     .join("\n"),
@@ -158,7 +158,7 @@ export const deleteChannelIfEmpty = async (
                 new EmbedBuilder()
                     .setColor("Orange")
                     .setTitle(
-                        `${voiceState.member?.user.tag} a quitté le salon`,
+                        `${voiceState.member?.user.tag} left [${channel.name}]`,
                     )
                     .setDescription(`id: ${voiceState.member?.user.id}`)
                     .setTimestamp(new Date()),
@@ -174,7 +174,7 @@ export const deleteChannelIfEmpty = async (
     await channel.delete()
 
     embed //
-        .setDescription(`Aucun joueur restant, suppression du salon`)
+        .setDescription(`No players remaining, deleting channel`)
         .setColor("Red")
 
     if (voiceLogsChannel) {
@@ -215,15 +215,15 @@ export const cloneGeneratorChannel = async (
     })
 
     logInfo(
-        `${voiceState.member?.user.tag} (${voiceState.member?.user.id}) has created [${channel.name}]\n`,
+        `${voiceState.member?.user.tag} (${voiceState.member?.user.id}) created [${channel.name}]\n`,
     )
 
     if (voiceLogsChannel) {
         const embed = new EmbedBuilder() //
             .setTitle(channel.name)
             .addFields({
-                name: "Événement",
-                value: `${voiceState.member?.user} (${voiceState.member?.user.id}) a créé le salon ${genChannel.name}`,
+                name: "Event",
+                value: `${voiceState.member?.user} (${voiceState.member?.user.id}) created ${genChannel.name}`,
             })
             .setTimestamp(new Date())
             .setColor("Blue")
@@ -246,7 +246,9 @@ export const logUserJoinedVoiceChannel = async (
         embeds: [
             new EmbedBuilder()
                 .setColor("Green")
-                .setTitle(`${voiceState.member?.user.tag} a rejoint le salon`)
+                .setTitle(
+                    `${voiceState.member?.user.tag} joined [${channel.name}]`,
+                )
                 .setDescription(`id: ${voiceState.member?.user.id}`)
                 .setTimestamp(new Date()),
         ],
@@ -256,7 +258,7 @@ export const logUserJoinedVoiceChannel = async (
 
     if (roomNumber) {
         channel.send(
-            `${voiceState.member?.user}, Le numéro de la room est \`${roomNumber}\``,
+            `${voiceState.member?.user}, the room number is \`${roomNumber}\``,
         )
     }
 
@@ -275,15 +277,15 @@ export const logUserJoinedVoiceChannel = async (
         const embed = new EmbedBuilder() //
             .setTitle(channel.name)
             .setDescription(
-                `${channel.members.size}/${channel.userLimit} joueurs`,
+                `${channel.members.size}/${channel.userLimit} players`,
             )
             .addFields(
                 {
-                    name: "Événement",
-                    value: `${voiceState.member?.user} (${voiceState.member?.user.id}) a rejoint le salon`,
+                    name: "Event",
+                    value: `${voiceState.member?.user} (${voiceState.member?.user.id}) joined`,
                 },
                 {
-                    name: "Joueurs",
+                    name: "Players",
                     value: channel.members
                         .map((member) => `${member.user} (${member.user.id})`)
                         .join("\n"),
