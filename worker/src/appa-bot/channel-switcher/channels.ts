@@ -103,6 +103,10 @@ const getLangDisplay = (language: string) => {
             return "🇪🇸"
         case "ja":
             return "🇯🇵"
+        case "pt":
+            return "🇵🇹"
+        case "hi":
+            return "🇮🇳"
         default:
             return ""
     }
