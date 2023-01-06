@@ -28,9 +28,9 @@ const Page = () => {
         <>
             <SEO
                 title="Track your Brawlhalla stats, view rankings, and more! • Corehalla"
-                description="Improve Your Brawlhalla Game, and Find Your Place Among the
-                Elite with Our In-Depth Player and Clan Stats Tracking and Live
-                Leaderboards."
+                description="Improve your Brawlhalla Game, and find your place among
+                the Elite with our in-depth Player and Clan stats tracking and live
+                leaderboards."
             />
             <div
                 className={cn(
