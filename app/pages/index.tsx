@@ -53,13 +53,13 @@ const Page = () => {
                     </span>
                 </a>
                 <h1 className="text-center text-5xl sm:text-6xl font-bold mt-6 uppercase max-w-5xl">
-                    <Balancer>Stay Ahead of the Competition.</Balancer>
+                    <Balancer>Stay ahead of the competition.</Balancer>
                 </h1>
                 <p className="text-sm sm:text-base mt-3 text-center text-textVar1 max-w-xl">
                     <Balancer>
-                        Improve Your Brawlhalla Game, and Find Your Place Among
-                        the Elite with Our In-Depth Stats Tracking and Live
-                        Leaderboards.
+                        Improve your Brawlhalla Game, and find your place among
+                        the Elite with our in-depth stats tracking and live
+                        leaderboards.
                     </Balancer>
                 </p>
                 <div className="mt-8 flex items-center gap-3 sm:gap-6 flex-col sm:flex-row">
