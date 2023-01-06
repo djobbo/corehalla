@@ -1,4 +1,5 @@
 import {
+    HiArrowSmRight,
     HiChevronDoubleUp,
     HiChevronDown,
     HiChevronUp,
@@ -28,6 +29,7 @@ export const SearchIcon = HiSearch
 export const ShareIcon = HiShare
 export const SortAscendingIcon = HiSortAscending
 export const SortDescendingIcon = HiSortDescending
+export const ArrowSmRightIcon = HiArrowSmRight
 
 // Stats
 export const Rankings1v1Icon = HiChevronDoubleUp

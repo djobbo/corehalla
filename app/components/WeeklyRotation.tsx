@@ -10,7 +10,7 @@ type WeeklyRotationProps = {
 export const WeeklyRotation = ({ weeklyRotation }: WeeklyRotationProps) => {
     if (weeklyRotation.length <= 0) {
         return (
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
                 {Array.from({ length: 9 }, (_, i) => (
                     <div
                         key={i}
@@ -24,7 +24,7 @@ export const WeeklyRotation = ({ weeklyRotation }: WeeklyRotationProps) => {
     }
 
     return (
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
             {weeklyRotation.map((legend) => (
                 <Tooltip key={legend.legend_id} content={legend.bio_name}>
                     <Image

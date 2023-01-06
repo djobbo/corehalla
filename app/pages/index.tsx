@@ -1,6 +1,6 @@
+import { ArrowSmRightIcon, DiscordIcon } from "ui/icons"
 import { ArticlePreviewGrid } from "@components/articles/ArticlePreviewGrid"
 import { Button } from "ui/base/Button"
-import { DiscordIcon } from "ui/icons"
 import { FavoritesGrid } from "@components/favorites/FavoritesGrid"
 import { SEO } from "@components/SEO"
 import { SearchButton } from "@components/search/SearchButton"
@@ -11,6 +11,7 @@ import { css } from "ui/theme"
 import { useAuth, useFavorites } from "@ctx/auth/AuthProvider"
 import { useBrawlhallaArticles } from "@hooks/useBrawlhallaArticles"
 import { useWeeklyRotation } from "@hooks/useWeeklyRotation"
+import Balancer from "react-wrap-balancer"
 
 const landingClassName = css({
     height: "60vh",
@@ -27,9 +28,9 @@ const Page = () => {
         <>
             <SEO
                 title="Track your Brawlhalla stats, view rankings, and more! • Corehalla"
-                description="Track your stats now! View official rankings, and navigate
-                through a database of millions of Brawlhalla players and
-                clans."
+                description="Improve Your Brawlhalla Game, and Find Your Place Among the
+                Elite with Our In-Depth Player and Clan Stats Tracking and Live
+                Leaderboards."
             />
             <div
                 className={cn(
@@ -37,16 +38,29 @@ const Page = () => {
                     landingClassName,
                 )}
             >
-                <span className="text-center text-lg sm:text-2xl font-bold uppercase bg-gradient-to-l from-accent to-accentVar1 bg-clip-text text-fill-none">
-                    Welcome to
-                </span>
-                <h1 className="text-center text-3xl sm:text-5xl font-bold uppercase mt-1">
-                    Corehalla
+                <a
+                    href="/discord"
+                    target="_blank"
+                    className="flex items-center gap-2 pl-3 pr-2 py-1 bg-bgVar1 rounded-full border border-bg text-sm hover:bg-bgVar2"
+                    aria-label='Join our "Corehalla" Discord server'
+                >
+                    <span className="border-r border-r-bg pr-2">
+                        Join our community of 1000+ players
+                    </span>
+                    <span className="flex items-center gap-1 font-semibold text-center bg-gradient-to-l from-accent to-accentVar1 bg-clip-text text-fill-none">
+                        Discord
+                        <ArrowSmRightIcon className="w-4 h-4" />
+                    </span>
+                </a>
+                <h1 className="text-center text-5xl sm:text-6xl font-bold mt-6 uppercase max-w-5xl">
+                    <Balancer>Stay Ahead of the Competition.</Balancer>
                 </h1>
-                <p className="text-sm sm:text-base mt-3 max-w-lg text-center text-textVar1">
-                    Track your stats now! View official rankings, and navigate
-                    through a database of millions of Brawlhalla players and
-                    clans.
+                <p className="text-sm sm:text-base mt-3 text-center text-textVar1 max-w-xl">
+                    <Balancer>
+                        Improve Your Brawlhalla Game, and Find Your Place Among
+                        the Elite with Our In-Depth Stats Tracking and Live
+                        Leaderboards.
+                    </Balancer>
                 </p>
                 <div className="mt-8 flex items-center gap-3 sm:gap-6 flex-col sm:flex-row">
                     <SearchButton />
@@ -101,7 +115,6 @@ const Page = () => {
             )}
             <SectionTitle>Weekly Rotation</SectionTitle>
             <WeeklyRotation weeklyRotation={weeklyRotation} />
-
             {articles.length > 0 && (
                 <>
                     <SectionTitle>Latest News</SectionTitle>
