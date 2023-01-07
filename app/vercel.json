@@ -1,6 +1,6 @@
 {
     "functions": {
-        "pages/api/**/*.ts": {
+        "pages/**/*.ts": {
             "memory": 1024,
             "maxDuration": 8
         }
