@@ -60,9 +60,9 @@ export const trpc = createTRPCNext<AppRouter>({
             }
         }
 
-        // cache full page for 1 day + revalidate once every 10 minutes
+        // cache full page for 1 day + revalidate once every 15 minutes
         const CACHE_TIME = 60 * 60 * 24
-        const REVALIDATE_TIME = 60 * 10
+        const REVALIDATE_TIME = 60 * 15
         return {
             "Cache-Control": `s-maxage=${REVALIDATE_TIME}, stale-while-revalidate=${CACHE_TIME}`,
         }
