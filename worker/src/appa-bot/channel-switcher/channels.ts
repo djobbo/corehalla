@@ -23,18 +23,13 @@ const getVoiceLogsChannel = (client: Client, options: BotOptions) => {
     return channel
 }
 
-const isParentLobbyCategory = (channel: GuildChannel, options: BotOptions) =>
-    !!channel.parent?.name.startsWith(
-        options.channelSwitcher.lobbyCategoryPrefix,
-    )
-
 const isGeneratorChannel = (
     channel: GuildChannel | null,
     options: BotOptions,
 ): channel is VoiceChannel =>
     !!channel &&
     channel.name.startsWith(options.channelSwitcher.generatorPrefix) &&
-    isParentLobbyCategory(channel, options)
+    channel.parentId === options.channelSwitcher.generatorCategoryId
 
 export const isLobbyChannel = (
     channel: GuildChannel | null,
@@ -43,7 +38,7 @@ export const isLobbyChannel = (
     !!channel &&
     channel.name.startsWith(options.channelSwitcher.lobbyPrefix) &&
     !isGeneratorChannel(channel, options) &&
-    isParentLobbyCategory(channel, options)
+    channel.parentId === options.channelSwitcher.lobbysCategoryId
 
 const getVoiceRtcRegionFromRegion = (region: Exclude<RankedRegion, "all">) => {
     switch (region) {
@@ -195,8 +190,6 @@ export const cloneGeneratorChannel = async (
 
     if (!isGeneratorChannel(channel, options)) return null
 
-    if (!channel.parent) return null
-
     const { region, language, rtcRegion } = getMemberPreferredRegionAndLanguage(
         voiceState.member,
         options,
@@ -213,7 +206,7 @@ export const cloneGeneratorChannel = async (
 
     const genChannel = await channel.clone({
         name: `${options.channelSwitcher.lobbyPrefix}${langDisplay}${regionDisplay}-${newChannelName}`,
-        parent: channel.parent,
+        parent: options.channelSwitcher.lobbysCategoryId,
         position: 999,
         rtcRegion,
     })

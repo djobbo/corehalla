@@ -11,12 +11,13 @@ export type BotOptions = {
     channelSwitcher: {
         generatorPrefix: string
         lobbyPrefix: string
-        lobbyCategoryPrefix: string
         logsChannelId: string
         regionRolePrefix: string
         languageRolePrefix: string
         defaultRegion: string
         defaultLanguage: string
+        generatorCategoryId: string
+        lobbysCategoryId: string
     }
 }
 
