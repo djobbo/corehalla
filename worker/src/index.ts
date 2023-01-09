@@ -21,6 +21,8 @@ const main = async () => {
         DISCORD_MANAGER_BOT_DEV_GUILD_ID,
         DISCORD_MANAGER_BOT_CLIENT_ID,
         DISCORD_CHANNEL_SWITCHER_VOICE_LOGS_CHANNEL_ID,
+        DISCORD_CHANNEL_SWITCHER_GENERATOR_CATEGORY_ID,
+        DISCORD_CHANNEL_SWITCHER_LOBBYS_CATEGORY_ID,
     } = process.env
 
     await startDiscordManagerBot({
@@ -35,11 +37,18 @@ const main = async () => {
         channelSwitcher: {
             generatorPrefix: "➕ ",
             lobbyPrefix: "",
-            lobbyCategoryPrefix: "🎮 ",
             logsChannelId: z
                 .string()
                 .min(1)
                 .parse(DISCORD_CHANNEL_SWITCHER_VOICE_LOGS_CHANNEL_ID),
+            generatorCategoryId: z
+                .string()
+                .min(1)
+                .parse(DISCORD_CHANNEL_SWITCHER_GENERATOR_CATEGORY_ID),
+            lobbysCategoryId: z
+                .string()
+                .min(1)
+                .parse(DISCORD_CHANNEL_SWITCHER_LOBBYS_CATEGORY_ID),
             regionRolePrefix: "region:",
             languageRolePrefix: "lang:",
             defaultRegion: "us-e",
