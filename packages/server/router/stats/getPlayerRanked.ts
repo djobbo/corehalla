@@ -29,10 +29,9 @@ export const getPlayerRanked = publicProcedure //
 
             // TODO: check whole object with zod
             try {
-                z.undefined().or(z.object({}).strict()).parse(ranked)
-                throw new Error("Player ranked not found")
+                z.number().parse(ranked?.brawlhalla_id)
             } catch {
-                // do nothing, continue
+                throw new Error("Player ranked not found")
             }
 
             const aliases = [

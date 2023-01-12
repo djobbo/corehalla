@@ -38,11 +38,7 @@ export const trpc = createTRPCNext<AppRouter>({
                         staleTime: 60,
                         refetchOnWindowFocus: false,
                         refetchOnMount: false,
-                        retry(failureCount) {
-                            return failureCount < 1
-                        },
-                        retryDelay: (attemptIndex) =>
-                            Math.min(1000 * 5 ** attemptIndex, 30000),
+                        retry: false,
                     },
                 },
             },
