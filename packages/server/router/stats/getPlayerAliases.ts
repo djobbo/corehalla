@@ -20,7 +20,7 @@ export const getPlayerAliases = publicProcedure //
             const { data, error } = await supabaseService
                 .from<BHPlayerAlias>("BHPlayerAlias")
                 .select("*")
-                .match({ playerId })
+                .match({ playerId, public: true })
 
             if (error) throw error
 
