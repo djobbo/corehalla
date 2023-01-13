@@ -6,6 +6,8 @@ import "@fontsource/montserrat/700.css"
 
 import { AnimatedLogo } from "ui/base/AnimatedLogo"
 import { AuthProvider } from "@ctx/auth/AuthProvider"
+// dynamic breaks with next >= v13.0.7
+//Will be fixed (maybe?) by https://github.com/vercel/next.js/pull/44832
 const BackToTopButton = dynamic(
     () =>
         import("@components/BackToTopButton").then(
@@ -15,7 +17,6 @@ const BackToTopButton = dynamic(
         ssr: false,
     },
 )
-import { Analytics } from "@vercel/analytics/react"
 import { GAScripts } from "common/analytics/GAScripts"
 import { KBarProvider } from "kbar"
 import { Layout } from "@components/layout/Layout"
@@ -63,7 +64,6 @@ const App = ({
                     </SideNavProvider>
                 </KBarProvider>
             </AuthProvider>
-            <Analytics />
         </>
     )
 }
