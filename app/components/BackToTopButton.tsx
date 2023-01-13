@@ -1,14 +1,10 @@
 import { BackToTopIcon } from "ui/icons"
 import { Tooltip } from "ui/base/Tooltip"
 import { cn } from "common/helpers/classnames"
-import { useFeatureFlags } from "@hooks/useFeatures"
 import { useWindowScroll } from "common/hooks/useWindowScroll"
 
 export const BackToTopButton = () => {
-    const { shouldShowBackToTop } = useFeatureFlags()
     const { y: scrollY } = useWindowScroll()
-
-    if (!shouldShowBackToTop) return null
 
     return (
         <div
