@@ -2,7 +2,20 @@
 	"name": "Corehalla",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "app",
-	"workspaceFolder": "/workspace",
+	"mounts": [
+		"source=${localWorkspaceFolder},target=/home/corehalla/workspace,type=bind",
+		"source=${localWorkspaceFolder}/.devcontainer/.zshrc,target=/home/corehalla/.zshrc,type=bind",
+		"source=${localWorkspaceFolder}/.devcontainer/corehalla.zsh-theme,target=/home/corehalla/.oh-my-zsh/custom/themes/corehalla.zsh-theme,type=bind"
+	],
+	"workspaceFolder": "/home/corehalla/workspace",
+	"settings": {
+		"terminal.integrated.defaultProfile.linux": "zsh", 
+        "terminal.integrated.profiles.linux": {
+            "zsh": {
+                "path": "/bin/zsh"
+            }
+        }
+	},
 
 	"customizations": {
 		"vscode": {
@@ -11,7 +24,8 @@
 				"bradlc.vscode-tailwindcss",
 				"Prisma.prisma",
 				"eamodio.gitlens",
-				"mhutchie.git-graph"
+				"mhutchie.git-graph",
+				"GitHub.vscode-pull-request-github"
 			]
 		}
 	},
@@ -32,5 +46,7 @@
 			"onAutoForward": "notify"
 		}
 	},
-	"postCreateCommand": "pnpm setup:env"
+	"postCreateCommand": "sudo curl -fsSL https://get.pnpm.io/install.sh | sh - && pnpm ci && pnpm setup:env",
+	"containerUser": "corehalla",
+	"remoteUser": "corehalla"
 }
