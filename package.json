@@ -3,7 +3,7 @@
     "version": "0.0.0",
     "private": true,
     "repository": "https://github.com/djobbo/corehalla.git",
-    "author": "Djobbo Maïga <4998293+djobbo@users.noreply.github.com>",
+    "author": "Djobbo Maïga <hi@djobbo.com>",
     "scripts": {
         "build": "turbo run build",
         "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
