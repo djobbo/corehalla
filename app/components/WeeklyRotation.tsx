@@ -21,7 +21,7 @@ export const WeeklyRotation = ({ weeklyRotation }: WeeklyRotationProps) => {
                                   src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
                                   alt={legend.bio_name}
                                   containerClassName="w-16 h-16 rounded-md"
-                                  className="object-contain object-center border border-bg rounded-lg"
+                                  className="object-contain object-center border border-bg rounded-lg transition-transform scale-100 hover:scale-105"
                               />
                           </Tooltip>
                       ))
