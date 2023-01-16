@@ -2,6 +2,7 @@
     "name": "app",
     "version": "0.0.0",
     "private": true,
+    "sideEffects": false,
     "scripts": {
         "dev": "next dev",
         "dev:prod": "NEXT_PUBLIC_FORCE_PRODUCTION_WEBSITE=true next dev",
