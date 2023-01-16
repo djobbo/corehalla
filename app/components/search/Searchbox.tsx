@@ -134,8 +134,16 @@ export const Searchbox = () => {
                                                         {cleanString(mainAlias)}
                                                     </p>
                                                     <p className="text-xs text-textVar1">
-                                                        {otherAliases.map(
-                                                            (alias) => (
+                                                        {otherAliases
+                                                            .filter(
+                                                                (alias) =>
+                                                                    alias.length >=
+                                                                        2 &&
+                                                                    !alias.endsWith(
+                                                                        "•2",
+                                                                    ),
+                                                            )
+                                                            .map((alias) => (
                                                                 <span
                                                                     key={alias}
                                                                     className={cn(
@@ -154,8 +162,7 @@ export const Searchbox = () => {
                                                                         alias,
                                                                     )}
                                                                 </span>
-                                                            ),
-                                                        )}
+                                                            ))}
                                                     </p>
                                                 </div>
                                             </AppLink>
