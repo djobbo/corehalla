@@ -45,7 +45,7 @@ const Page = () => {
                     aria-label='Join our "Corehalla" Discord server'
                 >
                     <span className="border-r border-r-bg pr-2">
-                        Join our community of 1000+ players
+                        Join our community
                     </span>
                     <span className="flex items-center gap-1 font-semibold text-center bg-gradient-to-l from-accent to-accentVar1 bg-clip-text text-fill-none">
                         Discord
