@@ -57,7 +57,6 @@ importers:
       react-dom: ^18.2.0
       react-hot-toast: ^2.4.0
       react-icons: ^4.7.1
-      react-wrap-balancer: ^0.3.0
       server: workspace:*
       tailwindcss: ^3.2.4
       tsconfig: workspace:*
@@ -87,7 +86,6 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       react-hot-toast: 2.4.0_owo25xnefcwdq3zjgtohz6dbju
       react-icons: 4.7.1_react@18.2.0
-      react-wrap-balancer: 0.3.0_react@18.2.0
       server: link:../packages/server
       ui: link:../packages/ui
       web-parser: link:../packages/web-parser
@@ -5602,14 +5600,6 @@ packages:
       react: ^16.6.3 || ^17.0.0
     dependencies:
       '@reach/observe-rect': 1.2.0
-      react: 18.2.0
-    dev: false
-
-  /react-wrap-balancer/0.3.0_react@18.2.0:
-    resolution: {integrity: sha512-UlnQvCvSRW0jh8uILic2LJs4tV0KjOO+P70ookE5qRpfZvsKmY8KLcV8s7TBPB6cuVYkoH7+fbqankFrFata8w==}
-    peerDependencies:
-      react: ^18.0.0
-    dependencies:
       react: 18.2.0
     dev: false
 

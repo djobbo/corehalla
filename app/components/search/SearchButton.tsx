@@ -23,9 +23,9 @@ export const SearchButton = ({
             type="button"
             className={cn(
                 className,
-                "rounded-xl py-2 px-4 cursor-text text-sm flex items-center justify-between border border-bg text-textVar1 hover:text-text hover:border-textVar1",
+                "rounded-lg py-1.5 px-2 cursor-text text-sm flex items-center justify-between border border-bg text-textVar1 hover:text-text hover:border-textVar1",
                 {
-                    "w-60": !customWidth,
+                    "w-48": !customWidth,
                 },
                 bg ?? "bg-bgVar2",
             )}
