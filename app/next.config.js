@@ -2,6 +2,7 @@ const BRAWLHALLA_WIKI_URL = "https://brawlhalla.fandom.com/wiki/Brawlhalla_Wiki"
 const COREHALLA_DISCORD_URL = "https://discord.com/invite/eD248ez"
 const COREHALLA_GITHUB_URL = "https://github.com/djobbo/corehalla"
 const COREHALLA_TWITTER_URL = "https://twitter.com/Corehalla"
+const COREHALLA_KOFI_URL = "https://ko-fi.com/corehalla"
 
 // TODO: remove this when upgrading to next@13.1+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -51,6 +52,16 @@ const nextConfig = {
             {
                 source: "/twitter",
                 destination: COREHALLA_TWITTER_URL,
+                permanent: true,
+            },
+            {
+                source: "/kofi",
+                destination: COREHALLA_KOFI_URL,
+                permanent: true,
+            },
+            {
+                source: "/donate",
+                destination: COREHALLA_KOFI_URL,
                 permanent: true,
             },
             {
