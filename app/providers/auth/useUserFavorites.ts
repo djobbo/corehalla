@@ -55,7 +55,11 @@ export const useUserFavorites = (session: Session | null) => {
         })
     }
 
-    const removeFavorite = async ({ id, type, name }: Favorite) => {
+    const removeFavorite = async ({
+        id,
+        type,
+        name,
+    }: Pick<Favorite, "id" | "type" | "name">) => {
         if (!userId) return
 
         const { error } = await supabase
