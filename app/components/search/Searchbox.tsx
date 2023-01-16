@@ -142,9 +142,9 @@ export const Searchbox = () => {
                                                                     )
 
                                                                 if (
-                                                                    cleanAlias.length >=
-                                                                        2 &&
-                                                                    !cleanAlias.endsWith(
+                                                                    cleanAlias.length <
+                                                                        2 ||
+                                                                    cleanAlias.endsWith(
                                                                         "•2",
                                                                     )
                                                                 )
