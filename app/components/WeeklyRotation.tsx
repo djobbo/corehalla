@@ -10,7 +10,7 @@ type WeeklyRotationProps = {
 export const WeeklyRotation = ({ weeklyRotation }: WeeklyRotationProps) => {
     return (
         <div className="flex flex-col items-center">
-            <div className="mx-auto inline-flex gap-4 flex-wrap p-4 rounded-2xl bg-bgVar2 border border-bg">
+            <div className="mx-auto grid gap-4 grid-cols-3 md:grid-cols-9 p-4 rounded-2xl bg-bgVar2 border border-bg">
                 {weeklyRotation.length > 0
                     ? weeklyRotation.map((legend) => (
                           <Tooltip

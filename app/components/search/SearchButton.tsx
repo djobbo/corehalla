@@ -34,8 +34,7 @@ export const SearchButton = ({
             <span>Search player...</span>
             {["mac", "pc"].includes(device) && (
                 <span className="flex items-center gap-1 text-textVar1">
-                    {device === "mac" ? <Kbd>⌘</Kbd> : <Kbd>Ctrl</Kbd>}
-                    <Kbd>k</Kbd>
+                    <Kbd>/</Kbd>
                 </span>
             )}
         </button>
