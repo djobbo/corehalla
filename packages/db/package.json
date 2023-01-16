@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "db:migrate": "pnpm db:supabase:clean && prisma migrate dev && pnpm db:supabase:setup",
-        "db:migrate:prod": "prisma migrate deploy && pnpm db:supabase:setup",
+        "db:migrate:prod": "pnpm db:supabase:clean && prisma migrate deploy && pnpm db:supabase:setup",
         "db:migrate:create": "pnpm db:supabase:clean && prisma migrate dev --create-only && pnpm db:supabase:setup",
         "db:supabase:setup": "pnpm db:rls:setup && pnpm db:realtime:setup && pnpm db:auth-user-trigger:add && pnpm db:extensions:setup && pnpm db:functions:setup",
         "db:supabase:clean": "pnpm db:auth-user-trigger:rm",
