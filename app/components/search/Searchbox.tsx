@@ -9,6 +9,8 @@ import {
 } from "kbar"
 import { SearchboxItem } from "./SearchboxItem"
 import { Spinner } from "ui/base/Spinner"
+import { UserIcon } from "ui/icons"
+import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { css } from "@stitches/react"
 import { gaEvent } from "common/analytics/gtag"
@@ -114,35 +116,50 @@ export const Searchbox = () => {
                                                 player={player}
                                             />
                                         ))}
-                                    {aliases.length > 0 && (
-                                        <div className="border-t border-bg">
-                                            <span className="px-4 text-xs text-textVar1">
-                                                players that used{" "}
-                                                <span className="bg-bgVar2 p-0.5">
-                                                    {search}
-                                                </span>{" "}
-                                                as an alias
-                                            </span>
-                                            <div className="flex flex-wrap px-4 py-2 gap-2">
-                                                {aliases.map(
-                                                    ({ alias, playerId }) => (
-                                                        <AppLink
-                                                            href={`/stats/player/${playerId}`}
-                                                            onClick={() =>
-                                                                toggle()
-                                                            }
-                                                            key={playerId}
-                                                            className="px-2 py-1 bg-bg rounded-md"
-                                                        >
-                                                            {alias}{" "}
-                                                            <span className="uppercase text-xs text-textVar1">
-                                                                (id: {playerId})
-                                                            </span>
-                                                        </AppLink>
-                                                    ),
-                                                )}
-                                            </div>
-                                        </div>
+                                    {aliases.map(
+                                        ({
+                                            playerId,
+                                            mainAlias,
+                                            otherAliases,
+                                        }) => (
+                                            <AppLink
+                                                key={playerId}
+                                                href={`/stats/player/${playerId}`}
+                                                onClick={() => toggle()}
+                                                className="px-4 py-3 w-full flex items-center border-b cursor-pointer border-bgVar2 hover:bg-bg"
+                                            >
+                                                <UserIcon className="w-8 h-8" />
+                                                <div className="ml-4">
+                                                    <p>
+                                                        {cleanString(mainAlias)}
+                                                    </p>
+                                                    <p className="text-xs text-textVar1">
+                                                        {otherAliases.map(
+                                                            (alias) => (
+                                                                <span
+                                                                    key={alias}
+                                                                    className={cn(
+                                                                        "mr-1 rounded bg-bgVar2 px-1 py-0.5",
+                                                                        {
+                                                                            "font-semibold":
+                                                                                alias
+                                                                                    .toLowerCase()
+                                                                                    .startsWith(
+                                                                                        immediateSearch.toLowerCase(),
+                                                                                    ),
+                                                                        },
+                                                                    )}
+                                                                >
+                                                                    {cleanString(
+                                                                        alias,
+                                                                    )}
+                                                                </span>
+                                                            ),
+                                                        )}
+                                                    </p>
+                                                </div>
+                                            </AppLink>
+                                        ),
                                     )}
                                 </>
                             ) : (

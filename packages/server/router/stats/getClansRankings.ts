@@ -19,21 +19,27 @@ export const getClansRankings = publicProcedure
             const { name, page } = req.input
             logInfo("getClansRankings", req.input)
 
-            let query = supabaseService
-                .from<BHClan>("BHClan")
-                .select("*")
-                .order("xp", { ascending: false })
+            let query = supabaseService.from<BHClan>("BHClan").select("*")
 
-            if (name) {
-                query = query.textSearch("name", name)
+            const cleanName = name.trim().replace(/'/g, "\\'")
+
+            if (cleanName.length > 0) {
+                query = query.ilike("name", `${cleanName}%`)
+            } else {
+                query = query.select("*")
             }
 
-            const { data, error } = await query.range(
-                (page - 1) * CLANS_RANKINGS_PER_PAGE,
-                page * CLANS_RANKINGS_PER_PAGE - 1,
-            )
+            const { data, error } = await query
+                .order("xp", { ascending: false })
+                .range(
+                    (page - 1) * CLANS_RANKINGS_PER_PAGE,
+                    page * CLANS_RANKINGS_PER_PAGE - 1,
+                )
 
-            if (error) throw error
+            if (error) {
+                console.error(error)
+                throw error
+            }
 
             // TODO: type check this with zod
             return data

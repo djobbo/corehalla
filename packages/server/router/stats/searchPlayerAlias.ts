@@ -19,19 +19,54 @@ export const searchPlayerAlias = publicProcedure //
             const { alias, page } = req.input
             logInfo("searchPlayerAlias", req.input)
 
-            const query = supabaseService
-                .from<BHPlayerAlias>("BHPlayerAlias")
-                .select("*")
-                .order("alias", { ascending: true })
-                .match({ alias })
+            if (alias.length < 2) {
+                return []
+            }
 
-            const { data, error } = await query.range(
-                (page - 1) * SEARCH_PLAYERS_ALIASES_PER_PAGE,
-                page * SEARCH_PLAYERS_ALIASES_PER_PAGE - 1,
+            const cleanAlias = alias.trim().replace(/'/g, "\\'")
+
+            const { data, error } = await supabaseService.rpc<BHPlayerAlias>(
+                "search_aliases",
+                {
+                    search: cleanAlias,
+                    aliases_offset:
+                        (page - 1) * SEARCH_PLAYERS_ALIASES_PER_PAGE,
+                    aliases_per_page: SEARCH_PLAYERS_ALIASES_PER_PAGE,
+                },
             )
 
-            if (error) throw error
+            if (error) {
+                throw error
+            }
 
-            return data ?? []
+            const aliases = data?.reduce(
+                (acc, alias) => {
+                    const player = acc.find(
+                        (a) => a.playerId === alias.playerId,
+                    )
+                    if (!player) {
+                        acc.push({
+                            playerId: alias.playerId,
+                            mainAlias: alias.alias,
+                            otherAliases: [],
+                        })
+
+                        return acc
+                    }
+
+                    if (player.mainAlias !== alias.alias) {
+                        player.otherAliases.push(alias.alias)
+                    }
+
+                    return acc
+                },
+                [] as {
+                    playerId: string
+                    mainAlias: string
+                    otherAliases: string[]
+                }[],
+            )
+
+            return aliases ?? []
         }, "searchPlayerAlias"),
     )

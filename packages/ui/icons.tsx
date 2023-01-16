@@ -11,6 +11,7 @@ import {
     HiShare,
     HiSortAscending,
     HiSortDescending,
+    HiUser,
     HiUserGroup,
     HiUsers,
     HiX,
@@ -30,6 +31,7 @@ export const ShareIcon = HiShare
 export const SortAscendingIcon = HiSortAscending
 export const SortDescendingIcon = HiSortDescending
 export const ArrowSmRightIcon = HiArrowSmRight
+export const UserIcon = HiUser
 
 // Stats
 export const Rankings1v1Icon = HiChevronDoubleUp
