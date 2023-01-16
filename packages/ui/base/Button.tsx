@@ -32,8 +32,8 @@ export const Button = <Type extends ButtonType = "button">(
                 buttonStyle === "outline",
         },
         {
-            "py-2 px-4 text-base": large,
-            "py-2 px-3 text-sm": !large,
+            "py-1 px-4 text-base": large,
+            "py-1 px-3 text-sm": !large,
         },
         className,
     )

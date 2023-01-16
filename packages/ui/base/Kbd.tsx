@@ -8,15 +8,15 @@ type KbdProps = {
 }
 
 const kbdClassName = css({
-    minWidth: "1.5rem",
-    height: "1.5rem",
+    minWidth: "1.25rem",
+    height: "1.25rem",
 })()
 
 export const Kbd = ({ children, className }: KbdProps) => (
     <kbd
         className={cn(
             kbdClassName,
-            "rounded-md hidden hashover:flex items-center justify-center px-2 bg-bg",
+            "rounded-md hidden hashover:flex items-center justify-center px-1 bg-bg text-xs",
             className,
         )}
     >
