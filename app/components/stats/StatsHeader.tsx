@@ -43,7 +43,7 @@ export const StatsHeader = ({
             <div
                 className="w-full h-28 max-h-28 relative rounded-md overflow-hidden shadow-md"
                 style={{
-                    background: "url(/images/backgrounds/orion.jpg)",
+                    background: "url(/images/backgrounds/Wallpaper_TextSm.jpg)",
                     backgroundPosition: "center",
                     backgroundSize: "cover",
                 }}

@@ -55,7 +55,7 @@ export const DiscordCard = () => {
                 className="bg-bgVar2/50 border border-bg/75 rounded-2xl w-96 overflow-hidden"
             >
                 <Image
-                    src="/images/backgrounds/orion.jpg"
+                    src="/images/backgrounds/Wallpaper_Text.jpg"
                     alt="Discord header image"
                     className="object-cover object-center"
                     containerClassName="w-full h-32"
