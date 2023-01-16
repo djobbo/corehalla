@@ -16,7 +16,7 @@ import {
     HiUsers,
     HiX,
 } from "react-icons/hi"
-import { SiDiscord, SiGithub, SiTwitter } from "react-icons/si"
+import { SiDiscord, SiGithub, SiKofi, SiTwitter } from "react-icons/si"
 
 // Common
 export const CloseIcon = HiX
@@ -44,3 +44,4 @@ export const ClanIcon = HiUserGroup
 export const GithubIcon = SiGithub
 export const DiscordIcon = SiDiscord
 export const TwitterIcon = SiTwitter
+export const KofiIcon = SiKofi

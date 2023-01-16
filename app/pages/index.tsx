@@ -1,8 +1,8 @@
 import { ArrowSmRightIcon, DiscordIcon } from "ui/icons"
 import { ArticlePreviewGrid } from "@components/articles/ArticlePreviewGrid"
 import { Button } from "ui/base/Button"
+import { DiscordCard } from "@components/DiscordCard"
 import { FavoritesGrid } from "@components/favorites/FavoritesGrid"
-import { Image } from "@components/Image"
 import { SEO } from "@components/SEO"
 import { SearchButton } from "@components/search/SearchButton"
 import { SectionTitle } from "@components/layout/SectionTitle"
@@ -43,7 +43,7 @@ const Page = () => {
                     <a
                         href="/discord"
                         target="_blank"
-                        className="flex items-center gap-2 pl-3 pr-2 py-1 bg-bgVar1 rounded-full border border-bg text-sm hover:bg-bgVar2"
+                        className="flex items-center gap-2 pl-3 pr-2 py-1 bg-bgVar1/75 rounded-full border border-bg text-sm hover:bg-bgVar2"
                         aria-label='Join our "Corehalla" Discord server'
                     >
                         <span className="border-r border-r-bg pr-2">
@@ -98,44 +98,7 @@ const Page = () => {
                     </div>
                 </div>
                 <div>
-                    <div className="bg-bgVar2 border border-bg rounded-lg w-96 overflow-hidden">
-                        <Image
-                            src="/images/backgrounds/orion.jpg"
-                            alt="Discord header image"
-                            className="object-cover object-center"
-                            containerClassName="w-full h-32"
-                        />
-                        <div className="flex">
-                            <Image
-                                src="/images/Corehalla_Logo.gif"
-                                alt="Corehalla animated logo"
-                                className="object-cover object-center"
-                                containerClassName="w-20 h-20 rounded-3xl -mt-10 ml-6 border-8 border-bgVar2 overflow-hidden"
-                            />
-                            <span className="text-sm ml-2 mt-2 text-textVar1 text-center">
-                                1000+ members
-                            </span>
-                        </div>
-                        <div className="p-6 flex flex-col gap-2 text-sm">
-                            <p className="uppercase text-textVar1 font-semibold">
-                                Question of the day
-                            </p>
-                            <p>
-                                Do you play with sound effects and/or ingame
-                                music?
-                            </p>
-                            <a
-                                href="/discord"
-                                target="_blank"
-                                aria-label="Join our Discord server to share your thoughts"
-                            >
-                                <span className="flex justify-end items-center gap-1 font-semibold bg-gradient-to-l from-accent to-accentVar1 bg-clip-text text-fill-none">
-                                    Share your thoughts
-                                    <ArrowSmRightIcon className="w-4 h-4" />
-                                </span>
-                            </a>
-                        </div>
-                    </div>
+                    <DiscordCard />
                     <a
                         href="/discord"
                         target="_blank"
@@ -146,7 +109,7 @@ const Page = () => {
                     </a>
                 </div>
             </div>
-            <div className="border border-bg border-dashed p-8 rounded-lg mt-16">
+            <div className="border border-bg border-dashed p-8 rounded-lg my-16">
                 {favorites.length > 0 ? (
                     <FavoritesGrid favorites={favorites} />
                 ) : (
@@ -175,8 +138,10 @@ const Page = () => {
                     </p>
                 )}
             </div>
-            <SectionTitle className="text-center">Latest News</SectionTitle>
             <WeeklyRotation weeklyRotation={weeklyRotation} />
+            <SectionTitle className="text-center mt-16">
+                Latest News
+            </SectionTitle>
             {articles.length > 0 && (
                 <>
                     <ArticlePreviewGrid articles={articles} />
