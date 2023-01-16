@@ -1,3 +1,4 @@
+import { cleanString } from "common/helpers/cleanString"
 import { trpc } from "@util/trpc"
 
 export const usePlayerAliases = (playerId: string) => {
@@ -5,9 +6,11 @@ export const usePlayerAliases = (playerId: string) => {
 
     return {
         playerAliases:
-            data?.filter(
-                (alias) => alias.length >= 2 && !alias.endsWith("•2"),
-            ) ?? [],
+            data
+                ?.map((alias) => cleanString(alias))
+                .filter(
+                    (alias) => alias.length >= 2 && !alias.endsWith("•2"),
+                ) ?? [],
         ...query,
     }
 }

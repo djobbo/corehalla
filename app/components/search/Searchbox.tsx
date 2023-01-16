@@ -134,35 +134,46 @@ export const Searchbox = () => {
                                                         {cleanString(mainAlias)}
                                                     </p>
                                                     <p className="text-xs text-textVar1">
-                                                        {otherAliases
-                                                            .filter(
-                                                                (alias) =>
-                                                                    alias.length >=
-                                                                        2 &&
-                                                                    !alias.endsWith(
-                                                                        "•2",
-                                                                    ),
-                                                            )
-                                                            .map((alias) => (
-                                                                <span
-                                                                    key={alias}
-                                                                    className={cn(
-                                                                        "mr-1 rounded bg-bgVar2 px-1 py-0.5",
-                                                                        {
-                                                                            "font-semibold":
-                                                                                alias
-                                                                                    .toLowerCase()
-                                                                                    .startsWith(
-                                                                                        immediateSearch.toLowerCase(),
-                                                                                    ),
-                                                                        },
-                                                                    )}
-                                                                >
-                                                                    {cleanString(
+                                                        {otherAliases.map(
+                                                            (alias) => {
+                                                                const cleanAlias =
+                                                                    cleanString(
                                                                         alias,
-                                                                    )}
-                                                                </span>
-                                                            ))}
+                                                                    )
+
+                                                                if (
+                                                                    cleanAlias.length >=
+                                                                        2 &&
+                                                                    !cleanAlias.endsWith(
+                                                                        "•2",
+                                                                    )
+                                                                )
+                                                                    return
+
+                                                                return (
+                                                                    <span
+                                                                        key={
+                                                                            cleanAlias
+                                                                        }
+                                                                        className={cn(
+                                                                            "mr-1 rounded bg-bgVar2 px-1 py-0.5",
+                                                                            {
+                                                                                "font-semibold":
+                                                                                    cleanAlias
+                                                                                        .toLowerCase()
+                                                                                        .startsWith(
+                                                                                            immediateSearch.toLowerCase(),
+                                                                                        ),
+                                                                            },
+                                                                        )}
+                                                                    >
+                                                                        {
+                                                                            cleanAlias
+                                                                        }
+                                                                    </span>
+                                                                )
+                                                            },
+                                                        )}
                                                     </p>
                                                 </div>
                                             </AppLink>
