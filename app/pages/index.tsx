@@ -146,7 +146,7 @@ const Page = () => {
                     </a>
                 </div>
             </div>
-            <div className="border border-bg border-dashed p-8 rounded-lg">
+            <div className="border border-bg border-dashed p-8 rounded-lg mt-16">
                 {favorites.length > 0 ? (
                     <FavoritesGrid favorites={favorites} />
                 ) : (
