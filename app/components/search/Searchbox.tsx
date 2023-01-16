@@ -56,7 +56,7 @@ export const Searchbox = () => {
             <KBarPositioner
                 className="z-20"
                 style={{
-                    backgroundColor: "#0004",
+                    backgroundColor: "#0006",
                 }}
             >
                 <KBarAnimator className="w-full max-w-screen-md">

@@ -17,7 +17,12 @@ export const Card = ({
     contentClassName,
 }: CardProps) => {
     return (
-        <div className={cn("rounded-lg p-4 w-full bg-bg shadow-md", className)}>
+        <div
+            className={cn(
+                "rounded-lg p-4 w-full bg-bgVar2/50 border border-bg/75 shadow-md",
+                className,
+            )}
+        >
             {title && (
                 <p
                     className={cn(

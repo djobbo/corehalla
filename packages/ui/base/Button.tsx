@@ -25,6 +25,7 @@ export const Button = <Type extends ButtonType = "button">(
     } = props
     const buttonClass = cn(
         "flex font-semibold cursor-pointer items-center justify-center rounded-lg",
+        "scale-100 hover:scale-[1.025] transition-transform",
         {
             "shadow-md bg-accent hover:bg-textVar1 hover:text-bgVar2":
                 buttonStyle === "primary",
