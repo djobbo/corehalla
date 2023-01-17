@@ -25,14 +25,16 @@ export const SearchboxItem = ({
         <AppLink
             href={href}
             onClick={() => toggle()}
-            className="px-4 py-3 w-full flex items-center justify-between border-b cursor-pointer border-bgVar2 hover:bg-bg/75"
+            className="px-4 py-3 w-full flex items-center justify-between gap-8 border-b cursor-pointer border-bgVar2 hover:bg-bg/75"
         >
-            <div className="flex items-center">
+            <div className="min-w-0 flex items-center flex-1">
                 {icon}
-                <div className="ml-4">
-                    <p>{title}</p>
+                <div className="ml-4 min-w-0 flex-1">
+                    <p className="truncate">{title}</p>
                     {subtitle && (
-                        <p className="text-xs text-textVar1">{subtitle}</p>
+                        <p className="text-xs text-textVar1 truncate">
+                            {subtitle}
+                        </p>
                     )}
                 </div>
             </div>
