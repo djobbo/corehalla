@@ -109,11 +109,11 @@ const Page = () => {
                     </a>
                 </div>
             </div>
-            <div className="border border-bg border-dashed p-8 rounded-lg my-16">
+            <div className="border border-bg border-dashed p-4 rounded-lg my-16">
                 {favorites.length > 0 ? (
                     <FavoritesGrid favorites={favorites} />
                 ) : (
-                    <p className="flex flex-col items-center gap-4">
+                    <p className="flex flex-col items-center gap-4 py-4">
                         {isLoggedIn ? (
                             <>
                                 You don&apos;t have any favorites yet, you can a
