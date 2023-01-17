@@ -77,7 +77,8 @@ export const DiscordCard = () => {
                             Question of the day
                         </p>
                         <p>
-                            Do you play with sound effects and/or ingame music?
+                            Do you listen to non in-game music while playing? If
+                            you do, do you mind sharing a song or a playlist?
                         </p>
                         <a
                             href="/discord"
