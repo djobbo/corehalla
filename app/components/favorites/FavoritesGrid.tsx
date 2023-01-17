@@ -38,7 +38,7 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                                 src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
                                 alt={`player ${cleanString(fav.name)} icon`}
                                 containerClassName="w-8 h-8"
-                                className="object-contain object-center"
+                                className="object-contain object-center flex-shrink-0"
                             />
                         )
                 } else if (fav.type === "clan") {
@@ -58,11 +58,11 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                             className={cn("flex items-center gap-2 px-3 py-3")}
                         >
                             {icon}
-                            <div>
-                                <p className="font-bold">
+                            <div className="min-w-0">
+                                <p className="font-bold truncate">
                                     {cleanString(fav.name)}
                                 </p>
-                                <p className="text-xs text-textVar1">
+                                <p className="text-xs text-textVar1 truncate">
                                     {fav.type} #{fav.id}
                                 </p>
                             </div>
