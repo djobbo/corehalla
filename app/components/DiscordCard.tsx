@@ -77,8 +77,8 @@ export const DiscordCard = () => {
                             Question of the day
                         </p>
                         <p>
-                            Do you listen to non in-game music while playing? If
-                            you do, do you mind sharing a song or a playlist?
+                            Did you watch the new battle pass theme reveal? Are
+                            you hyped and will you buy it?
                         </p>
                         <a
                             href="/discord"
