@@ -68,7 +68,7 @@ export const DiscordCard = () => {
                         containerClassName="w-20 h-20 rounded-3xl -mt-10 ml-6 border-8 border-bgVar2 overflow-hidden"
                     />
                     <span className="text-sm ml-2 mt-2 text-textVar1 text-center">
-                        1000+ discord members
+                        1.3k+ discord members, and growing!
                     </span>
                 </div>
                 <div className="h-64 flex flex-col justify-between">
@@ -77,8 +77,8 @@ export const DiscordCard = () => {
                             Question of the day
                         </p>
                         <p>
-                            Did you watch the new battle pass theme reveal? Are
-                            you hyped and will you buy it?
+                            Which weapon(s) do you enjoy playing the most? and
+                            which one(s) you dislike playing?
                         </p>
                         <a
                             href="/discord"
