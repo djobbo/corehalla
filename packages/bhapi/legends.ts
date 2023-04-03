@@ -687,6 +687,18 @@ export const legends: Legend[] = [
         defense: "5",
         speed: "5",
     },
+    {
+        legend_id: 62,
+        legend_name_key: "thea",
+        bio_name: "Thea",
+        bio_aka: "The Speedster",
+        weapon_one: "Battle Boots",
+        weapon_two: "Rocket Lance",
+        strength: "4",
+        dexterity: "6",
+        defense: "3",
+        speed: "9"
+    },
 ]
 
 export const legendsMap = arrayToMap(legends, "legend_id")
@@ -796,8 +808,8 @@ export const getWeaponlessData = (legends: FullLegend[]) => {
                     acc.unarmed.matchtime +
                     (legend.stats
                         ? legend.stats.matchtime -
-                          legend.stats.timeheldweaponone -
-                          legend.stats.timeheldweapontwo
+                        legend.stats.timeheldweaponone -
+                        legend.stats.timeheldweapontwo
                         : 0),
             },
             gadgets: {
