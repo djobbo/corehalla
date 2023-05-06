@@ -20,7 +20,7 @@ import {
     getFullWeapons,
     getLegendsAccumulativeData,
 } from "bhapi/legends"
-// import { usePlayerAliases } from "@hooks/stats/usePlayerAliases"
+import { usePlayerAliases } from "@hooks/stats/usePlayerAliases"
 import { usePlayerRanked } from "@hooks/stats/usePlayerRanked"
 import { usePlayerStats } from "@hooks/stats/usePlayerStats"
 import { useRouter } from "next/router"
@@ -51,7 +51,7 @@ const Page: NextPage = () => {
         playerId as string,
     )
     const { playerRanked } = usePlayerRanked(playerId as string)
-    // const { playerAliases } = usePlayerAliases(playerId as string)
+    const { playerAliases } = usePlayerAliases(playerId as string)
 
     if (isLoading) return <p>Loading...</p>
 
@@ -152,7 +152,7 @@ const Page: NextPage = () => {
             <StatsHeader
                 name={cleanString(playerStats.name)}
                 id={playerStats.brawlhalla_id}
-                aliases={[]}
+                aliases={playerAliases.slice(0, 10)}
                 miscStats={accountStats}
                 icon={
                     playerRanked?.region && (

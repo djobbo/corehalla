@@ -179,7 +179,7 @@ export const Searchbox = () => {
                                                                 immediateSearch
                                                             }
                                                             aliases={
-                                                                potentialBrawlhallaIdAliases
+                                                                potentialBrawlhallaIdAliases.slice(0, 10)
                                                             }
                                                         />
                                                     }
