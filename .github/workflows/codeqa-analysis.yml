@@ -26,5 +26,5 @@ jobs:
                   cache-dependency-path: pnpm-lock.yaml
             - name: ${{ matrix.name }}
               run: |
-                  pnpm ci
+                  pnpm ci:install
                   ${{ matrix.action }}

@@ -18,7 +18,7 @@ log("Starting dev environment...")
 
 log(chalk.bold("Installing dependencies"))
 try {
-    await $`pnpm ci`
+    await $`pnpm ci:install`
 } catch {
     log(chalk.red(`Failed to install dependencies`))
     exit(1)

@@ -46,7 +46,7 @@
 			"onAutoForward": "notify"
 		}
 	},
-	"postCreateCommand": "sudo curl -fsSL https://get.pnpm.io/install.sh | sh - && pnpm ci && pnpm setup:env",
+	"postCreateCommand": "sudo curl -fsSL https://get.pnpm.io/install.sh | sh - && pnpm ci:install && pnpm setup:env",
 	"containerUser": "corehalla",
 	"remoteUser": "corehalla"
 }
