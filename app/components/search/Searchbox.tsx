@@ -6,6 +6,7 @@ import {
     KBarSearch,
     useKBar,
 } from "kbar"
+import { MAX_SHOWN_ALIASES } from "@util/constants"
 import { RankedPlayerItem } from "./RankedPlayerItem"
 import { SearchboxItem } from "./SearchboxItem"
 import { Spinner } from "ui/base/Spinner"
@@ -180,7 +181,7 @@ export const Searchbox = () => {
                                                             }
                                                             aliases={potentialBrawlhallaIdAliases?.slice(
                                                                 0,
-                                                                10,
+                                                                MAX_SHOWN_ALIASES,
                                                             )}
                                                         />
                                                     }

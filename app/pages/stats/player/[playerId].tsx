@@ -1,4 +1,5 @@
 import { Image } from "@components/Image"
+import { MAX_SHOWN_ALIASES } from "@util/constants"
 import { Player2v2Tab } from "@components/stats/player/Player2v2Tab"
 import { PlayerLegendsTab } from "@components/stats/player/PlayerLegendsTab"
 import { PlayerOverviewTab } from "@components/stats/player/PlayerOverviewTab"
@@ -152,7 +153,7 @@ const Page: NextPage = () => {
             <StatsHeader
                 name={cleanString(playerStats.name)}
                 id={playerStats.brawlhalla_id}
-                aliases={playerAliases.slice(0, 10)}
+                aliases={playerAliases.slice(0, MAX_SHOWN_ALIASES)}
                 miscStats={accountStats}
                 icon={
                     playerRanked?.region && (
