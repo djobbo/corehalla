@@ -178,9 +178,10 @@ export const Searchbox = () => {
                                                             immediateSearch={
                                                                 immediateSearch
                                                             }
-                                                            aliases={
-                                                                potentialBrawlhallaIdAliases?.slice(0, 10)
-                                                            }
+                                                            aliases={potentialBrawlhallaIdAliases?.slice(
+                                                                0,
+                                                                10,
+                                                            )}
                                                         />
                                                     }
                                                 />

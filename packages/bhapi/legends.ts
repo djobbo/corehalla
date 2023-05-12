@@ -808,8 +808,8 @@ export const getWeaponlessData = (legends: FullLegend[]) => {
                     acc.unarmed.matchtime +
                     (legend.stats
                         ? legend.stats.matchtime -
-                        legend.stats.timeheldweaponone -
-                        legend.stats.timeheldweapontwo
+                          legend.stats.timeheldweaponone -
+                          legend.stats.timeheldweapontwo
                         : 0),
             },
             gadgets: {
