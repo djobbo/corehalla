@@ -20,6 +20,7 @@ const BackToTopButton = dynamic(
 import { GAScripts } from "common/analytics/GAScripts"
 import { KBarProvider } from "kbar"
 import { Layout } from "@components/layout/Layout"
+import { OverwolfProvider } from "@ctx/OverwolfProvider"
 import { PageLoader } from "ui/base/PageLoader"
 import { SEO } from "@components/SEO"
 import { Searchbox } from "@components/search/Searchbox"
@@ -46,24 +47,26 @@ const App = ({
             </Head>
             <SEO title="Corehalla" image="/images/og/main-og.jpg" />
             <GAScripts />
-            <AuthProvider>
-                <KBarProvider actions={[]} options={{}}>
-                    <SideNavProvider>
-                        <PageLoader>
-                            <div className="flex items-center gap-4">
-                                <span className="text-sm">Loading...</span>
-                                <AnimatedLogo size={32} />
-                            </div>
-                        </PageLoader>
-                        <Toaster />
-                        <Layout>
-                            <Component {...pageProps} />
-                        </Layout>
-                        <Searchbox />
-                        <BackToTopButton />
-                    </SideNavProvider>
-                </KBarProvider>
-            </AuthProvider>
+            <OverwolfProvider>
+                <AuthProvider>
+                    <KBarProvider actions={[]} options={{}}>
+                        <SideNavProvider>
+                            <PageLoader>
+                                <div className="flex items-center gap-4">
+                                    <span className="text-sm">Loading...</span>
+                                    <AnimatedLogo size={32} />
+                                </div>
+                            </PageLoader>
+                            <Toaster />
+                            <Layout>
+                                <Component {...pageProps} />
+                            </Layout>
+                            <Searchbox />
+                            <BackToTopButton />
+                        </SideNavProvider>
+                    </KBarProvider>
+                </AuthProvider>
+            </OverwolfProvider>
         </>
     )
 }

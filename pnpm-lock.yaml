@@ -116,6 +116,9 @@ importers:
         specifier: ^3.20.2
         version: 3.20.2
     devDependencies:
+      '@overwolf/types':
+        specifier: ^3.23.1
+        version: 3.23.1
       '@tanstack/query-core':
         specifier: ^4.22.0
         version: 4.22.0
@@ -1319,6 +1322,10 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
+    dev: true
+
+  /@overwolf/types@3.23.1:
+    resolution: {integrity: sha512-QkmvQONNxH31M0a018Mx23IZrWHvYSgWFwasEsxaQU3TkTiiF2ZqGpirCDBimtqD+Mk5MVWTaX4cmUsIhTgshQ==}
     dev: true
 
   /@pkgr/utils@2.3.1:
