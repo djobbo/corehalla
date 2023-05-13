@@ -1,5 +1,7 @@
 FROM node:18
 
+RUN userdel -r node
+
 ARG USERNAME=corehalla
 ARG USER_UID=1001
 ARG USER_GID=$USER_UID
