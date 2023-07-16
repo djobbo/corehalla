@@ -699,6 +699,18 @@ export const legends: Legend[] = [
         defense: "3",
         speed: "9",
     },
+    {
+        legend_id: 17,
+        legend_name_key: "redraptor",
+        bio_name: "Red Raptor",
+        bio_aka: "The Last Sentai",
+        weapon_one: "Battle Boots",
+        weapon_two: "Orb",
+        strength: "6",
+        dexterity: "6",
+        defense: "4",
+        speed: "6"
+    }
 ]
 
 export const legendsMap = arrayToMap(legends, "legend_id")
