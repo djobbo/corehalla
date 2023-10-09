@@ -16,7 +16,7 @@ export const getPowerRankings = publicProcedure
         }),
     )
     .query(
-        withTimeLog((req) => {
+        withTimeLog(async (req) => {
             const { bracket, region } = req.input
             logInfo("getPowerRankings", req.input)
 
