@@ -8,7 +8,6 @@ import axios from "axios"
 const APP_DIR = "../../app"
 const PUBLIC_DIR = `${APP_DIR}/public`
 const LEGENDS_URL = "https://www.brawlhalla.com/legends/"
-const NUM_LEGENDS = 58
 const OUT_DIR = `${PUBLIC_DIR}/images/icons/roster`
 
 export const downloadImages = async () => {
@@ -21,18 +20,23 @@ export const downloadImages = async () => {
 
     const $ = load(text)
 
-    const imgs = $(".et_pb_column.et_pb_column_1_6")
-        .map((_, el) => ({
-            name: $(el).find("p").text(),
-            src: $(el).find("img").attr("src") ?? "",
-        }))
+    const imgs = $(".legend-icon")
+        .map((_, el) => {
+            const img = $(el).find("img")
+
+            return {
+                name: img?.attr("alt") ?? "",
+                src: img?.attr("src") ?? "",
+            }
+        })
         .get()
-        .filter(({ name, src }) => name && src)
+        .filter(({ name, src }) => (console.log({ name, src }), name && src))
 
     imgs.forEach((img, i) => {
         if (!img.src || !img.name) return
 
-        const isLegend = i < NUM_LEGENDS
+        // TODO: readd crossovers
+        const isLegend = true
         const prefix = isLegend ? "legend" : "crossover"
 
         logInfo(`Downloading: ${prefix} => ${img.name}`)
