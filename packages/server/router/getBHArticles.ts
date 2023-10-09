@@ -16,14 +16,17 @@ export const getBHArticles = publicProcedure //
         }),
     )
     .query(async (req) => {
-        const { page, type, max } = req.input
-        logInfo("getBHArticles", { page, type, max })
 
-        const articles = await parseBHArticlesPage(page, type)
+        return []
 
-        if (max) {
-            return articles.slice(0, parseInt(max.toString()))
-        }
+        // const { page, type, max } = req.input
+        // logInfo("getBHArticles", { page, type, max })
 
-        return articles
+        // const articles = await parseBHArticlesPage(page, type)
+
+        // if (max) {
+        //     return articles.slice(0, parseInt(max.toString()))
+        // }
+
+        // return articles
     })
