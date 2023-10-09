@@ -47,19 +47,19 @@ export const getPlayerRanked = publicProcedure //
                 public: true,
             }))
 
-            // Fire and forget
-            const fireAndForget = withTimeLog(
-                updateDBPlayerAliases,
-                "updateDBPlayerAliases",
-            )(aliases, {
-                abortSignal: controller.signal,
-            }).catch((e) => {
-                logError("Error updating player aliases", e)
-            })
+            // // Fire and forget
+            // const fireAndForget = withTimeLog(
+            //     updateDBPlayerAliases,
+            //     "updateDBPlayerAliases",
+            // )(aliases, {
+            //     abortSignal: controller.signal,
+            // }).catch((e) => {
+            //     logError("Error updating player aliases", e)
+            // })
 
-            waitForRequestTimeout(fireAndForget, {
-                abortController: controller,
-            })
+            // waitForRequestTimeout(fireAndForget, {
+            //     abortController: controller,
+            // })
 
             return ranked
         }, "getPlayerRanked"),

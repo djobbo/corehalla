@@ -20,9 +20,11 @@ export const getPowerRankings = publicProcedure
             const { bracket, region } = req.input
             logInfo("getPowerRankings", req.input)
 
-            return withTimeLog(
-                parsePowerRankingsPage,
-                "parsePowerRankingsPage",
-            )(bracket ?? "1v1", region ?? "us-e")
+            return []
+
+            // return withTimeLog(
+            //     parsePowerRankingsPage,
+            //     "parsePowerRankingsPage",
+            // )(bracket ?? "1v1", region ?? "us-e")
         }, "getPowerRankings"),
     )

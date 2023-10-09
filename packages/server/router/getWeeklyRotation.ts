@@ -6,5 +6,7 @@ export const getWeeklyRotation = publicProcedure //
     .query(async () => {
         logInfo("getWeeklyRotation")
 
-        return getWeeklyRotationFn()
+        return []
+
+        // return getWeeklyRotationFn()
     })
