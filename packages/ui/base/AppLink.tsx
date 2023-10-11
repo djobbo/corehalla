@@ -10,6 +10,7 @@ export const AppLink = ({ href, children, ...props }: AppLinkProps) => {
             href={href}
             {...props}
             rel={props.target === "_blank" ? "noreferrer" : undefined}
+            prefech={false}
         >
             {children}
         </Link>
