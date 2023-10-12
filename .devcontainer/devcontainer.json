@@ -1,22 +1,11 @@
 {
 	"name": "Corehalla",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "app",
+	"workspaceFolder": "/workspace",
 	"mounts": [
-		"source=${localWorkspaceFolder},target=/home/corehalla/workspace,type=bind",
-		"source=${localWorkspaceFolder}/.devcontainer/.zshrc,target=/home/corehalla/.zshrc,type=bind",
-		"source=${localWorkspaceFolder}/.devcontainer/corehalla.zsh-theme,target=/home/corehalla/.oh-my-zsh/custom/themes/corehalla.zsh-theme,type=bind"
+		"source=${localWorkspaceFolder},target=/workspace,type=bind",
+		"source=${localWorkspaceFolder}/.devcontainer/zsh/.zshrc,target=/root/.zshrc,type=bind",
+		"source=${localWorkspaceFolder}/.devcontainer/zsh/devcontainer.zsh-theme,target=/root/.oh-my-zsh/custom/themes/devcontainer.zsh-theme,type=bind"
 	],
-	"workspaceFolder": "/home/corehalla/workspace",
-	"settings": {
-		"terminal.integrated.defaultProfile.linux": "zsh", 
-        "terminal.integrated.profiles.linux": {
-            "zsh": {
-                "path": "/bin/zsh"
-            }
-        }
-	},
-
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -25,28 +14,37 @@
 				"Prisma.prisma",
 				"eamodio.gitlens",
 				"mhutchie.git-graph",
-				"GitHub.vscode-pull-request-github"
-			]
+				"GitHub.vscode-pull-request-github",
+				"ms-azuretools.vscode-docker",
+				"usernamehw.errorlens"
+			],
+			"settings": {
+				"terminal.integrated.defaultProfile.linux": "zsh",
+				"terminal.integrated.profiles.linux": {
+					"zsh": {
+						"path": "/bin/zsh"
+					}
+				}
+			}
 		}
 	},
-
-	"forwardPorts": [3000, 3001, 3002],
-
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"forwardPorts": [
+		3000,
+		3001,
+		3002
+	],
 	"portsAttributes": {
 		"3000": {
-			"label": "Corehalla Web",
-			"onAutoForward": "notify"
+			"label": "Corehalla Web"
 		},
 		"3001": {
-			"label": "Supabase Studio",
-			"onAutoForward": "notify"
+			"label": "Supabase Studio"
 		},
 		"3002": {
-			"label": "Corehalla Worker",
-			"onAutoForward": "notify"
+			"label": "Corehalla Worker"
 		}
 	},
-	"postCreateCommand": "sudo curl -fsSL https://get.pnpm.io/install.sh | sh - && pnpm ci:install && pnpm setup:env",
-	"containerUser": "corehalla",
-	"remoteUser": "corehalla"
+	"postStartCommand": "pnpm ci:install && pnpm setup:env"
 }

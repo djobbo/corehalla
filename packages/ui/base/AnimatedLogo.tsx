@@ -1,3 +1,5 @@
+"use client"
+
 import { keyframes, styled } from "../theme"
 
 const centerAnimation = keyframes({

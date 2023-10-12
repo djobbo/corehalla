@@ -2,7 +2,7 @@
     "name": "bhapi",
     "version": "0.0.0",
     "devDependencies": {
-        "@types/node": "^18.11.18",
+        "@types/node": "^20.8.3",
         "tsconfig": "workspace:*",
         "typescript": "^4.9.4"
     },
@@ -14,6 +14,6 @@
         "common": "workspace:*",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "zod": "^3.20.2"
+        "zod": "^3.22.4"
     }
 }

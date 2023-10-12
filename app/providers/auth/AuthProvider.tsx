@@ -1,3 +1,5 @@
+"use client"
+
 import { createContext, useContext, useEffect, useState } from "react"
 import { signIn, signOut } from "db/supabase/auth"
 import { supabase } from "db/supabase/client"
@@ -38,7 +40,13 @@ const authContext = createContext<AuthContext>({
     },
 })
 
-export const useAuth = (): AuthContext => useContext(authContext)
+export const useAuth = (): AuthContext => {
+    const context = useContext(authContext)
+    if (!context) {
+        throw new Error(`useAuth must be used within a AuthProvider`)
+    }
+    return context
+}
 export const useFavorites = () => useAuth().userFavorites
 
 interface Props {

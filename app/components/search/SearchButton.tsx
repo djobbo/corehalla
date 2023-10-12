@@ -1,8 +1,12 @@
+"use client"
+
 import { Kbd } from "ui/base/Kbd"
 import { SearchIcon } from "ui/icons"
 import { cn } from "common/helpers/classnames"
 import { useDevice } from "common/hooks/useDevice"
 import { useKBar } from "kbar"
+
+// TODO: replace kbar with shadcn ui search
 
 type SearchButtonProps = {
     className?: string

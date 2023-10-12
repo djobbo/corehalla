@@ -1,10 +1,19 @@
+"use client"
+
 import { BackToTopIcon } from "ui/icons"
 import { Tooltip } from "ui/base/Tooltip"
 import { cn } from "common/helpers/classnames"
+import { useEffect, useState } from "react"
 import { useWindowScroll } from "common/hooks/useWindowScroll"
 
 export const BackToTopButton = () => {
     const { y: scrollY } = useWindowScroll()
+    const [mounted, setMounted] = useState(false)
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    if (!mounted) return null
 
     return (
         <div
@@ -17,7 +26,7 @@ export const BackToTopButton = () => {
                     type="button"
                     className="relative w-12 h-12 mx-4 mb-4 rounded-full bg-accent flex items-center justify-center shadow-md"
                     style={{
-                        transition: "0.15s opacity ease",
+                        transition: "1s opacity ease",
                     }}
                     onClick={() => {
                         window.scrollTo({

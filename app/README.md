@@ -1,23 +1,32 @@
-<p align="center">
-  <a href="https://corehalla.com">
-    <img src="./public/images/Corehalla_Logo.gif" height="128">
-    <h1 align="center">Corehalla</h1>
-  </a>
-  <p align="center">
-  View official rankings, player and clan stats, or find a community, and join the fight!
-  </p>
-</p>
-<p align="center">
-    <a aria-label="Corehalla Website" href="https://corehalla.com" target="_blank">
-        <img alt="" src="https://img.shields.io/website.svg?url=http%3A%2F%2Fcorehalla.com&style=for-the-badge&labelColor=202020&label=Corehalla">
-    </a>
-    <a aria-label="License" href="https://github.com/djobbo/corehalla/blob/master/LICENSE.md" target="_blank">
-        <img alt="" src="https://img.shields.io/github/license/djobbo/corehalla.svg?style=for-the-badge&labelColor=202020">
-    </a>
-    <a aria-label="Corehalla Discord" href="https://discord.com/invite/eD248ez" target="_blank">
-        <img alt="" src="https://img.shields.io/badge/Join%20the%20discord-5865F2.svg?style=for-the-badge&logo=Discord&labelColor=202020&logoWidth=20&logoColor=white">
-    </a>
-    <a aria-label="Corehalla Twitter" href="https://twitter.com/Corehalla" target="_blank">
-        <img alt="" src="https://img.shields.io/badge/Follow-1DA1F2.svg?style=for-the-badge&logo=Twitter&labelColor=202020&logoWidth=20&logoColor=white">
-    </a>
-</p>
+# Corehalla Web App
+
+## Pages -> App Dir Migration
+
+- [x] new app with nextjs appdir
+    - [x] me
+        - [x] favorites
+    - [x] rankings
+        - [x] 1v1
+        - [x] 2v2
+        - [x] clans
+        - [x] global (legends/weapons...)
+        - [x] power
+    - [x] stats
+        - [x] clan [clanId] + tabs
+        - [x] player [playerId] + tabs
+    - [ ] 400 / 500
+- [ ] validate bhapi with zod
+- [ ] rename all zod "validators" to "schemas"
+- [ ] reduce usage of 'use client' in components
+- [ ] clean "replays" from copy paste
+- [ ] trpc
+- [ ] replace prisma with drizzle
+- [x] seo metadata
+- [ ] change components to shadcn
+- [ ] readd adsense
+- [ ] rename favorites to bookmarks
+- [ ] add up to 5 localstorage favorites?
+- [ ] history?
+- [ ] check deadcode
+- [ ] migrate providers to zustand
+- [ ] sitemap

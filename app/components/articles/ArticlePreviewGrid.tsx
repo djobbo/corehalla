@@ -1,15 +1,20 @@
 import { ArticlePreview } from "./ArticlePreview"
-import type { BHArticle } from "web-parser/bh-articles/parseBHArticlesPage"
+import {
+    type BrawlhallaArticleVariables,
+    getBrawlhallaArticles,
+} from "web-parser/common"
 
-type ArticlePreviewGridProps = {
-    articles: BHArticle[]
-}
+export const ArticlePreviewGrid = async (
+    props: Partial<BrawlhallaArticleVariables>,
+) => {
+    const articles = await getBrawlhallaArticles(props)
 
-export const ArticlePreviewGrid = ({ articles }: ArticlePreviewGridProps) => {
+    if (!articles || articles.length <= 0) return null
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {articles.map((article) => (
-                <ArticlePreview key={article.id} article={article} />
+                <ArticlePreview key={article.slug} article={article} />
             ))}
         </div>
     )

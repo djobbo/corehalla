@@ -1,7 +1,9 @@
-import { AppLink } from "ui/base/AppLink"
+"use client"
+
 import { Button } from "ui/base/Button"
 import { CloseIcon, DiscordIcon, GithubIcon, TwitterIcon } from "ui/icons"
 import { useLocalStorageState } from "common/hooks/useLocalStorageState"
+import Link from "next/link"
 
 export const FirstTimePopup = () => {
     const [showPopup, setShowPopup] = useLocalStorageState(
@@ -20,37 +22,37 @@ export const FirstTimePopup = () => {
                 <br />
                 <span className="flex items-center gap-4">
                     <span className="text-sm text-textVar1">Join us:</span>
-                    <AppLink
+                    <Link
                         className="text-textVar1 hover:text-text"
                         href="/discord"
                         target="_blank"
                     >
                         <DiscordIcon size="24" />
-                    </AppLink>
-                    <AppLink
+                    </Link>
+                    <Link
                         className="text-textVar1 hover:text-text"
                         href="/twitter"
                         target="_blank"
                     >
                         <TwitterIcon size="24" />
-                    </AppLink>
-                    <AppLink
+                    </Link>
+                    <Link
                         className="text-textVar1 hover:text-text"
                         href="/github"
                         target="_blank"
                     >
                         <GithubIcon size="24" />
-                    </AppLink>
+                    </Link>
                 </span>
                 <span className="block text-xs text-textVar1">
                     If you want, you can still visit the legacy website here:{" "}
-                    <AppLink
+                    <Link
                         href="https://old.corehalla.com"
                         className="text-text text-sm font-bold hover:text-accent cursor-pointer"
                         target="_blank"
                     >
                         old.corehalla.com
-                    </AppLink>
+                    </Link>
                 </span>
             </p>
             <Button

@@ -2,14 +2,14 @@ import { getRankings } from "bhapi"
 import { logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "../../trpc"
-import { rankedRegionValidator } from "bhapi/constants"
+import { rankedRegionSchema } from "bhapi/constants"
 import { withTimeLog } from "../../helpers/withTimeLog"
 import { z } from "zod"
 
 export const get1v1Rankings = publicProcedure //
     .input(
         z.object({
-            region: rankedRegionValidator,
+            region: rankedRegionSchema,
             page: numericLiteralValidator,
             name: z.optional(z.string()),
         }),
@@ -55,7 +55,7 @@ export const get1v1Rankings = publicProcedure //
 export const get2v2Rankings = publicProcedure //
     .input(
         z.object({
-            region: rankedRegionValidator,
+            region: rankedRegionSchema,
             page: numericLiteralValidator,
         }),
     )

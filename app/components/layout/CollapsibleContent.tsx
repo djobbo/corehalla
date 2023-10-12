@@ -16,6 +16,7 @@ export type CollapsibleContentProps = {
     closingArrow?: boolean
 }
 
+// TODO: use shadcn ui for this [CollapsibleContent]
 export const CollapsibleContent = ({
     className,
     triggerClassName,

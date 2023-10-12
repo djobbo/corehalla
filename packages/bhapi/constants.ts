@@ -12,7 +12,7 @@ export const rankedTierNames = [
     "Diamond",
 ]
 
-export type RankedTierName = typeof rankedTierNames[number]
+export type RankedTierName = (typeof rankedTierNames)[number]
 
 export const rankedTiers = [
     ["Diamond", 2000],
@@ -46,9 +46,9 @@ export const rankedTiers = [
 
 export const rankedTiersComplete = rankedTiers.map(([tier]) => tier)
 
-export type RankedTier = typeof rankedTiersComplete[number] | "Valhallan"
+export type RankedTier = (typeof rankedTiersComplete)[number] | "Valhallan"
 
-const rankedRegionsValidators = [
+const rankedRegionsSchemas = [
     z.literal("all"),
     z.literal("us-e"),
     z.literal("eu"),
@@ -61,13 +61,29 @@ const rankedRegionsValidators = [
     z.literal("me"),
 ] as const
 
-export const rankedRegionValidator = z.union(rankedRegionsValidators)
+export const rankedRegionSchema = z.union(rankedRegionsSchemas).catch("all")
 
-export const rankedRegions = rankedRegionsValidators.map(
+export const rankedRegions = rankedRegionsSchemas.map(
     (validator) => validator.value,
 )
 
-export type RankedRegion = z.infer<typeof rankedRegionValidator>
+const powerRankedRegionsSchemas = [
+    z.literal("na"),
+    z.literal("eu"),
+    z.literal("sa"),
+    z.literal("sea"),
+    z.literal("aus"),
+] as const
+
+export const powerRankedRegionSchema = z
+    .union(powerRankedRegionsSchemas)
+    .catch("na")
+
+export const powerRankedRegions = powerRankedRegionsSchemas.map(
+    (validator) => validator.value,
+)
+
+export type RankedRegion = z.infer<typeof rankedRegionSchema>
 
 export const weapons = [
     "Grapple Hammer",
@@ -86,8 +102,8 @@ export const weapons = [
     "Battle Boots",
 ] as const
 
-export type Weapon = typeof weapons[number]
+export type Weapon = (typeof weapons)[number]
 
 export const clanRanks = ["Leader", "Officer", "Member", "Recruit"] as const
 
-export type ClanRank = typeof clanRanks[number]
+export type ClanRank = (typeof clanRanks)[number]

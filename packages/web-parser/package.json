@@ -7,6 +7,7 @@
         "parse-bh-articles:dev": "tsnd --respawn ./bh-articles/dev.ts",
         "parse-pr:dev": "tsnd --respawn ./power-rankings/dev.ts",
         "parse-weekly-rot:dev": "tsnd --respawn ./weekly-rotation/dev.ts",
+        "new-api:dev": "tsnd --respawn ./common/dev.ts",
         "ts:check": "tsc --noEmit"
     },
     "dependencies": {
@@ -14,10 +15,10 @@
         "bhapi": "workspace:*",
         "cheerio": "1.0.0-rc.12",
         "logger": "workspace:*",
-        "zod": "^3.20.2"
+        "zod": "^3.22.4"
     },
     "devDependencies": {
-        "@types/node": "^18.11.18",
+        "@types/node": "^20.8.3",
         "ts-node": "^10.9.1",
         "ts-node-dev": "^2.0.0",
         "tsconfig": "workspace:*",
