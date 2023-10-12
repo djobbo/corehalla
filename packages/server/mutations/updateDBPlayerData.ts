@@ -64,8 +64,8 @@ export const updateDBPlayerData = async (
         falls,
         suicides,
         teamkos,
-        damagedealt,
-        damagetaken,
+        damageDealt,
+        damageTaken,
     } = getLegendsAccumulativeData(legends)
 
     const { unarmed, gadgets, throws } = getWeaponlessData(legends)
@@ -84,8 +84,8 @@ export const updateDBPlayerData = async (
         rankedWins: playerRanked.wins,
         tier: playerRanked.tier,
         region: playerRanked.region,
-        damageDealt: damagedealt,
-        damageTaken: damagetaken,
+        damageDealt,
+        damageTaken,
         kos,
         falls,
         suicides,

@@ -1,4 +1,7 @@
-import { getRankings } from "bhapi"
+import {
+    get1v1Rankings as get1v1RankingsFn,
+    get2v2Rankings as get2v2RankingsFn,
+} from "bhapi"
 import { logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "../../trpc"
@@ -22,9 +25,9 @@ export const get1v1Rankings = publicProcedure //
             // const controller = new AbortController()
 
             const rankings = await withTimeLog(
-                getRankings,
+                get1v1RankingsFn,
                 "BHAPI:rankings1v1",
-            )("1v1", region, page, name)
+            )(region, page, name)
 
             // Fire and forget
             // const fireAndForget = withTimeLog(
@@ -67,9 +70,9 @@ export const get2v2Rankings = publicProcedure //
             // const controller = new AbortController()
 
             const rankings = await withTimeLog(
-                getRankings,
+                get2v2RankingsFn,
                 "BHAPI:rankings2v2",
-            )("2v2", region, page)
+            )(region, page)
 
             // Fire and forget
             // const fireAndForget = withTimeLog(

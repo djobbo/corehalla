@@ -72,15 +72,15 @@ export const get2v2Rankings = async (region: RankedRegion, page: number) => {
     return rankings2v2Mock
 }
 
-export const getPlayerStats = async (playerId: string) =>
+export const getPlayerStats = async (playerId: string | number) =>
     __DEV ? playerStatsMock : getBhApi<PlayerStats>(`/player/${playerId}/stats`)
 
-export const getPlayerRanked = async (playerId: string) =>
+export const getPlayerRanked = async (playerId: string | number) =>
     __DEV
         ? playerRankedMock
         : getBhApi<PlayerRanked>(`/player/${playerId}/ranked`)
 
-export const getClan = async (clanId: string) =>
+export const getClan = async (clanId: string | number) =>
     __DEV ? clanMock : getBhApi<Clan>(`/clan/${clanId}`)
 
 export const getAllLegends = async () => getBhApi("/legend/all")

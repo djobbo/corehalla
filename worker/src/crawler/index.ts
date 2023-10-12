@@ -1,5 +1,5 @@
 import { formatTime } from "common/helpers/date"
-import { getPlayerStats, getRankings } from "bhapi"
+import { get1v1Rankings, getPlayerStats } from "bhapi"
 import { logInfo, logWarning } from "logger"
 import { supabaseService } from "db/supabase/service"
 import { updateDBPlayerData } from "server/mutations/updateDBPlayerData"
@@ -68,7 +68,7 @@ const createCrawlerQueue = async (config: CrawlerConfig) => {
 
                 logInfo("Crawling leaderboard page", currentPage)
                 const players = await requestWithMinimumDelay(
-                    () => getRankings("1v1", "all", currentPage),
+                    () => get1v1Rankings("all", currentPage),
                     delayMs,
                 )
 
