@@ -1,16 +1,18 @@
 {
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**"
+      ]
     },
     "lint": {
       "outputs": []
     },
     "ts:check": {
-      "outputs": []
-    },
-    "ci:deadcode": {
       "outputs": []
     },
     "ci:lint": {
