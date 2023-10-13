@@ -15,6 +15,16 @@ import { Toaster } from "react-hot-toast"
 const montserrat = Montserrat({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
+    metadataBase: new URL(
+        process.env.SITE_URL ?? `http://localhost:${process.env.PORT ?? 3000}`,
+    ),
+    alternates: {
+        canonical: "/",
+        languages: {
+            "en-US": "/en-US",
+            "de-DE": "/de-DE",
+        },
+    },
     title: "Track your Brawlhalla stats, view rankings, and more! • Corehalla",
     description:
         "Improve your Brawlhalla Game, and find your place among the Elite with our in-depth Player and Clan stats tracking and live leaderboards.",

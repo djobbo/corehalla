@@ -8,6 +8,7 @@ const config: KnipConfig = {
         // TODO: remove this
         "packages/server/**",
     ],
+    ignoreDependencies: ["encoding", "sharp"],
 }
 
 export default config
