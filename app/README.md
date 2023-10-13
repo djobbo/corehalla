@@ -10,13 +10,13 @@
         - [x] 2v2
         - [x] clans
         - [x] global (legends/weapons...)
-        - [x] power
+        - [ ] power
     - [x] stats
         - [x] clan [clanId] + tabs
         - [x] player [playerId] + tabs
 - [x] seo metadata
 - [x] clean "replays" from copy paste
-- [ ] check deadcode
+- [x] check deadcode
 - [ ] Error handling
     - [ ] 404
     - [ ] 500
