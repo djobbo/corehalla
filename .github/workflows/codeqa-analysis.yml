@@ -14,6 +14,8 @@ jobs:
                       action: pnpm ts:check
                     - name: Check Deadcode
                       action: pnpm ci:deadcode
+                    - name: Deadcode
+                      action: pnpm deadcode
         steps:
             - uses: actions/checkout@v3
             - uses: pnpm/action-setup@v2
