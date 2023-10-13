@@ -2,7 +2,7 @@
 
 import { BackToTopIcon } from "ui/icons"
 import { Tooltip } from "ui/base/Tooltip"
-import { cn } from "common/helpers/classnames"
+import { cn } from "@/lib/utils"
 import { useEffect, useState } from "react"
 import { useWindowScroll } from "common/hooks/useWindowScroll"
 

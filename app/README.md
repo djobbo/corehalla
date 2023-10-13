@@ -14,19 +14,23 @@
     - [x] stats
         - [x] clan [clanId] + tabs
         - [x] player [playerId] + tabs
-    - [ ] 400 / 500
+- [x] seo metadata
+- [x] clean "replays" from copy paste
+- [ ] check deadcode
+- [ ] Error handling
+    - [ ] 404
+    - [ ] 500
+    - [ ] all pages
 - [ ] validate bhapi with zod
 - [ ] rename all zod "validators" to "schemas"
 - [ ] reduce usage of 'use client' in components
-- [ ] clean "replays" from copy paste
 - [ ] trpc
 - [ ] replace prisma with drizzle
-- [x] seo metadata
 - [ ] change components to shadcn
 - [ ] readd adsense
 - [ ] rename favorites to bookmarks
 - [ ] add up to 5 localstorage favorites?
 - [ ] history?
-- [ ] check deadcode
 - [ ] migrate providers to zustand
 - [ ] sitemap
+- [ ] replace icons with lucide.dev icons

@@ -1,6 +1,6 @@
 import { CollapsibleContent } from "./CollapsibleContent"
 import { SectionTitle } from "./SectionTitle"
-import { cn } from "common/helpers/classnames"
+import { cn } from "@/lib/utils"
 import type { CollapsibleContentProps } from "./CollapsibleContent"
 import type { ReactNode } from "react"
 

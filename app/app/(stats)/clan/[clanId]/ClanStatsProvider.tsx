@@ -7,7 +7,7 @@ type ClanStatsContext = {
     clan: Clan | null
 }
 
-export const clanStatsContext = createContext<ClanStatsContext>({
+const clanStatsContext = createContext<ClanStatsContext>({
     clan: null,
 })
 

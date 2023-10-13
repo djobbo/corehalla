@@ -2,18 +2,6 @@ import { z } from "zod"
 
 export type BrawlhallaID = string | number
 
-export const rankedTierNames = [
-    "Unranked",
-    "Tin",
-    "Bronze",
-    "Silver",
-    "Gold",
-    "Platinum",
-    "Diamond",
-]
-
-export type RankedTierName = (typeof rankedTierNames)[number]
-
 export const rankedTiers = [
     ["Diamond", 2000],
     ["Platinum 5", 1936],
@@ -44,7 +32,7 @@ export const rankedTiers = [
     ["Tin 0", 200],
 ] as const
 
-export const rankedTiersComplete = rankedTiers.map(([tier]) => tier)
+const rankedTiersComplete = rankedTiers.map(([tier]) => tier)
 
 export type RankedTier = (typeof rankedTiersComplete)[number] | "Valhallan"
 
@@ -104,6 +92,6 @@ export const weapons = [
 
 export type Weapon = (typeof weapons)[number]
 
-export const clanRanks = ["Leader", "Officer", "Member", "Recruit"] as const
+const clanRanks = ["Leader", "Officer", "Member", "Recruit"] as const
 
 export type ClanRank = (typeof clanRanks)[number]

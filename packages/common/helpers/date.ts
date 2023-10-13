@@ -4,7 +4,7 @@ import { unix } from "dayjs"
  * @error returns different dates in client or ssr mode
  * @issue https://github.com/iamkun/dayjs/issues/1690
  */
-export const getDateFromUnixTime = (unixTime: number, template?: string) =>
+const getDateFromUnixTime = (unixTime: number, template?: string) =>
     unix(unixTime).format(template)
 
 type HMSTime = {
@@ -13,7 +13,7 @@ type HMSTime = {
     seconds: number
 }
 
-export const getHMSFromSeconds = (seconds: number): HMSTime => {
+const getHMSFromSeconds = (seconds: number): HMSTime => {
     const minutes = Math.floor(seconds / 60)
     const hours = Math.floor(minutes / 60)
 
@@ -24,7 +24,7 @@ export const getHMSFromSeconds = (seconds: number): HMSTime => {
     }
 }
 
-export const getHMSStringFromSeconds = (
+const getHMSStringFromSeconds = (
     milliseconds: number,
     template: ({ hours, minutes, seconds }: HMSTime) => string,
 ) => {

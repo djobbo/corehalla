@@ -7,7 +7,7 @@ import { SearchButton } from "@/components/search/SearchButton"
 import { SectionTitle } from "@/components/layout/SectionTitle"
 import { Suspense } from "react"
 import { WeeklyRotation } from "./_landing/WeeklyRotation"
-import { cn } from "common/helpers/classnames"
+import { cn } from "@/lib/utils"
 import { css } from "ui/theme"
 import Link from "next/link"
 

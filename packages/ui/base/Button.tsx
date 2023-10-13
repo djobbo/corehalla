@@ -5,7 +5,7 @@ import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from "react"
 type ButtonType = "a" | "button"
 type ButtonStyle = "primary" | "outline"
 
-export type ButtonProps<Type extends ButtonType> = {
+type ButtonProps<Type extends ButtonType> = {
     as?: Type
     buttonStyle?: ButtonStyle
     large?: boolean

@@ -3,7 +3,7 @@ import { ClanIcon } from "ui/icons"
 import { CollapsibleSection } from "@/components/layout/CollapsibleSection"
 import { MiscStatGroup } from "@/components/stats/MiscStatGroup"
 import { cleanString } from "common/helpers/cleanString"
-import { cn } from "common/helpers/classnames"
+import { cn } from "@/lib/utils"
 import { usePlayerStats } from "../PlayerStatsProvider"
 
 export const ClanContent = () => {

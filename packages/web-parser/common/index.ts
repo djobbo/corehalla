@@ -9,7 +9,7 @@ const BRAWLHALLA_GRAPHQL_API_HEADERS = {
     "Content-Type": "application/json",
 }
 
-export const getBrawlhallaGraphQLAPI = async <T>(
+const getBrawlhallaGraphQLAPI = async <T>(
     query: string,
     variables?: Record<string, unknown>,
 ): Promise<T> => {
@@ -192,7 +192,7 @@ export const getWeeklyRotation = async () => {
     return weeklyRotation
 }
 
-export const getBrawlhallaArticle = async (slug: string) => {
+const getBrawlhallaArticle = async (slug: string) => {
     const url = `${BRAWLHALLA_WP_API_URL}/posts?_embed&slug=${slug}`
 
     const { data } = await axios.get<
@@ -258,5 +258,3 @@ export const getBrawlhallaArticle = async (slug: string) => {
         })),
     }
 }
-
-export type BrawlhallaArticle = Awaited<ReturnType<typeof getBrawlhallaArticle>>

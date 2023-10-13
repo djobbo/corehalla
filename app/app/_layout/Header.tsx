@@ -10,7 +10,7 @@ import {
     SearchButton,
     SearchButtonIcon,
 } from "@/components/search/SearchButton"
-import { cn } from "common/helpers/classnames"
+import { cn } from "@/lib/utils"
 import { useAuth } from "@/providers/auth/AuthProvider"
 import { usePathname } from "next/navigation"
 import { useSideNav } from "@/providers/SideNavProvider"

@@ -3,7 +3,7 @@
 import { type BHClan } from "db/generated/client"
 import { CLANS_RANKINGS_PER_PAGE } from "./constants"
 import { cleanString } from "common/helpers/cleanString"
-import { cn } from "common/helpers/classnames"
+import { cn } from "@/lib/utils"
 import { formatUnixTime } from "common/helpers/date"
 import { useSearch } from "../../SearchProvider"
 import Link from "next/link"

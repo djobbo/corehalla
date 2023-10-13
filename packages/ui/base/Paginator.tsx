@@ -6,7 +6,7 @@ import { Select } from "./Select"
 import { cn } from "common/helpers/classnames"
 import { usePathname, useRouter } from "next/navigation"
 
-export type PaginatorPage = {
+type PaginatorPage = {
     id: string
     label?: ReactNode
     href: string

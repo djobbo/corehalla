@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm"
 import { publicProcedure } from "../../trpc"
 import { z } from "zod"
 
-export const getSingleReplay = publicProcedure
+export const getSingleUser = publicProcedure
     .input(z.string().optional().nullable())
     .query(async ({ input: id }) => {
         if (!id) return null

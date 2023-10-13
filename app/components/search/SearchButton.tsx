@@ -2,7 +2,7 @@
 
 import { Kbd } from "ui/base/Kbd"
 import { SearchIcon } from "ui/icons"
-import { cn } from "common/helpers/classnames"
+import { cn } from "@/lib/utils"
 import { useDevice } from "common/hooks/useDevice"
 import { useKBar } from "kbar"
 

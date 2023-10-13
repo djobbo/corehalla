@@ -4,6 +4,7 @@ import { playerStatsMock } from "./mocks/playerStats"
 import { rankings1v1Mock } from "./mocks/rankings1v1"
 import { rankings2v2Mock } from "./mocks/rankings2v2"
 import axios from "axios"
+import type { BrawlhallaID, RankedRegion } from "./constants"
 import type {
     Clan,
     PlayerRanked,
@@ -11,7 +12,6 @@ import type {
     Ranking1v1,
     Ranking2v2,
 } from "./types"
-import type { RankedRegion } from "./constants"
 
 const __DEV = process.env.NODE_ENV === "development"
 
@@ -72,15 +72,15 @@ export const get2v2Rankings = async (region: RankedRegion, page: number) => {
     return rankings2v2Mock
 }
 
-export const getPlayerStats = async (playerId: string | number) =>
+export const getPlayerStats = async (playerId: BrawlhallaID) =>
     __DEV ? playerStatsMock : getBhApi<PlayerStats>(`/player/${playerId}/stats`)
 
-export const getPlayerRanked = async (playerId: string | number) =>
+export const getPlayerRanked = async (playerId: BrawlhallaID) =>
     __DEV
         ? playerRankedMock
         : getBhApi<PlayerRanked>(`/player/${playerId}/ranked`)
 
-export const getClan = async (clanId: string | number) =>
+export const getClan = async (clanId: BrawlhallaID) =>
     __DEV ? clanMock : getBhApi<Clan>(`/clan/${clanId}`)
 
 export const getAllLegends = async () => getBhApi("/legend/all")

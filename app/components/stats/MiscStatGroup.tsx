@@ -1,5 +1,5 @@
 import { Tooltip } from "ui/base/Tooltip"
-import { cn } from "common/helpers/classnames"
+import { cn } from "@/lib/utils"
 import { css } from "ui/theme"
 import type { ReactNode } from "react"
 

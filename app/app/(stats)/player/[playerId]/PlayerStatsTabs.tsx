@@ -1,6 +1,6 @@
 "use client"
 
-import { cn } from "common/helpers/classnames"
+import { cn } from "@/lib/utils"
 import { css, theme } from "ui/theme"
 import { usePlayerStats } from "./PlayerStatsProvider"
 import { useSelectedLayoutSegment } from "next/navigation"

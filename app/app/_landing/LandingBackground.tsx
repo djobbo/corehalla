@@ -1,4 +1,4 @@
-import { cn } from "common/helpers/classnames"
+import { cn } from "@/lib/utils"
 
 type LandingBackgroundProps = {
     className?: string

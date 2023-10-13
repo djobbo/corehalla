@@ -1,22 +1,18 @@
 "use client"
 
 import { AppLink } from "ui/base/AppLink"
-import { DiscordIcon } from "ui/icons"
 import {
-    HiBookOpen,
-    HiChevronDoubleUp,
-    HiHeart,
-    HiHome,
-    HiLightningBolt,
-    HiUserGroup,
-    HiUsers,
-    HiX,
-} from "react-icons/hi"
+    DiscordIcon,
+    Rankings1v1Icon,
+    Rankings2v2Icon,
+    RankingsPowerIcon,
+} from "ui/icons"
+import { HiBookOpen, HiHeart, HiHome, HiUserGroup, HiX } from "react-icons/hi"
 // TODO: replace react-icons with lucide
 import { Image } from "@/components/Image"
 import { Tooltip } from "ui/base/Tooltip"
 import { cleanString } from "common/helpers/cleanString"
-import { cn } from "common/helpers/classnames"
+import { cn } from "@/lib/utils"
 import { css } from "ui/theme"
 import { legendsMap } from "bhapi/legends"
 import { useFavorites } from "@/providers/auth/AuthProvider"
@@ -123,20 +119,20 @@ const defaultNav: {
     },
     {
         name: "1v1 Rankings",
-        icon: <HiChevronDoubleUp className="w-6 h-6" />,
+        icon: <Rankings1v1Icon className="w-6 h-6" />,
         href: "/ranked/1v1",
         exact: false,
     },
     {
         name: "2v2 Rankings",
-        icon: <HiUsers className="w-6 h-6" />,
+        icon: <Rankings2v2Icon className="w-6 h-6" />,
         href: "/ranked/2v2",
         exact: false,
     },
     {
         name: "Power Rankings",
         href: "/power-rankings",
-        icon: <HiLightningBolt className="w-6 h-6" />,
+        icon: <RankingsPowerIcon className="w-6 h-6" />,
     },
     {
         name: "Clans",

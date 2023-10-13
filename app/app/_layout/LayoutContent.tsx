@@ -7,7 +7,7 @@ import { bgVar1 } from "ui/theme/theme"
 import { styled } from "ui/theme"
 import type { ReactNode } from "react"
 
-export type LayoutContentProps = {
+type LayoutContentProps = {
     children: ReactNode
 }
 
