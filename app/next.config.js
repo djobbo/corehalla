@@ -19,18 +19,23 @@ const withTM = require("next-transpile-modules")([
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
-    // TODO: uncomment this when upgrading to next@13.1+
-    // transpilePackages: [
-    //     "bhapi",
-    //     "ui",
-    //     "logger",
-    //     "common",
-    //     "db",
-    //     "web-parser",
-    //     "server",
-    // ],
+    transpilePackages: [
+        "bhapi",
+        "ui",
+        "logger",
+        "common",
+        "db",
+        "web-parser",
+        "server",
+    ],
     images: {
         domains: ["cdn.discordapp.com", "www.brawlhalla.com"],
+    },
+    experimental: {
+        logging: {
+            level: "verbose",
+            fullUrl: true,
+        },
     },
     async redirects() {
         return [
