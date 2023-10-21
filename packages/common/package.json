@@ -2,10 +2,10 @@
     "name": "common",
     "version": "0.0.0",
     "devDependencies": {
-        "@types/node": "^20.8.3",
-        "@types/react": "^18.2.25",
+        "@types/node": "^20.8.7",
+        "@types/react": "^18.2.31",
         "tsconfig": "workspace:*",
-        "typescript": "^4.9.4"
+        "typescript": "^5.2.2"
     },
     "scripts": {
         "ts:check": "tsc --noEmit"

@@ -34,3 +34,4 @@
 - [ ] migrate providers to zustand
 - [ ] sitemap
 - [ ] replace icons with lucide.dev icons
+- [ ] remove axios

@@ -15,10 +15,10 @@
         "logger": "workspace:*"
     },
     "devDependencies": {
-        "@types/node": "^20.8.3",
+        "@types/node": "^20.8.7",
         "ts-node": "^10.9.1",
         "ts-node-dev": "^2.0.0",
         "tsconfig": "workspace:*",
-        "typescript": "^4.9.4"
+        "typescript": "^5.2.2"
     }
 }

@@ -1,10 +1,10 @@
 "use client"
 
-import { AppLink } from "./AppLink"
 import { type ReactNode } from "react"
 import { Select } from "./Select"
 import { cn } from "common/helpers/classnames"
 import { usePathname, useRouter } from "next/navigation"
+import Link from "next/link"
 
 type PaginatorPage = {
     id: string
@@ -65,7 +65,7 @@ export const Paginator = ({
             >
                 {pages.map(({ id, label, href }) => {
                     return (
-                        <AppLink
+                        <Link
                             key={id}
                             href={href}
                             className={cn(
@@ -77,7 +77,7 @@ export const Paginator = ({
                             )}
                         >
                             {label ?? id}
-                        </AppLink>
+                        </Link>
                     )
                 })}
             </div>

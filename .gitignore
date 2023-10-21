@@ -17,6 +17,7 @@ build
 # misc
 .DS_Store
 *.pem
+.trash/
 
 # debug
 npm-debug.log*
@@ -38,3 +39,9 @@ yarn-error.log*
 
 # typescript
 tsconfig.tsbuildinfo
+
+# Obsidian
+.obsidian/*
+.obsidian-git-data
+Untitled*
+null*

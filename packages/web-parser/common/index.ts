@@ -1,5 +1,7 @@
 import { legends } from "bhapi/legends"
 import { load as loadHtml } from "cheerio"
+import { logError, logInfo } from "logger"
+import { z } from "zod"
 import axios from "axios"
 
 const BRAWLHALLA_GRAPHQL_API_URL = "https://cms.brawlhalla.com/graphql"
@@ -27,9 +29,19 @@ const getBrawlhallaGraphQLAPI = async <T>(
     return data
 }
 
+export const brawlhallaArticleCategorySchema = z.union([
+    z.literal(""),
+    z.literal("weekly-rotation"),
+    z.literal("patch-notes"),
+])
+
+export type BrawlhallaArticleCategory = z.infer<
+    typeof brawlhallaArticleCategorySchema
+>
+
 export type BrawlhallaArticleVariables = {
     first: number | null
-    category: string | null
+    category: BrawlhallaArticleCategory | null
     after: number | null
 }
 
@@ -161,22 +173,26 @@ export const getWeeklyRotation = async () => {
 
     const $ = loadHtml(content)
 
-    // Find the paragraph containing the required "free-to-play" phrase
-    const foundParagraph = $("p")
+    // Find list directly following the paragraph containing the required "free-to-play" phrase
+    const legendsList = $("p + ul")
         .filter((index, element) => {
-            const paragraphText = $(element).text().toLowerCase()
+            const el = $(element)
+            const paragraphText = el.prev("p").text().toLowerCase()
             return paragraphText.includes("free-to-play legend rotation")
         })
         .first()
 
-    if (!foundParagraph.length) {
+    if (legendsList.length < 1) {
+        logError("getWeeklyRotation", "Could not find legends list")
         return []
     }
+
     // Select all list items within the <ul> following the found paragraph
-    const listItems = foundParagraph.next("ul").find("li")
+    const legendsListItems = legendsList.find("li")
+    logInfo("getWeeklyRotation", `Found ${legendsListItems.length} list items`)
 
     // Extract the legend names
-    const weeklyRotation = listItems
+    const weeklyRotation = legendsListItems
         .map((index, element) => {
             const text = $(element).text()
             const legendName = text.split(" – ")[0] // Extracts the name before the hyphen
