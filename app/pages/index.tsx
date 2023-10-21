@@ -11,7 +11,6 @@ import { cn } from "common/helpers/classnames"
 import { css } from "ui/theme"
 import { useAuth, useFavorites } from "@ctx/auth/AuthProvider"
 import { useBrawlhallaArticles } from "@hooks/useBrawlhallaArticles"
-import { useWeeklyRotation } from "@hooks/useWeeklyRotation"
 
 const landingClassName = css({
     height: "60vh",
@@ -21,8 +20,7 @@ const landingClassName = css({
 const Page = () => {
     const { isLoggedIn, signIn } = useAuth()
     const { favorites } = useFavorites()
-    const { articles } = useBrawlhallaArticles("1", "", 3)
-    const { weeklyRotation } = useWeeklyRotation()
+    const { articles } = useBrawlhallaArticles(3)
 
     return (
         <>
@@ -138,12 +136,12 @@ const Page = () => {
                     </p>
                 )}
             </div>
-            <WeeklyRotation weeklyRotation={weeklyRotation} />
-            <SectionTitle className="text-center mt-16">
-                Latest News
-            </SectionTitle>
+            <WeeklyRotation />
             {articles.length > 0 && (
                 <>
+                    <SectionTitle className="text-center mt-16">
+                        Latest News
+                    </SectionTitle>
                     <ArticlePreviewGrid articles={articles} />
                 </>
             )}
