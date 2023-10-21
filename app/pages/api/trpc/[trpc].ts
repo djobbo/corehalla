@@ -16,9 +16,9 @@ export default trpcNext.createNextApiHandler({
         // checking we're doing a query request
         const isQuery = type === "query"
         if (allPublic && allOk && isQuery) {
-            // cache for 1 day + revalidate once every 15 minutes
+            // cache for 1 day + revalidate once every 30 seconds
             const CACHE_TIME = 60 * 60 * 24
-            const REVALIDATE_TIME = 60 * 15
+            const REVALIDATE_TIME = 30
 
             return {
                 headers: {
