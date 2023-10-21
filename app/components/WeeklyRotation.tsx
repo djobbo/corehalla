@@ -1,13 +1,11 @@
 import { Image } from "@components/Image"
 import { Tooltip } from "ui/base/Tooltip"
 import { UnknownIcon } from "ui/icons"
-import type { Legend } from "bhapi/types"
+import { useWeeklyRotation } from "@hooks/useWeeklyRotation"
 
-type WeeklyRotationProps = {
-    weeklyRotation: Legend[]
-}
+export const WeeklyRotation = () => {
+    const { weeklyRotation } = useWeeklyRotation()
 
-export const WeeklyRotation = ({ weeklyRotation }: WeeklyRotationProps) => {
     return (
         <div className="flex flex-col items-center">
             <div className="mx-auto grid gap-4 grid-cols-3 md:grid-cols-9 p-4 rounded-2xl bg-bgVar2 border border-bg">

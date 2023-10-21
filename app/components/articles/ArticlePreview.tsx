@@ -1,12 +1,16 @@
+import { type BHArticle } from "web-parser/common"
 import { Image } from "@components/Image"
-import type { BHArticle } from "web-parser/bh-articles/parseBHArticlesPage"
 
 type ArticlePreviewProps = {
     article: BHArticle
 }
 
+const BASE_BRAWLHALLA_ARTICLE_URL = "https://brawlhalla.com/news/"
+
 export const ArticlePreview = ({ article }: ArticlePreviewProps) => {
-    const { title, thumb, href, tags } = article
+    const { title, featuredImage, categories } = article
+
+    const href = `${BASE_BRAWLHALLA_ARTICLE_URL}${article.slug}`
 
     return (
         <div className="flex flex-col">
@@ -17,7 +21,7 @@ export const ArticlePreview = ({ article }: ArticlePreviewProps) => {
                 rel="noreferrer"
             >
                 <Image
-                    src={thumb}
+                    src={featuredImage.sourceUrl}
                     alt={title}
                     className="object-cover object-center"
                     Container={null}
@@ -25,12 +29,12 @@ export const ArticlePreview = ({ article }: ArticlePreviewProps) => {
                 />
             </a>
             <div className="flex justify-start items-center gap-2 mt-2">
-                {tags.map((tag) => (
+                {categories.map((category) => (
                     <span
-                        key={tag.type}
+                        key={category.slug}
                         className="px-2 py-1 text-xs rounded-md bg-bgVar2 text-textVar1"
                     >
-                        {tag.label}
+                        {category.name}
                     </span>
                 ))}
             </div>
