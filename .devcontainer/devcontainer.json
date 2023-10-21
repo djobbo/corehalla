@@ -17,7 +17,8 @@
 				"GitHub.vscode-pull-request-github",
 				"ms-azuretools.vscode-docker",
 				"usernamehw.errorlens",
-				"mrorz.language-gettext"
+				"mrorz.language-gettext",
+				"rangav.vscode-thunder-client"
 			],
 			"settings": {
 				"terminal.integrated.defaultProfile.linux": "zsh",
