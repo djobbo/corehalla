@@ -22,7 +22,7 @@
         "prisma": "prisma"
     },
     "devDependencies": {
-        "@types/react": "^18.0.26",
+        "@types/react": "^18.2.31",
         "discord-api-types": "^0.37.25",
         "prisma": "^4.8.0",
         "tsconfig": "workspace:*",

@@ -4,20 +4,8 @@ const COREHALLA_GITHUB_URL = "https://github.com/djobbo/corehalla"
 const COREHALLA_TWITTER_URL = "https://twitter.com/Corehalla"
 const COREHALLA_KOFI_URL = "https://ko-fi.com/corehalla"
 
-// TODO: remove this when upgrading to next@13.1+
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const withTM = require("next-transpile-modules")([
-    "bhapi",
-    "ui",
-    "logger",
-    "common",
-    "db",
-    "web-parser",
-    "server",
-])
-
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+module.exports = {
     reactStrictMode: true,
     transpilePackages: [
         "bhapi",
@@ -97,5 +85,3 @@ const nextConfig = {
         ]
     },
 }
-
-module.exports = withTM(nextConfig)

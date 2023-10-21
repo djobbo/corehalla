@@ -40,8 +40,8 @@
     },
     "devDependencies": {
         "@tanstack/query-core": "^4.22.0",
-        "@types/node": "^18.11.18",
-        "@types/react": "^18.0.26",
+        "@types/node": "^20.8.7",
+        "@types/react": "^18.2.31",
         "autoprefixer": "^10.4.13",
         "next-transpile-modules": "10.0.0",
         "postcss": "^8.4.20",

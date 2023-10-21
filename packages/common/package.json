@@ -2,8 +2,8 @@
     "name": "common",
     "version": "0.0.0",
     "devDependencies": {
-        "@types/node": "^18.11.18",
-        "@types/react": "^18.0.26",
+        "@types/node": "^20.8.7",
+        "@types/react": "^18.2.31",
         "tsconfig": "workspace:*",
         "typescript": "^4.9.4"
     },
