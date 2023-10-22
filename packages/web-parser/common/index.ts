@@ -1,6 +1,6 @@
 import { legends } from "bhapi/legends"
 import { load as loadHtml } from "cheerio"
-import { logError, logInfo } from "logger"
+import { logError } from "logger"
 import { z } from "zod"
 import axios from "axios"
 

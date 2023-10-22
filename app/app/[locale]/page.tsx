@@ -23,15 +23,7 @@ export const metadata = {
         "Improve your Brawlhalla Game, and find your place among the Elite with our in-depth Player and Clan stats tracking and live leaderboards.",
 }
 
-type HomeProps = {
-    params: {
-        locale: string
-    }
-}
-
-const t = (str: string) => str
-
-export default async function Home({ params: { locale } }: HomeProps) {
+export default async function Home() {
     return (
         <>
             <div className="flex flex-col items-center justify-center lg:gap-16 lg:flex-row">
