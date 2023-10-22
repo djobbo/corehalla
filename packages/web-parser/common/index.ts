@@ -189,8 +189,6 @@ export const getWeeklyRotation = async () => {
 
     // Select all list items within the <ul> following the found paragraph
     const legendsListItems = legendsList.find("li")
-    logInfo("getWeeklyRotation", `Found ${legendsListItems.length} list items`)
-
     // Extract the legend names
     const weeklyRotation = legendsListItems
         .map((index, element) => {

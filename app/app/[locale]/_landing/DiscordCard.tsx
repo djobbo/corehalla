@@ -3,8 +3,11 @@
 import { ArrowSmRightIcon, DiscordIcon, KofiIcon } from "ui/icons"
 import { Button } from "ui/base/Button"
 import { Image } from "@/components/Image"
+import { Trans } from "@lingui/macro"
 import { clamp } from "common/helpers/math"
 import { useEffect, useRef } from "react"
+
+const DISCORD_MEMBERS = "3.8k+"
 
 export const DiscordCard = () => {
     const containerRef = useRef<HTMLDivElement>(null)
@@ -70,13 +73,16 @@ export const DiscordCard = () => {
                         containerClassName="w-20 h-20 rounded-3xl -mt-10 ml-6 border-8 border-bgVar2 overflow-hidden"
                     />
                     <span className="text-sm ml-2 mt-2 text-textVar1 text-center">
-                        3.8k+ discord members, and growing!
+                        {/* {t`${DISCORD_MEMBERS} discord members, and growing!`} */}
+                        <Trans>
+                            {DISCORD_MEMBERS} discord members, and growing!
+                        </Trans>
                     </span>
                 </div>
                 <div className="h-64 flex flex-col justify-between">
                     <div className="p-6 flex flex-col gap-2 text-sm">
                         <p className="uppercase text-textVar1 font-semibold">
-                            Question of the day
+                            <Trans>Question of the day</Trans>
                         </p>
                         <p>
                             Which weapon(s) do you enjoy playing the most? and

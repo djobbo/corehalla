@@ -10,9 +10,14 @@
     "db:gen": "drizzle-kit generate:pg",
     "db:studio": "drizzle-kit studio",
     "db:push": "pnpm db:gen && tsx ./db/migrate.ts",
-    "ts:check": "tsc --noEmit"
+    "ts:check": "tsc --noEmit",
+    "locales:extract": "lingui extract --clean",
+    "locales:compile": "lingui compile"
   },
   "dependencies": {
+    "@lingui/core": "^4.5.0",
+    "@lingui/macro": "^4.5.0",
+    "@lingui/react": "^4.5.0",
     "@radix-ui/react-collapsible": "^1.0.3",
     "@tanstack/react-query": "^4.35.3",
     "@trpc/client": "^10.41.0",
@@ -30,7 +35,6 @@
     "drizzle-zod": "^0.5.1",
     "encoding": "^0.1.13",
     "i18next": "^23.6.0",
-    "i18next-resources-to-backend": "^1.1.4",
     "immer": "^10.0.3",
     "kbar": "0.1.0-beta.43",
     "logger": "workspace:*",
@@ -41,7 +45,6 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.1",
-    "react-i18next": "^13.3.1",
     "react-icons": "^4.11.0",
     "sharp": "^0.32.6",
     "superjson": "^2.0.0",
@@ -55,6 +58,10 @@
     "zustand": "^4.4.4"
   },
   "devDependencies": {
+    "@lingui/cli": "^4.5.0",
+    "@lingui/conf": "^4.5.0",
+    "@lingui/loader": "^4.5.0",
+    "@lingui/swc-plugin": "^4.0.4",
     "@types/pg": "^8.10.7",
     "drizzle-kit": "^0.19.13",
     "tsx": "^3.14.0"

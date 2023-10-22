@@ -6,10 +6,10 @@ import { LandingFavorites } from "./_landing/LandingFavorites"
 import { SearchButton } from "@/components/search/SearchButton"
 import { SectionTitle } from "@/components/layout/SectionTitle"
 import { Suspense } from "react"
+import { Trans } from "@lingui/macro"
 import { WeeklyRotation } from "./_landing/WeeklyRotation"
 import { cn } from "@/lib/utils"
 import { css } from "ui/theme"
-import { initServerTranslations } from "@/i18n/i18n"
 import Link from "next/link"
 
 const landingClassName = css({
@@ -29,9 +29,9 @@ type HomeProps = {
     }
 }
 
-export default async function Home({ params: { locale } }: HomeProps) {
-    const { t } = await initServerTranslations({ locale })
+const t = (str: string) => str
 
+export default async function Home({ params: { locale } }: HomeProps) {
     return (
         <>
             <div className="flex flex-col items-center justify-center lg:gap-16 lg:flex-row">
@@ -78,7 +78,7 @@ export default async function Home({ params: { locale } }: HomeProps) {
                     <div className="mt-8 flex items-center gap-3 sm:gap-6 flex-col sm:flex-row">
                         <SearchButton />
                         <span className="text-textVar1 text-sm sm:text-base">
-                            {t`or`}
+                            <Trans>or</Trans>
                         </span>
                         <div className="flex items-center gap-2">
                             <Button
@@ -86,7 +86,7 @@ export default async function Home({ params: { locale } }: HomeProps) {
                                 href="/rankings"
                                 className="whitespace-nowrap font-semibold"
                             >
-                                {t`View rankings`}
+                                <Trans>View rankings</Trans>
                             </Button>
                             <Button
                                 as="a"
@@ -94,7 +94,7 @@ export default async function Home({ params: { locale } }: HomeProps) {
                                 href="/rankings/2v2"
                                 className="whitespace-nowrap font-semibold"
                             >
-                                {t`2v2`}
+                                <Trans>2v2</Trans>
                             </Button>
                         </div>
                     </div>

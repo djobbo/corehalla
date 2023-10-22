@@ -7,8 +7,16 @@ const config: KnipConfig = {
         "**/reaccord.config.js",
         // TODO: remove this
         "packages/server/**",
+        ".obsidian/**",
+        "**/TransRSC.tsx",
     ],
-    ignoreDependencies: ["encoding", "sharp"],
+    ignoreDependencies: [
+        "encoding",
+        "sharp",
+        "@lingui/conf",
+        "@lingui/loader",
+        "@lingui/swc-plugin",
+    ],
 }
 
 export default config

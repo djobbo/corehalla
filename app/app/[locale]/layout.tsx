@@ -5,6 +5,7 @@ import { BackToTopButton } from "@/components/BackToTopButton"
 import { FeatureFlagsProvider } from "@/store/useFeatures"
 import { KBarProvider } from "@/components/search/KBarProvider"
 import { LayoutContent } from "./_layout/LayoutContent"
+import { LinguiProvider } from "@/i18n/LinguiProvider"
 import { type Metadata } from "next"
 import { Montserrat } from "next/font/google"
 import { type ReactNode } from "react"
@@ -12,6 +13,7 @@ import { SideNavProvider } from "@/providers/SideNavProvider"
 import { TRPCProvider } from "../_trpc/TRPCProvider"
 import { Toaster } from "react-hot-toast"
 import { dir } from "i18next"
+import { initServerTranslations } from "@/i18n/i18n"
 
 const montserrat = Montserrat({ subsets: ["latin"] })
 
@@ -81,28 +83,34 @@ export default async function RootLayout({
     children,
     params,
 }: RootLayoutProps) {
-    return (
-        <TRPCProvider>
-            <FeatureFlagsProvider>
-                <AuthProvider>
-                    <html lang={params.locale} dir={dir(params.locale)}>
-                        <body className={montserrat.className}>
-                            {/* TODO: reactivate GAScripts Google Analytics */}
-                            {/* <GAScripts /> */}
+    const i18nSetupData = await initServerTranslations(params)
 
-                            {/* TODO: change kbar for shadcn ui search */}
-                            <KBarProvider actions={[]} options={{}}>
-                                <SideNavProvider>
-                                    <Toaster />
-                                    <LayoutContent>{children}</LayoutContent>
-                                    {/* <Searchbox /> */}
-                                    <BackToTopButton />
-                                </SideNavProvider>
-                            </KBarProvider>
-                        </body>
-                    </html>
-                </AuthProvider>
-            </FeatureFlagsProvider>
-        </TRPCProvider>
+    return (
+        <LinguiProvider {...i18nSetupData}>
+            <TRPCProvider>
+                <FeatureFlagsProvider>
+                    <AuthProvider>
+                        <html lang={params.locale} dir={dir(params.locale)}>
+                            <body className={montserrat.className}>
+                                {/* TODO: reactivate GAScripts Google Analytics */}
+                                {/* <GAScripts /> */}
+
+                                {/* TODO: change kbar for shadcn ui search */}
+                                <KBarProvider actions={[]} options={{}}>
+                                    <SideNavProvider>
+                                        <Toaster />
+                                        <LayoutContent>
+                                            {children}
+                                        </LayoutContent>
+                                        {/* <Searchbox /> */}
+                                        <BackToTopButton />
+                                    </SideNavProvider>
+                                </KBarProvider>
+                            </body>
+                        </html>
+                    </AuthProvider>
+                </FeatureFlagsProvider>
+            </TRPCProvider>
+        </LinguiProvider>
     )
 }

@@ -1,52 +1,47 @@
-import { type Locale, defaultLocale, locales } from "./i18nConfig"
-import { type ResourceLanguage, createInstance } from "i18next"
-import { initReactI18next } from "react-i18next/initReactI18next"
-import { z } from "zod"
-import resourcesToBackend from "i18next-resources-to-backend"
+import { type I18n, setupI18n } from "@lingui/core"
+import { type Locale, localeSchema } from "./i18nConfig"
+import { cache } from "react"
+import { logError } from "logger"
 
-const localeSchema = z.enum(locales).catch(defaultLocale)
+const getLocaleCtx = cache((): { current: I18n | undefined } => {
+    return { current: undefined }
+})
+
+export const setI18n = (locale: I18n) => {
+    getLocaleCtx().current = locale
+}
+
+export const getI18n = (): I18n | undefined => {
+    return getLocaleCtx().current
+}
+
+const loadCatalog = async (locale: string) => {
+    try {
+        const catalog = await import(`@lingui/loader!./locales/${locale}.po`)
+        return catalog.messages
+    } catch (e) {
+        logError(`No catalog for locale "${locale}"`)
+        return {}
+    }
+}
+
+export type I18nSetupData = {
+    locale: Locale
+    messages: Partial<Record<Locale, Record<string, string>>>
+}
 
 export const initServerTranslations = async (params: { locale: string }) => {
     const locale = localeSchema.parse(params.locale)
-    const i18nInstance = await initTranslations(locale)
+    const catalog = await loadCatalog(locale)
 
-    return i18nInstance
-}
+    const i18nSetupData: I18nSetupData = {
+        locale,
+        messages: { [locale]: catalog },
+    }
 
-const namespaces = ["translation"] as const
+    const i18n = setupI18n(i18nSetupData)
 
-const en = {
-    translation: {
-        "hello world": "Hello World",
-        "View rankings": "View rankings",
-    },
-} satisfies ResourceLanguage
+    setI18n(i18n)
 
-export const initTranslations = async (locale: Locale) => {
-    const i18nInstance = createInstance()
-
-    await i18nInstance
-        .use(initReactI18next)
-        .use(
-            resourcesToBackend({
-                en,
-                fr: {
-                    translation: {
-                        "hello world": "Bonjour le monde",
-                        "View rankings": "Voir le classement",
-                    },
-                },
-            }),
-        )
-        .init({
-            lng: locale,
-            fallbackLng: defaultLocale,
-            supportedLngs: locales,
-            defaultNS: namespaces[0],
-            fallbackNS: namespaces[0],
-            ns: namespaces,
-            preload: typeof window === "undefined" ? locales : [],
-        })
-
-    return i18nInstance
+    return i18nSetupData
 }

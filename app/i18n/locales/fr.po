@@ -1,0 +1,34 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2023-10-22 00:59+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: fr\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#: app/[locale]/_landing/DiscordCard.tsx:77
+msgid "{DISCORD_MEMBERS} discord members, and growing!"
+msgstr "{DISCORD_MEMBERS} membres sur Discord, et ça continue !"
+
+#: app/[locale]/page.tsx:97
+msgid "2v2"
+msgstr "2v2"
+
+#: app/[locale]/page.tsx:81
+msgid "or"
+msgstr "ou"
+
+#: app/[locale]/_landing/DiscordCard.tsx:85
+msgid "Question of the day"
+msgstr "Question du jour"
+
+#: app/[locale]/page.tsx:89
+msgid "View rankings"
+msgstr "Voir le classement"

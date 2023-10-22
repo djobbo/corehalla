@@ -4,6 +4,45 @@ const COREHALLA_GITHUB_URL = "https://github.com/djobbo/corehalla"
 const COREHALLA_TWITTER_URL = "https://twitter.com/Corehalla"
 const COREHALLA_KOFI_URL = "https://ko-fi.com/corehalla"
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require("path")
+
+const TRANS_VIRTUAL_MODULE_NAME = "virtual-lingui-trans"
+
+class LinguiTransRscResolver {
+    apply(resolver) {
+        const target = resolver.ensureHook("resolve")
+        resolver
+            .getHook("resolve")
+            .tapAsync(
+                "LinguiTransRscResolver",
+                (request, resolveContext, callback) => {
+                    if (request.request === TRANS_VIRTUAL_MODULE_NAME) {
+                        const req = {
+                            ...request,
+                            request:
+                                request.context.issuerLayer === "rsc"
+                                    ? // RSC Version without Context
+                                      path.resolve("./i18n/TransRSC.tsx")
+                                    : // Regular version
+                                      "@lingui/react",
+                        }
+
+                        return resolver.doResolve(
+                            target,
+                            req,
+                            null,
+                            resolveContext,
+                            callback,
+                        )
+                    }
+
+                    callback()
+                },
+            )
+    }
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
@@ -16,6 +55,20 @@ const nextConfig = {
             level: "verbose",
             fullUrl: true,
         },
+        swcPlugins: [
+            [
+                "@lingui/swc-plugin",
+                {
+                    runtimeModules: {
+                        trans: [TRANS_VIRTUAL_MODULE_NAME, "Trans"],
+                    },
+                },
+            ],
+        ],
+    },
+    webpack(config) {
+        config.resolve.plugins.push(new LinguiTransRscResolver())
+        return config
     },
     async redirects() {
         return [
