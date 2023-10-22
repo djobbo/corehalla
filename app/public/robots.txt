@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://dev.corehalla.com
+Host: https://corehalla.com
 
 # Sitemaps
-Sitemap: https://dev.corehalla.com/sitemap.xml
+Sitemap: https://corehalla.com/sitemap.xml

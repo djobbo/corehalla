@@ -44,16 +44,6 @@ export const FirstTimePopup = () => {
                         <GithubIcon size="24" />
                     </Link>
                 </span>
-                <span className="block text-xs text-textVar1">
-                    If you want, you can still visit the legacy website here:{" "}
-                    <Link
-                        href="https://old.corehalla.com"
-                        className="text-text text-sm font-bold hover:text-accent cursor-pointer"
-                        target="_blank"
-                    >
-                        old.corehalla.com
-                    </Link>
-                </span>
             </p>
             <Button
                 onClick={() => {

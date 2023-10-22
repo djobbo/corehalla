@@ -1,4 +1,4 @@
-import { getWeeklyRotation as getWeeklyRotationFn } from "web-parser/weekly-rotation/getWeeklyRotation"
+import { getWeeklyRotation as getWeeklyRotationFn } from "web-parser/common"
 import { logInfo } from "logger"
 import { publicProcedure } from "../trpc"
 
@@ -6,5 +6,7 @@ export const getWeeklyRotation = publicProcedure //
     .query(async () => {
         logInfo("getWeeklyRotation")
 
-        return getWeeklyRotationFn()
+        const rotation = await getWeeklyRotationFn()
+
+        return rotation
     })

@@ -6,6 +6,8 @@ import { getWeeklyRotation } from "web-parser/common"
 export const WeeklyRotation = async () => {
     const weeklyRotation = await getWeeklyRotation()
 
+    if (weeklyRotation.length === 0) return null
+
     return (
         <div className="flex flex-col items-center">
             <div className="mx-auto grid gap-4 grid-cols-3 md:grid-cols-9 p-4 rounded-2xl bg-bgVar2 border border-bg">
