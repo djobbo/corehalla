@@ -15,7 +15,6 @@ export default function Error({
     const { _ } = useLingui()
     useEffect(() => {
         // TODO: Log the error to an error reporting service
-        console.error(error)
     }, [error])
 
     return <ErrorDisplay reset={reset} title={_(msg`Failed to fetch stats`)} />

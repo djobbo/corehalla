@@ -1,8 +1,8 @@
 {
   "pipeline": {
-    "build": {
+    "build:prod": {
       "dependsOn": [
-        "^build"
+        "^build:prod"
       ],
       "outputs": [
         "dist/**",

@@ -5,7 +5,6 @@
     "repository": "https://github.com/djobbo/corehalla.git",
     "author": "Djobbo Maïga <hi@djobbo.com>",
     "scripts": {
-        "build": "turbo run build",
         "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
         "format": "prettier --write \"**/*.{ts,tsx,md}\" && turbo run format",
         "ts:check": "turbo run ts:check",
@@ -14,7 +13,7 @@
         "dl-roster": "turbo run dl-roster",
         "db:migrate": "turbo run db:migrate",
         "db:migrate:prod": "turbo run db:migrate:prod --scope=db --include-dependencies --no-deps",
-        "build:prod": "pnpm db:migrate:prod && turbo run build --scope=app --include-dependencies --no-deps",
+        "build:prod": "pnpm db:migrate:prod && turbo run build:prod --scope=app --include-dependencies --no-deps",
         "dev": "turbo run dev --parallel",
         "setup:env": "zx setup.zx.mjs",
         "deadcode": "knip --no-gitignore --reporter compact"

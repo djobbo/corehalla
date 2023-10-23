@@ -17,8 +17,8 @@
         "format": "prisma format",
         "db:studio": "prisma studio",
         "ts:check": "tsc --noEmit",
-        "build": "prisma generate",
-        "postinstall": "pnpm build",
+        "build:prod": "prisma generate",
+        "postinstall": "pnpm build:prod",
         "prisma": "prisma"
     },
     "devDependencies": {
