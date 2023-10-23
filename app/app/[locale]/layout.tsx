@@ -114,3 +114,5 @@ export default async function RootLayout({
         </LinguiProvider>
     )
 }
+
+export const runtime = "edge"
