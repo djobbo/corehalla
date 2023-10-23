@@ -9,6 +9,7 @@ import {
     SearchButton,
     SearchButtonIcon,
 } from "@/components/search/SearchButton"
+import { Trans } from "@lingui/macro"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/providers/auth/AuthProvider"
 import { usePathname } from "next/navigation"
@@ -84,7 +85,7 @@ export const Header = ({ className }: HeaderProps) => {
                         ) : (
                             <Button onClick={signIn}>
                                 <DiscordIcon size="16" className="mr-2" />
-                                Sign in
+                                <Trans>Sign in</Trans>
                             </Button>
                         )}
                         <SearchButtonIcon

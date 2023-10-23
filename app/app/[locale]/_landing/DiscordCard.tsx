@@ -85,8 +85,10 @@ export const DiscordCard = () => {
                             <Trans>Question of the day</Trans>
                         </p>
                         <p>
-                            Which weapon(s) do you enjoy playing the most? and
-                            which one(s) you dislike playing?
+                            <Trans>
+                                Which weapon(s) do you enjoy playing the most ?
+                                and which one(s) you dislike playing ?
+                            </Trans>
                         </p>
                         <a
                             href="/discord"
@@ -94,14 +96,15 @@ export const DiscordCard = () => {
                             aria-label="Join our Discord server to share your thoughts"
                         >
                             <span className="flex justify-end items-center gap-1 font-semibold bg-gradient-to-l from-accent to-accentVar1 bg-clip-text text-fill-none">
-                                Share your thoughts
+                                <Trans>Share your thoughts</Trans>
                                 <ArrowSmRightIcon className="w-4 h-4" />
                             </span>
                         </a>
                     </div>
                     <div className="flex gap-2 justify-end p-4">
                         <Button as="a" href="/discord" target="_blank">
-                            <DiscordIcon size="16" className="mr-2" /> Join
+                            <DiscordIcon size="16" className="mr-2" />{" "}
+                            <Trans>Join</Trans>
                         </Button>
                         <Button
                             as="a"
@@ -109,7 +112,8 @@ export const DiscordCard = () => {
                             target="_blank"
                             className="bg-accentAlt"
                         >
-                            <KofiIcon size="16" className="mr-2" /> Donate
+                            <KofiIcon size="16" className="mr-2" />{" "}
+                            <Trans>Donate</Trans>
                         </Button>
                     </div>
                 </div>

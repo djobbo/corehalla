@@ -9,12 +9,15 @@ import {
 import { HiBookOpen, HiHeart, HiHome, HiUserGroup, HiX } from "react-icons/hi"
 // TODO: replace react-icons with lucide
 import { Image } from "@/components/Image"
+import { type MessageDescriptor } from "@lingui/core"
 import { Tooltip } from "ui/base/Tooltip"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "@/lib/utils"
 import { css } from "ui/theme"
 import { legendsMap } from "bhapi/legends"
+import { msg, t } from "@lingui/macro"
 import { useFavorites } from "@/providers/auth/AuthProvider"
+import { useLingui } from "@lingui/react"
 import { useParams, usePathname } from "next/navigation"
 import { useSideNav } from "@/providers/SideNavProvider"
 import Link from "next/link"
@@ -104,80 +107,84 @@ const SideNavIcon = ({
     )
 }
 
-const defaultNav: {
-    name: string
-    icon: ReactNode
-    href: string
-    exact?: boolean
-    external?: boolean
-}[] = [
-    {
-        name: "Home",
-        icon: <HiHome className="w-6 h-6" />,
-        href: "/",
-        exact: true,
-    },
-    {
-        name: "1v1 Rankings",
-        icon: <Rankings1v1Icon className="w-6 h-6" />,
-        href: "/ranked/1v1",
-        exact: false,
-    },
-    {
-        name: "2v2 Rankings",
-        icon: <Rankings2v2Icon className="w-6 h-6" />,
-        href: "/ranked/2v2",
-        exact: false,
-    },
-    {
-        name: "Power Rankings",
-        href: "/power-rankings",
-        icon: <RankingsPowerIcon className="w-6 h-6" />,
-    },
-    {
-        name: "Clans",
-        href: "/clans",
-        icon: <HiUserGroup className="w-6 h-6" />,
-    },
-    {
-        name: "Discord Server",
-        href: "/discord",
-        icon: <DiscordIcon className="w-6 h-6" />,
-        external: true,
-    },
-    {
-        name: "Wiki",
-        href: "/wiki",
-        icon: <HiBookOpen className="w-6 h-6" />,
-        external: true,
-    },
-]
-
 type SideNavProps = {
     className?: string
 }
 
 export const SideNav = ({ className }: SideNavProps) => {
     const { favorites, removeFavorite } = useFavorites()
-
     const { isSideNavOpen, closeSideNav } = useSideNav()
-
     const pathname = usePathname()
-
     const { playerId, clanId } = useParams()
+    const { _ } = useLingui()
 
-    const nav = defaultNav.concat(
-        favorites.length > 0
+    const nav: {
+        id: string
+        name: MessageDescriptor
+        icon: ReactNode
+        href: string
+        exact?: boolean
+        external?: boolean
+    }[] = [
+        {
+            id: "home",
+            name: msg`Home`,
+            icon: <HiHome className="w-6 h-6" />,
+            href: "/",
+            exact: true,
+        },
+        {
+            id: "rankings-1v1",
+            name: msg`1v1 Rankings`,
+            icon: <Rankings1v1Icon className="w-6 h-6" />,
+            href: "/ranked/1v1",
+            exact: false,
+        },
+        {
+            id: "rankings-2v2",
+            name: msg`2v2 Rankings`,
+            icon: <Rankings2v2Icon className="w-6 h-6" />,
+            href: "/ranked/2v2",
+            exact: false,
+        },
+        {
+            id: "power-rankings",
+            name: msg`Power Rankings`,
+            href: "/power-rankings",
+            icon: <RankingsPowerIcon className="w-6 h-6" />,
+        },
+        {
+            id: "clans",
+            name: msg`Clans`,
+            href: "/clans",
+            icon: <HiUserGroup className="w-6 h-6" />,
+        },
+        {
+            id: "discord",
+            name: msg`Discord Server`,
+            href: "/discord",
+            icon: <DiscordIcon className="w-6 h-6" />,
+            external: true,
+        },
+        {
+            id: "wiki",
+            name: msg`Wiki`,
+            href: "/wiki",
+            icon: <HiBookOpen className="w-6 h-6" />,
+            external: true,
+        },
+        ...(favorites.length > 0
             ? [
                   {
-                      name: "Favorites",
+                      id: "favorites",
+                      name: msg`Favorites`,
                       icon: <HiHeart className="w-6 h-6" />,
                       href: "/@me/favorites",
                       exact: false,
                   },
               ]
-            : [],
-    )
+            : []),
+    ]
 
     return (
         <div className="z-50">
@@ -208,8 +215,8 @@ export const SideNav = ({ className }: SideNavProps) => {
                 <div className="flex flex-col gap-2 flex-1 p-2">
                     {nav.map((nav) => (
                         <SideNavIcon
-                            key={nav.name}
-                            name={nav.name}
+                            key={nav.id}
+                            name={_(nav.name)}
                             content={nav.icon}
                             href={nav.href}
                             active={

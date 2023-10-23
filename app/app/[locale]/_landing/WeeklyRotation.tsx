@@ -1,5 +1,6 @@
 import { Image } from "@/components/Image"
 import { Tooltip } from "ui/base/Tooltip"
+import { Trans } from "@lingui/macro"
 import { UnknownIcon } from "ui/icons"
 import { getWeeklyRotation } from "web-parser/common"
 
@@ -35,7 +36,7 @@ export const WeeklyRotation = async () => {
                       ))}
             </div>
             <span className="text-sm text-textVar1 mt-2">
-                Free Legends Rotation
+                <Trans>Free Legends Rotation</Trans>
             </span>
         </div>
     )

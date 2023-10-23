@@ -41,7 +41,7 @@ export default async function Home() {
                         aria-label='Join our "Corehalla" Discord server'
                     >
                         <span className="border-r border-r-bg pr-2">
-                            Join our community
+                            <Trans>Join our community</Trans>
                         </span>
                         <span className="flex items-center gap-1 font-semibold text-center bg-gradient-to-l from-accent to-accentVar1 bg-clip-text text-fill-none">
                             Discord
@@ -54,8 +54,7 @@ export default async function Home() {
                             "lg:text-start lg:max-w-3xl",
                         )}
                     >
-                        Stay ahead of <br />
-                        the competition
+                        <Trans>Stay ahead of the competition</Trans>
                     </h1>
                     <p
                         className={cn(
@@ -63,9 +62,11 @@ export default async function Home() {
                             "lg:text-start",
                         )}
                     >
-                        Improve your Brawlhalla Game, and find your place among
-                        the Elite with our in-depth stats tracking and live
-                        leaderboards.
+                        <Trans>
+                            Improve your Brawlhalla Game, and find your place
+                            among the Elite with our in-depth stats tracking and
+                            live leaderboards.
+                        </Trans>
                     </p>
                     <div className="mt-8 flex items-center gap-3 sm:gap-6 flex-col sm:flex-row">
                         <SearchButton />
@@ -108,9 +109,15 @@ export default async function Home() {
                 <WeeklyRotation />
             </Suspense>
             <SectionTitle className="text-center mt-16">
-                Latest News
+                <Trans>Latest News</Trans>
             </SectionTitle>
-            <Suspense fallback={<div>Loading articles...</div>}>
+            <Suspense
+                fallback={
+                    <div>
+                        <Trans>Loading articles...</Trans>
+                    </div>
+                }
+            >
                 <ArticlePreviewGrid first={3} category="" />
             </Suspense>
         </>
