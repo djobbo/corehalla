@@ -7,6 +7,7 @@ import { Image } from "@components/Image"
 import { SearchButton, SearchButtonIcon } from "../search/SearchButton"
 import { cn } from "common/helpers/classnames"
 import { useAuth } from "@ctx/auth/AuthProvider"
+import { useOverwolf } from "@ctx/OverwolfProvider"
 import { useRouter } from "next/router"
 import { useSideNav } from "@ctx/SideNavProvider"
 
@@ -19,6 +20,8 @@ export const Header = ({ className }: HeaderProps) => {
     const router = useRouter()
 
     const { openSideNav } = useSideNav()
+
+    const { isOverwolfContext } = useOverwolf()
 
     const isLandingPage = router.pathname === "/"
 
@@ -53,6 +56,9 @@ export const Header = ({ className }: HeaderProps) => {
                                 Container={null}
                             />
                         </AppLink>
+                        {isOverwolfContext && (
+                            <p className="text-accent text-xs">Overwolf</p>
+                        )}
                     </div>
                     <div className="flex items-center gap-2">
                         <SearchButton

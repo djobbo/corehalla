@@ -39,6 +39,7 @@
         "zod": "^3.20.2"
     },
     "devDependencies": {
+        "@overwolf/types": "^3.23.1",
         "@tanstack/query-core": "^4.22.0",
         "@types/node": "^20.8.7",
         "@types/react": "^18.2.31",
