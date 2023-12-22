@@ -733,7 +733,7 @@ export const legends: Legend[] = [
         strength: "7",
         dexterity: "3",
         defense: "8",
-        speed: "4"
+        speed: "4",
     }
 ]
 
