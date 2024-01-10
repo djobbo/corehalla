@@ -10,7 +10,7 @@ type KbdProps = {
 const kbdClassName = css({
     minWidth: "1.25rem",
     height: "1.25rem",
-})()
+})().className
 
 export const Kbd = ({ children, className }: KbdProps) => (
     <kbd

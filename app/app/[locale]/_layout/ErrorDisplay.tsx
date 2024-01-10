@@ -2,16 +2,24 @@ import { Button } from "ui/base/Button"
 import { DiscordIcon, GithubIcon } from "ui/icons"
 import { SectionTitle } from "@/components/layout/SectionTitle"
 import { Trans } from "@lingui/macro"
+import { useEffect } from "react"
 
 type ErrorDisplayProps = {
     title?: string
     reset: () => void
+    error: Error & { digest?: string }
 }
 
 export const ErrorDisplay = ({
     title = "Oops, something went wrong",
     reset,
+    error,
 }: ErrorDisplayProps) => {
+    useEffect(() => {
+        console.log("error", error)
+        // TODO: Log the error to an error reporting service
+    }, [error])
+
     return (
         <div>
             <SectionTitle className="text-center">{title}</SectionTitle>

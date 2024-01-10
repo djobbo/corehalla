@@ -1,6 +1,6 @@
 "use client"
 
-import { ErrorDisplay } from "../_layout/ErrorDisplay"
+import { ErrorDisplay } from "./_layout/ErrorDisplay"
 import { msg } from "@lingui/macro"
 import { useLingui } from "@lingui/react"
 
@@ -16,7 +16,7 @@ export default function Error({
     return (
         <ErrorDisplay
             reset={reset}
-            title={_(msg`Failed to fetch stats`)}
+            title={_(msg`An unknown error occured :(`)}
             error={error}
         />
     )

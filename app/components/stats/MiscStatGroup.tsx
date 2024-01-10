@@ -27,12 +27,12 @@ export const MiscStatGroup = ({
     column,
 }: MiscStatGroupProps) => {
     const containerClassName = column
-        ? ["flex flex-col"]
+        ? "flex flex-col"
         : [
               "grid",
               css({
                   gridTemplateColumns: `repeat(auto-${fit}, minmax(${minItemWidth}, 1fr))`,
-              })(),
+              })().className,
           ]
 
     return (

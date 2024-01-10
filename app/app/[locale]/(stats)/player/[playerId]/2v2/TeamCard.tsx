@@ -26,7 +26,7 @@ const rankedBannerClassName = css({
     opacity: 0.08,
     transform: "translateX(25%) rotate(15deg)",
     zIndex: -1,
-})()
+})().className
 
 export const TeamCard = ({ playerId, team }: TeamCardProps) => {
     const { playerName, teammate } = getPlayerTeam(playerId, team)

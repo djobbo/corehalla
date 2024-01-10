@@ -41,7 +41,7 @@ const sideNavIconClassName = css({
         top: "-0.375rem",
         right: "-0.375rem",
     },
-})()
+})().className
 
 const SideNavIcon = ({
     className,

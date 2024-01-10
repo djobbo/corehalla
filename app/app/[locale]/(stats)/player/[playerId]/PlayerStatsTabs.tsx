@@ -20,7 +20,7 @@ const tabClassName = cn(
             borderColor: theme.colors.text,
             color: theme.colors.text,
         },
-    })(),
+    })().className,
 )
 
 export const PlayerStatsTabs = () => {

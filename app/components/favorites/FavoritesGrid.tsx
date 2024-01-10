@@ -19,7 +19,7 @@ const favoriteClassName = css({
         top: "-0.6rem",
         right: "-0.6rem",
     },
-})()
+})().className
 
 export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
     const { removeFavorite } = useFavorites()

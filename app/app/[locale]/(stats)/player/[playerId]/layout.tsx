@@ -7,7 +7,7 @@ import { type ReactNode, cache } from "react"
 import { getPlayerRanked, getPlayerStats } from "bhapi"
 import { supabaseService } from "db/supabase/service"
 
-type PlayerStatsLayoutProps = {
+export type PlayerStatsLayoutProps = {
     children: ReactNode
     params: {
         playerId: string

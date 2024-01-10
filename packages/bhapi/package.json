@@ -2,7 +2,7 @@
     "name": "bhapi",
     "version": "0.0.0",
     "devDependencies": {
-        "@types/node": "^20.8.7",
+        "@types/node": "^20.9.0",
         "tsconfig": "workspace:*",
         "typescript": "^5.2.2"
     },
@@ -10,7 +10,6 @@
         "ts:check": "tsc --noEmit"
     },
     "dependencies": {
-        "axios": "1.1.3",
         "common": "workspace:*",
         "zod": "^3.22.4"
     }

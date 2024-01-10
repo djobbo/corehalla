@@ -48,7 +48,14 @@ const nextConfig = {
     reactStrictMode: true,
     transpilePackages: ["bhapi", "common", "db", "ui"],
     images: {
-        domains: ["cdn.discordapp.com", "www.brawlhalla.com"],
+        remotePatterns: [
+            {
+                hostname: "cdn.discordapp.com",
+            },
+            {
+                hostname: "www.brawlhalla.com",
+            },
+        ],
     },
     experimental: {
         logging: {
