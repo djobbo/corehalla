@@ -4,7 +4,7 @@
         "main": "./index.tsx",
         "types": "./index.tsx",
         "devDependencies": {
-                "@types/react": "^18.2.47",
+                "@types/react": "^18.2.48",
                 "@types/react-dom": "^18.2.18",
                 "tsconfig": "workspace:*",
                 "typescript": "^5.3.3"
@@ -17,7 +17,7 @@
                 "next": "14.0.4",
                 "react": "^18.2.0",
                 "react-dom": "^18.2.0",
-                "react-icons": "^5.0.0",
+                "react-icons": "^5.0.1",
                 "react-select": "^5.8.0"
         },
         "scripts": {
