@@ -29,6 +29,11 @@ msgstr ""
 msgid "2v2 Rankings"
 msgstr ""
 
+#: app/[locale]/(rankings)/error.tsx:19
+#: app/[locale]/error.tsx:19
+msgid "An unknown error occured :("
+msgstr ""
+
 #: app/[locale]/_layout/SideNav.tsx:158
 msgid "Clans"
 msgstr ""
@@ -41,8 +46,24 @@ msgstr ""
 msgid "Donate"
 msgstr ""
 
-#: app/[locale]/(stats)/error.tsx:21
+#: app/[locale]/(stats)/error.tsx:19
 msgid "Failed to fetch stats"
+msgstr ""
+
+#: app/[locale]/(rankings)/clans/[[...clansRankingsOptions]]/error.tsx:19
+msgid "Failed to load the clan rankings :("
+msgstr ""
+
+#: app/[locale]/(rankings)/power-rankings/[[...rankingsOptions]]/error.tsx:19
+msgid "Failed to load the power rankings :("
+msgstr ""
+
+#: app/[locale]/(rankings)/ranked/queue/error.tsx:19
+msgid "Failed to load the ranked queue :("
+msgstr ""
+
+#: app/[locale]/(rankings)/ranked/[[...rankingsOptions]]/error.tsx:19
+msgid "Failed to load the rankings :("
 msgstr ""
 
 #: app/[locale]/_layout/SideNav.tsx:180
@@ -114,7 +135,7 @@ msgstr ""
 msgid "Stay ahead of the competition"
 msgstr ""
 
-#: app/[locale]/_layout/ErrorDisplay.tsx:21
+#: app/[locale]/_layout/ErrorDisplay.tsx:29
 msgid "Try Again"
 msgstr ""
 
