@@ -22,13 +22,13 @@
         "prisma": "prisma"
     },
     "devDependencies": {
-        "discord-api-types": "^0.37.63",
-        "prisma": "^5.5.2",
+        "discord-api-types": "^0.37.67",
+        "prisma": "^5.8.0",
         "tsconfig": "workspace:*",
-        "typescript": "^5.2.2"
+        "typescript": "^5.3.3"
     },
     "dependencies": {
-        "@prisma/client": "5.5.2",
+        "@prisma/client": "5.8.0",
         "@supabase/supabase-js": "^1.35.7"
     }
 }

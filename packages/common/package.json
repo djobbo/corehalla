@@ -2,19 +2,19 @@
     "name": "common",
     "version": "0.0.0",
     "devDependencies": {
-        "@types/node": "^20.9.0",
-        "@types/react": "^18.2.37",
+        "@types/node": "^20.10.8",
+        "@types/react": "^18.2.47",
         "tsconfig": "workspace:*",
-        "typescript": "^5.2.2"
+        "typescript": "^5.3.3"
     },
     "scripts": {
         "ts:check": "tsc --noEmit"
     },
     "dependencies": {
-        "classnames": "^2.3.2",
+        "classnames": "^2.5.1",
         "dayjs": "^1.11.10",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-use": "^17.4.0"
+        "react-use": "^17.4.2"
     }
 }

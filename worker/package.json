@@ -13,19 +13,19 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^20.9.0",
-    "typescript": "^5.2.2"
+    "@types/node": "^20.10.8",
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "bhapi": "workspace:*",
     "common": "workspace:*",
     "db": "workspace:*",
-    "discord.js": "^14.13.0",
+    "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
     "logger": "workspace:*",
     "reaccord": "0.0.1-dev.1669742731656.1c2e96f",
     "server": "workspace:*",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "zod": "^3.22.4"
   }
