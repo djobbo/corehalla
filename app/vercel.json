@@ -2,11 +2,11 @@
     "functions": {
         "pages/**/*.ts": {
             "memory": 1024,
-            "maxDuration": 4
+            "maxDuration": 8
         },
         "pages/**/*.tsx": {
             "memory": 1024,
-            "maxDuration": 4
+            "maxDuration": 8
         }
     }
 }
