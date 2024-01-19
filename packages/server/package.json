@@ -6,10 +6,10 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^4.22.0",
-    "@trpc/client": "10.9.0",
-    "@trpc/next": "10.9.0",
-    "@trpc/react-query": "10.9.0",
-    "@trpc/server": "10.9.0",
+    "@trpc/client": "10.45.0",
+    "@trpc/next": "10.45.0",
+    "@trpc/react-query": "10.45.0",
+    "@trpc/server": "10.45.0",
     "bhapi": "workspace:*",
     "common": "workspace:*",
     "db": "workspace:*",
@@ -18,7 +18,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@types/node": "^20.8.7",
+    "@types/node": "^20.11.5",
     "tsconfig": "workspace:*"
   }
 }
