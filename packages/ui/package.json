@@ -23,6 +23,7 @@
         "@radix-ui/react-popover": "^1.0.2",
         "@radix-ui/react-progress": "^1.0.1",
         "@radix-ui/react-tooltip": "^1.0.2",
+        "@react-icons/all-files": "https://github.com/react-icons/react-icons/releases/download/v5.0.1/react-icons-all-files-5.0.1.tgz",
         "@stitches/react": "^1.2.8",
         "bhapi": "workspace:*",
         "common": "workspace:*",
@@ -33,7 +34,6 @@
         "nprogress": "^0.2.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-icons": "^4.7.1",
         "react-phone-input-2": "^2.15.1",
         "react-select": "^5.7.0",
         "react-table": "^7.8.0"

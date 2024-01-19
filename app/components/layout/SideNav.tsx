@@ -1,15 +1,13 @@
 import { AppLink } from "ui/base/AppLink"
 import { DiscordIcon } from "ui/icons"
-import {
-    HiBookOpen,
-    HiChevronDoubleUp,
-    HiHeart,
-    HiHome,
-    HiLightningBolt,
-    HiUserGroup,
-    HiUsers,
-    HiX,
-} from "react-icons/hi"
+import { HiBookOpen } from "@react-icons/all-files/hi/HiBookOpen"
+import { HiChevronDoubleUp } from "@react-icons/all-files/hi/HiChevronDoubleUp"
+import { HiHeart } from "@react-icons/all-files/hi/HiHeart"
+import { HiHome } from "@react-icons/all-files/hi/HiHome"
+import { HiLightningBolt } from "@react-icons/all-files/hi/HiLightningBolt"
+import { HiUserGroup } from "@react-icons/all-files/hi/HiUserGroup"
+import { HiUsers } from "@react-icons/all-files/hi/HiUsers"
+import { HiX } from "@react-icons/all-files/hi/HiX"
 import { Image } from "@components/Image"
 import { Tooltip } from "ui/base/Tooltip"
 import { cleanString } from "common/helpers/cleanString"

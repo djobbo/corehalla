@@ -1,8 +1,6 @@
-import {
-    HiChevronDoubleLeft,
-    HiChevronLeft,
-    HiChevronRight,
-} from "react-icons/hi"
+import { HiChevronDoubleLeft } from "@react-icons/all-files/hi/HiChevronDoubleLeft"
+import { HiChevronLeft } from "@react-icons/all-files/hi/HiChevronLeft"
+import { HiChevronRight } from "@react-icons/all-files/hi/HiChevronRight"
 import { Paginator } from "./Paginator"
 
 type PaginationProps = {

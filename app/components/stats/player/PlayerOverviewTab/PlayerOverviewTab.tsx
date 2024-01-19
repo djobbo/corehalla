@@ -1,7 +1,10 @@
 import { CollapsibleSection } from "@components/layout/CollapsibleSection"
-import { FiTarget } from "react-icons/fi"
+import { FiTarget } from "@react-icons/all-files/fi/FiTarget"
 import { GeneralStats } from "../../GeneralStats"
-import { HiChartBar, HiFire, HiHand } from "react-icons/hi"
+import { HiChartBar } from "@react-icons/all-files/hi/HiChartBar"
+import { HiFire } from "@react-icons/all-files/hi/HiFire"
+import { HiHand } from "@react-icons/all-files/hi/HiHand"
+
 import { MiscStatGroup } from "../../MiscStatGroup"
 import { PlayerOverviewClanContent } from "./ClanContent"
 import { PlayerOverviewRankedContent } from "./RankedContent"

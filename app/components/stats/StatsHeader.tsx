@@ -1,7 +1,9 @@
 import { AdsenseStatsHeader } from "common/analytics/Adsense"
 import { Button } from "ui/base/Button"
 import { DiscordIcon } from "ui/icons"
-import { HiUserAdd, HiUserRemove } from "react-icons/hi"
+import { HiUserAdd } from "@react-icons/all-files/hi/HiUserAdd"
+import { HiUserRemove } from "@react-icons/all-files/hi/HiUserRemove"
+
 import { MiscStatGroup } from "./MiscStatGroup"
 import { ShareIcon } from "ui/icons"
 import { cleanString } from "common/helpers/cleanString"
