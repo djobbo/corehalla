@@ -4,7 +4,7 @@
     "devDependencies": {
         "@types/node": "^20.8.7",
         "tsconfig": "workspace:*",
-        "typescript": "^4.9.4"
+        "typescript": "^5.3.3"
     },
     "scripts": {
         "ts:check": "tsc --noEmit"
@@ -14,6 +14,6 @@
         "common": "workspace:*",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "zod": "^3.20.2"
+        "zod": "^3.22.4"
     }
 }

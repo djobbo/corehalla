@@ -39,7 +39,7 @@ export const sortablePlayerProps = [
     "damageGadgets",
 ] as const satisfies readonly (keyof BHPlayerData)[]
 
-export type SortablePlayerProp = typeof sortablePlayerProps[number]
+export type SortablePlayerProp = (typeof sortablePlayerProps)[number]
 
 export const updateDBPlayerData = async (
     playerStats: PlayerStats,

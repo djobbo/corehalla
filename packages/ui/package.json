@@ -12,7 +12,7 @@
         "postcss": "^8.4.20",
         "tailwindcss": "^3.2.4",
         "tsconfig": "workspace:*",
-        "typescript": "^4.9.4"
+        "typescript": "^5.3.3"
     },
     "dependencies": {
         "@radix-ui/colors": "^0.1.8",
@@ -29,7 +29,7 @@
         "db": "workspace:*",
         "kbar": "0.1.0-beta.39",
         "logger": "workspace:*",
-        "next": "13.5.6",
+        "next": "14.1.0",
         "nprogress": "^0.2.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",

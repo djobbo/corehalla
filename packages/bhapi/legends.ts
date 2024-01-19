@@ -734,7 +734,7 @@ export const legends: Legend[] = [
         dexterity: "3",
         defense: "8",
         speed: "4",
-    }
+    },
 ]
 
 export const legendsMap = arrayToMap(legends, "legend_id")
@@ -811,18 +811,21 @@ export type FullWeapon = {
 }
 
 export const getFullWeapons = (legends: FullLegend[]): FullWeapon[] => {
-    const weaponsMap = legends.reduce((acc, legend) => {
-        const legendData = legendsMap[legend.legend_id]
-        acc[legendData.weapon_one] = [
-            ...(acc[legendData.weapon_one] ?? []),
-            legend,
-        ]
-        acc[legendData.weapon_two] = [
-            ...(acc[legendData.weapon_two] ?? []),
-            legend,
-        ]
-        return acc
-    }, {} as Record<Weapon, FullLegend[]>)
+    const weaponsMap = legends.reduce(
+        (acc, legend) => {
+            const legendData = legendsMap[legend.legend_id]
+            acc[legendData.weapon_one] = [
+                ...(acc[legendData.weapon_one] ?? []),
+                legend,
+            ]
+            acc[legendData.weapon_two] = [
+                ...(acc[legendData.weapon_two] ?? []),
+                legend,
+            ]
+            return acc
+        },
+        {} as Record<Weapon, FullLegend[]>,
+    )
 
     const weapons = Object.entries(weaponsMap).map(([weapon, legends]) => ({
         weapon,
