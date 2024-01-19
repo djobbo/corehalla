@@ -5,7 +5,7 @@ const COREHALLA_TWITTER_URL = "https://twitter.com/Corehalla"
 const COREHALLA_KOFI_URL = "https://ko-fi.com/corehalla"
 
 /** @type {import('next').NextConfig} */
-module.exports = {
+const config = {
     reactStrictMode: true,
     transpilePackages: [
         "bhapi",
@@ -85,3 +85,8 @@ module.exports = {
         ]
     },
 }
+
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+    enabled: process.env.ANALYZE === "true",
+})
+module.exports = withBundleAnalyzer(config)

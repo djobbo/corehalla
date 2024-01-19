@@ -1,4 +1,5 @@
-import { HiArrowUp } from "react-icons/hi"
+import { HiArrowUp } from "@react-icons/all-files/hi/HiArrowUp"
+
 import {
     KBarAnimator,
     KBarPortal,

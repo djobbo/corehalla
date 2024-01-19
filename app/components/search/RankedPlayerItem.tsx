@@ -1,4 +1,6 @@
-import { HiOutlineStar, HiStar } from "react-icons/hi2"
+import { HiOutlineStar } from "@react-icons/all-files/hi2/HiOutlineStar"
+import { HiStar } from "@react-icons/all-files/hi2/HiStar"
+
 import { Image } from "@components/Image"
 import { SearchboxItem } from "./SearchboxItem"
 import { cleanString } from "common/helpers/cleanString"
