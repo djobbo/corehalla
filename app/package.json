@@ -6,7 +6,7 @@
     "dev": "next dev",
     "dev:prod": "NEXT_PUBLIC_FORCE_PRODUCTION_WEBSITE=true next dev",
     "build": "next build",
-    "build:prod": "next-on-pages",
+    "build:prod": "next build",
     "start": "next start",
     "db:gen": "drizzle-kit generate:pg",
     "db:studio": "drizzle-kit studio",
