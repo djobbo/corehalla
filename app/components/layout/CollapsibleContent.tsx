@@ -1,6 +1,6 @@
 import { CollapseSectionIcon, ExpandSectionIcon } from "ui/icons"
 import { Content, Root, Trigger } from "@radix-ui/react-collapsible"
-import { cn } from "common/helpers/classnames"
+import { cn } from "@/lib/utils"
 import { useState } from "react"
 import type { ReactNode } from "react"
 
@@ -16,6 +16,7 @@ export type CollapsibleContentProps = {
     closingArrow?: boolean
 }
 
+// TODO: use shadcn ui for this [CollapsibleContent]
 export const CollapsibleContent = ({
     className,
     triggerClassName,

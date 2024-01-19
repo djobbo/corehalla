@@ -1,12 +1,12 @@
-import { AppLink } from "ui/base/AppLink"
 import { ClanIcon, CloseIcon } from "ui/icons"
-import { Image } from "@components/Image"
+import { Image } from "@/components/Image"
 import { cleanString } from "common/helpers/cleanString"
-import { cn } from "common/helpers/classnames"
+import { cn } from "@/lib/utils"
 import { css } from "ui/theme"
 import { legendsMap } from "bhapi/legends"
-import { useFavorites } from "@ctx/auth/AuthProvider"
-import type { Favorite } from "@ctx/auth/useUserFavorites"
+import { useFavorites } from "@/providers/auth/AuthProvider"
+import Link from "next/link"
+import type { Favorite } from "@/providers/auth/useUserFavorites"
 import type { ReactNode } from "react"
 
 type FavoritesGridProps = {
@@ -19,7 +19,7 @@ const favoriteClassName = css({
         top: "-0.6rem",
         right: "-0.6rem",
     },
-})()
+})().className
 
 export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
     const { removeFavorite } = useFavorites()
@@ -53,7 +53,7 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                         )}
                         key={`${fav.type}/${fav.id}`}
                     >
-                        <AppLink
+                        <Link
                             href={`/stats/${fav.type}/${fav.id}`}
                             className={cn("flex items-center gap-2 px-3 py-3")}
                         >
@@ -66,7 +66,7 @@ export const FavoritesGrid = ({ favorites }: FavoritesGridProps) => {
                                     {fav.type} #{fav.id}
                                 </p>
                             </div>
-                        </AppLink>
+                        </Link>
                         <button
                             className="hidden remove-btn absolute w-5 h-5 p-0.5 rounded-full overflow-hidden shadow-md bg-accent hover:bg-text hover:text-bgVar2"
                             onClick={() => removeFavorite(fav)}

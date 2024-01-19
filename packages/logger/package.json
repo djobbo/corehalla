@@ -3,9 +3,9 @@
     "version": "0.0.0",
     "main": "index.ts",
     "devDependencies": {
-        "@types/node": "^20.8.7",
+        "@types/node": "^20.11.4",
         "tsconfig": "workspace:*",
-        "typescript": "^4.9.4"
+        "typescript": "^5.3.3"
     },
     "scripts": {
         "ts:check": "tsc --noEmit"

@@ -1,8 +1,13 @@
+"use client"
+
 import { Kbd } from "ui/base/Kbd"
 import { SearchIcon } from "ui/icons"
-import { cn } from "common/helpers/classnames"
+import { Trans } from "@lingui/macro"
+import { cn } from "@/lib/utils"
 import { useDevice } from "common/hooks/useDevice"
 import { useKBar } from "kbar"
+
+// TODO: replace kbar with shadcn ui search
 
 type SearchButtonProps = {
     className?: string
@@ -31,7 +36,9 @@ export const SearchButton = ({
             )}
             onClick={query.toggle}
         >
-            <span>Search player...</span>
+            <span>
+                <Trans>Search player...</Trans>
+            </span>
             {["mac", "pc"].includes(device) && (
                 <span className="flex items-center gap-1 text-textVar1">
                     <Kbd>/</Kbd>

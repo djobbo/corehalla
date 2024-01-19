@@ -1,7 +1,5 @@
 import type { ClanRank, RankedRegion, RankedTier, Weapon } from "./constants"
 
-export type Bracket = "1v1" | "2v2"
-
 export type PlayerStats = {
     brawlhalla_id: number
     name: string

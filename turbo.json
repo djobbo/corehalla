@@ -1,8 +1,8 @@
 {
   "pipeline": {
-    "build": {
+    "build:prod": {
       "dependsOn": [
-        "^build"
+        "^build:prod"
       ],
       "outputs": [
         "dist/**",
@@ -14,9 +14,6 @@
       "outputs": []
     },
     "ts:check": {
-      "outputs": []
-    },
-    "ci:deadcode": {
       "outputs": []
     },
     "ci:lint": {

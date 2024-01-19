@@ -1,5 +1,5 @@
 import { downloadImage } from "./downloadImage"
-import { existsSync, mkdirSync, rmdirSync } from "fs"
+import { existsSync, mkdirSync, rmSync } from "fs"
 import { legends } from "bhapi/legends"
 import { load } from "cheerio"
 import { logInfo } from "logger"
@@ -7,16 +7,16 @@ import axios from "axios"
 
 const APP_DIR = "../../app"
 const PUBLIC_DIR = `${APP_DIR}/public`
-const LEGENDS_URL = "https://www.brawlhalla.com/legends/"
+const BASE_URL = "https://www.brawlhalla.com"
 const OUT_DIR = `${PUBLIC_DIR}/images/icons/roster`
 
-export const downloadImages = async () => {
-    if (existsSync(OUT_DIR)) rmdirSync(OUT_DIR, { recursive: true })
-    mkdirSync(OUT_DIR)
-    mkdirSync(`${OUT_DIR}/legends`)
-    mkdirSync(`${OUT_DIR}/crossovers`)
+export const downloadImages = async (type: "legends" | "crossovers") => {
+    logInfo(`Downloading ${type} roster images...`)
+    const outDir = `${OUT_DIR}/${type}`
+    if (existsSync(outDir)) rmSync(outDir, { recursive: true })
+    mkdirSync(outDir, { recursive: true })
 
-    const { data: text } = await axios.get(LEGENDS_URL)
+    const { data: text } = await axios.get(`${BASE_URL}/${type}`)
 
     const $ = load(text)
 
@@ -30,21 +30,17 @@ export const downloadImages = async () => {
             }
         })
         .get()
-        .filter(({ name, src }) => (console.log({ name, src }), name && src))
+        .filter(({ name, src }) => name && src)
 
-    imgs.forEach((img, i) => {
+    imgs.forEach((img) => {
         if (!img.src || !img.name) return
 
-        // TODO: readd crossovers
-        const isLegend = true
-        const prefix = isLegend ? "legend" : "crossover"
-
-        logInfo(`Downloading: ${prefix} => ${img.name}`)
+        logInfo(`  => ${img.name}`)
 
         downloadImage(
             img.src,
-            `${OUT_DIR}/${prefix}s/${
-                isLegend
+            `${outDir}/${
+                type === "legends"
                     ? legends.find((l) => l.bio_name === img.name)
                           ?.legend_name_key ?? img.name
                     : img.name
@@ -52,7 +48,8 @@ export const downloadImages = async () => {
         )
     })
 
-    logInfo("Downloaded roster images!")
+    logInfo(`Downloaded ${type} roster images!\n`)
 }
 
-downloadImages()
+downloadImages("legends")
+downloadImages("crossovers")

@@ -18,6 +18,7 @@ type SelectProps<T> = {
     label?: string
 }
 
+// TODO: switch Select to shadcn ui
 export const Select = <T extends string>({
     onChange,
     options,

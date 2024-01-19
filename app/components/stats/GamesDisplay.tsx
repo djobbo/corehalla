@@ -1,6 +1,6 @@
 import { Progress } from "ui/base/Progress"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
-import { cn } from "common/helpers/classnames"
+import { cn } from "@/lib/utils"
 import type { ReactNode } from "react"
 
 type GamesCardProps = {

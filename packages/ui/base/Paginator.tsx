@@ -1,30 +1,43 @@
-import { AppLink } from "./AppLink"
+"use client"
+
+import { type ReactNode } from "react"
 import { Select } from "./Select"
 import { cn } from "common/helpers/classnames"
-import { useRouter } from "next/router"
-import type { ReactNode } from "react"
+import { usePathname, useRouter } from "next/navigation"
+import Link from "next/link"
 
-export type PaginatorPage = {
-    page: string
+type PaginatorPage = {
+    id: string
     label?: ReactNode
+    href: string
+    exact?: boolean
 }
 
 type PaginatorProps = {
-    pages: (PaginatorPage | null)[]
-    currentPage: string
-    getPageHref: (page: string) => string
+    pages: PaginatorPage[]
     className?: string
     responsive?: boolean
+    currentPage?: string
 }
 
 export const Paginator = ({
     pages,
-    currentPage,
-    getPageHref,
     className,
     responsive,
+    currentPage: page,
 }: PaginatorProps) => {
     const router = useRouter()
+    const pathname = usePathname()
+
+    if (pages.length === 0) {
+        return null
+    }
+
+    const currentPage =
+        page ??
+        pages.find(({ href, exact }) =>
+            exact ? href === pathname : pathname.startsWith(href),
+        )?.id
 
     return (
         <>
@@ -34,15 +47,15 @@ export const Paginator = ({
                     hidden: !responsive,
                 })}
                 onChange={(page) => {
-                    router.push(getPageHref(page))
+                    const href = pages.find(({ id }) => id === page)?.href
+                    if (!href) return
+
+                    router.push(href)
                 }}
-                value={currentPage}
-                options={pages.map((page) => ({
-                    label:
-                        typeof page?.label === "string"
-                            ? page.label
-                            : page?.page ?? "",
-                    value: page?.page ?? "",
+                value={currentPage || pages[0].id}
+                options={pages.map(({ id, label }) => ({
+                    value: id,
+                    label: (typeof label === "string" && label) || id,
                 }))}
             />
             <div
@@ -50,25 +63,21 @@ export const Paginator = ({
                     "hidden sm:flex": responsive,
                 })}
             >
-                {pages.map((pageData) => {
-                    if (!pageData) return null
-
-                    const { page, label } = pageData
-
+                {pages.map(({ id, label, href }) => {
                     return (
-                        <AppLink
-                            key={page}
-                            href={getPageHref(page)}
+                        <Link
+                            key={id}
+                            href={href}
                             className={cn(
                                 "p-2 h-8 flex items-center justify-center text-sm rounded-lg border-bg whitespace-nowrap",
                                 {
-                                    "bg-accent": page === currentPage,
-                                    "bg-bgVar2": page !== currentPage,
+                                    "bg-accent": id === currentPage,
+                                    "bg-bgVar2": id !== currentPage,
                                 },
                             )}
                         >
-                            {label ?? page}
-                        </AppLink>
+                            {label ?? id}
+                        </Link>
                     )
                 })}
             </div>

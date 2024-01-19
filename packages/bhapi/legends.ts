@@ -768,6 +768,16 @@ export const getFullLegends = (
         : Object.values(fullLegends).filter((legend) => legend.stats?.games)
 }
 
+export const defaultLegendAccumulativeData = {
+    matchtime: 0,
+    kos: 0,
+    falls: 0,
+    suicides: 0,
+    teamkos: 0,
+    damageDealt: 0,
+    damageTaken: 0,
+}
+
 export const getLegendsAccumulativeData = (fullLegends: FullLegend[]) => {
     return fullLegends.reduce<{
         matchtime: number
@@ -775,34 +785,21 @@ export const getLegendsAccumulativeData = (fullLegends: FullLegend[]) => {
         falls: number
         suicides: number
         teamkos: number
-        damagedealt: number
-        damagetaken: number
-    }>(
-        (acc, legend) => {
-            if (!legend.stats) return acc
+        damageDealt: number
+        damageTaken: number
+    }>((acc, legend) => {
+        if (!legend.stats) return acc
 
-            return {
-                matchtime: acc.matchtime + legend.stats.matchtime,
-                kos: acc.kos + legend.stats.kos,
-                falls: acc.falls + legend.stats.falls,
-                suicides: acc.suicides + legend.stats.suicides,
-                teamkos: acc.teamkos + legend.stats.teamkos,
-                damagedealt:
-                    acc.damagedealt + parseInt(legend.stats.damagedealt),
-                damagetaken:
-                    acc.damagetaken + parseInt(legend.stats.damagetaken),
-            }
-        },
-        {
-            matchtime: 0,
-            kos: 0,
-            falls: 0,
-            suicides: 0,
-            teamkos: 0,
-            damagedealt: 0,
-            damagetaken: 0,
-        },
-    )
+        return {
+            matchtime: acc.matchtime + legend.stats.matchtime,
+            kos: acc.kos + legend.stats.kos,
+            falls: acc.falls + legend.stats.falls,
+            suicides: acc.suicides + legend.stats.suicides,
+            teamkos: acc.teamkos + legend.stats.teamkos,
+            damageDealt: acc.damageDealt + parseInt(legend.stats.damagedealt),
+            damageTaken: acc.damageTaken + parseInt(legend.stats.damagetaken),
+        }
+    }, defaultLegendAccumulativeData)
 }
 
 export type FullWeapon = {
@@ -811,18 +808,21 @@ export type FullWeapon = {
 }
 
 export const getFullWeapons = (legends: FullLegend[]): FullWeapon[] => {
-    const weaponsMap = legends.reduce((acc, legend) => {
-        const legendData = legendsMap[legend.legend_id]
-        acc[legendData.weapon_one] = [
-            ...(acc[legendData.weapon_one] ?? []),
-            legend,
-        ]
-        acc[legendData.weapon_two] = [
-            ...(acc[legendData.weapon_two] ?? []),
-            legend,
-        ]
-        return acc
-    }, {} as Record<Weapon, FullLegend[]>)
+    const weaponsMap = legends.reduce(
+        (acc, legend) => {
+            const legendData = legendsMap[legend.legend_id]
+            acc[legendData.weapon_one] = [
+                ...(acc[legendData.weapon_one] ?? []),
+                legend,
+            ]
+            acc[legendData.weapon_two] = [
+                ...(acc[legendData.weapon_two] ?? []),
+                legend,
+            ]
+            return acc
+        },
+        {} as Record<Weapon, FullLegend[]>,
+    )
 
     const weapons = Object.entries(weaponsMap).map(([weapon, legends]) => ({
         weapon,
@@ -830,6 +830,22 @@ export const getFullWeapons = (legends: FullLegend[]): FullWeapon[] => {
     }))
 
     return weapons
+}
+
+export const defaultWeaponlessData = {
+    unarmed: {
+        kos: 0,
+        damageDealt: 0,
+        matchtime: 0,
+    },
+    gadgets: {
+        kos: 0,
+        damageDealt: 0,
+    },
+    throws: {
+        kos: 0,
+        damageDealt: 0,
+    },
 }
 
 export const getWeaponlessData = (legends: FullLegend[]) => {
@@ -861,21 +877,7 @@ export const getWeaponlessData = (legends: FullLegend[]) => {
                     parseInt(legend.stats?.damagethrownitem ?? "0"),
             },
         }),
-        {
-            unarmed: {
-                kos: 0,
-                damageDealt: 0,
-                matchtime: 0,
-            },
-            gadgets: {
-                kos: 0,
-                damageDealt: 0,
-            },
-            throws: {
-                kos: 0,
-                damageDealt: 0,
-            },
-        },
+        defaultWeaponlessData,
     )
 }
 

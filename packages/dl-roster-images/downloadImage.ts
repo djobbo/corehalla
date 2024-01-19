@@ -1,5 +1,5 @@
 import { createWriteStream } from "fs"
-import Axios from "axios"
+import axios from "axios"
 
 export const downloadImage = async (
     fileUrl: string,
@@ -7,7 +7,7 @@ export const downloadImage = async (
 ) => {
     const writer = createWriteStream(outputLocationPath)
 
-    return Axios({
+    return axios({
         method: "get",
         url: fileUrl,
         responseType: "stream",

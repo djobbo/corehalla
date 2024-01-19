@@ -5,20 +5,12 @@
     "ts:check": "tsc --noEmit"
   },
   "dependencies": {
-    "@tanstack/react-query": "^4.22.0",
-    "@trpc/client": "10.9.0",
-    "@trpc/next": "10.9.0",
-    "@trpc/react-query": "10.9.0",
-    "@trpc/server": "10.9.0",
     "bhapi": "workspace:*",
-    "common": "workspace:*",
     "db": "workspace:*",
-    "logger": "workspace:*",
-    "web-parser": "workspace:*",
-    "zod": "^3.20.2"
+    "logger": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^20.8.7",
+    "@types/node": "^20.11.4",
     "tsconfig": "workspace:*"
   }
 }

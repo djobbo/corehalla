@@ -1,11 +1,14 @@
 import { ArticlePreview } from "./ArticlePreview"
-import { type BHArticle } from "web-parser/common"
+import {
+    type BrawlhallaArticleVariables,
+    getBrawlhallaArticles,
+} from "web-parser/common"
 
-type ArticlePreviewGridProps = {
-    articles: BHArticle[]
-}
+export const ArticlePreviewGrid = async (
+    props: Partial<BrawlhallaArticleVariables>,
+) => {
+    const articles = await getBrawlhallaArticles(props)
 
-export const ArticlePreviewGrid = ({ articles }: ArticlePreviewGridProps) => {
     if (!articles || articles.length <= 0) return null
 
     return (

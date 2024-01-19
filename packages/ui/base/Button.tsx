@@ -1,11 +1,11 @@
-import { AppLink } from "./AppLink"
 import { cn } from "common/helpers/classnames"
+import Link from "next/link"
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from "react"
 
 type ButtonType = "a" | "button"
 type ButtonStyle = "primary" | "outline"
 
-export type ButtonProps<Type extends ButtonType> = {
+type ButtonProps<Type extends ButtonType> = {
     as?: Type
     buttonStyle?: ButtonStyle
     large?: boolean
@@ -43,7 +43,7 @@ export const Button = <Type extends ButtonType = "button">(
         const { href, ...rest } = buttonProps
         return (
             // @ts-expect-error spread type isn't narrowed correctly
-            <AppLink href={href} className={buttonClass} {...rest} />
+            <Link href={href} className={buttonClass} {...rest} />
         )
     }
     // @ts-expect-error spread type isnt narrowed correctly

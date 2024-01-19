@@ -1,8 +1,12 @@
+import { FiTarget } from "react-icons/fi"
 import {
     HiArrowSmRight,
+    HiChartBar,
     HiChevronDoubleUp,
     HiChevronDown,
     HiChevronUp,
+    HiFire,
+    HiHand,
     HiLightningBolt,
     HiMenu,
     HiOutlineInformationCircle,
@@ -11,8 +15,9 @@ import {
     HiShare,
     HiSortAscending,
     HiSortDescending,
-    HiUser,
+    HiUserAdd,
     HiUserGroup,
+    HiUserRemove,
     HiUsers,
     HiX,
 } from "react-icons/hi"
@@ -31,12 +36,19 @@ export const ShareIcon = HiShare
 export const SortAscendingIcon = HiSortAscending
 export const SortDescendingIcon = HiSortDescending
 export const ArrowSmRightIcon = HiArrowSmRight
-export const UserIcon = HiUser
 
 // Stats
 export const Rankings1v1Icon = HiChevronDoubleUp
 export const Rankings2v2Icon = HiUsers
 export const RankingsPowerIcon = HiLightningBolt
+export const GeneralStatsIcon = HiChartBar
+export const UnarmedIcon = HiHand
+export const WeaponThrowsIcon = FiTarget
+export const GadgetsIcon = HiFire
+
+export const AddFavoriteIcon = HiUserAdd
+export const RemoveFavoriteIcon = HiUserRemove
+
 // export const FavoritesIcon =
 export const ClanIcon = HiUserGroup
 

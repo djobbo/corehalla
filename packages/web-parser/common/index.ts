@@ -1,8 +1,7 @@
 import { legends } from "bhapi/legends"
 import { load as loadHtml } from "cheerio"
-import { logError, logInfo } from "logger"
+import { logError } from "logger"
 import { z } from "zod"
-import axios from "axios"
 
 const BRAWLHALLA_GRAPHQL_API_URL = "https://cms.brawlhalla.com/graphql"
 const BRAWLHALLA_WP_API_URL = "https://cms.brawlhalla.com/wp-json/wp/v2"
@@ -14,17 +13,18 @@ const BRAWLHALLA_GRAPHQL_API_HEADERS = {
 const getBrawlhallaGraphQLAPI = async <T>(
     query: string,
     variables?: Record<string, unknown>,
+    schema?: z.Schema<T>,
 ): Promise<T> => {
-    const { data } = await axios.post<T>(
-        BRAWLHALLA_GRAPHQL_API_URL,
-        {
+    const data = await fetch(BRAWLHALLA_GRAPHQL_API_URL, {
+        method: "POST",
+        headers: BRAWLHALLA_GRAPHQL_API_HEADERS,
+        body: JSON.stringify({
             query,
             variables,
-        },
-        {
-            headers: BRAWLHALLA_GRAPHQL_API_HEADERS,
-        },
-    )
+        }),
+    })
+        .then((res) => res.json())
+        .then((res) => (schema ? schema.parse(res) : res))
 
     return data
 }
@@ -101,46 +101,52 @@ export const getBrawlhallaArticles = async (
             }
         }`
 
-    const { data } = await getBrawlhallaGraphQLAPI<{
-        data: {
-            posts: {
-                nodes: {
-                    title: string
-                    slug: string
-                    dateGmt: string
-                    excerpt: string
-                    categories: {
-                        nodes: {
-                            name: string
-                            slug: string
-                        }[]
-                    }
-                    featuredImage: {
-                        node: {
-                            sourceUrl: string
-                            mediaDetails: {
-                                height: number
-                                width: number
-                                sizes: {
-                                    name: string
-                                    mimeType: string
-                                    sourceUrl: string
-                                    width: number
-                                    height: number
-                                }[]
-                            }
-                        }
-                    }
-                }[]
-                pageInfo: {
-                    endCursor: string
-                }
-            }
-        }
-    }>(query, {
-        ...defaultBrawlhallaArticleVariables,
-        ...variables,
-    })
+    const { data } = await getBrawlhallaGraphQLAPI(
+        query,
+        {
+            ...defaultBrawlhallaArticleVariables,
+            ...variables,
+        },
+        z.object({
+            data: z.object({
+                posts: z.object({
+                    nodes: z.array(
+                        z.object({
+                            title: z.string(),
+                            slug: z.string(),
+                            dateGmt: z.string(),
+                            excerpt: z.string(),
+                            categories: z.object({
+                                nodes: z.array(
+                                    z.object({
+                                        name: z.string(),
+                                        slug: z.string(),
+                                    }),
+                                ),
+                            }),
+                            featuredImage: z.object({
+                                node: z.object({
+                                    sourceUrl: z.string(),
+                                    mediaDetails: z.object({
+                                        sizes: z.array(
+                                            z.object({
+                                                name: z.string(),
+                                                mimeType: z.string(),
+                                                sourceUrl: z.string(),
+                                            }),
+                                        ),
+                                    }),
+                                }),
+                            }),
+                        }),
+                    ),
+                    pageInfo: z.object({
+                        endCursor: z.string(),
+                    }),
+                }),
+            }),
+        }),
+    )
 
     return data.posts.nodes.map((node) => ({
         title: node.title,
@@ -189,8 +195,6 @@ export const getWeeklyRotation = async () => {
 
     // Select all list items within the <ul> following the found paragraph
     const legendsListItems = legendsList.find("li")
-    logInfo("getWeeklyRotation", `Found ${legendsListItems.length} list items`)
-
     // Extract the legend names
     const weeklyRotation = legendsListItems
         .map((index, element) => {
@@ -211,56 +215,65 @@ export const getWeeklyRotation = async () => {
 const getBrawlhallaArticle = async (slug: string) => {
     const url = `${BRAWLHALLA_WP_API_URL}/posts?_embed&slug=${slug}`
 
-    const { data } = await axios.get<
-        {
-            id: number
-            date: string
-            date_gmt: string
-            guid: {
-                rendered: string
-            }
-            modified: string
-            modified_gmt: string
-            slug: string
-            status: string
-            type: string
-            link: string
-            title: {
-                rendered: string
-            }
-            content: {
-                rendered: string
-                protected: boolean
-            }
-            yoast_head_json: {
-                title: string
-                canonical: string
-                og_title: string
-                og_description: string
-                og_url: string
-                og_site_name: string
-                article_published_time: string
-                article_modified_time: string
-                og_image: {
-                    width: number
-                    height: number
-                    url: string
-                    type: string
-                }[]
-            }
-            _embedded: {
-                "wp:term": [
-                    {
-                        id: number
-                        name: string
-                        slug: string
-                    }[],
-                ]
-            }
-        }[]
-    >(url)
-
-    const [post] = data
+    const post = await fetch(url)
+        .then((res) => res.json())
+        .then((res) =>
+            z
+                .array(
+                    z.object({
+                        id: z.number(),
+                        date: z.string(),
+                        date_gmt: z.string(),
+                        guid: z.object({
+                            rendered: z.string(),
+                        }),
+                        modified: z.string(),
+                        modified_gmt: z.string(),
+                        slug: z.string(),
+                        status: z.string(),
+                        type: z.string(),
+                        link: z.string(),
+                        title: z.object({
+                            rendered: z.string(),
+                        }),
+                        content: z.object({
+                            rendered: z.string(),
+                            protected: z.boolean(),
+                        }),
+                        yoast_head_json: z.object({
+                            title: z.string(),
+                            canonical: z.string(),
+                            og_title: z.string(),
+                            og_description: z.string(),
+                            og_url: z.string(),
+                            og_site_name: z.string(),
+                            article_published_time: z.string(),
+                            article_modified_time: z.string(),
+                            og_image: z.array(
+                                z.object({
+                                    width: z.number(),
+                                    height: z.number(),
+                                    url: z.string(),
+                                    type: z.string(),
+                                }),
+                            ),
+                        }),
+                        _embedded: z.object({
+                            "wp:term": z.array(
+                                z.array(
+                                    z.object({
+                                        id: z.number(),
+                                        name: z.string(),
+                                        slug: z.string(),
+                                    }),
+                                ),
+                            ),
+                        }),
+                    }),
+                )
+                .parse(res),
+        )
+        .then((res) => res[0])
 
     return {
         title: post.yoast_head_json.title,

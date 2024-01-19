@@ -1,0 +1,1 @@
+export const CLANS_RANKINGS_PER_PAGE = 50

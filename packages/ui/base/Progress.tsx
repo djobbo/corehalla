@@ -1,3 +1,5 @@
+"use client"
+
 import { Indicator as ProgressIndicator, Root } from "@radix-ui/react-progress"
 
 type ProgressProps = {

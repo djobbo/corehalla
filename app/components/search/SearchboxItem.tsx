@@ -1,5 +1,5 @@
-import { AppLink } from "ui/base/AppLink"
 import { useKBar } from "kbar"
+import Link from "next/link"
 import type { ReactNode } from "react"
 
 type SearchboxItemProps = {
@@ -22,7 +22,7 @@ export const SearchboxItem = ({
     } = useKBar()
 
     return (
-        <AppLink
+        <Link
             href={href}
             onClick={() => toggle()}
             className="px-4 py-3 w-full flex items-center justify-between gap-8 border-b cursor-pointer border-bgVar2 hover:bg-bg/75"
@@ -39,6 +39,6 @@ export const SearchboxItem = ({
                 </div>
             </div>
             {rightContent}
-        </AppLink>
+        </Link>
     )
 }

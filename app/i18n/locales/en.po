@@ -1,0 +1,157 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2023-10-22 00:59+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: en\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#: app/[locale]/_landing/DiscordCard.tsx:77
+msgid "{DISCORD_MEMBERS} discord members, and growing!"
+msgstr "{DISCORD_MEMBERS} discord members, and growing!"
+
+#: app/[locale]/_layout/SideNav.tsx:138
+msgid "1v1 Rankings"
+msgstr "1v1 Rankings"
+
+#: app/[locale]/page.tsx:90
+msgid "2v2"
+msgstr "2v2"
+
+#: app/[locale]/_layout/SideNav.tsx:145
+msgid "2v2 Rankings"
+msgstr "2v2 Rankings"
+
+#: app/[locale]/(rankings)/error.tsx:19
+#: app/[locale]/error.tsx:19
+msgid "An unknown error occured :("
+msgstr "An unknown error occured :("
+
+#: app/[locale]/_layout/SideNav.tsx:158
+msgid "Clans"
+msgstr "Clans"
+
+#: app/[locale]/_layout/SideNav.tsx:164
+msgid "Discord Server"
+msgstr "Discord Server"
+
+#: app/[locale]/_landing/DiscordCard.tsx:116
+msgid "Donate"
+msgstr "Donate"
+
+#: app/[locale]/(stats)/error.tsx:19
+msgid "Failed to fetch stats"
+msgstr "Failed to fetch stats"
+
+#: app/[locale]/(rankings)/clans/[[...clansRankingsOptions]]/error.tsx:19
+msgid "Failed to load the clan rankings :("
+msgstr "Failed to load the clan rankings :("
+
+#: app/[locale]/(rankings)/power-rankings/[[...rankingsOptions]]/error.tsx:19
+msgid "Failed to load the power rankings :("
+msgstr "Failed to load the power rankings :("
+
+#: app/[locale]/(rankings)/ranked/queue/error.tsx:19
+msgid "Failed to load the ranked queue :("
+msgstr "Failed to load the ranked queue :("
+
+#: app/[locale]/(rankings)/ranked/[[...rankingsOptions]]/error.tsx:19
+msgid "Failed to load the rankings :("
+msgstr "Failed to load the rankings :("
+
+#: app/[locale]/_layout/SideNav.tsx:180
+msgid "Favorites"
+msgstr "Favorites"
+
+#: app/[locale]/_landing/WeeklyRotation.tsx:39
+msgid "Free Legends Rotation"
+msgstr "Free Legends Rotation"
+
+#: app/[locale]/_landing/LandingFavorites.tsx:32
+msgid "Here you'll be able to see your favorite players and clans"
+msgstr "Here you'll be able to see your favorite players and clans"
+
+#: app/[locale]/_layout/SideNav.tsx:131
+msgid "Home"
+msgstr "Home"
+
+#: app/[locale]/page.tsx:65
+msgid "Improve your Brawlhalla Game, and find your place among the Elite with our in-depth stats tracking and live leaderboards."
+msgstr "Improve your Brawlhalla Game, and find your place among the Elite with our in-depth stats tracking and live leaderboards."
+
+#: app/[locale]/_landing/DiscordCard.tsx:107
+msgid "Join"
+msgstr "Join"
+
+#: app/[locale]/page.tsx:44
+msgid "Join our community"
+msgstr "Join our community"
+
+#: app/[locale]/_layout/Footer.tsx:67
+msgid "Join our community :"
+msgstr "Join our community :"
+
+#: app/[locale]/page.tsx:112
+msgid "Latest News"
+msgstr "Latest News"
+
+#: app/[locale]/page.tsx:117
+msgid "Loading articles..."
+msgstr "Loading articles..."
+
+#: app/[locale]/page.tsx:74
+msgid "or"
+msgstr "or"
+
+#: app/[locale]/_layout/SideNav.tsx:152
+msgid "Power Rankings"
+msgstr "Power Rankings"
+
+#: app/[locale]/_landing/DiscordCard.tsx:85
+msgid "Question of the day"
+msgstr "Question of the day"
+
+#: components/search/SearchButton.tsx:40
+msgid "Search player..."
+msgstr "Search player..."
+
+#: app/[locale]/_landing/DiscordCard.tsx:99
+msgid "Share your thoughts"
+msgstr "Share your thoughts"
+
+#: app/[locale]/_landing/LandingFavorites.tsx:39
+#: app/[locale]/_layout/Header.tsx:88
+msgid "Sign in"
+msgstr "Sign in"
+
+#: app/[locale]/page.tsx:57
+msgid "Stay ahead of the competition"
+msgstr "Stay ahead of the competition"
+
+#: app/[locale]/_layout/ErrorDisplay.tsx:29
+msgid "Try Again"
+msgstr "Try Again"
+
+#: app/[locale]/_landing/LandingFavorites.tsx:26
+#: app/[locale]/page.tsx:82
+msgid "View rankings"
+msgstr "View rankings"
+
+#: app/[locale]/_landing/DiscordCard.tsx:88
+msgid "Which weapon(s) do you enjoy playing the most ? and which one(s) you dislike playing ?"
+msgstr "Which weapon(s) do you enjoy playing the most ? and which one(s) you dislike playing ?"
+
+#: app/[locale]/_layout/SideNav.tsx:171
+msgid "Wiki"
+msgstr "Wiki"
+
+#: app/[locale]/_landing/LandingFavorites.tsx:20
+msgid "You don't have any favorites yet, you can a player or a clan as favorite when visiting their profile page."
+msgstr "You don't have any favorites yet, you can a player or a clan as favorite when visiting their profile page."
