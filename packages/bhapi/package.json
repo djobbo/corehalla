@@ -2,7 +2,7 @@
     "name": "bhapi",
     "version": "0.0.0",
     "devDependencies": {
-        "@types/node": "^20.8.7",
+        "@types/node": "^20.11.5",
         "tsconfig": "workspace:*",
         "typescript": "^5.3.3"
     },
