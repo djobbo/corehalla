@@ -17,7 +17,7 @@ export const {
 })
 
 const setColor =
-    (prop: string) => (color: keyof typeof theme["colors"], state?: string) =>
+    (prop: string) => (color: keyof (typeof theme)["colors"], state?: string) =>
         css(
             state
                 ? { [state]: { [prop]: theme.colors[color] } }

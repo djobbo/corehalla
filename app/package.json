@@ -27,7 +27,7 @@
         "encoding": "^0.1.13",
         "kbar": "0.1.0-beta.39",
         "logger": "workspace:*",
-        "next": "13.5.6",
+        "next": "14.1.0",
         "next-sitemap": "^3.1.43",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
@@ -36,7 +36,7 @@
         "server": "workspace:*",
         "ui": "workspace:*",
         "web-parser": "workspace:*",
-        "zod": "^3.20.2"
+        "zod": "^3.22.4"
     },
     "devDependencies": {
         "@tanstack/query-core": "^4.22.0",
@@ -47,6 +47,6 @@
         "postcss": "^8.4.20",
         "tailwindcss": "^3.2.4",
         "tsconfig": "workspace:*",
-        "typescript": "^4.9.4"
+        "typescript": "^5.3.3"
     }
 }

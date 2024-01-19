@@ -41,7 +41,7 @@ export const PlayerWeaponsTab = ({
         changeSortDirection: changeWeaponSortDirection,
         sortDirection: weaponSortDirection,
         displaySortFn: displayWeaponSortFn,
-    } = useSortBy<typeof weaponsStats[number], WeaponSortOption>(
+    } = useSortBy<(typeof weaponsStats)[number], WeaponSortOption>(
         weaponsStats,
         {
             name: {

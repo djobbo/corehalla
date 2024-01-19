@@ -73,9 +73,8 @@ export const Searchbox = () => {
 
     const { rankings1v1, aliases, isLoading } = usePlayerSearch(search)
 
-    const isPotentialBrawlhallaId = !!numericLiteralValidator
-        .catch("")
-        .parse(search)
+    const isPotentialBrawlhallaId =
+        numericLiteralValidator.safeParse(search).success
 
     const { data: potentialBrawlhallaIdAliases } =
         trpc.getPlayerAliases.useQuery(

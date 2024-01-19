@@ -12,7 +12,7 @@ export const rankedTierNames = [
     "Diamond",
 ]
 
-export type RankedTierName = typeof rankedTierNames[number]
+export type RankedTierName = (typeof rankedTierNames)[number]
 
 export const rankedTiers = [
     ["Diamond", 2000],
@@ -46,7 +46,7 @@ export const rankedTiers = [
 
 export const rankedTiersComplete = rankedTiers.map(([tier]) => tier)
 
-export type RankedTier = typeof rankedTiersComplete[number] | "Valhallan"
+export type RankedTier = (typeof rankedTiersComplete)[number] | "Valhallan"
 
 const rankedRegionsValidators = [
     z.literal("all"),
@@ -86,8 +86,8 @@ export const weapons = [
     "Battle Boots",
 ] as const
 
-export type Weapon = typeof weapons[number]
+export type Weapon = (typeof weapons)[number]
 
 export const clanRanks = ["Leader", "Officer", "Member", "Recruit"] as const
 
-export type ClanRank = typeof clanRanks[number]
+export type ClanRank = (typeof clanRanks)[number]
