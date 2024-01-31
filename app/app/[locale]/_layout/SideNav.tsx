@@ -8,6 +8,7 @@ import {
 } from "ui/icons"
 import { HiBookOpen, HiHeart, HiHome, HiUserGroup, HiX } from "react-icons/hi"
 // TODO: replace react-icons with lucide
+import { BRAWLHALLA_WIKI_URL, COREHALLA_DISCORD_URL } from "@/socials"
 import { Image } from "@/components/Image"
 import { type MessageDescriptor } from "@lingui/core"
 import { Tooltip } from "ui/base/Tooltip"
@@ -162,14 +163,14 @@ export const SideNav = ({ className }: SideNavProps) => {
         {
             id: "discord",
             name: msg`Discord Server`,
-            href: "/discord",
+            href: COREHALLA_DISCORD_URL,
             icon: <DiscordIcon className="w-6 h-6" />,
             external: true,
         },
         {
             id: "wiki",
             name: msg`Wiki`,
-            href: "/wiki",
+            href: BRAWLHALLA_WIKI_URL,
             icon: <HiBookOpen className="w-6 h-6" />,
             external: true,
         },

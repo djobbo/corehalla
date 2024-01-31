@@ -1,3 +1,8 @@
+import {
+    COREHALLA_DISCORD_URL,
+    COREHALLA_GITHUB_URL,
+    COREHALLA_TWITTER_URL,
+} from "@/socials"
 import { DiscordIcon, GithubIcon, TwitterIcon } from "ui/icons"
 import { Tooltip } from "ui/base/Tooltip"
 import { Trans } from "@lingui/macro"
@@ -5,17 +10,17 @@ import Link from "next/link"
 
 const socialLinks = [
     {
-        href: "/discord",
+        href: COREHALLA_DISCORD_URL,
         Icon: DiscordIcon,
         name: "Discord",
     },
     {
-        href: "/twitter",
+        href: COREHALLA_TWITTER_URL,
         Icon: TwitterIcon,
         name: "Twitter",
     },
     {
-        href: "/github",
+        href: COREHALLA_GITHUB_URL,
         Icon: GithubIcon,
         name: "Github",
     },

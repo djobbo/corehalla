@@ -1,6 +1,7 @@
 import { ArrowSmRightIcon } from "ui/icons"
 import { ArticlePreviewGrid } from "@/components/articles/ArticlePreviewGrid"
 import { Button } from "ui/base/Button"
+import { COREHALLA_DISCORD_URL } from "@/socials"
 import { DiscordCard } from "./_landing/DiscordCard"
 import { LandingFavorites } from "./_landing/LandingFavorites"
 import { SearchButton } from "@/components/search/SearchButton"
@@ -29,7 +30,7 @@ export default async function Home() {
                     )}
                 >
                     <Link
-                        href="/discord"
+                        href={COREHALLA_DISCORD_URL}
                         target="_blank"
                         className="flex items-center gap-2 pl-3 pr-2 py-1 bg-bgVar1/75 rounded-full border border-bg text-sm hover:bg-bgVar2"
                         aria-label='Join our "Corehalla" Discord server'
@@ -89,7 +90,7 @@ export default async function Home() {
                 <div>
                     <DiscordCard />
                     <Link
-                        href="/discord"
+                        href={COREHALLA_DISCORD_URL}
                         target="_blank"
                         aria-label="Discord server link"
                         className="block text-sm mt-2 text-textVar1 text-center"

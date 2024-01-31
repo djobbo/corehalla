@@ -1,8 +1,11 @@
-const BRAWLHALLA_WIKI_URL = "https://brawlhalla.fandom.com/wiki/Brawlhalla_Wiki"
-const COREHALLA_DISCORD_URL = "https://discord.com/invite/eD248ez"
-const COREHALLA_GITHUB_URL = "https://github.com/djobbo/corehalla"
-const COREHALLA_TWITTER_URL = "https://twitter.com/Corehalla"
-const COREHALLA_KOFI_URL = "https://ko-fi.com/corehalla"
+const {
+    BRAWLHALLA_WIKI_URL,
+    COREHALLA_DISCORD_URL,
+    COREHALLA_GITHUB_URL,
+    COREHALLA_TWITTER_URL,
+    COREHALLA_KOFI_URL,
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+} = require("./socials")
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require("path")
@@ -57,11 +60,12 @@ const nextConfig = {
             },
         ],
     },
-    experimental: {
-        logging: {
-            level: "verbose",
+    logging: {
+        fetches: {
             fullUrl: true,
         },
+    },
+    experimental: {
         swcPlugins: [
             [
                 "@lingui/swc-plugin",

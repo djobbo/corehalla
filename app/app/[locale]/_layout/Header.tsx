@@ -2,6 +2,11 @@
 
 import { AlertBar } from "./AlertBar"
 import { Button } from "ui/base/Button"
+import {
+    COREHALLA_DISCORD_URL,
+    COREHALLA_GITHUB_URL,
+    COREHALLA_TWITTER_URL,
+} from "@/socials"
 import { DiscordIcon, GithubIcon, TwitterIcon } from "ui/icons"
 import { HamburgerMenuIcon } from "ui/icons"
 import { Image } from "@/components/Image"
@@ -97,21 +102,21 @@ export const Header = ({ className }: HeaderProps) => {
                         <div className="hidden md:flex items-center gap-1 ml-2">
                             <Link
                                 className="text-textVar1 hover:text-text"
-                                href="/discord"
+                                href={COREHALLA_DISCORD_URL}
                                 target="_blank"
                             >
                                 <DiscordIcon size="16" className="mr-2" />
                             </Link>
                             <Link
                                 className="text-textVar1 hover:text-text"
-                                href="/twitter"
+                                href={COREHALLA_TWITTER_URL}
                                 target="_blank"
                             >
                                 <TwitterIcon size="16" className="mr-2" />
                             </Link>
                             <Link
                                 className="text-textVar1 hover:text-text"
-                                href="/github"
+                                href={COREHALLA_GITHUB_URL}
                                 target="_blank"
                             >
                                 <GithubIcon size="16" className="mr-2" />

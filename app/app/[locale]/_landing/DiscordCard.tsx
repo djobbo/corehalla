@@ -2,6 +2,7 @@
 
 import { ArrowSmRightIcon, DiscordIcon, KofiIcon } from "ui/icons"
 import { Button } from "ui/base/Button"
+import { COREHALLA_DISCORD_URL, COREHALLA_KOFI_URL } from "@/socials"
 import { Image } from "@/components/Image"
 import { Trans } from "@lingui/macro"
 import { clamp } from "common/helpers/math"
@@ -90,7 +91,7 @@ export const DiscordCard = () => {
                             </Trans>
                         </p>
                         <a
-                            href="/discord"
+                            href={COREHALLA_DISCORD_URL}
                             target="_blank"
                             aria-label="Join our Discord server to share your thoughts"
                         >
@@ -101,13 +102,17 @@ export const DiscordCard = () => {
                         </a>
                     </div>
                     <div className="flex gap-2 justify-end p-4">
-                        <Button as="a" href="/discord" target="_blank">
+                        <Button
+                            as="a"
+                            href={COREHALLA_DISCORD_URL}
+                            target="_blank"
+                        >
                             <DiscordIcon size="16" className="mr-2" />{" "}
                             <Trans>Join</Trans>
                         </Button>
                         <Button
                             as="a"
-                            href="/donate"
+                            href={COREHALLA_KOFI_URL}
                             target="_blank"
                             className="bg-accentAlt"
                         >

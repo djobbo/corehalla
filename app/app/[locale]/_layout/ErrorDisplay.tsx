@@ -1,4 +1,5 @@
 import { Button } from "ui/base/Button"
+import { COREHALLA_DISCORD_URL, COREHALLA_GITHUB_URL } from "@/socials"
 import { DiscordIcon, GithubIcon } from "ui/icons"
 import { SectionTitle } from "@/components/layout/SectionTitle"
 import { Trans } from "@lingui/macro"
@@ -35,7 +36,11 @@ export const ErrorDisplay = ({
                         buttonStyle="outline"
                         onClick={() => {
                             window
-                                ?.open("/discord", "_blank", "noreferrer")
+                                ?.open(
+                                    COREHALLA_DISCORD_URL,
+                                    "_blank",
+                                    "noreferrer",
+                                )
                                 ?.focus()
                         }}
                         className="flex items-center gap-2"
@@ -46,7 +51,11 @@ export const ErrorDisplay = ({
                         buttonStyle="outline"
                         onClick={() => {
                             window
-                                ?.open("/github", "_blank", "noreferrer")
+                                ?.open(
+                                    COREHALLA_GITHUB_URL,
+                                    "_blank",
+                                    "noreferrer",
+                                )
                                 ?.focus()
                         }}
                         className="flex items-center gap-2"

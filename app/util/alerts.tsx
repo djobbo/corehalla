@@ -1,3 +1,4 @@
+import { COREHALLA_DISCORD_URL } from "@/socials"
 import Link from "next/link"
 
 export const alerts = {
@@ -5,7 +6,7 @@ export const alerts = {
         <span>
             Brawlhalla maintenance ongoing. More info{" "}
             <Link
-                href="/discord"
+                href={COREHALLA_DISCORD_URL}
                 target="_blank"
                 className="text-accentAlt font-semibold hover:text-text"
             >
@@ -19,7 +20,7 @@ export const alerts = {
             Known issues with fetching stats from Brawlhalla{"'"}s servers, don
             {"'"}t panic. Updates{" "}
             <Link
-                href="/discord"
+                href={COREHALLA_DISCORD_URL}
                 target="_blank"
                 className="text-accentAlt font-semibold hover:text-text"
             >
@@ -33,7 +34,7 @@ export const alerts = {
             Authentication server is down, and so favorites aren{"'"}t
             accessible, sorry for the inconvenience. Updates{" "}
             <Link
-                href="/discord"
+                href={COREHALLA_DISCORD_URL}
                 target="_blank"
                 className="text-accentAlt font-semibold hover:text-text"
             >
@@ -47,7 +48,7 @@ export const alerts = {
             Authentication server is back online, you can reconnect! Don{"'"}t
             forget to join our{" "}
             <Link
-                href="/discord"
+                href={COREHALLA_DISCORD_URL}
                 target="_blank"
                 className="text-accentAlt font-semibold hover:text-text"
             >

@@ -1,6 +1,11 @@
 "use client"
 
 import { Button } from "ui/base/Button"
+import {
+    COREHALLA_DISCORD_URL,
+    COREHALLA_GITHUB_URL,
+    COREHALLA_TWITTER_URL,
+} from "@/socials"
 import { CloseIcon, DiscordIcon, GithubIcon, TwitterIcon } from "ui/icons"
 import { useLocalStorageState } from "common/hooks/useLocalStorageState"
 import Link from "next/link"
@@ -24,21 +29,21 @@ export const FirstTimePopup = () => {
                     <span className="text-sm text-textVar1">Join us:</span>
                     <Link
                         className="text-textVar1 hover:text-text"
-                        href="/discord"
+                        href={COREHALLA_DISCORD_URL}
                         target="_blank"
                     >
                         <DiscordIcon size="24" />
                     </Link>
                     <Link
                         className="text-textVar1 hover:text-text"
-                        href="/twitter"
+                        href={COREHALLA_TWITTER_URL}
                         target="_blank"
                     >
                         <TwitterIcon size="24" />
                     </Link>
                     <Link
                         className="text-textVar1 hover:text-text"
-                        href="/github"
+                        href={COREHALLA_GITHUB_URL}
                         target="_blank"
                     >
                         <GithubIcon size="24" />
