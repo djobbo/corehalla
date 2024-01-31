@@ -7,7 +7,7 @@ import { Trans } from "@lingui/macro"
 import { clamp } from "common/helpers/math"
 import { useEffect, useRef } from "react"
 
-const DISCORD_MEMBERS = "3.8k+"
+const DISCORD_MEMBERS = "4.5k+"
 
 export const DiscordCard = () => {
     const containerRef = useRef<HTMLDivElement>(null)
@@ -73,7 +73,6 @@ export const DiscordCard = () => {
                         containerClassName="w-20 h-20 rounded-3xl -mt-10 ml-6 border-8 border-bgVar2 overflow-hidden"
                     />
                     <span className="text-sm ml-2 mt-2 text-textVar1 text-center">
-                        {/* {t`${DISCORD_MEMBERS} discord members, and growing!`} */}
                         <Trans>
                             {DISCORD_MEMBERS} discord members, and growing!
                         </Trans>

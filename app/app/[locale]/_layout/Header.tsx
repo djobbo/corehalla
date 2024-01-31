@@ -80,7 +80,9 @@ export const Header = ({ className }: HeaderProps) => {
                                         </div>
                                     </>
                                 )}
-                                <Button onClick={signOut}>Sign out</Button>
+                                <Button onClick={signOut}>
+                                    <Trans>Sign out</Trans>
+                                </Button>
                             </>
                         ) : (
                             <Button onClick={signIn}>

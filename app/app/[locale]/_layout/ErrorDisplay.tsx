@@ -16,6 +16,7 @@ export const ErrorDisplay = ({
     error,
 }: ErrorDisplayProps) => {
     useEffect(() => {
+        // eslint-disable-next-line no-console
         console.log("error", error)
         // TODO: Log the error to an error reporting service
     }, [error])

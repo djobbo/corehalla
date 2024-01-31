@@ -50,12 +50,14 @@ export const Footer = ({ className }: FooterProps) => {
                     </Link>
                     .
                     <br />
-                    Corehalla is neither associated nor endorsed by Blue Mammoth
-                    Games and doesn&apos;t reflect the views or opinions of Blue
-                    Mammoth Games or anyone officially involved in developing
-                    Brawlhalla.
-                    <br />
-                    Brawlhalla and Blue Mammoth Games are trademarks of{" "}
+                    <Trans>
+                        Corehalla is neither associated nor endorsed by Blue
+                        Mammoth Games and doesn&apos;t reflect the views or
+                        opinions of Blue Mammoth Games or anyone officially
+                        involved in developing Brawlhalla.
+                        <br />
+                        Brawlhalla and Blue Mammoth Games are trademarks of{" "}
+                    </Trans>
                     <a className="p-link" href="https://www.bluemammoth.com">
                         Blue Mammoth Games
                     </a>

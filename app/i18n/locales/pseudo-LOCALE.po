@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: app/[locale]/_landing/DiscordCard.tsx:77
+#: app/[locale]/_landing/DiscordCard.tsx:76
 msgid "{DISCORD_MEMBERS} discord members, and growing!"
 msgstr ""
 
@@ -38,11 +38,15 @@ msgstr ""
 msgid "Clans"
 msgstr ""
 
+#: app/[locale]/_layout/Footer.tsx:53
+msgid "Corehalla is neither associated nor endorsed by Blue Mammoth Games and doesn't reflect the views or opinions of Blue Mammoth Games or anyone officially involved in developing Brawlhalla.<0/>Brawlhalla and Blue Mammoth Games are trademarks of"
+msgstr ""
+
 #: app/[locale]/_layout/SideNav.tsx:164
 msgid "Discord Server"
 msgstr ""
 
-#: app/[locale]/_landing/DiscordCard.tsx:116
+#: app/[locale]/_landing/DiscordCard.tsx:115
 msgid "Donate"
 msgstr ""
 
@@ -74,6 +78,18 @@ msgstr ""
 msgid "Free Legends Rotation"
 msgstr ""
 
+#: app/[locale]/calculator/page.tsx:76
+msgid "Glory Calculator"
+msgstr ""
+
+#: app/[locale]/calculator/page.tsx:121
+msgid "Glory from best rating:"
+msgstr ""
+
+#: app/[locale]/calculator/page.tsx:105
+msgid "Glory from wins:"
+msgstr ""
+
 #: app/[locale]/_landing/LandingFavorites.tsx:32
 msgid "Here you'll be able to see your favorite players and clans"
 msgstr ""
@@ -82,11 +98,15 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
+#: app/[locale]/calculator/page.tsx:88
+msgid "I have played 10 ranked games (or more)."
+msgstr ""
+
 #: app/[locale]/page.tsx:65
 msgid "Improve your Brawlhalla Game, and find your place among the Elite with our in-depth stats tracking and live leaderboards."
 msgstr ""
 
-#: app/[locale]/_landing/DiscordCard.tsx:107
+#: app/[locale]/_landing/DiscordCard.tsx:106
 msgid "Join"
 msgstr ""
 
@@ -94,7 +114,7 @@ msgstr ""
 msgid "Join our community"
 msgstr ""
 
-#: app/[locale]/_layout/Footer.tsx:67
+#: app/[locale]/_layout/Footer.tsx:69
 msgid "Join our community :"
 msgstr ""
 
@@ -102,19 +122,31 @@ msgstr ""
 msgid "Latest News"
 msgstr ""
 
+#: app/[locale]/calculator/page.tsx:165
+msgid "Legend/Team Rating Squash:"
+msgstr ""
+
 #: app/[locale]/page.tsx:117
 msgid "Loading articles..."
+msgstr ""
+
+#: app/[locale]/calculator/page.tsx:71
+msgid "New Season Glory / ELO Reset Calculator"
 msgstr ""
 
 #: app/[locale]/page.tsx:74
 msgid "or"
 msgstr ""
 
+#: app/[locale]/calculator/page.tsx:149
+msgid "Personal Rating Squash:"
+msgstr ""
+
 #: app/[locale]/_layout/SideNav.tsx:152
 msgid "Power Rankings"
 msgstr ""
 
-#: app/[locale]/_landing/DiscordCard.tsx:85
+#: app/[locale]/_landing/DiscordCard.tsx:84
 msgid "Question of the day"
 msgstr ""
 
@@ -122,7 +154,7 @@ msgstr ""
 msgid "Search player..."
 msgstr ""
 
-#: app/[locale]/_landing/DiscordCard.tsx:99
+#: app/[locale]/_landing/DiscordCard.tsx:98
 msgid "Share your thoughts"
 msgstr ""
 
@@ -144,7 +176,7 @@ msgstr ""
 msgid "View rankings"
 msgstr ""
 
-#: app/[locale]/_landing/DiscordCard.tsx:88
+#: app/[locale]/_landing/DiscordCard.tsx:87
 msgid "Which weapon(s) do you enjoy playing the most ? and which one(s) you dislike playing ?"
 msgstr ""
 
@@ -154,4 +186,8 @@ msgstr ""
 
 #: app/[locale]/_landing/LandingFavorites.tsx:20
 msgid "You don't have any favorites yet, you can a player or a clan as favorite when visiting their profile page."
+msgstr ""
+
+#: app/[locale]/calculator/page.tsx:134
+msgid "You gotta play at least 10 ranked games!"
 msgstr ""

@@ -6,11 +6,7 @@ export const getDiscordProfile = async (
     discordToken: string,
 ): Promise<Pick<APIUser, "username" | "avatar"> | null> => {
     try {
-        const res = await discordApi.get<APIUser>(discordToken, Routes.user())
-
-        if (res.status !== 200) throw new Error(res.statusText)
-
-        const user = res.data
+        const user = await discordApi.get<APIUser>(discordToken, Routes.user())
 
         return {
             username: user.username,

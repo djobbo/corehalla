@@ -10,7 +10,7 @@
     "logger": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^20.11.4",
+    "@types/node": "^20.11.10",
     "tsconfig": "workspace:*"
   }
 }

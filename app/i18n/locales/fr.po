@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: app/[locale]/_landing/DiscordCard.tsx:77
+#: app/[locale]/_landing/DiscordCard.tsx:76
 msgid "{DISCORD_MEMBERS} discord members, and growing!"
 msgstr "{DISCORD_MEMBERS} membres sur Discord, et ça continue !"
 
@@ -38,11 +38,15 @@ msgstr "Une erreur inconnue est survenue :("
 msgid "Clans"
 msgstr "Clans"
 
+#: app/[locale]/_layout/Footer.tsx:53
+msgid "Corehalla is neither associated nor endorsed by Blue Mammoth Games and doesn't reflect the views or opinions of Blue Mammoth Games or anyone officially involved in developing Brawlhalla.<0/>Brawlhalla and Blue Mammoth Games are trademarks of"
+msgstr "Corehalla n'est ni associé ni approuvé par Blue Mammoth Games et ne reflète pas les vues ou opinions de Blue Mammoth Games ou de quiconque officiellement impliqué dans le développement de Brawlhalla.<0/>Brawlhalla et Blue Mammoth Games sont des marques déposées de"
+
 #: app/[locale]/_layout/SideNav.tsx:164
 msgid "Discord Server"
 msgstr "Serveur Discord"
 
-#: app/[locale]/_landing/DiscordCard.tsx:116
+#: app/[locale]/_landing/DiscordCard.tsx:115
 msgid "Donate"
 msgstr "Faire un don"
 
@@ -74,6 +78,18 @@ msgstr "Mes favoris"
 msgid "Free Legends Rotation"
 msgstr "Légendes gratuites de la semaine"
 
+#: app/[locale]/calculator/page.tsx:76
+msgid "Glory Calculator"
+msgstr "Calculateur de Gloire"
+
+#: app/[locale]/calculator/page.tsx:121
+msgid "Glory from best rating:"
+msgstr "Gloire liée au meilleur classement:"
+
+#: app/[locale]/calculator/page.tsx:105
+msgid "Glory from wins:"
+msgstr "Gloire liée aux victoires:"
+
 #: app/[locale]/_landing/LandingFavorites.tsx:32
 msgid "Here you'll be able to see your favorite players and clans"
 msgstr "Ici, vous pourrez voir vos joueurs et clans favoris"
@@ -82,11 +98,15 @@ msgstr "Ici, vous pourrez voir vos joueurs et clans favoris"
 msgid "Home"
 msgstr "Accueil"
 
+#: app/[locale]/calculator/page.tsx:88
+msgid "I have played 10 ranked games (or more)."
+msgstr "J'ai joué 10 parties classées (ou plus)."
+
 #: app/[locale]/page.tsx:65
 msgid "Improve your Brawlhalla Game, and find your place among the Elite with our in-depth stats tracking and live leaderboards."
 msgstr "Deviens un meilleur joueur de Brawlhalla, en t'appuyant sur nos statistiques détaillées et nos classements mis à jour en temps réel."
 
-#: app/[locale]/_landing/DiscordCard.tsx:107
+#: app/[locale]/_landing/DiscordCard.tsx:106
 msgid "Join"
 msgstr "Rejoindre"
 
@@ -94,7 +114,7 @@ msgstr "Rejoindre"
 msgid "Join our community"
 msgstr "Rejoignez notre communauté"
 
-#: app/[locale]/_layout/Footer.tsx:67
+#: app/[locale]/_layout/Footer.tsx:69
 msgid "Join our community :"
 msgstr "Rejoignez notre communauté :"
 
@@ -102,19 +122,31 @@ msgstr "Rejoignez notre communauté :"
 msgid "Latest News"
 msgstr "Dernières actus"
 
+#: app/[locale]/calculator/page.tsx:165
+msgid "Legend/Team Rating Squash:"
+msgstr "Classement Légende/Équipe pour la prochaine saison:"
+
 #: app/[locale]/page.tsx:117
 msgid "Loading articles..."
 msgstr "Chargement des articles..."
+
+#: app/[locale]/calculator/page.tsx:71
+msgid "New Season Glory / ELO Reset Calculator"
+msgstr ""
 
 #: app/[locale]/page.tsx:74
 msgid "or"
 msgstr "ou"
 
+#: app/[locale]/calculator/page.tsx:149
+msgid "Personal Rating Squash:"
+msgstr "Classement personnel pour la prochaine saison:"
+
 #: app/[locale]/_layout/SideNav.tsx:152
 msgid "Power Rankings"
 msgstr "Classement Compétitif"
 
-#: app/[locale]/_landing/DiscordCard.tsx:85
+#: app/[locale]/_landing/DiscordCard.tsx:84
 msgid "Question of the day"
 msgstr "Question du jour"
 
@@ -122,7 +154,7 @@ msgstr "Question du jour"
 msgid "Search player..."
 msgstr "Rechercher..."
 
-#: app/[locale]/_landing/DiscordCard.tsx:99
+#: app/[locale]/_landing/DiscordCard.tsx:98
 msgid "Share your thoughts"
 msgstr "Partagez vos idées"
 
@@ -144,7 +176,7 @@ msgstr "Réessayer"
 msgid "View rankings"
 msgstr "Voir le classement"
 
-#: app/[locale]/_landing/DiscordCard.tsx:88
+#: app/[locale]/_landing/DiscordCard.tsx:87
 msgid "Which weapon(s) do you enjoy playing the most ? and which one(s) you dislike playing ?"
 msgstr "Quelle(s) arme(s) préférez-vous jouer ? Et laquelle (lesquelles) n'aimez-vous pas ?"
 
@@ -155,3 +187,7 @@ msgstr "Wiki"
 #: app/[locale]/_landing/LandingFavorites.tsx:20
 msgid "You don't have any favorites yet, you can a player or a clan as favorite when visiting their profile page."
 msgstr "Vous n'avez pas encore de favoris, vous pouvez ajouter un joueur ou un clan en favori en visitant leur page de profil."
+
+#: app/[locale]/calculator/page.tsx:134
+msgid "You gotta play at least 10 ranked games!"
+msgstr "Vous devez jouer au moins 10 parties classées !"

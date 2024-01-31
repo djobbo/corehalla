@@ -2,6 +2,7 @@
 
 import { Card } from "ui/base/Card"
 import { SectionTitle } from "@/components/layout/SectionTitle"
+import { Trans } from "@lingui/macro"
 import { create } from "zustand"
 import {
     getGloryFromBestRating,
@@ -67,11 +68,13 @@ export default function CalculatorPage() {
     return (
         <>
             <h1 className="text-3xl font-bold">
-                New Season Glory / ELO Reset Calculator
+                <Trans>New Season Glory / ELO Reset Calculator</Trans>
             </h1>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-4 items-center">
-                    <SectionTitle>Glory Calculator</SectionTitle>
+                    <SectionTitle>
+                        <Trans>Glory Calculator</Trans>
+                    </SectionTitle>
                     <Card>
                         <label>
                             <input
@@ -82,7 +85,9 @@ export default function CalculatorPage() {
                                     setHasPlayed10Games(e.target.checked)
                                 }
                             />
-                            I have played 10 ranked games (or more).
+                            <Trans>
+                                I have played 10 ranked games (or more).
+                            </Trans>
                         </label>
                     </Card>
                     {hasPlayed10Games ? (
@@ -97,7 +102,7 @@ export default function CalculatorPage() {
                                     min={0}
                                     max={10000}
                                 />
-                                Glory from wins:
+                                <Trans>Glory from wins:</Trans>
                                 <span className={resultClassName}>
                                     {gloryWins}
                                 </span>
@@ -113,7 +118,7 @@ export default function CalculatorPage() {
                                     min={200}
                                     max={4000}
                                 />
-                                Glory from best rating:
+                                <Trans>Glory from best rating:</Trans>
                                 <span className={resultClassName}>
                                     {gloryRating}
                                 </span>
@@ -126,7 +131,7 @@ export default function CalculatorPage() {
                             </Card>
                         </>
                     ) : (
-                        <>You gotta play at least 10 ranked games!</>
+                        <Trans>You gotta play at least 10 ranked games!</Trans>
                     )}
                 </div>
                 <div className="flex flex-col gap-4 items-center">
@@ -141,7 +146,7 @@ export default function CalculatorPage() {
                             min={200}
                             max={4000}
                         />
-                        Personal Rating Squash:
+                        <Trans>Personal Rating Squash:</Trans>
                         <span className={resultClassName}>
                             {squashPersonal} (
                             {getTierFromRating(squashPersonal)})
@@ -157,7 +162,7 @@ export default function CalculatorPage() {
                             min={200}
                             max={4000}
                         />
-                        Legend/Team Rating Squash:
+                        <Trans>Legend/Team Rating Squash:</Trans>
                         <span className={resultClassName}>
                             {squashHero} ({getTierFromRating(squashHero)})
                         </span>

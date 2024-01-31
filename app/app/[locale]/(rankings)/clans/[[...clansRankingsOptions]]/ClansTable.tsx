@@ -2,6 +2,7 @@
 
 import { type BHClan } from "db/generated/client"
 import { CLANS_RANKINGS_PER_PAGE } from "./constants"
+import { Trans } from "@lingui/macro"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "@/lib/utils"
 import { formatUnixTime } from "common/helpers/date"
@@ -45,9 +46,11 @@ export const ClansTable = ({ clans, page }: ClansTableProps) => {
                             </Link>
                         </p>
                         <div className="w-40 flex items-center justify-center">
-                            {!!clan.created && clan.created > 0
-                                ? formatUnixTime(clan.created)
-                                : "N/A"}
+                            {!!clan.created && clan.created > 0 ? (
+                                formatUnixTime(clan.created)
+                            ) : (
+                                <Trans>N/A</Trans>
+                            )}
                         </div>
                         <p className="w-20 text-center">{clan.xp}</p>
                     </div>

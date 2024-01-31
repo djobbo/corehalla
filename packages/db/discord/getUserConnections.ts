@@ -6,14 +6,12 @@ export const getUserConnections = async (
     discordToken: string,
 ): Promise<APIConnection[] | null> => {
     try {
-        const res = await discordApi.get<APIConnection[]>(
+        const connections = await discordApi.get<APIConnection[]>(
             discordToken,
             Routes.userConnections(),
         )
 
-        if (res.status !== 200) throw new Error(res.statusText)
-
-        return res.data
+        return connections
     } catch (e) {
         return null
     }

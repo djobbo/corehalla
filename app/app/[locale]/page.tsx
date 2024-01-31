@@ -9,13 +9,7 @@ import { Suspense } from "react"
 import { Trans } from "@lingui/macro"
 import { WeeklyRotation } from "./_landing/WeeklyRotation"
 import { cn } from "@/lib/utils"
-import { css } from "ui/theme"
 import Link from "next/link"
-
-const landingClassName = css({
-    height: "60vh",
-    minHeight: "400px",
-})().className
 
 export const metadata = {
     title: "Corehalla - Track your Brawlhalla stats, view rankings, and more!",
@@ -30,7 +24,7 @@ export default async function Home() {
                 <div
                     className={cn(
                         "relative flex flex-col justify-center items-center lg:items-start",
-                        landingClassName,
+                        "h-[60vh] min-h-[400px]",
                         'after:content[""] after:absolute after:inset-0 after:bg-accent after:blur-[256px] after:opacity-[0.15] after:-z-10',
                     )}
                 >

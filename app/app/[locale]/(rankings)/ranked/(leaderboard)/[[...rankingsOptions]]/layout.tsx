@@ -1,4 +1,4 @@
-import { BracketSelection } from "../../BracketSelection"
+import { BracketSelection } from "../../../BracketSelection"
 import { Paginator } from "ui/base/Paginator"
 import { type ReactNode } from "react"
 import { rankedRegionSchema, rankedRegions } from "bhapi/constants"

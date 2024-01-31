@@ -173,17 +173,13 @@ export const SideNav = ({ className }: SideNavProps) => {
             icon: <HiBookOpen className="w-6 h-6" />,
             external: true,
         },
-        ...(favorites.length > 0
-            ? [
-                  {
-                      id: "favorites",
-                      name: msg`Favorites`,
-                      icon: <HiHeart className="w-6 h-6" />,
-                      href: "/@me/favorites",
-                      exact: false,
-                  },
-              ]
-            : []),
+        {
+            id: "favorites",
+            name: msg`Favorites`,
+            icon: <HiHeart className="w-6 h-6" />,
+            href: "/me/favorites",
+            exact: false,
+        },
     ]
 
     return (
