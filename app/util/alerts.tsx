@@ -56,4 +56,18 @@ export const alerts = {
             !
         </span>
     ),
+    NEW_BH_WIKI: (
+        <span>
+            The Brawlhalla Wiki has officially migrated to its new home at wiki.gg!
+            Explore the latest updates and resources by visiting{" "}
+            <AppLink
+                href="https://brawlhalla.wiki.gg"
+                target="_blank"
+                className="text-accentAlt font-semibold hover:text-text"
+            >
+                brawlhalla.wiki.gg
+            </AppLink>{" "}
+            today!
+        </span>
+    ),
 } as const
