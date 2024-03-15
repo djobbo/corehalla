@@ -1,4 +1,3 @@
 import classnames from "classnames"
 
-// @ts-expect-error bruh
-export const cn = classnames
+export const cn: typeof classnames = classnames
