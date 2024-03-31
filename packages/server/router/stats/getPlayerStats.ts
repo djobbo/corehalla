@@ -48,29 +48,29 @@ export const getPlayerStats = publicProcedure //
                 })
             }
 
-            // // Fire and forget
-            // const fireAndForget = Promise.all([
-            //     withTimeLog(updateDBPlayerAliases, "updateDBPlayerAliases")(
-            //         [
-            //             {
-            //                 playerId: stats.brawlhalla_id.toString(),
-            //                 alias: stats.name,
-            //                 createdAt: new Date(),
-            //                 public: true,
-            //             },
-            //         ],
-            //         {
-            //             abortSignal: controller.signal,
-            //         },
-            //     ).catch((e) => {
-            //         logError("Error updating player aliases", e)
-            //     }),
-            //     updateClanData(),
-            // ])
+            // Fire and forget
+            const fireAndForget = Promise.all([
+                withTimeLog(updateDBPlayerAliases, "updateDBPlayerAliases")(
+                    [
+                        {
+                            playerId: stats.brawlhalla_id.toString(),
+                            alias: stats.name,
+                            createdAt: new Date(),
+                            public: true,
+                        },
+                    ],
+                    {
+                        abortSignal: controller.signal,
+                    },
+                ).catch((e) => {
+                    logError("Error updating player aliases", e)
+                }),
+                updateClanData(),
+            ])
 
-            // waitForRequestTimeout(fireAndForget, {
-            //     abortController: controller,
-            // })
+            waitForRequestTimeout(fireAndForget, {
+                abortController: controller,
+            })
 
             return stats
         }, "getPlayerStats"),
