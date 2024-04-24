@@ -58,8 +58,8 @@ export const alerts = {
     ),
     NEW_BH_WIKI: (
         <span>
-            The Brawlhalla Wiki has officially migrated to its new home at wiki.gg!
-            Explore the latest updates and resources by visiting{" "}
+            The Brawlhalla Wiki has officially migrated to its new home at
+            wiki.gg! Explore the latest updates and resources by visiting{" "}
             <AppLink
                 href="https://brawlhalla.wiki.gg"
                 target="_blank"
