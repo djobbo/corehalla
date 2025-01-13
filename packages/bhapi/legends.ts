@@ -748,16 +748,28 @@ export const legends: Legend[] = [
         speed: "7",
     },
     {
-        "legend_id": 65,
-        "legend_name_key": "imugi",
-        "bio_name": "Imugi",
-        "bio_aka": "The Warrior Chef",
-        "weapon_one": "Axe",
-        "weapon_two": "Greatsword",
-        "strength": "8",
-        "dexterity": "3",
-        "defense": "8",
-        "speed": "3"
+        legend_id: 65,
+        legend_name_key: "imugi",
+        bio_name: "Imugi",
+        bio_aka: "The Warrior Chef",
+        weapon_one: "Axe",
+        weapon_two: "Greatsword",
+        strength: "8",
+        dexterity: "3",
+        defense: "8",
+        speed: "3",
+    },
+    {
+        legend_id: 66,
+        legend_name_key: "king zuva",
+        bio_name: "King Zuva",
+        bio_aka: "The Stampede",
+        weapon_one: "Grapple Hammer",
+        weapon_two: "Battle Boots",
+        strength: "8",
+        dexterity: "4",
+        defense: "6",
+        speed: "4",
     }
 ]
 
