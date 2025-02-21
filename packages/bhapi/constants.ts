@@ -84,6 +84,7 @@ export const weapons = [
     "Orb",
     "Greatsword",
     "Battle Boots",
+    "Chakram"
 ] as const
 
 export type Weapon = (typeof weapons)[number]
