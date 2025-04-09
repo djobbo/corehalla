@@ -1,4 +1,0 @@
-packages:
-    - "app"
-    - "worker"
-    - "packages/*"

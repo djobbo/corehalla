@@ -41,5 +41,5 @@
         "npm": ">=7.0.0",
         "node": ">=18.0.0"
     },
-    "packageManager": "pnpm@10.8.0"
+    "packageManager": "bun@1.2.9"
 }
