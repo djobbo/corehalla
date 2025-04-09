@@ -9,13 +9,14 @@
     "@types/bun": "latest",
     "@tanstack/query-core": "^4.22.0",
     "@types/node": "^20.11.5",
-    "@types/react": "^18.2.31",
     "autoprefixer": "^10.4.13",
     "next-transpile-modules": "10.0.1",
     "postcss": "^8.4.33",
     "tailwindcss": "^3.4.1",
     "tsconfig": "workspace:*",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3"
   },
   "dependencies": {
     "@fontsource/montserrat": "^4.5.13",
@@ -37,8 +38,8 @@
     "logger": "workspace:*",
     "next": "13.4.19",
     "next-sitemap": "^3.1.43",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-hot-toast": "^2.4.0",
     "server": "workspace:*",
     "ui": "workspace:*",
