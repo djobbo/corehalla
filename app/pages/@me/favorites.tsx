@@ -1,7 +1,7 @@
-import { FavoritesGrid } from "@components/favorites/FavoritesGrid"
-import { SEO } from "@components/SEO"
-import { SectionTitle } from "@components/layout/SectionTitle"
-import { useFavorites } from "@ctx/auth/AuthProvider"
+import { FavoritesGrid } from "@corehalla/core/src/components/favorites/FavoritesGrid"
+import { SEO } from "@corehalla/core/src/components/SEO"
+import { SectionTitle } from "@corehalla/core/src/components/layout/SectionTitle"
+import { useFavorites } from "@corehalla/core/src/providers/auth/AuthProvider"
 import type { NextPage } from "next"
 
 const Page: NextPage = () => {

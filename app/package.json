@@ -37,7 +37,8 @@
         "server": "workspace:*",
         "ui": "workspace:*",
         "web-parser": "workspace:*",
-        "zod": "^3.22.4"
+        "zod": "^3.22.4",
+        "@corehalla/core": "workspace:*"
     },
     "devDependencies": {
         "@tanstack/query-core": "^4.22.0",

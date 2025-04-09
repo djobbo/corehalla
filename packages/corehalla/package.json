@@ -1,0 +1,51 @@
+{
+  "name": "@corehalla/core",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "check:types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@tanstack/query-core": "^4.22.0",
+    "@types/node": "^20.11.5",
+    "@types/react": "^18.2.31",
+    "autoprefixer": "^10.4.13",
+    "next-transpile-modules": "10.0.1",
+    "postcss": "^8.4.33",
+    "tailwindcss": "^3.4.1",
+    "tsconfig": "workspace:*",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@fontsource/montserrat": "^4.5.13",
+    "@next/bundle-analyzer": "^14.1.0",
+    "@radix-ui/react-collapsible": "^1.0.1",
+    "@radix-ui/react-tabs": "^1.0.1",
+    "@react-icons/all-files": "https://github.com/react-icons/react-icons/releases/download/v5.0.1/react-icons-all-files-5.0.1.tgz",
+    "@stitches/react": "^1.2.8",
+    "@tanstack/react-query": "^4.22.0",
+    "@trpc/client": "10.45.0",
+    "@trpc/next": "10.45.0",
+    "@trpc/react-query": "10.45.0",
+    "@trpc/server": "10.45.0",
+    "bhapi": "workspace:*",
+    "common": "workspace:*",
+    "db": "workspace:*",
+    "encoding": "^0.1.13",
+    "kbar": "0.1.0-beta.45",
+    "logger": "workspace:*",
+    "next": "13.4.19",
+    "next-sitemap": "^3.1.43",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.4.0",
+    "server": "workspace:*",
+    "ui": "workspace:*",
+    "web-parser": "workspace:*",
+    "zod": "^3.22.4"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

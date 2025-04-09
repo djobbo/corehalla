@@ -1,4 +1,4 @@
-import { ErrorPageContent } from "@components/layout/ErrorPageContent"
+import { ErrorPageContent } from "@corehalla/core/src/components/layout/ErrorPageContent"
 import type { NextPage } from "next"
 
 const ErrorPage: NextPage = () => {
