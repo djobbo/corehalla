@@ -1,5 +1,5 @@
 import { Card } from "ui/base/Card"
-import { SectionTitle } from "@components/layout/SectionTitle"
+import { SectionTitle } from "@corehalla/core/src/components/layout/SectionTitle"
 import {
     getGloryFromBestRating,
     getGloryFromWins,

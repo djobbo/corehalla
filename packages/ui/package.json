@@ -5,8 +5,8 @@
     "types": "./index.tsx",
     "devDependencies": {
         "@types/nprogress": "^0.2.3",
-        "@types/react": "^18.2.31",
-        "@types/react-dom": "^18.2.18",
+        "@types/react": "^19.0.8",
+        "@types/react-dom": "^19.0.3",
         "@types/react-table": "^7.7.13",
         "autoprefixer": "^10.4.13",
         "postcss": "^8.4.33",
@@ -32,8 +32,8 @@
         "logger": "workspace:*",
         "next": "13.4.19",
         "nprogress": "^0.2.0",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
         "react-phone-input-2": "^2.15.1",
         "react-select": "^5.8.0",
         "react-table": "^7.8.0"

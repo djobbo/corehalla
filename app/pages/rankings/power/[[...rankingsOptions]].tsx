@@ -1,6 +1,6 @@
-import { MiscStatGroup } from "@components/stats/MiscStatGroup"
-import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
-import { SEO } from "@components/SEO"
+import { MiscStatGroup } from "@corehalla/core/src/components/stats/MiscStatGroup"
+import { RankingsLayout } from "@corehalla/core/src/components/stats/rankings/RankingsLayout"
+import { SEO } from "@corehalla/core/src/components/SEO"
 import { Select } from "ui/base/Select"
 import { Spinner } from "ui/base/Spinner"
 import { Tooltip } from "ui/base/Tooltip"
@@ -11,11 +11,11 @@ import {
     powerRankingsRegionValidator,
 } from "web-parser/power-rankings/parsePowerRankingsPage"
 import { useDebouncedState } from "common/hooks/useDebouncedState"
-import { usePowerRankings } from "@hooks/stats/usePowerRankings"
+import { usePowerRankings } from "@corehalla/core/src/hooks/stats/usePowerRankings"
 import { useRouter } from "next/router"
 import { useSortBy } from "common/hooks/useSortBy"
 import { z } from "zod"
-import type { MiscStat } from "@components/stats/MiscStatGroup"
+import type { MiscStat } from "@corehalla/core/src/components/stats/MiscStatGroup"
 import type { NextPage } from "next"
 import type {
     PR,
