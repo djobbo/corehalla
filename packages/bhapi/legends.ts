@@ -794,6 +794,30 @@ export const legends: Legend[] = [
         "dexterity": "4",
         "defense": "3",
         "speed": "8"
+    },
+    {
+        "legend_id": 69,
+        "legend_name_key": "lady vera",
+        "bio_name": "Lady Vera",
+        "bio_aka": "The Luminary",
+        "weapon_one": "Chakram",
+        "weapon_two": "Scythe",
+        "strength": "3",
+        "dexterity": "7",
+        "defense": "8",
+        "speed": "4"
+    },
+    {
+        "legend_id": 70,
+        "legend_name_key": "rupture",
+        "bio_name": "Rupture",
+        "bio_aka": "The Nemesis",
+        "weapon_one": "Katars",
+        "weapon_two": "Rocket Lance",
+        "strength": "9",
+        "dexterity": "3",
+        "defense": "5",
+        "speed": "5"
     }
 ]
 
