@@ -1,12 +1,12 @@
-import { ClanMember } from "@components/stats/clan/ClanMember"
-import { SEO } from "@components/SEO"
-import { StatsHeader } from "@components/stats/StatsHeader"
+import { ClanMember } from "@corehalla/core/src/components/stats/clan/ClanMember"
+import { SEO } from "@corehalla/core/src/components/SEO"
+import { StatsHeader } from "@corehalla/core/src/components/stats/StatsHeader"
 import { cleanString } from "common/helpers/cleanString"
 import { formatUnixTime } from "common/helpers/date"
-import { useClan } from "@hooks/stats/useClan"
+import { useClan } from "@corehalla/core/src/hooks/stats/useClan"
 import { useRouter } from "next/router"
 import type { ClanRank } from "bhapi/constants"
-import type { MiscStat } from "@components/stats/MiscStatGroup"
+import type { MiscStat } from "@corehalla/core/src/components/stats/MiscStatGroup"
 import type { NextPage } from "next"
 
 const clanRankWeights: Record<ClanRank, number> = {

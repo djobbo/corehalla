@@ -4,6 +4,11 @@
     "private": true,
     "repository": "https://github.com/djobbo/corehalla.git",
     "author": "Djobbo Maïga <hi@djobbo.com>",
+    "workspaces": [
+        "packages/*",
+        "app",
+        "worker"
+    ],
     "scripts": {
         "build": "turbo run build",
         "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
@@ -36,5 +41,5 @@
         "npm": ">=7.0.0",
         "node": ">=18.0.0"
     },
-    "packageManager": "pnpm@8.5.0"
+    "packageManager": "bun@1.2.9"
 }

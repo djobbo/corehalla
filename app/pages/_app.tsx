@@ -1,16 +1,16 @@
-import "../styles/globals.css"
-import "../styles/nprogress.css"
+import "@corehalla/core/src/styles/globals.css"
+import "@corehalla/core/src/styles/nprogress.css"
 import "@fontsource/montserrat/400.css"
 import "@fontsource/montserrat/600.css"
 import "@fontsource/montserrat/700.css"
 
 import { AnimatedLogo } from "ui/base/AnimatedLogo"
-import { AuthProvider } from "@ctx/auth/AuthProvider"
+import { AuthProvider } from "@corehalla/core/src/providers/auth/AuthProvider"
 // dynamic breaks with next >= v13.0.7
 //Will be fixed (maybe?) by https://github.com/vercel/next.js/pull/44832
 const BackToTopButton = dynamic(
     () =>
-        import("@components/BackToTopButton").then(
+        import("@corehalla/core/src/components/BackToTopButton").then(
             (mod) => mod.BackToTopButton,
         ),
     {
@@ -19,13 +19,13 @@ const BackToTopButton = dynamic(
 )
 import { GAScripts } from "common/analytics/GAScripts"
 import { KBarProvider } from "kbar"
-import { Layout } from "@components/layout/Layout"
+import { Layout } from "@corehalla/core/src/components/layout/Layout"
 import { PageLoader } from "ui/base/PageLoader"
-import { SEO } from "@components/SEO"
-import { Searchbox } from "@components/search/Searchbox"
-import { SideNavProvider } from "@ctx/SideNavProvider"
+import { SEO } from "@corehalla/core/src/components/SEO"
+import { Searchbox } from "@corehalla/core/src/components/search/Searchbox"
+import { SideNavProvider } from "@corehalla/core/src/providers/SideNavProvider"
 import { Toaster } from "react-hot-toast"
-import { trpc } from "@util/trpc"
+import { trpc } from "@corehalla/core/src/util/trpc"
 import Head from "next/head"
 import dynamic from "next/dynamic"
 import type { AppProps } from "next/app"

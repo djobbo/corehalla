@@ -1,11 +1,11 @@
-import { Image } from "@components/Image"
-import { MAX_SHOWN_ALIASES } from "@util/constants"
-import { Player2v2Tab } from "@components/stats/player/Player2v2Tab"
-import { PlayerLegendsTab } from "@components/stats/player/PlayerLegendsTab"
-import { PlayerOverviewTab } from "@components/stats/player/PlayerOverviewTab"
-import { PlayerWeaponsTab } from "@components/stats/player/PlayerWeaponsTab"
-import { SEO } from "@components/SEO"
-import { StatsHeader } from "@components/stats/StatsHeader"
+import { Image } from "@corehalla/core/src/components/Image"
+import { MAX_SHOWN_ALIASES } from "@corehalla/core/src/util/constants"
+import { Player2v2Tab } from "@corehalla/core/src/components/stats/player/Player2v2Tab"
+import { PlayerLegendsTab } from "@corehalla/core/src/components/stats/player/PlayerLegendsTab"
+import { PlayerOverviewTab } from "@corehalla/core/src/components/stats/player/PlayerOverviewTab"
+import { PlayerWeaponsTab } from "@corehalla/core/src/components/stats/player/PlayerWeaponsTab"
+import { SEO } from "@corehalla/core/src/components/SEO"
+import { StatsHeader } from "@corehalla/core/src/components/stats/StatsHeader"
 import {
     Root as Tabs,
     TabsContent,
@@ -21,11 +21,11 @@ import {
     getFullWeapons,
     getLegendsAccumulativeData,
 } from "bhapi/legends"
-import { usePlayerAliases } from "@hooks/stats/usePlayerAliases"
-import { usePlayerRanked } from "@hooks/stats/usePlayerRanked"
-import { usePlayerStats } from "@hooks/stats/usePlayerStats"
+import { usePlayerAliases } from "@corehalla/core/src/hooks/stats/usePlayerAliases"
+import { usePlayerRanked } from "@corehalla/core/src/hooks/stats/usePlayerRanked"
+import { usePlayerStats } from "@corehalla/core/src/hooks/stats/usePlayerStats"
 import { useRouter } from "next/router"
-import type { MiscStat } from "@components/stats/MiscStatGroup"
+import type { MiscStat } from "@corehalla/core/src/components/stats/MiscStatGroup"
 import type { NextPage } from "next"
 
 const tabClassName = cn(
