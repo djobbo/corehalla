@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "next dev",
         "dev:prod": "NEXT_PUBLIC_FORCE_PRODUCTION_WEBSITE=true next dev",
-        "build": "next build && pnpm gen:sitemap",
+        "build": "next build --webpack && pnpm gen:sitemap",
         "start": "next start",
         "ts:check": "tsc --noEmit",
         "gen:sitemap": "next-sitemap"
@@ -29,7 +29,7 @@
         "encoding": "^0.1.13",
         "kbar": "0.1.0-beta.45",
         "logger": "workspace:*",
-        "next": "13.4.19",
+        "next": "16.1.5",
         "next-sitemap": "^3.1.43",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
