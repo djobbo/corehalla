@@ -1,6 +1,8 @@
 import { AppLink } from "ui/base/AppLink"
 import { useKBar } from "kbar"
 import type { ReactNode } from "react"
+import { useRouter } from 'next/router'
+
 
 type SearchboxItemProps = {
     icon?: ReactNode
@@ -20,11 +22,17 @@ export const SearchboxItem = ({
     const {
         query: { toggle },
     } = useKBar()
+    const router = useRouter()
+
 
     return (
         <AppLink
             href={href}
-            onClick={() => toggle()}
+            onClick={(e) => {
+                e.preventDefault()
+                toggle()
+                router.push(href)
+            }}
             className="px-4 py-3 w-full flex items-center justify-between gap-8 border-b cursor-pointer border-bgVar2 hover:bg-bg/75"
         >
             <div className="min-w-0 flex items-center flex-1">
