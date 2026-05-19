@@ -50,6 +50,10 @@ git remote add docs-upstream https://github.com/OWNER/REPO-NAME
 git subtree pull --prefix=.repos/docs docs-upstream main --squash
 ```
 
+## Merging to `main` without vendored blobs
+
+If subtrees live on a `dev` branch but **`main` must stay vendor-free**, strip `.repos/` from `dev` history and force-push **before** merging. See [dev-branch-strip-vendored-repos-before-merge.md](dev-branch-strip-vendored-repos-before-merge.md).
+
 ## Notes
 
 - Subtree imports are **normal files** in your repo; there is no nested `.git` inside the prefix.
