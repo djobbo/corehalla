@@ -1,13 +1,15 @@
-import * as RadixTooltip from "@radix-ui/react-tooltip"
+import RadixTooltip from "@radix-ui/react-tooltip"
 import { cn } from "common/helpers/classnames"
-import type { ReactNode } from "react"
+import type { ComponentPropsWithoutRef, ReactNode } from "react"
+
+type TooltipContentProps = ComponentPropsWithoutRef<typeof RadixTooltip.Content>
 
 type TooltipProps = {
     content: ReactNode
     children: ReactNode
     delay?: number
-    side?: RadixTooltip.TooltipContentProps["side"]
-    align?: RadixTooltip.TooltipContentProps["align"]
+    side?: TooltipContentProps["side"]
+    align?: TooltipContentProps["align"]
     className?: string
 }
 
@@ -22,7 +24,7 @@ export const Tooltip = ({
     return (
         <RadixTooltip.Provider delayDuration={delay}>
             <RadixTooltip.Root>
-                <RadixTooltip.Trigger className="text-left">
+                <RadixTooltip.Trigger asChild className="text-left">
                     {children}
                 </RadixTooltip.Trigger>
                 <RadixTooltip.Portal>
