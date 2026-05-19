@@ -10,14 +10,16 @@ Trees under `.repos/<name>` are the **authoritative local copy** for how we reas
 
 Configured repos (see `VENDORED_REPOS` in [scripts/sync-vendored-repos.mts](../scripts/sync-vendored-repos.mts)):
 
-| Prefix                   | Upstream                                                            | Branch   |
-| ------------------------ | ------------------------------------------------------------------- | -------- |
-| `.repos/effect`          | [Effect-TS/effect-smol](https://github.com/Effect-TS/effect-smol)   | `main`   |
-| `.repos/tanstack-router` | [TanStack/router](https://github.com/TanStack/router)               | `main`   |
-| `.repos/tanstack-query`  | [TanStack/query](https://github.com/TanStack/query)                 | `main`   |
-| `.repos/supabase`        | [supabase/supabase](https://github.com/supabase/supabase)           | `main`   |
-| `.repos/base-ui`         | [mui/base-ui](https://github.com/mui/base-ui)                       | `master` |
-| `.repos/vite-plus`       | [voidzero-dev/vite-plus](https://github.com/voidzero-dev/vite-plus) | `main`   |
+| Prefix                   | Upstream                                                                | Branch   |
+| ------------------------ | ----------------------------------------------------------------------- | -------- |
+| `.repos/effect`          | [Effect-TS/effect-smol](https://github.com/Effect-TS/effect-smol)       | `main`   |
+| `.repos/tanstack-router` | [TanStack/router](https://github.com/TanStack/router)                   | `main`   |
+| `.repos/tanstack-query`  | [TanStack/query](https://github.com/TanStack/query)                     | `main`   |
+| `.repos/supabase`        | [supabase/supabase](https://github.com/supabase/supabase)               | `main`   |
+| `.repos/base-ui`         | [mui/base-ui](https://github.com/mui/base-ui)                           | `master` |
+| `.repos/vite-plus`       | [voidzero-dev/vite-plus](https://github.com/voidzero-dev/vite-plus)     | `main`   |
+| `.repos/drizzle-orm`     | [drizzle-team/drizzle-orm](https://github.com/drizzle-team/drizzle-orm) | `main`   |
+| `.repos/kubi`            | [djobbo/kubi](https://github.com/djobbo/kubi)                           | `main`   |
 
 ## Prerequisites
 

@@ -45,6 +45,16 @@ const VENDORED_REPOS: ReadonlyArray<VendoredRepo> = [
         url: "https://github.com/voidzero-dev/vite-plus.git",
         branch: "main",
     },
+    {
+        name: "drizzle-orm",
+        url: "https://github.com/drizzle-team/drizzle-orm.git",
+        branch: "main",
+    },
+    {
+        name: "kubi",
+        url: "https://github.com/djobbo/kubi.git",
+        branch: "main",
+    },
 ]
 
 export class VendoredReposError extends Data.TaggedError("VendoredReposError")<{
