@@ -1,6 +1,12 @@
 import { defineConfig } from "vite-plus"
 
 export default defineConfig({
+    run: {
+        cache: {
+            scripts: false,
+            tasks: true,
+        },
+    },
     staged: {
         "*.{js,ts,tsx,md,yaml,yml}": "vp check --fix",
     },
@@ -43,7 +49,7 @@ export default defineConfig({
     lint: {
         plugins: ["typescript", "react", "jsx-a11y"],
         // tsgolint does not support app/tsconfig baseUrl or legacy moduleResolution: node;
-        // use `pnpm ts:check` (tsc) for type checking.
+        // use `vp run ts:check` (tsc) for type checking.
         options: {
             typeAware: false,
             typeCheck: false,

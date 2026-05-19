@@ -24,14 +24,14 @@
 
 ## Local development
 
-Corehalla is a [pnpm](https://pnpm.io/) monorepo. You run the web app and worker on your machine; [Supabase CLI](https://supabase.com/docs/guides/cli) starts Postgres, Auth, REST, and Studio in Docker.
+Corehalla is a [pnpm](https://pnpm.io/) monorepo managed with [Vite+](https://viteplus.dev/) (`vp`). You run the web app and worker on your machine; [Supabase CLI](https://supabase.com/docs/guides/cli) starts Postgres, Auth, REST, and Studio in Docker.
 
 ### Prerequisites
 
 - **Node.js** `>=22.12.0` (see `engines` in `package.json`)
-- **pnpm** `9.15.9` (`corepack enable` matches `packageManager`)
+- **Vite+** (`vp`) — installs and uses **pnpm** `11.1.3` from `packageManager` in `package.json`
 - **Docker** (for local Supabase)
-- **Supabase CLI** — installed automatically as a dev dependency; use `pnpm exec supabase` or the `pnpm services:*` scripts
+- **Supabase CLI** — installed automatically as a dev dependency; use `vp exec supabase` or the `vp run services:*` scripts
 
 ### First-time setup
 
@@ -41,22 +41,22 @@ From the repo root:
 cp .env.example .env
 # Edit .env: BRAWLHALLA_API_KEY, DISCORD_AUTH_CLIENT_ID, DISCORD_AUTH_SECRET, etc.
 
-pnpm setup
+vp run setup
 ```
 
-`pnpm setup` starts Supabase, writes API keys and `DATABASE_URL` into `.env`, installs dependencies, and runs Prisma migrations plus Supabase setup SQL in `packages/db`.
+`vp run setup` starts Supabase, writes API keys and `DATABASE_URL` into `.env`, installs dependencies, and runs Prisma migrations plus Supabase setup SQL in `packages/db`.
 
 Then start the app and worker:
 
 ```bash
-pnpm dev
+vp run dev
 ```
 
 ### Daily workflow
 
 ```bash
-pnpm services:up   # start Supabase if it is not already running
-pnpm dev
+vp run services:up   # start Supabase if it is not already running
+vp run dev
 ```
 
 | Service           | URL                    |
@@ -69,18 +69,25 @@ pnpm dev
 
 ### Useful commands
 
-| Command                        | Description                                                 |
-| ------------------------------ | ----------------------------------------------------------- |
-| `pnpm dev`                     | Start app and worker in watch mode                          |
-| `pnpm setup`                   | Start Supabase, sync `.env`, install deps, migrate database |
-| `pnpm services:up`             | `supabase start`                                            |
-| `pnpm services:down`           | `supabase stop`                                             |
-| `pnpm services:status`         | `supabase status`                                           |
-| `pnpm db:migrate`              | Apply migrations and Supabase setup SQL                     |
-| `pnpm --filter app dev:prod`   | App with production-style public config                     |
-| `pnpm --filter worker bot:dev` | Worker with Discord bot only (crawler off)                  |
+| Command                          | Description                                                 |
+| -------------------------------- | ----------------------------------------------------------- |
+| `vp run dev`                     | Start app and worker in watch mode                          |
+| `vp run setup`                   | Start Supabase, sync `.env`, install deps, migrate database |
+| `vp run services:up`             | `supabase start`                                            |
+| `vp run services:down`           | `supabase stop`                                             |
+| `vp run services:status`         | `supabase status`                                           |
+| `vp run db:migrate`              | Apply migrations and Supabase setup SQL                     |
+| `vp run -r build`                | Build all workspace packages (dependency order)             |
+| `vp run -r ts:check`             | Typecheck all packages                                      |
+| `vp check`                       | Lint and format the repo (also runs on commit via hooks)    |
+| `vp run --filter app dev:prod`   | App with production-style public config                     |
+| `vp run --filter worker bot:dev` | Worker with Discord bot only (crawler off)                  |
 
-Reset local database data: `pnpm exec supabase db reset` (destroys local Postgres data).
+Reset local database data: `vp exec supabase db reset` (destroys local Postgres data).
+
+### Commit hooks
+
+`vp install` runs `vp config`, which wires Git to `.vite-hooks/`. The pre-commit hook runs `vp staged` (format + lint with auto-fix on staged files per `vite.config.ts`). Run `vp config` again if hooks are missing after clone.
 
 ### Optional configuration
 
@@ -88,4 +95,4 @@ Reset local database data: `pnpm exec supabase db reset` (destroys local Postgre
 - **Discord OAuth** — Set `DISCORD_AUTH_CLIENT_ID` and `DISCORD_AUTH_SECRET` in `.env`. In the [Discord Developer Portal](https://discord.com/developers/applications), set the redirect URL to `http://127.0.0.1:54321/auth/v1/callback` (Supabase local API; previously `http://localhost:8000/auth/v1/callback` with the old Compose stack).
 - **Discord worker** — Copy `worker/.env.example` to `worker/.env` for manager-bot tokens; root `.env` is loaded first, then `worker/.env` overrides.
 
-Environment variables are loaded from the repo root `.env` (Vite `envDir`, worker `dotenv`, and `dotenv-cli` for `pnpm dev` / `pnpm db:migrate`).
+Environment variables are loaded from the repo root `.env` (Vite `envDir`, worker `dotenv`, and `dotenv-cli` for `vp run dev` / `vp run db:migrate`).

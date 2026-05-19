@@ -34,7 +34,8 @@ yarn-error.log*
 .env.dev
 .env.prod
 
-# turbo
+# vite-plus task runner
+node_modules/.vite/
 .turbo
 
 # typescript

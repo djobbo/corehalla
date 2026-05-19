@@ -4,9 +4,50 @@ packages:
     - "packages/*"
 
 catalog:
+    # vite-plus
     vite: npm:@voidzero-dev/vite-plus-core@^0.1.21
     vitest: npm:@voidzero-dev/vite-plus-test@^0.1.21
     vite-plus: ^0.1.21
+
+    # effect
+    effect: 4.0.0-beta.68
+    "@effect/platform-node": 4.0.0-beta.68
+
+    # react
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    "@types/react": ^18.2.31
+    "@types/react-dom": ^18.2.18
+
+    # tanstack
+    "@tanstack/react-query": ^4.36.1
+    "@tanstack/query-core": ^4.36.1
+    "@tanstack/react-router": ^1.170.4
+    "@tanstack/router-core": 1.170.1
+    "@tanstack/react-start": ^1.168.6
+
+    # trpc
+    "@trpc/client": 10.45.0
+    "@trpc/react-query": 10.45.0
+    "@trpc/server": 10.45.0
+
+    # app ui & data
+    "@base-ui/react": ^1.5.0
+    "@fontsource/montserrat": ^5.2.8
+    "@react-icons/all-files": https://github.com/react-icons/react-icons/releases/download/v5.0.1/react-icons-all-files-5.0.1.tgz
+    "@stitches/react": ^1.2.8
+    "@tailwindcss/vite": ^4.3.0
+    tailwindcss: ^4.3.0
+    encoding: ^0.1.13
+    kbar: 0.1.0-beta.48
+    react-hot-toast: ^2.6.0
+    zod: ^3.22.4
+
+    # app tooling
+    "@types/node": ^22.12.0
+    "@vitejs/plugin-react": ^6.0.2
+    nitro: 3.0.260429-beta
+    typescript: ^5.3.3
 
 overrides:
     vite: "catalog:"
@@ -19,3 +60,29 @@ peerDependencyRules:
     allowedVersions:
         vite: "*"
         vitest: "*"
+
+# pnpm v11+ supply-chain policy (aligned with vp migration defaults)
+minimumReleaseAge: 1440
+minimumReleaseAgeExclude:
+    - "@base-ui/*"
+    - "@effect/*"
+    - effect
+    - vite-plus
+    - "@voidzero-dev/*"
+    - oxlint
+    - "@oxlint/*"
+    - oxlint-tsgolint
+    - "@oxlint-tsgolint/*"
+    - oxfmt
+    - "@oxfmt/*"
+allowBuilds:
+    "@prisma/client": true
+    "@prisma/engines": true
+    bufferutil: true
+    core-js-pure: true
+    es5-ext: true
+    esbuild: true
+    msgpackr-extract: true
+    prisma: true
+    sharp: true
+    utf-8-validate: true

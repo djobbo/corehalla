@@ -22,13 +22,13 @@ Configured repos (see `VENDORED_REPOS` in [scripts/sync-vendored-repos.mts](../s
 ## Prerequisites
 
 - **Git** installed and on your `PATH`.
-- After cloning this repo, run **`pnpm setup`** (or call `syncVendoredRepos` yourself) so `.repos/` is populated before you rely on vendored source.
+- After cloning this repo, run **`vp run setup`** (or call `syncVendoredRepos` yourself) so `.repos/` is populated before you rely on vendored source.
 
 ## Syncing (`syncVendoredRepos`)
 
 Sync logic lives in [scripts/sync-vendored-repos.mts](../scripts/sync-vendored-repos.mts) and is exported as `Effect.fn("syncVendoredRepos")`.
 
-It runs automatically as a step in [scripts/setup.mts](../scripts/setup.mts) after `pnpm install`.
+It runs automatically as a step in [scripts/setup.mts](../scripts/setup.mts) after `vp install`.
 
 | Option                   | Behavior                                                                                                  |
 | ------------------------ | --------------------------------------------------------------------------------------------------------- |
@@ -37,12 +37,12 @@ It runs automatically as a step in [scripts/setup.mts](../scripts/setup.mts) aft
 
 Clones use `git clone --depth 1 --single-branch` so each tree has a single squashed snapshot (no full upstream history on disk).
 
-### Refresh after `pnpm setup`
+### Refresh after `vp run setup`
 
 Re-run setup, or invoke the function directly (example with `force: false`):
 
 ```bash
-pnpm exec tsx -e "
+vp exec tsx -e "
 import * as NodeRuntime from '@effect/platform-node/NodeRuntime'
 import * as NodeServices from '@effect/platform-node/NodeServices'
 import * as Effect from 'effect/Effect'
@@ -65,7 +65,7 @@ Use `{ force: true }` when a clone is corrupted or you need a clean re-download.
 
 1. Add an entry to `VENDORED_REPOS` in [scripts/sync-vendored-repos.mts](../scripts/sync-vendored-repos.mts) (`name`, `url`, `branch`).
 2. Update the table in this file and in [AGENTS.md](../AGENTS.md).
-3. Run `syncVendoredRepos({})` (via `pnpm setup` or the snippet above) to clone into `.repos/<name>`.
+3. Run `syncVendoredRepos({})` (via `vp run setup` or the snippet above) to clone into `.repos/<name>`.
 
 Convention for `name`: short slug matching the upstream project (example: `effect` → `.repos/effect`).
 

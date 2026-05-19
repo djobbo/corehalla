@@ -5,24 +5,24 @@
     "author": "Djobbo Maïga <hi@djobbo.com>",
     "repository": "https://github.com/djobbo/corehalla.git",
     "scripts": {
-        "build": "turbo run build",
-        "check": "vp check && pnpm ts:check",
+        "build": "vp run -r build",
+        "check": "vp check && vp run -r ts:check",
         "lint": "vp lint --fix",
         "format": "vp fmt",
-        "ts:check": "turbo run ts:check",
-        "ci:install": "pnpm install --frozen-lockfile",
-        "ci:check": "vp check && pnpm ts:check",
-        "ci:deadcode": "turbo run ci:deadcode",
-        "dl-roster": "turbo run dl-roster",
-        "db:migrate": "dotenv -e .env -- turbo run db:migrate",
-        "db:migrate:prod": "turbo run db:migrate:prod --scope=db --include-dependencies --no-deps",
-        "build:prod": "pnpm db:migrate:prod && turbo run build --scope=app --include-dependencies --no-deps",
-        "dev": "dotenv -e .env -- pnpm --filter app dev",
+        "ts:check": "vp run -r ts:check",
+        "ci:install": "vp install --frozen-lockfile",
+        "ci:check": "vp check && vp run -r ts:check",
+        "dl-roster": "vp run --filter dl-roster-images dl-roster",
+        "db:migrate": "dotenv -e .env -- vp run --filter db db:migrate",
+        "db:migrate:prod": "vp run --filter db db:migrate:prod",
+        "build:prod": "vp run db:migrate:prod && vp run --filter app... build",
+        "dev": "dotenv -e .env -- vp run --filter app dev",
         "setup": "tsx scripts/setup.mts",
         "setup:env": "tsx scripts/setup.mts",
-        "services:up": "dotenv -e .env -- pnpm exec supabase start",
-        "services:down": "dotenv -e .env -- pnpm exec supabase stop",
-        "services:status": "dotenv -e .env -- pnpm exec supabase status"
+        "services:up": "dotenv -e .env -- vp exec supabase start",
+        "services:down": "dotenv -e .env -- vp exec supabase stop",
+        "services:status": "dotenv -e .env -- vp exec supabase status",
+        "prepare": "vp config"
     },
     "devDependencies": {
         "@effect/platform-node": "4.0.0-beta.68",
@@ -32,7 +32,6 @@
         "effect": "4.0.0-beta.68",
         "supabase": "^2.76.10",
         "tsx": "^4.19.2",
-        "turbo": "^1.11.3",
         "typescript": "^5.3.3",
         "vite-plus": "^0.1.21"
     },
@@ -40,5 +39,5 @@
         "node": ">=22.12.0",
         "npm": ">=7.0.0"
     },
-    "packageManager": "pnpm@9.15.9"
+    "packageManager": "pnpm@11.1.3"
 }

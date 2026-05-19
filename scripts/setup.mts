@@ -166,7 +166,7 @@ const ensureEnvFile = Effect.fnUntraced(function* () {
 const syncEnvFromSupabaseStatus = Effect.fnUntraced(function* () {
     const fs = yield* FileSystem.FileSystem
     const raw = yield* dotenvCommand([
-        "pnpm",
+        "vp",
         "exec",
         "supabase",
         "status",
@@ -202,7 +202,7 @@ const migrateDatabase = Effect.fnUntraced(function* () {
                 `Waiting for database... (retry ${attempt - 1}/${MAX_MIGRATE_RETRIES})`,
             )
         }
-        yield* runCommand("pnpm", ["db:migrate"])
+        yield* runCommand("vp", ["run", "db:migrate"])
     }).pipe(
         Effect.retry({
             times: MAX_MIGRATE_RETRIES - 1,
@@ -243,7 +243,7 @@ const program = Effect.gen(function* () {
     yield* ensureEnvFile()
 
     yield* Effect.logInfo("Starting Supabase (Docker)")
-    yield* dotenvCommand(["pnpm", "exec", "supabase", "start"]).pipe(
+    yield* dotenvCommand(["vp", "exec", "supabase", "start"]).pipe(
         Effect.catchTag("CommandError", () =>
             Effect.gen(function* () {
                 yield* Effect.logError(
@@ -262,7 +262,7 @@ const program = Effect.gen(function* () {
     yield* Effect.log()
 
     yield* Effect.logInfo("Installing dependencies")
-    yield* runCommand("pnpm", ["install"]).pipe(
+    yield* runCommand("vp", ["install"]).pipe(
         Effect.catchTag("CommandError", () =>
             Effect.gen(function* () {
                 yield* Effect.logError("Failed to install dependencies")
@@ -299,7 +299,7 @@ const program = Effect.gen(function* () {
     yield* Effect.logInfo("✔️ Migrated database")
     yield* Effect.logInfo("✔️ Dev environment ready")
     yield* Effect.logInfo(`Supabase Studio: http://127.0.0.1:${STUDIO_PORT}`)
-    yield* Effect.logInfo(`Web app: http://localhost:3000 (run pnpm dev)`)
+    yield* Effect.logInfo(`Web app: http://localhost:3000 (run vp run dev)`)
 })
 
 NodeRuntime.runMain(

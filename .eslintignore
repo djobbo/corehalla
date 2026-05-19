@@ -1,6 +1,6 @@
 node_modules/
 .next/
-.turbo/
+node_modules/.vite/
 dist/
 build/
 out/
