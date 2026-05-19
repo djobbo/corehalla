@@ -16,5 +16,6 @@ When working on code that uses these libraries:
 | `.repos/tanstack-router` | [TanStack/router](https://github.com/TanStack/router) (`main`) | `@tanstack/react-router`, `@tanstack/react-start`, and their workspace siblings in that monorepo |
 | `.repos/tanstack-query` | [TanStack/query](https://github.com/TanStack/query) (`main`) | `@tanstack/react-query`, `@tanstack/query-core`, and their workspace siblings in that monorepo |
 | `.repos/supabase` | [supabase/supabase](https://github.com/supabase/supabase) (`main`) | `@supabase/supabase-js`, platform docs, and JS client packages under `packages/` in that monorepo |
+| `.repos/base-ui` | [mui/base-ui](https://github.com/mui/base-ui) (`master`) | `@base-ui/react` and related Base UI packages under `packages/` in that monorepo |
 
 If `.repos/` is missing, run `pnpm setup` or `syncVendoredRepos({})` before relying on vendored source. Do not treat vendored trees as editable forks unless the task explicitly requires upstream contributions.
