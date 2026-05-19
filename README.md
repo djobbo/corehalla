@@ -69,19 +69,19 @@ vp run dev
 
 ### Useful commands
 
-| Command                          | Description                                                 |
-| -------------------------------- | ----------------------------------------------------------- |
-| `vp run dev`                     | Start app and worker in watch mode                          |
-| `vp run setup`                   | Start Supabase, sync `.env`, install deps, migrate database |
-| `vp run services:up`             | `supabase start`                                            |
-| `vp run services:down`           | `supabase stop`                                             |
-| `vp run services:status`         | `supabase status`                                           |
-| `vp run db:migrate`              | Apply migrations and Supabase setup SQL                     |
-| `vp run -r build`                | Build all workspace packages (dependency order)             |
-| `vp run -r ts:check`             | Typecheck all packages                                      |
-| `vp check`                       | Lint and format the repo (also runs on commit via hooks)    |
-| `vp run --filter app dev:prod`   | App with production-style public config                     |
-| `vp run --filter worker bot:dev` | Worker with Discord bot only (crawler off)                  |
+| Command                          | Description                                                          |
+| -------------------------------- | -------------------------------------------------------------------- |
+| `vp run dev`                     | Start app and worker in watch mode                                   |
+| `vp run setup`                   | Start Supabase, sync `.env`, install deps, migrate database          |
+| `vp run services:up`             | `supabase start`                                                     |
+| `vp run services:down`           | `supabase stop`                                                      |
+| `vp run services:status`         | `supabase status`                                                    |
+| `vp run db:migrate`              | Apply migrations and Supabase setup SQL                              |
+| `vp run -r build`                | Build all workspace packages (dependency order)                      |
+| `vp run -r ts:check`             | Typecheck all packages with `tsc` (optional; `vp check` covers this) |
+| `vp check`                       | Format, lint, and typecheck the repo (also runs on commit)           |
+| `vp run --filter app dev:prod`   | App with production-style public config                              |
+| `vp run --filter worker bot:dev` | Worker with Discord bot only (crawler off)                           |
 
 Reset local database data: `vp exec supabase db reset` (destroys local Postgres data).
 
