@@ -20,8 +20,8 @@ const MAX_MIGRATE_RETRIES = 10
 
 const SYNC_KEYS = {
   DATABASE_URL: (s: SupabaseStatus) => s.DB_URL,
-  NEXT_PUBLIC_SUPABASE_URL: (s: SupabaseStatus) => s.API_URL,
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: (s: SupabaseStatus) => s.ANON_KEY,
+  VITE_SUPABASE_URL: (s: SupabaseStatus) => s.API_URL,
+  VITE_SUPABASE_ANON_KEY: (s: SupabaseStatus) => s.ANON_KEY,
   SUPABASE_URL: (s: SupabaseStatus) => s.API_URL,
   SUPABASE_SERVICE_KEY: (s: SupabaseStatus) => s.SERVICE_ROLE_KEY,
 } as const

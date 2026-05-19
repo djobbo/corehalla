@@ -1,5 +1,5 @@
 {
   "extends": "tsconfig/nextjs.json",
-  "include": ["."],
+  "include": [".", "vite-env.d.ts"],
   "exclude": ["node_modules"]
 }

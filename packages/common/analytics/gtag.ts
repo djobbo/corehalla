@@ -1,11 +1,11 @@
 /**
  * Google Analytics Identifier
  */
-export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_TRACKING_ID
+export const GA_TRACKING_ID = import.meta.env.VITE_GA_TRACKING_ID
 /**
  * Google Adsense Identifier
  */
-export const ADSENSE_ID = process.env.NEXT_PUBLIC_ADSENSE_ID
+export const ADSENSE_ID = import.meta.env.VITE_ADSENSE_ID
 
 /**
  * Google Adsense Publisher Identifier

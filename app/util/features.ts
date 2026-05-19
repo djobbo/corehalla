@@ -11,7 +11,7 @@ export const getFeatureFlags = ({
 }) => {
     // const isSSR = typeof window === "undefined"
     // const isProductionWebsite =
-    //     process.env.NEXT_PUBLIC_FORCE_PRODUCTION_WEBSITE ||
+    //     import.meta.env.VITE_FORCE_PRODUCTION_WEBSITE ||
     //     (!isSSR && window.location.hostname === "corehalla.com")
 
     return {
