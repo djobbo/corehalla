@@ -43,3 +43,6 @@ tsconfig.tsbuildinfo
 # supabase cli
 supabase/.branches
 supabase/.temp
+
+# Vendored upstream (local only — synced via setup)
+.repos/

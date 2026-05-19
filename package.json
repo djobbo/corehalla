@@ -17,8 +17,8 @@
         "db:migrate:prod": "turbo run db:migrate:prod --scope=db --include-dependencies --no-deps",
         "build:prod": "pnpm db:migrate:prod && turbo run build --scope=app --include-dependencies --no-deps",
         "dev": "dotenv -e .env -- pnpm --filter app dev",
-        "setup": "tsx setup.mts",
-        "setup:env": "tsx setup.mts",
+        "setup": "tsx scripts/setup.mts",
+        "setup:env": "tsx scripts/setup.mts",
         "services:up": "dotenv -e .env -- pnpm exec supabase start",
         "services:down": "dotenv -e .env -- pnpm exec supabase stop",
         "services:status": "dotenv -e .env -- pnpm exec supabase status"

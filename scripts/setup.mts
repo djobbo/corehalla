@@ -8,8 +8,10 @@ import * as FileSystem from "effect/FileSystem"
 import * as Logger from "effect/Logger"
 import * as Ref from "effect/Ref"
 import * as Schedule from "effect/Schedule"
-import * as Stream from "effect/Stream"
-import { ChildProcess } from "effect/unstable/process"
+import { ChildProcessSpawner } from "effect/unstable/process"
+
+import { runChildProcess } from "./run-child-process.mts"
+import { syncVendoredRepos } from "./sync-vendored-repos.mts"
 
 const STUDIO_PORT = 54323
 const ENV_PATH = ".env"
@@ -97,16 +99,8 @@ const mergeEnvFile = (existingContent: string, updates: Record<string, string | 
   return serializeEnvFile(entries)
 }
 
-const runCommand = Effect.fnUntraced(function* (command: string, args: ReadonlyArray<string>) {
-  return yield* Effect.gen(function* () {
-    const handle = yield* ChildProcess.make(command, args)
-    const stdout = yield* Stream.mkString(Stream.decodeText(handle.stdout)).pipe(
-      Effect.map((text) => text.trim()),
-    )
-    yield* handle.exitCode
-    return stdout
-  }).pipe(
-    Effect.scoped,
+const runCommand = Effect.fn("runCommand")(function* (command: string, args: ReadonlyArray<string>) {
+  const { stdout, stderr, exitCode } = yield* runChildProcess({ command, args }).pipe(
     Effect.mapError(
       (cause) =>
         new CommandError({
@@ -116,6 +110,18 @@ const runCommand = Effect.fnUntraced(function* (command: string, args: ReadonlyA
         }),
     ),
   )
+
+  if (exitCode !== ChildProcessSpawner.ExitCode(0)) {
+    return yield* Effect.fail(
+      new CommandError({
+        command,
+        args,
+        cause: { exitCode, stdout, stderr },
+      }),
+    )
+  }
+
+  return stdout.trim()
 })
 
 const dotenvCommand = (args: ReadonlyArray<string>) => runCommand("dotenv", ["-e", ENV_PATH, "--", ...args])
@@ -213,6 +219,17 @@ const program = Effect.gen(function* () {
     ),
   )
   yield* Effect.logInfo("✔️ Installed dependencies")
+  yield* Effect.log()
+
+  yield* Effect.logInfo("Syncing vendored repositories")
+  yield* syncVendoredRepos({}).pipe(
+    Effect.catchTag("VendoredReposError", (error) =>
+      Effect.gen(function* () {
+        yield* Effect.logError(`Failed to sync vendored repositories: ${error.message}`)
+        return yield* Effect.fail(new SetupError({ message: "Failed to sync vendored repositories" }))
+      }),
+    ),
+  )
   yield* Effect.log()
 
   yield* Effect.logInfo("Applying database migrations...")
