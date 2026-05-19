@@ -8,37 +8,26 @@ import { cn } from "common/helpers/classnames"
 import { formatUnixTime } from "common/helpers/date"
 import { useClansRankings } from "@hooks/stats/useClansRankings"
 import { useDebouncedState } from "common/hooks/useDebouncedState"
-import { useRouter } from "next/router"
+import { useParams, useSearch } from "@tanstack/react-router"
 import { z } from "zod"
-import type { NextPage } from "next"
 
-const ClansPage: NextPage = () => {
-    const router = useRouter()
-
-    const { clansOptions, clan } = router.query
+export const RankingsClansPage = () => {
+    const { page: pageParam } = useParams({ strict: false })
+    const { clan } = useSearch({ strict: false })
 
     let clanName = ""
     let page = "1"
 
-    // TODO: ZOD (next version) will allow us to do this:
-    // const clanName = z.string().catch("").parse(clan)
     try {
         clanName = z.string().parse(clan)
     } catch {
-        // do nothing, we use the default value
+        // use default
     }
 
     try {
-        const validClanOptions = z.array(z.string()).parse(clansOptions)
-        const [pageToValidate] = validClanOptions
-
-        // TODO: ZOD (next version) will allow us to do this:
-        // const validPage = z.string().regex(/^\d+$/).catch("1").parse(pageToValidate)
-        const validPage = z.string().regex(/^\d+$/).parse(pageToValidate)
-
-        page = validPage
+        page = z.string().regex(/^\d+$/).parse(pageParam ?? "1")
     } catch {
-        // do nothing, we use the default value
+        // use default
     }
 
     const [search, setSearch, immediateSearch] = useDebouncedState(
@@ -123,4 +112,4 @@ const ClansPage: NextPage = () => {
     )
 }
 
-export default ClansPage
+export default RankingsClansPage

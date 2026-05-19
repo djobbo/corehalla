@@ -12,11 +12,10 @@ import {
 } from "web-parser/power-rankings/parsePowerRankingsPage"
 import { useDebouncedState } from "common/hooks/useDebouncedState"
 import { usePowerRankings } from "@hooks/stats/usePowerRankings"
-import { useRouter } from "next/router"
+import { useParams } from "@tanstack/react-router"
 import { useSortBy } from "common/hooks/useSortBy"
 import { z } from "zod"
 import type { MiscStat } from "@components/stats/MiscStatGroup"
-import type { NextPage } from "next"
 import type {
     PR,
     PowerRankingsBracket,
@@ -33,39 +32,24 @@ type PRSortOption =
     | "t8"
     | "t32"
 
-const Page: NextPage = () => {
-    const router = useRouter()
+export const RankingsPowerPage = () => {
+    const { bracket: bracketParam, region: regionParam } = useParams({
+        strict: false,
+    })
 
-    const { rankingsOptions } = router.query
+    let bracket: PowerRankingsBracket = "1v1"
+    let region: PowerRankingsRegion = "us-e"
 
-    let bracket: PowerRankingsBracket = "1v1",
-        region: PowerRankingsRegion = "us-e"
-
-    // TODO: ZOD (next version) will allow us to do this:
-    // const bracket = powerRankingsBracketValidator.catch("1v1").parse(bracket)
-    // const region = powerRankingsRegionValidator.catch("us-e").parse(region)
     try {
-        const validRankingsOptions = z.array(z.string()).parse(rankingsOptions)
-        const [bracketToValidate, regionToValidate] = validRankingsOptions
-
-        try {
-            const validBracket =
-                powerRankingsBracketValidator.parse(bracketToValidate)
-
-            bracket = validBracket
-        } catch {
-            // do nothing, we use the default value
-        }
-        try {
-            const validRegion =
-                powerRankingsRegionValidator.parse(regionToValidate)
-
-            region = validRegion
-        } catch {
-            // do nothing, we use the default value
-        }
+        bracket = powerRankingsBracketValidator.parse(bracketParam ?? "1v1")
     } catch {
-        // do nothing, we use the default values
+        // use default
+    }
+
+    try {
+        region = powerRankingsRegionValidator.parse(regionParam ?? "us-e")
+    } catch {
+        // use default
     }
 
     const { powerRankings, isLoading, isError } = usePowerRankings(
@@ -265,4 +249,4 @@ const Page: NextPage = () => {
     )
 }
 
-export default Page
+export default RankingsPowerPage

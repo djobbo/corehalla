@@ -8,13 +8,11 @@ import {
 } from "bhapi/calculator"
 import { getTierFromRating } from "bhapi/helpers/getTierFromRating"
 import { useState } from "react"
-import type { NextPage } from "next"
-
 const inputClassName =
     "w-full px-4 py-2 border bg-bgVar2 border-bg rounded-lg block mb-4"
 const resultClassName = "text-xl font-semibold block text-center"
 
-const CalcPage: NextPage = () => {
+export const CalcPage = () => {
     const [hasPlayed10Games, setHasPlayed10Games] = useState(false)
     const [wins, setWins] = useState("0")
     const [rating, setRating] = useState("0")

@@ -7,24 +7,22 @@ import { Spinner } from "ui/base/Spinner"
 import { cleanString } from "common/helpers/cleanString"
 import { legendsMap } from "bhapi/legends"
 import { useDebouncedState } from "common/hooks/useDebouncedState"
+import { useNavigate, useParams, useSearch } from "@tanstack/react-router"
 import { useEffect } from "react"
 import { useRankings1v1 } from "@hooks/stats/useRankings"
-import { useRouter } from "next/router"
-import type { NextPage } from "next"
 
-const Page: NextPage = () => {
-    const router = useRouter()
+export const Rankings1v1Page = () => {
+    const navigate = useNavigate()
+    const { region: regionParam, page: pageParam } = useParams({ strict: false })
+    const { player = "" } = useSearch({ strict: false })
 
-    const { rankingsOptions, player = "" } = router.query
+    const region = regionParam ?? "all"
+    const page = pageParam ?? "1"
 
     const [search, setSearch, immediateSearch] = useDebouncedState(
         player.toString(),
         500,
     )
-
-    const [region = "all", page = "1"] = Array.isArray(rankingsOptions)
-        ? rankingsOptions
-        : []
 
     const { rankings1v1, isLoading, isError } = useRankings1v1(
         // @ts-expect-error TODO: Typecheck this
@@ -34,12 +32,13 @@ const Page: NextPage = () => {
     )
 
     useEffect(() => {
-        window.history.replaceState(
-            "",
-            "",
-            `/rankings/1v1/${region}/${page}?player=${search}`,
-        )
-    }, [region, page, search])
+        void navigate({
+            to: "/rankings/1v1/{-$region}/{-$page}",
+            params: { region, page },
+            search: { player: search || undefined },
+            replace: true,
+        })
+    }, [region, page, search, navigate])
 
     if (isError || (!isLoading && !rankings1v1)) return <div>Error</div>
 
@@ -48,7 +47,6 @@ const Page: NextPage = () => {
             brackets={[
                 { page: "1v1" },
                 { page: "2v2" },
-                // { page: "switchcraft", label: "Switchcraft" },
                 { page: "power/1v1", label: "Power 1v1" },
                 { page: "power/2v2", label: "Power 2v2" },
                 { page: "clans", label: "Clans" },
@@ -81,7 +79,7 @@ const Page: NextPage = () => {
                 } 1v1 Rankings - Page ${page}${
                     search ? ` - ${search}` : ""
                 } • Corehalla`}
-                description={`Brawhalla ${
+                description={`Brawlhalla ${
                     region === "all" ? "Global" : region.toUpperCase()
                 } 1v1 Rankings - Page ${page}${
                     search ? ` - ${search}` : ""
@@ -142,4 +140,4 @@ const Page: NextPage = () => {
     )
 }
 
-export default Page
+export default Rankings1v1Page
