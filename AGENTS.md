@@ -14,5 +14,6 @@ When working on code that uses these libraries:
 | --- | --- | --- |
 | `.repos/effect` | [Effect-TS/effect-smol](https://github.com/Effect-TS/effect-smol) (`main`) | `effect` and related Effect v4 packages from that monorepo |
 | `.repos/tanstack-router` | [TanStack/router](https://github.com/TanStack/router) (`main`) | `@tanstack/react-router`, `@tanstack/react-start`, and their workspace siblings in that monorepo |
+| `.repos/supabase` | [supabase/supabase](https://github.com/supabase/supabase) (`master`) | Self-hosted stack (`docker/`), GoTrue/PostgREST/Realtime behavior, and `@supabase/supabase-js` patterns in `packages/` |
 
 Subtree imports are normal tracked files; there is no nested `.git` under these prefixes. Do not treat vendored trees as editable forks unless the task explicitly requires upstream contributions.
