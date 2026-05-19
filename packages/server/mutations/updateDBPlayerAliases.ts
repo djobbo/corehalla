@@ -1,6 +1,7 @@
-import { logInfo } from "logger"
-import { supabaseService } from "db/supabase/service"
 import type { BHPlayerAlias } from "db/generated/client"
+import { supabaseService } from "db/supabase/service"
+import { logInfo } from "logger"
+
 import type { CommonOptions } from "../helpers/commonOptions"
 
 export const updateDBPlayerAliases = async (

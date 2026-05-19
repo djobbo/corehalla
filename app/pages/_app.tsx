@@ -3,9 +3,8 @@ import "../styles/nprogress.css"
 import "@fontsource/montserrat/400.css"
 import "@fontsource/montserrat/600.css"
 import "@fontsource/montserrat/700.css"
-
-import { AnimatedLogo } from "ui/base/AnimatedLogo"
 import { AuthProvider } from "@ctx/auth/AuthProvider"
+import { AnimatedLogo } from "ui/base/AnimatedLogo"
 // dynamic breaks with next >= v13.0.7
 //Will be fixed (maybe?) by https://github.com/vercel/next.js/pull/44832
 const BackToTopButton = dynamic(
@@ -17,17 +16,17 @@ const BackToTopButton = dynamic(
         ssr: false,
     },
 )
-import { GAScripts } from "common/analytics/GAScripts"
-import { KBarProvider } from "kbar"
+import { ClientToaster } from "@components/ClientToaster"
 import { Layout } from "@components/layout/Layout"
-import { PageLoader } from "ui/base/PageLoader"
 import { Searchbox } from "@components/search/Searchbox"
 import { SideNavProvider } from "@ctx/SideNavProvider"
-import { ClientToaster } from "@components/ClientToaster"
 import { trpc } from "@util/trpc"
-import Head from "next/head"
-import dynamic from "next/dynamic"
+import { GAScripts } from "common/analytics/GAScripts"
+import { KBarProvider } from "kbar"
 import type { AppProps } from "next/app"
+import dynamic from "next/dynamic"
+import Head from "next/head"
+import { PageLoader } from "ui/base/PageLoader"
 
 const App = ({
     Component,

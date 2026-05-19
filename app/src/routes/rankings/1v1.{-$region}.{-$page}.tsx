@@ -1,7 +1,8 @@
-import Rankings1v1Page from "../../../pages/rankings/1v1/[[...rankingsOptions]]"
 import { rankings1v1Seo } from "@components/SEO"
 import { createFileRoute } from "@tanstack/react-router"
 import { z } from "zod"
+
+import Rankings1v1Page from "../../../pages/rankings/1v1/[[...rankingsOptions]]"
 
 const searchSchema = z.object({
     player: z.string().optional(),

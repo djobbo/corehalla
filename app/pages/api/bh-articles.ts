@@ -1,6 +1,6 @@
+import type { NextApiHandler } from "next"
 import { parseBHArticlesPage } from "web-parser/bh-articles/parseBHArticlesPage"
 import type { BHArticleType } from "web-parser/bh-articles/parseBHArticlesPage"
-import type { NextApiHandler } from "next"
 
 const handler: NextApiHandler = async (req, res) => {
     const { page = "1", type = "patch-notes", max } = req.query

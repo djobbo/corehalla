@@ -1,5 +1,6 @@
-import { getWeeklyRotation as getWeeklyRotationFn } from "web-parser/common"
 import { logInfo } from "logger"
+import { getWeeklyRotation as getWeeklyRotationFn } from "web-parser/common"
+
 import { publicProcedure } from "../trpc"
 
 export const getWeeklyRotation = publicProcedure //

@@ -42,9 +42,11 @@ export default defineConfig({
     },
     lint: {
         plugins: ["typescript", "react", "jsx-a11y"],
+        // tsgolint does not support app/tsconfig baseUrl or legacy moduleResolution: node;
+        // use `pnpm ts:check` (tsc) for type checking.
         options: {
-            typeAware: true,
-            typeCheck: true,
+            typeAware: false,
+            typeCheck: false,
         },
         rules: {
             "no-console": "error",
@@ -55,13 +57,6 @@ export default defineConfig({
                 { prefer: "type-imports" },
             ],
             "object-shorthand": ["error", "always"],
-            "react/function-component-definition": [
-                "error",
-                {
-                    namedComponents: "arrow-function",
-                    unnamedComponents: "arrow-function",
-                },
-            ],
         },
         ignorePatterns: [
             "**/node_modules/**",

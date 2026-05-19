@@ -1,4 +1,5 @@
-import { getWeeklyRotation } from "./getWeeklyRotation"
 import { logInfo } from "logger"
+
+import { getWeeklyRotation } from "./getWeeklyRotation"
 
 getWeeklyRotation().then(logInfo)

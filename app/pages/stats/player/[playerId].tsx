@@ -1,25 +1,25 @@
+import { Tabs } from "@base-ui/react/tabs"
 import { Image } from "@components/Image"
-import { MAX_SHOWN_ALIASES } from "@util/constants"
+import type { MiscStat } from "@components/stats/MiscStatGroup"
 import { Player2v2Tab } from "@components/stats/player/Player2v2Tab"
 import { PlayerLegendsTab } from "@components/stats/player/PlayerLegendsTab"
 import { PlayerOverviewTab } from "@components/stats/player/PlayerOverviewTab"
 import { PlayerWeaponsTab } from "@components/stats/player/PlayerWeaponsTab"
 import { StatsHeader } from "@components/stats/StatsHeader"
-import { Tabs } from "@base-ui/react/tabs"
-import { cleanString } from "common/helpers/cleanString"
-import { cn } from "common/helpers/classnames"
-import { css, theme } from "ui/theme"
-import { formatTime } from "common/helpers/date"
+import { usePlayerAliases } from "@hooks/stats/usePlayerAliases"
+import { usePlayerRanked } from "@hooks/stats/usePlayerRanked"
+import { usePlayerStats } from "@hooks/stats/usePlayerStats"
+import { useParams } from "@tanstack/react-router"
+import { MAX_SHOWN_ALIASES } from "@util/constants"
 import {
     getFullLegends,
     getFullWeapons,
     getLegendsAccumulativeData,
 } from "bhapi/legends"
-import { usePlayerAliases } from "@hooks/stats/usePlayerAliases"
-import { usePlayerRanked } from "@hooks/stats/usePlayerRanked"
-import { usePlayerStats } from "@hooks/stats/usePlayerStats"
-import { useParams } from "@tanstack/react-router"
-import type { MiscStat } from "@components/stats/MiscStatGroup"
+import { cn } from "common/helpers/classnames"
+import { cleanString } from "common/helpers/cleanString"
+import { formatTime } from "common/helpers/date"
+import { css, theme } from "ui/theme"
 
 const tabClassName = cn(
     "px-6 py-4 uppercase text-xs border-b-2 z-10 whitespace-nowrap",

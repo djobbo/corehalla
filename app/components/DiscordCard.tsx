@@ -1,8 +1,8 @@
-import { ArrowSmRightIcon, DiscordIcon, KofiIcon } from "ui/icons"
-import { Button } from "ui/base/Button"
 import { Image } from "@components/Image"
 import { clamp } from "common/helpers/math"
 import { useEffect, useRef } from "react"
+import { Button } from "ui/base/Button"
+import { ArrowSmRightIcon, DiscordIcon, KofiIcon } from "ui/icons"
 
 export const DiscordCard = () => {
     const containerRef = useRef<HTMLDivElement>(null)

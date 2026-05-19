@@ -1,6 +1,7 @@
-import { GA_TRACKING_ID, adsenseCaPub, gaPageview } from "./gtag"
 import { useRouterState } from "@tanstack/react-router"
 import { useEffect } from "react"
+
+import { GA_TRACKING_ID, adsenseCaPub, gaPageview } from "./gtag"
 
 const initGtagStub = () => {
     window.dataLayer = window.dataLayer ?? []

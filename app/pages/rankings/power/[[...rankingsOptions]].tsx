@@ -1,26 +1,24 @@
 import { MiscStatGroup } from "@components/stats/MiscStatGroup"
+import type { MiscStat } from "@components/stats/MiscStatGroup"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
+import { usePowerRankings } from "@hooks/stats/usePowerRankings"
+import { useParams } from "@tanstack/react-router"
+import { cn } from "common/helpers/classnames"
+import { cleanString } from "common/helpers/cleanString"
+import { useDebouncedState } from "common/hooks/useDebouncedState"
+import { useSortBy } from "common/hooks/useSortBy"
 import { Select } from "ui/base/Select"
 import { Spinner } from "ui/base/Spinner"
 import { Tooltip } from "ui/base/Tooltip"
-import { cleanString } from "common/helpers/cleanString"
-import { cn } from "common/helpers/classnames"
 import {
     powerRankingsBracketValidator,
     powerRankingsRegionValidator,
 } from "web-parser/power-rankings/parsePowerRankingsPage"
-import { useDebouncedState } from "common/hooks/useDebouncedState"
-import { usePowerRankings } from "@hooks/stats/usePowerRankings"
-import { useParams } from "@tanstack/react-router"
-import { useSortBy } from "common/hooks/useSortBy"
-import { z } from "zod"
-import type { MiscStat } from "@components/stats/MiscStatGroup"
 import type {
     PR,
     PowerRankingsBracket,
     PowerRankingsRegion,
 } from "web-parser/power-rankings/parsePowerRankingsPage"
-
 type PRSortOption =
     | "rank"
     | "name"

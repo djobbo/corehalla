@@ -1,14 +1,15 @@
-import { AlertBar } from "./AlertBar"
+import { Image } from "@components/Image"
+import { useAuth } from "@ctx/auth/AuthProvider"
+import { useSideNav } from "@ctx/SideNavProvider"
+import { useAppRouter } from "@util/router"
+import { cn } from "common/helpers/classnames"
 import { AppLink } from "ui/base/AppLink"
 import { Button } from "ui/base/Button"
 import { DiscordIcon, GithubIcon, TwitterIcon } from "ui/icons"
 import { HamburgerMenuIcon } from "ui/icons"
-import { Image } from "@components/Image"
+
 import { SearchButton, SearchButtonIcon } from "../search/SearchButton"
-import { cn } from "common/helpers/classnames"
-import { useAuth } from "@ctx/auth/AuthProvider"
-import { useAppRouter } from "@util/router"
-import { useSideNav } from "@ctx/SideNavProvider"
+import { AlertBar } from "./AlertBar"
 
 type HeaderProps = {
     className?: string

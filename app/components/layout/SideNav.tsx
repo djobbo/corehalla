@@ -1,5 +1,6 @@
-import { AppLink } from "ui/base/AppLink"
-import { DiscordIcon } from "ui/icons"
+import { Image } from "@components/Image"
+import { useFavorites } from "@ctx/auth/AuthProvider"
+import { useSideNav } from "@ctx/SideNavProvider"
 import { HiBookOpen } from "@react-icons/all-files/hi/HiBookOpen"
 import { HiChevronDoubleUp } from "@react-icons/all-files/hi/HiChevronDoubleUp"
 import { HiHeart } from "@react-icons/all-files/hi/HiHeart"
@@ -8,17 +9,16 @@ import { HiLightningBolt } from "@react-icons/all-files/hi/HiLightningBolt"
 import { HiUserGroup } from "@react-icons/all-files/hi/HiUserGroup"
 import { HiUsers } from "@react-icons/all-files/hi/HiUsers"
 import { HiX } from "@react-icons/all-files/hi/HiX"
-import { Image } from "@components/Image"
-import { Tooltip } from "ui/base/Tooltip"
-import { cleanString } from "common/helpers/cleanString"
-import { cn } from "common/helpers/classnames"
-import { css } from "ui/theme"
-import { legendsMap } from "bhapi/legends"
-import { useFavorites } from "@ctx/auth/AuthProvider"
 import { useParams } from "@tanstack/react-router"
 import { useAppRouter } from "@util/router"
-import { useSideNav } from "@ctx/SideNavProvider"
+import { legendsMap } from "bhapi/legends"
+import { cn } from "common/helpers/classnames"
+import { cleanString } from "common/helpers/cleanString"
 import type { ReactNode } from "react"
+import { AppLink } from "ui/base/AppLink"
+import { Tooltip } from "ui/base/Tooltip"
+import { DiscordIcon } from "ui/icons"
+import { css } from "ui/theme"
 
 type SideNavIconProps = {
     className?: string
@@ -243,7 +243,8 @@ export const SideNav = ({ className }: SideNavProps) => {
                                         active={
                                             pathname.startsWith(
                                                 `/stats/player/${favorite.id}`,
-                                            ) && playerId === favorite.id.toString()
+                                            ) &&
+                                            playerId === favorite.id.toString()
                                         }
                                         onRemove={() => {
                                             removeFavorite(favorite)
@@ -260,7 +261,8 @@ export const SideNav = ({ className }: SideNavProps) => {
                                         active={
                                             pathname.startsWith(
                                                 `/stats/clan/${favorite.id}`,
-                                            ) && clanId === favorite.id.toString()
+                                            ) &&
+                                            clanId === favorite.id.toString()
                                         }
                                         onRemove={() => {
                                             removeFavorite(favorite)

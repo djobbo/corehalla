@@ -1,4 +1,3 @@
-import { Card } from "ui/base/Card"
 import { SectionTitle } from "@components/layout/SectionTitle"
 import {
     getGloryFromBestRating,
@@ -8,6 +7,7 @@ import {
 } from "bhapi/calculator"
 import { getTierFromRating } from "bhapi/helpers/getTierFromRating"
 import { useState } from "react"
+import { Card } from "ui/base/Card"
 const inputClassName =
     "w-full px-4 py-2 border bg-bgVar2 border-bg rounded-lg block mb-4"
 const resultClassName = "text-xl font-semibold block text-center"

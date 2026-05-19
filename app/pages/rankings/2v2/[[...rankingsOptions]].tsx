@@ -1,14 +1,16 @@
-import { AppLink } from "ui/base/AppLink"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
 import { RankingsTableItem } from "@components/stats/RankingsTableItem"
-import { Spinner } from "ui/base/Spinner"
-import { cleanString } from "common/helpers/cleanString"
-import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
 import { useRankings2v2 } from "@hooks/stats/useRankings"
 import { useParams } from "@tanstack/react-router"
+import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
+import { cleanString } from "common/helpers/cleanString"
+import { AppLink } from "ui/base/AppLink"
+import { Spinner } from "ui/base/Spinner"
 
 export const Rankings2v2Page = () => {
-    const { region: regionParam, page: pageParam } = useParams({ strict: false })
+    const { region: regionParam, page: pageParam } = useParams({
+        strict: false,
+    })
 
     const region = regionParam ?? "all"
     const page = pageParam ?? "1"

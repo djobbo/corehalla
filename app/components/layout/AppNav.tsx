@@ -1,10 +1,10 @@
+import { cn } from "common/helpers/classnames"
 import {
     ClanIcon,
     Rankings1v1Icon,
     Rankings2v2Icon,
     RankingsPowerIcon,
 } from "ui/icons"
-import { cn } from "common/helpers/classnames"
 
 const subHeaderNavigation = [
     {

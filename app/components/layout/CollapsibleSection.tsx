@@ -1,8 +1,9 @@
-import { CollapsibleContent } from "./CollapsibleContent"
-import { SectionTitle } from "./SectionTitle"
 import { cn } from "common/helpers/classnames"
-import type { CollapsibleContentProps } from "./CollapsibleContent"
 import type { ReactNode } from "react"
+
+import { CollapsibleContent } from "./CollapsibleContent"
+import type { CollapsibleContentProps } from "./CollapsibleContent"
+import { SectionTitle } from "./SectionTitle"
 
 type CollapsibleSectionProps = Omit<CollapsibleContentProps, "trigger"> & {
     trigger: ReactNode

@@ -17,7 +17,10 @@ const config = {
         "server",
     ],
     images: {
-        remotePatterns: [new URL("https://cdn.discordapp.com/**"), new URL("https://www.brawlhalla.com/**")],
+        remotePatterns: [
+            new URL("https://cdn.discordapp.com/**"),
+            new URL("https://www.brawlhalla.com/**"),
+        ],
     },
     experimental: {
         logging: {

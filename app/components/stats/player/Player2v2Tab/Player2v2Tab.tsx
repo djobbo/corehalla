@@ -1,11 +1,12 @@
-import { MiscStatGroup } from "../../MiscStatGroup"
+import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
+import type { PlayerRanked } from "bhapi/types"
+import { SortDirection, useSortBy } from "common/hooks/useSortBy"
 import { Select } from "ui/base/Select"
 import { SortAscendingIcon, SortDescendingIcon } from "ui/icons"
-import { SortDirection, useSortBy } from "common/hooks/useSortBy"
-import { TeamCard } from "../../TeamCard"
-import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
+
+import { MiscStatGroup } from "../../MiscStatGroup"
 import type { MiscStat } from "../../MiscStatGroup"
-import type { PlayerRanked } from "bhapi/types"
+import { TeamCard } from "../../TeamCard"
 
 type Player2v2TabProps = {
     ranked: PlayerRanked

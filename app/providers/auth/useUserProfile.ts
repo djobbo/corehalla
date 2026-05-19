@@ -1,9 +1,9 @@
-import { getDiscordProfile } from "db/discord/getDiscordProfile"
-import { supabase } from "db/supabase/client"
-import { useEffect } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import type { Session } from "db/supabase/client"
+import { getDiscordProfile } from "db/discord/getDiscordProfile"
 import type { UserProfile } from "db/generated/client"
+import { supabase } from "db/supabase/client"
+import type { Session } from "db/supabase/client"
+import { useEffect } from "react"
 
 export const useUserProfile = (session: Session | null) => {
     const userId = session?.user?.id

@@ -1,15 +1,16 @@
-import { Legend } from "./Legend"
-import { MiscStatGroup } from "../../MiscStatGroup"
+import { weapons } from "bhapi/constants"
+import type { Weapon } from "bhapi/constants"
+import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
+import type { FullLegend } from "bhapi/legends"
+import { formatTime } from "common/helpers/date"
+import { SortDirection, useSortBy } from "common/hooks/useSortBy"
+import { useMemo, useState } from "react"
 import { Select } from "ui/base/Select"
 import { SortAscendingIcon, SortDescendingIcon } from "ui/icons"
-import { SortDirection, useSortBy } from "common/hooks/useSortBy"
-import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
-import { formatTime } from "common/helpers/date"
-import { useMemo, useState } from "react"
-import { weapons } from "bhapi/constants"
-import type { FullLegend } from "bhapi/legends"
+
+import { MiscStatGroup } from "../../MiscStatGroup"
 import type { MiscStat } from "../../MiscStatGroup"
-import type { Weapon } from "bhapi/constants"
+import { Legend } from "./Legend"
 
 type PlayerLegendsTabProps = {
     legends: FullLegend[]

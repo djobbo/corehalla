@@ -1,11 +1,12 @@
-import { CLANS_RANKINGS_PER_PAGE } from "../../helpers/constants"
-import { logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
-import { publicProcedure } from "../../trpc"
-import { supabaseService } from "db/supabase/service"
-import { withTimeLog } from "../../helpers/withTimeLog"
-import { z } from "zod"
 import type { BHClan } from "db/generated/client"
+import { supabaseService } from "db/supabase/service"
+import { logInfo } from "logger"
+import { z } from "zod"
+
+import { CLANS_RANKINGS_PER_PAGE } from "../../helpers/constants"
+import { withTimeLog } from "../../helpers/withTimeLog"
+import { publicProcedure } from "../../trpc"
 
 export const getClansRankings = publicProcedure
     .input(

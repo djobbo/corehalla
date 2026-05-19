@@ -1,6 +1,6 @@
+import { createFileRoute } from "@tanstack/react-router"
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch"
 import { appRouter } from "server/router"
-import { createFileRoute } from "@tanstack/react-router"
 
 const CACHE_TIME = 60 * 60 * 24
 const REVALIDATE_TIME = 30

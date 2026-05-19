@@ -1,7 +1,8 @@
 import { cn } from "common/helpers/classnames"
-import { theme } from "../theme"
 import { useId } from "react"
 import ReactSelect from "react-select"
+
+import { theme } from "../theme"
 
 type SelectOption<T> = {
     value: T

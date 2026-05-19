@@ -1,12 +1,12 @@
+import { Image } from "@components/Image"
+import { useAuth, useFavorites } from "@ctx/auth/AuthProvider"
 import { HiOutlineStar } from "@react-icons/all-files/hi2/HiOutlineStar"
 import { HiStar } from "@react-icons/all-files/hi2/HiStar"
-
-import { Image } from "@components/Image"
-import { SearchboxItem } from "./SearchboxItem"
-import { cleanString } from "common/helpers/cleanString"
 import { legendsMap } from "bhapi/legends"
-import { useAuth, useFavorites } from "@ctx/auth/AuthProvider"
 import type { Ranking1v1 } from "bhapi/types"
+import { cleanString } from "common/helpers/cleanString"
+
+import { SearchboxItem } from "./SearchboxItem"
 
 type RankedPlayerItemProps = {
     player: Ranking1v1

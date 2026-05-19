@@ -127,11 +127,7 @@ export const rankings2v2Seo = ({
     return seoHead({ title, description: title })
 }
 
-export const rankingsClansSeo = ({
-    page = "1",
-}: {
-    page?: string
-}) => {
+export const rankingsClansSeo = ({ page = "1" }: { page?: string }) => {
     const title = `Brawlhalla Clans - Page ${page} • Corehalla`
 
     return seoHead({ title, description: title })

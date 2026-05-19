@@ -1,15 +1,15 @@
-import { ArrowSmRightIcon, DiscordIcon } from "ui/icons"
 import { ArticlePreviewGrid } from "@components/articles/ArticlePreviewGrid"
-import { Button } from "ui/base/Button"
 import { DiscordCard } from "@components/DiscordCard"
 import { FavoritesGrid } from "@components/favorites/FavoritesGrid"
-import { SearchButton } from "@components/search/SearchButton"
 import { SectionTitle } from "@components/layout/SectionTitle"
+import { SearchButton } from "@components/search/SearchButton"
 import { WeeklyRotation } from "@components/WeeklyRotation"
-import { cn } from "common/helpers/classnames"
-import { css } from "ui/theme"
 import { useAuth, useFavorites } from "@ctx/auth/AuthProvider"
 import { useBrawlhallaArticles } from "@hooks/useBrawlhallaArticles"
+import { cn } from "common/helpers/classnames"
+import { Button } from "ui/base/Button"
+import { ArrowSmRightIcon, DiscordIcon } from "ui/icons"
+import { css } from "ui/theme"
 
 const landingClassName = css({
     height: "60vh",

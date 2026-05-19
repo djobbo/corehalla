@@ -1,7 +1,8 @@
-import { adsenseCaPub } from "./gtag"
-import { cn } from "../helpers/classnames"
 import { useRouterState } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react"
+
+import { cn } from "../helpers/classnames"
+import { adsenseCaPub } from "./gtag"
 
 declare global {
     interface Window {

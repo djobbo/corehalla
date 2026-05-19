@@ -1,7 +1,7 @@
 import { Image } from "@components/Image"
+import { useWeeklyRotation } from "@hooks/useWeeklyRotation"
 import { Tooltip } from "ui/base/Tooltip"
 import { UnknownIcon } from "ui/icons"
-import { useWeeklyRotation } from "@hooks/useWeeklyRotation"
 
 export const WeeklyRotation = () => {
     const { weeklyRotation } = useWeeklyRotation()

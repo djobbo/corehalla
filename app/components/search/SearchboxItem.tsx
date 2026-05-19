@@ -1,6 +1,6 @@
-import { AppLink } from "ui/base/AppLink"
 import { VisualState, useKBar } from "kbar"
 import type { ReactNode } from "react"
+import { AppLink } from "ui/base/AppLink"
 
 type SearchboxItemProps = {
     icon?: ReactNode

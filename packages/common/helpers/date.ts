@@ -10,8 +10,7 @@ const unixDateFormat: Intl.DateTimeFormatOptions & { locale?: string } = {
 export const getDateFromUnixTime = (
     unixTime: number,
     options: Intl.DateTimeFormatOptions & { locale?: string } = unixDateFormat,
-) =>
-    DateTime.formatUtc(DateTime.makeUnsafe(unixTime * 1000), options)
+) => DateTime.formatUtc(DateTime.makeUnsafe(unixTime * 1000), options)
 
 type HMSTime = {
     hours: number
@@ -44,4 +43,5 @@ export const formatTime = (seconds: number) =>
         ({ hours, minutes, seconds }) => `${hours}h ${minutes}m ${seconds}s`,
     )
 
-export const formatUnixTime = (unixTime: number) => getDateFromUnixTime(unixTime)
+export const formatUnixTime = (unixTime: number) =>
+    getDateFromUnixTime(unixTime)

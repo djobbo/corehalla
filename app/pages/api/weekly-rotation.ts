@@ -1,5 +1,5 @@
-import { getWeeklyRotation } from "web-parser/weekly-rotation/getWeeklyRotation"
 import type { NextApiHandler } from "next"
+import { getWeeklyRotation } from "web-parser/weekly-rotation/getWeeklyRotation"
 
 const handler: NextApiHandler = async (req, res) => {
     try {
@@ -11,7 +11,7 @@ const handler: NextApiHandler = async (req, res) => {
         )
 
         res.status(200).json(weeklyRotation)
-    } catch (error) {
+    } catch {
         res.status(500).json({ error: "Failed to fetch weekly rotation" })
     }
 }

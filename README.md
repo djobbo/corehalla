@@ -59,26 +59,26 @@ pnpm services:up   # start Supabase if it is not already running
 pnpm dev
 ```
 
-| Service | URL |
-| --- | --- |
-| Web app | http://localhost:3000 |
-| Supabase API | http://127.0.0.1:54321 |
-| Supabase Studio | http://127.0.0.1:54323 |
-| Worker API | http://localhost:3002 |
-| Postgres (direct) | `127.0.0.1:54322` |
+| Service           | URL                    |
+| ----------------- | ---------------------- |
+| Web app           | http://localhost:3000  |
+| Supabase API      | http://127.0.0.1:54321 |
+| Supabase Studio   | http://127.0.0.1:54323 |
+| Worker API        | http://localhost:3002  |
+| Postgres (direct) | `127.0.0.1:54322`      |
 
 ### Useful commands
 
-| Command | Description |
-| --- | --- |
-| `pnpm dev` | Start app and worker in watch mode |
-| `pnpm setup` | Start Supabase, sync `.env`, install deps, migrate database |
-| `pnpm services:up` | `supabase start` |
-| `pnpm services:down` | `supabase stop` |
-| `pnpm services:status` | `supabase status` |
-| `pnpm db:migrate` | Apply migrations and Supabase setup SQL |
-| `pnpm --filter app dev:prod` | App with production-style public config |
-| `pnpm --filter worker bot:dev` | Worker with Discord bot only (crawler off) |
+| Command                        | Description                                                 |
+| ------------------------------ | ----------------------------------------------------------- |
+| `pnpm dev`                     | Start app and worker in watch mode                          |
+| `pnpm setup`                   | Start Supabase, sync `.env`, install deps, migrate database |
+| `pnpm services:up`             | `supabase start`                                            |
+| `pnpm services:down`           | `supabase stop`                                             |
+| `pnpm services:status`         | `supabase status`                                           |
+| `pnpm db:migrate`              | Apply migrations and Supabase setup SQL                     |
+| `pnpm --filter app dev:prod`   | App with production-style public config                     |
+| `pnpm --filter worker bot:dev` | Worker with Discord bot only (crawler off)                  |
 
 Reset local database data: `pnpm exec supabase db reset` (destroys local Postgres data).
 

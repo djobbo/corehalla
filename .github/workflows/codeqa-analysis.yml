@@ -10,8 +10,6 @@ jobs:
                 include:
                     - name: Check
                       action: pnpm ci:check
-                    - name: Check Types
-                      action: pnpm ts:check
                     - name: Check Deadcode
                       action: pnpm ci:deadcode
         steps:

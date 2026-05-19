@@ -1,42 +1,37 @@
 {
-  "extends": "tsconfig/base.json",
-  "include": [
-    "env.d.ts",
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "components/**/*.ts",
-    "components/**/*.tsx",
-    "hooks/**/*.ts",
-    "hooks/**/*.tsx",
-    "providers/**/*.ts",
-    "providers/**/*.tsx",
-    "util/**/*.ts",
-    "util/**/*.tsx",
-    "pages/**/*.ts",
-    "pages/**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules",
-    ".output",
-    "dist",
-    "pages/_app.tsx"
-  ],
-  "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "allowJs": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "incremental": true,
-    "baseUrl": ".",
-    "paths": {
-      "@hooks/*": ["hooks/*"],
-      "@components/*": ["components/*"],
-      "@ctx/*": ["providers/*"],
-      "@util/*": ["util/*"]
-    },
-    "types": ["vite/client"]
-  }
+    "extends": "tsconfig/base.json",
+    "include": [
+        "env.d.ts",
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "components/**/*.ts",
+        "components/**/*.tsx",
+        "hooks/**/*.ts",
+        "hooks/**/*.tsx",
+        "providers/**/*.ts",
+        "providers/**/*.tsx",
+        "util/**/*.ts",
+        "util/**/*.tsx",
+        "pages/**/*.ts",
+        "pages/**/*.tsx"
+    ],
+    "exclude": ["node_modules", ".output", "dist", "pages/_app.tsx"],
+    "compilerOptions": {
+        "target": "ES2022",
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "allowJs": true,
+        "noEmit": true,
+        "jsx": "react-jsx",
+        "incremental": true,
+        "baseUrl": ".",
+        "paths": {
+            "@hooks/*": ["hooks/*"],
+            "@components/*": ["components/*"],
+            "@ctx/*": ["providers/*"],
+            "@util/*": ["util/*"]
+        },
+        "types": ["vite/client"]
+    }
 }

@@ -4,25 +4,25 @@ import "../../styles/nprogress.css"
 import "@fontsource/montserrat/400.css"
 import "@fontsource/montserrat/600.css"
 import "@fontsource/montserrat/700.css"
-
-import { AnimatedLogo } from "ui/base/AnimatedLogo"
-import { AuthProvider } from "@ctx/auth/AuthProvider"
 import { BackToTopButton } from "@components/BackToTopButton"
-import { GAScripts } from "common/analytics/GAScripts"
-import { KBarProvider } from "kbar"
+import { ClientToaster } from "@components/ClientToaster"
 import { Layout } from "@components/layout/Layout"
-import { PageLoader } from "ui/base/PageLoader"
-import { DEFAULT_OG_IMAGE, seoHead } from "@components/SEO"
 import { Searchbox } from "@components/search/Searchbox"
+import { DEFAULT_OG_IMAGE, seoHead } from "@components/SEO"
+import { AuthProvider } from "@ctx/auth/AuthProvider"
 import { SideNavProvider } from "@ctx/SideNavProvider"
-import type { RouterContext } from "../router-context"
 import {
     HeadContent,
     Outlet,
     Scripts,
     createRootRouteWithContext,
 } from "@tanstack/react-router"
-import { ClientToaster } from "@components/ClientToaster"
+import { GAScripts } from "common/analytics/GAScripts"
+import { KBarProvider } from "kbar"
+import { AnimatedLogo } from "ui/base/AnimatedLogo"
+import { PageLoader } from "ui/base/PageLoader"
+
+import type { RouterContext } from "../router-context"
 
 export const Route = createRootRouteWithContext<RouterContext>()({
     head: () => ({

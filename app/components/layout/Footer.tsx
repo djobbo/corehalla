@@ -1,6 +1,6 @@
 import { AppLink } from "ui/base/AppLink"
-import { DiscordIcon, GithubIcon, TwitterIcon } from "ui/icons"
 import { Tooltip } from "ui/base/Tooltip"
+import { DiscordIcon, GithubIcon, TwitterIcon } from "ui/icons"
 
 const socialLinks = [
     {

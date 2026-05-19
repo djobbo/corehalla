@@ -1,5 +1,13 @@
+import { usePlayerSearch } from "@hooks/stats/usePlayerSearch"
 import { HiArrowUp } from "@react-icons/all-files/hi/HiArrowUp"
-
+import { css } from "@stitches/react"
+import { MAX_SHOWN_ALIASES } from "@util/constants"
+import { trpc } from "@util/trpc"
+import { gaEvent } from "common/analytics/gtag"
+import { cn } from "common/helpers/classnames"
+import { cleanString } from "common/helpers/cleanString"
+import { numericLiteralValidator } from "common/helpers/validators"
+import { useDebouncedState } from "common/hooks/useDebouncedState"
 import {
     KBarAnimator,
     KBarPortal,
@@ -7,21 +15,13 @@ import {
     KBarSearch,
     useKBar,
 } from "kbar"
-import { MAX_SHOWN_ALIASES } from "@util/constants"
-import { RankedPlayerItem } from "./RankedPlayerItem"
-import { SearchboxItem } from "./SearchboxItem"
+import { useEffect } from "react"
 import { Spinner } from "ui/base/Spinner"
 import { UserIcon } from "ui/icons"
-import { cleanString } from "common/helpers/cleanString"
-import { cn } from "common/helpers/classnames"
-import { css } from "@stitches/react"
-import { gaEvent } from "common/analytics/gtag"
-import { numericLiteralValidator } from "common/helpers/validators"
 import { styled, theme } from "ui/theme"
-import { trpc } from "@util/trpc"
-import { useDebouncedState } from "common/hooks/useDebouncedState"
-import { useEffect } from "react"
-import { usePlayerSearch } from "@hooks/stats/usePlayerSearch"
+
+import { RankedPlayerItem } from "./RankedPlayerItem"
+import { SearchboxItem } from "./SearchboxItem"
 const __DEV = process.env.NODE_ENV === "development"
 
 const ResultsContainer = styled("div", {

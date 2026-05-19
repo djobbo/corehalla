@@ -1,8 +1,8 @@
+import axios from "axios"
 import { legends } from "bhapi/legends"
 import { load as loadHtml } from "cheerio"
 import { logError, logInfo } from "logger"
 import { z } from "zod"
-import axios from "axios"
 
 const BRAWLHALLA_GRAPHQL_API_URL = "https://cms.brawlhalla.com/graphql"
 const BRAWLHALLA_WP_API_URL = "https://cms.brawlhalla.com/wp-json/wp/v2"

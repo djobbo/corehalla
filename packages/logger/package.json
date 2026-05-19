@@ -2,12 +2,12 @@
     "name": "logger",
     "version": "0.0.0",
     "main": "index.ts",
+    "scripts": {
+        "ts:check": "tsc --noEmit"
+    },
     "devDependencies": {
         "@types/node": "^20.11.5",
         "tsconfig": "workspace:*",
         "typescript": "^5.3.3"
-    },
-    "scripts": {
-        "ts:check": "tsc --noEmit"
     }
 }

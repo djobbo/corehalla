@@ -21,10 +21,7 @@ export const Image = ({
         <img
             {...props}
             alt={alt}
-            className={cn(
-                fill && "absolute inset-0 h-full w-full",
-                className,
-            )}
+            className={cn(fill && "absolute inset-0 h-full w-full", className)}
         />
     )
 
@@ -33,6 +30,8 @@ export const Image = ({
     }
 
     return (
-        <Container className={cn(position, containerClassName)}>{img}</Container>
+        <Container className={cn(position, containerClassName)}>
+            {img}
+        </Container>
     )
 }

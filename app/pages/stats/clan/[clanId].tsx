@@ -1,11 +1,11 @@
 import { ClanMember } from "@components/stats/clan/ClanMember"
+import type { MiscStat } from "@components/stats/MiscStatGroup"
 import { StatsHeader } from "@components/stats/StatsHeader"
-import { cleanString } from "common/helpers/cleanString"
-import { formatUnixTime } from "common/helpers/date"
 import { useClan } from "@hooks/stats/useClan"
 import { useParams } from "@tanstack/react-router"
 import type { ClanRank } from "bhapi/constants"
-import type { MiscStat } from "@components/stats/MiscStatGroup"
+import { cleanString } from "common/helpers/cleanString"
+import { formatUnixTime } from "common/helpers/date"
 
 const clanRankWeights: Record<ClanRank, number> = {
     Leader: 0,

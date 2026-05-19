@@ -1,7 +1,8 @@
-import { theme } from "../theme"
 import { useRouterState } from "@tanstack/react-router"
 import NProgress from "nprogress"
 import { useEffect, useState, type ReactNode } from "react"
+
+import { theme } from "../theme"
 
 type PageLoaderProps = {
     children: ReactNode

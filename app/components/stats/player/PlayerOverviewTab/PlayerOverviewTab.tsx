@@ -1,18 +1,18 @@
 import { CollapsibleSection } from "@components/layout/CollapsibleSection"
 import { FiTarget } from "@react-icons/all-files/fi/FiTarget"
-import { GeneralStats } from "../../GeneralStats"
 import { HiChartBar } from "@react-icons/all-files/hi/HiChartBar"
 import { HiFire } from "@react-icons/all-files/hi/HiFire"
 import { HiHand } from "@react-icons/all-files/hi/HiHand"
-
-import { MiscStatGroup } from "../../MiscStatGroup"
-import { PlayerOverviewClanContent } from "./ClanContent"
-import { PlayerOverviewRankedContent } from "./RankedContent"
-import { formatTime } from "common/helpers/date"
 import { getWeaponlessData } from "bhapi/legends"
 import type { FullLegend } from "bhapi/legends"
-import type { MiscStat } from "../../MiscStatGroup"
 import type { PlayerRanked, PlayerStats } from "bhapi/types"
+import { formatTime } from "common/helpers/date"
+
+import { GeneralStats } from "../../GeneralStats"
+import { MiscStatGroup } from "../../MiscStatGroup"
+import type { MiscStat } from "../../MiscStatGroup"
+import { PlayerOverviewClanContent } from "./ClanContent"
+import { PlayerOverviewRankedContent } from "./RankedContent"
 
 type PlayerOverviewTabProps = {
     stats: PlayerStats

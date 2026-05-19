@@ -1,7 +1,7 @@
-import { CLANS_RANKINGS_PER_PAGE } from "server/helpers/constants"
-import { supabaseService } from "db/supabase/service"
 import type { BHClan } from "db/generated/client"
+import { supabaseService } from "db/supabase/service"
 import type { NextApiHandler } from "next"
+import { CLANS_RANKINGS_PER_PAGE } from "server/helpers/constants"
 
 const handler: NextApiHandler = async (req, res) => {
     const { name = "", page = "1" } = req.query
@@ -31,7 +31,7 @@ const handler: NextApiHandler = async (req, res) => {
         )
 
         res.status(200).json(data ?? [])
-    } catch (error) {
+    } catch {
         res.status(500).json({ error: "something went wrong" })
     }
 }

@@ -1,7 +1,8 @@
-import { bhArticlesMock } from "./bhArticlesMock"
+import axios from "axios"
 import { load } from "cheerio"
 import { z } from "zod"
-import axios from "axios"
+
+import { bhArticlesMock } from "./bhArticlesMock"
 
 const __DEV = process.env.NODE_ENV === "development"
 

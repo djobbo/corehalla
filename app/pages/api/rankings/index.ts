@@ -1,7 +1,7 @@
 import { getRankings } from "bhapi"
+import type { RankedRegion } from "bhapi/constants"
 import type { Bracket } from "bhapi/types"
 import type { NextApiHandler } from "next"
-import type { RankedRegion } from "bhapi/constants"
 
 const handler: NextApiHandler = async (req, res) => {
     res.setHeader(
@@ -18,7 +18,7 @@ const handler: NextApiHandler = async (req, res) => {
             name as string,
         )
         res.status(200).json(data)
-    } catch (error) {
+    } catch {
         res.status(500).json({ error: "something went wrong" })
     }
 }

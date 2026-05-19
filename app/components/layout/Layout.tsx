@@ -1,10 +1,11 @@
 import { FirstTimePopup } from "@components/FirstTimePopup"
+import type { ReactNode } from "react"
+import { styled, theme } from "ui/theme"
+
 import { Footer } from "./Footer"
 import { Header } from "./Header"
 import { LandingBackground } from "./LandingBackground"
 import { SideNav } from "./SideNav"
-import { styled, theme } from "ui/theme"
-import type { ReactNode } from "react"
 
 export type LayoutProps = {
     children: ReactNode

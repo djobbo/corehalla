@@ -3,6 +3,26 @@
     "version": "0.0.0",
     "main": "./index.tsx",
     "types": "./index.tsx",
+    "scripts": {
+        "ts:check": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@base-ui/react": "^1.5.0",
+        "@react-icons/all-files": "https://github.com/react-icons/react-icons/releases/download/v5.0.1/react-icons-all-files-5.0.1.tgz",
+        "@stitches/react": "^1.2.8",
+        "@tanstack/react-router": "^1.170.4",
+        "bhapi": "workspace:*",
+        "common": "workspace:*",
+        "db": "workspace:*",
+        "kbar": "0.1.0-beta.45",
+        "logger": "workspace:*",
+        "nprogress": "^0.2.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-phone-input-2": "^2.15.1",
+        "react-select": "^5.8.0",
+        "react-table": "^7.8.0"
+    },
     "devDependencies": {
         "@types/nprogress": "^0.2.3",
         "@types/react": "^18.2.31",
@@ -13,25 +33,5 @@
         "tailwindcss": "^3.4.1",
         "tsconfig": "workspace:*",
         "typescript": "^5.3.3"
-    },
-    "dependencies": {
-        "@base-ui/react": "^1.5.0",
-        "@react-icons/all-files": "https://github.com/react-icons/react-icons/releases/download/v5.0.1/react-icons-all-files-5.0.1.tgz",
-        "@stitches/react": "^1.2.8",
-        "bhapi": "workspace:*",
-        "common": "workspace:*",
-        "db": "workspace:*",
-        "kbar": "0.1.0-beta.45",
-        "logger": "workspace:*",
-        "@tanstack/react-router": "^1.170.4",
-        "nprogress": "^0.2.0",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "react-phone-input-2": "^2.15.1",
-        "react-select": "^5.8.0",
-        "react-table": "^7.8.0"
-    },
-    "scripts": {
-        "ts:check": "tsc --noEmit"
     }
 }

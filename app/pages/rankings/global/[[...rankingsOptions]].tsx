@@ -1,11 +1,11 @@
-import { AppLink } from "ui/base/AppLink"
-import { GLOBAL_PLAYER_RANKINGS_PER_PAGE } from "server/helpers/constants"
-import { Select } from "ui/base/Select"
-import { cleanString } from "common/helpers/cleanString"
-import { cn } from "common/helpers/classnames"
 import { trpc } from "@util/trpc"
+import { cn } from "common/helpers/classnames"
+import { cleanString } from "common/helpers/cleanString"
 import { useState } from "react"
+import { GLOBAL_PLAYER_RANKINGS_PER_PAGE } from "server/helpers/constants"
 import type { SortablePlayerProp } from "server/mutations/updateDBPlayerData"
+import { AppLink } from "ui/base/AppLink"
+import { Select } from "ui/base/Select"
 
 export const RankingsGlobalPage = () => {
     const page = "1"

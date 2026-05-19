@@ -1,6 +1,7 @@
 import { arrayToMap } from "common/helpers/arrayToMap"
-import type { Legend, PlayerRanked, PlayerStats } from "./types"
+
 import type { Weapon } from "./constants"
+import type { Legend, PlayerRanked, PlayerStats } from "./types"
 
 export const legends: Legend[] = [
     {
@@ -784,41 +785,41 @@ export const legends: Legend[] = [
         speed: "7",
     },
     {
-        "legend_id": 68,
-        "legend_name_key": "ransom",
-        "bio_name": "Ransom",
-        "bio_aka": "The Virus",
-        "weapon_one": "Chakram",
-        "weapon_two": "Bow",
-        "strength": "7",
-        "dexterity": "4",
-        "defense": "3",
-        "speed": "8"
+        legend_id: 68,
+        legend_name_key: "ransom",
+        bio_name: "Ransom",
+        bio_aka: "The Virus",
+        weapon_one: "Chakram",
+        weapon_two: "Bow",
+        strength: "7",
+        dexterity: "4",
+        defense: "3",
+        speed: "8",
     },
     {
-        "legend_id": 69,
-        "legend_name_key": "lady vera",
-        "bio_name": "Lady Vera",
-        "bio_aka": "The Luminary",
-        "weapon_one": "Chakram",
-        "weapon_two": "Scythe",
-        "strength": "3",
-        "dexterity": "7",
-        "defense": "8",
-        "speed": "4"
+        legend_id: 69,
+        legend_name_key: "lady vera",
+        bio_name: "Lady Vera",
+        bio_aka: "The Luminary",
+        weapon_one: "Chakram",
+        weapon_two: "Scythe",
+        strength: "3",
+        dexterity: "7",
+        defense: "8",
+        speed: "4",
     },
     {
-        "legend_id": 70,
-        "legend_name_key": "rupture",
-        "bio_name": "Rupture",
-        "bio_aka": "The Nemesis",
-        "weapon_one": "Katars",
-        "weapon_two": "Rocket Lance",
-        "strength": "9",
-        "dexterity": "3",
-        "defense": "5",
-        "speed": "5"
-    }
+        legend_id: 70,
+        legend_name_key: "rupture",
+        bio_name: "Rupture",
+        bio_aka: "The Nemesis",
+        weapon_one: "Katars",
+        weapon_two: "Rocket Lance",
+        strength: "9",
+        dexterity: "3",
+        defense: "5",
+        speed: "5",
+    },
 ]
 
 export const legendsMap = arrayToMap(legends, "legend_id")

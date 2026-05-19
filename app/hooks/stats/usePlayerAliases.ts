@@ -1,5 +1,5 @@
-import { cleanString } from "common/helpers/cleanString"
 import { trpc } from "@util/trpc"
+import { cleanString } from "common/helpers/cleanString"
 
 export const usePlayerAliases = (playerId: string) => {
     const { data, ...query } = trpc.getPlayerAliases.useQuery({ playerId })

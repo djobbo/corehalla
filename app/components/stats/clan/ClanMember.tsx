@@ -1,16 +1,16 @@
-import { AppLink } from "ui/base/AppLink"
-import { Card } from "ui/base/Card"
+import type { IconType } from "@react-icons/all-files"
 import { FaCrown } from "@react-icons/all-files/fa/FaCrown"
 import { HiStar } from "@react-icons/all-files/hi/HiStar"
 import { HiUser } from "@react-icons/all-files/hi/HiUser"
 import { HiUserAdd } from "@react-icons/all-files/hi/HiUserAdd"
-
-import { MiscStatGroup } from "../MiscStatGroup"
+import type { ClanRank } from "bhapi/constants"
+import type { Clan } from "bhapi/types"
 import { cleanString } from "common/helpers/cleanString"
 import { formatUnixTime } from "common/helpers/date"
-import type { Clan } from "bhapi/types"
-import type { ClanRank } from "bhapi/constants"
-import type { IconType } from "@react-icons/all-files"
+import { AppLink } from "ui/base/AppLink"
+import { Card } from "ui/base/Card"
+
+import { MiscStatGroup } from "../MiscStatGroup"
 import type { MiscStat } from "../MiscStatGroup"
 
 type ClanMemberProps = {

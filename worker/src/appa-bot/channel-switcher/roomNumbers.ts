@@ -1,5 +1,5 @@
-import { z } from "zod"
 import type { VoiceChannel } from "discord.js"
+import { z } from "zod"
 
 const brawlhallaRoomNumbers = new Map<string, string>()
 
@@ -8,7 +8,7 @@ export const isValidBrawlhallaRoomNumber = (content: string) => {
     try {
         z.string().regex(brawlhallaRoomNumberRegex).parse(content)
         return true
-    } catch (error) {
+    } catch {
         return false
     }
 }

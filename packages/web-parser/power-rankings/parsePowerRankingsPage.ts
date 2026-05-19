@@ -1,8 +1,9 @@
-import { load } from "cheerio"
-import { powerRankingsMock } from "./powerRankingsMock"
-import { z } from "zod"
 import axios from "axios"
 import type { Bracket } from "bhapi/types"
+import { load } from "cheerio"
+import { z } from "zod"
+
+import { powerRankingsMock } from "./powerRankingsMock"
 
 const __DEV = process.env.NODE_ENV === "development"
 

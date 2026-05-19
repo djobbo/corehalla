@@ -1,10 +1,11 @@
-import { logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
-import { publicProcedure } from "../../trpc"
-import { supabaseService } from "db/supabase/service"
-import { withTimeLog } from "../../helpers/withTimeLog"
-import { z } from "zod"
 import type { BHPlayerAlias } from "db/generated/client"
+import { supabaseService } from "db/supabase/service"
+import { logInfo } from "logger"
+import { z } from "zod"
+
+import { withTimeLog } from "../../helpers/withTimeLog"
+import { publicProcedure } from "../../trpc"
 
 export const getPlayerAliases = publicProcedure //
     .input(

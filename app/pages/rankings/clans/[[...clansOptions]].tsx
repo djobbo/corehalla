@@ -1,13 +1,13 @@
-import { AppLink } from "ui/base/AppLink"
-import { CLANS_RANKINGS_PER_PAGE } from "server/helpers/constants"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
-import { Spinner } from "ui/base/Spinner"
-import { cleanString } from "common/helpers/cleanString"
-import { cn } from "common/helpers/classnames"
-import { formatUnixTime } from "common/helpers/date"
 import { useClansRankings } from "@hooks/stats/useClansRankings"
-import { useDebouncedState } from "common/hooks/useDebouncedState"
 import { useParams, useSearch } from "@tanstack/react-router"
+import { cn } from "common/helpers/classnames"
+import { cleanString } from "common/helpers/cleanString"
+import { formatUnixTime } from "common/helpers/date"
+import { useDebouncedState } from "common/hooks/useDebouncedState"
+import { CLANS_RANKINGS_PER_PAGE } from "server/helpers/constants"
+import { AppLink } from "ui/base/AppLink"
+import { Spinner } from "ui/base/Spinner"
 import { z } from "zod"
 
 export const RankingsClansPage = () => {
@@ -24,7 +24,10 @@ export const RankingsClansPage = () => {
     }
 
     try {
-        page = z.string().regex(/^\d+$/).parse(pageParam ?? "1")
+        page = z
+            .string()
+            .regex(/^\d+$/)
+            .parse(pageParam ?? "1")
     } catch {
         // use default
     }

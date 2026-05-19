@@ -1,6 +1,7 @@
 import { Routes } from "discord-api-types/v9"
-import { discordApi } from "./client"
 import type { APIUser } from "discord-api-types/v9"
+
+import { discordApi } from "./client"
 
 export const getDiscordProfile = async (
     discordToken: string,
@@ -16,7 +17,7 @@ export const getDiscordProfile = async (
             username: user.username,
             avatar: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`,
         }
-    } catch (e) {
+    } catch {
         return null
     }
 }

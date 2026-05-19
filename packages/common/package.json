@@ -1,22 +1,22 @@
 {
     "name": "common",
     "version": "0.0.0",
+    "scripts": {
+        "ts:check": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@tanstack/react-router": "^1.170.4",
+        "classnames": "^2.5.1",
+        "effect": "4.0.0-beta.68",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-use": "^17.4.0",
+        "zod": "^3.22.4"
+    },
     "devDependencies": {
         "@types/node": "^20.11.5",
         "@types/react": "^18.2.31",
         "tsconfig": "workspace:*",
         "typescript": "^5.3.3"
-    },
-    "scripts": {
-        "ts:check": "tsc --noEmit"
-    },
-    "dependencies": {
-        "classnames": "^2.5.1",
-        "effect": "4.0.0-beta.68",
-        "@tanstack/react-router": "^1.170.4",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "react-use": "^17.4.0",
-        "zod": "^3.22.4"
     }
 }

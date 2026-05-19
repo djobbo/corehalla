@@ -1,9 +1,10 @@
-import { supabaseService } from "db/supabase/service"
 import type {
     BHPlayerData,
     BHPlayerLegend,
     BHPlayerWeapon,
 } from "db/generated/client"
+import { supabaseService } from "db/supabase/service"
+
 import type { CommonOptions } from "../helpers/commonOptions"
 
 export const flushOutdatedBPlayerData = async (options: CommonOptions) => {

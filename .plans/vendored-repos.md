@@ -10,14 +10,14 @@ Trees under `.repos/<name>` are the **authoritative local copy** for how we reas
 
 Configured repos (see `VENDORED_REPOS` in [scripts/sync-vendored-repos.mts](../scripts/sync-vendored-repos.mts)):
 
-| Prefix                    | Upstream                                                                    | Branch   |
-| ------------------------- | --------------------------------------------------------------------------- | -------- |
-| `.repos/effect`           | [Effect-TS/effect-smol](https://github.com/Effect-TS/effect-smol)           | `main`   |
-| `.repos/tanstack-router`  | [TanStack/router](https://github.com/TanStack/router)                       | `main`   |
-| `.repos/tanstack-query`   | [TanStack/query](https://github.com/TanStack/query)                         | `main`   |
-| `.repos/supabase`         | [supabase/supabase](https://github.com/supabase/supabase)                   | `main`   |
-| `.repos/base-ui`          | [mui/base-ui](https://github.com/mui/base-ui)                               | `master` |
-| `.repos/vite-plus`        | [voidzero-dev/vite-plus](https://github.com/voidzero-dev/vite-plus)         | `main`   |
+| Prefix                   | Upstream                                                            | Branch   |
+| ------------------------ | ------------------------------------------------------------------- | -------- |
+| `.repos/effect`          | [Effect-TS/effect-smol](https://github.com/Effect-TS/effect-smol)   | `main`   |
+| `.repos/tanstack-router` | [TanStack/router](https://github.com/TanStack/router)               | `main`   |
+| `.repos/tanstack-query`  | [TanStack/query](https://github.com/TanStack/query)                 | `main`   |
+| `.repos/supabase`        | [supabase/supabase](https://github.com/supabase/supabase)           | `main`   |
+| `.repos/base-ui`         | [mui/base-ui](https://github.com/mui/base-ui)                       | `master` |
+| `.repos/vite-plus`       | [voidzero-dev/vite-plus](https://github.com/voidzero-dev/vite-plus) | `main`   |
 
 ## Prerequisites
 
@@ -30,10 +30,10 @@ Sync logic lives in [scripts/sync-vendored-repos.mts](../scripts/sync-vendored-r
 
 It runs automatically as a step in [scripts/setup.mts](../scripts/setup.mts) after `pnpm install`.
 
-| Option | Behavior |
-| ------ | -------- |
+| Option                   | Behavior                                                                                                  |
+| ------------------------ | --------------------------------------------------------------------------------------------------------- |
 | `force: false` (default) | Clone any **missing** repos; **fetch + reset** existing shallow clones to the latest upstream branch tip. |
-| `force: true` | **Delete** each configured repo path under `.repos/`, then re-clone from scratch. |
+| `force: true`            | **Delete** each configured repo path under `.repos/`, then re-clone from scratch.                         |
 
 Clones use `git clone --depth 1 --single-branch` so each tree has a single squashed snapshot (no full upstream history on disk).
 

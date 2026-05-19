@@ -1,6 +1,6 @@
-import { parsePowerRankingsPage } from "web-parser/power-rankings/parsePowerRankingsPage"
 import type { Bracket } from "bhapi/types"
 import type { NextApiHandler } from "next"
+import { parsePowerRankingsPage } from "web-parser/power-rankings/parsePowerRankingsPage"
 
 const handler: NextApiHandler = async (req, res) => {
     try {
@@ -17,7 +17,7 @@ const handler: NextApiHandler = async (req, res) => {
         )
 
         res.status(200).json(data)
-    } catch (error) {
+    } catch {
         res.status(500).json({ error: "something went wrong" })
     }
 }

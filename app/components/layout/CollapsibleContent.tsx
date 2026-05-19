@@ -1,8 +1,8 @@
 import { Collapsible } from "@base-ui/react/collapsible"
-import { CollapseSectionIcon, ExpandSectionIcon } from "ui/icons"
 import { cn } from "common/helpers/classnames"
 import { useState } from "react"
 import type { ReactNode } from "react"
+import { CollapseSectionIcon, ExpandSectionIcon } from "ui/icons"
 
 export type CollapsibleContentProps = {
     className?: string

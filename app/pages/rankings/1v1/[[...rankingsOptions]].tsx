@@ -1,18 +1,20 @@
-import { AppLink } from "ui/base/AppLink"
 import { Image } from "@components/Image"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
 import { RankingsTableItem } from "@components/stats/RankingsTableItem"
-import { Spinner } from "ui/base/Spinner"
-import { cleanString } from "common/helpers/cleanString"
-import { legendsMap } from "bhapi/legends"
-import { useDebouncedState } from "common/hooks/useDebouncedState"
-import { useNavigate, useParams, useSearch } from "@tanstack/react-router"
-import { useEffect } from "react"
 import { useRankings1v1 } from "@hooks/stats/useRankings"
+import { useNavigate, useParams, useSearch } from "@tanstack/react-router"
+import { legendsMap } from "bhapi/legends"
+import { cleanString } from "common/helpers/cleanString"
+import { useDebouncedState } from "common/hooks/useDebouncedState"
+import { useEffect } from "react"
+import { AppLink } from "ui/base/AppLink"
+import { Spinner } from "ui/base/Spinner"
 
 export const Rankings1v1Page = () => {
     const navigate = useNavigate()
-    const { region: regionParam, page: pageParam } = useParams({ strict: false })
+    const { region: regionParam, page: pageParam } = useParams({
+        strict: false,
+    })
     const { player = "" } = useSearch({ strict: false })
 
     const region = regionParam ?? "all"

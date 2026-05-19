@@ -9,7 +9,10 @@ import {
 export function useAppRouter() {
     const navigate = useNavigate()
     const pathname = useRouterState({ select: (s) => s.location.pathname })
-    const params = useParams({ strict: false }) as Record<string, string | undefined>
+    const params = useParams({ strict: false }) as Record<
+        string,
+        string | undefined
+    >
     const search = useSearch({ strict: false }) as Record<
         string,
         string | undefined

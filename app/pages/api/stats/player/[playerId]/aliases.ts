@@ -1,5 +1,5 @@
-import { supabaseService } from "db/supabase/service"
 import type { BHPlayerAlias } from "db/generated/client"
+import { supabaseService } from "db/supabase/service"
 import type { NextApiHandler } from "next"
 
 const handler: NextApiHandler = async (req, res) => {
@@ -19,7 +19,7 @@ const handler: NextApiHandler = async (req, res) => {
         if (error) throw error
 
         res.status(200).json(data.map((alias) => alias.alias))
-    } catch (error) {
+    } catch {
         res.status(500).json({ error: "something went wrong" })
     }
 }
