@@ -35,6 +35,11 @@ const VENDORED_REPOS: ReadonlyArray<VendoredRepo> = [
     url: "https://github.com/supabase/supabase.git",
     branch: "master",
   },
+  {
+    name: "base-ui",
+    url: "https://github.com/mui/base-ui.git",
+    branch: "master",
+  },
 ]
 
 export class VendoredReposError extends Data.TaggedError("VendoredReposError")<{

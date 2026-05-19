@@ -6,7 +6,7 @@ Use them when you want upstream source, tests, and bundled docs available for im
 
 ## Local source of truth (`.repos`)
 
-Trees under `.repos/<name>` are the **authoritative local copy** for how we reason about those upstream projects in _this_ repo. When you implement against, debug, or document behavior of a vendored library or service (for example Effect from `effect-smol`, TanStack Router, TanStack Query, or Supabase), **prefer reading and citing the code and bundled docs inside `.repos`** over guessing from npm types, third-party summaries, or stale web pages. Treat each prefix as the canonical reference for that dependency until you refresh it with `syncVendoredRepos`.
+Trees under `.repos/<name>` are the **authoritative local copy** for how we reason about those upstream projects in _this_ repo. When you implement against, debug, or document behavior of a vendored library or service (for example Effect from `effect-smol`, TanStack Router, TanStack Query, Supabase, or Base UI), **prefer reading and citing the code and bundled docs inside `.repos`** over guessing from npm types, third-party summaries, or stale web pages. Treat each prefix as the canonical reference for that dependency until you refresh it with `syncVendoredRepos`.
 
 Configured repos (see `VENDORED_REPOS` in [scripts/sync-vendored-repos.mts](../scripts/sync-vendored-repos.mts)):
 
@@ -16,6 +16,7 @@ Configured repos (see `VENDORED_REPOS` in [scripts/sync-vendored-repos.mts](../s
 | `.repos/tanstack-router`  | [TanStack/router](https://github.com/TanStack/router)                       | `main`   |
 | `.repos/tanstack-query`   | [TanStack/query](https://github.com/TanStack/query)                         | `main`   |
 | `.repos/supabase`         | [supabase/supabase](https://github.com/supabase/supabase)                   | `main`   |
+| `.repos/base-ui`          | [mui/base-ui](https://github.com/mui/base-ui)                               | `master` |
 
 ## Prerequisites
 
