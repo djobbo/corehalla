@@ -1,27 +1,39 @@
 import { cn } from "common/helpers/classnames"
-import NextImage from "next/image"
-import type { ImageProps as NextImageProps } from "next/image"
+import type { ImgHTMLAttributes } from "react"
 
-type ImageProps = NextImageProps & {
+type ImageProps = ImgHTMLAttributes<HTMLImageElement> & {
     containerClassName?: string
     Container?: "div" | "span" | null
     position?: "absolute" | "relative" | "fixed" | string
+    fill?: boolean
+    unoptimized?: boolean
 }
 
 export const Image = ({
     containerClassName,
     Container = "div",
     position = "relative",
-    sizes = "100vw",
+    fill,
+    className,
+    alt = "",
     ...props
 }: ImageProps) => {
+    const img = (
+        <img
+            {...props}
+            alt={alt}
+            className={cn(
+                fill && "absolute inset-0 h-full w-full",
+                className,
+            )}
+        />
+    )
+
     if (!Container) {
-        return <NextImage {...props} fill sizes={sizes} />
+        return img
     }
 
     return (
-        <Container className={cn(position, containerClassName)}>
-            <NextImage {...props} fill sizes={sizes} />
-        </Container>
+        <Container className={cn(position, containerClassName)}>{img}</Container>
     )
 }

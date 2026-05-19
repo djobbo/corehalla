@@ -17,7 +17,7 @@ const landingClassName = css({
     minHeight: "400px",
 })()
 
-const Page = () => {
+export const HomePage = () => {
     const { isLoggedIn, signIn } = useAuth()
     const { favorites } = useFavorites()
     const { articles } = useBrawlhallaArticles(3)
@@ -149,4 +149,4 @@ const Page = () => {
     )
 }
 
-export default Page
+export default HomePage

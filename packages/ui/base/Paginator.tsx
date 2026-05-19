@@ -1,7 +1,7 @@
 import { AppLink } from "./AppLink"
 import { Select } from "./Select"
 import { cn } from "common/helpers/classnames"
-import { useRouter } from "next/router"
+import { useNavigate } from "@tanstack/react-router"
 import type { ReactNode } from "react"
 
 export type PaginatorPage = {
@@ -24,7 +24,7 @@ export const Paginator = ({
     className,
     responsive,
 }: PaginatorProps) => {
-    const router = useRouter()
+    const navigate = useNavigate()
 
     return (
         <>
@@ -34,7 +34,7 @@ export const Paginator = ({
                     hidden: !responsive,
                 })}
                 onChange={(page) => {
-                    router.push(getPageHref(page))
+                    void navigate({ href: getPageHref(page) })
                 }}
                 value={currentPage}
                 options={pages.map((page) => ({

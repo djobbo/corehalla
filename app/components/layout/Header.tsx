@@ -7,7 +7,7 @@ import { Image } from "@components/Image"
 import { SearchButton, SearchButtonIcon } from "../search/SearchButton"
 import { cn } from "common/helpers/classnames"
 import { useAuth } from "@ctx/auth/AuthProvider"
-import { useRouter } from "next/router"
+import { useAppRouter } from "@util/router"
 import { useSideNav } from "@ctx/SideNavProvider"
 
 type HeaderProps = {
@@ -16,11 +16,11 @@ type HeaderProps = {
 
 export const Header = ({ className }: HeaderProps) => {
     const { isLoggedIn, signIn, signOut, userProfile } = useAuth()
-    const router = useRouter()
+    const { pathname } = useAppRouter()
 
     const { openSideNav } = useSideNav()
 
-    const isLandingPage = router.pathname === "/"
+    const isLandingPage = pathname === "/"
 
     return (
         <>

@@ -15,7 +15,8 @@ import { cn } from "common/helpers/classnames"
 import { css } from "ui/theme"
 import { legendsMap } from "bhapi/legends"
 import { useFavorites } from "@ctx/auth/AuthProvider"
-import { useRouter } from "next/router"
+import { useParams } from "@tanstack/react-router"
+import { useAppRouter } from "@util/router"
 import { useSideNav } from "@ctx/SideNavProvider"
 import type { ReactNode } from "react"
 
@@ -158,12 +159,13 @@ type SideNavProps = {
 
 export const SideNav = ({ className }: SideNavProps) => {
     const { favorites, removeFavorite } = useFavorites()
-    const router = useRouter()
+    const { pathname, query } = useAppRouter()
+    const params = useParams({ strict: false })
 
     const { isSideNavOpen, closeSideNav } = useSideNav()
 
-    const { pathname } = router
-    const { playerId, clanId } = router.query
+    const playerId = (params.playerId ?? query.playerId) as string | undefined
+    const clanId = (params.clanId ?? query.clanId) as string | undefined
 
     const nav = defaultNav.concat(
         favorites.length > 0
@@ -239,9 +241,9 @@ export const SideNav = ({ className }: SideNavProps) => {
                                             image: `/images/icons/roster/legends/${legend.legend_name_key}.png`,
                                         })}
                                         active={
-                                            pathname ===
-                                                "/stats/player/[playerId]" &&
-                                            playerId === favorite.id.toString()
+                                            pathname.startsWith(
+                                                `/stats/player/${favorite.id}`,
+                                            ) && playerId === favorite.id.toString()
                                         }
                                         onRemove={() => {
                                             removeFavorite(favorite)
@@ -256,9 +258,9 @@ export const SideNav = ({ className }: SideNavProps) => {
                                         href={`/stats/clan/${favorite.id}`}
                                         name={cleanString(favorite.name)}
                                         active={
-                                            pathname ===
-                                                "/stats/clan/[clanId]" &&
-                                            clanId === favorite.id.toString()
+                                            pathname.startsWith(
+                                                `/stats/clan/${favorite.id}`,
+                                            ) && clanId === favorite.id.toString()
                                         }
                                         onRemove={() => {
                                             removeFavorite(favorite)

@@ -24,9 +24,8 @@ import {
 import { usePlayerAliases } from "@hooks/stats/usePlayerAliases"
 import { usePlayerRanked } from "@hooks/stats/usePlayerRanked"
 import { usePlayerStats } from "@hooks/stats/usePlayerStats"
-import { useRouter } from "next/router"
+import { useParams } from "@tanstack/react-router"
 import type { MiscStat } from "@components/stats/MiscStatGroup"
-import type { NextPage } from "next"
 
 const tabClassName = cn(
     "px-6 py-4 uppercase text-xs border-b-2 z-10 whitespace-nowrap",
@@ -45,9 +44,8 @@ const tabClassName = cn(
     })(),
 )
 
-const Page: NextPage = () => {
-    const router = useRouter()
-    const { playerId } = router.query
+export const PlayerStatsPage = () => {
+    const { playerId } = useParams({ strict: false })
     const { playerStats, isLoading, isError } = usePlayerStats(
         playerId as string,
     )
@@ -232,4 +230,4 @@ const Page: NextPage = () => {
     )
 }
 
-export default Page
+export default PlayerStatsPage

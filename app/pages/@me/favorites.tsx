@@ -2,9 +2,7 @@ import { FavoritesGrid } from "@components/favorites/FavoritesGrid"
 import { SEO } from "@components/SEO"
 import { SectionTitle } from "@components/layout/SectionTitle"
 import { useFavorites } from "@ctx/auth/AuthProvider"
-import type { NextPage } from "next"
-
-const Page: NextPage = () => {
+export const FavoritesPage = () => {
     const { playerFavorites, clanFavorites } = useFavorites()
 
     return (
@@ -19,4 +17,4 @@ const Page: NextPage = () => {
     )
 }
 
-export default Page
+export default FavoritesPage

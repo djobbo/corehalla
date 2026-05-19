@@ -4,10 +4,9 @@ import { StatsHeader } from "@components/stats/StatsHeader"
 import { cleanString } from "common/helpers/cleanString"
 import { formatUnixTime } from "common/helpers/date"
 import { useClan } from "@hooks/stats/useClan"
-import { useRouter } from "next/router"
+import { useParams } from "@tanstack/react-router"
 import type { ClanRank } from "bhapi/constants"
 import type { MiscStat } from "@components/stats/MiscStatGroup"
-import type { NextPage } from "next"
 
 const clanRankWeights: Record<ClanRank, number> = {
     Leader: 0,
@@ -16,9 +15,8 @@ const clanRankWeights: Record<ClanRank, number> = {
     Recruit: 3,
 } as const
 
-const Page: NextPage = () => {
-    const router = useRouter()
-    const { clanId } = router.query
+export const ClanStatsPage = () => {
+    const { clanId } = useParams({ strict: false })
 
     const { clan, isLoading, isError } = useClan(clanId as string)
 
@@ -88,4 +86,4 @@ const Page: NextPage = () => {
     )
 }
 
-export default Page
+export default ClanStatsPage

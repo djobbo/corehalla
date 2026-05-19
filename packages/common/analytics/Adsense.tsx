@@ -1,7 +1,7 @@
 import { adsenseCaPub } from "./gtag"
 import { cn } from "../helpers/classnames"
+import { useRouterState } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react"
-import { useRouter } from "next/router"
 
 declare global {
     interface Window {
@@ -20,10 +20,8 @@ type AdsenseProps = {
 
 const Ads = ({
     slot,
-    // format = "auto",
     layout = "",
     layoutKey = "",
-    // responsive = false,
     className = "",
 }: AdsenseProps) => {
     const adsRef = useRef<HTMLModElement | null>(null)
@@ -50,28 +48,23 @@ const Ads = ({
             data-ad-slot={slot}
             data-ad-layout={layout}
             data-ad-layout-key={layoutKey}
-            // data-ad-format={format}
-            // data-full-width-responsive={responsive}
         ></ins>
     )
 }
 
 const Adsense = (props: AdsenseProps) => {
-    const router = useRouter()
+    const isNavigating = useRouterState({
+        select: (s) => s.status === "pending",
+    })
     const [shouldMount, setShouldMount] = useState(true)
 
     useEffect(() => {
-        const onRouteChangeStart = () => setShouldMount(false)
-        const onRouteChangeComplete = () => setShouldMount(true)
-
-        router.events.on("routeChangeStart", onRouteChangeStart)
-        router.events.on("routeChangeComplete", onRouteChangeComplete)
-
-        return () => {
-            router.events.off("routeChangeStart", onRouteChangeStart)
-            router.events.off("routeChangeComplete", onRouteChangeComplete)
+        if (isNavigating) {
+            setShouldMount(false)
+        } else {
+            setShouldMount(true)
         }
-    }, [router.events])
+    }, [isNavigating])
 
     return shouldMount ? <Ads {...props} /> : null
 }
