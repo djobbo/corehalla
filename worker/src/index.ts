@@ -1,10 +1,13 @@
+import path from "node:path"
 import { config as loadEnv } from "dotenv"
 import { logError, logInfo } from "logger"
 import { startCrawler } from "./crawler"
 import { startBot as startDiscordManagerBot } from "./appa-bot"
 import { z } from "zod"
 
-loadEnv()
+const repoRoot = path.resolve(__dirname, "../..")
+loadEnv({ path: path.join(repoRoot, ".env") })
+loadEnv({ path: path.join(__dirname, "../.env") })
 
 const __DEV = process.env.NODE_ENV === "development"
 

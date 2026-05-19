@@ -24,85 +24,68 @@
 
 ## Local development
 
-Corehalla is a [pnpm](https://pnpm.io/) monorepo. Local dev runs the web app and background worker against a self-hosted [Supabase](https://supabase.com/) stack (Postgres, Auth, REST, and Studio) via Docker.
+Corehalla is a [pnpm](https://pnpm.io/) monorepo. You run the web app and worker on your machine; [Supabase CLI](https://supabase.com/docs/guides/cli) starts Postgres, Auth, REST, and Studio in Docker.
 
 ### Prerequisites
 
 - **Node.js** `>=22.12.0` (see `engines` in `package.json`)
-- **pnpm** `8.5.0` (`corepack enable` is enough to match `packageManager`)
-- **Docker** and Docker Compose (for the database and Supabase services)
+- **pnpm** `8.5.0` (`corepack enable` matches `packageManager`)
+- **Docker** (for local Supabase)
+- **Supabase CLI** — installed automatically as a dev dependency; use `pnpm exec supabase` or the `pnpm services:*` scripts
 
-### Dev Container (recommended)
+### First-time setup
 
-The repo includes a [Dev Container](https://containers.dev/) under `.devcontainer/` that starts Supabase and wires environment variables for you.
+From the repo root:
 
-1. Open the repository in VS Code or Cursor and choose **Reopen in Container**.
-2. On first start, the container runs `pnpm ci:install` and `pnpm setup:env` (installs dependencies and applies database migrations once Postgres is up).
-3. From the repo root, start the app and worker:
+```bash
+cp .env.example .env
+# Edit .env: BRAWLHALLA_API_KEY, DISCORD_AUTH_CLIENT_ID, DISCORD_AUTH_SECRET, etc.
 
-   ```bash
-   pnpm dev
-   ```
+pnpm setup
+```
+
+`pnpm setup` starts Supabase, writes API keys and `DATABASE_URL` into `.env`, installs dependencies, and runs Prisma migrations plus Supabase setup SQL in `packages/db`.
+
+Then start the app and worker:
+
+```bash
+pnpm dev
+```
+
+### Daily workflow
+
+```bash
+pnpm services:up   # start Supabase if it is not already running
+pnpm dev
+```
 
 | Service | URL |
 | --- | --- |
 | Web app | http://localhost:3000 |
-| Supabase Studio | http://localhost:3001 |
+| Supabase API | http://127.0.0.1:54321 |
+| Supabase Studio | http://127.0.0.1:54323 |
 | Worker API | http://localhost:3002 |
-
-### Manual setup (host machine)
-
-Use this if you are not using the Dev Container.
-
-1. **Environment** — Copy the example env file and adjust secrets as needed:
-
-   ```bash
-   cp .devcontainer/.env.example .devcontainer/.env
-   ```
-
-   Set `ENV_FILE=.env` in `.devcontainer/.env` so Compose picks up your file (the example documents this).
-
-   For commands run on your host (not inside Docker), export at least `DATABASE_URL` and the `NEXT_PUBLIC_*` / Supabase variables from the same file. Use `localhost` as the database host, for example:
-
-   ```bash
-   export DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@localhost:5432/postgres"
-   ```
-
-2. **Start Supabase** — From `.devcontainer/`:
-
-   ```bash
-   docker compose up -d
-   ```
-
-3. **Install and migrate** — From the repo root:
-
-   ```bash
-   pnpm install
-   pnpm db:migrate
-   ```
-
-   `db:migrate` runs Prisma migrations and Supabase setup SQL in `packages/db`.
-
-4. **Run dev servers**:
-
-   ```bash
-   pnpm dev
-   ```
-
-   This runs `app` (Vite on port 3000) and `worker` (port 3002) in parallel via Turborepo.
+| Postgres (direct) | `127.0.0.1:54322` |
 
 ### Useful commands
 
 | Command | Description |
 | --- | --- |
 | `pnpm dev` | Start app and worker in watch mode |
-| `pnpm setup:env` | Install deps and retry migrations until the database is ready (used by the Dev Container) |
-| `pnpm db:migrate` | Apply migrations and Supabase setup locally |
-| `pnpm --filter app dev:prod` | Run the app against production-style public config |
-| `pnpm --filter worker bot:dev` | Worker with Discord bot only (crawler disabled) |
+| `pnpm setup` | Start Supabase, sync `.env`, install deps, migrate database |
+| `pnpm services:up` | `supabase start` |
+| `pnpm services:down` | `supabase stop` |
+| `pnpm services:status` | `supabase status` |
+| `pnpm db:migrate` | Apply migrations and Supabase setup SQL |
+| `pnpm --filter app dev:prod` | App with production-style public config |
+| `pnpm --filter worker bot:dev` | Worker with Discord bot only (crawler off) |
+
+Reset local database data: `pnpm exec supabase db reset` (destroys local Postgres data).
 
 ### Optional configuration
 
-- **`BRAWLHALLA_API_KEY`** — Required for live Brawlhalla API data (see `.devcontainer/.env.example`).
-- **Discord worker** — Copy `worker/.env.example` to `worker/.env` if you need the Discord manager bot locally; the worker `dev` script enables the bot and crawler by default.
-- **Discord OAuth** — Set `DISCORD_AUTH_CLIENT_ID` and `DISCORD_AUTH_SECRET` in your env file for sign-in during local development.
+- **`BRAWLHALLA_API_KEY`** — Required for live Brawlhalla API data (see `.env.example`).
+- **Discord OAuth** — Set `DISCORD_AUTH_CLIENT_ID` and `DISCORD_AUTH_SECRET` in `.env`. In the [Discord Developer Portal](https://discord.com/developers/applications), set the redirect URL to `http://127.0.0.1:54321/auth/v1/callback` (Supabase local API; previously `http://localhost:8000/auth/v1/callback` with the old Compose stack).
+- **Discord worker** — Copy `worker/.env.example` to `worker/.env` for manager-bot tokens; root `.env` is loaded first, then `worker/.env` overrides.
+
+Environment variables are loaded from the repo root `.env` (Vite `envDir`, worker `dotenv`, and `dotenv-cli` for `pnpm dev` / `pnpm db:migrate`).
