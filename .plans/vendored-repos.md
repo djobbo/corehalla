@@ -17,6 +17,7 @@ Configured repos (see `VENDORED_REPOS` in [scripts/sync-vendored-repos.mts](../s
 | `.repos/tanstack-query`   | [TanStack/query](https://github.com/TanStack/query)                         | `main`   |
 | `.repos/supabase`         | [supabase/supabase](https://github.com/supabase/supabase)                   | `main`   |
 | `.repos/base-ui`          | [mui/base-ui](https://github.com/mui/base-ui)                               | `master` |
+| `.repos/vite-plus`        | [voidzero-dev/vite-plus](https://github.com/voidzero-dev/vite-plus)         | `main`   |
 
 ## Prerequisites
 

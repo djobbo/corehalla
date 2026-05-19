@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-restricted-imports
 import { Link } from "@tanstack/react-router"
 import type { AnchorHTMLAttributes } from "react"
 

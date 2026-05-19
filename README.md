@@ -29,7 +29,7 @@ Corehalla is a [pnpm](https://pnpm.io/) monorepo. You run the web app and worker
 ### Prerequisites
 
 - **Node.js** `>=22.12.0` (see `engines` in `package.json`)
-- **pnpm** `8.5.0` (`corepack enable` matches `packageManager`)
+- **pnpm** `9.15.9` (`corepack enable` matches `packageManager`)
 - **Docker** (for local Supabase)
 - **Supabase CLI** — installed automatically as a dev dependency; use `pnpm exec supabase` or the `pnpm services:*` scripts
 

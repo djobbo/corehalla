@@ -1,6 +1,6 @@
 {
     "recommendations": [
-        "dbaeumer.vscode-eslint",
+        "VoidZero.vite-plus-extension-pack",
         "bradlc.vscode-tailwindcss",
         "Prisma.prisma",
         "eamodio.gitlens",

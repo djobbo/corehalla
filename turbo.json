@@ -19,7 +19,7 @@
     "ci:deadcode": {
       "outputs": []
     },
-    "ci:lint": {
+    "ci:check": {
       "outputs": []
     },
     "dev": {
