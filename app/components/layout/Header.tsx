@@ -69,7 +69,6 @@ export const Header = ({ className }: HeaderProps) => {
                                                 alt={userProfile.username}
                                                 containerClassName="rounded-lg w-8 h-8 overflow-hidden"
                                                 className="object-cover object-center"
-                                                unoptimized
                                             />
                                         </div>
                                     </>

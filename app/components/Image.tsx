@@ -6,7 +6,6 @@ type ImageProps = ImgHTMLAttributes<HTMLImageElement> & {
     Container?: "div" | "span" | null
     position?: "absolute" | "relative" | "fixed" | string
     fill?: boolean
-    unoptimized?: boolean
 }
 
 export const Image = ({

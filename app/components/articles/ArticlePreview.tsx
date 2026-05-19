@@ -25,7 +25,6 @@ export const ArticlePreview = ({ article }: ArticlePreviewProps) => {
                     alt={title}
                     className="object-cover object-center"
                     Container={null}
-                    unoptimized
                 />
             </a>
             <div className="flex justify-start items-center gap-2 mt-2">

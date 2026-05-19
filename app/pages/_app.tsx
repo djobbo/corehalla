@@ -23,7 +23,7 @@ import { Layout } from "@components/layout/Layout"
 import { PageLoader } from "ui/base/PageLoader"
 import { Searchbox } from "@components/search/Searchbox"
 import { SideNavProvider } from "@ctx/SideNavProvider"
-import { Toaster } from "react-hot-toast"
+import { ClientToaster } from "@components/ClientToaster"
 import { trpc } from "@util/trpc"
 import Head from "next/head"
 import dynamic from "next/dynamic"
@@ -53,7 +53,7 @@ const App = ({
                                 <AnimatedLogo size={32} />
                             </div>
                         </PageLoader>
-                        <Toaster />
+                        <ClientToaster />
                         <Layout>
                             <Component {...pageProps} />
                         </Layout>

@@ -22,7 +22,7 @@ import {
     Scripts,
     createRootRouteWithContext,
 } from "@tanstack/react-router"
-import { Toaster } from "react-hot-toast"
+import { ClientToaster } from "@components/ClientToaster"
 
 export const Route = createRootRouteWithContext<RouterContext>()({
     head: () => ({
@@ -65,7 +65,7 @@ function RootDocument() {
                                     <AnimatedLogo size={32} />
                                 </div>
                             </PageLoader>
-                            <Toaster />
+                            <ClientToaster />
                             <Layout>
                                 <Outlet />
                             </Layout>

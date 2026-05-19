@@ -1,3 +1,5 @@
+import { AppLink } from "ui/base/AppLink"
+import { VisualState, useKBar } from "kbar"
 import type { ReactNode } from "react"
 
 type SearchboxItemProps = {
@@ -15,10 +17,15 @@ export const SearchboxItem = ({
     subtitle,
     rightContent,
 }: SearchboxItemProps) => {
+    const { query } = useKBar()
+
     return (
-        <a
+        <AppLink
             href={href}
             className="px-4 py-3 w-full flex items-center justify-between gap-8 border-b cursor-pointer border-bgVar2 hover:bg-bg/75"
+            onClick={() => {
+                query.setVisualState(VisualState.hidden)
+            }}
         >
             <div className="min-w-0 flex items-center flex-1">
                 {icon}
@@ -32,6 +39,6 @@ export const SearchboxItem = ({
                 </div>
             </div>
             {rightContent}
-        </a>
+        </AppLink>
     )
 }

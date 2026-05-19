@@ -1,11 +1,17 @@
-import { unix } from "dayjs"
+import { DateTime } from "effect"
 
-/**
- * @error returns different dates in client or ssr mode
- * @issue https://github.com/iamkun/dayjs/issues/1690
- */
-export const getDateFromUnixTime = (unixTime: number, template?: string) =>
-    unix(unixTime).format(template)
+const unixDateFormat: Intl.DateTimeFormatOptions & { locale?: string } = {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    locale: "en-US",
+}
+
+export const getDateFromUnixTime = (
+    unixTime: number,
+    options: Intl.DateTimeFormatOptions & { locale?: string } = unixDateFormat,
+) =>
+    DateTime.formatUtc(DateTime.makeUnsafe(unixTime * 1000), options)
 
 type HMSTime = {
     hours: number
@@ -38,5 +44,4 @@ export const formatTime = (seconds: number) =>
         ({ hours, minutes, seconds }) => `${hours}h ${minutes}m ${seconds}s`,
     )
 
-export const formatUnixTime = (unixTime: number) =>
-    getDateFromUnixTime(unixTime, "MMM DD, YYYY")
+export const formatUnixTime = (unixTime: number) => getDateFromUnixTime(unixTime)

@@ -1,16 +1,21 @@
 import { theme } from "../theme"
 import { useRouterState } from "@tanstack/react-router"
 import NProgress from "nprogress"
-import { useEffect, type ReactNode } from "react"
+import { useEffect, useState, type ReactNode } from "react"
 
 type PageLoaderProps = {
     children: ReactNode
 }
 
 export const PageLoader = ({ children }: PageLoaderProps) => {
+    const [mounted, setMounted] = useState(false)
     const isLoading = useRouterState({
         select: (s) => s.status === "pending",
     })
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     useEffect(() => {
         NProgress.configure({ showSpinner: false })
@@ -24,7 +29,7 @@ export const PageLoader = ({ children }: PageLoaderProps) => {
         }
     }, [isLoading])
 
-    if (!isLoading) return null
+    if (!mounted || !isLoading) return null
 
     return (
         <div

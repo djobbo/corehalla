@@ -2,32 +2,29 @@ import { GA_TRACKING_ID, adsenseCaPub, gaPageview } from "./gtag"
 import { useRouterState } from "@tanstack/react-router"
 import { useEffect } from "react"
 
+const initGtagStub = () => {
+    window.dataLayer = window.dataLayer ?? []
+    window.gtag = function gtag(...args: unknown[]) {
+        window.dataLayer?.push(args)
+    }
+    window.gtag("js", new Date())
+    window.gtag("config", GA_TRACKING_ID, {
+        page_path: window.location.pathname,
+    })
+}
+
 export const GAScripts = () => {
     const pathname = useRouterState({ select: (s) => s.location.pathname })
 
     useEffect(() => {
-        gaPageview(pathname)
-    }, [pathname])
+        if (typeof document === "undefined" || !GA_TRACKING_ID) return
 
-    useEffect(() => {
-        if (typeof document === "undefined") return
+        initGtagStub()
 
         const gtagScript = document.createElement("script")
         gtagScript.async = true
         gtagScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`
         document.head.appendChild(gtagScript)
-
-        const gtagInit = document.createElement("script")
-        gtagInit.id = "gtag-init"
-        gtagInit.textContent = `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '${GA_TRACKING_ID}', {
-            page_path: window.location.pathname,
-        });
-        `
-        document.head.appendChild(gtagInit)
 
         const adsenseScript = document.createElement("script")
         adsenseScript.async = true
@@ -37,10 +34,14 @@ export const GAScripts = () => {
 
         return () => {
             gtagScript.remove()
-            gtagInit.remove()
             adsenseScript.remove()
+            delete window.gtag
         }
     }, [])
+
+    useEffect(() => {
+        gaPageview(pathname)
+    }, [pathname])
 
     return null
 }
