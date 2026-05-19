@@ -1,6 +1,6 @@
-import { rankings1v1Seo } from "@components/SEO"
+import { rankings1v1Seo } from "#/components/SEO"
+import { Rankings1v1Page } from "#/views/rankings/1v1"
 import { createFileRoute } from "@tanstack/react-router"
-import { Rankings1v1Page } from "@views/rankings/1v1"
 import { z } from "zod"
 
 const searchSchema = z.object({

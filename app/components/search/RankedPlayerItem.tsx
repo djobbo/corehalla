@@ -1,5 +1,5 @@
-import { Image } from "@components/Image"
-import { useAuth, useFavorites } from "@ctx/auth/AuthProvider"
+import { Image } from "#/components/Image"
+import { useAuth, useFavorites } from "#/providers/auth/AuthProvider"
 import { HiOutlineStar } from "@react-icons/all-files/hi2/HiOutlineStar"
 import { HiStar } from "@react-icons/all-files/hi2/HiStar"
 import { legendsMap } from "bhapi/legends"

@@ -1,4 +1,4 @@
-import { trpc } from "@util/trpc"
+import { trpc } from "#/util/trpc"
 import type { BrawlhallaArticleCategory } from "web-parser/common"
 
 export const useBrawlhallaArticles = (

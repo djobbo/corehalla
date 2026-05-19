@@ -1,5 +1,5 @@
-import { Image } from "@components/Image"
-import { CollapsibleSection } from "@components/layout/CollapsibleSection"
+import { Image } from "#/components/Image"
+import { CollapsibleSection } from "#/components/layout/CollapsibleSection"
 import { getLegendEloReset } from "bhapi/calculator"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
 import { getTierFromRating } from "bhapi/helpers/getTierFromRating"

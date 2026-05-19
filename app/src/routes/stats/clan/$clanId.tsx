@@ -1,6 +1,6 @@
-import { seoHead } from "@components/SEO"
+import { seoHead } from "#/components/SEO"
+import { ClanStatsPage } from "#/views/stats/clan"
 import { createFileRoute } from "@tanstack/react-router"
-import { ClanStatsPage } from "@views/stats/clan"
 
 export const Route = createFileRoute("/stats/clan/$clanId")({
     loader: ({ context: { trpcProxy }, params }) =>

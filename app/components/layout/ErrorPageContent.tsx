@@ -1,4 +1,4 @@
-import { Image } from "@components/Image"
+import { Image } from "#/components/Image"
 import { useNavigate } from "@tanstack/react-router"
 import { Button } from "ui/base/Button"
 import { DiscordIcon, GithubIcon } from "ui/icons"

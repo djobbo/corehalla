@@ -1,4 +1,4 @@
-import { Image } from "@components/Image"
+import { Image } from "#/components/Image"
 import { getLegendEloReset } from "bhapi/calculator"
 import { rankedRegions } from "bhapi/constants"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"

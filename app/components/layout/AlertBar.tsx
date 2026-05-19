@@ -1,4 +1,4 @@
-import { alerts } from "@util/alerts"
+import { alerts } from "#/util/alerts"
 import { InfoIcon } from "ui/icons"
 
 const CURRENT_ALERT = import.meta.env.VITE_ALERT as

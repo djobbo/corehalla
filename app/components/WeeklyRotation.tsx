@@ -1,5 +1,5 @@
-import { Image } from "@components/Image"
-import { useWeeklyRotation } from "@hooks/useWeeklyRotation"
+import { Image } from "#/components/Image"
+import { useWeeklyRotation } from "#/hooks/useWeeklyRotation"
 import { Tooltip } from "ui/base/Tooltip"
 import { UnknownIcon } from "ui/icons"
 

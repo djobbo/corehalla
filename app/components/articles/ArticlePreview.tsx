@@ -1,4 +1,4 @@
-import { Image } from "@components/Image"
+import { Image } from "#/components/Image"
 import { type BHArticle } from "web-parser/common"
 
 type ArticlePreviewProps = {

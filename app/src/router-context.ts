@@ -1,5 +1,5 @@
+import type { trpcClient, trpcProxy } from "#/util/trpc"
 import type { QueryClient } from "@tanstack/react-query"
-import type { trpcClient, trpcProxy } from "@util/trpc"
 
 export type RouterContext = {
     queryClient: QueryClient

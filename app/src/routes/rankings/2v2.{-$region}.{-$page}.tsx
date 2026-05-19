@@ -1,6 +1,6 @@
-import { rankings2v2Seo } from "@components/SEO"
+import { rankings2v2Seo } from "#/components/SEO"
+import { Rankings2v2Page } from "#/views/rankings/2v2"
 import { createFileRoute } from "@tanstack/react-router"
-import { Rankings2v2Page } from "@views/rankings/2v2"
 
 export const Route = createFileRoute("/rankings/2v2/{-$region}/{-$page}")({
     head: ({ params }) =>

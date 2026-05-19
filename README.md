@@ -28,7 +28,7 @@ Corehalla is a [pnpm](https://pnpm.io/) monorepo managed with [Vite+](https://vi
 
 ### Prerequisites
 
-- **Node.js** `>=22.12.0` (see `engines` in `package.json`)
+- **Node.js** `>=24.14.0` (see `engines` in `package.json`)
 - **Vite+** (`vp`) — installs and uses **pnpm** `11.1.3` from `packageManager` in `package.json`
 - **Docker** (for local Supabase)
 - **Supabase CLI** — installed automatically as a dev dependency; use `vp exec supabase` or the `vp run services:*` scripts

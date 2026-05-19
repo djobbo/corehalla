@@ -26,17 +26,17 @@
     },
     "devDependencies": {
         "@effect/platform-node": "4.0.0-beta.68",
-        "@types/node": "^20.11.5",
+        "@types/node": "catalog:",
         "@voidzero-dev/vite-plus-core": "^0.1.21",
         "dotenv-cli": "^8.0.0",
         "effect": "4.0.0-beta.68",
         "supabase": "^2.76.10",
         "tsx": "^4.19.2",
-        "typescript": "^5.3.3",
+        "typescript": "catalog:",
         "vite-plus": "^0.1.21"
     },
     "engines": {
-        "node": ">=22.12.0",
+        "node": ">=24.14.0",
         "npm": ">=7.0.0"
     },
     "packageManager": "pnpm@11.1.3"

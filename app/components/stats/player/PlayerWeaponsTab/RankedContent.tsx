@@ -1,4 +1,4 @@
-import { Image } from "@components/Image"
+import { Image } from "#/components/Image"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
 import type { FullLegend, FullWeapon } from "bhapi/legends"
 import { memo } from "react"

@@ -1,4 +1,4 @@
-import { trpc } from "@util/trpc"
+import { trpc } from "#/util/trpc"
 import type { Ranking1v1 } from "bhapi/types"
 
 type PlayerAliasSearchResult = {

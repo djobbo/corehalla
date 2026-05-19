@@ -28,11 +28,7 @@
         "jsx": "react-jsx",
         "incremental": true,
         "paths": {
-            "@hooks/*": ["./hooks/*"],
-            "@components/*": ["./components/*"],
-            "@ctx/*": ["./providers/*"],
-            "@util/*": ["./util/*"],
-            "@views/*": ["./views/*"]
+            "#/*": ["./*"]
         },
         "types": ["vite/client"]
     }

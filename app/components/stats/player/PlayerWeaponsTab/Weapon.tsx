@@ -1,4 +1,4 @@
-import { Image } from "@components/Image"
+import { Image } from "#/components/Image"
 import type { FullWeapon } from "bhapi/legends"
 import { formatTime } from "common/helpers/date"
 import { Card } from "ui/base/Card"

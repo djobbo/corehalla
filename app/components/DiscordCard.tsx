@@ -1,4 +1,4 @@
-import { Image } from "@components/Image"
+import { Image } from "#/components/Image"
 import { clamp } from "common/helpers/math"
 import { useEffect, useRef } from "react"
 import { Button } from "ui/base/Button"

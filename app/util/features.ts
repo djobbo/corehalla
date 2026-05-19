@@ -1,4 +1,4 @@
-import type { AuthContext } from "@ctx/auth/AuthProvider"
+import type { AuthContext } from "#/providers/auth/AuthProvider"
 
 export type FeatureFlags = keyof ReturnType<typeof getFeatureFlags>
 

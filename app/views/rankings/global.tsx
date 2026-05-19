@@ -1,4 +1,4 @@
-import { trpc } from "@util/trpc"
+import { trpc } from "#/util/trpc"
 import { cn } from "common/helpers/classnames"
 import { cleanString } from "common/helpers/cleanString"
 import { useState } from "react"

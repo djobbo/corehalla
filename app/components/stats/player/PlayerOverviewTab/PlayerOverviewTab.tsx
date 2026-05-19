@@ -1,4 +1,4 @@
-import { CollapsibleSection } from "@components/layout/CollapsibleSection"
+import { CollapsibleSection } from "#/components/layout/CollapsibleSection"
 import { FiTarget } from "@react-icons/all-files/fi/FiTarget"
 import { HiChartBar } from "@react-icons/all-files/hi/HiChartBar"
 import { HiFire } from "@react-icons/all-files/hi/HiFire"

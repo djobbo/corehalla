@@ -1,4 +1,4 @@
-import { Image } from "@components/Image"
+import { Image } from "#/components/Image"
 import type { FullLegend } from "bhapi/legends"
 import { formatTime } from "common/helpers/date"
 

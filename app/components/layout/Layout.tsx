@@ -1,4 +1,4 @@
-import { FirstTimePopup } from "@components/FirstTimePopup"
+import { FirstTimePopup } from "#/components/FirstTimePopup"
 import type { ReactNode } from "react"
 import { styled, theme } from "ui/theme"
 

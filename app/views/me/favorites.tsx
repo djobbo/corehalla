@@ -1,6 +1,6 @@
-import { FavoritesGrid } from "@components/favorites/FavoritesGrid"
-import { SectionTitle } from "@components/layout/SectionTitle"
-import { useFavorites } from "@ctx/auth/AuthProvider"
+import { FavoritesGrid } from "#/components/favorites/FavoritesGrid"
+import { SectionTitle } from "#/components/layout/SectionTitle"
+import { useFavorites } from "#/providers/auth/AuthProvider"
 export const FavoritesPage = () => {
     const { playerFavorites, clanFavorites } = useFavorites()
 

@@ -1,4 +1,4 @@
-import { Image } from "@components/Image"
+import { Image } from "#/components/Image"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
 import type { Ranking } from "bhapi/types"
 import { cn } from "common/helpers/classnames"

@@ -1,4 +1,4 @@
-import { useFeatureFlags } from "@hooks/useFeatures"
+import { useFeatureFlags } from "#/hooks/useFeatures"
 import type { Prisma, UserFavorite } from "db/generated/client"
 import { supabase } from "db/supabase/client"
 import type { Session } from "db/supabase/client"

@@ -1,4 +1,4 @@
-import { CollapsibleSection } from "@components/layout/CollapsibleSection"
+import { CollapsibleSection } from "#/components/layout/CollapsibleSection"
 import type { PlayerStats } from "bhapi/types"
 import { cn } from "common/helpers/classnames"
 import { cleanString } from "common/helpers/cleanString"

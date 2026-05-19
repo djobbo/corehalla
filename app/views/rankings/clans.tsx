@@ -1,5 +1,5 @@
-import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
-import { useClansRankings } from "@hooks/stats/useClansRankings"
+import { RankingsLayout } from "#/components/stats/rankings/RankingsLayout"
+import { useClansRankings } from "#/hooks/stats/useClansRankings"
 import { useParams, useSearch } from "@tanstack/react-router"
 import { cn } from "common/helpers/classnames"
 import { cleanString } from "common/helpers/cleanString"

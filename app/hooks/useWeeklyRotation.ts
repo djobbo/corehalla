@@ -1,4 +1,4 @@
-import { trpc } from "@util/trpc"
+import { trpc } from "#/util/trpc"
 
 export const useWeeklyRotation = () => {
     const { data, ...query } = trpc.getWeeklyRotation.useQuery()

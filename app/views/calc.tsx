@@ -1,4 +1,4 @@
-import { SectionTitle } from "@components/layout/SectionTitle"
+import { SectionTitle } from "#/components/layout/SectionTitle"
 import {
     getGloryFromBestRating,
     getGloryFromWins,

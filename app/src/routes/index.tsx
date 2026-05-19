@@ -1,6 +1,6 @@
-import { seoHead } from "@components/SEO"
+import { seoHead } from "#/components/SEO"
+import { HomePage } from "#/views/home"
 import { createFileRoute } from "@tanstack/react-router"
-import { HomePage } from "@views/home"
 
 export const Route = createFileRoute("/")({
     head: () =>

@@ -1,7 +1,7 @@
-import { ErrorPageContent } from "@components/layout/ErrorPageContent"
+import { ErrorPageContent } from "#/components/layout/ErrorPageContent"
+import { queryClient, trpc, trpcClient, trpcProxy } from "#/util/trpc"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { createRouter } from "@tanstack/react-router"
-import { queryClient, trpc, trpcClient, trpcProxy } from "@util/trpc"
 
 import type { RouterContext } from "./router-context"
 import { routeTree } from "./routeTree.gen"

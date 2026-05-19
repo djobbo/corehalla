@@ -8,7 +8,7 @@ jobs:
             - uses: actions/checkout@v4
             - uses: voidzero-dev/setup-vp@v1
               with:
-                  node-version: "22"
+                  node-version: "24"
                   cache: true
             - name: Check
               run: |
