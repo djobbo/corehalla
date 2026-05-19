@@ -21,7 +21,6 @@ import { GAScripts } from "common/analytics/GAScripts"
 import { KBarProvider } from "kbar"
 import { Layout } from "@components/layout/Layout"
 import { PageLoader } from "ui/base/PageLoader"
-import { SEO } from "@components/SEO"
 import { Searchbox } from "@components/search/Searchbox"
 import { SideNavProvider } from "@ctx/SideNavProvider"
 import { Toaster } from "react-hot-toast"
@@ -44,7 +43,6 @@ const App = ({
                 />
                 <link rel="icon" type="image/png" href="/images/favicon.png" />
             </Head>
-            <SEO title="Corehalla" image="/images/og/main-og.jpg" />
             <GAScripts />
             <AuthProvider>
                 <KBarProvider actions={[]} options={{}}>

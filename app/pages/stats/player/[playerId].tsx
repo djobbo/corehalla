@@ -4,7 +4,6 @@ import { Player2v2Tab } from "@components/stats/player/Player2v2Tab"
 import { PlayerLegendsTab } from "@components/stats/player/PlayerLegendsTab"
 import { PlayerOverviewTab } from "@components/stats/player/PlayerOverviewTab"
 import { PlayerWeaponsTab } from "@components/stats/player/PlayerWeaponsTab"
-import { SEO } from "@components/SEO"
 import { StatsHeader } from "@components/stats/StatsHeader"
 import {
     Root as Tabs,
@@ -144,10 +143,6 @@ export const PlayerStatsPage = () => {
 
     return (
         <>
-            <SEO
-                title={`${playerStats.name} - Player Stats • Corehalla`}
-                description={`${playerStats.name} Stats - Brawlhalla Player Stats • Corehalla`}
-            />
             <StatsHeader
                 name={cleanString(playerStats.name)}
                 id={playerStats.brawlhalla_id}
