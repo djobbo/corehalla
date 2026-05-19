@@ -8,10 +8,11 @@ Trees under `.repos/<name>` are the **authoritative local copy** for how we reas
 
 Currently tracked:
 
-| Prefix                    | Upstream                                                                    | Branch   |
-| ------------------------- | --------------------------------------------------------------------------- | -------- |
-| `.repos/effect`           | [Effect-TS/effect-smol](https://github.com/Effect-TS/effect-smol)           | `main`   |
-| `.repos/tanstack-router`  | [TanStack/router](https://github.com/TanStack/router)                       | `main`   |
+| Prefix                    | Upstream                                                                    | Branch    |
+| ------------------------- | --------------------------------------------------------------------------- | --------- |
+| `.repos/effect`           | [Effect-TS/effect-smol](https://github.com/Effect-TS/effect-smol)           | `main`    |
+| `.repos/tanstack-router`  | [TanStack/router](https://github.com/TanStack/router)                       | `main`    |
+| `.repos/supabase`         | [supabase/supabase](https://github.com/supabase/supabase)                   | `master`  |
 
 ## Prerequisites
 
