@@ -1,5 +1,5 @@
 import { QueryClient } from "@tanstack/react-query"
-import { httpLink } from "@trpc/client"
+import { createTRPCProxyClient, httpLink } from "@trpc/client"
 import { createTRPCReact } from "@trpc/react-query"
 import type { AppRouter } from "server/router"
 
@@ -26,10 +26,16 @@ export const queryClient = new QueryClient({
 
 export const trpc = createTRPCReact<AppRouter>()
 
+const trpcLinks = [
+    httpLink({
+        url: `${getBaseUrl()}/api/trpc`,
+    }),
+]
+
 export const trpcClient = trpc.createClient({
-    links: [
-        httpLink({
-            url: `${getBaseUrl()}/api/trpc`,
-        }),
-    ],
+    links: trpcLinks,
+})
+
+export const trpcProxy = createTRPCProxyClient<AppRouter>({
+    links: trpcLinks,
 })

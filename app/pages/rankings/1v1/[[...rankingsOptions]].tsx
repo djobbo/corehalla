@@ -2,7 +2,6 @@ import { AppLink } from "ui/base/AppLink"
 import { Image } from "@components/Image"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
 import { RankingsTableItem } from "@components/stats/RankingsTableItem"
-import { SEO } from "@components/SEO"
 import { Spinner } from "ui/base/Spinner"
 import { cleanString } from "common/helpers/cleanString"
 import { legendsMap } from "bhapi/legends"
@@ -73,18 +72,6 @@ export const Rankings1v1Page = () => {
             searchPlaceholder="Search player..."
             searchSubtitle="Search must start with exact match. Only players that have completed their 10 placement matches are shown."
         >
-            <SEO
-                title={`Brawlhalla ${
-                    region === "all" ? "Global" : region.toUpperCase()
-                } 1v1 Rankings - Page ${page}${
-                    search ? ` - ${search}` : ""
-                } • Corehalla`}
-                description={`Brawlhalla ${
-                    region === "all" ? "Global" : region.toUpperCase()
-                } 1v1 Rankings - Page ${page}${
-                    search ? ` - ${search}` : ""
-                } • Corehalla`}
-            />
             <div className="py-4 w-full h-full items-center gap-4 hidden md:flex">
                 <p className="w-16 text-center">Rank</p>
                 <p className="w-8 text-center">Tier</p>

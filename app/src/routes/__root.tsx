@@ -12,18 +12,19 @@ import { GAScripts } from "common/analytics/GAScripts"
 import { KBarProvider } from "kbar"
 import { Layout } from "@components/layout/Layout"
 import { PageLoader } from "ui/base/PageLoader"
-import { SEO } from "@components/SEO"
+import { DEFAULT_OG_IMAGE, seoHead } from "@components/SEO"
 import { Searchbox } from "@components/search/Searchbox"
 import { SideNavProvider } from "@ctx/SideNavProvider"
+import type { RouterContext } from "../router-context"
 import {
     HeadContent,
     Outlet,
     Scripts,
-    createRootRoute,
+    createRootRouteWithContext,
 } from "@tanstack/react-router"
 import { Toaster } from "react-hot-toast"
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<RouterContext>()({
     head: () => ({
         meta: [
             { charSet: "utf-8" },
@@ -31,6 +32,10 @@ export const Route = createRootRoute({
                 name: "viewport",
                 content: "width=device-width, initial-scale=1",
             },
+            ...seoHead({
+                title: "Corehalla",
+                image: DEFAULT_OG_IMAGE,
+            }).meta,
         ],
         links: [
             {
@@ -50,7 +55,6 @@ function RootDocument() {
                 <HeadContent />
             </head>
             <body>
-                <SEO title="Corehalla" image="/images/og/main-og.jpg" />
                 <GAScripts />
                 <AuthProvider>
                     <KBarProvider actions={[]} options={{}}>
