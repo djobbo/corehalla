@@ -1,7 +1,6 @@
 import { AppLink } from "ui/base/AppLink"
 import { CLANS_RANKINGS_PER_PAGE } from "server/helpers/constants"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
-import { SEO } from "@components/SEO"
 import { Spinner } from "ui/base/Spinner"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
@@ -61,10 +60,6 @@ export const RankingsClansPage = () => {
             searchPlaceholder="Search clan..."
             searchSubtitle="Search by clan name (exactly as it appears in-game). Clan search/rankings is still in early development."
         >
-            <SEO
-                title={`Brawlhalla Clans - Page ${page} • Corehalla`}
-                description={`Brawhalla Clans - Page ${page} • Corehalla`}
-            />
             <div className="p-4 w-full h-full flex items-center gap-4">
                 {showClanRank && <p className="w-16 text-center">Rank</p>}
                 <p className="flex-1">Name</p>

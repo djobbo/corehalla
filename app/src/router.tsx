@@ -1,12 +1,18 @@
 import { QueryClientProvider } from "@tanstack/react-query"
 import { createRouter } from "@tanstack/react-router"
 import { ErrorPageContent } from "@components/layout/ErrorPageContent"
-import { queryClient, trpc, trpcClient } from "@util/trpc"
+import { queryClient, trpc, trpcClient, trpcProxy } from "@util/trpc"
+import type { RouterContext } from "./router-context"
 import { routeTree } from "./routeTree.gen"
 
 export function getRouter() {
     return createRouter({
         routeTree,
+        context: {
+            queryClient,
+            trpcClient,
+            trpcProxy,
+        } satisfies RouterContext,
         defaultPreload: "intent",
         scrollRestoration: true,
         defaultNotFoundComponent: () => (
@@ -15,10 +21,6 @@ export function getRouter() {
         defaultErrorComponent: () => (
             <ErrorPageContent statusCode={500} />
         ),
-        context: {
-            queryClient,
-            trpcClient,
-        },
         Wrap: ({ children }) => (
             <trpc.Provider client={trpcClient} queryClient={queryClient}>
                 <QueryClientProvider client={queryClient}>

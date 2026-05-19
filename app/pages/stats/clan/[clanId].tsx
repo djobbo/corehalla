@@ -1,5 +1,4 @@
 import { ClanMember } from "@components/stats/clan/ClanMember"
-import { SEO } from "@components/SEO"
 import { StatsHeader } from "@components/stats/StatsHeader"
 import { cleanString } from "common/helpers/cleanString"
 import { formatUnixTime } from "common/helpers/date"
@@ -58,10 +57,6 @@ export const ClanStatsPage = () => {
 
     return (
         <>
-            <SEO
-                title={`${clan.clan_name} - Clan Stats • Corehalla`}
-                description={`${clan.clan_name} Stats - Brawlhalla Clan Stats • Corehalla`}
-            />
             <StatsHeader
                 name={cleanString(clan.clan_name)}
                 id={clan.clan_id}

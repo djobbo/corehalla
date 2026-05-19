@@ -1,6 +1,5 @@
 import { MiscStatGroup } from "@components/stats/MiscStatGroup"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
-import { SEO } from "@components/SEO"
 import { Select } from "ui/base/Select"
 import { Spinner } from "ui/base/Spinner"
 import { Tooltip } from "ui/base/Tooltip"
@@ -179,10 +178,6 @@ export const RankingsPowerPage = () => {
             searchPlaceholder="Search player..."
             defaultRegion="us-e"
         >
-            <SEO
-                title={`Brawlhalla ${region.toUpperCase()} ${bracket} Power Rankings • Corehalla`}
-                description={`Brawhalla ${region.toUpperCase()} ${bracket} Power Rankings • Corehalla`}
-            />
             <Select<PRSortOption>
                 className="flex-1"
                 onChange={setSortBy}

@@ -1,7 +1,11 @@
 import { cleanString } from "common/helpers/cleanString"
-import { useEffect } from "react"
 
-type SEOProps = {
+export type SeoMeta =
+    | { title: string }
+    | { name: string; content: string }
+    | { property: string; content: string }
+
+export type SEOProps = {
     title: string
     description?: string
     image?: string
@@ -22,81 +26,125 @@ type SEOProps = {
     }
 }
 
-const getSocialTags = ({
-    openGraphType,
-    url,
-    title,
-    description,
-    image,
-    createdAt,
-    updatedAt,
-    settings,
-}: SEOProps) => {
-    return [
-        { name: "twitter:card", content: "summary_large_image" },
-        {
-            name: "twitter:site",
-            content: settings?.meta?.social?.twitter?.site ?? "@Corehalla",
-        },
-        { name: "twitter:title", content: title },
-        { name: "twitter:description", content: description },
-        {
-            name: "twitter:creator",
-            content: settings?.meta?.social?.twitter?.author ?? "@djobbo_",
-        },
-        { name: "twitter:image:src", content: image },
-        { name: "og:title", content: title },
-        { name: "og:type", content: openGraphType },
-        { name: "og:url", content: url },
-        { name: "og:image", content: image },
-        { name: "og:description", content: description },
-        {
-            name: "og:site_name",
-            content: settings?.meta?.title ?? title,
-        },
-        {
-            name: "og:published_time",
-            content: (createdAt ?? new Date()).toISOString(),
-        },
-        {
-            name: "og:modified_time",
-            content: (updatedAt ?? new Date()).toISOString(),
-        },
-    ]
-}
+export const DEFAULT_OG_IMAGE = "/images/og/main-og.jpg"
 
-const setMeta = (name: string, content: string | undefined) => {
-    if (!content || typeof document === "undefined") return
+const formatRankingsRegion = (region: string) =>
+    region === "all" ? "Global" : region.toUpperCase()
 
-    let element = document.querySelector(
-        `meta[name="${name}"]`,
-    ) as HTMLMetaElement | null
+export const seoHead = (props: SEOProps): { meta: SeoMeta[] } => {
+    const title = cleanString(props.title)
+    const description = cleanString(props.description ?? "")
+    const image = props.image
+    const twitterSite =
+        props.settings?.meta?.social?.twitter?.site ?? "@Corehalla"
+    const twitterCreator =
+        props.settings?.meta?.social?.twitter?.author ?? "@djobbo_"
+    const siteName = props.settings?.meta?.title ?? title
 
-    if (!element) {
-        element = document.createElement("meta")
-        element.setAttribute("name", name)
-        document.head.appendChild(element)
+    const meta: SeoMeta[] = [{ title }]
+
+    if (description) {
+        meta.push({ name: "description", content: description })
+        meta.push({ name: "itemprop:name", content: title })
+        meta.push({ name: "itemprop:description", content: description })
     }
 
-    element.setAttribute("content", content)
+    if (image) {
+        meta.push({ name: "itemprop:image", content: image })
+    }
+
+    meta.push({ name: "twitter:card", content: "summary_large_image" })
+    meta.push({ name: "twitter:site", content: twitterSite })
+    meta.push({ name: "twitter:title", content: title })
+
+    if (description) {
+        meta.push({ name: "twitter:description", content: description })
+    }
+
+    meta.push({ name: "twitter:creator", content: twitterCreator })
+
+    if (image) {
+        meta.push({ name: "twitter:image", content: image })
+    }
+
+    meta.push({ property: "og:title", content: title })
+
+    if (props.openGraphType) {
+        meta.push({ property: "og:type", content: props.openGraphType })
+    }
+
+    if (props.url) {
+        meta.push({ property: "og:url", content: props.url })
+    }
+
+    if (image) {
+        meta.push({ property: "og:image", content: image })
+    }
+
+    if (description) {
+        meta.push({ property: "og:description", content: description })
+    }
+
+    meta.push({ property: "og:site_name", content: siteName })
+    meta.push({
+        property: "og:published_time",
+        content: (props.createdAt ?? new Date()).toISOString(),
+    })
+    meta.push({
+        property: "og:modified_time",
+        content: (props.updatedAt ?? new Date()).toISOString(),
+    })
+
+    return { meta }
 }
 
-export const SEO = (props: SEOProps) => {
-    const { title, description, image } = props
-    const cleanTitle = cleanString(title)
-    const cleanDescription = cleanString(description ?? "")
+export const rankings1v1Seo = ({
+    region = "all",
+    page = "1",
+    search = "",
+}: {
+    region?: string
+    page?: string
+    search?: string
+}) => {
+    const regionLabel = formatRankingsRegion(region)
+    const suffix = search ? ` - ${search}` : ""
+    const title = `Brawlhalla ${regionLabel} 1v1 Rankings - Page ${page}${suffix} • Corehalla`
 
-    useEffect(() => {
-        document.title = cleanTitle
-        setMeta("description", cleanDescription)
-        setMeta("itemprop:name", cleanTitle)
-        setMeta("itemprop:description", cleanDescription)
-        setMeta("itemprop:image", image)
+    return seoHead({ title, description: title })
+}
 
-        for (const { name, content } of getSocialTags(props)) {
-            setMeta(name, content)
-        }
-    }, [cleanTitle, cleanDescription, image, props])
+export const rankings2v2Seo = ({
+    region = "all",
+    page = "1",
+}: {
+    region?: string
+    page?: string
+}) => {
+    const regionLabel = formatRankingsRegion(region)
+    const title = `Brawlhalla ${regionLabel} 2v2 Rankings - Page ${page} • Corehalla`
 
-    return null
+    return seoHead({ title, description: title })
+}
+
+export const rankingsClansSeo = ({
+    page = "1",
+}: {
+    page?: string
+}) => {
+    const title = `Brawlhalla Clans - Page ${page} • Corehalla`
+
+    return seoHead({ title, description: title })
+}
+
+export const rankingsPowerSeo = ({
+    region,
+    bracket,
+}: {
+    region: string
+    bracket: string
+}) => {
+    const title = `Brawlhalla ${region.toUpperCase()} ${bracket} Power Rankings • Corehalla`
+
+    return seoHead({ title, description: title })
 }

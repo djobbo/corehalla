@@ -1,7 +1,6 @@
 import { AppLink } from "ui/base/AppLink"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
 import { RankingsTableItem } from "@components/stats/RankingsTableItem"
-import { SEO } from "@components/SEO"
 import { Spinner } from "ui/base/Spinner"
 import { cleanString } from "common/helpers/cleanString"
 import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
@@ -49,14 +48,6 @@ export const Rankings2v2Page = () => {
             currentPage={page}
             hasPagination
         >
-            <SEO
-                title={`Brawlhalla ${
-                    region === "all" ? "Global" : region.toUpperCase()
-                } 2v2 Rankings - Page ${page} • Corehalla`}
-                description={`Brawhalla ${
-                    region === "all" ? "Global" : region.toUpperCase()
-                } 2v2 Rankings - Page ${page} • Corehalla`}
-            />
             <div className="py-4 w-full h-full hidden md:flex items-center gap-4">
                 <p className="w-16 text-center">Rank</p>
                 <p className="w-8 text-center">Tier</p>

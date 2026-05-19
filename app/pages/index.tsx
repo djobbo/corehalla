@@ -3,7 +3,6 @@ import { ArticlePreviewGrid } from "@components/articles/ArticlePreviewGrid"
 import { Button } from "ui/base/Button"
 import { DiscordCard } from "@components/DiscordCard"
 import { FavoritesGrid } from "@components/favorites/FavoritesGrid"
-import { SEO } from "@components/SEO"
 import { SearchButton } from "@components/search/SearchButton"
 import { SectionTitle } from "@components/layout/SectionTitle"
 import { WeeklyRotation } from "@components/WeeklyRotation"
@@ -24,12 +23,6 @@ export const HomePage = () => {
 
     return (
         <>
-            <SEO
-                title="Track your Brawlhalla stats, view rankings, and more! • Corehalla"
-                description="Improve your Brawlhalla Game, and find your place among
-                the Elite with our in-depth Player and Clan stats tracking and live
-                leaderboards."
-            />
             <div className="flex flex-col items-center justify-center lg:gap-16 lg:flex-row">
                 <div
                     className={cn(
