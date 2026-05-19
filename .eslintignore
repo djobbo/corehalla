@@ -1,7 +1,0 @@
-node_modules/
-.next/
-node_modules/.vite/
-dist/
-build/
-out/
-generated/

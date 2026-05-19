@@ -1,8 +1,7 @@
 import { rankingsClansSeo } from "@components/SEO"
 import { createFileRoute } from "@tanstack/react-router"
+import { RankingsClansPage } from "@views/rankings/clans"
 import { z } from "zod"
-
-import RankingsClansPage from "../../../pages/rankings/clans/[[...clansOptions]]"
 
 const searchSchema = z.object({
     clan: z.string().optional(),

@@ -1,5 +1,5 @@
 {
-    "extends": "tsconfig/nextjs.json",
+    "extends": "tsconfig/react-library.json",
     "compilerOptions": {
         "types": ["node"]
     },

@@ -5,7 +5,7 @@ import {
     useSearch,
 } from "@tanstack/react-router"
 
-/** Minimal next/router compatibility for migrated pages and shared UI. */
+/** TanStack Router helpers for layout components that need pathname and query. */
 export function useAppRouter() {
     const navigate = useNavigate()
     const pathname = useRouterState({ select: (s) => s.location.pathname })

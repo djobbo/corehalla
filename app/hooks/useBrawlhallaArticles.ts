@@ -5,17 +5,10 @@ export const useBrawlhallaArticles = (
     first?: number,
     category?: BrawlhallaArticleCategory,
 ) => {
-    const { data, ...query } = trpc.getBHArticles.useQuery(
-        {
-            category,
-            first,
-        },
-        {
-            trpc: {
-                ssr: false,
-            },
-        },
-    )
+    const { data, ...query } = trpc.getBHArticles.useQuery({
+        category,
+        first,
+    })
 
     return {
         articles: data ?? [],

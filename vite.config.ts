@@ -67,11 +67,6 @@ export default defineConfig({
             "**/dist/**",
             "**/.output/**",
             "**/routeTree.gen.ts",
-            "app/pages/_app.tsx",
-            "app/pages/_error.tsx",
-            "app/pages/404.tsx",
-            "app/pages/500.tsx",
-            "app/pages/api/**",
         ],
         overrides: [
             {
