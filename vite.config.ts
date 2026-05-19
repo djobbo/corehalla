@@ -48,11 +48,9 @@ export default defineConfig({
     },
     lint: {
         plugins: ["typescript", "react", "jsx-a11y"],
-        // tsgolint does not support app/tsconfig baseUrl or legacy moduleResolution: node;
-        // use `vp run ts:check` (tsc) for type checking.
         options: {
-            typeAware: false,
-            typeCheck: false,
+            typeAware: true,
+            typeCheck: true,
         },
         rules: {
             "no-console": "error",
@@ -69,6 +67,11 @@ export default defineConfig({
             "**/dist/**",
             "**/.output/**",
             "**/routeTree.gen.ts",
+            "app/pages/_app.tsx",
+            "app/pages/_error.tsx",
+            "app/pages/404.tsx",
+            "app/pages/500.tsx",
+            "app/pages/api/**",
         ],
         overrides: [
             {

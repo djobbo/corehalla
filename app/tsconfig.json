@@ -15,7 +15,16 @@
         "pages/**/*.ts",
         "pages/**/*.tsx"
     ],
-    "exclude": ["node_modules", ".output", "dist", "pages/_app.tsx"],
+    "exclude": [
+        "node_modules",
+        ".output",
+        "dist",
+        "pages/_app.tsx",
+        "pages/_error.tsx",
+        "pages/404.tsx",
+        "pages/500.tsx",
+        "pages/api/**"
+    ],
     "compilerOptions": {
         "target": "ES2022",
         "lib": ["dom", "dom.iterable", "esnext"],
@@ -25,12 +34,11 @@
         "noEmit": true,
         "jsx": "react-jsx",
         "incremental": true,
-        "baseUrl": ".",
         "paths": {
-            "@hooks/*": ["hooks/*"],
-            "@components/*": ["components/*"],
-            "@ctx/*": ["providers/*"],
-            "@util/*": ["util/*"]
+            "@hooks/*": ["./hooks/*"],
+            "@components/*": ["./components/*"],
+            "@ctx/*": ["./providers/*"],
+            "@util/*": ["./util/*"]
         },
         "types": ["vite/client"]
     }
