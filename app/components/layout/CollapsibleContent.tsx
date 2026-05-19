@@ -1,5 +1,5 @@
+import { Collapsible } from "@base-ui/react/collapsible"
 import { CollapseSectionIcon, ExpandSectionIcon } from "ui/icons"
-import { Content, Root, Trigger } from "@radix-ui/react-collapsible"
 import { cn } from "common/helpers/classnames"
 import { useState } from "react"
 import type { ReactNode } from "react"
@@ -30,8 +30,12 @@ export const CollapsibleContent = ({
     const [open, setOpen] = useState(defaultOpen)
 
     return (
-        <Root open={open} onOpenChange={setOpen} className={className}>
-            <Trigger
+        <Collapsible.Root
+            open={open}
+            onOpenChange={setOpen}
+            className={className}
+        >
+            <Collapsible.Trigger
                 className={cn(
                     "w-full flex items-center justify-between",
                     triggerClassName,
@@ -46,8 +50,8 @@ export const CollapsibleContent = ({
                     ) : (
                         <ExpandSectionIcon className={arrowClassName} />
                     ))}
-            </Trigger>
-            <Content className={contentClassName}>
+            </Collapsible.Trigger>
+            <Collapsible.Panel className={contentClassName}>
                 {children}
                 {closingArrow && (
                     <button
@@ -58,7 +62,7 @@ export const CollapsibleContent = ({
                         <CollapseSectionIcon />
                     </button>
                 )}
-            </Content>
-        </Root>
+            </Collapsible.Panel>
+        </Collapsible.Root>
     )
 }

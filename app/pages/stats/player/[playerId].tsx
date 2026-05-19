@@ -5,12 +5,7 @@ import { PlayerLegendsTab } from "@components/stats/player/PlayerLegendsTab"
 import { PlayerOverviewTab } from "@components/stats/player/PlayerOverviewTab"
 import { PlayerWeaponsTab } from "@components/stats/player/PlayerWeaponsTab"
 import { StatsHeader } from "@components/stats/StatsHeader"
-import {
-    Root as Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@radix-ui/react-tabs"
+import { Tabs } from "@base-ui/react/tabs"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { css, theme } from "ui/theme"
@@ -31,7 +26,7 @@ const tabClassName = cn(
     css({
         borderColor: "transparent",
         color: theme.colors.textVar1,
-        '&[data-state="active"]': {
+        "&[data-active]": {
             borderColor: theme.colors.accent,
             color: theme.colors.text,
         },
@@ -170,24 +165,24 @@ export const PlayerStatsPage = () => {
                     },
                 }}
             />
-            <Tabs defaultValue="overview">
-                <TabsList className="relative flex mt-8 before:absolute before:inset-x-0 before:bottom-0 before:h-0.5 before:bg-bgVar1 overflow-x-scroll">
-                    <TabsTrigger value="overview" className={tabClassName}>
+            <Tabs.Root defaultValue="overview">
+                <Tabs.List className="relative flex mt-8 before:absolute before:inset-x-0 before:bottom-0 before:h-0.5 before:bg-bgVar1 overflow-x-scroll">
+                    <Tabs.Tab value="overview" className={tabClassName}>
                         Overview
-                    </TabsTrigger>
+                    </Tabs.Tab>
                     {playerRanked && playerRanked["2v2"].length > 0 && (
-                        <TabsTrigger value="2v2" className={tabClassName}>
+                        <Tabs.Tab value="2v2" className={tabClassName}>
                             2v2 Ranked
-                        </TabsTrigger>
+                        </Tabs.Tab>
                     )}
-                    <TabsTrigger value="legends" className={tabClassName}>
+                    <Tabs.Tab value="legends" className={tabClassName}>
                         Legends
-                    </TabsTrigger>
-                    <TabsTrigger value="weapons" className={tabClassName}>
+                    </Tabs.Tab>
+                    <Tabs.Tab value="weapons" className={tabClassName}>
                         Weapons
-                    </TabsTrigger>
-                </TabsList>
-                <TabsContent value="overview">
+                    </Tabs.Tab>
+                </Tabs.List>
+                <Tabs.Panel value="overview">
                     <PlayerOverviewTab
                         stats={playerStats}
                         ranked={playerRanked}
@@ -200,27 +195,27 @@ export const PlayerStatsPage = () => {
                         teamkos={teamkos}
                         matchtime={matchtime}
                     />
-                </TabsContent>
+                </Tabs.Panel>
                 {playerRanked && playerRanked["2v2"].length > 0 && (
-                    <TabsContent value="2v2">
+                    <Tabs.Panel value="2v2">
                         <Player2v2Tab ranked={playerRanked} />
-                    </TabsContent>
+                    </Tabs.Panel>
                 )}
-                <TabsContent value="legends">
+                <Tabs.Panel value="legends">
                     <PlayerLegendsTab
                         legends={fullLegends}
                         matchtime={matchtime}
                         games={playerStats.games}
                     />
-                </TabsContent>
-                <TabsContent value="weapons">
+                </Tabs.Panel>
+                <Tabs.Panel value="weapons">
                     <PlayerWeaponsTab
                         weapons={weapons}
                         matchtime={matchtime}
                         games={playerStats.games}
                     />
-                </TabsContent>
-            </Tabs>
+                </Tabs.Panel>
+            </Tabs.Root>
         </>
     )
 }

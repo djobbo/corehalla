@@ -15,14 +15,7 @@
         "typescript": "^5.3.3"
     },
     "dependencies": {
-        "@radix-ui/colors": "^3.0.0",
-        "@radix-ui/react-collapsible": "^1.0.1",
-        "@radix-ui/react-dialog": "^1.0.2",
-        "@radix-ui/react-dropdown-menu": "^2.0.1",
-        "@radix-ui/react-navigation-menu": "^1.1.1",
-        "@radix-ui/react-popover": "^1.0.2",
-        "@radix-ui/react-progress": "^1.0.1",
-        "@radix-ui/react-tooltip": "^1.0.2",
+        "@base-ui/react": "^1.5.0",
         "@react-icons/all-files": "https://github.com/react-icons/react-icons/releases/download/v5.0.1/react-icons-all-files-5.0.1.tgz",
         "@stitches/react": "^1.2.8",
         "bhapi": "workspace:*",

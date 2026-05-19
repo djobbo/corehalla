@@ -1,4 +1,4 @@
-import { Indicator as ProgressIndicator, Root } from "@radix-ui/react-progress"
+import { Progress as BaseProgress } from "@base-ui/react/progress"
 
 type ProgressProps = {
     value: number
@@ -12,11 +12,10 @@ export const Progress = ({
     indicatorClassName,
 }: ProgressProps) => {
     return (
-        <Root value={value} className={className}>
-            <ProgressIndicator
-                style={{ width: `${value}%` }}
-                className={indicatorClassName}
-            />
-        </Root>
+        <BaseProgress.Root value={value} className={className}>
+            <BaseProgress.Track className="h-full w-full">
+                <BaseProgress.Indicator className={indicatorClassName} />
+            </BaseProgress.Track>
+        </BaseProgress.Root>
     )
 }

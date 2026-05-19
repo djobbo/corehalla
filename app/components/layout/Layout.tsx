@@ -3,8 +3,7 @@ import { Footer } from "./Footer"
 import { Header } from "./Header"
 import { LandingBackground } from "./LandingBackground"
 import { SideNav } from "./SideNav"
-import { bgVar1 } from "ui/theme/theme"
-import { styled } from "ui/theme"
+import { styled, theme } from "ui/theme"
 import type { ReactNode } from "react"
 
 export type LayoutProps = {
@@ -13,7 +12,7 @@ export type LayoutProps = {
 
 const BackgroundContainer = styled("div", {
     "&>svg": {
-        maskImage: `linear-gradient(0deg, ${bgVar1}00 0%, ${bgVar1} 40%)`,
+        maskImage: `linear-gradient(0deg, ${theme.colors.bgVar1}00 0%, ${theme.colors.bgVar1} 40%)`,
     },
 })
 

@@ -10,7 +10,7 @@ const repoRoot = path.resolve(fileURLToPath(new URL(".", import.meta.url)), ".."
 
 export default defineConfig({
     envDir: repoRoot,
-    envPrefix: ["NEXT_PUBLIC_", "VITE_"],
+    envPrefix: "VITE_",
     server: {
         port: 3000,
     },
@@ -34,7 +34,6 @@ export default defineConfig({
             "db",
             "web-parser",
             "server",
-            /^@radix-ui\//,
         ],
     },
 })
