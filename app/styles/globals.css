@@ -1,12 +1,32 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@source "..";
+@source "../../packages/ui";
+
+@custom-variant hashover (@media (hover: hover));
+
+@theme {
+    --color-bgVar2: #1a1b23;
+    --color-bgVar1: #1e212c;
+    --color-bg: #2b3043;
+    --color-bgLanding: #1a1b23aa;
+    --color-textVar1: #ccd0d6;
+    --color-text: #ffffff;
+    --color-accent: #3861fb;
+    --color-accentVar1: #2095f2;
+    --color-success: #24cd7c;
+    --color-danger: #ed7853;
+    --color-warning: #f3da57;
+    --color-accentAlt: #e568d9;
+    --color-accentAltVar1: #ff99e9;
+}
 
 * {
     scroll-behavior: smooth;
 }
 
-html, body {
+html,
+body {
     @apply bg-bgVar1 text-text;
     font-family: "Montserrat", sans-serif;
 }
@@ -28,5 +48,5 @@ html, body {
 }
 
 .text-fill-none {
-    -webkit-text-fill-color: transparent
+    -webkit-text-fill-color: transparent;
 }

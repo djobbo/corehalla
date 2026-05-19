@@ -6,17 +6,13 @@ import { Spinner } from "ui/base/Spinner"
 import { cleanString } from "common/helpers/cleanString"
 import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
 import { useRankings2v2 } from "@hooks/stats/useRankings"
-import { useRouter } from "next/router"
-import type { NextPage } from "next"
+import { useParams } from "@tanstack/react-router"
 
-const Page: NextPage = () => {
-    const router = useRouter()
+export const Rankings2v2Page = () => {
+    const { region: regionParam, page: pageParam } = useParams({ strict: false })
 
-    const { rankingsOptions } = router.query
-
-    const [region = "all", page = "1"] = Array.isArray(rankingsOptions)
-        ? rankingsOptions
-        : []
+    const region = regionParam ?? "all"
+    const page = pageParam ?? "1"
 
     const { rankings2v2, isLoading, isError } = useRankings2v2(
         // @ts-expect-error TODO: Typecheck this
@@ -112,4 +108,4 @@ const Page: NextPage = () => {
     )
 }
 
-export default Page
+export default Rankings2v2Page

@@ -1,6 +1,5 @@
 import { theme } from "../theme"
-import { useEffect, useState } from "react"
-import { useRouter } from "next/router"
+import { useRouterState } from "@tanstack/react-router"
 import NProgress from "nprogress"
 import type { ReactNode } from "react"
 
@@ -11,32 +10,17 @@ type PageLoaderProps = {
 NProgress.configure({ showSpinner: false })
 
 export const PageLoader = ({ children }: PageLoaderProps) => {
-    const router = useRouter()
+    const isLoading = useRouterState({
+        select: (s) => s.status === "pending",
+    })
 
-    const [loading, setLoading] = useState(false)
+    if (isLoading) {
+        NProgress.start()
+    } else {
+        NProgress.done()
+    }
 
-    useEffect(() => {
-        const handleStart = () => {
-            NProgress.start()
-            setLoading(true)
-        }
-        const handleComplete = () => {
-            NProgress.done()
-            setLoading(false)
-        }
-
-        router.events.on("routeChangeStart", handleStart)
-        router.events.on("routeChangeComplete", handleComplete)
-        router.events.on("routeChangeError", handleComplete)
-
-        return () => {
-            router.events.off("routeChangeStart", handleStart)
-            router.events.off("routeChangeComplete", handleComplete)
-            router.events.off("routeChangeError", handleComplete)
-        }
-    }, [router.events])
-
-    if (!loading) return null
+    if (!isLoading) return null
 
     return (
         <div

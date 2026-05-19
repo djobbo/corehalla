@@ -30,7 +30,7 @@
         "db": "workspace:*",
         "kbar": "0.1.0-beta.45",
         "logger": "workspace:*",
-        "next": "13.4.19",
+        "@tanstack/react-router": "^1.170.4",
         "nprogress": "^0.2.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",

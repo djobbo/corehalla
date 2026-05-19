@@ -2,7 +2,7 @@ import { Button } from "ui/base/Button"
 import { DiscordIcon, GithubIcon } from "ui/icons"
 import { Image } from "@components/Image"
 import { SectionTitle } from "./SectionTitle"
-import { useRouter } from "next/router"
+import { useNavigate } from "@tanstack/react-router"
 
 type ErrorPageContentProps = {
     title?: string
@@ -13,7 +13,7 @@ export const ErrorPageContent = ({
     title = "Oops, something went wrong",
     statusCode,
 }: ErrorPageContentProps) => {
-    const router = useRouter()
+    const navigate = useNavigate()
 
     return (
         <div>
@@ -27,7 +27,12 @@ export const ErrorPageContent = ({
                 />
             )}
             <div className="flex flex-col justify-center items-center gap-4">
-                <Button buttonStyle="primary" onClick={() => router.push("/")}>
+                <Button
+                    buttonStyle="primary"
+                    onClick={() => {
+                        void navigate({ to: "/" })
+                    }}
+                >
                     Bring me home
                 </Button>
                 <div className="flex justify-center items-center gap-2">

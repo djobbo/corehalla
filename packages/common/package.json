@@ -13,7 +13,7 @@
     "dependencies": {
         "classnames": "^2.5.1",
         "dayjs": "^1.11.7",
-        "next": "13.4.19",
+        "@tanstack/react-router": "^1.170.4",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-use": "^17.4.0",

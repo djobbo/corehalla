@@ -5,10 +5,9 @@ import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { trpc } from "@util/trpc"
 import { useState } from "react"
-import type { NextPage } from "next"
 import type { SortablePlayerProp } from "server/mutations/updateDBPlayerData"
 
-const Page: NextPage = () => {
+export const RankingsGlobalPage = () => {
     const page = "1"
 
     const [sortBy, setSortBy] = useState<SortablePlayerProp>("xp")
@@ -132,4 +131,4 @@ const Page: NextPage = () => {
     )
 }
 
-export default Page
+export default RankingsGlobalPage
