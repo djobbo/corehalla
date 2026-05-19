@@ -8,10 +8,11 @@ Trees under `.repos/<name>` are the **authoritative local copy** for how we reas
 
 Currently tracked:
 
-| Prefix                    | Upstream                                                                    | Branch   |
-| ------------------------- | --------------------------------------------------------------------------- | -------- |
-| `.repos/effect`           | [Effect-TS/effect-smol](https://github.com/Effect-TS/effect-smol)           | `main`   |
-| `.repos/tanstack-router`  | [TanStack/router](https://github.com/TanStack/router)                       | `main`   |
+| Prefix                    | Upstream                                                                    | Branch    |
+| ------------------------- | --------------------------------------------------------------------------- | --------- |
+| `.repos/effect`           | [Effect-TS/effect-smol](https://github.com/Effect-TS/effect-smol)           | `main`    |
+| `.repos/tanstack-router`  | [TanStack/router](https://github.com/TanStack/router)                       | `main`    |
+| `.repos/supabase`         | [supabase/supabase](https://github.com/supabase/supabase)                   | `master`  |
 
 ## Prerequisites
 
@@ -48,6 +49,10 @@ Resolve any merge conflicts if they appear, then commit as usual.
 git remote add docs-upstream https://github.com/OWNER/REPO-NAME
 git subtree pull --prefix=.repos/docs docs-upstream main --squash
 ```
+
+## Merging to `main` without vendored blobs
+
+If subtrees live on a `dev` branch but **`main` must stay vendor-free**, strip `.repos/` from `dev` history and force-push **before** merging. See [dev-branch-strip-vendored-repos-before-merge.md](dev-branch-strip-vendored-repos-before-merge.md).
 
 ## Notes
 
