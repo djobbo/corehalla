@@ -55,6 +55,11 @@ const VENDORED_REPOS: ReadonlyArray<VendoredRepo> = [
         url: "https://github.com/djobbo/kubi.git",
         branch: "main",
     },
+    {
+        name: "alchemy",
+        url: "https://github.com/alchemy-run/alchemy.git",
+        branch: "main",
+    },
 ]
 
 export class VendoredReposError extends Data.TaggedError("VendoredReposError")<{

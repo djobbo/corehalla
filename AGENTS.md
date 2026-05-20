@@ -20,5 +20,6 @@ When working on code that uses these libraries:
 | `.repos/vite-plus`       | [voidzero-dev/vite-plus](https://github.com/voidzero-dev/vite-plus) (`main`)     | `vite-plus`, `@voidzero-dev/vite-plus-core`, Oxlint/Oxfmt config, and `vp` CLI behavior                  |
 | `.repos/drizzle-orm`     | [drizzle-team/drizzle-orm](https://github.com/drizzle-team/drizzle-orm) (`main`) | `drizzle-orm`, `drizzle-kit`, and related workspace packages in that monorepo                            |
 | `.repos/kubi`            | [djobbo/kubi](https://github.com/djobbo/kubi) (`main`)                           | [dair.gg](https://dair.gg) reference monorepo — API, workers, and packages under `apps/` and `packages/` |
+| `.repos/alchemy`         | [alchemy-run/alchemy](https://github.com/alchemy-run/alchemy) (`main`)           | `alchemy` IaC library, provider resources, examples, and docs in that monorepo                           |
 
 If `.repos/` is missing, run `vp run setup` or `syncVendoredRepos({})` before relying on vendored source. Do not treat vendored trees as editable forks unless the task explicitly requires upstream contributions.

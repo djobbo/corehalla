@@ -20,6 +20,7 @@ Configured repos (see `VENDORED_REPOS` in [scripts/sync-vendored-repos.mts](../s
 | `.repos/vite-plus`       | [voidzero-dev/vite-plus](https://github.com/voidzero-dev/vite-plus)     | `main`   |
 | `.repos/drizzle-orm`     | [drizzle-team/drizzle-orm](https://github.com/drizzle-team/drizzle-orm) | `main`   |
 | `.repos/kubi`            | [djobbo/kubi](https://github.com/djobbo/kubi)                           | `main`   |
+| `.repos/alchemy`         | [alchemy-run/alchemy](https://github.com/alchemy-run/alchemy)           | `main`   |
 
 ## Prerequisites
 
