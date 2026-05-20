@@ -1,24 +1,23 @@
 {
-  "name": "server",
-  "version": "0.0.0",
-  "scripts": {
-    "ts:check": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@tanstack/react-query": "^4.22.0",
-    "@trpc/client": "10.45.0",
-    "@trpc/next": "10.45.0",
-    "@trpc/react-query": "10.45.0",
-    "@trpc/server": "10.45.0",
-    "bhapi": "workspace:*",
-    "common": "workspace:*",
-    "db": "workspace:*",
-    "logger": "workspace:*",
-    "web-parser": "workspace:*",
-    "zod": "^3.22.4"
-  },
-  "devDependencies": {
-    "@types/node": "^20.11.5",
-    "tsconfig": "workspace:*"
-  }
+    "name": "server",
+    "version": "0.0.0",
+    "scripts": {
+        "ts:check": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@tanstack/react-query": "^4.22.0",
+        "@trpc/client": "10.45.0",
+        "@trpc/react-query": "10.45.0",
+        "@trpc/server": "10.45.0",
+        "bhapi": "workspace:*",
+        "common": "workspace:*",
+        "db": "workspace:*",
+        "logger": "workspace:*",
+        "web-parser": "workspace:*",
+        "zod": "^3.22.4"
+    },
+    "devDependencies": {
+        "@types/node": "^20.11.5",
+        "tsconfig": "workspace:*"
+    }
 }

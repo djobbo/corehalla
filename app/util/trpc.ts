@@ -1,68 +1,41 @@
-import { createTRPCNext } from "@trpc/next"
-import { httpLink } from "@trpc/client"
+import { QueryClient } from "@tanstack/react-query"
+import { createTRPCProxyClient, httpLink } from "@trpc/client"
+import { createTRPCReact } from "@trpc/react-query"
 import type { AppRouter } from "server/router"
-// TS2742: https://github.com/microsoft/TypeScript/issues/47663
-import type {} from "@trpc/react-query"
 
 const getBaseUrl = () => {
-    if (typeof window !== "undefined")
-        // browser should use relative path
-        return ""
+    if (typeof window !== "undefined") return ""
 
-    if (process.env.VERCEL_URL)
-        // reference for vercel.com
-        return `https://${process.env.VERCEL_URL}`
+    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
 
-    // fallback to localhost
     return `http://localhost:${process.env.PORT ?? 3000}`
 }
 
-export const trpc = createTRPCNext<AppRouter>({
-    config() {
-        return {
-            links: [
-                httpLink({
-                    /**
-                     * If you want to use SSR, you need to use the server's full URL
-                     * @link https://trpc.io/docs/ssr
-                     **/
-                    url: `${getBaseUrl()}/api/trpc`,
-                }),
-            ],
-            /**
-             * @link https://tanstack.com/query/v4/docs/reference/QueryClient
-             **/
-            queryClientConfig: {
-                defaultOptions: {
-                    queries: {
-                        staleTime: 60,
-                        refetchOnWindowFocus: false,
-                        refetchOnMount: false,
-                        retry: 3,
-                        retryDelay: (attemptIndex) =>
-                            Math.min(1000 * 2 ** attemptIndex, 30000),
-                    },
-                },
-            },
-        }
+export const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 60,
+            refetchOnWindowFocus: false,
+            refetchOnMount: false,
+            retry: 3,
+            retryDelay: (attemptIndex) =>
+                Math.min(1000 * 2 ** attemptIndex, 30000),
+        },
     },
-    /**
-     * @link https://trpc.io/docs/ssr
-     **/
-    ssr: true,
-    responseMeta({ clientErrors }) {
-        if (clientErrors.length) {
-            // propagate first http error from API calls
-            return {
-                status: clientErrors[0].data?.httpStatus ?? 500,
-            }
-        }
+})
 
-        // cache full page for 1 day + revalidate once every 30 seconds
-        const CACHE_TIME = 60 * 60 * 24
-        const REVALIDATE_TIME = 30
-        return {
-            "Cache-Control": `s-maxage=${REVALIDATE_TIME}, stale-while-revalidate=${CACHE_TIME}`,
-        }
-    },
+export const trpc = createTRPCReact<AppRouter>()
+
+const trpcLinks = [
+    httpLink({
+        url: `${getBaseUrl()}/api/trpc`,
+    }),
+]
+
+export const trpcClient = trpc.createClient({
+    links: trpcLinks,
+})
+
+export const trpcProxy = createTRPCProxyClient<AppRouter>({
+    links: trpcLinks,
 })

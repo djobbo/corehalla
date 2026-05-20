@@ -1,8 +1,8 @@
-import { Kbd } from "ui/base/Kbd"
-import { SearchIcon } from "ui/icons"
 import { cn } from "common/helpers/classnames"
 import { useDevice } from "common/hooks/useDevice"
 import { useKBar } from "kbar"
+import { Kbd } from "ui/base/Kbd"
+import { SearchIcon } from "ui/icons"
 
 type SearchButtonProps = {
     className?: string

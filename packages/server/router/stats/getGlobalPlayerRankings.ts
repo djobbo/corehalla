@@ -1,10 +1,11 @@
-import { GLOBAL_PLAYER_RANKINGS_PER_PAGE } from "../../helpers/constants"
-import { logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
-import { publicProcedure } from "../../trpc"
-import { supabaseService } from "db/supabase/service"
-import { z } from "zod"
 import type { BHPlayerData } from "db/generated/client"
+import { supabaseService } from "db/supabase/service"
+import { logInfo } from "logger"
+import { z } from "zod"
+
+import { GLOBAL_PLAYER_RANKINGS_PER_PAGE } from "../../helpers/constants"
+import { publicProcedure } from "../../trpc"
 
 export const getGlobalPlayerRankings = publicProcedure
     .input(

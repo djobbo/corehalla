@@ -1,6 +1,7 @@
 import { Routes } from "discord-api-types/v9"
-import { discordApi } from "./client"
 import type { APIConnection } from "discord-api-types/v9"
+
+import { discordApi } from "./client"
 
 export const getUserConnections = async (
     discordToken: string,
@@ -14,7 +15,7 @@ export const getUserConnections = async (
         if (res.status !== 200) throw new Error(res.statusText)
 
         return res.data
-    } catch (e) {
+    } catch {
         return null
     }
 }

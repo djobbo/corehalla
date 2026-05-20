@@ -1,12 +1,13 @@
 import { getRankings } from "bhapi"
-import { logError, logInfo } from "logger"
-import { numericLiteralValidator } from "common/helpers/validators"
-import { publicProcedure } from "../../trpc"
 import { rankedRegionValidator } from "bhapi/constants"
-import { updateDBPlayerAliases } from "../../mutations/updateDBPlayerAliases"
+import { numericLiteralValidator } from "common/helpers/validators"
+import { logError, logInfo } from "logger"
+import { z } from "zod"
+
 import { waitForRequestTimeout } from "../../helpers/waitForRequestTimeout"
 import { withTimeLog } from "../../helpers/withTimeLog"
-import { z } from "zod"
+import { updateDBPlayerAliases } from "../../mutations/updateDBPlayerAliases"
+import { publicProcedure } from "../../trpc"
 
 export const get1v1Rankings = publicProcedure //
     .input(

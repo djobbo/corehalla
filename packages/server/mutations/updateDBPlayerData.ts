@@ -1,3 +1,4 @@
+import type { RankedRegion, RankedTier } from "bhapi/constants"
 import {
     getFullLegends,
     getFullWeapons,
@@ -5,14 +6,14 @@ import {
     getWeaponlessData,
     getWeaponsAccumulativeData,
 } from "bhapi/legends"
-import { logError, logInfo } from "logger"
-import { supabaseService } from "db/supabase/service"
-import type { BHPlayerData } from "db/generated/client"
-import type { BHPlayerLegend, BHPlayerWeapon } from "db/generated/client"
-import type { CommonOptions } from "../helpers/commonOptions"
 import type { FullLegend, FullWeapon } from "bhapi/legends"
 import type { PlayerStats } from "bhapi/types"
-import type { RankedRegion, RankedTier } from "bhapi/constants"
+import type { BHPlayerData } from "db/generated/client"
+import type { BHPlayerLegend, BHPlayerWeapon } from "db/generated/client"
+import { supabaseService } from "db/supabase/service"
+import { logError, logInfo } from "logger"
+
+import type { CommonOptions } from "../helpers/commonOptions"
 
 const MAX_LEGENDS_PER_PLAYER = 3
 const MAX_WEAPONS_PER_PLAYER = 3

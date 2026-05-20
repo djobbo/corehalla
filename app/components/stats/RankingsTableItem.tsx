@@ -1,9 +1,9 @@
-import { Image } from "@components/Image"
-import { Progress } from "ui/base/Progress"
+import { Image } from "#/components/Image"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
-import { cn } from "common/helpers/classnames"
 import type { Ranking } from "bhapi/types"
+import { cn } from "common/helpers/classnames"
 import type { ReactNode } from "react"
+import { Progress } from "ui/base/Progress"
 
 type RankingsTableItemProps = Ranking & {
     className?: string

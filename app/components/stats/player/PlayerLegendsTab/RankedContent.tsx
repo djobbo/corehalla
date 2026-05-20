@@ -1,12 +1,13 @@
-import { CollapsibleSection } from "@components/layout/CollapsibleSection"
-import { Image } from "@components/Image"
-import { MiscStatGroup } from "../../MiscStatGroup"
-import { RatingDisplay } from "../../RatingDisplay"
-import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
+import { Image } from "#/components/Image"
+import { CollapsibleSection } from "#/components/layout/CollapsibleSection"
 import { getLegendEloReset } from "bhapi/calculator"
+import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
 import { getTierFromRating } from "bhapi/helpers/getTierFromRating"
 import type { FullLegend } from "bhapi/legends"
+
+import { MiscStatGroup } from "../../MiscStatGroup"
 import type { MiscStat } from "../../MiscStatGroup"
+import { RatingDisplay } from "../../RatingDisplay"
 
 type PlayerLegendRankedContentProps = {
     ranked: FullLegend["ranked"]

@@ -1,13 +1,14 @@
-import { CollapsibleSection } from "@components/layout/CollapsibleSection"
-import { Image } from "@components/Image"
-import { MiscStatGroup } from "../../MiscStatGroup"
-import { Rankings1v1Icon } from "ui/icons"
-import { RatingDisplay } from "../../RatingDisplay"
-import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
+import { Image } from "#/components/Image"
+import { CollapsibleSection } from "#/components/layout/CollapsibleSection"
 import { getGlory, getPersonalEloReset } from "bhapi/calculator"
+import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
 import { getTierFromRating } from "bhapi/helpers/getTierFromRating"
-import type { MiscStat } from "../../MiscStatGroup"
 import type { PlayerRanked } from "bhapi/types"
+import { Rankings1v1Icon } from "ui/icons"
+
+import { MiscStatGroup } from "../../MiscStatGroup"
+import type { MiscStat } from "../../MiscStatGroup"
+import { RatingDisplay } from "../../RatingDisplay"
 
 type PlayerOverviewRankedContentProps = {
     ranked: PlayerRanked

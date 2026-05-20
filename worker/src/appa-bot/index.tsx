@@ -1,6 +1,7 @@
 import { ActivityType, GatewayIntentBits } from "discord.js"
-import { Embed, createClient, createSlashCommand } from "reaccord"
 import { logInfo } from "logger"
+import { Embed, createClient, createSlashCommand } from "reaccord"
+
 import { startChannelSwitcher } from "./channel-switcher"
 
 export type BotOptions = {

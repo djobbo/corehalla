@@ -1,11 +1,6 @@
 {
     "name": "bhapi",
     "version": "0.0.0",
-    "devDependencies": {
-        "@types/node": "^20.11.5",
-        "tsconfig": "workspace:*",
-        "typescript": "^5.3.3"
-    },
     "scripts": {
         "ts:check": "tsc --noEmit"
     },
@@ -15,5 +10,10 @@
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "zod": "^3.22.4"
+    },
+    "devDependencies": {
+        "@types/node": "^20.11.5",
+        "tsconfig": "workspace:*",
+        "typescript": "^5.3.3"
     }
 }

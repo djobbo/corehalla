@@ -1,9 +1,9 @@
-import { supabase } from "db/supabase/client"
-import { toast } from "react-hot-toast"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { useFeatureFlags } from "@hooks/useFeatures"
+import { useFeatureFlags } from "#/hooks/useFeatures"
 import type { Prisma, UserFavorite } from "db/generated/client"
+import { supabase } from "db/supabase/client"
 import type { Session } from "db/supabase/client"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { toast } from "react-hot-toast"
 
 type FavoriteType = "player" | "clan"
 

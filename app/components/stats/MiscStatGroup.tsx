@@ -1,7 +1,7 @@
-import { Tooltip } from "ui/base/Tooltip"
 import { cn } from "common/helpers/classnames"
-import { css } from "ui/theme"
 import type { ReactNode } from "react"
+import { Tooltip } from "ui/base/Tooltip"
+import { css } from "ui/theme"
 
 export type MiscStat = {
     name: string

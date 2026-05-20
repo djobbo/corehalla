@@ -1,3 +1,6 @@
+import type { Client } from "reaccord"
+
+import type { BotOptions } from ".."
 import {
     cloneGeneratorChannel,
     deleteChannelIfEmpty,
@@ -9,8 +12,6 @@ import {
     isValidBrawlhallaRoomNumber,
     saveRoomNumber,
 } from "./roomNumbers"
-import type { BotOptions } from ".."
-import type { Client } from "reaccord"
 
 export const startChannelSwitcher = async (
     client: Client,

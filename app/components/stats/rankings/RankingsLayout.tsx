@@ -1,7 +1,7 @@
-import { Pagination } from "ui/base/Pagination"
-import { Paginator } from "ui/base/Paginator"
 import { cn } from "common/helpers/classnames"
 import type { Dispatch, ReactNode, SetStateAction } from "react"
+import { Pagination } from "ui/base/Pagination"
+import { Paginator } from "ui/base/Paginator"
 import type { PaginatorPage } from "ui/base/Paginator"
 
 type RankingsLayoutProps = {

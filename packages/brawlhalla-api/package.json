@@ -1,0 +1,21 @@
+{
+    "name": "@corehalla/brawlhalla-api",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "ts:check": "tsc --noEmit"
+    },
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "dependencies": {
+        "common": "workspace:*",
+        "effect": "catalog:"
+    },
+    "devDependencies": {
+        "@types/node": "catalog:",
+        "tsconfig": "workspace:*",
+        "typescript": "catalog:"
+    }
+}

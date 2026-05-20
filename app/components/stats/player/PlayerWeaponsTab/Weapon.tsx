@@ -1,12 +1,13 @@
+import { Image } from "#/components/Image"
+import type { FullWeapon } from "bhapi/legends"
+import { formatTime } from "common/helpers/date"
 import { Card } from "ui/base/Card"
+
 import { CollapsibleContent } from "../../../layout/CollapsibleContent"
 import { GamesDisplay } from "../../GamesDisplay"
-import { Image } from "@components/Image"
 import { MiscStatGroup } from "../../MiscStatGroup"
-import { PlayerWeaponRankedContent } from "./RankedContent"
-import { formatTime } from "common/helpers/date"
-import type { FullWeapon } from "bhapi/legends"
 import type { MiscStat } from "../../MiscStatGroup"
+import { PlayerWeaponRankedContent } from "./RankedContent"
 
 type Weapon = FullWeapon & {
     games: number

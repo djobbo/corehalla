@@ -4,27 +4,13 @@ jobs:
     analyze:
         name: Analyze
         runs-on: ubuntu-latest
-        strategy:
-            fail-fast: false
-            matrix:
-                include:
-                    - name: Lint
-                      action: pnpm ci:lint
-                    - name: Check Types
-                      action: pnpm ts:check
-                    - name: Check Deadcode
-                      action: pnpm ci:deadcode
         steps:
-            - uses: actions/checkout@v3
-            - uses: pnpm/action-setup@v2
+            - uses: actions/checkout@v4
+            - uses: voidzero-dev/setup-vp@v1
               with:
-                  version: 8.5.0
-            - uses: actions/setup-node@v2
-              with:
-                  node-version: 18
-                  cache: "pnpm"
-                  cache-dependency-path: pnpm-lock.yaml
-            - name: ${{ matrix.name }}
+                  node-version: "24"
+                  cache: true
+            - name: Check
               run: |
-                  pnpm ci:install
-                  ${{ matrix.action }}
+                  vp install --frozen-lockfile
+                  vp run ci:check

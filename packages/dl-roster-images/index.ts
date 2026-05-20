@@ -1,9 +1,11 @@
-import { downloadImage } from "./downloadImage"
 import { existsSync, mkdirSync, rmdirSync } from "fs"
+
+import axios from "axios"
 import { legends } from "bhapi/legends"
 import { load } from "cheerio"
 import { logInfo } from "logger"
-import axios from "axios"
+
+import { downloadImage } from "./downloadImage"
 
 const APP_DIR = "../../app"
 const PUBLIC_DIR = `${APP_DIR}/public`
@@ -30,9 +32,9 @@ export const downloadImages = async () => {
             }
         })
         .get()
-        .filter(({ name, src }) => (console.log({ name, src }), name && src))
+        .filter(({ name, src }) => name && src)
 
-    imgs.forEach((img, i) => {
+    imgs.forEach((img) => {
         if (!img.src || !img.name) return
 
         // TODO: readd crossovers
@@ -45,8 +47,8 @@ export const downloadImages = async () => {
             img.src,
             `${OUT_DIR}/${prefix}s/${
                 isLegend
-                    ? legends.find((l) => l.bio_name === img.name)
-                          ?.legend_name_key ?? img.name
+                    ? (legends.find((l) => l.bio_name === img.name)
+                          ?.legend_name_key ?? img.name)
                     : img.name
             }.png`,
         )

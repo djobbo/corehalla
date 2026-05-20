@@ -1,5 +1,13 @@
+import { usePlayerSearch } from "#/hooks/stats/usePlayerSearch"
+import { MAX_SHOWN_ALIASES } from "#/util/constants"
+import { trpc } from "#/util/trpc"
 import { HiArrowUp } from "@react-icons/all-files/hi/HiArrowUp"
-
+import { css } from "@stitches/react"
+import { gaEvent } from "common/analytics/gtag"
+import { cn } from "common/helpers/classnames"
+import { cleanString } from "common/helpers/cleanString"
+import { numericLiteralValidator } from "common/helpers/validators"
+import { useDebouncedState } from "common/hooks/useDebouncedState"
 import {
     KBarAnimator,
     KBarPortal,
@@ -7,23 +15,13 @@ import {
     KBarSearch,
     useKBar,
 } from "kbar"
-import { MAX_SHOWN_ALIASES } from "@util/constants"
-import { RankedPlayerItem } from "./RankedPlayerItem"
-import { SearchboxItem } from "./SearchboxItem"
+import { useEffect } from "react"
 import { Spinner } from "ui/base/Spinner"
 import { UserIcon } from "ui/icons"
-import { cleanString } from "common/helpers/cleanString"
-import { cn } from "common/helpers/classnames"
-import { css } from "@stitches/react"
-import { gaEvent } from "common/analytics/gtag"
-import { numericLiteralValidator } from "common/helpers/validators"
 import { styled, theme } from "ui/theme"
-import { trpc } from "@util/trpc"
-import { useDebouncedState } from "common/hooks/useDebouncedState"
-import { useEffect, useState } from "react"
-import { usePlayerSearch } from "@hooks/stats/usePlayerSearch"
-import type { Ranking1v1 } from "bhapi/types"
 
+import { RankedPlayerItem } from "./RankedPlayerItem"
+import { SearchboxItem } from "./SearchboxItem"
 const __DEV = process.env.NODE_ENV === "development"
 
 const ResultsContainer = styled("div", {
@@ -68,7 +66,6 @@ const AliasesSubtitle = ({
 }
 
 export const Searchbox = () => {
-    const [rankings, setRankings] = useState<Ranking1v1[]>([])
     const [search, setSearch, immediateSearch, isDebouncingSearch] =
         useDebouncedState("", __DEV ? 250 : 750)
 
@@ -105,18 +102,16 @@ export const Searchbox = () => {
     }, [toggle])
 
     useEffect(() => {
-        if (isLoading) return
+        if (isLoading || !search) return
 
         gaEvent({
             action: "use_searchbox",
             category: "app",
             label: `player ${search}`,
         })
+    }, [isLoading, search])
 
-        setRankings(rankings1v1 ?? [])
-    }, [rankings1v1, isLoading, search])
-
-    const filteredRankings = rankings.filter((player) =>
+    const filteredRankings = rankings1v1.filter((player) =>
         player.name.toLowerCase().startsWith(immediateSearch.toLowerCase()),
     )
 
@@ -157,7 +152,7 @@ export const Searchbox = () => {
                         <ResultsContainer className="overflow-y-auto">
                             <div className="max-h-[50vh] my-2">
                                 {immediateSearch &&
-                                (rankings.length > 0 ||
+                                (rankings1v1.length > 0 ||
                                     aliases.length > 0 ||
                                     isPotentialBrawlhallaId) ? (
                                     <>

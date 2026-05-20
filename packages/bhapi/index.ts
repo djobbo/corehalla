@@ -1,9 +1,11 @@
+import axios from "axios"
+
+import type { RankedRegion } from "./constants"
 import { clanMock } from "./mocks/clan"
 import { playerRankedMock } from "./mocks/playerRanked"
 import { playerStatsMock } from "./mocks/playerStats"
 import { rankings1v1Mock } from "./mocks/rankings1v1"
 import { rankings2v2Mock } from "./mocks/rankings2v2"
-import axios from "axios"
 import type {
     Bracket,
     Clan,
@@ -12,7 +14,6 @@ import type {
     Ranking1v1,
     Ranking2v2,
 } from "./types"
-import type { RankedRegion } from "./constants"
 
 const __DEV = process.env.NODE_ENV === "development"
 
@@ -24,11 +25,18 @@ const getBhApi = async <T>(
     params: Record<string, string | undefined> = {},
 ) => {
     return (
-        await axios.get<T>(`${DAIR_GG_API_BASE}${path}`, {
-            params: { ...params, api_key: process.env.BRAWLHALLA_API_KEY },
-        }).catch(() => axios.get<T>(`${BH_API_BASE}${path}`, {
-            params: { ...params, api_key: process.env.BRAWLHALLA_API_KEY },
-        }))
+        await axios
+            .get<T>(`${DAIR_GG_API_BASE}${path}`, {
+                params: { ...params, api_key: process.env.BRAWLHALLA_API_KEY },
+            })
+            .catch(() =>
+                axios.get<T>(`${BH_API_BASE}${path}`, {
+                    params: {
+                        ...params,
+                        api_key: process.env.BRAWLHALLA_API_KEY,
+                    },
+                }),
+            )
     ).data
 }
 

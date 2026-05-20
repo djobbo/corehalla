@@ -1,7 +1,5 @@
+import type { RankedRegion } from "bhapi/constants"
 import { ChannelType, EmbedBuilder } from "discord.js"
-import { deleteRoomNumber, getRoomNumber } from "./roomNumbers"
-import { logInfo } from "logger"
-import type { BotOptions } from ".."
 import type {
     Channel,
     GuildChannel,
@@ -9,8 +7,11 @@ import type {
     VoiceChannel,
     VoiceState,
 } from "discord.js"
+import { logInfo } from "logger"
 import type { Client } from "reaccord"
-import type { RankedRegion } from "bhapi/constants"
+
+import type { BotOptions } from ".."
+import { deleteRoomNumber, getRoomNumber } from "./roomNumbers"
 
 const isTextChannel = (channel?: Channel): channel is TextChannel =>
     !!channel && channel.type === ChannelType.GuildText

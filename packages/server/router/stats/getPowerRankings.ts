@@ -1,12 +1,12 @@
 import { logInfo } from "logger"
 import {
-    parsePowerRankingsPage,
     powerRankingsBracketValidator,
     powerRankingsRegionValidator,
 } from "web-parser/power-rankings/parsePowerRankingsPage"
-import { publicProcedure } from "../../trpc"
-import { withTimeLog } from "../../helpers/withTimeLog"
 import { z } from "zod"
+
+import { withTimeLog } from "../../helpers/withTimeLog"
+import { publicProcedure } from "../../trpc"
 
 export const getPowerRankings = publicProcedure
     .input(
@@ -17,7 +17,6 @@ export const getPowerRankings = publicProcedure
     )
     .query(
         withTimeLog(async (req) => {
-            const { bracket, region } = req.input
             logInfo("getPowerRankings", req.input)
 
             return []

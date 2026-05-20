@@ -1,12 +1,13 @@
 import { getPlayerStats as getPlayerStatsFn } from "bhapi"
-import { logError, logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
-import { publicProcedure } from "../../trpc"
-import { updateDBClanData } from "../../mutations/updateDBClanData"
-import { updateDBPlayerAliases } from "../../mutations/updateDBPlayerAliases"
+import { logError, logInfo } from "logger"
+import { z } from "zod"
+
 import { waitForRequestTimeout } from "../../helpers/waitForRequestTimeout"
 import { withTimeLog } from "../../helpers/withTimeLog"
-import { z } from "zod"
+import { updateDBClanData } from "../../mutations/updateDBClanData"
+import { updateDBPlayerAliases } from "../../mutations/updateDBPlayerAliases"
+import { publicProcedure } from "../../trpc"
 
 export const getPlayerStats = publicProcedure //
     .input(

@@ -1,10 +1,11 @@
+import { logInfo } from "logger"
 import {
     brawlhallaArticleCategorySchema,
     getBrawlhallaArticles,
 } from "web-parser/common"
-import { logInfo } from "logger"
-import { publicProcedure } from "../trpc"
 import { z } from "zod"
+
+import { publicProcedure } from "../trpc"
 
 export const getBHArticles = publicProcedure //
     .input(

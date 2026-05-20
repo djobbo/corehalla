@@ -1,11 +1,18 @@
+declare global {
+    interface Window {
+        dataLayer?: unknown[]
+        gtag?: (...args: unknown[]) => void
+    }
+}
+
 /**
  * Google Analytics Identifier
  */
-export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_TRACKING_ID
+export const GA_TRACKING_ID = import.meta.env.VITE_GA_TRACKING_ID
 /**
  * Google Adsense Identifier
  */
-export const ADSENSE_ID = process.env.NEXT_PUBLIC_ADSENSE_ID
+export const ADSENSE_ID = import.meta.env.VITE_ADSENSE_ID
 
 /**
  * Google Adsense Publisher Identifier
@@ -19,8 +26,10 @@ export const adsenseCaPub = `ca-pub-${ADSENSE_ID}`
  * @param url page url
  */
 export const gaPageview = (url: string) => {
-    // @ts-expect-error window.gtag is not defined
-    window.gtag("config", GA_TRACKING_ID, {
+    if (typeof window === "undefined" || !GA_TRACKING_ID) return
+    const gtag = window.gtag
+    if (typeof gtag !== "function") return
+    gtag("config", GA_TRACKING_ID, {
         page_path: url,
     })
 }
@@ -37,8 +46,10 @@ type GAEvent = {
  * @link https://developers.google.com/analytics/devguides/collection/gtagjs/events
  */
 export const gaEvent = ({ action, category, label, value }: GAEvent) => {
-    // @ts-expect-error window.gtag is not defined
-    window.gtag("event", action, {
+    if (typeof window === "undefined" || !GA_TRACKING_ID) return
+    const gtag = window.gtag
+    if (typeof gtag !== "function") return
+    gtag("event", action, {
         event_category: category,
         event_label: label,
         value,

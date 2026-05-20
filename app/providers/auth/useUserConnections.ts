@@ -1,9 +1,9 @@
 import { getUserConnections } from "db/discord/getUserConnections"
-import { logInfo } from "logger"
-import { supabase } from "db/supabase/client"
-import { useCallback, useEffect, useState } from "react"
-import type { Session } from "db/supabase/client"
 import type { UserConnection } from "db/generated/client"
+import { supabase } from "db/supabase/client"
+import type { Session } from "db/supabase/client"
+import { logInfo } from "logger"
+import { useCallback, useEffect, useState } from "react"
 
 export const useUserConnections = (
     session: Session | null,

@@ -1,7 +1,7 @@
-import { BackToTopIcon } from "ui/icons"
-import { Tooltip } from "ui/base/Tooltip"
 import { cn } from "common/helpers/classnames"
 import { useWindowScroll } from "common/hooks/useWindowScroll"
+import { Tooltip } from "ui/base/Tooltip"
+import { BackToTopIcon } from "ui/icons"
 
 export const BackToTopButton = () => {
     const { y: scrollY } = useWindowScroll()

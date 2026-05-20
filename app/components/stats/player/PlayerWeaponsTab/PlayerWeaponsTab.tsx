@@ -1,12 +1,13 @@
+import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
+import { getWeaponsAccumulativeData } from "bhapi/legends"
+import type { FullWeapon } from "bhapi/legends"
+import { formatTime } from "common/helpers/date"
+import { SortDirection, useSortBy } from "common/hooks/useSortBy"
+import { useMemo } from "react"
 import { Select } from "ui/base/Select"
 import { SortAscendingIcon, SortDescendingIcon } from "ui/icons"
-import { SortDirection, useSortBy } from "common/hooks/useSortBy"
+
 import { Weapon } from "./Weapon"
-import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
-import { formatTime } from "common/helpers/date"
-import { getWeaponsAccumulativeData } from "bhapi/legends"
-import { useMemo } from "react"
-import type { FullWeapon } from "bhapi/legends"
 
 type PlayerWeaponsTabProps = {
     weapons: FullWeapon[]

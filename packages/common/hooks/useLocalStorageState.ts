@@ -19,7 +19,7 @@ export const useLocalStorageState = <T>(
             if (typeof window !== "undefined") {
                 window.localStorage.setItem(key, JSON.stringify(valueToStore))
             }
-        } catch (error) {
+        } catch {
             // Error saving data
         }
     }
@@ -32,7 +32,7 @@ export const useLocalStorageState = <T>(
         try {
             const item = window.localStorage.getItem(key)
             setStoredValue(item ? JSON.parse(item) : initialValue)
-        } catch (error) {
+        } catch {
             // Error retrieving data
         }
 

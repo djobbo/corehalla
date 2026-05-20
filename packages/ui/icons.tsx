@@ -14,7 +14,6 @@ import { HiUser } from "@react-icons/all-files/hi/HiUser"
 import { HiUserGroup } from "@react-icons/all-files/hi/HiUserGroup"
 import { HiUsers } from "@react-icons/all-files/hi/HiUsers"
 import { HiX } from "@react-icons/all-files/hi/HiX"
-
 import { SiDiscord } from "@react-icons/all-files/si/SiDiscord"
 import { SiGithub } from "@react-icons/all-files/si/SiGithub"
 import { SiKofi } from "@react-icons/all-files/si/SiKofi"

@@ -1,9 +1,10 @@
-import { Image } from "@components/Image"
-import { MiscStatGroup } from "../../MiscStatGroup"
-import { SectionTitle } from "../../../layout/SectionTitle"
+import { Image } from "#/components/Image"
 import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
-import { memo } from "react"
 import type { FullLegend, FullWeapon } from "bhapi/legends"
+import { memo } from "react"
+
+import { SectionTitle } from "../../../layout/SectionTitle"
+import { MiscStatGroup } from "../../MiscStatGroup"
 import type { MiscStat } from "../../MiscStatGroup"
 
 type PlayerWeaponRankedContentProps = {

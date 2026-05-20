@@ -1,6 +1,6 @@
+import { trpc } from "#/util/trpc"
 // TS2742: https://github.com/microsoft/TypeScript/issues/47663
 import {} from "@tanstack/query-core"
-import { trpc } from "@util/trpc"
 import type {
     PowerRankingsBracket,
     PowerRankingsRegion,

@@ -1,10 +1,11 @@
+import { CollapsibleSection } from "#/components/layout/CollapsibleSection"
+import type { PlayerStats } from "bhapi/types"
+import { cn } from "common/helpers/classnames"
+import { cleanString } from "common/helpers/cleanString"
 import { AppLink } from "ui/base/AppLink"
 import { ClanIcon } from "ui/icons"
-import { CollapsibleSection } from "@components/layout/CollapsibleSection"
+
 import { MiscStatGroup } from "../../MiscStatGroup"
-import { cleanString } from "common/helpers/cleanString"
-import { cn } from "common/helpers/classnames"
-import type { PlayerStats } from "bhapi/types"
 
 type PlayerOverviewClanContentProps = {
     playerStats: PlayerStats

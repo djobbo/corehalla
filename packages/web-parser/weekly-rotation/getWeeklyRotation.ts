@@ -1,8 +1,9 @@
-import { legends } from "bhapi/legends"
-import { load } from "cheerio"
-import { parseBHArticlesPage } from "../bh-articles/parseBHArticlesPage"
 import axios from "axios"
+import { legends } from "bhapi/legends"
 import type { Legend } from "bhapi/types"
+import { load } from "cheerio"
+
+import { parseBHArticlesPage } from "../bh-articles/parseBHArticlesPage"
 
 const PREFIXES = [
     "The free-to-play Legend rotation for this week includes: ",

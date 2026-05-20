@@ -1,6 +1,7 @@
-import { AppLink } from "./AppLink"
 import { cn } from "common/helpers/classnames"
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from "react"
+
+import { AppLink } from "./AppLink"
 
 type ButtonType = "a" | "button"
 type ButtonStyle = "primary" | "outline"

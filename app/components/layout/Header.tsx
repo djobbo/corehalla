@@ -1,14 +1,15 @@
-import { AlertBar } from "./AlertBar"
+import { Image } from "#/components/Image"
+import { useAuth } from "#/providers/auth/AuthProvider"
+import { useSideNav } from "#/providers/SideNavProvider"
+import { useAppRouter } from "#/util/router"
+import { cn } from "common/helpers/classnames"
 import { AppLink } from "ui/base/AppLink"
 import { Button } from "ui/base/Button"
 import { DiscordIcon, GithubIcon, TwitterIcon } from "ui/icons"
 import { HamburgerMenuIcon } from "ui/icons"
-import { Image } from "@components/Image"
+
 import { SearchButton, SearchButtonIcon } from "../search/SearchButton"
-import { cn } from "common/helpers/classnames"
-import { useAuth } from "@ctx/auth/AuthProvider"
-import { useRouter } from "next/router"
-import { useSideNav } from "@ctx/SideNavProvider"
+import { AlertBar } from "./AlertBar"
 
 type HeaderProps = {
     className?: string
@@ -16,11 +17,11 @@ type HeaderProps = {
 
 export const Header = ({ className }: HeaderProps) => {
     const { isLoggedIn, signIn, signOut, userProfile } = useAuth()
-    const router = useRouter()
+    const { pathname } = useAppRouter()
 
     const { openSideNav } = useSideNav()
 
-    const isLandingPage = router.pathname === "/"
+    const isLandingPage = pathname === "/"
 
     return (
         <>
@@ -69,7 +70,6 @@ export const Header = ({ className }: HeaderProps) => {
                                                 alt={userProfile.username}
                                                 containerClassName="rounded-lg w-8 h-8 overflow-hidden"
                                                 className="object-cover object-center"
-                                                unoptimized
                                             />
                                         </div>
                                     </>

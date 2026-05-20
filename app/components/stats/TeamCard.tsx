@@ -1,18 +1,18 @@
-import { getPlayerTeam } from "bhapi/helpers/getTeamPlayers"
+import { Image } from "#/components/Image"
+import { getLegendEloReset } from "bhapi/calculator"
 import { rankedRegions } from "bhapi/constants"
+import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
+import { getPlayerTeam } from "bhapi/helpers/getTeamPlayers"
+import { getTierFromRating } from "bhapi/helpers/getTierFromRating"
 import type { PlayerRanked } from "bhapi/types"
-
+import { cn } from "common/helpers/classnames"
+import { cleanString } from "common/helpers/cleanString"
 import { AppLink } from "ui/base/AppLink"
 import { Card } from "ui/base/Card"
-import { Image } from "@components/Image"
+import { css } from "ui/theme"
+
 import { MiscStatGroup } from "./MiscStatGroup"
 import { RatingDisplay } from "./RatingDisplay"
-import { calculateWinrate } from "bhapi/helpers/calculateWinrate"
-import { cleanString } from "common/helpers/cleanString"
-import { cn } from "common/helpers/classnames"
-import { css } from "ui/theme"
-import { getLegendEloReset } from "bhapi/calculator"
-import { getTierFromRating } from "bhapi/helpers/getTierFromRating"
 
 type TeamCardProps = {
     playerId: number

@@ -1,12 +1,13 @@
+import { Image } from "#/components/Image"
+import type { FullLegend } from "bhapi/legends"
+import { formatTime } from "common/helpers/date"
+
 import { CollapsibleContent } from "../../../layout/CollapsibleContent"
 import { GeneralStats } from "../../GeneralStats"
-import { Image } from "@components/Image"
 import { MiscStatGroup } from "../../MiscStatGroup"
+import type { MiscStat } from "../../MiscStatGroup"
 import { PlayerLegendRankedContent } from "./RankedContent"
 import { PlayerLegendWeaponDistribution } from "./WeaponDistribution"
-import { formatTime } from "common/helpers/date"
-import type { FullLegend } from "bhapi/legends"
-import type { MiscStat } from "../../MiscStatGroup"
 
 type LegendProps = {
     legend: FullLegend

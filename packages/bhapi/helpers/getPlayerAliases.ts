@@ -1,6 +1,7 @@
 import { cleanString } from "common/helpers/cleanString"
-import { getPlayerTeam } from "./getTeamPlayers"
+
 import type { PlayerRanked, PlayerStats } from "../types"
+import { getPlayerTeam } from "./getTeamPlayers"
 
 export const getPlayerAliases = (
     playerStats: PlayerStats,

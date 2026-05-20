@@ -1,7 +1,7 @@
+import { alerts } from "#/util/alerts"
 import { InfoIcon } from "ui/icons"
-import { alerts } from "@util/alerts"
 
-const CURRENT_ALERT = process.env.NEXT_PUBLIC_ALERT as
+const CURRENT_ALERT = import.meta.env.VITE_ALERT as
     | keyof typeof alerts
     | undefined
 

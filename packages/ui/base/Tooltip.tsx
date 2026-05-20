@@ -1,13 +1,16 @@
-import * as RadixTooltip from "@radix-ui/react-tooltip"
+import { Tooltip as BaseTooltip } from "@base-ui/react/tooltip"
 import { cn } from "common/helpers/classnames"
+import type { ComponentProps } from "react"
 import type { ReactNode } from "react"
+
+type TooltipPositionerProps = ComponentProps<typeof BaseTooltip.Positioner>
 
 type TooltipProps = {
     content: ReactNode
     children: ReactNode
     delay?: number
-    side?: RadixTooltip.TooltipContentProps["side"]
-    align?: RadixTooltip.TooltipContentProps["align"]
+    side?: TooltipPositionerProps["side"]
+    align?: TooltipPositionerProps["align"]
     className?: string
 }
 
@@ -20,25 +23,25 @@ export const Tooltip = ({
     className,
 }: TooltipProps) => {
     return (
-        <RadixTooltip.Provider delayDuration={delay}>
-            <RadixTooltip.Root>
-                <RadixTooltip.Trigger className="text-left">
+        <BaseTooltip.Provider delay={delay}>
+            <BaseTooltip.Root>
+                <BaseTooltip.Trigger render={<div className="text-left" />}>
                     {children}
-                </RadixTooltip.Trigger>
-                <RadixTooltip.Portal>
-                    <RadixTooltip.Content
-                        side={side}
-                        align={align}
-                        className={cn(
-                            className,
-                            "px-4 py-2 bg-bgVar2 border border-bg rounded-lg shadow-md hidden hashover:block z-50",
-                        )}
-                    >
-                        {content}
-                        <RadixTooltip.Arrow className="mb-2 fill-bg" />
-                    </RadixTooltip.Content>
-                </RadixTooltip.Portal>
-            </RadixTooltip.Root>
-        </RadixTooltip.Provider>
+                </BaseTooltip.Trigger>
+                <BaseTooltip.Portal>
+                    <BaseTooltip.Positioner side={side} align={align}>
+                        <BaseTooltip.Popup
+                            className={cn(
+                                className,
+                                "px-4 py-2 bg-bgVar2 border border-bg rounded-lg shadow-md hidden hashover:block z-50",
+                            )}
+                        >
+                            {content}
+                            <BaseTooltip.Arrow className="mb-2 fill-bg" />
+                        </BaseTooltip.Popup>
+                    </BaseTooltip.Positioner>
+                </BaseTooltip.Portal>
+            </BaseTooltip.Root>
+        </BaseTooltip.Provider>
     )
 }
