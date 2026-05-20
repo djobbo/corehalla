@@ -57,6 +57,9 @@ catalogs:
     '@vitejs/plugin-react':
       specifier: ^6.0.2
       version: 6.0.2
+    effect:
+      specifier: 4.0.0-beta.68
+      version: 4.0.0-beta.68
     encoding:
       specifier: ^0.1.13
       version: 0.1.13
@@ -249,6 +252,63 @@ importers:
       '@types/node':
         specifier: ^20.11.5
         version: 20.19.41
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: ^6.0.0
+        version: 6.0.3
+
+  packages/brawlhalla-api:
+    dependencies:
+      common:
+        specifier: workspace:*
+        version: link:../common
+      effect:
+        specifier: 'catalog:'
+        version: 4.0.0-beta.68
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.12.4
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: ^6.0.0
+        version: 6.0.3
+
+  packages/brawlhalla-gql-api:
+    dependencies:
+      bhapi:
+        specifier: workspace:*
+        version: link:../bhapi
+      cheerio:
+        specifier: 1.0.0-rc.12
+        version: 1.0.0-rc.12
+      effect:
+        specifier: 'catalog:'
+        version: 4.0.0-beta.68
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.12.4
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: ^6.0.0
+        version: 6.0.3
+
+  packages/brawltools-api:
+    dependencies:
+      effect:
+        specifier: 'catalog:'
+        version: 4.0.0-beta.68
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.12.4
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
