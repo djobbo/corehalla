@@ -5,9 +5,9 @@
     "type": "module",
     "sideEffects": false,
     "scripts": {
-        "dev": "vite dev --host",
-        "dev:prod": "VITE_FORCE_PRODUCTION_WEBSITE=true vite dev --host",
-        "build": "vite build && tsc --noEmit",
+        "dev": "vp dev --host",
+        "dev:prod": "VITE_FORCE_PRODUCTION_WEBSITE=true vp dev --host",
+        "build": "vp build && tsc --noEmit",
         "start": "node .output/server/index.mjs",
         "ts:check": "tsc --noEmit"
     },
