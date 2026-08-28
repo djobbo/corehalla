@@ -818,6 +818,30 @@ export const legends: Legend[] = [
         "dexterity": "3",
         "defense": "5",
         "speed": "5"
+    },
+    {
+        "legend_id": 71,
+        "legend_name": "AURUS",
+        "bio_name": "Aurus",
+        "bio_aka": "The Gladiator",
+        "weapon_one": "Chakram",
+        "weapon_two": "Spear",
+        "strength": "6",
+        "dexterity": "6",
+        "defense": "6",
+        "speed": "4"
+    },
+    {
+        "legend_id": 72,
+        "legend_name": "QINGHUA & BAOBAO",
+        "bio_name": "Qinghua & Baobao",
+        "bio_aka": "The Voyager & The Void",
+        "weapon_one": "Orb",
+        "weapon_two": "Cannon",
+        "strength": "5",
+        "dexterity": "4",
+        "defense": "5",
+        "speed": "8"
     }
 ]
 
