@@ -33,13 +33,13 @@ newLine()
 
 // `supabase start` brings up Postgres, PostgREST, Auth and Realtime using the
 // CLI's built-in stack (see `supabase/config.toml`) and waits for health.
-log(chalk.bold("Starting the local Supabase stack"))
+log(chalk.bold("Starting the local Postgres"))
 try {
     await $`vp exec supabase start`
 } catch {
     log(
         chalk.red(
-            "Failed to start Supabase. Is Docker running? See `supabase/config.toml`.",
+            "Failed to start Postgres. Is Docker running? See `supabase/config.toml`.",
         ),
     )
     exit(1)
@@ -68,7 +68,9 @@ const local = Object.fromEntries(
         }),
 )
 
-for (const key of ["API_URL", "ANON_KEY", "SERVICE_ROLE_KEY", "DB_URL"]) {
+// Supabase is a Postgres host now: the only value the pair of apps and the
+// worker need is the database URL.
+for (const key of ["DB_URL"]) {
     if (!local[key]) {
         log(chalk.red(`Could not read ${key} from \`supabase status\``))
         exit(1)
@@ -100,7 +102,7 @@ const writeEnv = async (file, values) => {
     while (lines.length > 0 && lines.at(-1).trim() === "") lines.pop()
 
     if (pending.size > 0) {
-        lines.push("", "# --- local Supabase (pnpm setup:env) ---")
+        lines.push("", "# --- local Postgres (pnpm setup:env) ---")
         for (const [key, value] of pending) lines.push(`${key}=${value}`)
     }
 
@@ -108,32 +110,14 @@ const writeEnv = async (file, values) => {
     log(`  ${chalk.cyan(file)}`)
 }
 
-const supabaseServer = {
-    SUPABASE_URL: local.API_URL,
-    SUPABASE_SERVICE_KEY: local.SERVICE_ROLE_KEY,
-    DATABASE_URL: local.DB_URL,
-}
+const database = { DATABASE_URL: local.DB_URL }
 
-const supabasePublic = {
-    NEXT_PUBLIC_SUPABASE_URL: local.API_URL,
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: local.ANON_KEY,
-}
-
-// `web` reads the `VITE_` prefix and still accepts the legacy `NEXT_PUBLIC_`
-// one; `app` is Next.js and only reads `NEXT_PUBLIC_`.
-const supabaseVite = {
-    VITE_SUPABASE_URL: local.API_URL,
-    VITE_SUPABASE_ANON_KEY: local.ANON_KEY,
-}
-
-await writeEnv("packages/db/.env", { DATABASE_URL: local.DB_URL })
-await writeEnv("web/.env.local", {
-    ...supabaseServer,
-    ...supabasePublic,
-    ...supabaseVite,
-})
-await writeEnv("app/.env.local", { ...supabaseServer, ...supabasePublic })
-await writeEnv("worker/.env", { ...supabaseServer })
+await writeEnv("packages/db/.env", database)
+await writeEnv("web/.env.local", database)
+// The legacy Next app still runs the shared tRPC router, which reads the
+// database directly; it keeps its own Supabase Auth values if it needs them.
+await writeEnv("app/.env.local", database)
+await writeEnv("worker/.env", database)
 
 newLine()
 
@@ -153,6 +137,6 @@ newLine()
 
 log("✔️ Dev environment ready")
 log(`Supabase Studio is running at: ${chalk.blue(local.STUDIO_URL ?? "")}`)
-log(`Supabase API is running at:    ${chalk.blue(local.API_URL)}`)
+log(`Postgres is running at:        ${chalk.blue(local.DB_URL)}`)
 newLine()
 log(`Start the apps with: ${chalk.bold("pnpm dev")}`)

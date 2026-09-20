@@ -1,7 +1,7 @@
 import { formatTime } from "common/helpers/date"
 import { getPlayerStats, getRankings } from "bhapi"
 import { logInfo, logWarning } from "logger"
-import { supabaseService } from "db/supabase/service"
+import { Database, Effect, crawlProgress, eq, runDatabase } from "db/drizzle"
 import { updateDBPlayerData } from "server/mutations/updateDBPlayerData"
 import type { RankedRegion } from "bhapi/constants"
 
@@ -56,12 +56,28 @@ const createCrawlerQueue = async (config: CrawlerConfig) => {
             return async () => {
                 const currentPage = i + (config.startPage ?? 1)
                 logInfo("Save crawl progress", currentPage)
-                await supabaseService.from("CrawlProgress").upsert({
-                    id: "Crawler",
-                    progress: currentPage,
-                    lastUpdated: new Date(),
-                    name: "Crawler",
-                })
+                await runDatabase(
+                    Effect.gen(function* () {
+                        const db = yield* Database
+
+                        yield* db
+                            .insert(crawlProgress)
+                            .values({
+                                id: "Crawler",
+                                progress: currentPage,
+                                lastUpdated: new Date(),
+                                name: "Crawler",
+                            })
+                            .onConflictDoUpdate({
+                                target: crawlProgress.id,
+                                set: {
+                                    progress: currentPage,
+                                    lastUpdated: new Date(),
+                                    name: "Crawler",
+                                },
+                            })
+                    }),
+                )
 
                 logInfo("Crawling leaderboard page", currentPage)
                 const players = await requestWithMinimumDelay(
@@ -121,17 +137,27 @@ export const startCrawler = async (config: CrawlerConfig = defaultConfig) => {
 
         logInfo("Crawler iteration:", iteration)
         if (iteration === 1) {
-            const { data, error } = await supabaseService
-                .from("CrawlProgress")
-                .select("*")
-                .match({ id: "Crawler" })
-                .single()
+            const progress = await runDatabase(
+                Effect.gen(function* () {
+                    const db = yield* Database
 
-            if (!error && !!data?.progress) {
+                    const rows = yield* db
+                        .select()
+                        .from(crawlProgress)
+                        .where(eq(crawlProgress.id, "Crawler"))
+                        .limit(1)
+
+                    return rows[0] ?? null
+                }),
+            )
+
+            // NOTE: ported verbatim from the Supabase query — the log message
+            // and the early `return` on a found row are pre-existing behaviour.
+            if (progress?.progress) {
                 logWarning("Failed to fetch crawl progress")
                 logInfo("Starting from page 1")
 
-                startPage = data.progress
+                startPage = progress.progress
                 return
             }
 

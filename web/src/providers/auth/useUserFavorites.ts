@@ -1,9 +1,16 @@
-import { supabase } from "db/supabase/client"
 import { toast } from "react-hot-toast"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useFeatureFlags } from "@hooks/useFeatures"
-import type { JsonValue, UserFavorite } from "db/schema"
-import type { Session } from "db/supabase/client"
+import type { JsonValue, UserFavorite, UserProfile } from "db/schema"
+
+/**
+ * The signed-in user's favourites.
+ *
+ * Supabase's browser client wrote these rows through PostgREST and watched
+ * `postgres_changes`; both are gone. The server scopes every write to the
+ * session's user, and this hook keeps the list in sync optimistically (the user
+ * is the only writer of their own favourites).
+ */
 
 type FavoriteType = "player" | "clan"
 
@@ -33,22 +40,45 @@ const isFavoritePlayer = (favorite: Favorite): favorite is PlayerFavorite =>
 const isFavoriteClan = (favorite: Favorite): favorite is ClanFavorite =>
     favorite.type === "clan"
 
-export const useUserFavorites = (session: Session | null) => {
+const toFavorite = (row: UserFavorite): Favorite =>
+    ({
+        id: row.id,
+        type: row.type as FavoriteType,
+        name: row.name,
+        meta: row.meta,
+    }) as Favorite
+
+const sameFavorite = (
+    a: Pick<Favorite, "id" | "type">,
+    b: Pick<Favorite, "id" | "type">,
+) => a.id === b.id && a.type === b.type
+
+const jsonRequest = (method: "POST" | "DELETE", body: unknown) =>
+    fetch("/api/me/favorites", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+    })
+
+export const useUserFavorites = (user: UserProfile | null) => {
     const [favorites, setFavorites] = useState<Favorite[]>([])
     const { shouldShowDummyFavorites } = useFeatureFlags()
-    const userId = session?.user?.id
+    const userId = user?.id
 
     const addFavorite = async (favorite: Favorite) => {
         if (!userId) return
 
-        const { error } = await supabase
-            .from("UserFavorite")
-            .upsert({ ...favorite, userId })
+        const response = await jsonRequest("POST", favorite)
 
-        if (error) {
+        if (!response.ok) {
             toast.error(`Failed to add favorite`)
-            throw error
+            return
         }
+
+        setFavorites((current) => [
+            ...current.filter((existing) => !sameFavorite(existing, favorite)),
+            favorite,
+        ])
 
         toast.success(favorite.name, {
             icon: "❤️",
@@ -62,15 +92,18 @@ export const useUserFavorites = (session: Session | null) => {
     }: Pick<Favorite, "id" | "type" | "name">) => {
         if (!userId) return
 
-        const { error } = await supabase
-            .from("UserFavorite")
-            .delete()
-            .match({ userId, id, type })
+        const response = await jsonRequest("DELETE", { id, type })
 
-        if (error) {
+        if (!response.ok) {
             toast.error(`Failed to remove favorite`)
-            throw error
+            return
         }
+
+        setFavorites((current) =>
+            current.filter(
+                (favorite) => !(favorite.id === id && favorite.type === type),
+            ),
+        )
 
         toast.success(name, {
             icon: "💔",
@@ -80,40 +113,23 @@ export const useUserFavorites = (session: Session | null) => {
     const editFavorite = async (favorite: Favorite) => {
         if (!userId) return
 
-        const { error } = await supabase
-            .from("UserFavorite")
-            .upsert({ ...favorite, userId })
+        const response = await jsonRequest("POST", favorite)
 
-        if (error) {
+        if (!response.ok) {
             toast.error(`Failed to edit favorite, please try again.`)
-            throw error
+            return
         }
+
+        setFavorites((current) =>
+            current.map((existing) =>
+                sameFavorite(existing, favorite) ? favorite : existing,
+            ),
+        )
 
         toast.success(`${favorite.name} updated`, {
             icon: "✏️",
         })
     }
-
-    const fetchInitialFavorites = useCallback(async () => {
-        if (!userId) return
-
-        const { data: initialFavorites, error } = await supabase
-            .from("UserFavorite")
-            .select("*")
-            .match({ userId })
-
-        if (error) throw error
-
-        setFavorites(
-            // @ts-expect-error ts doesn't know about `type`
-            initialFavorites.map(({ id, type, name, meta }) => ({
-                id,
-                type,
-                name,
-                meta,
-            })),
-        )
-    }, [userId])
 
     useEffect(() => {
         if (!userId) {
@@ -121,59 +137,25 @@ export const useUserFavorites = (session: Session | null) => {
             return
         }
 
-        fetchInitialFavorites()
+        let cancelled = false
 
-        const channel = supabase
-            .channel(`user-favorites:${userId}`)
-            .on<UserFavorite>(
-                "postgres_changes",
-                { event: "*", schema: "public", table: "UserFavorite" },
-                (payload) => {
-                    switch (payload.eventType) {
-                        case "INSERT": {
-                            const { id, name, meta, type } = payload.new
-
-                            // @ts-expect-error ts doesn't know about `type`
-                            return setFavorites((favorites) => [
-                                ...favorites,
-                                { id, name, meta, type },
-                            ])
-                        }
-                        case "UPDATE": {
-                            const { id, name, meta, type } = payload.new
-
-                            // @ts-expect-error ts doesn't know about `type`
-                            return setFavorites((favorites) =>
-                                favorites.map((favorite) =>
-                                    favorite.type === type && favorite.id === id
-                                        ? { id, name, meta, type }
-                                        : favorite,
-                                ),
-                            )
-                        }
-                        case "DELETE":
-                            return setFavorites((favorites) =>
-                                favorites.filter(
-                                    (favorite) =>
-                                        favorite.type !== payload.old.type ||
-                                        favorite.id !== payload.old.id,
-                                ),
-                            )
-                    }
-                },
-            )
-            .subscribe()
+        fetch("/api/me/favorites", { headers: { accept: "application/json" } })
+            .then((response) => (response.ok ? response.json() : []))
+            .then((rows: UserFavorite[]) => {
+                if (!cancelled) setFavorites(rows.map(toFavorite))
+            })
+            .catch(() => {
+                if (!cancelled) setFavorites([])
+            })
 
         return () => {
-            void supabase.removeChannel(channel)
+            cancelled = true
         }
-    }, [fetchInitialFavorites, userId])
+    }, [userId])
 
     const isFavorite = useCallback(
         (favorite: Pick<Favorite, "id" | "type">) =>
-            favorites.some(
-                (f) => f.id === favorite.id && f.type === favorite.type,
-            ),
+            favorites.some((f) => sameFavorite(f, favorite)),
         [favorites],
     )
 

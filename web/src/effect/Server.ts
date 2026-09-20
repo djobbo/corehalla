@@ -1,6 +1,8 @@
 import { Layer } from "effect"
 import { FetchHttpClient, HttpRouter, HttpServer } from "effect/unstable/http"
 import { HttpApiBuilder } from "effect/unstable/httpapi"
+import { layer as sqlLayer } from "db/client"
+import { databaseUrl } from "@/env"
 import { CorehallaApi } from "./Api"
 import {
     contentGroup,
@@ -23,27 +25,48 @@ import { layer as DatabaseLayer } from "./Database"
  * Each group layer is provided individually so the group-service requirements
  * are discharged one at a time; merging them first loses the precise service
  * types in this release candidate.
+ *
+ * The handler is built lazily on the first request because the connection URL
+ * is a Worker binding on Cloudflare (Hyperdrive) and `cloudflare:workers` is not
+ * readable at module scope under the TanStack Start dev server. It is then
+ * cached for the isolate's lifetime.
  */
 
-const ServicesLayer = Layer.mergeAll(
-    BrawlhallaLayer,
-    DatabaseLayer,
-    ContentLayer,
-)
+const createHandler = (url: string) => {
+    // One pool for the whole server; `Database.layer` consumes it.
+    const SqlLayer = sqlLayer(url)
 
-const ApiLayer = HttpApiBuilder.layer(CorehallaApi).pipe(
-    Layer.provide(rankingsGroup),
-    Layer.provide(statsGroup),
-    Layer.provide(searchGroup),
-    Layer.provide(contentGroup),
-    Layer.provide(ServicesLayer),
-    Layer.provide(FetchHttpClient.layer),
-    Layer.provide(HttpServer.layerServices),
-)
+    const ServicesLayer = Layer.mergeAll(
+        BrawlhallaLayer,
+        DatabaseLayer,
+        ContentLayer,
+    ).pipe(Layer.provide(SqlLayer))
 
-const webHandler = HttpRouter.toWebHandler(ApiLayer, { disableLogger: true })
+    const ApiLayer = HttpApiBuilder.layer(CorehallaApi).pipe(
+        Layer.provide(rankingsGroup),
+        Layer.provide(statsGroup),
+        Layer.provide(searchGroup),
+        Layer.provide(contentGroup),
+        Layer.provide(ServicesLayer),
+        Layer.provide(FetchHttpClient.layer),
+        Layer.provide(HttpServer.layerServices),
+    )
 
-export const apiHandler = webHandler.handler
+    return HttpRouter.toWebHandler(ApiLayer, { disableLogger: true })
+}
+
+let webHandler: ReturnType<typeof createHandler> | null = null
+
+export const apiHandler = async (request: Request) => {
+    if (!webHandler) {
+        webHandler = createHandler(await databaseUrl())
+    }
+
+    return webHandler.handler(request)
+}
 
 /** Releases the API layer's resources (used when the server shuts down). */
-export const disposeApi = webHandler.dispose
+export const disposeApi = async () => {
+    await webHandler?.dispose()
+    webHandler = null
+}

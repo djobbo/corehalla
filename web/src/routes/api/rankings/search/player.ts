@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { SEARCH_PLAYERS_ALIASES_PER_PAGE } from "@util/constants"
-import { supabaseService } from "db/supabase/service"
+import { Effect } from "effect"
+import { Database } from "@/effect/Database"
+import { runDatabase } from "@/effect/run"
+
 /** Server route replacing `pages/api/rankings/search/player.ts`. */
 export const Route = createFileRoute("/api/rankings/search/player")({
     server: {
@@ -8,7 +10,7 @@ export const Route = createFileRoute("/api/rankings/search/player")({
             async GET({ request }) {
                 const url = new URL(request.url)
                 const search = url.searchParams.get("search")
-                const page = url.searchParams.get("page") ?? "1"
+                const page = parseInt(url.searchParams.get("page") ?? "1")
 
                 if (!search) {
                     return Response.json(
@@ -18,23 +20,15 @@ export const Route = createFileRoute("/api/rankings/search/player")({
                 }
 
                 try {
-                    let query = supabaseService
-                        .from("BHPlayerAlias")
-                        .select("*")
-                        .order("alias", { ascending: true })
+                    const aliases = await runDatabase(
+                        Effect.gen(function* () {
+                            const db = yield* Database
 
-                    query = query.match({ alias: search })
-
-                    const pageNum = parseInt(page)
-
-                    const { data, error } = await query.range(
-                        (pageNum - 1) * SEARCH_PLAYERS_ALIASES_PER_PAGE,
-                        pageNum * SEARCH_PLAYERS_ALIASES_PER_PAGE - 1,
+                            return yield* db.searchExactAliases(search, page)
+                        }),
                     )
 
-                    if (error) throw error
-
-                    return Response.json(data ?? [], {
+                    return Response.json(aliases, {
                         headers: {
                             "Cache-Control":
                                 "public, s-maxage=600, stale-while-revalidate=3600",

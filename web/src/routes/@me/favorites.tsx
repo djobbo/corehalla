@@ -6,7 +6,7 @@ import { seoTags } from "@components/SEO"
 import { useFavorites } from "@ctx/auth/AuthProvider"
 
 export const Route = createFileRoute("/@me/favorites")({
-    // Favourites come from the browser Supabase session (localStorage), so the
+    // Favourites are loaded from the session cookie in the browser, so the
     // server has nothing meaningful to render for this route.
     ssr: false,
     // Personalised content must never be shared-cached.

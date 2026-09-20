@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { CLANS_RANKINGS_PER_PAGE } from "@util/constants"
-import { supabaseService } from "db/supabase/service"
+import { Effect } from "effect"
+import { Database } from "@/effect/Database"
+import { runDatabase } from "@/effect/run"
+
 /** Server route replacing `pages/api/rankings/clans.ts`. */
 export const Route = createFileRoute("/api/rankings/clans")({
     server: {
@@ -8,28 +10,18 @@ export const Route = createFileRoute("/api/rankings/clans")({
             async GET({ request }) {
                 const url = new URL(request.url)
                 const name = url.searchParams.get("name") ?? ""
-                const page = url.searchParams.get("page") ?? "1"
+                const page = parseInt(url.searchParams.get("page") ?? "1")
 
                 try {
-                    let query = supabaseService
-                        .from("BHClan")
-                        .select("*")
-                        .order("xp", { ascending: false })
+                    const clans = await runDatabase(
+                        Effect.gen(function* () {
+                            const db = yield* Database
 
-                    if (name) {
-                        query = query.match({ name })
-                    }
-
-                    const pageNum = parseInt(page)
-
-                    const { data, error } = await query.range(
-                        (pageNum - 1) * CLANS_RANKINGS_PER_PAGE,
-                        pageNum * CLANS_RANKINGS_PER_PAGE - 1,
+                            return yield* db.getClansRankings(name, page)
+                        }),
                     )
 
-                    if (error) throw error
-
-                    return Response.json(data ?? [], {
+                    return Response.json(clans, {
                         headers: {
                             "Cache-Control":
                                 "public, s-maxage=300, stale-while-revalidate=480",

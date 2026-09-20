@@ -8,7 +8,7 @@ apps run side by side until the cutover is complete.
 - **Framework:** TanStack Start + TanStack Router (file-based routes)
 - **Runtime/data:** [Effect v4](https://effect.website) — `HttpApi` + `HttpClient`
   on the server, `Atom` + `@effect/atom-react` on the client
-- **Deployment:** Nitro (`node-server` locally, the `vercel` preset on Vercel)
+- **Deployment:** Cloudflare Workers via [Alchemy](https://alchemy.run) (`Cloudflare.Website.Vite` + Hyperdrive); see `alchemy.run.ts`
 - **UI:** React 19, Tailwind CSS v4 (CSS-first config), Stitches, Radix, kbar
 - **TypeScript:** 7.0.2 (native) with `@effect/tsgo`
 
@@ -23,6 +23,8 @@ vp -C web dev          # dev server on http://localhost:3000
 vp -C web build        # production build (+ route tree generation)
 vp -C web preview      # preview the built output
 vp -C web ts:check     # effect-tsgo patch && tsc --noEmit
+pnpm --filter web dev:cloud   # alchemy dev: Workers runtime + bound local Postgres
+pnpm --filter web deploy      # alchemy deploy: Cloudflare Worker + assets
 ```
 
 From the repository root:
@@ -34,9 +36,9 @@ vp check               # oxfmt + oxlint over the whole workspace
 vp run -r ts:check     # type-check every package
 ```
 
-> The production server reads configuration from the runtime environment.
-> For local production previews run
-> `node --env-file=.env .output/server/index.mjs`.
+> Server code reads configuration through `src/env.ts`, which prefers
+> `process.env` on Node and the Worker bindings (Hyperdrive, secrets) on
+> Cloudflare.
 
 ## Architecture
 
@@ -49,7 +51,13 @@ src/
     Api.ts                # HttpApi contract (groups + endpoints + schemas)
     schemas.ts            # request/response schemas
     Brawlhalla.ts         # HttpClient-based Brawlhalla service
-    Database.ts           # Supabase service
+    Database.ts           # Drizzle + Effect SQL stats queries
+    Auth.ts               # app-owned Discord OAuth sessions
+    config.ts             # runtime configuration (Node env / Worker bindings)
+    cookies.ts            # cookie + opaque session-token primitives
+    discord.ts            # Discord OAuth2 + REST calls
+    http.ts               # same-origin guard and private-JSON helpers
+    run.ts                # per-request service runner for server routes
     Content.ts            # web-parser service
     Handlers.ts           # HttpApiBuilder group implementations
     Server.ts             # build -> WHATWG fetch handler for /api/effect/*
@@ -60,7 +68,7 @@ src/
   routes/                 # file-based routes + server routes
   components/ hooks/ providers/ util/   # moved from app/
   ui/                     # vendored from packages/ui (React 19 + Start link/router)
-  lib/                    # vendored client hooks, analytics, Supabase client, date
+  lib/                    # vendored client hooks, analytics, date
   styles/app.css          # Tailwind v4 entry + design tokens
 ```
 
@@ -77,27 +85,44 @@ The typed API is declared once as an `HttpApi` contract
 - **Outbound HTTP** — the Brawlhalla service calls upstream through Effect's
   `HttpClient`, preferring the dair.gg proxy and falling back to the official
   API.
-- **Client** — `AtomHttpApi.Service()` generates typed query/mutation atoms from
-  the same contract. Components read them with `useAtomValue` / `useQuery`
+- **Client** — `AtomHttpApi.Service()` generates typed query atoms from the same
+  contract. Components read them with `useAtomValue` / `useQuery`
   (`useAtomSuspense`), so there is no hand-written fetch layer on the client.
 
 React Query has been removed. Retries now use Effect's native
 `Schedule.exponential("200 millis")` (200ms → 400ms → 800ms → 1.6s, 4 attempts)
 through `src/effect/retry.ts`, applied to every request the client and the
-Brawlhalla service make. The auth profile fetch uses the same schedule.
+Brawlhalla service make.
 
 ### Server-only boundaries
 
-Privileged code is only reachable from the server route that mounts the API:
+Privileged code is only reachable from server routes:
 
-- `Brawlhalla` / `Database` / `Content` import server-only modules
-  (`db/supabase/service`, `web-parser`) and are only imported by `Handlers.ts`
-  and `Server.ts`.
-- `packages/db/supabase/service.ts` (service-role client) is created lazily, so
-  missing credentials fail the request that needs them instead of crashing the
-  server at import time.
-- Verified: the client bundle contains no `cheerio`, service-role key,
+- `Brawlhalla` / `Database` / `Content` / `Auth` import server-only modules
+  (`db/client`, `web-parser`, `effect/discord`) and are only imported by
+  `Handlers.ts`, `Server.ts` and the `api/auth` + `api/me` server routes.
+- Queries go straight to Postgres through `packages/db/client.ts`
+  (`@effect/sql-pg` + `drizzle-orm/effect-postgres`); there is no PostgREST or
+  Supabase client in the bundle.
+- Verified: the client bundle contains no `cheerio`, database driver,
   `HttpApiBuilder`, tRPC, or React Query code.
+
+### Authentication
+
+Supabase Auth is gone. `src/effect/Auth.ts` owns sessions:
+
+- `GET /api/auth/discord` sets a single-use `state` cookie and redirects to
+  Discord; `GET /api/auth/discord/callback` exchanges the code, upserts
+  `UserProfile` (keyed by the Discord snowflake) and sets the session cookie.
+- The cookie holds an opaque random token; only its SHA-256 digest is stored in
+  `UserSession`, together with the Discord access/refresh tokens. The browser
+  never receives them.
+- `Auth.getSession(headers)` refreshes the Discord token shortly before it
+  expires and scopes every favourites/connections read and write to the
+  session's `userId`, which is what replaced RLS.
+- `/api/me/*` server routes expose session, favourites and connections to the
+  React providers in `src/providers/auth/`; live updates come from optimistic
+  local state instead of `postgres_changes`.
 
 ### SSR with Effect atoms
 
@@ -116,23 +141,24 @@ the server-computed values and does not refetch. Each query atom passes a
 survives until dehydrate.
 
 During SSR the atom client targets the deployment's own origin
-(`INTERNAL_ORIGIN`, else `VERCEL_URL`, else `http://localhost:$PORT`), because
-`fetch` cannot resolve a relative URL on the server.
+(`INTERNAL_ORIGIN`, else `SITE_URL`, else the build-time `VITE_SITE_URL`, else
+`http://localhost:$PORT`), because `fetch` cannot resolve a relative URL on the
+server.
 
 ### SSR mode per route
 
-| Route                     | `ssr`                                           | Why                                             |
-| ------------------------- | ----------------------------------------------- | ----------------------------------------------- |
-| `/`                       | `true`                                          | Landing content has SEO value                   |
-| `/rankings/1v1/…`         | `true`, or `'data-only'` when `?player=` is set | Search results are non-canonical                |
-| `/rankings/2v2/…`         | `true`                                          | Public, indexable                               |
-| `/rankings/clans/…`       | `true`, or `'data-only'` when `?clan=` is set   | Same as 1v1                                     |
-| `/rankings/global/…`      | `true`                                          | Public, indexable                               |
-| `/rankings/power/…`       | `true`                                          | Public, indexable                               |
-| `/stats/player/$playerId` | `true`                                          | Public, indexable; 404 for a missing player     |
-| `/stats/clan/$clanId`     | `true`                                          | Public, indexable                               |
-| `/calc`                   | `true`                                          | Static tool, indexable                          |
-| `/@me/favorites`          | `false`                                         | Content comes from the browser Supabase session |
+| Route                     | `ssr`                                           | Why                                         |
+| ------------------------- | ----------------------------------------------- | ------------------------------------------- |
+| `/`                       | `true`                                          | Landing content has SEO value               |
+| `/rankings/1v1/…`         | `true`, or `'data-only'` when `?player=` is set | Search results are non-canonical            |
+| `/rankings/2v2/…`         | `true`                                          | Public, indexable                           |
+| `/rankings/clans/…`       | `true`, or `'data-only'` when `?clan=` is set   | Same as 1v1                                 |
+| `/rankings/global/…`      | `true`                                          | Public, indexable                           |
+| `/rankings/power/…`       | `true`                                          | Public, indexable                           |
+| `/stats/player/$playerId` | `true`                                          | Public, indexable; 404 for a missing player |
+| `/stats/clan/$clanId`     | `true`                                          | Public, indexable                           |
+| `/calc`                   | `true`                                          | Static tool, indexable                      |
+| `/@me/favorites`          | `false`                                         | Content comes from the app session cookie   |
 
 `/@me/favorites` also returns `Cache-Control: private, no-store` and
 `robots: noindex`.
@@ -173,38 +199,46 @@ Effect's diagnostics need the patched compiler:
 
 ## Environment variables
 
-See `.env.example`. Server-only variables are read at request time through
-`process.env`; browser variables are read through `import.meta.env` (Vite
-`envPrefix` allows both `VITE_` and the legacy `NEXT_PUBLIC_` prefix).
+See `.env.example`. Server-only variables are read through `src/env.ts`, which
+prefers `process.env` on Node and the Worker bindings on Cloudflare; browser
+variables are read through `import.meta.env` (Vite `envPrefix` allows both
+`VITE_` and the legacy `NEXT_PUBLIC_` prefix).
 
-`pnpm setup:env` (from the repository root) writes the local Supabase URL, keys
-and `DATABASE_URL` into `.env.local` after `supabase start`; `.env.local` takes
-precedence over `.env`.
+`pnpm setup:env` (from the repository root) writes `DATABASE_URL` into
+`.env.local` after `supabase start`; `.env.local` takes precedence over `.env`.
 
-`INTERNAL_ORIGIN` optionally pins the origin used for SSR atom preloading.
+| Variable                | Purpose                                              |
+| ----------------------- | ---------------------------------------------------- |
+| `DATABASE_URL`          | Postgres connection (Node dev, CI migrations)        |
+| `DISCORD_CLIENT_ID`     | Discord OAuth application id                         |
+| `DISCORD_CLIENT_SECRET` | Discord OAuth application secret                     |
+| `SITE_URL`              | Public origin; also the OAuth redirect base          |
+| `BRAWLHALLA_API_KEY`    | Brawlhalla API key (server only)                     |
+| `INTERNAL_ORIGIN`       | Optional override for the SSR atom self-fetch origin |
 
-## Supabase client
+## Deployment (Cloudflare via Alchemy)
 
-`@supabase/supabase-js` v2 types every query from a `Database` schema passed to
-`createClient`, so `.from("Table")` and `.rpc("fn")` are typed without a
-per-call generic. The schema in `packages/db/supabase/database.types.ts` maps
-the Drizzle row types onto that shape, so a new Drizzle table needs an entry there
-before `supabaseService.from("NewTable")` compiles.
+`alchemy.run.ts` declares the deployment:
 
-`web/src/lib/supabase/client.ts` reimplements the browser client for Vite:
-`tsconfig.json` maps the `db/supabase/client` and `db/supabase/auth` imports onto
-these files, so shared code keeps importing the same specifiers.
+- `Cloudflare.Website.Vite` builds the Vite `ssr` environment into a Worker plus
+  static assets. Alchemy supplies the Cloudflare plugin, so `vite.config.ts`
+  must not add `@cloudflare/vite-plugin` or Nitro.
+- `Cloudflare.Hyperdrive.Connection` pools connections to the Supabase Postgres
+  origin; the Worker reads `env.HYPERDRIVE.connectionString` in `src/env.ts`.
+  Its `dev` origin points at the local Postgres (`127.0.0.1:54322`).
+- Secrets (`DISCORD_CLIENT_SECRET`, `BRAWLHALLA_API_KEY`) are bound as
+  `secret_text`; `SITE_URL`/`VITE_SITE_URL`/`INTERNAL_ORIGIN` are plain values.
 
-## Deployment (Vercel)
-
-`nitro()` emits the Vercel Build Output API directory (`.vercel/output`) when
-built on Vercel. Configure the Vercel project with **root directory `web`**.
+Drizzle's migrator reads `packages/db/drizzle/` from disk, so migrations remain a
+Node/CI step (`pnpm db:migrate`) against the same origin — they are not run by
+the Worker.
 
 ## Cutover checklist
 
 1. Deploy `web/` to a preview URL and compare responses against `app/` with
-   real environment variables (Brawlhalla API key, Supabase service key).
+   real environment variables (Brawlhalla API key, `DATABASE_URL`, Discord
+   credentials).
 2. Compare HTML, status codes, redirects, titles/descriptions, and
    `/sitemap.xml` / `/robots.txt`.
-3. Point the production domain at the `web` project.
-4. Only then remove `app/` and its `next.config.js` redirects.
+3. Point the production domain at the `web` Worker.
+4. Only then remove `app/`, `packages/server` and `packages/db/supabase/`.

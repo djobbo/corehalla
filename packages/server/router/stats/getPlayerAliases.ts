@@ -1,9 +1,19 @@
 import { logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "../../trpc"
-import { supabaseService } from "db/supabase/service"
 import { withTimeLog } from "../../helpers/withTimeLog"
 import { z } from "zod"
+import {
+    Database,
+    Effect,
+    and,
+    bhPlayerAlias,
+    desc,
+    eq,
+    runDatabase,
+} from "db/drizzle"
+
+/** Public aliases for a player, newest first. */
 export const getPlayerAliases = publicProcedure //
     .input(
         z.object({
@@ -15,14 +25,23 @@ export const getPlayerAliases = publicProcedure //
             const { playerId } = req.input
             logInfo("getPlayerAliases", req.input)
 
-            const { data, error } = await supabaseService
-                .from("BHPlayerAlias")
-                .select("*")
-                .order("createdAt", { ascending: false })
-                .match({ playerId, public: true })
+            return runDatabase(
+                Effect.gen(function* () {
+                    const db = yield* Database
 
-            if (error) throw error
+                    const rows = yield* db
+                        .select({ alias: bhPlayerAlias.alias })
+                        .from(bhPlayerAlias)
+                        .where(
+                            and(
+                                eq(bhPlayerAlias.playerId, playerId.toString()),
+                                eq(bhPlayerAlias.public, true),
+                            ),
+                        )
+                        .orderBy(desc(bhPlayerAlias.createdAt))
 
-            return data.map((alias) => alias.alias)
+                    return rows.map((row) => row.alias)
+                }),
+            )
         }, "getPlayerAliases"),
     )

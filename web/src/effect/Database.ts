@@ -1,7 +1,6 @@
-import { and, desc, eq, getTableColumns, ilike, sql } from "drizzle-orm"
-import { makeWithDefaults } from "drizzle-orm/effect-postgres"
-import * as PgClient from "@effect/sql-pg/PgClient"
-import { Context, Effect, Layer, Redacted } from "effect"
+import { and, asc, desc, eq, getTableColumns, ilike, sql } from "drizzle-orm"
+import { Database as SqlDatabase, layer as sqlLayer } from "db/client"
+import { Context, Effect, Layer } from "effect"
 import {
     CLANS_RANKINGS_PER_PAGE,
     GLOBAL_PLAYER_RANKINGS_PER_PAGE,
@@ -17,7 +16,9 @@ import type { AliasSearchResult, GlobalPlayerRanking } from "./schemas"
  *
  * Queries go straight to Postgres through Drizzle's Effect integration
  * (`drizzle-orm/effect-postgres`) on Effect's own PostgreSQL client, so there
- * is no HTTP layer between the server and the database.
+ * is no HTTP layer between the server and the database. The pool itself is
+ * built by `db/client`, which is the single place that knows the connection
+ * settings.
  *
  * Operations fail with a typed `DatabaseError`; handlers decide whether that
  * becomes a defect (HTTP 500) or an empty result (e.g. optional player
@@ -39,6 +40,14 @@ export class Database extends Context.Service<
             name: string,
             page: number,
         ) => Effect.Effect<readonly BHClan[], DatabaseError>
+        /**
+         * Exact-alias lookup used by the public `/api/rankings/search/player`
+         * route (the grouped prefix search is `searchAliases`).
+         */
+        readonly searchExactAliases: (
+            alias: string,
+            page: number,
+        ) => Effect.Effect<readonly BHPlayerAlias[], DatabaseError>
         readonly getGlobalPlayerRankings: (
             sortBy: string,
             page: number,
@@ -50,27 +59,23 @@ export class Database extends Context.Service<
     }
 >()("app/Database") {}
 
-/**
- * Connection pool for the application database.
- *
- * A missing `DATABASE_URL` is not fatal at import time: an empty URL leaves the
- * client unconfigured and the first query fails with a `DatabaseError`,
- * matching how the previous client behaved.
- */
-export const PgLive = PgClient.layer({
-    url: Redacted.make(process.env.DATABASE_URL ?? ""),
-})
-
 /** Turns any driver/query failure into the domain's `DatabaseError`. */
 const run = <A, E, R>(
     effect: Effect.Effect<A, E, R>,
 ): Effect.Effect<A, DatabaseError, R> =>
     effect.pipe(Effect.mapError((cause) => new DatabaseError({ cause })))
 
+/**
+ * The domain service, built on whatever `SqlDatabase` pool is in context.
+ *
+ * Splitting the pool out lets `Server.ts` build one pool and share it between
+ * the stats services and `Auth`; `makeLayer` is the convenience wrapper for
+ * one-off server routes.
+ */
 export const layer = Layer.effect(
     Database,
     Effect.gen(function* () {
-        const db = yield* makeWithDefaults({})
+        const db = yield* SqlDatabase
 
         /**
          * The sortable column is dynamic. The HTTP layer validates `sortBy`
@@ -146,8 +151,8 @@ export const layer = Layer.effect(
                     db
                         .select()
                         .from(bhClan)
-                        // A bind parameter, so the PostgREST-era quote escaping
-                        // for the filter string is no longer needed.
+                        // A bind parameter, so the PostgREST-era quote
+                        // escaping for the filter string is gone.
                         .where(
                             name.trim().length > 0
                                 ? ilike(bhClan.name, `${name.trim()}%`)
@@ -156,6 +161,17 @@ export const layer = Layer.effect(
                         .orderBy(desc(bhClan.xp))
                         .limit(CLANS_RANKINGS_PER_PAGE)
                         .offset((page - 1) * CLANS_RANKINGS_PER_PAGE),
+                ),
+
+            searchExactAliases: (alias, page) =>
+                run(
+                    db
+                        .select()
+                        .from(bhPlayerAlias)
+                        .where(eq(bhPlayerAlias.alias, alias))
+                        .orderBy(asc(bhPlayerAlias.alias))
+                        .limit(SEARCH_PLAYERS_ALIASES_PER_PAGE)
+                        .offset((page - 1) * SEARCH_PLAYERS_ALIASES_PER_PAGE),
                 ),
 
             getGlobalPlayerRankings: (sortBy, page) =>
@@ -187,8 +203,9 @@ export const layer = Layer.effect(
                                 (page - 1) * GLOBAL_PLAYER_RANKINGS_PER_PAGE,
                             )
 
-                        // Every sortable property is an integer column, so the
-                        // union of column value types narrows to `number`.
+                        // Every sortable property is an integer column, so
+                        // the union of column value types narrows to
+                        // `number`.
                         return rows.map((row) => ({
                             ...row,
                             prop: row.prop as number,
@@ -201,18 +218,19 @@ export const layer = Layer.effect(
                     Effect.gen(function* () {
                         if (alias.length < 2) return []
 
-                        // Reaches the `search_aliases` SQL function installed by
-                        // `packages/db/sql/functions.sql`.
+                        // Reaches the `search_aliases` SQL function
+                        // installed by `packages/db/sql/functions.sql`.
                         const rows = yield* db.execute<BHPlayerAlias>(
                             sql`
-                                select * from search_aliases(
-                                    ${alias.trim()},
-                                    ${(page - 1) * SEARCH_PLAYERS_ALIASES_PER_PAGE},
-                                    ${SEARCH_PLAYERS_ALIASES_PER_PAGE}
-                                )
-                            `,
-                            // Decode rows as objects; the RC types `execute`
-                            // results as `unknown` without an explicit mode.
+                                    select * from search_aliases(
+                                        ${alias.trim()},
+                                        ${(page - 1) * SEARCH_PLAYERS_ALIASES_PER_PAGE},
+                                        ${SEARCH_PLAYERS_ALIASES_PER_PAGE}
+                                    )
+                                `,
+                            // Decode rows as objects; the RC types
+                            // `execute` results as `unknown` without an
+                            // explicit mode.
                             "objects",
                         )
 
@@ -241,4 +259,9 @@ export const layer = Layer.effect(
                 ),
         })
     }),
-).pipe(Layer.provide(PgLive))
+)
+
+/** Builds the domain service on its own pool for one connection URL. */
+export const makeLayer = (
+    url: string = globalThis.process?.env?.DATABASE_URL ?? "",
+) => layer.pipe(Layer.provide(sqlLayer(url)))

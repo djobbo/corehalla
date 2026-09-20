@@ -2,9 +2,23 @@ import { GLOBAL_PLAYER_RANKINGS_PER_PAGE } from "../../helpers/constants"
 import { logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "../../trpc"
-import { supabaseService } from "db/supabase/service"
 import { z } from "zod"
-import type { BHPlayerData } from "db/schema"
+import {
+    Database,
+    Effect,
+    bhPlayerData,
+    desc,
+    getTableColumns,
+    runDatabase,
+} from "db/drizzle"
+
+/**
+ * Global player ranking page.
+ *
+ * The sortable column is dynamic, so it is looked up in the table's column map
+ * (the HTTP layer validates `sortBy` against the `SortablePlayerProp` literals)
+ * rather than interpolating an identifier into SQL.
+ */
 export const getGlobalPlayerRankings = publicProcedure
     .input(
         z.object({
@@ -29,39 +43,38 @@ export const getGlobalPlayerRankings = publicProcedure
         const { sortBy, page } = req.input
         logInfo("getGlobalPlayerRankings", req.input)
 
-        const query = supabaseService
-            .from("BHPlayerData")
-            .select(`id,name,tier,rating,region,peakRating,${sortBy}`)
-            .order(sortBy as keyof BHPlayerData, { ascending: false }) // TODO: validate prop with zod
+        return runDatabase(
+            Effect.gen(function* () {
+                const db = yield* Database
+                const playerColumns = getTableColumns(bhPlayerData)
+                const column =
+                    playerColumns[sortBy as keyof typeof playerColumns]
 
-        const { data, error } = await query.range(
-            (page - 1) * GLOBAL_PLAYER_RANKINGS_PER_PAGE,
-            page * GLOBAL_PLAYER_RANKINGS_PER_PAGE - 1,
-        )
-
-        if (error) throw error
-
-        // The select list is interpolated, so it is not a literal type and the
-        // client cannot infer the projected row shape. The table's row type is
-        // the contract here.
-        const rows = (data ?? []) as unknown as BHPlayerData[]
-
-        // TODO: type check this with zod
-        return rows.map(
-            // TODO: validate prop with zod
-            (playerData) => {
-                // The sorted column is dynamic, so it is projected out through
-                // an index signature: computed-key destructuring on the concrete
-                // row type is not representable.
-                const { [sortBy]: prop, ...rest } = playerData as Record<
-                    string,
-                    unknown
-                >
-
-                return {
-                    ...(rest as unknown as BHPlayerData),
-                    prop: prop as number,
+                if (!column) {
+                    throw new Error(`Unknown sort column: ${sortBy}`)
                 }
-            },
+
+                const rows = yield* db
+                    .select({
+                        id: bhPlayerData.id,
+                        name: bhPlayerData.name,
+                        tier: bhPlayerData.tier,
+                        rating: bhPlayerData.rating,
+                        region: bhPlayerData.region,
+                        peakRating: bhPlayerData.peakRating,
+                        prop: column,
+                    })
+                    .from(bhPlayerData)
+                    .orderBy(desc(column))
+                    .limit(GLOBAL_PLAYER_RANKINGS_PER_PAGE)
+                    .offset((page - 1) * GLOBAL_PLAYER_RANKINGS_PER_PAGE)
+
+                // Every sortable property is an integer column, so the union of
+                // column value types narrows to `number`.
+                return rows.map((row) => ({
+                    ...row,
+                    prop: row.prop as number,
+                }))
+            }),
         )
     })

@@ -1,60 +1,54 @@
-import { getUserConnections } from "db/discord/getUserConnections"
-import { logInfo } from "logger"
-import { supabase } from "db/supabase/client"
-import { useCallback, useEffect, useState } from "react"
-import type { Session } from "db/supabase/client"
-import type { UserConnection } from "db/schema"
-export const useUserConnections = (
-    session: Session | null,
-    updateEnabled = false,
-) => {
+import { useEffect, useState } from "react"
+import type { UserConnection, UserProfile } from "db/schema"
+
+/**
+ * The signed-in user's Discord connections.
+ *
+ * The Discord access token lives in the server session now, so the browser no
+ * longer calls the Discord API or writes through PostgREST: `POST
+ * /api/me/connections` asks the server to refresh them from Discord, and `GET`
+ * reads back what is stored.
+ */
+export const useUserConnections = (user: UserProfile | null) => {
     const [userConnections, setUserConnections] = useState<UserConnection[]>([])
-    const userId = session?.user?.id
-    const discordToken = session?.provider_token
-
-    const updateUserConnections = useCallback(async () => {
-        if (!userId || !discordToken) return
-
-        const userConnections = await getUserConnections(discordToken)
-
-        if (!userConnections) return
-
-        // TODO: delete old connections
-        const { data: connections, error } = await supabase
-            .from("UserConnection")
-            .upsert(
-                userConnections.map(({ id, name, type, verified }) => ({
-                    appId: id,
-                    userId,
-                    type,
-                    verified,
-                    name,
-                })),
-            )
-
-        if (error) throw error
-
-        setUserConnections(connections ?? [])
-    }, [discordToken, userId])
+    const userId = user?.id
 
     useEffect(() => {
-        if (!updateEnabled) return
+        if (!userId) {
+            setUserConnections([])
+            return
+        }
 
-        const channel = supabase
-            .channel(`user-connection:${userId}`)
-            .on<UserConnection>(
-                "postgres_changes",
-                { event: "*", schema: "public", table: "UserConnection" },
-                (payload) => {
-                    logInfo("UserConnection Change received!", payload)
-                },
-            )
-            .subscribe()
+        let cancelled = false
+
+        const load = async () => {
+            const synced = await fetch("/api/me/connections", {
+                method: "POST",
+            })
+
+            if (synced.ok) {
+                return (await synced.json()) as UserConnection[]
+            }
+
+            const stored = await fetch("/api/me/connections", {
+                headers: { accept: "application/json" },
+            })
+
+            return stored.ok ? ((await stored.json()) as UserConnection[]) : []
+        }
+
+        void load()
+            .then((connections) => {
+                if (!cancelled) setUserConnections(connections)
+            })
+            .catch(() => {
+                if (!cancelled) setUserConnections([])
+            })
 
         return () => {
-            void supabase.removeChannel(channel)
+            cancelled = true
         }
-    }, [updateUserConnections, updateEnabled])
+    }, [userId])
 
     return userConnections
 }

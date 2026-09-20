@@ -2,9 +2,21 @@ import { SEARCH_PLAYERS_ALIASES_PER_PAGE } from "../../helpers/constants"
 import { logInfo } from "logger"
 import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "../../trpc"
-import { supabaseService } from "db/supabase/service"
 import { withTimeLog } from "../../helpers/withTimeLog"
 import { z } from "zod"
+import { Database, Effect, runDatabase, sql } from "db/drizzle"
+import type { BHPlayerAlias } from "db/schema"
+
+type AliasSearchResult = {
+    playerId: string
+    mainAlias: string
+    otherAliases: string[]
+}
+
+/**
+ * Alias search backed by the `search_aliases` SQL function in
+ * `packages/db/sql/functions.sql`. Replaces the PostgREST `rpc` call.
+ */
 export const searchPlayerAlias = publicProcedure //
     .input(
         z.object({
@@ -21,50 +33,43 @@ export const searchPlayerAlias = publicProcedure //
                 return []
             }
 
-            const cleanAlias = alias.trim().replace(/'/g, "\\'")
+            return runDatabase(
+                Effect.gen(function* () {
+                    const db = yield* Database
 
-            const { data, error } = await supabaseService.rpc(
-                "search_aliases",
-                {
-                    search: cleanAlias,
-                    aliases_offset:
-                        (page - 1) * SEARCH_PLAYERS_ALIASES_PER_PAGE,
-                    aliases_per_page: SEARCH_PLAYERS_ALIASES_PER_PAGE,
-                },
-            )
-
-            if (error) {
-                throw error
-            }
-
-            const aliases = data?.reduce(
-                (acc, alias) => {
-                    const player = acc.find(
-                        (a) => a.playerId === alias.playerId,
+                    const rows = yield* db.execute<BHPlayerAlias>(
+                        sql`
+                            select * from search_aliases(
+                                ${alias.trim()},
+                                ${(page - 1) * SEARCH_PLAYERS_ALIASES_PER_PAGE},
+                                ${SEARCH_PLAYERS_ALIASES_PER_PAGE}
+                            )
+                        `,
+                        "objects",
                     )
-                    if (!player) {
-                        acc.push({
-                            playerId: alias.playerId,
-                            mainAlias: alias.alias,
-                            otherAliases: [],
-                        })
+
+                    return rows.reduce((acc, row) => {
+                        const player = acc.find(
+                            (a) => a.playerId === row.playerId,
+                        )
+
+                        if (!player) {
+                            acc.push({
+                                playerId: row.playerId,
+                                mainAlias: row.alias,
+                                otherAliases: [],
+                            })
+
+                            return acc
+                        }
+
+                        if (player.mainAlias !== row.alias) {
+                            player.otherAliases.push(row.alias)
+                        }
 
                         return acc
-                    }
-
-                    if (player.mainAlias !== alias.alias) {
-                        player.otherAliases.push(alias.alias)
-                    }
-
-                    return acc
-                },
-                [] as {
-                    playerId: string
-                    mainAlias: string
-                    otherAliases: string[]
-                }[],
+                    }, [] as AliasSearchResult[])
+                }),
             )
-
-            return aliases ?? []
         }, "searchPlayerAlias"),
     )

@@ -1,26 +1,37 @@
-import { createContext, useContext, useEffect, useState } from "react"
-import { signIn, signOut } from "db/supabase/auth"
-import { supabase } from "db/supabase/client"
+import {
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useState,
+} from "react"
 import { useUserConnections } from "./useUserConnections"
 import { useUserFavorites } from "./useUserFavorites"
-import { useUserProfile } from "./useUserProfile"
 import type { ReactNode } from "react"
-import type { Session, User } from "db/supabase/client"
-import type { UserConnection, UserProfile } from "db/schema"
+import type { UserProfile } from "db/schema"
+
+/**
+ * Client-side auth state.
+ *
+ * Supabase Auth used to own the session in `localStorage` plus a realtime
+ * subscription. Now the server owns it behind an HttpOnly cookie: this provider
+ * asks `/api/me/session` once, and sign-in is a full-page redirect into the
+ * Discord OAuth route.
+ */
 export type AuthContext = {
     isLoggedIn: boolean
-    session: Session | null
-    user: User | null
+    isPending: boolean
+    user: UserProfile | null
     userProfile: UserProfile | null
     signIn: () => void
     signOut: () => void
-    userConnections: UserConnection[]
+    userConnections: ReturnType<typeof useUserConnections>
     userFavorites: ReturnType<typeof useUserFavorites>
 }
 
 const authContext = createContext<AuthContext>({
     isLoggedIn: false,
-    session: null,
+    isPending: false,
     user: null,
     userProfile: null,
     signIn: () => void 0,
@@ -45,34 +56,49 @@ interface Props {
 }
 
 export const AuthProvider = ({ children }: Props) => {
-    const [session, setSession] = useState<Session | null>(null)
-    const userProfile = useUserProfile(session)
-    const userConnections = useUserConnections(session, !!userProfile)
-    const userFavorites = useUserFavorites(session)
+    const [user, setUser] = useState<UserProfile | null>(null)
+    const [isPending, setIsPending] = useState(true)
+    const userConnections = useUserConnections(user)
+    const userFavorites = useUserFavorites(user)
 
     useEffect(() => {
-        // v2: `auth.session()` is gone and the subscription now lives on
-        // `data.subscription`. `onAuthStateChange` emits `INITIAL_SESSION` as
-        // soon as it subscribes, so it is the single source of truth for the
-        // session (no separate `getSession()` call is needed).
-        const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session)
-        })
+        let cancelled = false
+
+        fetch("/api/me/session", { headers: { accept: "application/json" } })
+            .then((response) => (response.ok ? response.json() : null))
+            .then((data: { user: UserProfile | null } | null) => {
+                if (!cancelled) setUser(data?.user ?? null)
+            })
+            .catch(() => {
+                if (!cancelled) setUser(null)
+            })
+            .finally(() => {
+                if (!cancelled) setIsPending(false)
+            })
 
         return () => {
-            data.subscription.unsubscribe()
+            cancelled = true
         }
     }, [])
 
-    const isLoggedIn = !!session && !!userProfile
+    const signIn = useCallback(() => {
+        window.location.assign("/api/auth/discord")
+    }, [])
+
+    const signOut = useCallback(() => {
+        void fetch("/api/auth/signout", { method: "POST" }).finally(() => {
+            setUser(null)
+            window.location.assign("/")
+        })
+    }, [])
 
     return (
         <authContext.Provider
             value={{
-                session,
-                user: session?.user ?? null,
-                userProfile,
-                isLoggedIn,
+                user,
+                userProfile: user,
+                isLoggedIn: !!user,
+                isPending,
                 signIn,
                 signOut,
                 userConnections,

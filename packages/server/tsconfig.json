@@ -1,5 +1,11 @@
 {
     "extends": "tsconfig/nextjs.json",
     "include": ["."],
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules"],
+    "compilerOptions": {
+        // `db/drizzle` re-exports Effect and Drizzle, whose packages are
+        // ESM-only and only expose their entry points through `exports`
+        // (invisible to the legacy `node`/node10 resolution in the base config).
+        "moduleResolution": "bundler"
+    }
 }

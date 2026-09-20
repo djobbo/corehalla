@@ -1,5 +1,6 @@
 import { Context, Effect, Layer } from "effect"
 import { HttpClient } from "effect/unstable/http"
+import { envValue } from "@/env"
 import { rankings1v1Mock } from "bhapi/mocks/rankings1v1"
 import { rankings2v2Mock } from "bhapi/mocks/rankings2v2"
 import { playerStatsMock } from "bhapi/mocks/playerStats"
@@ -65,7 +66,9 @@ export const layer = Layer.effect(
             Effect.gen(function* () {
                 const query = {
                     ...params,
-                    api_key: process.env.BRAWLHALLA_API_KEY,
+                    api_key: yield* Effect.promise(() =>
+                        envValue("BRAWLHALLA_API_KEY"),
+                    ),
                 }
 
                 const request = (base: string) =>

@@ -8,6 +8,7 @@ import {
     primaryKey,
     text,
     timestamp,
+    unique,
     uuid,
 } from "drizzle-orm/pg-core"
 
@@ -21,6 +22,10 @@ import {
  *
  * Row types are exported under the same names the Prisma client used
  * (`BHPlayerData`, `UserProfile`, …), so call sites keep their imports.
+ *
+ * Authentication is owned by the application now (`web/src/effect/Auth.ts`):
+ * `UserProfile` is the identity table and `UserSession` stores Discord OAuth
+ * tokens. Supabase only hosts Postgres, so nothing here references `auth.*`.
  */
 
 /** Matches the previous `Prisma.JsonValue`. */
@@ -44,12 +49,64 @@ const pgCascade = "cascade" as const
 export const userProfile = pgTable(
     "UserProfile",
     {
-        // Cross-schema foreign key: auth.users.id -> auth_user_trigger_[add|rm].sql
-        id: uuid("id").primaryKey(),
+        id: uuid("id").primaryKey().defaultRandom(),
+        /**
+         * Discord snowflake. Nullable because rows created while the app used
+         * Supabase Auth have no local Discord id until they sign in again (or
+         * `packages/db/sql/backfill_discord_ids.sql` is run against the
+         * Supabase project before GoTrue is retired).
+         */
+        discordId: text("discordId"),
         username: text("username").notNull().default(""),
         avatarUrl: text("avatarUrl").notNull().default(""),
+        email: text("email"),
+        createdAt: timestamp("createdAt", { precision: 3 })
+            .notNull()
+            .default(sql`CURRENT_TIMESTAMP`),
     },
-    (table) => [primaryKey({ name: "UserProfile_pkey", columns: [table.id] })],
+    (table) => [
+        primaryKey({ name: "UserProfile_pkey", columns: [table.id] }),
+        unique("UserProfile_discordId_key").on(table.discordId),
+    ],
+)
+
+/**
+ * Discord OAuth sessions.
+ *
+ * `id` is the SHA-256 hex digest of the opaque token stored in the browser
+ * cookie, so a database leak cannot be replayed as a login. The Discord access
+ * and refresh tokens live here instead of in the client session, which is what
+ * removes the last reason to hold a Supabase Auth JWT.
+ */
+export const userSession = pgTable(
+    "UserSession",
+    {
+        id: text("id").primaryKey(),
+        userId: uuid("userId").notNull(),
+        discordAccessToken: text("discordAccessToken").notNull(),
+        discordRefreshToken: text("discordRefreshToken"),
+        discordTokenExpiresAt: timestamp("discordTokenExpiresAt", {
+            precision: 3,
+        }).notNull(),
+        scope: text("scope").notNull().default(""),
+        createdAt: timestamp("createdAt", { precision: 3 })
+            .notNull()
+            .default(sql`CURRENT_TIMESTAMP`),
+        expiresAt: timestamp("expiresAt", { precision: 3 }).notNull(),
+        lastSeenAt: timestamp("lastSeenAt", { precision: 3 })
+            .notNull()
+            .default(sql`CURRENT_TIMESTAMP`),
+    },
+    (table) => [
+        primaryKey({ name: "UserSession_pkey", columns: [table.id] }),
+        foreignKey({
+            name: "UserSession_userId_fkey",
+            columns: [table.userId],
+            foreignColumns: [userProfile.id],
+        })
+            .onDelete(pgCascade)
+            .onUpdate(pgCascade),
+    ],
 )
 
 export const userFavorite = pgTable(
@@ -258,6 +315,7 @@ export const crawlProgress = pgTable(
 // Same names the Prisma client exported, so existing imports keep working.
 
 export type UserProfile = typeof userProfile.$inferSelect
+export type UserSession = typeof userSession.$inferSelect
 export type UserFavorite = typeof userFavorite.$inferSelect
 export type UserConnection = typeof userConnection.$inferSelect
 export type BHPlayerData = typeof bhPlayerData.$inferSelect
@@ -270,6 +328,7 @@ export type CrawlProgress = typeof crawlProgress.$inferSelect
 // --- insert types -----------------------------------------------------------
 
 export type NewUserProfile = typeof userProfile.$inferInsert
+export type NewUserSession = typeof userSession.$inferInsert
 export type NewUserFavorite = typeof userFavorite.$inferInsert
 export type NewUserConnection = typeof userConnection.$inferInsert
 export type NewBHPlayerData = typeof bhPlayerData.$inferInsert

@@ -6,8 +6,10 @@
     "type": "module",
     "scripts": {
         "dev": "vp dev --port 3000",
+        "dev:cloud": "alchemy dev",
         "build": "vp build",
-        "start": "node .output/server/index.mjs",
+        "deploy": "alchemy deploy",
+        "destroy": "alchemy destroy",
         "preview": "vp preview",
         "ts:check": "effect-tsgo patch && tsc --noEmit",
         "prepare": "effect-tsgo patch"
@@ -22,7 +24,6 @@
         "@radix-ui/react-tooltip": "^1.2.16",
         "@react-icons/all-files": "https://github.com/react-icons/react-icons/releases/download/v5.0.1/react-icons-all-files-5.0.1.tgz",
         "@stitches/react": "^1.2.8",
-        "@supabase/supabase-js": "^2.116.0",
         "@tanstack/react-router": "^1.170.38",
         "@tanstack/react-start": "^1.168.56",
         "bhapi": "workspace:*",
@@ -44,6 +45,7 @@
         "zod": "^3.25.76"
     },
     "devDependencies": {
+        "@effect/platform-node": "4.0.0-rc.116",
         "@effect/tsgo": "^0.45.0",
         "@tailwindcss/vite": "^4.3.3",
         "@types/node": "^24.0.0",
@@ -52,7 +54,7 @@
         "@types/react-dom": "^19.0.3",
         "@types/scheduler": "^0.28.0",
         "@vitejs/plugin-react": "^6.0.1",
-        "nitro": "^3.0.260311-beta",
+        "alchemy": "2.0.0-beta.79",
         "tailwindcss": "^4.3.3",
         "typescript": "7.0.2",
         "vite": "^8.0.14",

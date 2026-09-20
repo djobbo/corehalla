@@ -1,27 +1,39 @@
-import { supabaseService } from "db/supabase/service"
+import {
+    Database,
+    Effect,
+    bhPlayerData,
+    bhPlayerLegend,
+    bhPlayerWeapon,
+    lte,
+    runDatabase,
+} from "db/drizzle"
 import type { CommonOptions } from "../helpers/commonOptions"
 
-export const flushOutdatedBPlayerData = async (options: CommonOptions) => {
-    const currentTimestamp = new Date().getTime()
-    const twoDaysAgo = currentTimestamp - 2 * 24 * 60 * 60 * 1000
+/**
+ * Deletes player rows that have not been refreshed in the last two days.
+ *
+ * Replaces the three PostgREST `delete().filter("lastUpdated","not.gt",…)`
+ * calls with direct Drizzle deletes. `options.abortSignal` is kept for
+ * signature compatibility; the Effect SQL pool owns query cancellation.
+ */
+export const flushOutdatedBPlayerData = async (_options: CommonOptions) => {
+    const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
 
-    const flushPlayerData = supabaseService
-        .from("BHPlayerData")
-        .delete()
-        .filter("lastUpdated", "not.gt", twoDaysAgo)
-        .abortSignal(options.abortSignal)
+    await runDatabase(
+        Effect.gen(function* () {
+            const db = yield* Database
 
-    const flushLegendData = supabaseService
-        .from("BHPlayerLegend")
-        .delete()
-        .filter("lastUpdated", "not.gt", twoDaysAgo)
-        .abortSignal(options.abortSignal)
+            yield* db
+                .delete(bhPlayerData)
+                .where(lte(bhPlayerData.lastUpdated, twoDaysAgo))
 
-    const flushWeaponData = supabaseService
-        .from("BHPlayerWeapon")
-        .delete()
-        .filter("lastUpdated", "not.gt", twoDaysAgo)
-        .abortSignal(options.abortSignal)
+            yield* db
+                .delete(bhPlayerLegend)
+                .where(lte(bhPlayerLegend.lastUpdated, twoDaysAgo))
 
-    await Promise.all([flushPlayerData, flushLegendData, flushWeaponData])
+            yield* db
+                .delete(bhPlayerWeapon)
+                .where(lte(bhPlayerWeapon.lastUpdated, twoDaysAgo))
+        }),
+    )
 }

@@ -2,7 +2,9 @@ import type { AuthContext } from "@ctx/auth/AuthProvider"
 
 export type FeatureFlags = keyof ReturnType<typeof getFeatureFlags>
 
-const __DEV = process.env.NODE_ENV === "development"
+const __DEV =
+    (globalThis.process?.env?.NODE_ENV ?? import.meta.env.MODE) ===
+    "development"
 
 export const getFeatureFlags = ({
     authContext,

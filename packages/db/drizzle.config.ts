@@ -16,10 +16,9 @@ export default defineConfig({
     // `storage`, `realtime`, … and a generate/push must never touch them.
     schemaFilter: ["public"],
 
-    // The `public` tables carry RLS policies that grant Supabase's `anon`,
-    // `authenticated` and `service_role` roles access; drizzle-kit must not try
-    // to manage those roles.
-    entities: { roles: { provider: "supabase" } },
+    // Authorization lives in the server layer and the connection is made with
+    // the database owner, so there are no RLS policies or Supabase roles left
+    // for drizzle-kit to reconcile.
 
     migrations: {
         table: "__drizzle_migrations",

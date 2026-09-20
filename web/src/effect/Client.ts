@@ -10,12 +10,19 @@ import { withRetry } from "./retry"
  * `/api/effect/*` routes over HTTP. During SSR that request has to target this
  * deployment's own origin, because `fetch` cannot resolve a relative URL on the
  * server.
+ *
+ * On Node the process environment is authoritative; on Cloudflare the deploy
+ * binds `VITE_SITE_URL` (inlined at build time) so the self-fetch has a target.
  */
 const serverOrigin = () => {
-    if (process.env.INTERNAL_ORIGIN) return process.env.INTERNAL_ORIGIN
-    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
+    const env = globalThis.process?.env ?? {}
 
-    return `http://localhost:${process.env.PORT ?? "3000"}`
+    if (env.INTERNAL_ORIGIN) return env.INTERNAL_ORIGIN
+    if (env.SITE_URL) return env.SITE_URL
+    if (import.meta.env.VITE_SITE_URL) return import.meta.env.VITE_SITE_URL
+    if (env.VERCEL_URL) return `https://${env.VERCEL_URL}`
+
+    return `http://localhost:${env.PORT ?? "3000"}`
 }
 
 /** Identity type for the client service; `Self` has no inference site. */

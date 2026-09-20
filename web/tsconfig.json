@@ -34,9 +34,7 @@
             "ui/*": ["./src/ui/*"],
             "common/hooks/*": ["./src/lib/hooks/*"],
             "common/analytics/*": ["./src/lib/analytics/*"],
-            "common/helpers/date": ["./src/lib/date.ts"],
-            "db/supabase/client": ["./src/lib/supabase/client.ts"],
-            "db/supabase/auth": ["./src/lib/supabase/auth.ts"]
+            "common/helpers/date": ["./src/lib/date.ts"]
         }
     }
 }

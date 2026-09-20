@@ -6,9 +6,15 @@ import {
     getWeaponsAccumulativeData,
 } from "bhapi/legends"
 import { logError, logInfo } from "logger"
-import { supabaseService } from "db/supabase/service"
-import type { BHPlayerData } from "db/schema"
-import type { BHPlayerLegend } from "db/schema"
+import {
+    Database,
+    Effect,
+    bhPlayerData,
+    bhPlayerLegend,
+    bhPlayerWeapon,
+    runDatabase,
+} from "db/drizzle"
+import type { BHPlayerData, BHPlayerLegend } from "db/schema"
 import type { CommonOptions } from "../helpers/commonOptions"
 import type { FullLegend, FullWeapon } from "bhapi/legends"
 import type { PlayerStats } from "bhapi/types"
@@ -40,6 +46,16 @@ export const sortablePlayerProps = [
 ] as const satisfies readonly (keyof BHPlayerData)[]
 
 export type SortablePlayerProp = (typeof sortablePlayerProps)[number]
+
+/** `excluded` is the row the insert proposed; updates are last-write-wins. */
+const onConflictUpdateFrom = <Row extends Record<string, unknown>>(
+    row: Row,
+    keys: readonly (keyof Row)[],
+) => {
+    const entries = Object.entries(row).filter(([key]) => !keys.includes(key))
+
+    return Object.fromEntries(entries)
+}
 
 export const updateDBPlayerData = async (
     playerStats: PlayerStats,
@@ -100,28 +116,35 @@ export const updateDBPlayerData = async (
         koGadgets: gadgets.kos,
     }
 
-    const [{ error }] = await Promise.all([
-        supabaseService
-            .from("BHPlayerData")
-            .upsert(playerData)
-            .abortSignal(options.abortSignal),
+    const upsertPlayer = runDatabase(
+        Effect.gen(function* () {
+            const db = yield* Database
+
+            yield* db
+                .insert(bhPlayerData)
+                .values(playerData)
+                .onConflictDoUpdate({
+                    target: bhPlayerData.id,
+                    set: onConflictUpdateFrom(playerData, ["id"]),
+                })
+        }),
+    )
+
+    await Promise.all([
+        upsertPlayer.catch((error) => {
+            logError(
+                `Failed to update player#${playerId}'s data in database`,
+                error,
+            )
+        }),
         updateDBPlayerLegends(playerId, legends, options),
     ])
-
-    if (error) {
-        logError(
-            `Failed to update player#${playerId}'s data in database`,
-            error,
-        )
-
-        return
-    }
 }
 
 export const updateDBPlayerLegends = async (
     playerId: string,
     legends: FullLegend[],
-    options: CommonOptions,
+    _options: CommonOptions,
 ) => {
     logInfo("updateDBPlayerLegends", { playerId })
 
@@ -186,62 +209,93 @@ export const updateDBPlayerLegends = async (
 
     const weapons = getFullWeapons(legends)
 
-    const [{ error }] = await Promise.all([
-        supabaseService
-            .from("BHPlayerLegend")
-            .upsert(
-                dbLegends
-                    .sort((a, b) => b.xp - a.xp)
-                    .slice(0, MAX_LEGENDS_PER_PLAYER),
+    const topLegends = dbLegends
+        .sort((a, b) => b.xp - a.xp)
+        .slice(0, MAX_LEGENDS_PER_PLAYER)
+
+    const upsertLegends =
+        topLegends.length === 0
+            ? Promise.resolve()
+            : runDatabase(
+                  Effect.gen(function* () {
+                      const db = yield* Database
+
+                      yield* db
+                          .insert(bhPlayerLegend)
+                          .values(topLegends)
+                          .onConflictDoUpdate({
+                              target: [
+                                  bhPlayerLegend.player_id,
+                                  bhPlayerLegend.legend_id,
+                              ],
+                              set: onConflictUpdateFrom(topLegends[0], [
+                                  "player_id",
+                                  "legend_id",
+                              ]),
+                          })
+                  }),
+              )
+
+    await Promise.all([
+        upsertLegends.catch((error) => {
+            logError(
+                `Failed to update player#${playerId}'s legends in database`,
+                error,
             )
-            .abortSignal(options.abortSignal),
-        updateDBPlayerWeapons(playerId, weapons, options),
+        }),
+        updateDBPlayerWeapons(playerId, weapons, _options),
     ])
-
-    if (error) {
-        logError(
-            `Failed to update player#${playerId}'s legends in database`,
-            error,
-        )
-
-        return
-    }
 }
 
 export const updateDBPlayerWeapons = async (
     playerId: string,
     fullWeapons: FullWeapon[],
-    options: CommonOptions,
+    _options: CommonOptions,
 ) => {
     logInfo("updateDBPlayerWeapons", { playerId })
 
     const weapons = getWeaponsAccumulativeData(fullWeapons)
 
-    const { error } = await supabaseService
-        .from("BHPlayerWeapon")
-        .upsert(
-            weapons
-                .map((weapon) => ({
-                    player_id: playerId,
-                    weapon_name: weapon.weapon,
-                    lastUpdated: new Date(),
-                    kos: weapon.kos,
-                    matchTime: weapon.matchtime,
-                    games: weapon.games,
-                    wins: weapon.wins,
-                    damageDealt: weapon.damageDealt,
-                    xp: weapon.xp,
-                    level: weapon.level,
-                }))
-                .sort((a, b) => b.matchTime - a.matchTime)
-                .slice(0, MAX_WEAPONS_PER_PLAYER),
-        )
-        .abortSignal(options.abortSignal)
+    const rows = weapons
+        .map((weapon) => ({
+            player_id: playerId,
+            weapon_name: weapon.weapon,
+            lastUpdated: new Date(),
+            kos: weapon.kos,
+            matchTime: weapon.matchtime,
+            games: weapon.games,
+            wins: weapon.wins,
+            damageDealt: weapon.damageDealt,
+            xp: weapon.xp,
+            level: weapon.level,
+        }))
+        .sort((a, b) => b.matchTime - a.matchTime)
+        .slice(0, MAX_WEAPONS_PER_PLAYER)
 
-    if (error) {
+    if (rows.length === 0) return
+
+    await runDatabase(
+        Effect.gen(function* () {
+            const db = yield* Database
+
+            yield* db
+                .insert(bhPlayerWeapon)
+                .values(rows)
+                .onConflictDoUpdate({
+                    target: [
+                        bhPlayerWeapon.player_id,
+                        bhPlayerWeapon.weapon_name,
+                    ],
+                    set: onConflictUpdateFrom(rows[0], [
+                        "player_id",
+                        "weapon_name",
+                    ]),
+                })
+        }),
+    ).catch((error) => {
         logError(
             `Failed to update player#${playerId}'s weapons in database`,
             error,
         )
-    }
+    })
 }

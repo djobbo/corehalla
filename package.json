@@ -13,6 +13,8 @@
         "db:status": "supabase status",
         "db:migrate": "vp run -r db:migrate",
         "db:migrate:prod": "vp run --filter db db:migrate:prod",
+        "deploy": "vp run --filter web deploy",
+        "deploy:destroy": "vp run --filter web destroy",
         "dl-roster": "vp run -r dl-roster",
         "ts:check": "vp run -r ts:check",
         "check": "vp check",

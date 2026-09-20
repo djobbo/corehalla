@@ -4,13 +4,26 @@
         "esModuleInterop": true,
         "allowJs": true,
         "lib": ["esnext", "dom"],
-        "moduleResolution": "node",
+        "module": "esnext",
+        // `server`/`db` re-export Effect and Drizzle, whose packages are
+        // ESM-only and expose their entry points only through `exports`
+        // (invisible to the legacy `node`/node10 resolution used before).
+        "moduleResolution": "bundler",
         "jsx": "react-jsx",
-        "target": "es6",
+        "target": "es2022",
         "skipLibCheck": true,
         "sourceMap": false,
         "outDir": "dist"
     },
     "include": ["src"],
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules"],
+    // Runtime stays CommonJS: ts-node transpiles only (no type check) and Node
+    // loads the ESM-only dependencies through require(esm).
+    "ts-node": {
+        "transpileOnly": true,
+        "compilerOptions": {
+            "module": "commonjs",
+            "moduleResolution": "node"
+        }
+    }
 }

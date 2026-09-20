@@ -1,28 +1,19 @@
-# Corehalla local Supabase stack.
+# Corehalla local Postgres.
 #
-# Started with `pnpm db:start` (which runs `supabase start`). The CLI's built-in
-# stack replaces the hand-maintained Docker Compose + Kong + database init
-# scripts that used to live in `.devcontainer/`.
+# `pnpm db:start` still runs `supabase start`, but the app only uses the
+# Postgres instance: the CLI is the most convenient way to run the same
+# Postgres major version as the hosted project. Authentication, PostgREST,
+# Realtime, Storage and the Edge runtime are disabled because the application
+# owns those concerns now (`web/src/effect/Auth.ts`, Drizzle over a direct
+# connection).
 #
 # Full reference: https://supabase.com/docs/guides/local-development/cli/config
-#
-# Values wrapped in `env(...)` are resolved from the ambient environment, then
-# `supabase/.env*`, then the repository-root `.env*` (ambient wins). Leaving one
-# unset keeps the literal in place rather than failing the start.
 
 project_id = "corehalla"
 
 [api]
-enabled = true
-# Port to use for the API URL (PostgREST + Auth + Realtime gateway).
-port = 54321
-# Only the `public` schema is exposed: the app talks to Postgres directly
-# (Drizzle) and through PostgREST, and the GraphQL API is unused.
-schemas = ["public"]
-# Extra schemas added to the search_path of every request.
-extra_search_path = ["public", "extensions"]
-# The maximum number of rows returned from a view, table, or stored procedure.
-max_rows = 1000
+# PostgREST + Auth + Realtime gateway: unused by the app.
+enabled = false
 
 [db]
 # Port to use for the local database URL (Drizzle connects here).
@@ -44,55 +35,22 @@ enabled = false
 enabled = false
 
 [realtime]
-# Used by the client hooks (favorites, profile, connections).
-enabled = true
+# Live updates are gone: the app mutates through its own API and keeps state
+# locally instead of subscribing to `postgres_changes`.
+enabled = false
 
 [studio]
 enabled = true
 # Port for Supabase Studio.
 port = 54323
-# External URL of the API server Studio connects to.
-api_url = "http://127.0.0.1"
-
-[local_smtp]
-# Email sign-in is disabled; accounts are created through Discord OAuth.
-enabled = false
 
 [storage]
 # The app stores no objects in Supabase Storage.
 enabled = false
 
 [auth]
-enabled = true
-# Base URL of the site, used as an allow-list for redirects.
-site_url = "http://localhost:3000"
-# Exact URLs auth providers may redirect to after authentication.
-additional_redirect_urls = ["http://localhost:3000", "http://127.0.0.1:3000"]
-# How long tokens are valid for, in seconds.
-jwt_expiry = 3600
-# Allow new users to sign up (the first Discord login creates the account).
-enable_signup = true
-enable_anonymous_sign_ins = false
-enable_manual_linking = false
-minimum_password_length = 6
-password_requirements = ""
-
-[auth.email]
-# Discord is the only sign-in method.
-enable_signup = false
-enable_confirmations = false
-
-[auth.sms]
-enable_signup = false
-enable_confirmations = false
-
-[auth.external.discord]
-# Discord is the app's only OAuth provider. Set DISCORD_AUTH_CLIENT_ID and
-# DISCORD_AUTH_SECRET (in the environment or a root `.env`) to sign in locally.
-enabled = true
-client_id = "env(DISCORD_AUTH_CLIENT_ID)"
-secret = "env(DISCORD_AUTH_SECRET)"
-skip_nonce_check = false
+# Supabase Auth (GoTrue) is gone; sessions are app-owned.
+enabled = false
 
 [edge_runtime]
 # No edge functions are deployed from this repository.

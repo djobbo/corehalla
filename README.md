@@ -24,42 +24,65 @@
 
 ## Repository layout
 
-| Package      | Description                                                                                                                         |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `web`        | **TanStack Start app** (Vite + Nitro, React 19, Tailwind v4). The Next.js migration target. See [`web/README.md`](./web/README.md). |
-| `app`        | Legacy Next.js app, kept runnable until the `web` cutover is verified.                                                              |
-| `worker`     | Discord bot + crawler.                                                                                                              |
-| `packages/*` | Shared `server` (tRPC router), `db`, `bhapi`, `web-parser`, `common`, `ui`, `logger` packages.                                      |
+| Package      | Description                                                                                                                                                      |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `web`        | **TanStack Start app** (Vite, React 19, Tailwind v4). Deployed to Cloudflare with Alchemy. The Next.js migration target. See [`web/README.md`](./web/README.md). |
+| `app`        | Legacy Next.js app, kept runnable until the `web` cutover is verified.                                                                                           |
+| `worker`     | Discord bot + crawler.                                                                                                                                           |
+| `packages/*` | Shared `server` (tRPC router), `db`, `bhapi`, `web-parser`, `common`, `ui`, `logger` packages.                                                                   |
+
+## Supabase = Postgres only
+
+Supabase is used **only as a Postgres host**. There is no `@supabase/supabase-js`
+in the `web` app, the server package or the worker: every query goes through
+[Drizzle](https://orm.drizzle.team) on Effect's own PostgreSQL client
+(`@effect/sql-pg`), and authentication is owned by the app.
+
+| Concern      | Where                                                                  |
+| ------------ | ---------------------------------------------------------------------- |
+| Connection   | `DATABASE_URL` (Node/CI) or a Cloudflare Hyperdrive binding (Workers)  |
+| Client       | `packages/db/client.ts` (Effect SQL + `drizzle-orm/effect-postgres`)   |
+| Node helpers | `packages/db/drizzle.ts` (re-exports the client, schema and operators) |
+| Auth         | `web/src/effect/Auth.ts` — app-owned Discord OAuth + DB sessions       |
+| Deploy       | `web/alchemy.run.ts` — Cloudflare Worker + Hyperdrive                  |
+
+Removed with the Supabase client: GoTrue auth, PostgREST reads/writes,
+`postgres_changes` subscriptions, the `auth.users` foreign key and trigger, all
+RLS policies and the `supabase_realtime` publication. Authorization is enforced
+in the server layer (every query is scoped to the session's `userId`). The
+legacy `app` still imports `packages/db/supabase/*`; those files are deprecated
+and go away with it.
 
 ## Local development
 
-The local stack is the [Supabase CLI](https://supabase.com/docs/guides/local-development):
-`supabase start` brings up Postgres, PostgREST, Auth and Realtime from
-`supabase/config.toml`, replacing the hand-maintained Docker Compose + Kong +
-database init scripts that used to live in `.devcontainer/`.
+Local development still uses the [Supabase CLI](https://supabase.com/docs/guides/local-development)
+for Postgres (the same major version as the hosted project), but
+`supabase/config.toml` disables Auth, PostgREST, Realtime, Storage and the Edge
+runtime — the app owns all of those.
 
 ```sh
-pnpm setup:env     # install deps, `supabase start`, write env files, migrate
+pnpm setup:env     # install deps, `supabase start`, write DATABASE_URL, migrate
 pnpm dev           # run the app dev servers
-pnpm db:stop       # stop the local stack
+pnpm db:stop       # stop local Postgres
 ```
 
-`pnpm setup:env` is idempotent: it starts the stack (Docker must be running),
-writes the returned URL/keys/`DATABASE_URL` into `packages/db/.env`,
-`web/.env.local`, `app/.env.local` and `worker/.env` without touching the other
-values in those files, then applies the database migrations.
+`pnpm setup:env` is idempotent: it starts Postgres (Docker must be running),
+writes `DATABASE_URL` into `packages/db/.env`, `web/.env.local`,
+`app/.env.local` and `worker/.env` without touching the other values in those
+files, then applies the database migrations.
 
 Useful commands:
 
 ```sh
-pnpm db:start      # supabase start
-pnpm db:status     # supabase status (URLs, keys, ports)
+pnpm db:start      # supabase start (Postgres + Studio)
+pnpm db:status     # supabase status
 pnpm db:stop       # supabase stop
-pnpm db:migrate    # drizzle migrate + RLS/realtime/functions setup
+pnpm db:migrate    # drizzle migrate + the SQL in packages/db/sql/
 ```
 
-The service ports come from `supabase/config.toml`: API `54321`, Postgres
-`54322`, Studio `54323`.
+Both apps read the same `DATABASE_URL`; `web` resolves it through
+`web/src/env.ts`, which prefers `process.env` on Node and the Hyperdrive
+binding on Cloudflare.
 
 ## Database (Drizzle)
 
@@ -68,12 +91,12 @@ The schema is defined in `packages/db/schema.ts` and owned by
 types, defaults and constraint names are identical to the ones Prisma created,
 so no data migration is involved.
 
-| Concern      | Where                                                    |
-| ------------ | -------------------------------------------------------- |
-| Schema       | `packages/db/schema.ts`                                  |
-| Migrations   | `packages/db/drizzle/<timestamp>_<name>/`                |
-| Supabase SQL | `packages/db/sql/` (RLS, realtime, trigger, RPCs)        |
-| Runner       | `packages/db/scripts/db.mts` (Effect + `@effect/sql-pg`) |
+| Concern    | Where                                                    |
+| ---------- | -------------------------------------------------------- |
+| Schema     | `packages/db/schema.ts`                                  |
+| Migrations | `packages/db/drizzle/<timestamp>_<name>/`                |
+| Setup SQL  | `packages/db/sql/` (extensions, RPCs, Supabase cleanup)  |
+| Runner     | `packages/db/scripts/db.mts` (Effect + `@effect/sql-pg`) |
 
 ```sh
 pnpm --filter db db:generate   # drizzle-kit generate: migration from schema.ts
@@ -94,6 +117,55 @@ Adopt them once with:
 ```sh
 pnpm --filter db db:init       # record the baseline as applied, run nothing
 ```
+
+Migration `20260920200153_wet_aqueduct` adds `UserSession` plus the
+`UserProfile.discordId`/`email`/`createdAt` columns. `db:migrate` runs
+`legacy_supabase_auth_cleanup.sql` first (dropping the `auth.users` foreign key
+and trigger, the RLS policies and the realtime publication — idempotent no-ops
+on a plain Postgres) and `backfill_discord_ids.sql` afterwards, which copies the
+Discord snowflake out of `auth.identities` so existing users are recognised on
+their next sign-in.
+
+## Authentication
+
+`web` implements Discord sign-in itself:
+
+| Route                            | Purpose                                                   |
+| -------------------------------- | --------------------------------------------------------- |
+| `GET /api/auth/discord`          | Mints the OAuth `state` cookie and redirects to Discord   |
+| `GET /api/auth/discord/callback` | Exchanges the code, upserts the profile, sets the session |
+| `POST /api/auth/signout`         | Deletes the session row and clears the cookie             |
+| `GET /api/me/session`            | The signed-in `UserProfile`, or `{ user: null }`          |
+| `/api/me/favorites`              | `GET`/`POST`/`DELETE` the user's favourites               |
+| `/api/me/connections`            | `GET` stored Discord connections, `POST` re-syncs them    |
+
+The browser holds one opaque HttpOnly, `SameSite=Lax` cookie. Only its SHA-256
+digest is stored (`UserSession.id`), and the Discord access/refresh tokens stay
+in that row — refreshed server-side shortly before they expire. Set
+`DISCORD_CLIENT_ID` / `DISCORD_CLIENT_SECRET` in `web/.env` and register
+`${SITE_URL}/api/auth/discord/callback` as the redirect URL.
+
+## Deployment (Alchemy → Cloudflare)
+
+`web` deploys to Cloudflare Workers with [Alchemy](https://alchemy.run):
+
+```sh
+pnpm --filter web deploy      # alchemy deploy
+pnpm --filter web dev:cloud   # alchemy dev (Workers runtime + local Postgres)
+pnpm --filter web destroy     # alchemy destroy
+```
+
+`web/alchemy.run.ts` builds `Cloudflare.Website.Vite` (Alchemy supplies the
+Cloudflare Vite plugin, so `vite.config.ts` has no Nitro/Cloudflare preset) and
+a `Cloudflare.Hyperdrive.Connection` over the Supabase Postgres origin. The
+Worker reads the pooled connection string from the `HYPERDRIVE` binding; the
+deploy reads `SUPABASE_DB_*`, `DISCORD_*`, `BRAWLHALLA_API_KEY` and `SITE_URL`
+from its environment. Caching is disabled on the Hyperdrive because sessions
+must never be read stale.
+
+Drizzle's migrator reads the `drizzle/` directory from disk, which a Worker
+cannot do, so migrations stay a Node/CI step (`pnpm db:migrate`, pointed at the
+same origin). `worker` is not deployed by this stack.
 
 ## Tooling
 
@@ -125,15 +197,17 @@ pnpm ci:lint       # vp lint (no fixes; used in CI)
 ### Notes and follow-ups
 
 - **Type-aware linting is off.** Vite+ recommends `typeAware: true` +
-  `typeCheck: true`, but tsgolint (TypeScript 7) rejects the legacy
-  `app`/`worker` tsconfigs (`es5`, `moduleResolution: node10`,
-  `downlevelIteration`, `baseUrl`-relative `paths`), and `web` must be checked
-  by the Effect-patched compiler. Types are checked per package by
-  `pnpm ts:check` instead. Enable both once those tsconfigs are modernized.
+  `typeCheck: true`, but tsgolint (TypeScript 7) still rejects the legacy
+  `app`/`worker` tsconfigs (`es5`, `downlevelIteration`, `baseUrl`-relative
+  `paths`), and `web` must be checked by the Effect-patched compiler. Types are
+  checked per package by `pnpm ts:check` instead. (`server`, `worker` and `app`
+  now resolve Effect's ESM-only `exports` via `moduleResolution: "bundler"`.)
 - **95 lint warnings** remain (mostly `react/no-unstable-nested-components`,
   `no-underscore-dangle`, `react/function-component-definition` and
   `react/set-state-in-effect`). They are demoted to warnings so the migration
   lands green; fix them and the rules can become errors.
+- **`packages/db/supabase/` is deprecated.** Only the legacy `app` imports it;
+  it disappears with the Next.js cutover.
 - **Commit hooks are not installed.** `staged` in `vite.config.ts` and
   `.vite-hooks/pre-commit` are committed and ready; run `vp hooks enable` (or
   add `vp config` to a `prepare` script) to activate them, and

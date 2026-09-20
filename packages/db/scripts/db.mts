@@ -7,10 +7,10 @@
  * uses, so there is only one driver and one set of connection settings.
  *
  * Commands:
- *   migrate   Apply pending migrations, then install the Supabase SQL
+ *   migrate   Apply pending migrations, then run the SQL in `sql/`
  *   init      Baseline an existing database: record the migrations as already
  *             applied without running them (for databases created by Prisma)
- *   setup     Only run the Supabase SQL in `sql/`
+ *   setup     Only run the SQL in `sql/`
  *
  * Usage: node --env-file-if-exists=.env scripts/db.ts <command>
  */
@@ -32,21 +32,19 @@ const sqlFolder = join(packageDir, "sql")
 const BREAKPOINT = "--> statement-breakpoint"
 
 /**
- * Dropped before migrating and recreated by `SETUP_FILES`.
+ * Retire the Supabase-Auth objects before migrating.
  *
- * The trigger lives in a `public` table but references `auth.users`, which this
- * project does not own, so it is installed out-of-band rather than from the
- * schema.
+ * These were installed out-of-band (the `auth.users` foreign key and trigger,
+ * the RLS policies, the realtime publication), so drizzle-kit neither owns nor
+ * drops them. The cleanup is idempotent and a no-op on a plain Postgres.
  */
-const CLEAN_FILES = ["auth_user_trigger_rm.sql"] as const
+const CLEAN_FILES = ["legacy_supabase_auth_cleanup.sql"] as const
 
 /** Applied in order after every migrate; each is safe to re-run. */
 const SETUP_FILES = [
-    "rls_setup.sql",
-    "realtime_setup.sql",
-    "auth_user_trigger_add.sql",
     "extensions.sql",
     "functions.sql",
+    "backfill_discord_ids.sql",
 ] as const
 
 const databaseUrl = process.env.DATABASE_URL

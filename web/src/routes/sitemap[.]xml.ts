@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
+import { siteUrl } from "@/effect/config"
 
 /**
  * Server route that replaces the `next-sitemap` generated `sitemap.xml`.
@@ -18,18 +19,15 @@ const PUBLIC_PATHS = [
     "/rankings/power/2v2",
 ] as const
 
-function getSiteUrl() {
-    return (process.env.SITE_URL ?? "https://dev.corehalla.com").replace(
-        /\/$/,
-        "",
-    )
+async function getSiteUrl() {
+    return ((await siteUrl()) || "https://dev.corehalla.com").replace(/\/$/, "")
 }
 
 export const Route = createFileRoute("/sitemap.xml")({
     server: {
         handlers: {
-            GET() {
-                const siteUrl = getSiteUrl()
+            async GET() {
+                const siteUrl = await getSiteUrl()
                 const urls = PUBLIC_PATHS.map(
                     (path) =>
                         `<url><loc>${siteUrl}${path}</loc><changefreq>daily</changefreq><priority>1.0</priority></url>`,

@@ -1,9 +1,8 @@
 import { InfoIcon } from "ui/icons"
 import { alerts } from "@util/alerts"
 
-const CURRENT_ALERT = process.env.NEXT_PUBLIC_ALERT as
-    | keyof typeof alerts
-    | undefined
+const CURRENT_ALERT = (import.meta.env.VITE_ALERT ??
+    import.meta.env.NEXT_PUBLIC_ALERT) as keyof typeof alerts | undefined
 
 export const AlertBar = () => {
     if (!CURRENT_ALERT) return null

@@ -14,11 +14,16 @@ coverage
 out/
 build
 
-# tanstack start / nitro
+# tanstack start / vite / nitro
 .output/
 .vercel/
 .nitro/
 .nitro
+dist/
+.vercel/output
+
+# alchemy (local state)
+.alchemy/
 
 # misc
 .DS_Store
