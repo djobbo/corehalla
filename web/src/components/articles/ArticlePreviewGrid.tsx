@@ -2,7 +2,7 @@ import { ArticlePreview } from "./ArticlePreview"
 import { type BHArticle } from "web-parser/common"
 
 type ArticlePreviewGridProps = {
-    articles: BHArticle[]
+    articles: readonly BHArticle[]
 }
 
 export const ArticlePreviewGrid = ({ articles }: ArticlePreviewGridProps) => {

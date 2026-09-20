@@ -21,10 +21,18 @@ import {
     getFullWeapons,
     getLegendsAccumulativeData,
 } from "bhapi/legends"
-import { getPlayerAliases, getPlayerRanked, getPlayerStats } from "@/server/api.functions"
-import { numericStringSchema } from "@/server/schemas"
+import {
+    loadAtoms,
+    playerAliasesAtom,
+    playerRankedAtom,
+    playerStatsAtom,
+    preloadAtom,
+    useQuery,
+} from "@/effect/atoms"
+import { numericStringSchema } from "@/lib/routeSchemas"
 import { seoTags } from "@components/SEO"
 import type { MiscStat } from "@components/stats/MiscStatGroup"
+import type { PlayerStats } from "bhapi/types"
 
 const tabClassName = cn(
     "px-6 py-4 uppercase text-xs border-b-2 z-10 whitespace-nowrap",
@@ -44,31 +52,34 @@ const tabClassName = cn(
 )
 
 export const Route = createFileRoute("/stats/player/$playerId")({
-    loader: async ({ params }) => {
+    loader: async ({ params, context }) => {
         if (!numericStringSchema.safeParse(params.playerId).success) {
             throw notFound()
         }
 
-        const playerId = params.playerId
+        const playerId = parseInt(params.playerId)
 
-        const [playerStats, playerRanked, aliases] = await Promise.all([
-            // A missing player surfaces as a real 404 rather than a 500.
-            getPlayerStats({ data: { playerId } }).catch(() => {
-                throw notFound()
-            }),
-            // Ranked data and aliases are optional for the page to render.
-            getPlayerRanked({ data: { playerId } }).catch(() => undefined),
-            getPlayerAliases({ data: { playerId } }).catch(() => []),
+        // A missing player surfaces as a real 404 rather than a 500.
+        const playerStats = (await preloadAtom(
+            context.registry,
+            playerStatsAtom(playerId),
+        )) as PlayerStats | null
+
+        if (!playerStats) {
+            throw notFound()
+        }
+
+        const loaded = await loadAtoms(context, [
+            playerRankedAtom(playerId),
+            playerAliasesAtom(playerId),
         ])
 
-        const playerAliases = aliases
-            .map((alias) => cleanString(alias))
-            .filter((alias) => alias.length >= 2 && !alias.endsWith("•2"))
-
-        return { playerStats, playerRanked, playerAliases }
+        // `head()` cannot read the atom registry, so the name travels with the
+        // loader data to keep the server-rendered title dynamic.
+        return { ...loaded, playerName: playerStats.name }
     },
     head: ({ loaderData }) => {
-        const name = loaderData?.playerStats.name
+        const name = loaderData?.playerName
         return {
             meta: seoTags({
                 title: name
@@ -84,7 +95,18 @@ export const Route = createFileRoute("/stats/player/$playerId")({
 })
 
 function Page() {
-    const { playerStats, playerRanked, playerAliases } = Route.useLoaderData()
+    const { playerId } = Route.useParams()
+    const id = parseInt(playerId)
+
+    const playerStats = useQuery(playerStatsAtom(id))
+    const playerRanked = useQuery(playerRankedAtom(id))
+    const aliases = useQuery(playerAliasesAtom(id))
+
+    if (!playerStats) return null
+
+    const playerAliases = aliases
+        .map((alias) => cleanString(alias))
+        .filter((alias) => alias.length >= 2 && !alias.endsWith("•2"))
 
     const fullLegends = getFullLegends(
         playerStats.legends,
@@ -221,7 +243,7 @@ function Page() {
                 <TabsContent value="overview">
                     <PlayerOverviewTab
                         stats={playerStats}
-                        ranked={playerRanked}
+                        ranked={playerRanked ?? undefined}
                         legends={fullLegends}
                         damageDealt={damagedealt}
                         damageTaken={damagetaken}

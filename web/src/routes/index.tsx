@@ -3,19 +3,18 @@ import {
     DiscordIcon,
 } from "ui/icons"
 import { ArticlePreviewGrid } from "@components/articles/ArticlePreviewGrid"
-import { Await } from "@tanstack/react-router"
 import { Button } from "ui/base/Button"
 import { DiscordCard } from "@components/DiscordCard"
 import { FavoritesGrid } from "@components/favorites/FavoritesGrid"
 import { SearchButton } from "@components/search/SearchButton"
 import { SectionTitle } from "@components/layout/SectionTitle"
-import { Suspense } from "react"
 import { WeeklyRotation } from "@components/WeeklyRotation"
+import { articlesAtom, loadAtoms, useQuery, weeklyRotationAtom } from "@/effect/atoms"
 import { cn } from "common/helpers/classnames"
 import { createFileRoute } from "@tanstack/react-router"
 import { css } from "ui/theme"
-import { getBHArticles, getWeeklyRotation } from "@/server/api.functions"
 import { seoTags } from "@components/SEO"
+import { useAtomValue } from "@effect/atom-react"
 import { useAuth, useFavorites } from "@ctx/auth/AuthProvider"
 
 const landingClassName = css({
@@ -24,13 +23,10 @@ const landingClassName = css({
 })()
 
 export const Route = createFileRoute("/")({
-    // Both below-the-fold data sources are returned as promises so the server
-    // renders and streams the shell immediately, then streams the rotation and
-    // the news grid as they resolve.
-    loader: () => ({
-        weeklyRotation: getWeeklyRotation(),
-        articles: getBHArticles({ data: { category: "", first: 3 } }),
-    }),
+    // The free-legend rotation is preloaded so it is present in the server HTML
+    // and hydrated on the client. The news grid stays client-fetched, matching
+    // the Next.js app which opted it out of SSR.
+    loader: ({ context }) => loadAtoms(context, [weeklyRotationAtom()]),
     head: () => ({
         meta: seoTags({
             title: "Track your Brawlhalla stats, view rankings, and more! • Corehalla",
@@ -44,7 +40,11 @@ export const Route = createFileRoute("/")({
 function Page() {
     const { isLoggedIn, signIn } = useAuth()
     const { favorites } = useFavorites()
-    const { weeklyRotation, articles } = Route.useLoaderData()
+
+    const weeklyRotation = useQuery(weeklyRotationAtom())
+    const articlesResult = useAtomValue(articlesAtom("", 3))
+    const articles =
+        articlesResult._tag === "Success" ? articlesResult.value : []
 
     return (
         <>
@@ -154,27 +154,15 @@ function Page() {
                     </p>
                 )}
             </div>
-            <Suspense fallback={<WeeklyRotation />}>
-                <Await promise={weeklyRotation}>
-                    {(rotation) => <WeeklyRotation rotation={rotation} />}
-                </Await>
-            </Suspense>
-            <Suspense fallback={null}>
-                <Await promise={articles}>
-                    {(resolvedArticles) =>
-                        resolvedArticles.length > 0 ? (
-                            <>
-                                <SectionTitle className="text-center mt-16">
-                                    Latest News
-                                </SectionTitle>
-                                <ArticlePreviewGrid
-                                    articles={resolvedArticles}
-                                />
-                            </>
-                        ) : null
-                    }
-                </Await>
-            </Suspense>
+            <WeeklyRotation rotation={weeklyRotation} />
+            {articles.length > 0 && (
+                <>
+                    <SectionTitle className="text-center mt-16">
+                        Latest News
+                    </SectionTitle>
+                    <ArticlePreviewGrid articles={articles} />
+                </>
+            )}
         </>
     )
 }

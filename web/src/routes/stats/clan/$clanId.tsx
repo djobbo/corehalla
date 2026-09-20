@@ -1,11 +1,12 @@
 import { ClanMember } from "@components/stats/clan/ClanMember"
 import { StatsHeader } from "@components/stats/StatsHeader"
 import { cleanString } from "common/helpers/cleanString"
+import { clanStatsAtom, loadAtoms, preloadAtom, useQuery } from "@/effect/atoms"
 import { createFileRoute, notFound } from "@tanstack/react-router"
 import { formatUnixTime } from "common/helpers/date"
-import { getClanStats } from "@/server/api.functions"
-import { numericStringSchema } from "@/server/schemas"
+import { numericStringSchema } from "@/lib/routeSchemas"
 import { seoTags } from "@components/SEO"
+import type { Clan } from "bhapi/types"
 import type { ClanRank } from "bhapi/constants"
 import type { MiscStat } from "@components/stats/MiscStatGroup"
 
@@ -17,21 +18,28 @@ const clanRankWeights: Record<ClanRank, number> = {
 } as const
 
 export const Route = createFileRoute("/stats/clan/$clanId")({
-    loader: async ({ params }) => {
+    loader: async ({ params, context }) => {
         if (!numericStringSchema.safeParse(params.clanId).success) {
             throw notFound()
         }
 
-        const clan = await getClanStats({ data: { clanId: params.clanId } })
+        const clanId = parseInt(params.clanId)
+
+        const clan = (await preloadAtom(
+            context.registry,
+            clanStatsAtom(clanId),
+        )) as Clan | null
 
         if (!clan) {
             throw notFound()
         }
 
-        return clan
+        const loaded = await loadAtoms(context, [])
+
+        return { ...loaded, clanName: clan.clan_name }
     },
     head: ({ loaderData }) => {
-        const name = loaderData?.clan_name
+        const name = loaderData?.clanName
         return {
             meta: seoTags({
                 title: name
@@ -47,7 +55,10 @@ export const Route = createFileRoute("/stats/clan/$clanId")({
 })
 
 function Page() {
-    const clan = Route.useLoaderData()
+    const { clanId } = Route.useParams()
+    const clan = useQuery(clanStatsAtom(parseInt(clanId)))
+
+    if (!clan) return null
 
     const clanStats: MiscStat[] = [
         {

@@ -6,12 +6,12 @@ import { Tooltip } from "ui/base/Tooltip"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { createFileRoute, stripSearchParams, useNavigate } from "@tanstack/react-router"
-import { getPowerRankings } from "@/server/api.functions"
+import { loadAtoms, powerRankingsAtom, useQuery } from "@/effect/atoms"
 import { powerRankingsRegions, rankingsBrackets } from "@components/stats/rankings/options"
 import {
     resolvePowerRankingsBracket,
     resolvePowerRankingsRegion,
-} from "@/server/params"
+} from "@/lib/routeParams"
 import { seoTags } from "@components/SEO"
 import { useDebouncedState } from "common/hooks/useDebouncedState"
 import { useEffect } from "react"
@@ -29,13 +29,13 @@ export const Route = createFileRoute("/rankings/power/{-$bracket}/{-$region}")({
         q: z.string().catch(""),
     }),
     search: { middlewares: [stripSearchParams<{ q: string }>({ q: "" })] },
-    loader: ({ params }) =>
-        getPowerRankings({
-            data: {
-                bracket: resolvePowerRankingsBracket(params.bracket),
-                region: resolvePowerRankingsRegion(params.region),
-            },
-        }),
+    loader: ({ params, context }) =>
+        loadAtoms(context, [
+            powerRankingsAtom(
+                resolvePowerRankingsBracket(params.bracket),
+                resolvePowerRankingsRegion(params.region),
+            ),
+        ]),
     head: ({ params }) => {
         const bracket = resolvePowerRankingsBracket(params?.bracket)
         const region = resolvePowerRankingsRegion(params?.region)
@@ -52,11 +52,12 @@ export const Route = createFileRoute("/rankings/power/{-$bracket}/{-$region}")({
 function Page() {
     const { bracket: bracketParam, region: regionParam } = Route.useParams()
     const { q } = Route.useSearch()
-    const powerRankings = Route.useLoaderData()
     const navigate = useNavigate()
 
     const bracket = resolvePowerRankingsBracket(bracketParam)
     const region = resolvePowerRankingsRegion(regionParam)
+
+    const powerRankings = useQuery(powerRankingsAtom(bracket, region))
 
     const {
         sortedArray: sortedPowerRankings,
@@ -64,7 +65,7 @@ function Page() {
         sortBy,
         options: sortOptions,
     } = useSortBy<PR, PRSortOption>(
-        powerRankings ?? [],
+        powerRankings ? [...powerRankings] : [],
         {
             rank: { label: "PR", sortFn: (a, b) => a.rank - b.rank },
             name: {
@@ -194,11 +195,7 @@ function Page() {
                 <p className="w-16 text-center">Top 8</p>
                 <p className="w-16 text-center">Top 32</p>
             </div>
-            {!powerRankings ? (
-                <div className="flex items-center justify-center h-48">
-                    <Spinner size="4rem" />
-                </div>
-            ) : filteredlPowerRankings.length > 0 ? (
+            {filteredlPowerRankings.length > 0 ? (
                 <div className="rounded-lg overflow-hidden border border-bg mb-4">
                     {filteredlPowerRankings.map((player, i) => (
                         <div

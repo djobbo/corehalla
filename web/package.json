@@ -9,9 +9,11 @@
         "build": "vite build",
         "start": "node .output/server/index.mjs",
         "preview": "vite preview",
-        "ts:check": "tsc --noEmit"
+        "ts:check": "effect-tsgo patch && tsc --noEmit",
+        "prepare": "effect-tsgo patch"
     },
     "dependencies": {
+        "@effect/atom-react": "4.0.0-rc.116",
         "@fontsource/montserrat": "^5.3.0",
         "@radix-ui/react-collapsible": "^1.1.20",
         "@radix-ui/react-progress": "^1.1.16",
@@ -20,13 +22,13 @@
         "@react-icons/all-files": "https://github.com/react-icons/react-icons/releases/download/v5.0.1/react-icons-all-files-5.0.1.tgz",
         "@stitches/react": "^1.2.8",
         "@supabase/supabase-js": "^1.35.7",
-        "@tanstack/react-query": "^5.103.1",
         "@tanstack/react-router": "^1.170.38",
         "@tanstack/react-start": "^1.168.56",
-        "@trpc/server": "10.45.0",
         "bhapi": "workspace:*",
         "common": "workspace:*",
+        "dayjs": "^1.11.13",
         "db": "workspace:*",
+        "effect": "4.0.0-rc.116",
         "kbar": "^1.0.0",
         "logger": "workspace:*",
         "nprogress": "^0.2.0",
@@ -35,20 +37,22 @@
         "react-hot-toast": "^2.6.1",
         "react-select": "^5.10.2",
         "react-use": "^17.6.1",
-        "server": "workspace:*",
+        "scheduler": "0.27.0",
         "web-parser": "workspace:*",
         "zod": "^3.25.76"
     },
     "devDependencies": {
+        "@effect/tsgo": "^0.45.0",
         "@tailwindcss/vite": "^4.3.3",
         "@types/node": "^24.0.0",
         "@types/nprogress": "^0.2.3",
         "@types/react": "^19.0.8",
         "@types/react-dom": "^19.0.3",
+        "@types/scheduler": "^0.28.0",
         "@vitejs/plugin-react": "^6.0.1",
         "nitro": "^3.0.260311-beta",
         "tailwindcss": "^4.3.3",
-        "typescript": "^5.9.3",
+        "typescript": "7.0.2",
         "vite": "^8.0.14"
     }
 }

@@ -4,7 +4,7 @@ import { UnknownIcon } from "ui/icons"
 import type { Legend } from "bhapi/types"
 
 type WeeklyRotationProps = {
-    rotation?: Legend[]
+    rotation?: readonly Legend[]
 }
 
 /**

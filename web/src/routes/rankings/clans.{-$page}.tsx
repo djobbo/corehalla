@@ -1,14 +1,13 @@
 import { AppLink } from "ui/base/AppLink"
-import { CLANS_RANKINGS_PER_PAGE } from "server/helpers/constants"
+import { CLANS_RANKINGS_PER_PAGE } from "@util/constants"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
-import { Spinner } from "ui/base/Spinner"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
+import { clansRankingsAtom, loadAtoms, useQuery } from "@/effect/atoms"
 import { createFileRoute, stripSearchParams, useNavigate } from "@tanstack/react-router"
 import { formatUnixTime } from "common/helpers/date"
-import { getClansRankings } from "@/server/api.functions"
 import { rankingsBrackets } from "@components/stats/rankings/options"
-import { resolvePage } from "@/server/params"
+import { resolvePage } from "@/lib/routeParams"
 import { seoTags } from "@components/SEO"
 import { useDebouncedState } from "common/hooks/useDebouncedState"
 import { useEffect } from "react"
@@ -22,13 +21,10 @@ export const Route = createFileRoute("/rankings/clans/{-$page}")({
         middlewares: [stripSearchParams<{ clan: string }>({ clan: "" })],
     },
     loaderDeps: ({ search }) => ({ clan: search.clan }),
-    loader: ({ params, deps }) =>
-        getClansRankings({
-            data: {
-                page: resolvePage(params.page),
-                name: deps.clan,
-            },
-        }),
+    loader: ({ params, deps, context }) =>
+        loadAtoms(context, [
+            clansRankingsAtom(deps.clan, parseInt(resolvePage(params.page))),
+        ]),
     ssr: ({ search }) =>
         search.status === "success" && search.value.clan ? "data-only" : true,
     head: ({ params }) => {
@@ -46,10 +42,11 @@ export const Route = createFileRoute("/rankings/clans/{-$page}")({
 function ClansPage() {
     const { page: pageParam } = Route.useParams()
     const { clan } = Route.useSearch()
-    const clans = Route.useLoaderData()
     const navigate = useNavigate()
 
     const page = resolvePage(pageParam)
+    const clans = useQuery(clansRankingsAtom(clan, parseInt(page)))
+
     const [search, setSearch, immediateSearch, isDebouncing] =
         useDebouncedState(clan, 500)
 
@@ -85,43 +82,37 @@ function ClansPage() {
                 <p className="w-40 pl-1 text-center">Created on</p>
                 <p className="w-20 pl-1 text-center">XP</p>
             </div>
-            {!clans ? (
-                <div className="flex items-center justify-center h-48">
-                    <Spinner size="4rem" />
-                </div>
-            ) : (
-                <div className="rounded-lg overflow-hidden border border-bg mb-4">
-                    {clans.map((clan, index) => (
-                        <div
-                            key={clan.id}
-                            className={cn(
-                                "px-4 py-2 w-full h-full flex items-center gap-4 hover:bg-bg",
-                                { "bg-bgVar2": index % 2 === 0 },
-                            )}
-                        >
-                            {showClanRank && (
-                                <p className="w-16 h-full flex items-center justify-center text-xs">
-                                    {(parseInt(page, 10) - 1) *
-                                        CLANS_RANKINGS_PER_PAGE +
-                                        index +
-                                        1}
-                                </p>
-                            )}
-                            <p className="flex flex-1 items-center">
-                                <AppLink href={`/stats/clan/${clan.id}`}>
-                                    {cleanString(clan.name)}
-                                </AppLink>
+            <div className="rounded-lg overflow-hidden border border-bg mb-4">
+                {clans.map((clan, index) => (
+                    <div
+                        key={clan.id}
+                        className={cn(
+                            "px-4 py-2 w-full h-full flex items-center gap-4 hover:bg-bg",
+                            { "bg-bgVar2": index % 2 === 0 },
+                        )}
+                    >
+                        {showClanRank && (
+                            <p className="w-16 h-full flex items-center justify-center text-xs">
+                                {(parseInt(page, 10) - 1) *
+                                    CLANS_RANKINGS_PER_PAGE +
+                                    index +
+                                    1}
                             </p>
-                            <div className="w-40 flex items-center justify-center">
-                                {!!clan.created && clan.created > 0
-                                    ? formatUnixTime(clan.created)
-                                    : "N/A"}
-                            </div>
-                            <p className="w-20 text-center">{clan.xp}</p>
+                        )}
+                        <p className="flex flex-1 items-center">
+                            <AppLink href={`/stats/clan/${clan.id}`}>
+                                {cleanString(clan.name)}
+                            </AppLink>
+                        </p>
+                        <div className="w-40 flex items-center justify-center">
+                            {!!clan.created && clan.created > 0
+                                ? formatUnixTime(clan.created)
+                                : "N/A"}
                         </div>
-                    ))}
-                </div>
-            )}
+                        <p className="w-20 text-center">{clan.xp}</p>
+                    </div>
+                ))}
+            </div>
         </RankingsLayout>
     )
 }

@@ -27,10 +27,10 @@ import { Route as LeaderboardSplatRouteImport } from './routes/leaderboard.$'
 import { Route as PSplatRouteImport } from './routes/p.$'
 import { Route as RankingsIndexRouteImport } from './routes/rankings/index'
 import { Route as StatsMeRouteImport } from './routes/stats/me'
+import { Route as ApiEffectSplatRouteImport } from './routes/api/effect/$'
 import { Route as ApiRankingsIndexRouteImport } from './routes/api/rankings/index'
 import { Route as ApiRankingsClansRouteImport } from './routes/api/rankings/clans'
 import { Route as ApiRankingsPowerRouteImport } from './routes/api/rankings/power'
-import { Route as ApiTrpcSplatRouteImport } from './routes/api/trpc/$'
 import { Route as RankingsClansChar123PageChar125RouteImport } from './routes/rankings/clans.{-$page}'
 import { Route as RankingsGlobalChar123PageChar125RouteImport } from './routes/rankings/global.{-$page}'
 import { Route as RankingsPowerIndexRouteImport } from './routes/rankings/power/index'
@@ -135,6 +135,11 @@ const StatsMeRoute = StatsMeRouteImport.update({
   path: '/stats/me',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiEffectSplatRoute = ApiEffectSplatRouteImport.update({
+  id: '/api/effect/$',
+  path: '/api/effect/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiRankingsIndexRoute = ApiRankingsIndexRouteImport.update({
   id: '/api/rankings/',
   path: '/api/rankings/',
@@ -148,11 +153,6 @@ const ApiRankingsClansRoute = ApiRankingsClansRouteImport.update({
 const ApiRankingsPowerRoute = ApiRankingsPowerRouteImport.update({
   id: '/api/rankings/power',
   path: '/api/rankings/power',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
-  id: '/api/trpc/$',
-  path: '/api/trpc/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RankingsClansChar123PageChar125Route =
@@ -248,9 +248,9 @@ export interface FileRoutesByFullPath {
   '/p/$': typeof PSplatRoute
   '/stats/me': typeof StatsMeRoute
   '/rankings/': typeof RankingsIndexRoute
+  '/api/effect/$': typeof ApiEffectSplatRoute
   '/api/rankings/clans': typeof ApiRankingsClansRoute
   '/api/rankings/power': typeof ApiRankingsPowerRoute
-  '/api/trpc/$': typeof ApiTrpcSplatRoute
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
   '/stats/clan/$clanId': typeof StatsClanClanIdRoute
@@ -285,9 +285,9 @@ export interface FileRoutesByTo {
   '/p/$': typeof PSplatRoute
   '/stats/me': typeof StatsMeRoute
   '/rankings': typeof RankingsIndexRoute
+  '/api/effect/$': typeof ApiEffectSplatRoute
   '/api/rankings/clans': typeof ApiRankingsClansRoute
   '/api/rankings/power': typeof ApiRankingsPowerRoute
-  '/api/trpc/$': typeof ApiTrpcSplatRoute
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
   '/stats/clan/$clanId': typeof StatsClanClanIdRoute
@@ -323,9 +323,9 @@ export interface FileRoutesById {
   '/p/$': typeof PSplatRoute
   '/stats/me': typeof StatsMeRoute
   '/rankings/': typeof RankingsIndexRoute
+  '/api/effect/$': typeof ApiEffectSplatRoute
   '/api/rankings/clans': typeof ApiRankingsClansRoute
   '/api/rankings/power': typeof ApiRankingsPowerRoute
-  '/api/trpc/$': typeof ApiTrpcSplatRoute
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
   '/stats/clan/$clanId': typeof StatsClanClanIdRoute
@@ -362,9 +362,9 @@ export interface FileRouteTypes {
     | '/p/$'
     | '/stats/me'
     | '/rankings/'
+    | '/api/effect/$'
     | '/api/rankings/clans'
     | '/api/rankings/power'
-    | '/api/trpc/$'
     | '/rankings/clans/{-$page}'
     | '/rankings/global/{-$page}'
     | '/stats/clan/$clanId'
@@ -399,9 +399,9 @@ export interface FileRouteTypes {
     | '/p/$'
     | '/stats/me'
     | '/rankings'
+    | '/api/effect/$'
     | '/api/rankings/clans'
     | '/api/rankings/power'
-    | '/api/trpc/$'
     | '/rankings/clans/{-$page}'
     | '/rankings/global/{-$page}'
     | '/stats/clan/$clanId'
@@ -436,9 +436,9 @@ export interface FileRouteTypes {
     | '/p/$'
     | '/stats/me'
     | '/rankings/'
+    | '/api/effect/$'
     | '/api/rankings/clans'
     | '/api/rankings/power'
-    | '/api/trpc/$'
     | '/rankings/clans/{-$page}'
     | '/rankings/global/{-$page}'
     | '/stats/clan/$clanId'
@@ -474,9 +474,9 @@ export interface RootRouteChildren {
   PSplatRoute: typeof PSplatRoute
   StatsMeRoute: typeof StatsMeRoute
   RankingsIndexRoute: typeof RankingsIndexRoute
+  ApiEffectSplatRoute: typeof ApiEffectSplatRoute
   ApiRankingsClansRoute: typeof ApiRankingsClansRoute
   ApiRankingsPowerRoute: typeof ApiRankingsPowerRoute
-  ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
   RankingsClansChar123PageChar125Route: typeof RankingsClansChar123PageChar125Route
   RankingsGlobalChar123PageChar125Route: typeof RankingsGlobalChar123PageChar125Route
   StatsClanClanIdRoute: typeof StatsClanClanIdRoute
@@ -621,6 +621,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StatsMeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/effect/$': {
+      id: '/api/effect/$'
+      path: '/api/effect/$'
+      fullPath: '/api/effect/$'
+      preLoaderRoute: typeof ApiEffectSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/rankings/': {
       id: '/api/rankings/'
       path: '/api/rankings'
@@ -640,13 +647,6 @@ declare module '@tanstack/react-router' {
       path: '/api/rankings/power'
       fullPath: '/api/rankings/power'
       preLoaderRoute: typeof ApiRankingsPowerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/trpc/$': {
-      id: '/api/trpc/$'
-      path: '/api/trpc/$'
-      fullPath: '/api/trpc/$'
-      preLoaderRoute: typeof ApiTrpcSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rankings/clans/{-$page}': {
@@ -762,9 +762,9 @@ const rootRouteChildren: RootRouteChildren = {
   PSplatRoute: PSplatRoute,
   StatsMeRoute: StatsMeRoute,
   RankingsIndexRoute: RankingsIndexRoute,
+  ApiEffectSplatRoute: ApiEffectSplatRoute,
   ApiRankingsClansRoute: ApiRankingsClansRoute,
   ApiRankingsPowerRoute: ApiRankingsPowerRoute,
-  ApiTrpcSplatRoute: ApiTrpcSplatRoute,
   RankingsClansChar123PageChar125Route: RankingsClansChar123PageChar125Route,
   RankingsGlobalChar123PageChar125Route: RankingsGlobalChar123PageChar125Route,
   StatsClanClanIdRoute: StatsClanClanIdRoute,

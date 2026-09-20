@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { CLANS_RANKINGS_PER_PAGE } from "server/helpers/constants"
+import { CLANS_RANKINGS_PER_PAGE } from "@util/constants"
 import { supabaseService } from "db/supabase/service"
 import type { BHClan } from "db/generated/client"
 

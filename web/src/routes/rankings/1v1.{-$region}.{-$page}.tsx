@@ -2,13 +2,12 @@ import { AppLink } from "ui/base/AppLink"
 import { Image } from "@components/Image"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
 import { RankingsTableItem } from "@components/stats/RankingsTableItem"
-import { Spinner } from "ui/base/Spinner"
 import { cleanString } from "common/helpers/cleanString"
 import { createFileRoute, stripSearchParams, useNavigate } from "@tanstack/react-router"
-import { get1v1Rankings } from "@/server/api.functions"
 import { legendsMap } from "bhapi/legends"
+import { loadAtoms, rankings1v1Atom, useQuery } from "@/effect/atoms"
 import { rankingsBrackets, rankingsRegions } from "@components/stats/rankings/options"
-import { resolvePage, resolveRankedRegion } from "@/server/params"
+import { resolvePage, resolveRankedRegion } from "@/lib/routeParams"
 import { seoTags } from "@components/SEO"
 import { useDebouncedState } from "common/hooks/useDebouncedState"
 import { useEffect } from "react"
@@ -26,14 +25,14 @@ export const Route = createFileRoute("/rankings/1v1/{-$region}/{-$page}")({
         middlewares: [stripSearchParams<{ player: string }>({ player: "" })],
     },
     loaderDeps: ({ search }) => ({ player: search.player }),
-    loader: ({ params, deps }) =>
-        get1v1Rankings({
-            data: {
-                region: resolveRankedRegion(params.region),
-                page: resolvePage(params.page),
-                name: deps.player || undefined,
-            },
-        }),
+    loader: ({ params, deps, context }) =>
+        loadAtoms(context, [
+            rankings1v1Atom(
+                resolveRankedRegion(params.region),
+                parseInt(resolvePage(params.page)),
+                deps.player || undefined,
+            ),
+        ]),
     // Search-result URLs are not canonical content: keep them out of the
     // server-rendered component while still running the loader on the server
     // and serving the (noindex) head.
@@ -59,11 +58,14 @@ export const Route = createFileRoute("/rankings/1v1/{-$region}/{-$page}")({
 function Page() {
     const { region: regionParam, page: pageParam } = Route.useParams()
     const { player } = Route.useSearch()
-    const rankings1v1 = Route.useLoaderData()
     const navigate = useNavigate()
 
     const region = resolveRankedRegion(regionParam)
     const page = resolvePage(pageParam)
+
+    const rankings1v1 = useQuery(
+        rankings1v1Atom(region, parseInt(page), player || undefined),
+    )
 
     const [search, setSearch, immediateSearch, isDebouncing] =
         useDebouncedState(player, 500)
@@ -105,47 +107,41 @@ function Page() {
                 <p className="w-20 text-center">Winrate</p>
                 <p className="w-40 pl-1">Elo</p>
             </div>
-            {!rankings1v1 ? (
-                <div className="flex items-center justify-center h-48">
-                    <Spinner size="4rem" />
-                </div>
-            ) : (
-                <div className="rounded-lg overflow-hidden border border-bg mb-4 flex flex-col">
-                    {rankings1v1
-                        .filter((player) =>
-                            player.name
-                                .toLowerCase()
-                                .startsWith(immediateSearch.toLowerCase()),
-                        )
-                        .map((player, i) => {
-                            const legend = legendsMap[player.best_legend]
+            <div className="rounded-lg overflow-hidden border border-bg mb-4 flex flex-col">
+                {rankings1v1
+                    .filter((player) =>
+                        player.name
+                            .toLowerCase()
+                            .startsWith(immediateSearch.toLowerCase()),
+                    )
+                    .map((player, i) => {
+                        const legend = legendsMap[player.best_legend]
 
-                            return (
-                                <RankingsTableItem
-                                    key={player.brawlhalla_id}
-                                    index={i}
-                                    content={
-                                        <AppLink
-                                            href={`/stats/player/${player.brawlhalla_id}`}
-                                            className="flex flex-1 items-center gap-2 md:gap-3"
-                                        >
-                                            {legend && (
-                                                <Image
-                                                    src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
-                                                    alt={legend.bio_name}
-                                                    containerClassName="w-6 h-6 rounded-lg overflow-hidden"
-                                                    className="object-cover object-center"
-                                                />
-                                            )}
-                                            {cleanString(player.name)}
-                                        </AppLink>
-                                    }
-                                    {...player}
-                                />
-                            )
-                        })}
-                </div>
-            )}
+                        return (
+                            <RankingsTableItem
+                                key={player.brawlhalla_id}
+                                index={i}
+                                content={
+                                    <AppLink
+                                        href={`/stats/player/${player.brawlhalla_id}`}
+                                        className="flex flex-1 items-center gap-2 md:gap-3"
+                                    >
+                                        {legend && (
+                                            <Image
+                                                src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
+                                                alt={legend.bio_name}
+                                                containerClassName="w-6 h-6 rounded-lg overflow-hidden"
+                                                className="object-cover object-center"
+                                            />
+                                        )}
+                                        {cleanString(player.name)}
+                                    </AppLink>
+                                }
+                                {...player}
+                            />
+                        )
+                    })}
+            </div>
         </RankingsLayout>
     )
 }

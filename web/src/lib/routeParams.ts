@@ -2,8 +2,8 @@ import {
     powerRankingsBracketSchema,
     powerRankingsRegionSchema,
     rankedRegionSchema,
-} from "./schemas"
-import type { RankedRegion } from "./schemas"
+} from "./routeSchemas"
+import type { RankedRegion } from "./routeSchemas"
 import type {
     PowerRankingsBracket,
     PowerRankingsRegion,

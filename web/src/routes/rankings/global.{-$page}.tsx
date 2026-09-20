@@ -1,15 +1,15 @@
 import { AppLink } from "ui/base/AppLink"
-import { GLOBAL_PLAYER_RANKINGS_PER_PAGE } from "server/helpers/constants"
+import { GLOBAL_PLAYER_RANKINGS_PER_PAGE } from "@util/constants"
 import { Select } from "ui/base/Select"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { createFileRoute, stripSearchParams, useNavigate } from "@tanstack/react-router"
-import { getGlobalPlayerRankings } from "@/server/api.functions"
-import { globalRankingsSortOptions, sortablePlayerPropSchema } from "@/server/schemas"
-import { resolvePage } from "@/server/params"
+import { globalRankingsAtom, loadAtoms, useQuery } from "@/effect/atoms"
+import { globalRankingsSortOptions, sortablePlayerPropSchema } from "@/lib/routeSchemas"
+import { resolvePage } from "@/lib/routeParams"
 import { seoTags } from "@components/SEO"
 import { z } from "zod"
-import type { SortablePlayerProp } from "@/server/schemas"
+import type { SortablePlayerProp } from "@/lib/routeSchemas"
 
 export const Route = createFileRoute("/rankings/global/{-$page}")({
     // Sorting changes which column the server orders by, so it belongs in the
@@ -25,13 +25,13 @@ export const Route = createFileRoute("/rankings/global/{-$page}")({
         ],
     },
     loaderDeps: ({ search }) => ({ sortBy: search.sortBy }),
-    loader: ({ params, deps }) =>
-        getGlobalPlayerRankings({
-            data: {
-                sortBy: deps.sortBy,
-                page: resolvePage(params.page),
-            },
-        }),
+    loader: ({ params, deps, context }) =>
+        loadAtoms(context, [
+            globalRankingsAtom(
+                deps.sortBy,
+                parseInt(resolvePage(params.page)),
+            ),
+        ]),
     head: ({ params }) => {
         const page = resolvePage(params?.page)
         return {
@@ -47,10 +47,10 @@ export const Route = createFileRoute("/rankings/global/{-$page}")({
 function Page() {
     const { page: pageParam } = Route.useParams()
     const { sortBy } = Route.useSearch()
-    const players = Route.useLoaderData()
     const navigate = useNavigate()
 
     const page = resolvePage(pageParam)
+    const players = useQuery(globalRankingsAtom(sortBy, parseInt(page)))
 
     return (
         <>

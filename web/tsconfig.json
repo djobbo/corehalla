@@ -19,20 +19,28 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "forceConsistentCasingInFileNames": true,
-        "types": ["vite/client"],
-        "baseUrl": ".",
+        "types": ["node", "vite/client"],
+        "plugins": [
+            {
+                "name": "@effect/language-service",
+                "namespaceImportPackages": ["effect", "@effect/*"],
+                "includeSuggestionsInTsc": false,
+                "ignoreEffectWarningsInTscExitCode": true
+            }
+        ],
         "paths": {
-            "@/*": ["src/*"],
-            "@components/*": ["src/components/*"],
-            "@ctx/*": ["src/providers/*"],
-            "@hooks/*": ["src/hooks/*"],
-            "@util/*": ["src/util/*"],
-            "@ui/*": ["src/ui/*"],
-            "ui/*": ["src/ui/*"],
-            "common/hooks/*": ["src/lib/hooks/*"],
-            "common/analytics/*": ["src/lib/analytics/*"],
-            "db/supabase/client": ["src/lib/supabase/client.ts"],
-            "db/supabase/auth": ["src/lib/supabase/auth.ts"]
+            "@/*": ["./src/*"],
+            "@components/*": ["./src/components/*"],
+            "@ctx/*": ["./src/providers/*"],
+            "@hooks/*": ["./src/hooks/*"],
+            "@util/*": ["./src/util/*"],
+            "@ui/*": ["./src/ui/*"],
+            "ui/*": ["./src/ui/*"],
+            "common/hooks/*": ["./src/lib/hooks/*"],
+            "common/analytics/*": ["./src/lib/analytics/*"],
+            "common/helpers/date": ["./src/lib/date.ts"],
+            "db/supabase/client": ["./src/lib/supabase/client.ts"],
+            "db/supabase/auth": ["./src/lib/supabase/auth.ts"]
         }
     }
 }

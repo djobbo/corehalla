@@ -1,14 +1,15 @@
-# web — Corehalla on TanStack Start
+# web — Corehalla on TanStack Start + Effect
 
 This package is the TanStack Start migration of the Next.js app in `app/`. Both
 apps run side by side until the cutover is complete.
 
 - **Bundler:** Vite 8
 - **Framework:** TanStack Start + TanStack Router (file-based routes)
+- **Runtime/data:** [Effect v4](https://effect.website) — `HttpApi` + `HttpClient`
+  on the server, `Atom` + `@effect/atom-react` on the client
 - **Deployment:** Nitro (`node-server` locally, the `vercel` preset on Vercel)
 - **UI:** React 19, Tailwind CSS v4 (CSS-first config), Stitches, Radix, kbar
-- **Data:** typed server functions delegating to the existing tRPC router in
-  `packages/server` (unchanged)
+- **TypeScript:** 7.0.2 (native) with `@effect/tsgo`
 
 ## Commands
 
@@ -16,7 +17,7 @@ apps run side by side until the cutover is complete.
 pnpm --filter web dev        # vite dev on http://localhost:3000
 pnpm --filter web build      # vite build (+ route tree generation)
 pnpm --filter web start      # node .output/server/index.mjs
-pnpm --filter web ts:check   # tsc --noEmit
+pnpm --filter web ts:check   # effect-tsgo patch && tsc --noEmit
 ```
 
 > The production server reads configuration from the runtime environment.
@@ -27,46 +28,96 @@ pnpm --filter web ts:check   # tsc --noEmit
 
 ```
 src/
-  router.tsx              # createRouter(routeTree)
+  router.tsx              # createRouter(routeTree) + per-request Atom registry
   start.ts                # CSRF middleware for server functions
   server.ts               # custom server entry: injects Stitches CSS into SSR <head>
+  effect/
+    Api.ts                # HttpApi contract (groups + endpoints + schemas)
+    schemas.ts            # request/response schemas
+    Brawlhalla.ts         # HttpClient-based Brawlhalla service
+    Database.ts           # Supabase service
+    Content.ts            # web-parser service
+    Handlers.ts           # HttpApiBuilder group implementations
+    Server.ts             # build -> WHATWG fetch handler for /api/effect/*
+    Client.ts             # AtomHttpApi client (browser fetch / SSR loopback)
+    atoms.ts              # query atom factories + SSR preload/dehydrate helpers
+    retry.ts              # exponential-backoff retry policy
+    errors.ts             # typed domain errors
   routes/                 # file-based routes + server routes
-  server/                 # typed server functions and server-only helpers
   components/ hooks/ providers/ util/   # moved from app/
   ui/                     # vendored from packages/ui (React 19 + Start link/router)
-  lib/                    # vendored client hooks, analytics, Supabase client
+  lib/                    # vendored client hooks, analytics, Supabase client, date
   styles/app.css          # Tailwind v4 entry + design tokens
 ```
 
+### Data layer: Effect replaces tRPC and React Query
+
+The typed API is declared once as an `HttpApi` contract
+(`src/effect/Api.ts`) and mounted as a TanStack Start server route at
+`/api/effect/$`:
+
+- **Server** — `HttpApiBuilder.group(...)` implements each endpoint with the
+  `Brawlhalla`, `Database`, and `Content` services. Services are resolved in the
+  *outer* group builder, so the handler layer only requires plain services and
+  `Layer.provide` can discharge them.
+- **Outbound HTTP** — the Brawlhalla service calls upstream through Effect's
+  `HttpClient`, preferring the dair.gg proxy and falling back to the official
+  API.
+- **Client** — `AtomHttpApi.Service()` generates typed query/mutation atoms from
+  the same contract. Components read them with `useAtomValue` / `useQuery`
+  (`useAtomSuspense`), so there is no hand-written fetch layer on the client.
+
+React Query has been removed. Retries now use Effect's native
+`Schedule.exponential("200 millis")` (200ms → 400ms → 800ms → 1.6s, 4 attempts)
+through `src/effect/retry.ts`, applied to every request the client and the
+Brawlhalla service make. The auth profile fetch uses the same schedule.
+
 ### Server-only boundaries
 
-All privileged work sits behind `createServerFn`:
+Privileged code is only reachable from the server route that mounts the API:
 
-- `src/server/caller.server.ts` is a `.server.ts` module (import-protected) that
-  creates a tRPC caller: `appRouter.createCaller({})`.
-- `src/server/api.functions.ts` validates input with zod and delegates to the
-  matching procedure. The tRPC procedures and `packages/server` are unchanged.
-- Route loaders and components only ever call those typed functions; the build
-  replaces the handlers with RPC stubs in the browser bundle.
+- `Brawlhalla` / `Database` / `Content` import server-only modules
+  (`db/supabase/service`, `web-parser`) and are only imported by `Handlers.ts`
+  and `Server.ts`.
+- `packages/db/supabase/service.ts` (service-role client) is created lazily, so
+  missing credentials fail the request that needs them instead of crashing the
+  server at import time.
+- Verified: the client bundle contains no `cheerio`, service-role key,
+  `HttpApiBuilder`, tRPC, or React Query code.
 
-`packages/db/supabase/service.ts` (service-role client) is only reachable from
-server functions. It is now created lazily, so a missing Supabase configuration
-fails the request that needs it instead of crashing the whole server at import
-time.
+### SSR with Effect atoms
+
+Route loaders preload their query atoms into the registry that `getRouter()`
+creates per server request, then return the dehydrated state:
+
+```ts
+loader: ({ params, context }) =>
+  loadAtoms(context, [rankings1v1Atom(region, page, name)])
+```
+
+`Hydration.dehydrate` runs after the atoms settle and the root route feeds every
+matched route's slice into `HydrationBoundary`, so the first client render uses
+the server-computed values and does not refetch. Each query atom passes a
+`serializationKey` (required for dehydration) and a `timeToLive` so its node
+survives until dehydrate.
+
+During SSR the atom client targets the deployment's own origin
+(`INTERNAL_ORIGIN`, else `VERCEL_URL`, else `http://localhost:$PORT`), because
+`fetch` cannot resolve a relative URL on the server.
 
 ### SSR mode per route
 
 | Route | `ssr` | Why |
 | --- | --- | --- |
-| `/` | `true` (default) + streaming | Landing content has SEO value; rotation/news are deferred |
-| `/rankings/1v1/…` | `true`, or `'data-only'` when `?player=` is set | Search results are non-canonical; the loader still runs on the server |
+| `/` | `true` | Landing content has SEO value |
+| `/rankings/1v1/…` | `true`, or `'data-only'` when `?player=` is set | Search results are non-canonical |
 | `/rankings/2v2/…` | `true` | Public, indexable |
 | `/rankings/clans/…` | `true`, or `'data-only'` when `?clan=` is set | Same as 1v1 |
 | `/rankings/global/…` | `true` | Public, indexable |
 | `/rankings/power/…` | `true` | Public, indexable |
 | `/stats/player/$playerId` | `true` | Public, indexable; 404 for a missing player |
 | `/stats/clan/$clanId` | `true` | Public, indexable |
-| `/calc` | `true` | Static tool, indexable, no server data |
+| `/calc` | `true` | Static tool, indexable |
 | `/@me/favorites` | `false` | Content comes from the browser Supabase session |
 
 `/@me/favorites` also returns `Cache-Control: private, no-store` and
@@ -79,50 +130,45 @@ Validated with zod and kept in the URL:
 - `/rankings/1v1/…?player=` — validated, part of `loaderDeps`
 - `/rankings/clans/…?clan=` — validated, part of `loaderDeps`
 - `/rankings/global/…?sortBy=` — validated, part of `loaderDeps`
-- `/rankings/power/…?q=` — validated, client-side filter (not a loader dep)
+- `/rankings/power/…?q=` — validated, client-side filter
 
 `stripSearchParams` keeps default values out of the canonical URL so the server
 does not redirect `/rankings/1v1` to `/rankings/1v1?player=`.
 
-### Streaming
-
-The index loader returns the weekly rotation and news as promises. The server
-renders and streams the shell immediately, then streams each section through
-`<Await>` + `<Suspense>`. Measured locally with a browser user agent: first
-bytes in ~70 ms.
-
-Crawlers (detected by `isbot`) intentionally receive the fully settled document
-instead of a stream.
-
 ### Routes and redirects
 
 - Optional path params (`/rankings/1v1/{-$region}/{-$page}`) replace the
-  Next.js optional catch-alls, so `/rankings/1v1`, `/rankings/1v1/eu` and
-  `/rankings/1v1/eu/2` are all served by one route file.
-- Every `next.config.js` redirect is preserved as an HTTP 308 route:
-  `/wiki`, `/discord`, `/github`, `/twitter`, `/kofi`, `/donate`, `/stats/me`,
-  `/rankings`, `/leaderboard/*`, `/p/*`, `/c/*`.
+  Next.js optional catch-alls.
+- Every `next.config.js` redirect is preserved as an HTTP 308 route.
 - `/sitemap.xml` and `/robots.txt` are dynamic server routes driven by
-  `SITE_URL`. The stale `next-sitemap` output that used to live in
-  `app/public/` was removed so it cannot shadow them (a `next build`
-  regenerates it for the legacy app).
-- `packages/*` API routes are preserved as TanStack Start server routes under
-  `/api/*`, including `/api/trpc/*`.
+  `SITE_URL`.
+- The previous hand-written `/api/*` REST routes are retained unchanged;
+  the Effect API lives under `/api/effect/*`.
+
+## TypeScript 7 + `@effect/tsgo`
+
+Effect's diagnostics need the patched compiler:
+
+- `typescript` is pinned to exactly `7.0.2` (the native compiler) because
+  `@effect/tsgo` only supports specific upstream versions.
+- `web/package.json` runs `effect-tsgo patch` from `prepare` and from
+  `ts:check`.
+- `tsconfig.json` needs `"types": ["node", "vite/client"]` (TS 7 no longer
+  auto-includes `@types/*`), relative `paths` (TS 7 removed `baseUrl`), and the
+  `@effect/language-service` plugin entry.
 
 ## Environment variables
 
 See `.env.example`. Server-only variables are read at request time through
 `process.env`; browser variables are read through `import.meta.env` (Vite
-`envPrefix` allows both `VITE_` and the legacy `NEXT_PUBLIC_` prefix so the
-deployed environment does not have to change).
+`envPrefix` allows both `VITE_` and the legacy `NEXT_PUBLIC_` prefix).
+
+`INTERNAL_ORIGIN` optionally pins the origin used for SSR atom preloading.
 
 ## Deployment (Vercel)
 
 `nitro()` emits the Vercel Build Output API directory (`.vercel/output`) when
-built on Vercel. Configure the Vercel project with **root directory `web`**;
-`web/vercel.json` disables framework detection and uses `pnpm build`.
-
-`vercel.json` in `app/` still describes the legacy Next.js deployment.
+built on Vercel. Configure the Vercel project with **root directory `web`**.
 
 ## Cutover checklist
 

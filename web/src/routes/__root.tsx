@@ -4,24 +4,29 @@ import "../styles/app.css"
 import { AnimatedLogo } from "ui/base/AnimatedLogo"
 import { AuthProvider } from "@ctx/auth/AuthProvider"
 import { BackToTopButton } from "@components/BackToTopButton"
-import { ClientOnly } from "@tanstack/react-router"
+import {
+    ClientOnly,
+    HeadContent,
+    Outlet,
+    Scripts,
+    createRootRouteWithContext,
+    useMatches,
+} from "@tanstack/react-router"
 import { ErrorPageContent } from "@components/layout/ErrorPageContent"
 import { GAScripts } from "common/analytics/GAScripts"
-import { HeadContent } from "@tanstack/react-router"
+import { HydrationBoundary, RegistryContext } from "@effect/atom-react"
 import { KBarProvider } from "kbar"
 import { Layout } from "@components/layout/Layout"
-import { Outlet } from "@tanstack/react-router"
 import { PageLoader } from "ui/base/PageLoader"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { Scripts } from "@tanstack/react-router"
 import { Searchbox } from "@components/search/Searchbox"
 import { SideNavProvider } from "@ctx/SideNavProvider"
+import { Spinner } from "ui/base/Spinner"
+import { Suspense, useMemo } from "react"
 import { Toaster } from "react-hot-toast"
-import { createRootRoute } from "@tanstack/react-router"
-import { useState } from "react"
 import type { ReactNode } from "react"
+import type { DehydratedState, RouterContext } from "@/effect/atoms"
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<RouterContext>()({
     head: () => ({
         meta: [
             { charSet: "utf-8" },
@@ -44,38 +49,53 @@ export const Route = createRootRoute({
 })
 
 function RootComponent() {
+    const { registry } = Route.useRouteContext()
+    const matches = useMatches()
+
+    // Route loaders preload their atoms and return the dehydrated state.
+    // Merging every matched route's slice lets `HydrationBoundary` restore the
+    // server-computed values before the first client render.
+    const dehydrated = useMemo(
+        () =>
+            matches.flatMap(
+                (match) =>
+                    (
+                        match.loaderData as
+                            | { dehydrated?: DehydratedState }
+                            | undefined
+                    )?.dehydrated ?? [],
+            ),
+        [matches],
+    )
+
     return (
-        <RootProviders>
-            <Outlet />
-        </RootProviders>
+        <RegistryContext.Provider value={registry}>
+            <HydrationBoundary state={dehydrated}>
+                <RootProviders>
+                    <Suspense
+                        fallback={
+                            <div className="flex items-center justify-center h-48">
+                                <Spinner size="4rem" />
+                            </div>
+                        }
+                    >
+                        <Outlet />
+                    </Suspense>
+                </RootProviders>
+            </HydrationBoundary>
+        </RegistryContext.Provider>
     )
 }
 
 /**
  * Application-wide providers, moved out of the old `pages/_app.tsx`.
  *
- * The query client is created once per browser session (and once per server
- * request) so user data is never shared between requests.
+ * Server data is owned by Effect atoms (see `src/effect`), so there is no
+ * Query client here.
  */
 function RootProviders({ children }: { children: ReactNode }) {
-    const [queryClient] = useState(
-        () =>
-            new QueryClient({
-                defaultOptions: {
-                    queries: {
-                        staleTime: 60,
-                        refetchOnWindowFocus: false,
-                        refetchOnMount: false,
-                        retry: 3,
-                        retryDelay: (attemptIndex) =>
-                            Math.min(1000 * 2 ** attemptIndex, 30000),
-                    },
-                },
-            }),
-    )
-
     return (
-        <QueryClientProvider client={queryClient}>
+        <>
             <GAScripts />
             <AuthProvider>
                 <KBarProvider actions={[]} options={{}}>
@@ -95,7 +115,7 @@ function RootProviders({ children }: { children: ReactNode }) {
                     </SideNavProvider>
                 </KBarProvider>
             </AuthProvider>
-        </QueryClientProvider>
+        </>
     )
 }
 
