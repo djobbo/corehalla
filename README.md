@@ -47,7 +47,7 @@ pnpm db:stop       # stop the local stack
 `pnpm setup:env` is idempotent: it starts the stack (Docker must be running),
 writes the returned URL/keys/`DATABASE_URL` into `packages/db/.env`,
 `web/.env.local`, `app/.env.local` and `worker/.env` without touching the other
-values in those files, then applies the Prisma migrations.
+values in those files, then applies the database migrations.
 
 Useful commands:
 
@@ -55,11 +55,45 @@ Useful commands:
 pnpm db:start      # supabase start
 pnpm db:status     # supabase status (URLs, keys, ports)
 pnpm db:stop       # supabase stop
-pnpm db:migrate    # prisma migrate + RLS/realtime/functions setup
+pnpm db:migrate    # drizzle migrate + RLS/realtime/functions setup
 ```
 
 The service ports come from `supabase/config.toml`: API `54321`, Postgres
 `54322`, Studio `54323`.
+
+## Database (Drizzle)
+
+The schema is defined in `packages/db/schema.ts` and owned by
+[Drizzle](https://orm.drizzle.team) (the `1.0.0-rc` line). Table names, column
+types, defaults and constraint names are identical to the ones Prisma created,
+so no data migration is involved.
+
+| Concern      | Where                                                    |
+| ------------ | -------------------------------------------------------- |
+| Schema       | `packages/db/schema.ts`                                  |
+| Migrations   | `packages/db/drizzle/<timestamp>_<name>/`                |
+| Supabase SQL | `packages/db/sql/` (RLS, realtime, trigger, RPCs)        |
+| Runner       | `packages/db/scripts/db.mts` (Effect + `@effect/sql-pg`) |
+
+```sh
+pnpm --filter db db:generate   # drizzle-kit generate: migration from schema.ts
+pnpm --filter db db:migrate    # apply migrations, then the sql/ files
+pnpm --filter db db:setup      # only re-run the sql/ files
+pnpm --filter db db:push       # drizzle-kit push (dev only)
+pnpm --filter db db:studio     # drizzle-kit studio
+```
+
+`schema.ts` is the only place the row types come from: `BHPlayerData`,
+`UserProfile`, … are inferred from the tables with `$inferSelect`, so adding a
+table is a schema change plus a `db:generate`, with no code generation step.
+
+**Existing databases** (anything created by the Prisma migrations, including
+production) already contain this schema and have no Drizzle migration journal.
+Adopt them once with:
+
+```sh
+pnpm --filter db db:init       # record the baseline as applied, run nothing
+```
 
 ## Tooling
 

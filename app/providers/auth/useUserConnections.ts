@@ -3,7 +3,7 @@ import { logInfo } from "logger"
 import { supabase } from "db/supabase/client"
 import { useCallback, useEffect, useState } from "react"
 import type { Session } from "db/supabase/client"
-import type { UserConnection } from "db/generated/client"
+import type { UserConnection } from "db/schema"
 export const useUserConnections = (
     session: Session | null,
     updateEnabled = false,

@@ -6,7 +6,7 @@ import { useUserFavorites } from "./useUserFavorites"
 import { useUserProfile } from "./useUserProfile"
 import type { ReactNode } from "react"
 import type { Session, User } from "db/supabase/client"
-import type { UserConnection, UserProfile } from "db/generated/client"
+import type { UserConnection, UserProfile } from "db/schema"
 export type AuthContext = {
     isLoggedIn: boolean
     session: Session | null

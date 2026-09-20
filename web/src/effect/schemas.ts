@@ -9,12 +9,12 @@ import type {
 import type { Legend } from "bhapi/types"
 import type { BHArticle } from "web-parser/common"
 import type { PR } from "web-parser/power-rankings/parsePowerRankingsPage"
-import type { BHClan } from "db/generated/client"
+import type { BHClan } from "db/schema"
 /**
  * Declares an existing TypeScript domain type as an Effect `Schema` without
  * adding runtime validation.
  *
- * The upstream payload types (`packages/bhapi/types`, the Prisma row types, and
+ * The upstream payload types (`packages/bhapi/types`, the Drizzle row types, and
  * the `web-parser` output) are the contract we already rely on. `Schema.declare`
  * keeps the full codec metadata that `HttpApi` needs for response encoding while
  * accepting any decoded value.

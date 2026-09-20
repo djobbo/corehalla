@@ -8,7 +8,7 @@ import type {
     UserConnection,
     UserFavorite,
     UserProfile,
-} from "../generated/client"
+} from "../schema"
 
 /**
  * Database types for the Supabase client.
@@ -17,10 +17,10 @@ import type {
  * `createClient`, which is what types `.from("Table")` and `.rpc("fn")` — the
  * v1 API typed them with a per-call generic instead.
  *
- * The row types come from Prisma (the schema owner), so this file only maps
- * them onto the shape the client expects. Adding a table to `schema.prisma`
- * therefore needs a matching entry here — `supabaseService.from("NewTable")`
- * fails to compile until it has one.
+ * The row types come from the Drizzle schema (the schema owner), so this file
+ * only maps them onto the shape the client expects. Adding a table to
+ * `schema.ts` therefore needs a matching entry here —
+ * `supabaseService.from("NewTable")` fails to compile until it has one.
  */
 type Table<Row> = {
     Row: Row

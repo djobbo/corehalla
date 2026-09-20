@@ -1,6 +1,6 @@
 import { logInfo } from "logger"
 import { supabaseService } from "db/supabase/service"
-import type { BHClan } from "db/generated/client"
+import type { BHClan } from "db/schema"
 import type { CommonOptions } from "../helpers/commonOptions"
 
 export const updateDBClanData = async (

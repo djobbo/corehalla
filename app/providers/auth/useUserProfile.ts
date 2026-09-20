@@ -3,7 +3,7 @@ import { supabase } from "db/supabase/client"
 import { useEffect } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import type { Session } from "db/supabase/client"
-import type { UserProfile } from "db/generated/client"
+import type { UserProfile } from "db/schema"
 export const useUserProfile = (session: Session | null) => {
     const userId = session?.user?.id
     const discordToken = session?.provider_token

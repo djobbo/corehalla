@@ -16,8 +16,8 @@ project_id = "corehalla"
 enabled = true
 # Port to use for the API URL (PostgREST + Auth + Realtime gateway).
 port = 54321
-# Only the `public` schema is exposed: the app talks to Postgres through Prisma
-# and PostgREST, and the GraphQL API is unused.
+# Only the `public` schema is exposed: the app talks to Postgres directly
+# (Drizzle) and through PostgREST, and the GraphQL API is unused.
 schemas = ["public"]
 # Extra schemas added to the search_path of every request.
 extra_search_path = ["public", "extensions"]
@@ -25,7 +25,7 @@ extra_search_path = ["public", "extensions"]
 max_rows = 1000
 
 [db]
-# Port to use for the local database URL (Prisma connects here).
+# Port to use for the local database URL (Drizzle connects here).
 port = 54322
 # Port used by `db diff` to initialize the shadow database.
 shadow_port = 54320
@@ -35,12 +35,12 @@ health_timeout = "2m"
 major_version = 17
 
 [db.migrations]
-# Prisma owns the schema: migrations live in `packages/db/prisma/migrations`
-# and are applied by `pnpm db:migrate`, not by the Supabase CLI.
+# Drizzle owns the schema: migrations live in `packages/db/drizzle` and are
+# applied by `pnpm db:migrate`, not by the Supabase CLI.
 enabled = false
 
 [db.seed]
-# Seeds are Prisma-managed too; there is no `supabase/seed.sql`.
+# Seeds are managed by Drizzle too; there is no `supabase/seed.sql`.
 enabled = false
 
 [realtime]

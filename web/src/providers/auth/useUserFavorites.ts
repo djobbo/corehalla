@@ -2,12 +2,12 @@ import { supabase } from "db/supabase/client"
 import { toast } from "react-hot-toast"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useFeatureFlags } from "@hooks/useFeatures"
-import type { Prisma, UserFavorite } from "db/generated/client"
+import type { JsonValue, UserFavorite } from "db/schema"
 import type { Session } from "db/supabase/client"
 
 type FavoriteType = "player" | "clan"
 
-type FavoriteBase<Type extends FavoriteType, Meta extends Prisma.JsonValue> = {
+type FavoriteBase<Type extends FavoriteType, Meta extends JsonValue> = {
     id: string
     type: Type
     name: string

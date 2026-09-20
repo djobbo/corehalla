@@ -4,7 +4,7 @@ import { numericLiteralValidator } from "common/helpers/validators"
 import { publicProcedure } from "../../trpc"
 import { supabaseService } from "db/supabase/service"
 import { z } from "zod"
-import type { BHPlayerData } from "db/generated/client"
+import type { BHPlayerData } from "db/schema"
 export const getGlobalPlayerRankings = publicProcedure
     .input(
         z.object({

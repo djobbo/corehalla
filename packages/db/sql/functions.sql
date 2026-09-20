@@ -18,4 +18,4 @@ return query
     and "public" is TRUE
     order by "createdAt" desc;
 end;
-$$;
+$$

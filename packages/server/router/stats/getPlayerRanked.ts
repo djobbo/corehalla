@@ -7,7 +7,7 @@ import { updateDBPlayerAliases } from "../../mutations/updateDBPlayerAliases"
 import { waitForRequestTimeout } from "../../helpers/waitForRequestTimeout"
 import { withTimeLog } from "../../helpers/withTimeLog"
 import { z } from "zod"
-import type { BHPlayerAlias } from "db/generated/client"
+import type { BHPlayerAlias } from "db/schema"
 export const getPlayerRanked = publicProcedure //
     .input(
         z.object({

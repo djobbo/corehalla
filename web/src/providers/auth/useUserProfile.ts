@@ -4,7 +4,7 @@ import { supabase } from "db/supabase/client"
 import { useEffect, useState } from "react"
 import type { Session } from "db/supabase/client"
 import { AuthError } from "@/effect/errors"
-import type { UserProfile } from "db/generated/client"
+import type { UserProfile } from "db/schema"
 /**
  * Fetches and keeps the signed-in user's profile in sync.
  *

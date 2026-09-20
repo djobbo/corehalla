@@ -188,7 +188,7 @@ precedence over `.env`.
 `@supabase/supabase-js` v2 types every query from a `Database` schema passed to
 `createClient`, so `.from("Table")` and `.rpc("fn")` are typed without a
 per-call generic. The schema in `packages/db/supabase/database.types.ts` maps
-the Prisma row types onto that shape, so a new Prisma model needs an entry there
+the Drizzle row types onto that shape, so a new Drizzle table needs an entry there
 before `supabaseService.from("NewTable")` compiles.
 
 `web/src/lib/supabase/client.ts` reimplements the browser client for Vite:

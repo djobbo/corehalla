@@ -5,7 +5,7 @@ import { CorehallaApi } from "./Api"
 import { Brawlhalla } from "./Brawlhalla"
 import { Content } from "./Content"
 import { Database } from "./Database"
-import type { BHPlayerAlias } from "db/generated/client"
+import type { BHPlayerAlias } from "db/schema"
 import type { Ranking1v1, Ranking2v2 } from "bhapi/types"
 
 /**
