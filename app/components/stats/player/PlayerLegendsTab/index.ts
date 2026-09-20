@@ -1,1 +1,0 @@
-export { PlayerLegendsTab } from "./PlayerLegendsTab"

@@ -33,7 +33,6 @@
         "drizzle-orm": "1.0.0-rc.5-5935859",
         "effect": "4.0.0-rc.116",
         "kbar": "^1.0.0",
-        "logger": "workspace:*",
         "nprogress": "^0.2.0",
         "react": "^19.3.0",
         "react-dom": "^19.3.0",

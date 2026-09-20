@@ -10,8 +10,7 @@ import { defineConfig } from "vite-plus"
  * - Alchemy's `Cloudflare.Website.Vite` (see `alchemy.run.ts`) supplies the
  *   Cloudflare plugin and builds the `ssr` environment into a Worker, so this
  *   config must not add `@cloudflare/vite-plugin` or Nitro itself.
- * - `publicDir` points at the existing Next.js `public/` folder so both apps
- *   keep serving the same static assets until the cutover is complete.
+ * - Static assets live in `web/public/` (moved from the legacy Next.js app).
  */
 export default defineConfig({
     server: {
@@ -23,7 +22,7 @@ export default defineConfig({
     // Expose only the variables the browser genuinely needs. `VITE_` is
     // preferred; the legacy `NEXT_PUBLIC_` names are still read for analytics.
     envPrefix: ["VITE_", "NEXT_PUBLIC_"],
-    publicDir: "../app/public",
+    publicDir: "public",
     plugins: [
         tanstackStart(),
         // react's vite plugin must come after start's vite plugin

@@ -5,7 +5,7 @@ import { load } from "cheerio"
 import { logInfo } from "logger"
 import axios from "axios"
 
-const APP_DIR = "../../app"
+const APP_DIR = "../../web"
 const PUBLIC_DIR = `${APP_DIR}/public`
 const LEGENDS_URL = "https://www.brawlhalla.com/legends/"
 const OUT_DIR = `${PUBLIC_DIR}/images/icons/roster`

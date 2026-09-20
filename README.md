@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://corehalla.com">
-    <img src="./app/public/images/Corehalla_Logo.gif" height="128">
+    <img src="./web/public/images/Corehalla_Logo.gif" height="128">
     <h1 align="center">Corehalla</h1>
   </a>
   <p align="center">
@@ -24,12 +24,11 @@
 
 ## Repository layout
 
-| Package      | Description                                                                                                                                                      |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `web`        | **TanStack Start app** (Vite, React 19, Tailwind v4). Deployed to Cloudflare with Alchemy. The Next.js migration target. See [`web/README.md`](./web/README.md). |
-| `app`        | Legacy Next.js app, kept runnable until the `web` cutover is verified.                                                                                           |
-| `worker`     | Discord bot + crawler.                                                                                                                                           |
-| `packages/*` | Shared `server` (tRPC router), `db`, `bhapi`, `web-parser`, `common`, `ui`, `logger` packages.                                                                   |
+| Package      | Description                                                                                                                        |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `web`        | **TanStack Start app** (Vite, React 19, Tailwind v4). Deployed to Cloudflare with Alchemy. See [`web/README.md`](./web/README.md). |
+| `worker`     | Discord bot + crawler.                                                                                                             |
+| `packages/*` | Shared `db`, `bhapi`, `web-parser`, `common`, `logger` and `dl-roster-images` packages.                                            |
 
 ## Supabase = Postgres only
 
@@ -49,9 +48,7 @@ in the `web` app, the server package or the worker: every query goes through
 Removed with the Supabase client: GoTrue auth, PostgREST reads/writes,
 `postgres_changes` subscriptions, the `auth.users` foreign key and trigger, all
 RLS policies and the `supabase_realtime` publication. Authorization is enforced
-in the server layer (every query is scoped to the session's `userId`). The
-legacy `app` still imports `packages/db/supabase/*`; those files are deprecated
-and go away with it.
+in the server layer (every query is scoped to the session's `userId`).
 
 ## Local development
 
@@ -67,9 +64,9 @@ pnpm db:stop       # stop local Postgres
 ```
 
 `pnpm setup:env` is idempotent: it starts Postgres (Docker must be running),
-writes `DATABASE_URL` into `packages/db/.env`, `web/.env.local`,
-`app/.env.local` and `worker/.env` without touching the other values in those
-files, then applies the database migrations.
+writes `DATABASE_URL` into `packages/db/.env`, `web/.env.local` and
+`worker/.env` without touching the other values in those files, then applies the
+database migrations.
 
 Useful commands:
 
@@ -80,7 +77,7 @@ pnpm db:stop       # supabase stop
 pnpm db:migrate    # drizzle migrate + the SQL in packages/db/sql/
 ```
 
-Both apps read the same `DATABASE_URL`; `web` resolves it through
+The app and the worker read the same `DATABASE_URL`; `web` resolves it through
 `web/src/env.ts`, which prefers `process.env` on Node and the Hyperdrive
 binding on Cloudflare.
 
@@ -198,16 +195,14 @@ pnpm ci:lint       # vp lint (no fixes; used in CI)
 
 - **Type-aware linting is off.** Vite+ recommends `typeAware: true` +
   `typeCheck: true`, but tsgolint (TypeScript 7) still rejects the legacy
-  `app`/`worker` tsconfigs (`es5`, `downlevelIteration`, `baseUrl`-relative
-  `paths`), and `web` must be checked by the Effect-patched compiler. Types are
-  checked per package by `pnpm ts:check` instead. (`server`, `worker` and `app`
-  now resolve Effect's ESM-only `exports` via `moduleResolution: "bundler"`.)
-- **95 lint warnings** remain (mostly `react/no-unstable-nested-components`,
+  `tsconfig/nextjs` base the Node packages extend (`es5`,
+  `downlevelIteration`), and `web` must be checked by the Effect-patched
+  compiler. Types are checked per package by `pnpm ts:check` instead. (`worker`
+  now resolves Effect's ESM-only `exports` via `moduleResolution: "bundler"`.)
+- **61 lint warnings** remain (mostly `react/no-unstable-nested-components`,
   `no-underscore-dangle`, `react/function-component-definition` and
   `react/set-state-in-effect`). They are demoted to warnings so the migration
   lands green; fix them and the rules can become errors.
-- **`packages/db/supabase/` is deprecated.** Only the legacy `app` imports it;
-  it disappears with the Next.js cutover.
 - **Commit hooks are not installed.** `staged` in `vite.config.ts` and
   `.vite-hooks/pre-commit` are committed and ready; run `vp hooks enable` (or
   add `vp config` to a `prepare` script) to activate them, and

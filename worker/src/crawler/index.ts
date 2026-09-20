@@ -2,7 +2,7 @@ import { formatTime } from "common/helpers/date"
 import { getPlayerStats, getRankings } from "bhapi"
 import { logInfo, logWarning } from "logger"
 import { Database, Effect, crawlProgress, eq, runDatabase } from "db/drizzle"
-import { updateDBPlayerData } from "server/mutations/updateDBPlayerData"
+import { updateDBPlayerData } from "./updateDBPlayerData"
 import type { RankedRegion } from "bhapi/constants"
 
 type CrawlerConfig = {
@@ -90,20 +90,14 @@ const createCrawlerQueue = async (config: CrawlerConfig) => {
                     try {
                         const stats = await getPlayerStats(player.brawlhalla_id)
 
-                        await updateDBPlayerData(
-                            stats,
-                            {
-                                rating: player.rating,
-                                peak: player.peak_rating,
-                                games: player.games,
-                                wins: player.wins,
-                                tier: player.tier,
-                                region: player.region.toLowerCase() as RankedRegion, // TODO: better type check
-                            },
-                            {
-                                abortSignal: new AbortController().signal,
-                            },
-                        )
+                        await updateDBPlayerData(stats, {
+                            rating: player.rating,
+                            peak: player.peak_rating,
+                            games: player.games,
+                            wins: player.wins,
+                            tier: player.tier,
+                            region: player.region.toLowerCase() as RankedRegion, // TODO: better type check
+                        })
 
                         logInfo(`Fetched player#${player.brawlhalla_id} stats`)
                     } catch {

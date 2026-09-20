@@ -1,7 +1,8 @@
 # web — Corehalla on TanStack Start + Effect
 
-This package is the TanStack Start migration of the Next.js app in `app/`. Both
-apps run side by side until the cutover is complete.
+This package is the TanStack Start app that replaced the legacy Next.js app.
+The legacy `app/`, the `server` tRPC package and `packages/db/supabase/` have
+been removed.
 
 - **Bundler:** [Vite+](https://viteplus.dev) (Vite 8) — lint, format, tasks and
   the bundler come from one toolchain
@@ -66,8 +67,8 @@ src/
     retry.ts              # exponential-backoff retry policy
     errors.ts             # typed domain errors
   routes/                 # file-based routes + server routes
-  components/ hooks/ providers/ util/   # moved from app/
-  ui/                     # vendored from packages/ui (React 19 + Start link/router)
+  components/ hooks/ providers/ util/   # migrated from the legacy Next.js app
+  ui/                     # vendored UI primitives (React 19 + Start link/router)
   lib/                    # vendored client hooks, analytics, date
   styles/app.css          # Tailwind v4 entry + design tokens
 ```
@@ -179,7 +180,7 @@ does not redirect `/rankings/1v1` to `/rankings/1v1?player=`.
 
 - Optional path params (`/rankings/1v1/{-$region}/{-$page}`) replace the
   Next.js optional catch-alls.
-- Every `next.config.js` redirect is preserved as an HTTP 308 route.
+- Every legacy redirect is preserved as an HTTP 308 route.
 - `/sitemap.xml` and `/robots.txt` are dynamic server routes driven by
   `SITE_URL`.
 - The previous hand-written `/api/*` REST routes are retained unchanged;
@@ -233,12 +234,8 @@ Drizzle's migrator reads `packages/db/drizzle/` from disk, so migrations remain 
 Node/CI step (`pnpm db:migrate`) against the same origin — they are not run by
 the Worker.
 
-## Cutover checklist
+## Migration status
 
-1. Deploy `web/` to a preview URL and compare responses against `app/` with
-   real environment variables (Brawlhalla API key, `DATABASE_URL`, Discord
-   credentials).
-2. Compare HTML, status codes, redirects, titles/descriptions, and
-   `/sitemap.xml` / `/robots.txt`.
-3. Point the production domain at the `web` Worker.
-4. Only then remove `app/`, `packages/server` and `packages/db/supabase/`.
+The Next.js cutover is complete: `app/`, the `server` tRPC package and
+`packages/db/supabase/` have been removed. The worker's crawler owns its
+`updateDBPlayerData` mutation (`worker/src/crawler/updateDBPlayerData.ts`).

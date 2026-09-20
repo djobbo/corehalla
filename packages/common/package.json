@@ -3,7 +3,6 @@
     "version": "0.0.0",
     "devDependencies": {
         "@types/node": "^20.11.5",
-        "@types/react": "^18.2.31",
         "tsconfig": "workspace:*",
         "typescript": "^5.3.3"
     },
@@ -12,11 +11,6 @@
     },
     "dependencies": {
         "classnames": "^2.5.1",
-        "dayjs": "^1.11.7",
-        "next": "13.4.19",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "react-use": "^17.4.0",
-        "zod": "^3.22.4"
+        "dayjs": "^1.11.7"
     }
 }

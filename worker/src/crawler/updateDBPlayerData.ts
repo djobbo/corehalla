@@ -15,37 +15,12 @@ import {
     runDatabase,
 } from "db/drizzle"
 import type { BHPlayerData, BHPlayerLegend } from "db/schema"
-import type { CommonOptions } from "../helpers/commonOptions"
 import type { FullLegend, FullWeapon } from "bhapi/legends"
 import type { PlayerStats } from "bhapi/types"
 import type { RankedRegion, RankedTier } from "bhapi/constants"
 
 const MAX_LEGENDS_PER_PLAYER = 3
 const MAX_WEAPONS_PER_PLAYER = 3
-
-export const sortablePlayerProps = [
-    "xp",
-    "games",
-    "wins",
-    "rankedGames",
-    "rankedWins",
-    "damageDealt",
-    "damageTaken",
-    "kos",
-    "falls",
-    "suicides",
-    "teamKos",
-    "matchTime",
-    "damageUnarmed",
-    "koUnarmed",
-    "matchTimeUnarmed",
-    "koThrownItem",
-    "damageThrownItem",
-    "koGadgets",
-    "damageGadgets",
-] as const satisfies readonly (keyof BHPlayerData)[]
-
-export type SortablePlayerProp = (typeof sortablePlayerProps)[number]
 
 /** `excluded` is the row the insert proposed; updates are last-write-wins. */
 const onConflictUpdateFrom = <Row extends Record<string, unknown>>(
@@ -67,7 +42,6 @@ export const updateDBPlayerData = async (
         tier: RankedTier
         region: RankedRegion
     },
-    options: CommonOptions,
 ) => {
     const playerId = playerStats.brawlhalla_id.toString()
     logInfo("updateDBPlayerData", { playerId })
@@ -137,14 +111,13 @@ export const updateDBPlayerData = async (
                 error,
             )
         }),
-        updateDBPlayerLegends(playerId, legends, options),
+        updateDBPlayerLegends(playerId, legends),
     ])
 }
 
-export const updateDBPlayerLegends = async (
+const updateDBPlayerLegends = async (
     playerId: string,
     legends: FullLegend[],
-    _options: CommonOptions,
 ) => {
     logInfo("updateDBPlayerLegends", { playerId })
 
@@ -243,14 +216,13 @@ export const updateDBPlayerLegends = async (
                 error,
             )
         }),
-        updateDBPlayerWeapons(playerId, weapons, _options),
+        updateDBPlayerWeapons(playerId, weapons),
     ])
 }
 
-export const updateDBPlayerWeapons = async (
+const updateDBPlayerWeapons = async (
     playerId: string,
     fullWeapons: FullWeapon[],
-    _options: CommonOptions,
 ) => {
     logInfo("updateDBPlayerWeapons", { playerId })
 

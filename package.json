@@ -6,7 +6,7 @@
     "author": "Djobbo Maïga <hi@djobbo.com>",
     "scripts": {
         "build": "vp run -r build",
-        "build:prod": "pnpm db:migrate:prod && vp run --filter app build",
+        "build:prod": "pnpm db:migrate:prod && vp run --filter web build",
         "dev": "vp run -r --parallel dev",
         "db:start": "supabase start",
         "db:stop": "supabase stop",

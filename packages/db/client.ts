@@ -13,9 +13,8 @@ import type { EffectPgDatabase } from "drizzle-orm/effect-postgres"
  * the loop. `DATABASE_URL` is the single connection setting.
  *
  * The `SqlDatabase` service carries the Drizzle database; `runDatabase` runs an
- * effect on a process-wide pool for the Node entry points (the tRPC router and
- * the crawler), while the `web` package composes `layer(url)` into its own
- * per-request services.
+ * effect on a process-wide pool for the Node entry point (the crawler), while
+ * the `web` package composes `layer(url)` into its own per-request services.
  */
 
 /** The Drizzle database every consumer shares. */
@@ -56,9 +55,9 @@ let runtime: ManagedRuntime.ManagedRuntime<Database, unknown> | undefined
 /**
  * Runs one database effect on a lazily-created process-wide pool.
  *
- * Long-lived Node processes (the tRPC router behind the legacy Next app and the
- * crawler) call this instead of building a pool per query. Serverless entry
- * points must not use it — they provide `layer(url)` per request.
+ * The `worker` crawler calls this instead of building a pool per query.
+ * Serverless entry points must not use it — they provide `layer(url)` per
+ * request.
  */
 export const runDatabase = <A, E>(
     effect: Effect.Effect<A, E, Database>,

@@ -68,7 +68,7 @@ const local = Object.fromEntries(
         }),
 )
 
-// Supabase is a Postgres host now: the only value the pair of apps and the
+// Supabase is a Postgres host now: the only value the app and the
 // worker need is the database URL.
 for (const key of ["DB_URL"]) {
     if (!local[key]) {
@@ -114,9 +114,6 @@ const database = { DATABASE_URL: local.DB_URL }
 
 await writeEnv("packages/db/.env", database)
 await writeEnv("web/.env.local", database)
-// The legacy Next app still runs the shared tRPC router, which reads the
-// database directly; it keeps its own Supabase Auth values if it needs them.
-await writeEnv("app/.env.local", database)
 await writeEnv("worker/.env", database)
 
 newLine()
