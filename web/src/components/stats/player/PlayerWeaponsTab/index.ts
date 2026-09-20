@@ -1,0 +1,1 @@
+export { PlayerWeaponsTab } from "./PlayerWeaponsTab"

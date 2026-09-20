@@ -14,6 +14,12 @@ coverage
 out/
 build
 
+# tanstack start / nitro
+.output/
+.vercel/
+.nitro/
+.nitro
+
 # misc
 .DS_Store
 *.pem

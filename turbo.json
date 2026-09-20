@@ -6,7 +6,9 @@
       ],
       "outputs": [
         "dist/**",
-        ".next/**"
+        ".next/**",
+        ".output/**",
+        ".vercel/**"
       ],
       "cache": false
     },

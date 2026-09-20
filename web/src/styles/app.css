@@ -1,0 +1,87 @@
+@import "@fontsource/montserrat/400.css";
+@import "@fontsource/montserrat/600.css";
+@import "@fontsource/montserrat/700.css";
+@import "tailwindcss" source("../");
+
+/*
+ * Design tokens ported from `packages/ui/theme/theme.js`.
+ * Tailwind v4 is configured in CSS, so the JS theme object is no longer
+ * required by the Tailwind config. Stitches still consumes the same values
+ * through `src/ui/theme`.
+ */
+@theme {
+    --color-bgVar2: #1a1b23;
+    --color-bgVar1: #1e212c;
+    --color-bg: #2b3043;
+    --color-bgLanding: #1a1b23aa;
+    --color-textVar1: #ccd0d6;
+    --color-text: #ffffff;
+    --color-accent: #3861fb;
+    --color-accentVar1: #2095f2;
+    --color-success: #24cd7c;
+    --color-danger: #ed7853;
+    --color-warning: #f3da57;
+    --color-accentAlt: #e568d9;
+    --color-accentAltVar1: #ff99e9;
+}
+
+/* `hashover:` was a custom `raw` screen in the Tailwind v3 config. */
+@custom-variant hashover (@media (hover: hover));
+
+@layer base {
+    * {
+        scroll-behavior: smooth;
+    }
+
+    html,
+    body {
+        @apply bg-bgVar1 text-text;
+        font-family: "Montserrat", sans-serif;
+    }
+
+    ::-webkit-scrollbar {
+        @apply w-0 hashover:w-2;
+    }
+
+    ::-webkit-scrollbar-track {
+        @apply bg-transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        @apply bg-bg rounded-full hover:bg-accent;
+    }
+}
+
+.p-link {
+    @apply text-accent hover:underline;
+}
+
+.text-fill-none {
+    -webkit-text-fill-color: transparent;
+}
+
+/* nprogress (previously a separate `styles/nprogress.css` import) */
+#nprogress {
+    pointer-events: none;
+}
+
+#nprogress .bar {
+    background: #ffffffaa;
+
+    position: fixed;
+    z-index: 5000;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 2px;
+}
+
+.nprogress-custom-parent {
+    overflow: hidden;
+    position: relative;
+}
+
+.nprogress-custom-parent #nprogress .bar {
+    position: absolute;
+}

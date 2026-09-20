@@ -821,7 +821,7 @@ export const legends: Legend[] = [
     },
     {
         "legend_id": 71,
-        "legend_name": "AURUS",
+        "legend_name_key": "aurus",
         "bio_name": "Aurus",
         "bio_aka": "The Gladiator",
         "weapon_one": "Chakram",
@@ -833,7 +833,7 @@ export const legends: Legend[] = [
     },
     {
         "legend_id": 72,
-        "legend_name": "QINGHUA & BAOBAO",
+        "legend_name_key": "qinghua & baobao",
         "bio_name": "Qinghua & Baobao",
         "bio_aka": "The Voyager & The Void",
         "weapon_one": "Orb",

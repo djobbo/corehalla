@@ -36,5 +36,11 @@
         "npm": ">=7.0.0",
         "node": ">=18.0.0"
     },
-    "packageManager": "pnpm@8.5.0"
+    "packageManager": "pnpm@8.5.0",
+    "pnpm": {
+        "overrides": {
+            "@types/react": "~19.0.8",
+            "@types/react-dom": "~19.0.3"
+        }
+    }
 }

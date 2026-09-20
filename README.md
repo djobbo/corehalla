@@ -21,3 +21,12 @@
         <img alt="" src="https://img.shields.io/badge/Follow-1DA1F2.svg?style=for-the-badge&logo=Twitter&labelColor=202020&logoWidth=20&logoColor=white">
     </a>
 </p>
+
+## Repository layout
+
+| Package | Description |
+| --- | --- |
+| `web` | **TanStack Start app** (Vite + Nitro, React 19, Tailwind v4). The Next.js migration target. See [`web/README.md`](./web/README.md). |
+| `app` | Legacy Next.js app, kept runnable until the `web` cutover is verified. |
+| `worker` | Discord bot + crawler. |
+| `packages/*` | Shared `server` (tRPC router), `db`, `bhapi`, `web-parser`, `common`, `ui`, `logger` packages. |

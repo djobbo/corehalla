@@ -1,0 +1,38 @@
+{
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "vite.config.ts"
+    ],
+    "exclude": ["node_modules", ".output", ".vercel"],
+    "compilerOptions": {
+        "strict": true,
+        "esModuleInterop": true,
+        "jsx": "react-jsx",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "lib": ["DOM", "DOM.Iterable", "ES2022"],
+        "target": "ES2022",
+        "skipLibCheck": true,
+        "noEmit": true,
+        "allowJs": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "forceConsistentCasingInFileNames": true,
+        "types": ["vite/client"],
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"],
+            "@components/*": ["src/components/*"],
+            "@ctx/*": ["src/providers/*"],
+            "@hooks/*": ["src/hooks/*"],
+            "@util/*": ["src/util/*"],
+            "@ui/*": ["src/ui/*"],
+            "ui/*": ["src/ui/*"],
+            "common/hooks/*": ["src/lib/hooks/*"],
+            "common/analytics/*": ["src/lib/analytics/*"],
+            "db/supabase/client": ["src/lib/supabase/client.ts"],
+            "db/supabase/auth": ["src/lib/supabase/auth.ts"]
+        }
+    }
+}
