@@ -4,7 +4,11 @@ import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { clansRankingsAtom, loadAtoms, useQuery } from "@/effect/atoms"
-import { createFileRoute, stripSearchParams, useNavigate } from "@tanstack/react-router"
+import {
+    createFileRoute,
+    stripSearchParams,
+    useNavigate,
+} from "@tanstack/react-router"
 import { formatUnixTime } from "common/helpers/date"
 import { rankingsBrackets } from "@components/stats/rankings/options"
 import { resolvePage } from "@/lib/routeParams"
@@ -27,7 +31,7 @@ export const Route = createFileRoute("/rankings/clans/{-$page}")({
         ]),
     ssr: ({ search }) =>
         search.status === "success" && search.value.clan ? "data-only" : true,
-    head: ({ params }) => {
+    head({ params }) {
         const page = resolvePage(params?.page)
         return {
             meta: seoTags({

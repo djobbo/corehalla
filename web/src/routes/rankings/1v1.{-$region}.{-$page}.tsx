@@ -3,10 +3,17 @@ import { Image } from "@components/Image"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
 import { RankingsTableItem } from "@components/stats/RankingsTableItem"
 import { cleanString } from "common/helpers/cleanString"
-import { createFileRoute, stripSearchParams, useNavigate } from "@tanstack/react-router"
+import {
+    createFileRoute,
+    stripSearchParams,
+    useNavigate,
+} from "@tanstack/react-router"
 import { legendsMap } from "bhapi/legends"
 import { loadAtoms, rankings1v1Atom, useQuery } from "@/effect/atoms"
-import { rankingsBrackets, rankingsRegions } from "@components/stats/rankings/options"
+import {
+    rankingsBrackets,
+    rankingsRegions,
+} from "@components/stats/rankings/options"
 import { resolvePage, resolveRankedRegion } from "@/lib/routeParams"
 import { seoTags } from "@components/SEO"
 import { useDebouncedState } from "common/hooks/useDebouncedState"
@@ -37,10 +44,8 @@ export const Route = createFileRoute("/rankings/1v1/{-$region}/{-$page}")({
     // server-rendered component while still running the loader on the server
     // and serving the (noindex) head.
     ssr: ({ search }) =>
-        search.status === "success" && search.value.player
-            ? "data-only"
-            : true,
-    head: ({ params }) => {
+        search.status === "success" && search.value.player ? "data-only" : true,
+    head({ params }) {
         const region = resolveRankedRegion(params?.region)
         const page = resolvePage(params?.page)
         const label = region === "all" ? "Global" : region.toUpperCase()

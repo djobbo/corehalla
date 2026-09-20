@@ -41,7 +41,7 @@ export const Paginator = ({
                     label:
                         typeof page?.label === "string"
                             ? page.label
-                            : page?.page ?? "",
+                            : (page?.page ?? ""),
                     value: page?.page ?? "",
                 }))}
             />

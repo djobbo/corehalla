@@ -52,7 +52,7 @@ const tabClassName = cn(
 )
 
 export const Route = createFileRoute("/stats/player/$playerId")({
-    loader: async ({ params, context }) => {
+    async loader({ params, context }) {
         if (!numericStringSchema.safeParse(params.playerId).success) {
             throw notFound()
         }
@@ -78,7 +78,7 @@ export const Route = createFileRoute("/stats/player/$playerId")({
         // loader data to keep the server-rendered title dynamic.
         return { ...loaded, playerName: playerStats.name }
     },
-    head: ({ loaderData }) => {
+    head({ loaderData }) {
         const name = loaderData?.playerName
         return {
             meta: seoTags({

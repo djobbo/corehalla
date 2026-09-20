@@ -5,42 +5,36 @@
     "repository": "https://github.com/djobbo/corehalla.git",
     "author": "Djobbo Maïga <hi@djobbo.com>",
     "scripts": {
-        "build": "turbo run build",
-        "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
-        "format": "prettier --write \"**/*.{ts,tsx,md}\" && turbo run format",
-        "ts:check": "turbo run ts:check",
-        "ci:install": "pnpm install --frozen-lockfile",
-        "ci:lint": "eslint --ext .js,.jsx,.ts,.tsx .",
-        "ci:deadcode": "turbo run ci:deadcode",
-        "dl-roster": "turbo run dl-roster",
-        "db:migrate": "turbo run db:migrate",
-        "db:migrate:prod": "turbo run db:migrate:prod --scope=db --include-dependencies --no-deps",
-        "build:prod": "pnpm db:migrate:prod && turbo run build --scope=app --include-dependencies --no-deps",
-        "dev": "turbo run dev --parallel",
+        "build": "vp run -r build",
+        "build:prod": "pnpm db:migrate:prod && vp run --filter app build",
+        "dev": "vp run -r --parallel dev",
+        "db:migrate": "vp run -r db:migrate",
+        "db:migrate:prod": "vp run --filter db db:migrate:prod",
+        "dl-roster": "vp run -r dl-roster",
+        "ts:check": "vp run -r ts:check",
+        "check": "vp check",
+        "lint": "vp lint --fix",
+        "ci:lint": "vp lint",
+        "format": "vp fmt && vp run -r format",
+        "ci:install": "vp install --frozen-lockfile",
         "setup:env": "zx setup.zx.mjs"
     },
     "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^6.19.0",
-        "@typescript-eslint/parser": "^6.19.0",
-        "eslint": "^8.56.0",
-        "eslint-config-next": "^14.1.0",
-        "eslint-plugin-jsx-a11y": "^6.8.0",
-        "eslint-plugin-prettier": "^5.1.3",
-        "eslint-plugin-sort-imports-es6-autofix": "^0.6.0",
-        "prettier": "^3.2.4",
-        "turbo": "^1.11.3",
         "typescript": "^5.3.3",
+        "vite": "^8.0.14",
+        "vite-plus": "0.3.3",
         "zx": "^7.2.3"
     },
     "engines": {
         "npm": ">=7.0.0",
-        "node": ">=18.0.0"
+        "node": ">=22.18.0"
     },
     "packageManager": "pnpm@8.5.0",
     "pnpm": {
         "overrides": {
             "@types/react": "~19.0.8",
-            "@types/react-dom": "~19.0.3"
+            "@types/react-dom": "~19.0.3",
+            "vite@*": "npm:@voidzero-dev/vite-plus-core@0.3.3"
         }
     }
 }

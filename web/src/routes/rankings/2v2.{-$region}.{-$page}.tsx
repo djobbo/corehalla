@@ -5,7 +5,10 @@ import { cleanString } from "common/helpers/cleanString"
 import { createFileRoute } from "@tanstack/react-router"
 import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
 import { loadAtoms, rankings2v2Atom, useQuery } from "@/effect/atoms"
-import { rankingsBrackets, rankingsRegions } from "@components/stats/rankings/options"
+import {
+    rankingsBrackets,
+    rankingsRegions,
+} from "@components/stats/rankings/options"
 import { resolvePage, resolveRankedRegion } from "@/lib/routeParams"
 import { seoTags } from "@components/SEO"
 
@@ -17,7 +20,7 @@ export const Route = createFileRoute("/rankings/2v2/{-$region}/{-$page}")({
                 parseInt(resolvePage(params.page)),
             ),
         ]),
-    head: ({ params }) => {
+    head({ params }) {
         const region = resolveRankedRegion(params?.region)
         const page = resolvePage(params?.page)
         const label = region === "all" ? "Global" : region.toUpperCase()

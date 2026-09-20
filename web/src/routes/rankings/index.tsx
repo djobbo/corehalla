@@ -5,7 +5,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router"
  * rankings, matching the previous `next.config.js` redirects.
  */
 export const Route = createFileRoute("/rankings/")({
-    beforeLoad: () => {
+    beforeLoad() {
         throw redirect({ href: "/rankings/1v1", statusCode: 308 })
     },
 })

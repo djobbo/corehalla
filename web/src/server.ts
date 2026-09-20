@@ -91,14 +91,11 @@ async function injectStitchesCss(
         // transfer instead of a stale Content-Length.
         headers.delete("content-length")
 
-        const transformed = new Response(
-            pipeStitchesCss(ssr.response.body),
-            {
-                status: ssr.response.status,
-                statusText: ssr.response.statusText,
-                headers,
-            },
-        )
+        const transformed = new Response(pipeStitchesCss(ssr.response.body), {
+            status: ssr.response.status,
+            statusText: ssr.response.statusText,
+            headers,
+        })
 
         // Preserve the framework's stream ownership/cleanup contract.
         if (ssr.serverSsrCleanup === "stream") {

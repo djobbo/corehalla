@@ -5,7 +5,7 @@ import { getPlayerStats } from "bhapi"
 export const Route = createFileRoute("/api/stats/player/$playerId/stats")({
     server: {
         handlers: {
-            GET: async ({ params }) => {
+            async GET({ params }) {
                 try {
                     const data = await getPlayerStats(parseInt(params.playerId))
 

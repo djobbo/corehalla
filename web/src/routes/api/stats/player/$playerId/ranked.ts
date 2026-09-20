@@ -5,9 +5,11 @@ import { getPlayerRanked } from "bhapi"
 export const Route = createFileRoute("/api/stats/player/$playerId/ranked")({
     server: {
         handlers: {
-            GET: async ({ params }) => {
+            async GET({ params }) {
                 try {
-                    const data = await getPlayerRanked(parseInt(params.playerId))
+                    const data = await getPlayerRanked(
+                        parseInt(params.playerId),
+                    )
 
                     return Response.json(data, {
                         headers: {

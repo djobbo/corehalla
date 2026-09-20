@@ -7,7 +7,7 @@ import type { BHPlayerAlias } from "db/generated/client"
 export const Route = createFileRoute("/api/rankings/search/player")({
     server: {
         handlers: {
-            GET: async ({ request }) => {
+            async GET({ request }) {
                 const url = new URL(request.url)
                 const search = url.searchParams.get("search")
                 const page = url.searchParams.get("page") ?? "1"

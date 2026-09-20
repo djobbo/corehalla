@@ -3,9 +3,16 @@ import { GLOBAL_PLAYER_RANKINGS_PER_PAGE } from "@util/constants"
 import { Select } from "ui/base/Select"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
-import { createFileRoute, stripSearchParams, useNavigate } from "@tanstack/react-router"
+import {
+    createFileRoute,
+    stripSearchParams,
+    useNavigate,
+} from "@tanstack/react-router"
 import { globalRankingsAtom, loadAtoms, useQuery } from "@/effect/atoms"
-import { globalRankingsSortOptions, sortablePlayerPropSchema } from "@/lib/routeSchemas"
+import {
+    globalRankingsSortOptions,
+    sortablePlayerPropSchema,
+} from "@/lib/routeSchemas"
 import { resolvePage } from "@/lib/routeParams"
 import { seoTags } from "@components/SEO"
 import { z } from "zod"
@@ -27,12 +34,9 @@ export const Route = createFileRoute("/rankings/global/{-$page}")({
     loaderDeps: ({ search }) => ({ sortBy: search.sortBy }),
     loader: ({ params, deps, context }) =>
         loadAtoms(context, [
-            globalRankingsAtom(
-                deps.sortBy,
-                parseInt(resolvePage(params.page)),
-            ),
+            globalRankingsAtom(deps.sortBy, parseInt(resolvePage(params.page))),
         ]),
-    head: ({ params }) => {
+    head({ params }) {
         const page = resolvePage(params?.page)
         return {
             meta: seoTags({

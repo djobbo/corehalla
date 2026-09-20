@@ -5,7 +5,7 @@ import { getClan } from "bhapi"
 export const Route = createFileRoute("/api/stats/clan/$clanId")({
     server: {
         handlers: {
-            GET: async ({ params }) => {
+            async GET({ params }) {
                 try {
                     const data = await getClan(parseInt(params.clanId))
 

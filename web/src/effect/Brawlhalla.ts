@@ -6,7 +6,14 @@ import { playerStatsMock } from "bhapi/mocks/playerStats"
 import { playerRankedMock } from "bhapi/mocks/playerRanked"
 import { clanMock } from "bhapi/mocks/clan"
 import { retryTransient } from "./retry"
-import type { Bracket, Clan, PlayerRanked, PlayerStats, Ranking1v1, Ranking2v2 } from "bhapi/types"
+import type {
+    Bracket,
+    Clan,
+    PlayerRanked,
+    PlayerStats,
+    Ranking1v1,
+    Ranking2v2,
+} from "bhapi/types"
 import type { RankedRegion } from "bhapi/constants"
 
 const BH_API_BASE = "https://api.brawlhalla.com"

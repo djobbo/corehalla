@@ -28,7 +28,7 @@ function getSiteUrl() {
 export const Route = createFileRoute("/sitemap.xml")({
     server: {
         handlers: {
-            GET: () => {
+            GET() {
                 const siteUrl = getSiteUrl()
                 const urls = PUBLIC_PATHS.map(
                     (path) =>

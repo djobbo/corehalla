@@ -39,8 +39,9 @@ yarn-error.log*
 .env.dev
 .env.prod
 
-# turbo
-.turbo
+# vite+ (generated git hook dispatcher and task cache)
+.vite-hooks/_
+node_modules/.vite/task-cache
 
 # typescript
 tsconfig.tsbuildinfo

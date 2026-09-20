@@ -1,4 +1,4 @@
-// eslint-disable-next-line no-restricted-imports
+// oxlint-disable-next-line no-restricted-imports
 import Link from "next/link"
 import type { AnchorHTMLAttributes } from "react"
 

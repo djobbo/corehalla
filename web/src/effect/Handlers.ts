@@ -70,9 +70,9 @@ export const rankingsGroup = HttpApiBuilder.group(
                 }),
             )
             .handle("getGlobalPlayerRankings", ({ query }) =>
-                db.getGlobalPlayerRankings(query.sortBy, query.page).pipe(
-                    Effect.orDie,
-                ),
+                db
+                    .getGlobalPlayerRankings(query.sortBy, query.page)
+                    .pipe(Effect.orDie),
             )
             .handle("getClansRankings", ({ query }) =>
                 db.getClansRankings(query.name, query.page).pipe(Effect.orDie),
@@ -143,9 +143,13 @@ export const statsGroup = HttpApiBuilder.group(
             .handle("getPlayerAliases", ({ params }) =>
                 // Aliases are decorative: a database problem must not take the
                 // player page down.
-                db.getPlayerAliases(params.playerId.toString()).pipe(
-                    Effect.catch(() => Effect.succeed([] as readonly string[])),
-                ),
+                db
+                    .getPlayerAliases(params.playerId.toString())
+                    .pipe(
+                        Effect.catch(() =>
+                            Effect.succeed([] as readonly string[]),
+                        ),
+                    ),
             )
             .handle("getClanStats", ({ params }) =>
                 Effect.gen(function* () {
@@ -201,4 +205,3 @@ export const contentGroup = HttpApiBuilder.group(
             )
     }),
 )
-

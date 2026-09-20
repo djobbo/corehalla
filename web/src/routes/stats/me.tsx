@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/stats/me")({
-    beforeLoad: () => {
+    beforeLoad() {
         throw redirect({ href: "/", statusCode: 308 })
     },
 })

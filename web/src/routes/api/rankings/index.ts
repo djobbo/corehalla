@@ -7,7 +7,7 @@ import type { RankedRegion } from "bhapi/constants"
 export const Route = createFileRoute("/api/rankings/")({
     server: {
         handlers: {
-            GET: async ({ request }) => {
+            async GET({ request }) {
                 const url = new URL(request.url)
                 const bracket = url.searchParams.get("bracket") as Bracket
                 const region = url.searchParams.get("region") as RankedRegion

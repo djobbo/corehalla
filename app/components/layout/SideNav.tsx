@@ -93,6 +93,7 @@ const SideNavIcon = ({
                 {onRemove && (
                     <button
                         className="items-center justify-center hidden remove-btn absolute w-4 h-4 p-0.5 rounded-full overflow-hidden shadow-md bg-accent hover:bg-text hover:text-bgVar2"
+                        aria-label="Remove from favorites"
                         onClick={() => onRemove()}
                     >
                         <HiX size={12} />
@@ -181,6 +182,8 @@ export const SideNav = ({ className }: SideNavProps) => {
     return (
         <div className="z-50">
             <button
+                type="button"
+                aria-label="Close navigation"
                 className={cn(
                     "fixed w-full h-full inset-0 bg-bgVar2 opacity-50 cursor-default",
                     {

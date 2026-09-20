@@ -18,7 +18,7 @@ const clanRankWeights: Record<ClanRank, number> = {
 } as const
 
 export const Route = createFileRoute("/stats/clan/$clanId")({
-    loader: async ({ params, context }) => {
+    async loader({ params, context }) {
         if (!numericStringSchema.safeParse(params.clanId).success) {
             throw notFound()
         }
@@ -38,7 +38,7 @@ export const Route = createFileRoute("/stats/clan/$clanId")({
 
         return { ...loaded, clanName: clan.clan_name }
     },
-    head: ({ loaderData }) => {
+    head({ loaderData }) {
         const name = loaderData?.clanName
         return {
             meta: seoTags({

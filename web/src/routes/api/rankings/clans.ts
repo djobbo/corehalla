@@ -7,7 +7,7 @@ import type { BHClan } from "db/generated/client"
 export const Route = createFileRoute("/api/rankings/clans")({
     server: {
         handlers: {
-            GET: async ({ request }) => {
+            async GET({ request }) {
                 const url = new URL(request.url)
                 const name = url.searchParams.get("name") ?? ""
                 const page = url.searchParams.get("page") ?? "1"

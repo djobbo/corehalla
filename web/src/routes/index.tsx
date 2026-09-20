@@ -1,7 +1,4 @@
-import {
-    ArrowSmRightIcon,
-    DiscordIcon,
-} from "ui/icons"
+import { ArrowSmRightIcon, DiscordIcon } from "ui/icons"
 import { ArticlePreviewGrid } from "@components/articles/ArticlePreviewGrid"
 import { Button } from "ui/base/Button"
 import { DiscordCard } from "@components/DiscordCard"
@@ -9,7 +6,12 @@ import { FavoritesGrid } from "@components/favorites/FavoritesGrid"
 import { SearchButton } from "@components/search/SearchButton"
 import { SectionTitle } from "@components/layout/SectionTitle"
 import { WeeklyRotation } from "@components/WeeklyRotation"
-import { articlesAtom, loadAtoms, useQuery, weeklyRotationAtom } from "@/effect/atoms"
+import {
+    articlesAtom,
+    loadAtoms,
+    useQuery,
+    weeklyRotationAtom,
+} from "@/effect/atoms"
 import { cn } from "common/helpers/classnames"
 import { createFileRoute } from "@tanstack/react-router"
 import { css } from "ui/theme"

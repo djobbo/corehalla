@@ -1,5 +1,11 @@
 import { Schema } from "effect"
-import type { Clan, PlayerRanked, PlayerStats, Ranking1v1, Ranking2v2 } from "bhapi/types"
+import type {
+    Clan,
+    PlayerRanked,
+    PlayerStats,
+    Ranking1v1,
+    Ranking2v2,
+} from "bhapi/types"
 import type { Legend } from "bhapi/types"
 import type { BHArticle } from "web-parser/common"
 import type { PR } from "web-parser/power-rankings/parsePowerRankingsPage"

@@ -7,7 +7,11 @@ import { parsePowerRankingsPage } from "web-parser/power-rankings/parsePowerRank
 import { ContentError } from "./errors"
 import type { BHArticle, BrawlhallaArticleCategory } from "web-parser/common"
 import type { Legend } from "bhapi/types"
-import type { PR, PowerRankingsBracket, PowerRankingsRegion } from "web-parser/power-rankings/parsePowerRankingsPage"
+import type {
+    PR,
+    PowerRankingsBracket,
+    PowerRankingsRegion,
+} from "web-parser/power-rankings/parsePowerRankingsPage"
 
 /**
  * Server-side content scraping service.

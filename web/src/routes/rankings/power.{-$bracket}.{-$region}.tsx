@@ -1,13 +1,19 @@
 import { MiscStatGroup } from "@components/stats/MiscStatGroup"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
 import { Select } from "ui/base/Select"
-import { Spinner } from "ui/base/Spinner"
 import { Tooltip } from "ui/base/Tooltip"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
-import { createFileRoute, stripSearchParams, useNavigate } from "@tanstack/react-router"
+import {
+    createFileRoute,
+    stripSearchParams,
+    useNavigate,
+} from "@tanstack/react-router"
 import { loadAtoms, powerRankingsAtom, useQuery } from "@/effect/atoms"
-import { powerRankingsRegions, rankingsBrackets } from "@components/stats/rankings/options"
+import {
+    powerRankingsRegions,
+    rankingsBrackets,
+} from "@components/stats/rankings/options"
 import {
     resolvePowerRankingsBracket,
     resolvePowerRankingsRegion,
@@ -20,7 +26,15 @@ import { z } from "zod"
 import type { MiscStat } from "@components/stats/MiscStatGroup"
 import type { PR } from "web-parser/power-rankings/parsePowerRankingsPage"
 
-type PRSortOption = "rank" | "name" | "earnings" | "t1" | "t2" | "t3" | "t8" | "t32"
+type PRSortOption =
+    | "rank"
+    | "name"
+    | "earnings"
+    | "t1"
+    | "t2"
+    | "t3"
+    | "t8"
+    | "t32"
 
 export const Route = createFileRoute("/rankings/power/{-$bracket}/{-$region}")({
     // The text filter is validated and kept in the URL. It filters the loaded
@@ -36,7 +50,7 @@ export const Route = createFileRoute("/rankings/power/{-$bracket}/{-$region}")({
                 resolvePowerRankingsRegion(params.region),
             ),
         ]),
-    head: ({ params }) => {
+    head({ params }) {
         const bracket = resolvePowerRankingsBracket(params?.bracket)
         const region = resolvePowerRankingsRegion(params?.region)
         return {

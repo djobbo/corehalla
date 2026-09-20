@@ -5,10 +5,10 @@
     "sideEffects": false,
     "type": "module",
     "scripts": {
-        "dev": "vite dev --port 3000",
-        "build": "vite build",
+        "dev": "vp dev --port 3000",
+        "build": "vp build",
         "start": "node .output/server/index.mjs",
-        "preview": "vite preview",
+        "preview": "vp preview",
         "ts:check": "effect-tsgo patch && tsc --noEmit",
         "prepare": "effect-tsgo patch"
     },
@@ -53,6 +53,7 @@
         "nitro": "^3.0.260311-beta",
         "tailwindcss": "^4.3.3",
         "typescript": "7.0.2",
-        "vite": "^8.0.14"
+        "vite": "^8.0.14",
+        "vite-plus": "0.3.3"
     }
 }

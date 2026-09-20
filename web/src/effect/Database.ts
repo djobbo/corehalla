@@ -158,27 +158,24 @@ export const layer = Layer.succeed(Database, {
 
             if (error) throw error
 
-            return (data ?? []).reduce(
-                (acc, row) => {
-                    const player = acc.find((a) => a.playerId === row.playerId)
+            return (data ?? []).reduce((acc, row) => {
+                const player = acc.find((a) => a.playerId === row.playerId)
 
-                    if (!player) {
-                        acc.push({
-                            playerId: row.playerId,
-                            mainAlias: row.alias,
-                            otherAliases: [],
-                        })
-
-                        return acc
-                    }
-
-                    if (player.mainAlias !== row.alias) {
-                        player.otherAliases.push(row.alias)
-                    }
+                if (!player) {
+                    acc.push({
+                        playerId: row.playerId,
+                        mainAlias: row.alias,
+                        otherAliases: [],
+                    })
 
                     return acc
-                },
-                [] as AliasSearchResult[],
-            )
+                }
+
+                if (player.mainAlias !== row.alias) {
+                    player.otherAliases.push(row.alias)
+                }
+
+                return acc
+            }, [] as AliasSearchResult[])
         }),
 })

@@ -5,7 +5,7 @@ import { getWeeklyRotation } from "web-parser/weekly-rotation/getWeeklyRotation"
 export const Route = createFileRoute("/api/weekly-rotation")({
     server: {
         handlers: {
-            GET: async () => {
+            async GET() {
                 try {
                     const weeklyRotation = await getWeeklyRotation()
 

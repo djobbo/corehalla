@@ -7,7 +7,7 @@ const BRAWLHALLA_WIKI_URL = "https://brawlhalla.wiki.gg"
  * Next.js used `permanent: true`, which is HTTP 308.
  */
 export const Route = createFileRoute("/wiki")({
-    beforeLoad: () => {
+    beforeLoad() {
         throw redirect({ href: BRAWLHALLA_WIKI_URL, statusCode: 308 })
     },
 })

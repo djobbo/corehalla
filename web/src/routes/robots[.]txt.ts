@@ -16,7 +16,7 @@ function getSiteUrl() {
 export const Route = createFileRoute("/robots.txt")({
     server: {
         handlers: {
-            GET: () => {
+            GET() {
                 const siteUrl = getSiteUrl()
 
                 const robots = `User-agent: *

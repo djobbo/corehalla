@@ -19,9 +19,9 @@ const profileRetry = {
     times: 3,
 } as const
 
-const readProfile = (userId: string) =>
+const readProfile = () =>
     Effect.tryPromise({
-        try: async () => {
+        async try() {
             const { data } = await supabase
                 .from<UserProfile>("UserProfile")
                 .select("*")
@@ -45,7 +45,7 @@ const syncDiscordProfile = (userId: string, token: string) =>
         const { username, avatar } = discordProfile
 
         yield* Effect.tryPromise({
-            try: async () => {
+            async try() {
                 await supabase
                     .from<UserProfile>("UserProfile")
                     .upsert({
@@ -75,7 +75,7 @@ export const useUserProfile = (session: Session | null) => {
         let cancelled = false
 
         const program = Effect.gen(function* () {
-            const first = yield* readProfile(userId).pipe(Effect.option)
+            const first = yield* readProfile().pipe(Effect.option)
 
             if (Option.isSome(first)) return first.value
 
@@ -85,7 +85,7 @@ export const useUserProfile = (session: Session | null) => {
                     Effect.ignore,
                 )
 
-                const second = yield* readProfile(userId).pipe(Effect.option)
+                const second = yield* readProfile().pipe(Effect.option)
 
                 return Option.getOrNull(second)
             }

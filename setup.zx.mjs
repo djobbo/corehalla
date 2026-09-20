@@ -5,10 +5,10 @@ import { exit } from "node:process"
 
 const { STUDIO_PORT } = process.env
 
-//eslint-disable-next-line no-console
+// oxlint-disable-next-line no-console
 const log = (msg) => console.log(`${chalk.green("[dev-env]")} ${msg}`)
 
-//eslint-disable-next-line no-console
+// oxlint-disable-next-line no-console
 const newLine = () => console.log()
 
 const { version } = await fs.readJson("./package.json")

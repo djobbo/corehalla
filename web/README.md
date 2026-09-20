@@ -3,7 +3,8 @@
 This package is the TanStack Start migration of the Next.js app in `app/`. Both
 apps run side by side until the cutover is complete.
 
-- **Bundler:** Vite 8
+- **Bundler:** [Vite+](https://viteplus.dev) (Vite 8) — lint, format, tasks and
+  the bundler come from one toolchain
 - **Framework:** TanStack Start + TanStack Router (file-based routes)
 - **Runtime/data:** [Effect v4](https://effect.website) — `HttpApi` + `HttpClient`
   on the server, `Atom` + `@effect/atom-react` on the client
@@ -13,11 +14,24 @@ apps run side by side until the cutover is complete.
 
 ## Commands
 
+Vite+ is configured at the workspace root (`vite.config.ts`); `defaultPackage`
+points `vp dev`/`vp build`/`vp preview` at this package, so the root-level
+commands work without a filter.
+
 ```sh
-pnpm --filter web dev        # vite dev on http://localhost:3000
-pnpm --filter web build      # vite build (+ route tree generation)
-pnpm --filter web start      # node .output/server/index.mjs
-pnpm --filter web ts:check   # effect-tsgo patch && tsc --noEmit
+vp -C web dev          # dev server on http://localhost:3000
+vp -C web build        # production build (+ route tree generation)
+vp -C web preview      # preview the built output
+vp -C web ts:check     # effect-tsgo patch && tsc --noEmit
+```
+
+From the repository root:
+
+```sh
+vp dev                 # built-in dev server for ./web (defaultPackage)
+vp build               # built-in build for ./web
+vp check               # oxfmt + oxlint over the whole workspace
+vp run -r ts:check     # type-check every package
 ```
 
 > The production server reads configuration from the runtime environment.
@@ -58,7 +72,7 @@ The typed API is declared once as an `HttpApi` contract
 
 - **Server** — `HttpApiBuilder.group(...)` implements each endpoint with the
   `Brawlhalla`, `Database`, and `Content` services. Services are resolved in the
-  *outer* group builder, so the handler layer only requires plain services and
+  _outer_ group builder, so the handler layer only requires plain services and
   `Layer.provide` can discharge them.
 - **Outbound HTTP** — the Brawlhalla service calls upstream through Effect's
   `HttpClient`, preferring the dair.gg proxy and falling back to the official
@@ -92,7 +106,7 @@ creates per server request, then return the dehydrated state:
 
 ```ts
 loader: ({ params, context }) =>
-  loadAtoms(context, [rankings1v1Atom(region, page, name)])
+    loadAtoms(context, [rankings1v1Atom(region, page, name)])
 ```
 
 `Hydration.dehydrate` runs after the atoms settle and the root route feeds every
@@ -107,18 +121,18 @@ During SSR the atom client targets the deployment's own origin
 
 ### SSR mode per route
 
-| Route | `ssr` | Why |
-| --- | --- | --- |
-| `/` | `true` | Landing content has SEO value |
-| `/rankings/1v1/…` | `true`, or `'data-only'` when `?player=` is set | Search results are non-canonical |
-| `/rankings/2v2/…` | `true` | Public, indexable |
-| `/rankings/clans/…` | `true`, or `'data-only'` when `?clan=` is set | Same as 1v1 |
-| `/rankings/global/…` | `true` | Public, indexable |
-| `/rankings/power/…` | `true` | Public, indexable |
-| `/stats/player/$playerId` | `true` | Public, indexable; 404 for a missing player |
-| `/stats/clan/$clanId` | `true` | Public, indexable |
-| `/calc` | `true` | Static tool, indexable |
-| `/@me/favorites` | `false` | Content comes from the browser Supabase session |
+| Route                     | `ssr`                                           | Why                                             |
+| ------------------------- | ----------------------------------------------- | ----------------------------------------------- |
+| `/`                       | `true`                                          | Landing content has SEO value                   |
+| `/rankings/1v1/…`         | `true`, or `'data-only'` when `?player=` is set | Search results are non-canonical                |
+| `/rankings/2v2/…`         | `true`                                          | Public, indexable                               |
+| `/rankings/clans/…`       | `true`, or `'data-only'` when `?clan=` is set   | Same as 1v1                                     |
+| `/rankings/global/…`      | `true`                                          | Public, indexable                               |
+| `/rankings/power/…`       | `true`                                          | Public, indexable                               |
+| `/stats/player/$playerId` | `true`                                          | Public, indexable; 404 for a missing player     |
+| `/stats/clan/$clanId`     | `true`                                          | Public, indexable                               |
+| `/calc`                   | `true`                                          | Static tool, indexable                          |
+| `/@me/favorites`          | `false`                                         | Content comes from the browser Supabase session |
 
 `/@me/favorites` also returns `Cache-Control: private, no-store` and
 `robots: noindex`.

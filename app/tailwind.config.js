@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// oxlint-disable-next-line typescript/no-require-imports
 const colors = require("ui/theme/theme")
 
 module.exports = {

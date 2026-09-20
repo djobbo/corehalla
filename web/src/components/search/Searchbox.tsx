@@ -210,7 +210,9 @@ export const Searchbox = () => {
                                         {canSearch && (
                                             <AliasResults
                                                 search={search}
-                                                immediateSearch={immediateSearch}
+                                                immediateSearch={
+                                                    immediateSearch
+                                                }
                                             />
                                         )}
                                     </>

@@ -6,7 +6,8 @@
     scroll-behavior: smooth;
 }
 
-html, body {
+html,
+body {
     @apply bg-bgVar1 text-text;
     font-family: "Montserrat", sans-serif;
 }
@@ -28,5 +29,5 @@ html, body {
 }
 
 .text-fill-none {
-    -webkit-text-fill-color: transparent
+    -webkit-text-fill-color: transparent;
 }

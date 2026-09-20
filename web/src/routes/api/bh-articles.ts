@@ -11,7 +11,7 @@ import type { BHArticleType } from "web-parser/bh-articles/parseBHArticlesPage"
 export const Route = createFileRoute("/api/bh-articles")({
     server: {
         handlers: {
-            GET: async ({ request }) => {
+            async GET({ request }) {
                 const url = new URL(request.url)
                 const page = url.searchParams.get("page") ?? "1"
                 const type = url.searchParams.get("type") ?? "patch-notes"
@@ -29,10 +29,9 @@ export const Route = createFileRoute("/api/bh-articles")({
                     }
 
                     if (max) {
-                        return Response.json(
-                            articles.slice(0, parseInt(max)),
-                            { headers },
-                        )
+                        return Response.json(articles.slice(0, parseInt(max)), {
+                            headers,
+                        })
                     }
 
                     return Response.json(articles, { headers })

@@ -1,9 +1,10 @@
 import { Effect } from "effect"
-import { Atom, AtomRegistry, Hydration } from "effect/unstable/reactivity"
+import type { Atom } from "effect/unstable/reactivity"
+import { AtomRegistry, Hydration } from "effect/unstable/reactivity"
 import { useAtomSuspense } from "@effect/atom-react"
 import { CorehallaClient } from "./Client"
 import type * as AsyncResult from "effect/unstable/reactivity/AsyncResult"
-import {
+import type {
     ArticleCategory,
     Bracket,
     PowerRankingsRegion,
@@ -27,11 +28,7 @@ type PowerRegion = typeof PowerRankingsRegion.Type
 type ArticleCategoryType = typeof ArticleCategory.Type
 type SortableProp = typeof SortablePlayerProp.Type
 
-export const rankings1v1Atom = (
-    region: Region,
-    page: number,
-    name?: string,
-) =>
+export const rankings1v1Atom = (region: Region, page: number, name?: string) =>
     CorehallaClient.query("rankings", "get1v1Rankings", {
         query: name ? { region, page, name } : { region, page },
         serializationKey: `1v1:${region}:${page}:${name ?? ""}`,
@@ -45,10 +42,7 @@ export const rankings2v2Atom = (region: Region, page: number) =>
         timeToLive: ttl,
     })
 
-export const globalRankingsAtom = (
-    sortBy: SortableProp,
-    page: number,
-) =>
+export const globalRankingsAtom = (sortBy: SortableProp, page: number) =>
     CorehallaClient.query("rankings", "getGlobalPlayerRankings", {
         query: { sortBy, page },
         serializationKey: `global:${sortBy}:${page}`,
@@ -62,10 +56,7 @@ export const clansRankingsAtom = (name: string, page: number) =>
         timeToLive: ttl,
     })
 
-export const powerRankingsAtom = (
-    bracket: BracketType,
-    region: PowerRegion,
-) =>
+export const powerRankingsAtom = (bracket: BracketType, region: PowerRegion) =>
     CorehallaClient.query("rankings", "getPowerRankings", {
         query: { bracket, region },
         serializationKey: `power:${bracket}:${region}`,
@@ -163,7 +154,9 @@ export const loadAtoms = async (
     await Promise.all(atoms.map((atom) => preloadAtom(context.registry, atom)))
 
     return {
-        dehydrated: import.meta.env.SSR ? dehydrateRegistry(context.registry) : [],
+        dehydrated: import.meta.env.SSR
+            ? dehydrateRegistry(context.registry)
+            : [],
     }
 }
 
