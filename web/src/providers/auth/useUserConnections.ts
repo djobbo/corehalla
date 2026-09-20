@@ -4,7 +4,6 @@ import { supabase } from "db/supabase/client"
 import { useCallback, useEffect, useState } from "react"
 import type { Session } from "db/supabase/client"
 import type { UserConnection } from "db/generated/client"
-
 export const useUserConnections = (
     session: Session | null,
     updateEnabled = false,
@@ -22,7 +21,7 @@ export const useUserConnections = (
 
         // TODO: delete old connections
         const { data: connections, error } = await supabase
-            .from<UserConnection>("UserConnection")
+            .from("UserConnection")
             .upsert(
                 userConnections.map(({ id, name, type, verified }) => ({
                     appId: id,
@@ -41,17 +40,19 @@ export const useUserConnections = (
     useEffect(() => {
         if (!updateEnabled) return
 
-        const subscription = supabase
-            .from<UserConnection>("UserConnection")
-            .on("*", (payload) => {
-                logInfo("UserConnection Change received!", payload)
-            })
+        const channel = supabase
+            .channel(`user-connection:${userId}`)
+            .on<UserConnection>(
+                "postgres_changes",
+                { event: "*", schema: "public", table: "UserConnection" },
+                (payload) => {
+                    logInfo("UserConnection Change received!", payload)
+                },
+            )
             .subscribe()
 
-        updateUserConnections()
-
         return () => {
-            subscription.unsubscribe()
+            void supabase.removeChannel(channel)
         }
     }, [updateUserConnections, updateEnabled])
 

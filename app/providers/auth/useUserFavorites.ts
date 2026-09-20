@@ -42,7 +42,7 @@ export const useUserFavorites = (session: Session | null) => {
         if (!userId) return
 
         const { error } = await supabase
-            .from<UserFavorite>("UserFavorite")
+            .from("UserFavorite")
             .upsert({ ...favorite, userId })
 
         if (error) {
@@ -63,7 +63,7 @@ export const useUserFavorites = (session: Session | null) => {
         if (!userId) return
 
         const { error } = await supabase
-            .from<UserFavorite>("UserFavorite")
+            .from("UserFavorite")
             .delete()
             .match({ userId, id, type })
 
@@ -81,7 +81,7 @@ export const useUserFavorites = (session: Session | null) => {
         if (!userId) return
 
         const { error } = await supabase
-            .from<UserFavorite>("UserFavorite")
+            .from("UserFavorite")
             .upsert({ ...favorite, userId })
 
         if (error) {
@@ -98,7 +98,7 @@ export const useUserFavorites = (session: Session | null) => {
         if (!userId) return
 
         const { data: initialFavorites, error } = await supabase
-            .from<UserFavorite>("UserFavorite")
+            .from("UserFavorite")
             .select("*")
             .match({ userId })
 
@@ -123,41 +123,49 @@ export const useUserFavorites = (session: Session | null) => {
 
         fetchInitialFavorites()
 
-        const subscription = supabase
-            .from<UserFavorite>("UserFavorite")
-            .on("*", (payload) => {
-                const { id, name, meta, type } = payload.new
+        const channel = supabase
+            .channel(`user-favorites:${userId}`)
+            .on<UserFavorite>(
+                "postgres_changes",
+                { event: "*", schema: "public", table: "UserFavorite" },
+                (payload) => {
+                    switch (payload.eventType) {
+                        case "INSERT": {
+                            const { id, name, meta, type } = payload.new
 
-                switch (payload.eventType) {
-                    case "INSERT":
-                        // @ts-expect-error ts doesn't know about `type`
-                        return setFavorites((favorites) => [
-                            ...favorites,
-                            { id, name, meta, type },
-                        ])
-                    case "UPDATE":
-                        // @ts-expect-error ts doesn't know about `type`
-                        return setFavorites((favorites) =>
-                            favorites.map((favorite) =>
-                                favorite.type === type && favorite.id === id
-                                    ? { id, name, meta, type }
-                                    : favorite,
-                            ),
-                        )
-                    case "DELETE":
-                        return setFavorites((favorites) =>
-                            favorites.filter(
-                                (favorite) =>
-                                    favorite.type !== payload.old.type ||
-                                    favorite.id !== payload.old.id,
-                            ),
-                        )
-                }
-            })
+                            // @ts-expect-error ts doesn't know about `type`
+                            return setFavorites((favorites) => [
+                                ...favorites,
+                                { id, name, meta, type },
+                            ])
+                        }
+                        case "UPDATE": {
+                            const { id, name, meta, type } = payload.new
+
+                            // @ts-expect-error ts doesn't know about `type`
+                            return setFavorites((favorites) =>
+                                favorites.map((favorite) =>
+                                    favorite.type === type && favorite.id === id
+                                        ? { id, name, meta, type }
+                                        : favorite,
+                                ),
+                            )
+                        }
+                        case "DELETE":
+                            return setFavorites((favorites) =>
+                                favorites.filter(
+                                    (favorite) =>
+                                        favorite.type !== payload.old.type ||
+                                        favorite.id !== payload.old.id,
+                                ),
+                            )
+                    }
+                },
+            )
             .subscribe()
 
         return () => {
-            subscription.unsubscribe()
+            void supabase.removeChannel(channel)
         }
     }, [fetchInitialFavorites, userId])
 

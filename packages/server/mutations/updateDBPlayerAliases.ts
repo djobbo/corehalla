@@ -20,7 +20,7 @@ export const updateDBPlayerAliases = async (
     )
 
     await supabaseService //
-        .from<BHPlayerAlias>("BHPlayerAlias")
+        .from("BHPlayerAlias")
         .upsert(filteredAliases)
         .abortSignal(options.abortSignal)
 }

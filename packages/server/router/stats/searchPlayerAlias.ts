@@ -5,8 +5,6 @@ import { publicProcedure } from "../../trpc"
 import { supabaseService } from "db/supabase/service"
 import { withTimeLog } from "../../helpers/withTimeLog"
 import { z } from "zod"
-import type { BHPlayerAlias } from "db/generated/client"
-
 export const searchPlayerAlias = publicProcedure //
     .input(
         z.object({
@@ -25,7 +23,7 @@ export const searchPlayerAlias = publicProcedure //
 
             const cleanAlias = alias.trim().replace(/'/g, "\\'")
 
-            const { data, error } = await supabaseService.rpc<BHPlayerAlias>(
+            const { data, error } = await supabaseService.rpc(
                 "search_aliases",
                 {
                     search: cleanAlias,

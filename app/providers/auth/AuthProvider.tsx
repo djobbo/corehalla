@@ -7,7 +7,6 @@ import { useUserProfile } from "./useUserProfile"
 import type { ReactNode } from "react"
 import type { Session, User } from "db/supabase/client"
 import type { UserConnection, UserProfile } from "db/generated/client"
-
 export type AuthContext = {
     isLoggedIn: boolean
     session: Session | null
@@ -52,16 +51,16 @@ export const AuthProvider = ({ children }: Props) => {
     const userFavorites = useUserFavorites(session)
 
     useEffect(() => {
-        setSession(supabase.auth.session())
-
-        const { data: authSubscription } = supabase.auth.onAuthStateChange(
-            (evt, session) => {
-                setSession(session)
-            },
-        )
+        // v2: `auth.session()` is gone and the subscription now lives on
+        // `data.subscription`. `onAuthStateChange` emits `INITIAL_SESSION` as
+        // soon as it subscribes, so it is the single source of truth for the
+        // session (no separate `getSession()` call is needed).
+        const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session)
+        })
 
         return () => {
-            authSubscription?.unsubscribe()
+            data.subscription.unsubscribe()
         }
     }, [])
 

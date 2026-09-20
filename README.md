@@ -31,6 +31,36 @@
 | `worker`     | Discord bot + crawler.                                                                                                              |
 | `packages/*` | Shared `server` (tRPC router), `db`, `bhapi`, `web-parser`, `common`, `ui`, `logger` packages.                                      |
 
+## Local development
+
+The local stack is the [Supabase CLI](https://supabase.com/docs/guides/local-development):
+`supabase start` brings up Postgres, PostgREST, Auth and Realtime from
+`supabase/config.toml`, replacing the hand-maintained Docker Compose + Kong +
+database init scripts that used to live in `.devcontainer/`.
+
+```sh
+pnpm setup:env     # install deps, `supabase start`, write env files, migrate
+pnpm dev           # run the app dev servers
+pnpm db:stop       # stop the local stack
+```
+
+`pnpm setup:env` is idempotent: it starts the stack (Docker must be running),
+writes the returned URL/keys/`DATABASE_URL` into `packages/db/.env`,
+`web/.env.local`, `app/.env.local` and `worker/.env` without touching the other
+values in those files, then applies the Prisma migrations.
+
+Useful commands:
+
+```sh
+pnpm db:start      # supabase start
+pnpm db:status     # supabase status (URLs, keys, ports)
+pnpm db:stop       # supabase stop
+pnpm db:migrate    # prisma migrate + RLS/realtime/functions setup
+```
+
+The service ports come from `supabase/config.toml`: API `54321`, Postgres
+`54322`, Studio `54323`.
+
 ## Tooling
 
 The workspace is built and checked with [Vite+](https://viteplus.dev), which

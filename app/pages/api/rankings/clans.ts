@@ -1,6 +1,5 @@
 import { CLANS_RANKINGS_PER_PAGE } from "server/helpers/constants"
 import { supabaseService } from "db/supabase/service"
-import type { BHClan } from "db/generated/client"
 import type { NextApiHandler } from "next"
 
 const handler: NextApiHandler = async (req, res) => {
@@ -8,7 +7,7 @@ const handler: NextApiHandler = async (req, res) => {
 
     try {
         let query = supabaseService
-            .from<BHClan>("BHClan")
+            .from("BHClan")
             .select("*")
             .order("xp", { ascending: false })
 

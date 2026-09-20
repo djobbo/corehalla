@@ -4,8 +4,6 @@ import { publicProcedure } from "../../trpc"
 import { supabaseService } from "db/supabase/service"
 import { withTimeLog } from "../../helpers/withTimeLog"
 import { z } from "zod"
-import type { BHPlayerAlias } from "db/generated/client"
-
 export const getPlayerAliases = publicProcedure //
     .input(
         z.object({
@@ -18,7 +16,7 @@ export const getPlayerAliases = publicProcedure //
             logInfo("getPlayerAliases", req.input)
 
             const { data, error } = await supabaseService
-                .from<BHPlayerAlias>("BHPlayerAlias")
+                .from("BHPlayerAlias")
                 .select("*")
                 .order("createdAt", { ascending: false })
                 .match({ playerId, public: true })

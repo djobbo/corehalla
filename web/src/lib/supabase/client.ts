@@ -1,4 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
+import type { Database } from "db/supabase/database.types"
+
 export type { Session, User } from "@supabase/supabase-js"
 
 /**
@@ -23,4 +25,4 @@ const supabaseAnonKey =
     import.meta.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
     "public-anon-key"
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey)

@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 import type { SupabaseClient } from "@supabase/supabase-js"
+import type { Database } from "./database.types"
 
 /**
  * Server-only Supabase client (service role key).
@@ -14,11 +15,11 @@ import type { SupabaseClient } from "@supabase/supabase-js"
  * Configuration problems still surface, but only on the request that actually
  * needs database access.
  */
-let client: SupabaseClient | null = null
+let client: SupabaseClient<Database> | null = null
 
-const getServiceClient = (): SupabaseClient => {
+const getServiceClient = (): SupabaseClient<Database> => {
     if (!client) {
-        client = createClient(
+        client = createClient<Database>(
             process.env.SUPABASE_URL ??
                 process.env.NEXT_PUBLIC_SUPABASE_URL ??
                 "",
@@ -29,7 +30,7 @@ const getServiceClient = (): SupabaseClient => {
     return client
 }
 
-export const supabaseService = new Proxy({} as SupabaseClient, {
+export const supabaseService = new Proxy({} as SupabaseClient<Database>, {
     get(_target, property, receiver) {
         return Reflect.get(getServiceClient(), property, receiver)
     },

@@ -5,8 +5,6 @@ import { publicProcedure } from "../../trpc"
 import { supabaseService } from "db/supabase/service"
 import { withTimeLog } from "../../helpers/withTimeLog"
 import { z } from "zod"
-import type { BHClan } from "db/generated/client"
-
 export const getClansRankings = publicProcedure
     .input(
         z.object({
@@ -19,7 +17,7 @@ export const getClansRankings = publicProcedure
             const { name, page } = req.input
             logInfo("getClansRankings", req.input)
 
-            let query = supabaseService.from<BHClan>("BHClan").select("*")
+            let query = supabaseService.from("BHClan").select("*")
 
             const cleanName = name.trim().replace(/'/g, "\\'")
 

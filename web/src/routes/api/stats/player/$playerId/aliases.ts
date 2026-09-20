@@ -1,7 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { supabaseService } from "db/supabase/service"
-import type { BHPlayerAlias } from "db/generated/client"
-
 /** Server route replacing `pages/api/stats/player/[playerId]/aliases.ts`. */
 export const Route = createFileRoute("/api/stats/player/$playerId/aliases")({
     server: {
@@ -9,7 +7,7 @@ export const Route = createFileRoute("/api/stats/player/$playerId/aliases")({
             async GET({ params }) {
                 try {
                     const { data, error } = await supabaseService
-                        .from<BHPlayerAlias>("BHPlayerAlias")
+                        .from("BHPlayerAlias")
                         .select("*")
                         .match({ playerId: params.playerId })
 

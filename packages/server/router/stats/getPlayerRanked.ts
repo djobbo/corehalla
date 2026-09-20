@@ -8,7 +8,6 @@ import { waitForRequestTimeout } from "../../helpers/waitForRequestTimeout"
 import { withTimeLog } from "../../helpers/withTimeLog"
 import { z } from "zod"
 import type { BHPlayerAlias } from "db/generated/client"
-
 export const getPlayerRanked = publicProcedure //
     .input(
         z.object({

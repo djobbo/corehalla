@@ -10,7 +10,7 @@ export const updateDBClanData = async (
     logInfo("updateDBClanData", { clanId: clan.id })
 
     await supabaseService
-        .from<BHClan>("BHClan")
+        .from("BHClan")
         .upsert(clan)
         .abortSignal(options.abortSignal)
 }

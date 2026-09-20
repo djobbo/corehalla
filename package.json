@@ -8,6 +8,9 @@
         "build": "vp run -r build",
         "build:prod": "pnpm db:migrate:prod && vp run --filter app build",
         "dev": "vp run -r --parallel dev",
+        "db:start": "supabase start",
+        "db:stop": "supabase stop",
+        "db:status": "supabase status",
         "db:migrate": "vp run -r db:migrate",
         "db:migrate:prod": "vp run --filter db db:migrate:prod",
         "dl-roster": "vp run -r dl-roster",
@@ -20,6 +23,7 @@
         "setup:env": "zx setup.zx.mjs"
     },
     "devDependencies": {
+        "supabase": "^2.117.0",
         "typescript": "^5.3.3",
         "vite": "^8.0.14",
         "vite-plus": "0.3.3",

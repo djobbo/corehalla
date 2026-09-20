@@ -1,8 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { CLANS_RANKINGS_PER_PAGE } from "@util/constants"
 import { supabaseService } from "db/supabase/service"
-import type { BHClan } from "db/generated/client"
-
 /** Server route replacing `pages/api/rankings/clans.ts`. */
 export const Route = createFileRoute("/api/rankings/clans")({
     server: {
@@ -14,7 +12,7 @@ export const Route = createFileRoute("/api/rankings/clans")({
 
                 try {
                     let query = supabaseService
-                        .from<BHClan>("BHClan")
+                        .from("BHClan")
                         .select("*")
                         .order("xp", { ascending: false })
 

@@ -53,7 +53,7 @@ export const layer = Layer.succeed(Database, {
     getPlayerAliases: (playerId) =>
         run(async () => {
             const { data, error } = await supabaseService
-                .from<BHPlayerAlias>("BHPlayerAlias")
+                .from("BHPlayerAlias")
                 .select("*")
                 .order("createdAt", { ascending: false })
                 .match({ playerId, public: true })
@@ -77,7 +77,7 @@ export const layer = Layer.succeed(Database, {
             if (filtered.length === 0) return
 
             const { error } = await supabaseService
-                .from<BHPlayerAlias>("BHPlayerAlias")
+                .from("BHPlayerAlias")
                 .upsert(filtered)
 
             if (error) throw error
@@ -85,16 +85,14 @@ export const layer = Layer.succeed(Database, {
 
     upsertClan: (clan) =>
         run(async () => {
-            const { error } = await supabaseService
-                .from<BHClan>("BHClan")
-                .upsert(clan)
+            const { error } = await supabaseService.from("BHClan").upsert(clan)
 
             if (error) throw error
         }),
 
     getClansRankings: (name, page) =>
         run(async () => {
-            let query = supabaseService.from<BHClan>("BHClan").select("*")
+            let query = supabaseService.from("BHClan").select("*")
 
             const cleanName = name.trim().replace(/'/g, "\\'")
 
@@ -119,7 +117,7 @@ export const layer = Layer.succeed(Database, {
     getGlobalPlayerRankings: (sortBy, page) =>
         run(async () => {
             const { data, error } = await supabaseService
-                .from<BHPlayerData>("BHPlayerData")
+                .from("BHPlayerData")
                 .select(`id,name,tier,rating,region,peakRating,${sortBy}`)
                 .order(sortBy as keyof BHPlayerData, { ascending: false })
                 .range(
@@ -129,9 +127,19 @@ export const layer = Layer.succeed(Database, {
 
             if (error) throw error
 
-            return (data ?? []).map((playerData) => {
-                const { [sortBy as keyof BHPlayerData]: prop, ...rest } =
-                    playerData
+            // The select list is interpolated, so it is not a literal type and
+            // the client cannot infer the projected row shape. The table's row
+            // type is the contract here.
+            const rows = (data ?? []) as unknown as BHPlayerData[]
+
+            return rows.map((playerData) => {
+                // The sorted column is dynamic, so it is projected out through an
+                // index signature: computed-key destructuring on the concrete row
+                // type is not representable.
+                const { [sortBy]: prop, ...rest } = playerData as Record<
+                    string,
+                    unknown
+                >
 
                 return {
                     ...(rest as unknown as GlobalPlayerRanking),
@@ -146,7 +154,7 @@ export const layer = Layer.succeed(Database, {
 
             const cleanAlias = alias.trim().replace(/'/g, "\\'")
 
-            const { data, error } = await supabaseService.rpc<BHPlayerAlias>(
+            const { data, error } = await supabaseService.rpc(
                 "search_aliases",
                 {
                     search: cleanAlias,

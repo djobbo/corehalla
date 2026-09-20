@@ -1,9 +1,4 @@
 import { supabaseService } from "db/supabase/service"
-import type {
-    BHPlayerData,
-    BHPlayerLegend,
-    BHPlayerWeapon,
-} from "db/generated/client"
 import type { CommonOptions } from "../helpers/commonOptions"
 
 export const flushOutdatedBPlayerData = async (options: CommonOptions) => {
@@ -11,19 +6,19 @@ export const flushOutdatedBPlayerData = async (options: CommonOptions) => {
     const twoDaysAgo = currentTimestamp - 2 * 24 * 60 * 60 * 1000
 
     const flushPlayerData = supabaseService
-        .from<BHPlayerData>("BHPlayerData")
+        .from("BHPlayerData")
         .delete()
         .filter("lastUpdated", "not.gt", twoDaysAgo)
         .abortSignal(options.abortSignal)
 
     const flushLegendData = supabaseService
-        .from<BHPlayerLegend>("BHPlayerLegend")
+        .from("BHPlayerLegend")
         .delete()
         .filter("lastUpdated", "not.gt", twoDaysAgo)
         .abortSignal(options.abortSignal)
 
     const flushWeaponData = supabaseService
-        .from<BHPlayerWeapon>("BHPlayerWeapon")
+        .from("BHPlayerWeapon")
         .delete()
         .filter("lastUpdated", "not.gt", twoDaysAgo)
         .abortSignal(options.abortSignal)

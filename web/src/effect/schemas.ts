@@ -10,7 +10,6 @@ import type { Legend } from "bhapi/types"
 import type { BHArticle } from "web-parser/common"
 import type { PR } from "web-parser/power-rankings/parsePowerRankingsPage"
 import type { BHClan } from "db/generated/client"
-
 /**
  * Declares an existing TypeScript domain type as an Effect `Schema` without
  * adding runtime validation.

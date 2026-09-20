@@ -5,7 +5,6 @@ import { publicProcedure } from "../../trpc"
 import { supabaseService } from "db/supabase/service"
 import { z } from "zod"
 import type { BHPlayerData } from "db/generated/client"
-
 export const getGlobalPlayerRankings = publicProcedure
     .input(
         z.object({
@@ -31,7 +30,7 @@ export const getGlobalPlayerRankings = publicProcedure
         logInfo("getGlobalPlayerRankings", req.input)
 
         const query = supabaseService
-            .from<BHPlayerData>("BHPlayerData")
+            .from("BHPlayerData")
             .select(`id,name,tier,rating,region,peakRating,${sortBy}`)
             .order(sortBy as keyof BHPlayerData, { ascending: false }) // TODO: validate prop with zod
 
@@ -42,19 +41,27 @@ export const getGlobalPlayerRankings = publicProcedure
 
         if (error) throw error
 
-        // TODO: type check this with zod
-        return (
-            data?.map(
-                // TODO: validate prop with zod
-                (playerData) => {
-                    const { [sortBy as keyof BHPlayerData]: prop, ...rest } =
-                        playerData
+        // The select list is interpolated, so it is not a literal type and the
+        // client cannot infer the projected row shape. The table's row type is
+        // the contract here.
+        const rows = (data ?? []) as unknown as BHPlayerData[]
 
-                    return {
-                        ...(rest as BHPlayerData),
-                        prop: prop as number,
-                    }
-                },
-            ) ?? []
+        // TODO: type check this with zod
+        return rows.map(
+            // TODO: validate prop with zod
+            (playerData) => {
+                // The sorted column is dynamic, so it is projected out through
+                // an index signature: computed-key destructuring on the concrete
+                // row type is not representable.
+                const { [sortBy]: prop, ...rest } = playerData as Record<
+                    string,
+                    unknown
+                >
+
+                return {
+                    ...(rest as unknown as BHPlayerData),
+                    prop: prop as number,
+                }
+            },
         )
     })

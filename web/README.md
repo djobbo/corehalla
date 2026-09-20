@@ -177,7 +177,23 @@ See `.env.example`. Server-only variables are read at request time through
 `process.env`; browser variables are read through `import.meta.env` (Vite
 `envPrefix` allows both `VITE_` and the legacy `NEXT_PUBLIC_` prefix).
 
+`pnpm setup:env` (from the repository root) writes the local Supabase URL, keys
+and `DATABASE_URL` into `.env.local` after `supabase start`; `.env.local` takes
+precedence over `.env`.
+
 `INTERNAL_ORIGIN` optionally pins the origin used for SSR atom preloading.
+
+## Supabase client
+
+`@supabase/supabase-js` v2 types every query from a `Database` schema passed to
+`createClient`, so `.from("Table")` and `.rpc("fn")` are typed without a
+per-call generic. The schema in `packages/db/supabase/database.types.ts` maps
+the Prisma row types onto that shape, so a new Prisma model needs an entry there
+before `supabaseService.from("NewTable")` compiles.
+
+`web/src/lib/supabase/client.ts` reimplements the browser client for Vite:
+`tsconfig.json` maps the `db/supabase/client` and `db/supabase/auth` imports onto
+these files, so shared code keeps importing the same specifiers.
 
 ## Deployment (Vercel)
 

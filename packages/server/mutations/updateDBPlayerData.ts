@@ -8,7 +8,7 @@ import {
 import { logError, logInfo } from "logger"
 import { supabaseService } from "db/supabase/service"
 import type { BHPlayerData } from "db/generated/client"
-import type { BHPlayerLegend, BHPlayerWeapon } from "db/generated/client"
+import type { BHPlayerLegend } from "db/generated/client"
 import type { CommonOptions } from "../helpers/commonOptions"
 import type { FullLegend, FullWeapon } from "bhapi/legends"
 import type { PlayerStats } from "bhapi/types"
@@ -102,7 +102,7 @@ export const updateDBPlayerData = async (
 
     const [{ error }] = await Promise.all([
         supabaseService
-            .from<BHPlayerData>("BHPlayerData")
+            .from("BHPlayerData")
             .upsert(playerData)
             .abortSignal(options.abortSignal),
         updateDBPlayerLegends(playerId, legends, options),
@@ -188,7 +188,7 @@ export const updateDBPlayerLegends = async (
 
     const [{ error }] = await Promise.all([
         supabaseService
-            .from<BHPlayerLegend>("BHPlayerLegend")
+            .from("BHPlayerLegend")
             .upsert(
                 dbLegends
                     .sort((a, b) => b.xp - a.xp)
@@ -218,7 +218,7 @@ export const updateDBPlayerWeapons = async (
     const weapons = getWeaponsAccumulativeData(fullWeapons)
 
     const { error } = await supabaseService
-        .from<BHPlayerWeapon>("BHPlayerWeapon")
+        .from("BHPlayerWeapon")
         .upsert(
             weapons
                 .map((weapon) => ({

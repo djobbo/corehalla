@@ -1,8 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { SEARCH_PLAYERS_ALIASES_PER_PAGE } from "@util/constants"
 import { supabaseService } from "db/supabase/service"
-import type { BHPlayerAlias } from "db/generated/client"
-
 /** Server route replacing `pages/api/rankings/search/player.ts`. */
 export const Route = createFileRoute("/api/rankings/search/player")({
     server: {
@@ -21,7 +19,7 @@ export const Route = createFileRoute("/api/rankings/search/player")({
 
                 try {
                     let query = supabaseService
-                        .from<BHPlayerAlias>("BHPlayerAlias")
+                        .from("BHPlayerAlias")
                         .select("*")
                         .order("alias", { ascending: true })
 

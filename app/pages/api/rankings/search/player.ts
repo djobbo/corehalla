@@ -1,6 +1,5 @@
 import { SEARCH_PLAYERS_ALIASES_PER_PAGE } from "server/helpers/constants"
 import { supabaseService } from "db/supabase/service"
-import type { BHPlayerAlias } from "db/generated/client"
 import type { NextApiHandler } from "next"
 
 const handler: NextApiHandler = async (req, res) => {
@@ -17,7 +16,7 @@ const handler: NextApiHandler = async (req, res) => {
 
     try {
         let query = supabaseService
-            .from<BHPlayerAlias>("BHPlayerAlias")
+            .from("BHPlayerAlias")
             .select("*")
             .order("alias", { ascending: true })
 

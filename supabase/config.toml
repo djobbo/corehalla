@@ -1,0 +1,103 @@
+# Corehalla local Supabase stack.
+#
+# Started with `pnpm db:start` (which runs `supabase start`). The CLI's built-in
+# stack replaces the hand-maintained Docker Compose + Kong + database init
+# scripts that used to live in `.devcontainer/`.
+#
+# Full reference: https://supabase.com/docs/guides/local-development/cli/config
+#
+# Values wrapped in `env(...)` are resolved from the ambient environment, then
+# `supabase/.env*`, then the repository-root `.env*` (ambient wins). Leaving one
+# unset keeps the literal in place rather than failing the start.
+
+project_id = "corehalla"
+
+[api]
+enabled = true
+# Port to use for the API URL (PostgREST + Auth + Realtime gateway).
+port = 54321
+# Only the `public` schema is exposed: the app talks to Postgres through Prisma
+# and PostgREST, and the GraphQL API is unused.
+schemas = ["public"]
+# Extra schemas added to the search_path of every request.
+extra_search_path = ["public", "extensions"]
+# The maximum number of rows returned from a view, table, or stored procedure.
+max_rows = 1000
+
+[db]
+# Port to use for the local database URL (Prisma connects here).
+port = 54322
+# Port used by `db diff` to initialize the shadow database.
+shadow_port = 54320
+# Maximum amount of time to wait for the health check when starting the database.
+health_timeout = "2m"
+# Keep this in step with the hosted project's Postgres major version.
+major_version = 17
+
+[db.migrations]
+# Prisma owns the schema: migrations live in `packages/db/prisma/migrations`
+# and are applied by `pnpm db:migrate`, not by the Supabase CLI.
+enabled = false
+
+[db.seed]
+# Seeds are Prisma-managed too; there is no `supabase/seed.sql`.
+enabled = false
+
+[realtime]
+# Used by the client hooks (favorites, profile, connections).
+enabled = true
+
+[studio]
+enabled = true
+# Port for Supabase Studio.
+port = 54323
+# External URL of the API server Studio connects to.
+api_url = "http://127.0.0.1"
+
+[local_smtp]
+# Email sign-in is disabled; accounts are created through Discord OAuth.
+enabled = false
+
+[storage]
+# The app stores no objects in Supabase Storage.
+enabled = false
+
+[auth]
+enabled = true
+# Base URL of the site, used as an allow-list for redirects.
+site_url = "http://localhost:3000"
+# Exact URLs auth providers may redirect to after authentication.
+additional_redirect_urls = ["http://localhost:3000", "http://127.0.0.1:3000"]
+# How long tokens are valid for, in seconds.
+jwt_expiry = 3600
+# Allow new users to sign up (the first Discord login creates the account).
+enable_signup = true
+enable_anonymous_sign_ins = false
+enable_manual_linking = false
+minimum_password_length = 6
+password_requirements = ""
+
+[auth.email]
+# Discord is the only sign-in method.
+enable_signup = false
+enable_confirmations = false
+
+[auth.sms]
+enable_signup = false
+enable_confirmations = false
+
+[auth.external.discord]
+# Discord is the app's only OAuth provider. Set DISCORD_AUTH_CLIENT_ID and
+# DISCORD_AUTH_SECRET (in the environment or a root `.env`) to sign in locally.
+enabled = true
+client_id = "env(DISCORD_AUTH_CLIENT_ID)"
+secret = "env(DISCORD_AUTH_SECRET)"
+skip_nonce_check = false
+
+[edge_runtime]
+# No edge functions are deployed from this repository.
+enabled = false
+
+[analytics]
+# Logflare is not used locally.
+enabled = false

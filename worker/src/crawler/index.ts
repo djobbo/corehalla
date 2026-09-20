@@ -3,7 +3,6 @@ import { getPlayerStats, getRankings } from "bhapi"
 import { logInfo, logWarning } from "logger"
 import { supabaseService } from "db/supabase/service"
 import { updateDBPlayerData } from "server/mutations/updateDBPlayerData"
-import type { CrawlProgress } from "db/generated/client"
 import type { RankedRegion } from "bhapi/constants"
 
 type CrawlerConfig = {
@@ -57,14 +56,12 @@ const createCrawlerQueue = async (config: CrawlerConfig) => {
             return async () => {
                 const currentPage = i + (config.startPage ?? 1)
                 logInfo("Save crawl progress", currentPage)
-                await supabaseService
-                    .from<CrawlProgress>("CrawlProgress")
-                    .upsert({
-                        id: "Crawler",
-                        progress: currentPage,
-                        lastUpdated: new Date(),
-                        name: "Crawler",
-                    })
+                await supabaseService.from("CrawlProgress").upsert({
+                    id: "Crawler",
+                    progress: currentPage,
+                    lastUpdated: new Date(),
+                    name: "Crawler",
+                })
 
                 logInfo("Crawling leaderboard page", currentPage)
                 const players = await requestWithMinimumDelay(
@@ -125,7 +122,7 @@ export const startCrawler = async (config: CrawlerConfig = defaultConfig) => {
         logInfo("Crawler iteration:", iteration)
         if (iteration === 1) {
             const { data, error } = await supabaseService
-                .from<CrawlProgress>("CrawlProgress")
+                .from("CrawlProgress")
                 .select("*")
                 .match({ id: "Crawler" })
                 .single()

@@ -5,7 +5,6 @@ import { useEffect, useState } from "react"
 import type { Session } from "db/supabase/client"
 import { AuthError } from "@/effect/errors"
 import type { UserProfile } from "db/generated/client"
-
 /**
  * Fetches and keeps the signed-in user's profile in sync.
  *
@@ -23,7 +22,7 @@ const readProfile = () =>
     Effect.tryPromise({
         async try() {
             const { data } = await supabase
-                .from<UserProfile>("UserProfile")
+                .from("UserProfile")
                 .select("*")
                 .throwOnError()
                 .single()
@@ -47,7 +46,7 @@ const syncDiscordProfile = (userId: string, token: string) =>
         yield* Effect.tryPromise({
             async try() {
                 await supabase
-                    .from<UserProfile>("UserProfile")
+                    .from("UserProfile")
                     .upsert({
                         id: userId,
                         username,
@@ -105,16 +104,21 @@ export const useUserProfile = (session: Session | null) => {
     useEffect(() => {
         if (!userId) return
 
-        const subscription = supabase
-            .from<UserProfile>("UserProfile")
-            .on("*", (payload) => {
-                if (payload.new.id !== userId) return
-                setRefreshToken((token) => token + 1)
-            })
+        const channel = supabase
+            .channel(`user-profile:${userId}`)
+            .on<UserProfile>(
+                "postgres_changes",
+                { event: "*", schema: "public", table: "UserProfile" },
+                (payload) => {
+                    if (payload.eventType === "DELETE") return
+                    if (payload.new.id !== userId) return
+                    setRefreshToken((token) => token + 1)
+                },
+            )
             .subscribe()
 
         return () => {
-            subscription.unsubscribe()
+            void supabase.removeChannel(channel)
         }
     }, [userId])
 

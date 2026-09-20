@@ -4,7 +4,6 @@ import { useEffect } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import type { Session } from "db/supabase/client"
 import type { UserProfile } from "db/generated/client"
-
 export const useUserProfile = (session: Session | null) => {
     const userId = session?.user?.id
     const discordToken = session?.provider_token
@@ -15,7 +14,7 @@ export const useUserProfile = (session: Session | null) => {
         ["userProfile", userId],
         async () => {
             const { data } = await supabase
-                .from<UserProfile>("UserProfile")
+                .from("UserProfile")
                 .select("*")
                 .throwOnError()
                 .single()
@@ -41,7 +40,7 @@ export const useUserProfile = (session: Session | null) => {
             const { username, avatar } = discordProfile
 
             await supabase
-                .from<UserProfile>("UserProfile")
+                .from("UserProfile")
                 .upsert({
                     id: userId,
                     username,
@@ -57,16 +56,21 @@ export const useUserProfile = (session: Session | null) => {
     useEffect(() => {
         if (!userId) return
 
-        const subscription = supabase
-            .from<UserProfile>("UserProfile")
-            .on("*", (payload) => {
-                if (payload.new.id !== userId) return
-                queryClient.invalidateQueries(["userProfile", userId])
-            })
+        const channel = supabase
+            .channel(`user-profile:${userId}`)
+            .on<UserProfile>(
+                "postgres_changes",
+                { event: "*", schema: "public", table: "UserProfile" },
+                (payload) => {
+                    if (payload.eventType === "DELETE") return
+                    if (payload.new.id !== userId) return
+                    queryClient.invalidateQueries(["userProfile", userId])
+                },
+            )
             .subscribe()
 
         return () => {
-            subscription.unsubscribe()
+            void supabase.removeChannel(channel)
         }
     }, [queryClient, userId])
 

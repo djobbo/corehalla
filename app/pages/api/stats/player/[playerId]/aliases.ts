@@ -1,5 +1,4 @@
 import { supabaseService } from "db/supabase/service"
-import type { BHPlayerAlias } from "db/generated/client"
 import type { NextApiHandler } from "next"
 
 const handler: NextApiHandler = async (req, res) => {
@@ -12,7 +11,7 @@ const handler: NextApiHandler = async (req, res) => {
 
     try {
         const { data, error } = await supabaseService
-            .from<BHPlayerAlias>("BHPlayerAlias")
+            .from("BHPlayerAlias")
             .select("*")
             .match({ playerId })
 
