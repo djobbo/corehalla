@@ -1,9 +1,10 @@
 import { Effect, Layer } from "effect"
 import { layer as sqlLayer } from "db/client"
-import { databaseUrl as resolveDatabaseUrl } from "@/env"
+import { d1Database } from "@/env"
 import { Auth } from "./Auth"
 import { layer as authLayer } from "./Auth"
 import { makeLayer as databaseLayer } from "./Database"
+import type { D1Database } from "db/client"
 import type { AuthSession } from "./Auth"
 import type { AuthError } from "./errors"
 import type { Database } from "./Database"
@@ -12,9 +13,9 @@ import type { Database } from "./Database"
  * Runs a server-route effect against services scoped to the call.
  *
  * The shared `/api/effect` handler keeps its services alive for the isolate;
- * one-off TanStack Start server routes (auth, `me/*`) build a fresh pool and
- * release it when the request finishes. The connection URL is resolved per call
- * because on Cloudflare it comes from the Hyperdrive binding.
+ * one-off TanStack Start server routes (auth, `me/*`) build a fresh D1 client
+ * and release it when the request finishes. The `DB` binding is resolved per
+ * call because it only exists inside the Worker.
  */
 const runScoped = <A, E, R>(
     effect: Effect.Effect<A, E, R>,
@@ -29,23 +30,23 @@ const runScoped = <A, E, R>(
         ),
     )
 
-const url = (override?: string) => override ?? resolveDatabaseUrl()
+const resolve = (override?: D1Database) => override ?? d1Database()
 
-/** Runs a stats/database effect on a pool scoped to the call. */
+/** Runs a stats/database effect on a D1 client scoped to the call. */
 export const runDatabase = async <A, E>(
     effect: Effect.Effect<A, E, Database>,
-    override?: string,
-): Promise<A> => runScoped(effect, databaseLayer(await url(override)))
+    override?: D1Database,
+): Promise<A> => runScoped(effect, databaseLayer(await resolve(override)))
 
-/** Runs an auth effect on a pool scoped to the call. */
+/** Runs an auth effect on a D1 client scoped to the call. */
 export const runAuth = async <A, E>(
     effect: Effect.Effect<A, E, Auth>,
-    override?: string,
+    override?: D1Database,
 ): Promise<A> =>
     runScoped(
         effect,
         authLayer.pipe(
-            Layer.provide(sqlLayer(await url(override))),
+            Layer.provide(sqlLayer(await resolve(override))),
         ) as Layer.Layer<Auth, unknown, never>,
     )
 
@@ -58,7 +59,7 @@ export const runAuth = async <A, E>(
 export const runAuthed = async <A>(
     request: Request,
     program: (session: AuthSession) => Effect.Effect<A, AuthError, Auth>,
-    override?: string,
+    override?: D1Database,
 ): Promise<A | null> =>
     runAuth(
         Effect.gen(function* () {

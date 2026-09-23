@@ -1,20 +1,22 @@
+import type { D1Database } from "db/client"
+
 /**
  * Runtime environment.
  *
- * Node (local dev, the legacy SSR server) reads `process.env`. On Cloudflare the
- * same values arrive as Worker bindings, reached through `cloudflare:workers`.
- * The import is dynamic and guarded so a Node process — where that module does
- * not exist — keeps working unchanged.
+ * Node (Vite dev, build) reads `process.env`. On Cloudflare the values arrive as
+ * Worker bindings, reached through `cloudflare:workers`. The import is dynamic
+ * and guarded so a Node process — where that module does not exist — keeps
+ * working unchanged.
  */
 
 type WorkerEnvironment = {
-    DATABASE_URL?: string
+    /** The D1 database binding (see `alchemy.run.ts` at the repo root). */
+    DB?: D1Database
     BRAWLHALLA_API_KEY?: string
     SITE_URL?: string
     INTERNAL_ORIGIN?: string
     DISCORD_CLIENT_ID?: string
     DISCORD_CLIENT_SECRET?: string
-    HYPERDRIVE?: { connectionString?: string }
     [key: string]: unknown
 }
 
@@ -56,19 +58,21 @@ export const envValue = async (key: string): Promise<string | undefined> => {
 }
 
 /**
- * The PostgreSQL connection URL.
+ * The D1 database binding.
  *
- * `DATABASE_URL` is what Node and the deploy-time tooling use; on Cloudflare the
- * Worker reads the Hyperdrive binding, whose connection string only exists
- * inside the request context.
+ * Only the Worker has it; run the app through `alchemy dev` (or deploy it) when
+ * a request needs the database.
  */
-export const databaseUrl = async (): Promise<string> => {
-    const direct = await envValue("DATABASE_URL")
-
-    if (direct) return direct
-
+export const d1Database = async (): Promise<D1Database> => {
     const env = await workerEnv()
-    const connectionString = env.HYPERDRIVE?.connectionString
+    const db = env.DB
 
-    return connectionString ?? ""
+    if (!db) {
+        throw new Error(
+            "No D1 `DB` binding. Run `pnpm dev:cloud` (alchemy dev) " +
+                "or deploy through the Alchemy stack; plain `vite dev` has no bindings.",
+        )
+    }
+
+    return db
 }

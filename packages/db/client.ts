@@ -1,81 +1,37 @@
-import { makeWithDefaults } from "drizzle-orm/effect-postgres"
-import * as PgClient from "@effect/sql-pg/PgClient"
-import { Context, Layer, ManagedRuntime, Redacted } from "effect"
-import type { Effect } from "effect"
-import type { EffectPgDatabase } from "drizzle-orm/effect-postgres"
+import { makeWithDefaults } from "drizzle-orm/effect-d1"
+import * as D1Client from "@effect/sql-d1/D1Client"
+import { Context, Layer } from "effect"
+import type { EffectSQLiteD1Database } from "drizzle-orm/effect-d1"
 
 /**
- * Direct PostgreSQL access for the whole workspace.
+ * D1 access for the Cloudflare Worker.
  *
- * Supabase is only a Postgres host: every query goes through the Effect
- * PostgreSQL client (`@effect/sql-pg`) and Drizzle's Effect integration
- * (`drizzle-orm/effect-postgres`), with no PostgREST/GoTrue/Realtime client in
- * the loop. `DATABASE_URL` is the single connection setting.
- *
- * The `SqlDatabase` service carries the Drizzle database; `runDatabase` runs an
- * effect on a process-wide pool for the Node entry point (the crawler), while
- * the `web` package composes `layer(url)` into its own per-request services.
+ * Every query goes through Effect's D1 client (`@effect/sql-d1`) and Drizzle's
+ * Effect integration (`drizzle-orm/effect-d1`), driven by the `DB` binding.
+ * The `worker` crawler cannot use a binding, so it uses `db/node.ts` instead —
+ * same schema, D1 over HTTP.
  */
 
-/** The Drizzle database every consumer shares. */
-export type SqlDatabase = EffectPgDatabase & {
-    readonly $client: PgClient.PgClient
+/** The D1 database handle, as provided by the `DB` binding. */
+export type D1Database = D1Client.D1ClientConfig["db"]
+
+/** The Drizzle database every Worker-side consumer shares. */
+export type SqlDatabase = EffectSQLiteD1Database & {
+    readonly $client: D1Client.D1Client
 }
 
 /**
  * The running Drizzle database.
  *
- * A `Context.Tag` rather than a bare value so packages can provide a pool with
- * their own lifetime (`web` builds one per server request).
+ * A `Context.Tag` so the Worker can provide the binding with its own lifetime
+ * (one per request handler) and `web` can compose it into its services.
  */
 export class Database extends Context.Service<Database, SqlDatabase>()(
     "db/Database",
 ) {}
 
-/** A connection pool + Drizzle database for one connection URL. */
-export const layer = (url: string) =>
+/** A Drizzle database backed by one D1 binding. */
+export const layer = (db: D1Database) =>
     Layer.effect(Database, makeWithDefaults({})).pipe(
-        Layer.provide(PgClient.layer({ url: Redacted.make(url) })),
+        Layer.provide(D1Client.layer({ db })),
     )
-
-/**
- * Options shared by the database-writing helpers.
- *
- * Kept so the mutation signatures did not have to change when the Supabase
- * client was removed; the Effect SQL driver has no `AbortSignal` knob.
- */
-export type DatabaseOptions = {
-    readonly abortSignal?: AbortSignal
-}
-
-const databaseUrl = () => process.env.DATABASE_URL ?? ""
-
-let runtime: ManagedRuntime.ManagedRuntime<Database, unknown> | undefined
-
-/**
- * Runs one database effect on a lazily-created process-wide pool.
- *
- * The `worker` crawler calls this instead of building a pool per query.
- * Serverless entry points must not use it — they provide `layer(url)` per
- * request.
- */
-export const runDatabase = <A, E>(
-    effect: Effect.Effect<A, E, Database>,
-    url: string = databaseUrl(),
-): Promise<A> => {
-    if (!runtime) {
-        runtime = ManagedRuntime.make(
-            layer(url),
-        ) as ManagedRuntime.ManagedRuntime<Database, unknown>
-    }
-
-    return runtime.runPromise(effect)
-}
-
-/** Releases the process-wide pool (tests, graceful shutdown). */
-export const disposeDatabase = async () => {
-    if (runtime) {
-        await runtime.dispose()
-        runtime = undefined
-    }
-}

@@ -7,7 +7,7 @@ import { defineConfig } from "vite-plus"
  * TanStack Start application (the Next.js replacement).
  *
  * - Vite is the bundler.
- * - Alchemy's `Cloudflare.Website.Vite` (see `alchemy.run.ts`) supplies the
+ * - Alchemy's `Cloudflare.Website.Vite` (see the root `alchemy.run.ts`) supplies the
  *   Cloudflare plugin and builds the `ssr` environment into a Worker, so this
  *   config must not add `@cloudflare/vite-plugin` or Nitro itself.
  * - Static assets live in `web/public/` (moved from the legacy Next.js app).

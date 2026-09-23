@@ -1,31 +1,38 @@
 import { sql } from "drizzle-orm"
 import {
-    boolean,
     foreignKey,
+    index,
     integer,
-    jsonb,
-    pgTable,
     primaryKey,
+    sqliteTable,
     text,
-    timestamp,
-    unique,
-    uuid,
-} from "drizzle-orm/pg-core"
+    uniqueIndex,
+} from "drizzle-orm/sqlite-core"
 
 /**
- * Database schema.
+ * Database schema — Cloudflare D1 (SQLite).
  *
- * This replaces the previous `schema.prisma`. Table names, column names, SQL
- * types, defaults and constraint names are kept identical to what
- * `prisma migrate` produced, so existing databases need no data migration and
- * `drizzle-kit generate` reports no drift against them.
+ * The database is a single D1 SQLite database. Table and column names are kept
+ * identical to the Postgres/Prisma era so the query layer and the seeded data
+ * generator stay readable; only the column *types* changed:
  *
- * Row types are exported under the same names the Prisma client used
- * (`BHPlayerData`, `UserProfile`, …), so call sites keep their imports.
+ * - `uuid`      -> `text` (SQLite has no uuid type); ids default to
+ *                  `crypto.randomUUID()` in the application.
+ * - `timestamp` -> `integer` in `timestamp_ms` mode (epoch milliseconds, so
+ *                  `Date#getTime()` comparisons keep working).
+ * - `jsonb`     -> `text` in `json` mode (JSON string).
+ * - `boolean`   -> `integer` in `boolean` mode (0/1).
  *
- * Authentication is owned by the application now (`web/src/effect/Auth.ts`):
- * `UserProfile` is the identity table and `UserSession` stores Discord OAuth
- * tokens. Supabase only hosts Postgres, so nothing here references `auth.*`.
+ * `createdAt`/`lastUpdated`/`lastSeenAt` default to `(unixepoch() * 1000)`, so
+ * rows inserted without them (for example by `Auth.upsertDiscordUser`) still
+ * get a millisecond timestamp.
+ *
+ * The crawl tables carry indexes for the two hot read paths: the global player
+ * rankings (one index per sortable column, because the `ORDER BY` column is
+ * dynamic) and case-insensitive prefix search on clan names and player aliases
+ * (`lower(...)` expression indexes, which SQLite can use for `LIKE 'x%'`).
+ * Indexes add one written row per indexed column on every write, so keep the
+ * crawler's write volume in mind when adding more.
  */
 
 /** Matches the previous `Prisma.JsonValue`. */
@@ -41,82 +48,96 @@ export type JsonValue =
     | JsonArray
     | null
 
-// Prisma applied `@@id`/`@relation` names by convention; they are spelled out
-// here so the generated DDL matches the existing databases byte for byte.
-const pgRestrict = "restrict" as const
-const pgCascade = "cascade" as const
+const now = sql`(unixepoch() * 1000)`
 
-export const userProfile = pgTable(
+/** Columns exposed as global-ranking sort options (see `getGlobalPlayerRankings`). */
+const playerRankingColumns = [
+    "xp",
+    "games",
+    "wins",
+    "rankedGames",
+    "rankedWins",
+    "damageDealt",
+    "damageTaken",
+    "kos",
+    "falls",
+    "suicides",
+    "teamKos",
+    "matchTime",
+    "damageUnarmed",
+    "koUnarmed",
+    "matchTimeUnarmed",
+    "koThrownItem",
+    "damageThrownItem",
+    "koGadgets",
+    "damageGadgets",
+] as const
+
+export const userProfile = sqliteTable(
     "UserProfile",
     {
-        id: uuid("id").primaryKey().defaultRandom(),
+        id: text("id")
+            .primaryKey()
+            .$defaultFn(() => crypto.randomUUID()),
         /**
-         * Discord snowflake. Nullable because rows created while the app used
-         * Supabase Auth have no local Discord id until they sign in again (or
-         * `packages/db/sql/backfill_discord_ids.sql` is run against the
-         * Supabase project before GoTrue is retired).
+         * Discord snowflake. Nullable because rows created before the
+         * app-owned auth have no local Discord id until they sign in again.
          */
         discordId: text("discordId"),
         username: text("username").notNull().default(""),
         avatarUrl: text("avatarUrl").notNull().default(""),
         email: text("email"),
-        createdAt: timestamp("createdAt", { precision: 3 })
+        createdAt: integer("createdAt", { mode: "timestamp_ms" })
             .notNull()
-            .default(sql`CURRENT_TIMESTAMP`),
+            .default(now),
     },
-    (table) => [
-        primaryKey({ name: "UserProfile_pkey", columns: [table.id] }),
-        unique("UserProfile_discordId_key").on(table.discordId),
-    ],
+    (table) => [uniqueIndex("UserProfile_discordId_key").on(table.discordId)],
 )
 
 /**
  * Discord OAuth sessions.
  *
  * `id` is the SHA-256 hex digest of the opaque token stored in the browser
- * cookie, so a database leak cannot be replayed as a login. The Discord access
- * and refresh tokens live here instead of in the client session, which is what
- * removes the last reason to hold a Supabase Auth JWT.
+ * cookie, so a database leak cannot be replayed as a login.
  */
-export const userSession = pgTable(
+export const userSession = sqliteTable(
     "UserSession",
     {
         id: text("id").primaryKey(),
-        userId: uuid("userId").notNull(),
+        userId: text("userId").notNull(),
         discordAccessToken: text("discordAccessToken").notNull(),
         discordRefreshToken: text("discordRefreshToken"),
-        discordTokenExpiresAt: timestamp("discordTokenExpiresAt", {
-            precision: 3,
+        discordTokenExpiresAt: integer("discordTokenExpiresAt", {
+            mode: "timestamp_ms",
         }).notNull(),
         scope: text("scope").notNull().default(""),
-        createdAt: timestamp("createdAt", { precision: 3 })
+        createdAt: integer("createdAt", { mode: "timestamp_ms" })
             .notNull()
-            .default(sql`CURRENT_TIMESTAMP`),
-        expiresAt: timestamp("expiresAt", { precision: 3 }).notNull(),
-        lastSeenAt: timestamp("lastSeenAt", { precision: 3 })
+            .default(now),
+        expiresAt: integer("expiresAt", { mode: "timestamp_ms" }).notNull(),
+        lastSeenAt: integer("lastSeenAt", { mode: "timestamp_ms" })
             .notNull()
-            .default(sql`CURRENT_TIMESTAMP`),
+            .default(now),
     },
     (table) => [
-        primaryKey({ name: "UserSession_pkey", columns: [table.id] }),
         foreignKey({
             name: "UserSession_userId_fkey",
             columns: [table.userId],
             foreignColumns: [userProfile.id],
         })
-            .onDelete(pgCascade)
-            .onUpdate(pgCascade),
+            .onDelete("cascade")
+            .onUpdate("cascade"),
     ],
 )
 
-export const userFavorite = pgTable(
+export const userFavorite = sqliteTable(
     "UserFavorite",
     {
         type: text("type").notNull(),
         id: text("id").notNull(),
         name: text("name").notNull(),
-        meta: jsonb("meta").$type<JsonValue>().notNull(),
-        userId: uuid("userId").notNull(),
+        meta: text("meta", { mode: "json" }).$type<JsonValue>().notNull(),
+        userId: text("userId").notNull(),
     },
     (table) => [
         primaryKey({
@@ -128,20 +149,20 @@ export const userFavorite = pgTable(
             columns: [table.userId],
             foreignColumns: [userProfile.id],
         })
-            .onDelete(pgRestrict)
-            .onUpdate(pgCascade),
+            .onDelete("restrict")
+            .onUpdate("cascade"),
     ],
 )
 
-export const userConnection = pgTable(
+export const userConnection = sqliteTable(
     "UserConnection",
     {
-        userId: uuid("userId").notNull(),
+        userId: text("userId").notNull(),
         type: text("type").notNull(),
         appId: text("appId").notNull(),
         name: text("name").notNull(),
-        verified: boolean("verified").notNull(),
-        public: boolean("public").notNull().default(false),
+        verified: integer("verified", { mode: "boolean" }).notNull(),
+        public: integer("public", { mode: "boolean" }).notNull().default(false),
     },
     (table) => [
         primaryKey({
@@ -153,17 +174,17 @@ export const userConnection = pgTable(
             columns: [table.userId],
             foreignColumns: [userProfile.id],
         })
-            .onDelete(pgRestrict)
-            .onUpdate(pgCascade),
+            .onDelete("restrict")
+            .onUpdate("cascade"),
     ],
 )
 
-export const bhPlayerData = pgTable(
+export const bhPlayerData = sqliteTable(
     "BHPlayerData",
     {
         id: text("id").primaryKey(),
         name: text("name").notNull(),
-        lastUpdated: timestamp("lastUpdated", { precision: 3 }).notNull(),
+        lastUpdated: integer("lastUpdated", { mode: "timestamp_ms" }).notNull(),
         xp: integer("xp").notNull(),
         level: integer("level").notNull(),
         tier: text("tier").notNull(),
@@ -189,14 +210,19 @@ export const bhPlayerData = pgTable(
         koGadgets: integer("koGadgets").notNull(),
         damageGadgets: integer("damageGadgets").notNull(),
     },
-    (table) => [primaryKey({ name: "BHPlayerData_pkey", columns: [table.id] })],
+    (table) => [
+        ...playerRankingColumns.map((column) =>
+            index(`BHPlayerData_${column}_idx`).on(table[column]),
+        ),
+        index("BHPlayerData_lastUpdated_idx").on(table.lastUpdated),
+    ],
 )
 
-export const bhPlayerLegend = pgTable(
+export const bhPlayerLegend = sqliteTable(
     "BHPlayerLegend",
     {
         player_id: text("player_id").notNull(),
-        lastUpdated: timestamp("lastUpdated", { precision: 3 }).notNull(),
+        lastUpdated: integer("lastUpdated", { mode: "timestamp_ms" }).notNull(),
         legend_id: integer("legend_id").notNull(),
         damageDealt: integer("damageDealt").notNull(),
         damageTaken: integer("damageTaken").notNull(),
@@ -232,16 +258,16 @@ export const bhPlayerLegend = pgTable(
             columns: [table.player_id],
             foreignColumns: [bhPlayerData.id],
         })
-            .onDelete(pgRestrict)
-            .onUpdate(pgCascade),
+            .onDelete("restrict")
+            .onUpdate("cascade"),
     ],
 )
 
-export const bhPlayerWeapon = pgTable(
+export const bhPlayerWeapon = sqliteTable(
     "BHPlayerWeapon",
     {
         player_id: text("player_id").notNull(),
-        lastUpdated: timestamp("lastUpdated", { precision: 3 }).notNull(),
+        lastUpdated: integer("lastUpdated", { mode: "timestamp_ms" }).notNull(),
         weapon_name: text("weapon_name").notNull(),
         kos: integer("kos").notNull(),
         matchTime: integer("matchTime").notNull(),
@@ -261,32 +287,37 @@ export const bhPlayerWeapon = pgTable(
             columns: [table.player_id],
             foreignColumns: [bhPlayerData.id],
         })
-            .onDelete(pgRestrict)
-            .onUpdate(pgCascade),
+            .onDelete("restrict")
+            .onUpdate("cascade"),
     ],
 )
 
-export const bhPlayerAlias = pgTable(
+export const bhPlayerAlias = sqliteTable(
     "BHPlayerAlias",
     {
         playerId: text("playerId").notNull(),
         alias: text("alias").notNull(),
-        // Spelled as `CURRENT_TIMESTAMP` (not `now()`) to match the default
-        // Prisma created, so introspection reports no drift.
-        createdAt: timestamp("createdAt", { precision: 3 })
+        createdAt: integer("createdAt", { mode: "timestamp_ms" })
             .notNull()
-            .default(sql`CURRENT_TIMESTAMP`),
-        public: boolean("public").notNull().default(true),
+            .default(now),
+        public: integer("public", { mode: "boolean" }).notNull().default(true),
     },
     (table) => [
         primaryKey({
             name: "BHPlayerAlias_pkey",
             columns: [table.playerId, table.alias],
         }),
+        // Case-insensitive prefix search (`alias LIKE 'x%'`). The `NOCASE`
+        // collation on the *index* is what lets SQLite's LIKE optimization use
+        // it; a `lower(alias)` expression index would not be.
+        index("BHPlayerAlias_alias_nocase_idx").on(
+            sql`${table.alias} COLLATE NOCASE`,
+        ),
+        index("BHPlayerAlias_createdAt_idx").on(table.createdAt),
     ],
 )
 
-export const bhClan = pgTable(
+export const bhClan = sqliteTable(
     "BHClan",
     {
         id: text("id").primaryKey(),
@@ -294,25 +325,21 @@ export const bhClan = pgTable(
         created: integer("created").default(-1),
         xp: integer("xp").notNull(),
     },
-    (table) => [primaryKey({ name: "BHClan_pkey", columns: [table.id] })],
-)
-
-export const crawlProgress = pgTable(
-    "CrawlProgress",
-    {
-        id: text("id").primaryKey(),
-        name: text("name").notNull(),
-        lastUpdated: timestamp("lastUpdated", { precision: 3 }).notNull(),
-        progress: integer("progress").notNull(),
-    },
     (table) => [
-        primaryKey({ name: "CrawlProgress_pkey", columns: [table.id] }),
+        index("BHClan_xp_idx").on(table.xp),
+        // Case-insensitive prefix search (`name LIKE 'x%'`).
+        index("BHClan_name_nocase_idx").on(sql`${table.name} COLLATE NOCASE`),
     ],
 )
 
+export const crawlProgress = sqliteTable("CrawlProgress", {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    lastUpdated: integer("lastUpdated", { mode: "timestamp_ms" }).notNull(),
+    progress: integer("progress").notNull(),
+})
+
 // --- row types --------------------------------------------------------------
-//
-// Same names the Prisma client exported, so existing imports keep working.
 
 export type UserProfile = typeof userProfile.$inferSelect
 export type UserSession = typeof userSession.$inferSelect

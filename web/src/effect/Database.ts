@@ -1,4 +1,13 @@
-import { and, asc, desc, eq, getTableColumns, ilike, sql } from "drizzle-orm"
+import {
+    and,
+    asc,
+    desc,
+    eq,
+    getTableColumns,
+    inArray,
+    like,
+    sql,
+} from "db/query"
 import { Database as SqlDatabase, layer as sqlLayer } from "db/client"
 import { Context, Effect, Layer } from "effect"
 import {
@@ -8,17 +17,22 @@ import {
 } from "@util/constants"
 import { bhClan, bhPlayerAlias, bhPlayerData } from "db/schema"
 import { DatabaseError } from "./errors"
+import type { D1Database } from "db/client"
 import type { BHClan, BHPlayerAlias, NewBHClan } from "db/schema"
 import type { AliasSearchResult, GlobalPlayerRanking } from "./schemas"
 
 /**
  * Server-side database access.
  *
- * Queries go straight to Postgres through Drizzle's Effect integration
- * (`drizzle-orm/effect-postgres`) on Effect's own PostgreSQL client, so there
- * is no HTTP layer between the server and the database. The pool itself is
- * built by `db/client`, which is the single place that knows the connection
- * settings.
+ * Queries go straight to Cloudflare D1 through Drizzle's Effect integration
+ * (`drizzle-orm/effect-d1`) on Effect's own D1 client, so there is no HTTP
+ * layer between the server and the database. The client itself is built by
+ * `db/client`, which is the single place that knows about the `DB` binding.
+ *
+ * Text search uses `LIKE 'x%'` (SQLite has no `ILIKE`); the schema carries
+ * `COLLATE NOCASE` indexes so the case-insensitive prefix search stays
+ * indexed, and one index per ranking column keeps the dynamic `ORDER BY`
+ * indexed too.
  *
  * Operations fail with a typed `DatabaseError`; handlers decide whether that
  * becomes a defect (HTTP 500) or an empty result (e.g. optional player
@@ -66,11 +80,11 @@ const run = <A, E, R>(
     effect.pipe(Effect.mapError((cause) => new DatabaseError({ cause })))
 
 /**
- * The domain service, built on whatever `SqlDatabase` pool is in context.
+ * The domain service, built on whatever `SqlDatabase` client is in context.
  *
- * Splitting the pool out lets `Server.ts` build one pool and share it between
- * the stats services and `Auth`; `makeLayer` is the convenience wrapper for
- * one-off server routes.
+ * Splitting the client out lets `Server.ts` build one and share it between the
+ * stats services and `Auth`; `makeLayer` is the convenience wrapper for one-off
+ * server routes.
  */
 export const layer = Layer.effect(
     Database,
@@ -148,19 +162,21 @@ export const layer = Layer.effect(
 
             getClansRankings: (name, page) =>
                 run(
-                    db
-                        .select()
-                        .from(bhClan)
-                        // A bind parameter, so the PostgREST-era quote
-                        // escaping for the filter string is gone.
-                        .where(
-                            name.trim().length > 0
-                                ? ilike(bhClan.name, `${name.trim()}%`)
-                                : undefined,
-                        )
-                        .orderBy(desc(bhClan.xp))
-                        .limit(CLANS_RANKINGS_PER_PAGE)
-                        .offset((page - 1) * CLANS_RANKINGS_PER_PAGE),
+                    Effect.gen(function* () {
+                        const needle = name.trim().toLowerCase()
+
+                        return yield* db
+                            .select()
+                            .from(bhClan)
+                            .where(
+                                needle.length > 0
+                                    ? like(bhClan.name, `${needle}%`)
+                                    : undefined,
+                            )
+                            .orderBy(desc(bhClan.xp))
+                            .limit(CLANS_RANKINGS_PER_PAGE)
+                            .offset((page - 1) * CLANS_RANKINGS_PER_PAGE)
+                    }),
                 ),
 
             searchExactAliases: (alias, page) =>
@@ -168,7 +184,12 @@ export const layer = Layer.effect(
                     db
                         .select()
                         .from(bhPlayerAlias)
-                        .where(eq(bhPlayerAlias.alias, alias))
+                        .where(
+                            like(
+                                bhPlayerAlias.alias,
+                                alias.trim().toLowerCase(),
+                            ),
+                        )
                         .orderBy(asc(bhPlayerAlias.alias))
                         .limit(SEARCH_PLAYERS_ALIASES_PER_PAGE)
                         .offset((page - 1) * SEARCH_PLAYERS_ALIASES_PER_PAGE),
@@ -216,23 +237,41 @@ export const layer = Layer.effect(
             searchAliases: (alias, page) =>
                 run(
                     Effect.gen(function* () {
-                        if (alias.length < 2) return []
+                        const needle = alias.trim().toLowerCase()
 
-                        // Reaches the `search_aliases` SQL function
-                        // installed by `packages/db/sql/functions.sql`.
-                        const rows = yield* db.execute<BHPlayerAlias>(
-                            sql`
-                                    select * from search_aliases(
-                                        ${alias.trim()},
-                                        ${(page - 1) * SEARCH_PLAYERS_ALIASES_PER_PAGE},
-                                        ${SEARCH_PLAYERS_ALIASES_PER_PAGE}
-                                    )
-                                `,
-                            // Decode rows as objects; the RC types
-                            // `execute` results as `unknown` without an
-                            // explicit mode.
-                            "objects",
-                        )
+                        if (needle.length < 2) return []
+
+                        // Replaces the old `search_aliases` plpgsql function:
+                        // the first page of players whose alias starts with the
+                        // needle, then every public alias of those players.
+                        const matchingPlayerIds = db
+                            .select({ playerId: bhPlayerAlias.playerId })
+                            .from(bhPlayerAlias)
+                            .where(
+                                and(
+                                    like(bhPlayerAlias.alias, `${needle}%`),
+                                    eq(bhPlayerAlias.public, true),
+                                ),
+                            )
+                            .orderBy(desc(bhPlayerAlias.createdAt))
+                            .limit(SEARCH_PLAYERS_ALIASES_PER_PAGE)
+                            .offset(
+                                (page - 1) * SEARCH_PLAYERS_ALIASES_PER_PAGE,
+                            )
+
+                        const rows = yield* db
+                            .select()
+                            .from(bhPlayerAlias)
+                            .where(
+                                and(
+                                    inArray(
+                                        bhPlayerAlias.playerId,
+                                        matchingPlayerIds,
+                                    ),
+                                    eq(bhPlayerAlias.public, true),
+                                ),
+                            )
+                            .orderBy(desc(bhPlayerAlias.createdAt))
 
                         return rows.reduce((acc, row) => {
                             const player = acc.find(
@@ -261,7 +300,6 @@ export const layer = Layer.effect(
     }),
 )
 
-/** Builds the domain service on its own pool for one connection URL. */
-export const makeLayer = (
-    url: string = globalThis.process?.env?.DATABASE_URL ?? "",
-) => layer.pipe(Layer.provide(sqlLayer(url)))
+/** Builds the domain service on its own D1 client. */
+export const makeLayer = (db: D1Database) =>
+    layer.pipe(Layer.provide(sqlLayer(db)))

@@ -8,7 +8,59 @@ import {
     normalizeSsrResponse,
     type HandlerCallbackResult,
 } from "@tanstack/react-router/ssr/server"
+import { Effect } from "effect"
+import {
+    HttpClient,
+    HttpClientError,
+    HttpClientRequest,
+    HttpClientResponse,
+} from "effect/unstable/http"
 import { getCssText } from "@/ui/theme"
+import { useInProcessHttpClient } from "@/effect/Client"
+import { apiHandler } from "@/effect/Server"
+
+/**
+ * SSR data loading runs the API handler in-process.
+ *
+ * Route loaders preload their atoms, and the atoms call the mounted
+ * `/api/effect/*` routes. Going over HTTP for that needs an absolute origin and,
+ * in production, hits the zone's bot protection: the Worker's subrequest to its
+ * own hostname is answered with a managed challenge (403), which surfaced as a
+ * 500 on every first load. Calling the handler directly removes the network
+ * hop, the origin configuration, and the block.
+ */
+useInProcessHttpClient(
+    HttpClient.make((request, _url, signal) =>
+        Effect.gen(function* () {
+            const web = yield* HttpClientRequest.toWeb(request, {
+                signal,
+            }).pipe(
+                Effect.mapError(
+                    (cause) =>
+                        new HttpClientError.HttpClientError({
+                            reason: new HttpClientError.InvalidUrlError({
+                                request,
+                                cause,
+                            }),
+                        }),
+                ),
+            )
+
+            const response = yield* Effect.tryPromise({
+                try: () => apiHandler(web),
+                catch: (cause) =>
+                    new HttpClientError.HttpClientError({
+                        reason: new HttpClientError.TransportError({
+                            request,
+                            cause,
+                        }),
+                    }),
+            })
+
+            return HttpClientResponse.fromWeb(request, response)
+        }),
+    ),
+)
 
 /**
  * Custom server entry.

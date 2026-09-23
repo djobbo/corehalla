@@ -2,7 +2,7 @@ import { Layer } from "effect"
 import { FetchHttpClient, HttpRouter, HttpServer } from "effect/unstable/http"
 import { HttpApiBuilder } from "effect/unstable/httpapi"
 import { layer as sqlLayer } from "db/client"
-import { databaseUrl } from "@/env"
+import { d1Database } from "@/env"
 import { CorehallaApi } from "./Api"
 import {
     contentGroup,
@@ -13,6 +13,7 @@ import {
 import { layer as BrawlhallaLayer } from "./Brawlhalla"
 import { layer as ContentLayer } from "./Content"
 import { layer as DatabaseLayer } from "./Database"
+import type { D1Database } from "db/client"
 
 /**
  * Builds the Effect HTTP API into a WHATWG `fetch` handler.
@@ -26,15 +27,14 @@ import { layer as DatabaseLayer } from "./Database"
  * are discharged one at a time; merging them first loses the precise service
  * types in this release candidate.
  *
- * The handler is built lazily on the first request because the connection URL
- * is a Worker binding on Cloudflare (Hyperdrive) and `cloudflare:workers` is not
- * readable at module scope under the TanStack Start dev server. It is then
+ * The handler is built lazily on the first request because the `DB` binding is
+ * not readable at module scope under the TanStack Start dev server. It is then
  * cached for the isolate's lifetime.
  */
 
-const createHandler = (url: string) => {
-    // One pool for the whole server; `Database.layer` consumes it.
-    const SqlLayer = sqlLayer(url)
+const createHandler = (db: D1Database) => {
+    // One D1 client for the whole server; `Database.layer` consumes it.
+    const SqlLayer = sqlLayer(db)
 
     const ServicesLayer = Layer.mergeAll(
         BrawlhallaLayer,
@@ -59,7 +59,7 @@ let webHandler: ReturnType<typeof createHandler> | null = null
 
 export const apiHandler = async (request: Request) => {
     if (!webHandler) {
-        webHandler = createHandler(await databaseUrl())
+        webHandler = createHandler(await d1Database())
     }
 
     return webHandler.handler(request)

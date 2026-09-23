@@ -1,6 +1,9 @@
 {
-    "include": ["."],
-    "exclude": ["node_modules", "drizzle"],
+    // The Alchemy stack lives at the repo root; this project type-checks just
+    // that file (run via the root `ts:check` script before the per-package
+    // checks). Everything else is checked by its own package.
+    "include": ["alchemy.run.ts"],
+    "exclude": ["node_modules"],
     "compilerOptions": {
         "strict": true,
         "target": "es2022",
@@ -11,11 +14,7 @@
         "isolatedModules": true,
         "forceConsistentCasingInFileNames": true,
         "skipLibCheck": true,
-        "resolveJsonModule": true,
         "noEmit": true,
-        // The scripts run as ESM under `node`'s type stripping, which requires
-        // explicit extensions for relative imports (e.g. `../schema.ts`).
-        "allowImportingTsExtensions": true,
         "types": ["node"]
     }
 }

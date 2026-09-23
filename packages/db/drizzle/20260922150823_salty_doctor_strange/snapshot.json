@@ -1,1478 +1,1135 @@
 {
-  "version": "8",
-  "dialect": "postgres",
-  "id": "fb3a669d-babe-4b2b-9b35-13d02b218b1e",
+  "version": "7",
+  "dialect": "sqlite",
+  "id": "1f0aaba8-06a0-4c72-926e-f8dc4a53f5b8",
   "prevIds": [
-    "df977cfd-6efd-4d91-a3e9-0f08687ef634"
+    "00000000-0000-0000-0000-000000000000"
   ],
   "ddl": [
     {
-      "isRlsEnabled": false,
       "name": "BHClan",
-      "entityType": "tables",
-      "schema": "public"
+      "entityType": "tables"
     },
     {
-      "isRlsEnabled": false,
       "name": "BHPlayerAlias",
-      "entityType": "tables",
-      "schema": "public"
+      "entityType": "tables"
     },
     {
-      "isRlsEnabled": false,
       "name": "BHPlayerData",
-      "entityType": "tables",
-      "schema": "public"
+      "entityType": "tables"
     },
     {
-      "isRlsEnabled": false,
       "name": "BHPlayerLegend",
-      "entityType": "tables",
-      "schema": "public"
+      "entityType": "tables"
     },
     {
-      "isRlsEnabled": false,
       "name": "BHPlayerWeapon",
-      "entityType": "tables",
-      "schema": "public"
+      "entityType": "tables"
     },
     {
-      "isRlsEnabled": false,
       "name": "CrawlProgress",
-      "entityType": "tables",
-      "schema": "public"
+      "entityType": "tables"
     },
     {
-      "isRlsEnabled": false,
       "name": "UserConnection",
-      "entityType": "tables",
-      "schema": "public"
+      "entityType": "tables"
     },
     {
-      "isRlsEnabled": false,
       "name": "UserFavorite",
-      "entityType": "tables",
-      "schema": "public"
+      "entityType": "tables"
     },
     {
-      "isRlsEnabled": false,
       "name": "UserProfile",
-      "entityType": "tables",
-      "schema": "public"
+      "entityType": "tables"
     },
     {
-      "isRlsEnabled": false,
       "name": "UserSession",
-      "entityType": "tables",
-      "schema": "public"
+      "entityType": "tables"
     },
     {
       "type": "text",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
+      "notNull": false,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "id",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHClan"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "name",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHClan"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": false,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": "-1",
       "generated": null,
-      "identity": null,
       "name": "created",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHClan"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "xp",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHClan"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "playerId",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerAlias"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "alias",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerAlias"
     },
     {
-      "type": "timestamp(3)",
-      "typeSchema": null,
+      "type": "integer",
       "notNull": true,
-      "dimensions": 0,
-      "default": "CURRENT_TIMESTAMP",
+      "autoincrement": false,
+      "default": "(unixepoch() * 1000)",
       "generated": null,
-      "identity": null,
       "name": "createdAt",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerAlias"
     },
     {
-      "type": "boolean",
-      "typeSchema": null,
+      "type": "integer",
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": "true",
       "generated": null,
-      "identity": null,
       "name": "public",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerAlias"
     },
     {
       "type": "text",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
+      "notNull": false,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "id",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "name",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
-      "type": "timestamp(3)",
-      "typeSchema": null,
+      "type": "integer",
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "lastUpdated",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "xp",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "level",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "tier",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "games",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "wins",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "rating",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "peakRating",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "rankedGames",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "rankedWins",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "region",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "damageDealt",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "damageTaken",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "kos",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "falls",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "suicides",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "teamKos",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "matchTime",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "damageUnarmed",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "koUnarmed",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "matchTimeUnarmed",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "koThrownItem",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "damageThrownItem",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "koGadgets",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "damageGadgets",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerData"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "player_id",
       "entityType": "columns",
-      "schema": "public",
-      "table": "BHPlayerLegend"
-    },
-    {
-      "type": "timestamp(3)",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "lastUpdated",
-      "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
+      "name": "lastUpdated",
+      "entityType": "columns",
+      "table": "BHPlayerLegend"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
       "name": "legend_id",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "damageDealt",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "damageTaken",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "kos",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "falls",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "suicides",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "teamKos",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "matchTime",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "games",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "wins",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "damageUnarmed",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "damageThrownItem",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "damageWeaponOne",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "damageWeaponTwo",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "damageGadgets",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "koUnarmed",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "koThrownItem",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "koWeaponOne",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "koWeaponTwo",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "koGadgets",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "timeHeldWeaponOne",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "timeHeldWeaponTwo",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "xp",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "level",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "player_id",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerWeapon"
     },
     {
-      "type": "timestamp(3)",
-      "typeSchema": null,
+      "type": "integer",
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "lastUpdated",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerWeapon"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "weapon_name",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerWeapon"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "kos",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerWeapon"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "matchTime",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerWeapon"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "games",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerWeapon"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "wins",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerWeapon"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "damageDealt",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerWeapon"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "xp",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerWeapon"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "level",
       "entityType": "columns",
-      "schema": "public",
       "table": "BHPlayerWeapon"
     },
     {
       "type": "text",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
+      "notNull": false,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "id",
       "entityType": "columns",
-      "schema": "public",
       "table": "CrawlProgress"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "name",
       "entityType": "columns",
-      "schema": "public",
-      "table": "CrawlProgress"
-    },
-    {
-      "type": "timestamp(3)",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "lastUpdated",
-      "entityType": "columns",
-      "schema": "public",
       "table": "CrawlProgress"
     },
     {
       "type": "integer",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
-      "name": "progress",
+      "name": "lastUpdated",
       "entityType": "columns",
-      "schema": "public",
       "table": "CrawlProgress"
     },
     {
-      "type": "uuid",
-      "typeSchema": null,
+      "type": "integer",
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
+      "name": "progress",
+      "entityType": "columns",
+      "table": "CrawlProgress"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
       "name": "userId",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserConnection"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "type",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserConnection"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "appId",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserConnection"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "name",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserConnection"
     },
     {
-      "type": "boolean",
-      "typeSchema": null,
+      "type": "integer",
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "verified",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserConnection"
     },
     {
-      "type": "boolean",
-      "typeSchema": null,
+      "type": "integer",
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": "false",
       "generated": null,
-      "identity": null,
       "name": "public",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserConnection"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "type",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserFavorite"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "id",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserFavorite"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "name",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserFavorite"
     },
     {
-      "type": "jsonb",
-      "typeSchema": null,
+      "type": "text",
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "meta",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserFavorite"
     },
     {
-      "type": "uuid",
-      "typeSchema": null,
+      "type": "text",
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "userId",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserFavorite"
     },
     {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "gen_random_uuid()",
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
       "generated": null,
-      "identity": null,
       "name": "id",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserProfile"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": false,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "discordId",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserProfile"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": "''",
       "generated": null,
-      "identity": null,
       "name": "username",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserProfile"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": "''",
       "generated": null,
-      "identity": null,
       "name": "avatarUrl",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserProfile"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": false,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "email",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserProfile"
     },
     {
-      "type": "timestamp(3)",
-      "typeSchema": null,
+      "type": "integer",
       "notNull": true,
-      "dimensions": 0,
-      "default": "CURRENT_TIMESTAMP",
+      "autoincrement": false,
+      "default": "(unixepoch() * 1000)",
       "generated": null,
-      "identity": null,
       "name": "createdAt",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserProfile"
     },
     {
       "type": "text",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
+      "notNull": false,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "id",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserSession"
     },
     {
-      "type": "uuid",
-      "typeSchema": null,
+      "type": "text",
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "userId",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserSession"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "discordAccessToken",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserSession"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": false,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "discordRefreshToken",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserSession"
     },
     {
-      "type": "timestamp(3)",
-      "typeSchema": null,
+      "type": "integer",
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "discordTokenExpiresAt",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserSession"
     },
     {
       "type": "text",
-      "typeSchema": null,
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": "''",
       "generated": null,
-      "identity": null,
       "name": "scope",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserSession"
     },
     {
-      "type": "timestamp(3)",
-      "typeSchema": null,
+      "type": "integer",
       "notNull": true,
-      "dimensions": 0,
-      "default": "CURRENT_TIMESTAMP",
+      "autoincrement": false,
+      "default": "(unixepoch() * 1000)",
       "generated": null,
-      "identity": null,
       "name": "createdAt",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserSession"
     },
     {
-      "type": "timestamp(3)",
-      "typeSchema": null,
+      "type": "integer",
       "notNull": true,
-      "dimensions": 0,
+      "autoincrement": false,
       "default": null,
       "generated": null,
-      "identity": null,
       "name": "expiresAt",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserSession"
     },
     {
-      "type": "timestamp(3)",
-      "typeSchema": null,
+      "type": "integer",
       "notNull": true,
-      "dimensions": 0,
-      "default": "CURRENT_TIMESTAMP",
+      "autoincrement": false,
+      "default": "(unixepoch() * 1000)",
       "generated": null,
-      "identity": null,
       "name": "lastSeenAt",
       "entityType": "columns",
-      "schema": "public",
       "table": "UserSession"
     },
     {
-      "nameExplicit": true,
       "columns": [
         "player_id"
       ],
-      "schemaTo": "public",
       "tableTo": "BHPlayerData",
       "columnsTo": [
         "id"
       ],
       "onUpdate": "CASCADE",
       "onDelete": "RESTRICT",
+      "nameExplicit": true,
       "name": "BHPlayerLegend_player_id_fkey",
       "entityType": "fks",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
-      "nameExplicit": true,
       "columns": [
         "player_id"
       ],
-      "schemaTo": "public",
       "tableTo": "BHPlayerData",
       "columnsTo": [
         "id"
       ],
       "onUpdate": "CASCADE",
       "onDelete": "RESTRICT",
+      "nameExplicit": true,
       "name": "BHPlayerWeapon_player_id_fkey",
       "entityType": "fks",
-      "schema": "public",
       "table": "BHPlayerWeapon"
     },
     {
-      "nameExplicit": true,
       "columns": [
         "userId"
       ],
-      "schemaTo": "public",
       "tableTo": "UserProfile",
       "columnsTo": [
         "id"
       ],
       "onUpdate": "CASCADE",
       "onDelete": "RESTRICT",
+      "nameExplicit": true,
       "name": "UserConnection_userId_fkey",
       "entityType": "fks",
-      "schema": "public",
       "table": "UserConnection"
     },
     {
-      "nameExplicit": true,
       "columns": [
         "userId"
       ],
-      "schemaTo": "public",
       "tableTo": "UserProfile",
       "columnsTo": [
         "id"
       ],
       "onUpdate": "CASCADE",
       "onDelete": "RESTRICT",
+      "nameExplicit": true,
       "name": "UserFavorite_userId_fkey",
       "entityType": "fks",
-      "schema": "public",
       "table": "UserFavorite"
     },
     {
-      "nameExplicit": true,
       "columns": [
         "userId"
       ],
-      "schemaTo": "public",
       "tableTo": "UserProfile",
       "columnsTo": [
         "id"
       ],
       "onUpdate": "CASCADE",
       "onDelete": "CASCADE",
+      "nameExplicit": true,
       "name": "UserSession_userId_fkey",
       "entityType": "fks",
-      "schema": "public",
       "table": "UserSession"
-    },
-    {
-      "columns": [
-        "id"
-      ],
-      "nameExplicit": true,
-      "name": "BHClan_pkey",
-      "entityType": "pks",
-      "schema": "public",
-      "table": "BHClan"
     },
     {
       "columns": [
@@ -1482,18 +1139,7 @@
       "nameExplicit": true,
       "name": "BHPlayerAlias_pkey",
       "entityType": "pks",
-      "schema": "public",
       "table": "BHPlayerAlias"
-    },
-    {
-      "columns": [
-        "id"
-      ],
-      "nameExplicit": true,
-      "name": "BHPlayerData_pkey",
-      "entityType": "pks",
-      "schema": "public",
-      "table": "BHPlayerData"
     },
     {
       "columns": [
@@ -1503,7 +1149,6 @@
       "nameExplicit": true,
       "name": "BHPlayerLegend_pkey",
       "entityType": "pks",
-      "schema": "public",
       "table": "BHPlayerLegend"
     },
     {
@@ -1514,18 +1159,7 @@
       "nameExplicit": true,
       "name": "BHPlayerWeapon_pkey",
       "entityType": "pks",
-      "schema": "public",
       "table": "BHPlayerWeapon"
-    },
-    {
-      "columns": [
-        "id"
-      ],
-      "nameExplicit": true,
-      "name": "CrawlProgress_pkey",
-      "entityType": "pks",
-      "schema": "public",
-      "table": "CrawlProgress"
     },
     {
       "columns": [
@@ -1536,7 +1170,6 @@
       "nameExplicit": true,
       "name": "UserConnection_pkey",
       "entityType": "pks",
-      "schema": "public",
       "table": "UserConnection"
     },
     {
@@ -1548,38 +1181,401 @@
       "nameExplicit": true,
       "name": "UserFavorite_pkey",
       "entityType": "pks",
-      "schema": "public",
       "table": "UserFavorite"
     },
     {
       "columns": [
         "id"
       ],
-      "nameExplicit": true,
-      "name": "UserProfile_pkey",
-      "entityType": "pks",
-      "schema": "public",
-      "table": "UserProfile"
+      "nameExplicit": false,
+      "name": "BHClan_pk",
+      "table": "BHClan",
+      "entityType": "pks"
     },
     {
       "columns": [
         "id"
       ],
-      "nameExplicit": true,
-      "name": "UserSession_pkey",
-      "entityType": "pks",
-      "schema": "public",
-      "table": "UserSession"
+      "nameExplicit": false,
+      "name": "BHPlayerData_pk",
+      "table": "BHPlayerData",
+      "entityType": "pks"
     },
     {
-      "nameExplicit": true,
       "columns": [
-        "discordId"
+        "id"
       ],
-      "nullsNotDistinct": false,
+      "nameExplicit": false,
+      "name": "CrawlProgress_pk",
+      "table": "CrawlProgress",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "UserProfile_pk",
+      "table": "UserProfile",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "UserSession_pk",
+      "table": "UserSession",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        {
+          "value": "xp",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHClan_xp_idx",
+      "entityType": "indexes",
+      "table": "BHClan"
+    },
+    {
+      "columns": [
+        {
+          "value": "\"name\" COLLATE NOCASE",
+          "isExpression": true
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHClan_name_nocase_idx",
+      "entityType": "indexes",
+      "table": "BHClan"
+    },
+    {
+      "columns": [
+        {
+          "value": "\"alias\" COLLATE NOCASE",
+          "isExpression": true
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerAlias_alias_nocase_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerAlias"
+    },
+    {
+      "columns": [
+        {
+          "value": "createdAt",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerAlias_createdAt_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerAlias"
+    },
+    {
+      "columns": [
+        {
+          "value": "xp",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_xp_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "games",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_games_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "wins",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_wins_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "rankedGames",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_rankedGames_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "rankedWins",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_rankedWins_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "damageDealt",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_damageDealt_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "damageTaken",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_damageTaken_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "kos",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_kos_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "falls",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_falls_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "suicides",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_suicides_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "teamKos",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_teamKos_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "matchTime",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_matchTime_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "damageUnarmed",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_damageUnarmed_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "koUnarmed",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_koUnarmed_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "matchTimeUnarmed",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_matchTimeUnarmed_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "koThrownItem",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_koThrownItem_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "damageThrownItem",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_damageThrownItem_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "koGadgets",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_koGadgets_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "damageGadgets",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_damageGadgets_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "lastUpdated",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "BHPlayerData_lastUpdated_idx",
+      "entityType": "indexes",
+      "table": "BHPlayerData"
+    },
+    {
+      "columns": [
+        {
+          "value": "discordId",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
       "name": "UserProfile_discordId_key",
-      "entityType": "uniques",
-      "schema": "public",
+      "entityType": "indexes",
       "table": "UserProfile"
     }
   ],

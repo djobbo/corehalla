@@ -24,6 +24,9 @@ dist/
 # alchemy (local state)
 .alchemy/
 
+# generated seed SQL (the checked-in generator is scripts/seed.mts)
+packages/db/seed/generated/
+
 # misc
 .DS_Store
 *.pem

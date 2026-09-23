@@ -1,4 +1,4 @@
-import { and, eq, sql } from "drizzle-orm"
+import { and, eq, sql } from "db/query"
 import { Context, Effect, Layer, Option } from "effect"
 import { Database as SqlDatabase } from "db/client"
 import {

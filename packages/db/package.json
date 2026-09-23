@@ -4,21 +4,20 @@
     "private": true,
     "scripts": {
         "db:generate": "drizzle-kit generate",
-        "db:migrate": "node --env-file-if-exists=.env scripts/db.mts migrate",
-        "db:migrate:prod": "node --env-file-if-exists=.env scripts/db.mts migrate",
-        "db:init": "node --env-file-if-exists=.env scripts/db.mts init",
-        "db:setup": "node --env-file-if-exists=.env scripts/db.mts setup",
-        "db:push": "drizzle-kit push",
-        "db:studio": "drizzle-kit studio",
+        "db:seed": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/seed.mts",
+        "db:seed:verify": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/seed-verify.mts",
+        "db:import:supabase": "node --env-file-if-exists=.env --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-postgres.mts",
         "ts:check": "tsc --noEmit"
     },
     "devDependencies": {
+        "@types/node": "^24.0.0",
+        "@types/pg": "^8.23.1",
         "drizzle-kit": "1.0.0-rc.5-5935859",
-        "tsconfig": "workspace:*",
-        "typescript": "^5.3.3"
+        "pg": "^8.23.0",
+        "typescript": "^7.0.2"
     },
     "dependencies": {
-        "@effect/sql-pg": "4.0.0-rc.116",
+        "@effect/sql-d1": "4.0.0-rc.116",
         "drizzle-orm": "1.0.0-rc.5-5935859",
         "effect": "4.0.0-rc.116"
     }

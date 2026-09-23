@@ -15,7 +15,7 @@
     "devDependencies": {
         "@types/node": "^20.11.5",
         "@types/react": "^18.2.31",
-        "typescript": "^5.3.3"
+        "typescript": "^7.0.2"
     },
     "dependencies": {
         "bhapi": "workspace:*",

@@ -6,41 +6,34 @@
     "author": "Djobbo Maïga <hi@djobbo.com>",
     "scripts": {
         "build": "vp run -r build",
-        "build:prod": "pnpm db:migrate:prod && vp run --filter web build",
         "dev": "vp run -r --parallel dev",
-        "db:start": "supabase start",
-        "db:stop": "supabase stop",
-        "db:status": "supabase status",
-        "db:migrate": "vp run -r db:migrate",
-        "db:migrate:prod": "vp run --filter db db:migrate:prod",
-        "deploy": "vp run --filter web deploy",
-        "deploy:destroy": "vp run --filter web destroy",
+        "dev:cloud": "node --env-file-if-exists=.env --env-file-if-exists=web/.env node_modules/alchemy/bin/cli.js dev",
+        "db:generate": "vp run --filter db db:generate",
+        "db:seed": "vp run --filter db db:seed",
+        "db:seed:verify": "vp run --filter db db:seed:verify",
+        "db:import:supabase": "vp run --filter db db:import:supabase",
+        "deploy": "node --env-file-if-exists=.env --env-file-if-exists=web/.env node_modules/alchemy/bin/cli.js deploy",
+        "destroy": "node --env-file-if-exists=.env node_modules/alchemy/bin/cli.js destroy",
         "dl-roster": "vp run -r dl-roster",
-        "ts:check": "vp run -r ts:check",
+        "ts:check": "tsc --noEmit -p tsconfig.json && vp run -r ts:check",
         "check": "vp check",
         "lint": "vp lint --fix",
         "ci:lint": "vp lint",
         "format": "vp fmt && vp run -r format",
-        "ci:install": "vp install --frozen-lockfile",
-        "setup:env": "zx setup.zx.mjs"
+        "ci:install": "vp install --frozen-lockfile"
     },
     "devDependencies": {
-        "supabase": "^2.117.0",
-        "typescript": "^5.3.3",
+        "@effect/platform-node": "4.0.0-rc.116",
+        "@types/node": "^24.0.0",
+        "alchemy": "2.0.0-beta.79",
+        "effect": "4.0.0-rc.116",
+        "typescript": "^7.0.2",
         "vite": "^8.0.14",
-        "vite-plus": "0.3.3",
-        "zx": "^7.2.3"
+        "vite-plus": "0.3.3"
     },
     "engines": {
         "npm": ">=7.0.0",
         "node": ">=22.18.0"
     },
-    "packageManager": "pnpm@8.5.0",
-    "pnpm": {
-        "overrides": {
-            "@types/react": "~19.0.8",
-            "@types/react-dom": "~19.0.3",
-            "vite@*": "npm:@voidzero-dev/vite-plus-core@0.3.3"
-        }
-    }
+    "packageManager": "pnpm@12.5.1"
 }

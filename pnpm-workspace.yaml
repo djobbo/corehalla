@@ -2,3 +2,14 @@ packages:
     - "web"
     - "worker"
     - "packages/*"
+
+overrides:
+    "@types/react": ~19.0.8
+    "@types/react-dom": ~19.0.3
+    "vite@*": npm:@voidzero-dev/vite-plus-core@0.3.3
+
+# Dependency build scripts that are approved to run on install.
+allowBuilds:
+    core-js-pure: true
+    esbuild: true
+    workerd: true

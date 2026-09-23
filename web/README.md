@@ -9,7 +9,7 @@ been removed.
 - **Framework:** TanStack Start + TanStack Router (file-based routes)
 - **Runtime/data:** [Effect v4](https://effect.website) — `HttpApi` + `HttpClient`
   on the server, `Atom` + `@effect/atom-react` on the client
-- **Deployment:** Cloudflare Workers via [Alchemy](https://alchemy.run) (`Cloudflare.Website.Vite` + Hyperdrive); see `alchemy.run.ts`
+- **Deployment:** Cloudflare Workers via [Alchemy](https://alchemy.run) (`Cloudflare.Website.Vite` + `Cloudflare.D1.Database`); the stack lives at the repo root (`../alchemy.run.ts`)
 - **UI:** React 19, Tailwind CSS v4 (CSS-first config), Stitches, Radix, kbar
 - **TypeScript:** 7.0.2 (native) with `@effect/tsgo`
 
@@ -24,8 +24,8 @@ vp -C web dev          # dev server on http://localhost:3000
 vp -C web build        # production build (+ route tree generation)
 vp -C web preview      # preview the built output
 vp -C web ts:check     # effect-tsgo patch && tsc --noEmit
-pnpm --filter web dev:cloud   # alchemy dev: Workers runtime + bound local Postgres
-pnpm --filter web deploy      # alchemy deploy: Cloudflare Worker + assets
+pnpm dev:cloud                # (root) alchemy dev: Workers runtime + local D1 simulator
+pnpm deploy                   # (root) alchemy deploy: Cloudflare Worker + assets
 ```
 
 From the repository root:
@@ -38,7 +38,7 @@ vp run -r ts:check     # type-check every package
 ```
 
 > Server code reads configuration through `src/env.ts`, which prefers
-> `process.env` on Node and the Worker bindings (Hyperdrive, secrets) on
+> `process.env` on Node and the Worker bindings (D1, secrets) on
 > Cloudflare.
 
 ## Architecture
@@ -102,9 +102,9 @@ Privileged code is only reachable from server routes:
 - `Brawlhalla` / `Database` / `Content` / `Auth` import server-only modules
   (`db/client`, `web-parser`, `effect/discord`) and are only imported by
   `Handlers.ts`, `Server.ts` and the `api/auth` + `api/me` server routes.
-- Queries go straight to Postgres through `packages/db/client.ts`
-  (`@effect/sql-pg` + `drizzle-orm/effect-postgres`); there is no PostgREST or
-  Supabase client in the bundle.
+- Queries go straight to Cloudflare D1 through `packages/db/client.ts`
+  (`@effect/sql-d1` + `drizzle-orm/effect-d1`); the query operators come from
+  `db/query` so `web` shares `db`'s single `drizzle-orm` instance.
 - Verified: the client bundle contains no `cheerio`, database driver,
   `HttpApiBuilder`, tRPC, or React Query code.
 
@@ -203,39 +203,61 @@ Effect's diagnostics need the patched compiler:
 See `.env.example`. Server-only variables are read through `src/env.ts`, which
 prefers `process.env` on Node and the Worker bindings on Cloudflare; browser
 variables are read through `import.meta.env` (Vite `envPrefix` allows both
-`VITE_` and the legacy `NEXT_PUBLIC_` prefix).
-
-`pnpm setup:env` (from the repository root) writes `DATABASE_URL` into
-`.env.local` after `supabase start`; `.env.local` takes precedence over `.env`.
+`VITE_` and the legacy `NEXT_PUBLIC_` prefix). There is no database URL: the
+database is the `DB` D1 binding.
 
 | Variable                | Purpose                                              |
 | ----------------------- | ---------------------------------------------------- |
-| `DATABASE_URL`          | Postgres connection (Node dev, CI migrations)        |
 | `DISCORD_CLIENT_ID`     | Discord OAuth application id                         |
 | `DISCORD_CLIENT_SECRET` | Discord OAuth application secret                     |
 | `SITE_URL`              | Public origin; also the OAuth redirect base          |
 | `BRAWLHALLA_API_KEY`    | Brawlhalla API key (server only)                     |
 | `INTERNAL_ORIGIN`       | Optional override for the SSR atom self-fetch origin |
 
+Alchemy reads its own credentials from the repo-root `.env` (or from an
+`alchemy profile`): `CLOUDFLARE_ACCOUNT_ID` plus `CLOUDFLARE_API_TOKEN` (or
+`CLOUDFLARE_API_KEY` + `CLOUDFLARE_EMAIL`). The token needs Workers Scripts:
+Edit, D1: Edit and Secrets Store: Edit; see the root README for the full list and
+the `alchemy profile edit` OAuth alternative.
+
 ## Deployment (Cloudflare via Alchemy)
 
-`alchemy.run.ts` declares the deployment:
+The root `alchemy.run.ts` declares the deployment:
 
+- `Cloudflare.D1.Database("CorehallaDb", { name: "corehalla", migrations })`
+  creates the SQLite database and applies `packages/db/drizzle` at deploy (and to
+  the local simulator under `alchemy dev`). Read replication is left off so
+  sessions are never read stale.
 - `Cloudflare.Website.Vite` builds the Vite `ssr` environment into a Worker plus
-  static assets. Alchemy supplies the Cloudflare plugin, so `vite.config.ts`
-  must not add `@cloudflare/vite-plugin` or Nitro.
-- `Cloudflare.Hyperdrive.Connection` pools connections to the Supabase Postgres
-  origin; the Worker reads `env.HYPERDRIVE.connectionString` in `src/env.ts`.
-  Its `dev` origin points at the local Postgres (`127.0.0.1:54322`).
+  static assets, binding the database as `DB` (`src/env.ts` reads `env.DB`).
+  Alchemy supplies the Cloudflare plugin, so `vite.config.ts` must not add
+  `@cloudflare/vite-plugin` or Nitro.
 - Secrets (`DISCORD_CLIENT_SECRET`, `BRAWLHALLA_API_KEY`) are bound as
   `secret_text`; `SITE_URL`/`VITE_SITE_URL`/`INTERNAL_ORIGIN` are plain values.
 
-Drizzle's migrator reads `packages/db/drizzle/` from disk, so migrations remain a
-Node/CI step (`pnpm db:migrate`) against the same origin — they are not run by
-the Worker.
+Seeding is a one-off manual step; see the root README. `pnpm db:seed` generates
+the synthetic data, `pnpm db:import:supabase` converts the old Supabase database
+into D1-ready SQL, and `pnpm db:seed:verify` checks either result offline against
+`node:sqlite`.
+
+### Dev modes
+
+- `pnpm dev:cloud` (`alchemy dev`, run from the repo root) runs the app in
+  workerd with the real bindings — the Vite dev server with HMR behind a stable
+  local URL, the local D1 simulator under `.alchemy/local/d1` at the repo root,
+  and migrations applied — so it is the only mode where DB-backed routes work.
+  Local imports come from the D1 resource's `importFiles`; `wrangler d1 execute
+--local` cannot see this simulator because it has its own Miniflare store.
+  State uses `Cloudflare.state()`, which needs Cloudflare credentials.
+- `pnpm --filter web dev` is plain Vite on `:3000` with no bindings: `env.DB` is
+  undefined and DB-backed routes throw. Use it for UI-only work.
+- Alchemy's `importFiles` is for small reference data; the old-database migration
+  uses the split `.sql` files from `import-postgres.mts`.
 
 ## Migration status
 
 The Next.js cutover is complete: `app/`, the `server` tRPC package and
-`packages/db/supabase/` have been removed. The worker's crawler owns its
-`updateDBPlayerData` mutation (`worker/src/crawler/updateDBPlayerData.ts`).
+`packages/db/supabase/` have been removed, and the database moved from
+Postgres/Supabase to Cloudflare D1 (see `packages/db/schema.ts`). The worker's
+crawler owns its `updateDBPlayerData` mutation
+(`worker/src/crawler/updateDBPlayerData.ts`) and reaches D1 over the HTTP API.

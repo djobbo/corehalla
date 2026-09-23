@@ -4,7 +4,7 @@
     "devDependencies": {
         "@types/node": "^20.11.5",
         "tsconfig": "workspace:*",
-        "typescript": "^5.3.3"
+        "typescript": "^7.0.2"
     },
     "scripts": {
         "ts:check": "tsc --noEmit"

@@ -1,32 +1,15 @@
 import { defineConfig } from "drizzle-kit"
 
 /**
- * Drizzle Kit configuration.
+ * Drizzle Kit configuration — Cloudflare D1 (SQLite).
  *
- * This replaces the Prisma CLI. `schema.ts` is the single source of truth for
- * the database, `drizzle/` holds the generated migrations, and
- * `scripts/db.ts` applies them (plus the SQL in `sql/`) at runtime.
+ * `schema.ts` is the single source of truth and `drizzle/` holds the generated
+ * migrations. The Alchemy stack applies them to the D1 database at deploy
+ * (`Cloudflare.D1.Database({ migrations })`), so there is no Node migrator and
+ * no database credentials here; `db:generate` only needs the schema.
  */
 export default defineConfig({
-    dialect: "postgresql",
+    dialect: "sqlite",
     schema: "./schema.ts",
     out: "./drizzle",
-
-    // Only the `public` schema belongs to this project. Supabase owns `auth`,
-    // `storage`, `realtime`, … and a generate/push must never touch them.
-    schemaFilter: ["public"],
-
-    // Authorization lives in the server layer and the connection is made with
-    // the database owner, so there are no RLS policies or Supabase roles left
-    // for drizzle-kit to reconcile.
-
-    migrations: {
-        table: "__drizzle_migrations",
-        schema: "drizzle",
-    },
-
-    // `drizzle-kit` loads `.env` from the package directory, which
-    // `pnpm setup:env` writes. Only the commands that talk to a database
-    // (migrate/push/studio/introspect) need this.
-    dbCredentials: { url: process.env.DATABASE_URL ?? "" },
 })
