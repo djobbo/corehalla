@@ -15,6 +15,7 @@ import { Route as DiscordRouteImport } from './routes/discord'
 import { Route as DonateRouteImport } from './routes/donate'
 import { Route as GithubRouteImport } from './routes/github'
 import { Route as KofiRouteImport } from './routes/kofi'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -80,6 +81,11 @@ const GithubRoute = GithubRouteImport.update({
 const KofiRoute = KofiRouteImport.update({
   id: '/kofi',
   path: '/kofi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
@@ -278,6 +284,7 @@ export interface FileRoutesByFullPath {
   '/donate': typeof DonateRoute
   '/github': typeof GithubRoute
   '/kofi': typeof KofiRoute
+  '/privacy': typeof PrivacyRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -322,6 +329,7 @@ export interface FileRoutesByTo {
   '/donate': typeof DonateRoute
   '/github': typeof GithubRoute
   '/kofi': typeof KofiRoute
+  '/privacy': typeof PrivacyRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -367,6 +375,7 @@ export interface FileRoutesById {
   '/donate': typeof DonateRoute
   '/github': typeof GithubRoute
   '/kofi': typeof KofiRoute
+  '/privacy': typeof PrivacyRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -413,6 +422,7 @@ export interface FileRouteTypes {
     | '/donate'
     | '/github'
     | '/kofi'
+    | '/privacy'
     | '/robots.txt'
     | '/search'
     | '/sitemap.xml'
@@ -457,6 +467,7 @@ export interface FileRouteTypes {
     | '/donate'
     | '/github'
     | '/kofi'
+    | '/privacy'
     | '/robots.txt'
     | '/search'
     | '/sitemap.xml'
@@ -501,6 +512,7 @@ export interface FileRouteTypes {
     | '/donate'
     | '/github'
     | '/kofi'
+    | '/privacy'
     | '/robots.txt'
     | '/search'
     | '/sitemap.xml'
@@ -546,6 +558,7 @@ export interface RootRouteChildren {
   DonateRoute: typeof DonateRoute
   GithubRoute: typeof GithubRoute
   KofiRoute: typeof KofiRoute
+  PrivacyRoute: typeof PrivacyRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -625,6 +638,13 @@ declare module '@tanstack/react-router' {
       path: '/kofi'
       fullPath: '/kofi'
       preLoaderRoute: typeof KofiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/robots.txt': {
@@ -901,6 +921,7 @@ const rootRouteChildren: RootRouteChildren = {
   DonateRoute: DonateRoute,
   GithubRoute: GithubRoute,
   KofiRoute: KofiRoute,
+  PrivacyRoute: PrivacyRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

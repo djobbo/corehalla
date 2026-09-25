@@ -41,7 +41,7 @@ export const SearchBar = ({
     onSubmit,
     onActivate,
     onEscape,
-    placeholder = "Search players and clans...",
+    placeholder = "Search player or clan...",
     autoFocus,
     className,
     size = "lg",

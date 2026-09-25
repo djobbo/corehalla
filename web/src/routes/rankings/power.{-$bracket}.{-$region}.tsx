@@ -84,7 +84,6 @@ function Page() {
         "rank",
     )
 
-
     const goldMedalists = sortedPowerRankings.filter(({ t1 }) => t1 > 0)
     const silverMedalists = sortedPowerRankings.filter(({ t2 }) => t2 > 0)
     const bronzeMedalists = sortedPowerRankings.filter(({ t3 }) => t3 > 0)

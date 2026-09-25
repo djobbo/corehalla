@@ -1,5 +1,6 @@
 import { Image } from "@components/Image"
 import { MAX_SHOWN_ALIASES } from "@util/constants"
+import { AdsenseProfileBottom } from "common/analytics/Adsense"
 import { Player2v2Tab } from "@components/stats/player/Player2v2Tab"
 import { PlayerLegendsTab } from "@components/stats/player/PlayerLegendsTab"
 import { PlayerOverviewTab } from "@components/stats/player/PlayerOverviewTab"
@@ -274,6 +275,7 @@ function Page() {
                     />
                 </TabsContent>
             </Tabs>
+            <AdsenseProfileBottom className="mt-8" />
         </>
     )
 }

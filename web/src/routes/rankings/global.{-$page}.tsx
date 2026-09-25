@@ -85,7 +85,9 @@ function Page() {
                 options={globalRankingsSortOptions}
             />
             <InfiniteRankings
-                buildAtom={(pageNumber) => globalRankingsAtom(sortBy, pageNumber)}
+                buildAtom={(pageNumber) =>
+                    globalRankingsAtom(sortBy, pageNumber)
+                }
                 initialPage={page}
                 resetKey={`global:${sortBy}`}
                 onHighestPageChange={syncPage}

@@ -61,7 +61,8 @@ export const Route = createFileRoute("/rankings/1v1/{-$region}/{-$page}")({
     // Search-result URLs are not canonical content: keep them out of the
     // server-rendered component while still running the loader on the server
     // and serving the (noindex) head.
-    ssr: ({ search }) => (search.status === "success" && search.value.q ? "data-only" : true),
+    ssr: ({ search }) =>
+        search.status === "success" && search.value.q ? "data-only" : true,
     head({ params }) {
         const region = resolveRankedRegion(params?.region)
         const page = resolvePage(params?.page)
@@ -86,10 +87,8 @@ function Page() {
     const region = resolveRankedRegion(regionParam)
     const page = parseInt(resolvePage(pageParam), 10)
 
-    const [search, setSearch, immediateSearch, isDebouncing] = useDebouncedState(
-        q,
-        SEARCH_DEBOUNCE_MS,
-    )
+    const [search, setSearch, immediateSearch, isDebouncing] =
+        useDebouncedState(q, SEARCH_DEBOUNCE_MS)
     // The last value this component pushed into the URL, so that an external
     // change (back/forward) resets the input without clobbering in-flight
     // typing.
@@ -124,7 +123,10 @@ function Page() {
                 // number into the region slot.
                 params:
                     nextPage > 1
-                        ? { region: regionParam ?? "all", page: String(nextPage) }
+                        ? {
+                              region: regionParam ?? "all",
+                              page: String(nextPage),
+                          }
                         : {
                               region:
                                   regionParam === "all"
@@ -144,7 +146,9 @@ function Page() {
         trimmedQuery.length >= 2
             ? searchAliasAtom(trimmedQuery, 1)
             : idleAliasesAtom
-    ) as Atom.Atom<AsyncResult.AsyncResult<readonly AliasSearchResult[], unknown>>
+    ) as Atom.Atom<
+        AsyncResult.AsyncResult<readonly AliasSearchResult[], unknown>
+    >
     const aliasesResult = useAtomValue(aliasesAtom)
     const aliasMatches =
         aliasesResult._tag === "Success" ? aliasesResult.value : []
@@ -167,7 +171,7 @@ function Page() {
                     }
                     exitSearch()
                 },
-                placeholder: "Search players by name or Brawlhalla ID...",
+                placeholder: "Search player by name or Brawlhalla ID...",
             }}
             searchQuery={q}
         >
@@ -178,9 +182,7 @@ function Page() {
                 initialPage={page}
                 resetKey={`1v1:${region}:${q}`}
                 onHighestPageChange={syncPage}
-                emptyLabel={
-                    q ? `No players match "${q}"` : "No players found"
-                }
+                emptyLabel={q ? `No players match "${q}"` : "No players found"}
             >
                 {(rows) => {
                     const rankedIds = new Set(
@@ -196,8 +198,7 @@ function Page() {
                         <>
                             <div className="rounded-lg overflow-hidden border border-bg mb-4 flex flex-col">
                                 {rows.map(({ row, index }) => {
-                                    const legend =
-                                        legendsMap[row.best_legend]
+                                    const legend = legendsMap[row.best_legend]
 
                                     return (
                                         <RankingsTableItem
@@ -211,7 +212,9 @@ function Page() {
                                                     {legend && (
                                                         <Image
                                                             src={`/images/icons/roster/legends/${legend.legend_name_key}.png`}
-                                                            alt={legend.bio_name}
+                                                            alt={
+                                                                legend.bio_name
+                                                            }
                                                             containerClassName="w-6 h-6 rounded-lg overflow-hidden"
                                                             className="object-cover object-center"
                                                         />

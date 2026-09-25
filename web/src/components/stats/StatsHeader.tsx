@@ -10,7 +10,6 @@ import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
 import { useAuth, useFavorites } from "@ctx/auth/AuthProvider"
 import { useCopyToClipboard } from "common/hooks/useCopyToClipboard"
-import { useFeatureFlags } from "@hooks/useFeatures"
 import toast from "react-hot-toast"
 import type { Favorite } from "@ctx/auth/useUserFavorites"
 import type { MiscStat } from "./MiscStatGroup"
@@ -36,7 +35,6 @@ export const StatsHeader = ({
     const { isLoggedIn, signIn } = useAuth()
     const { isFavorite, removeFavorite, addFavorite } = useFavorites()
     const copyToClipboard = useCopyToClipboard()
-    const { shouldShowAds } = useFeatureFlags()
 
     const isItemFavorite = favorite && isFavorite(favorite)
 
@@ -50,7 +48,7 @@ export const StatsHeader = ({
                     backgroundSize: "cover",
                 }}
             >
-                {shouldShowAds && <AdsenseStatsHeader />}
+                <AdsenseStatsHeader />
             </div>
             <div className="flex flex-col sm:flex-row justify-end py-2 gap-2">
                 {isLoggedIn ? (

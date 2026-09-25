@@ -12,6 +12,7 @@ import {
     createRootRouteWithContext,
     useMatches,
 } from "@tanstack/react-router"
+import { CFBeacon } from "common/analytics/CFBeacon"
 import { ErrorPageContent } from "@components/layout/ErrorPageContent"
 import { GAScripts } from "common/analytics/GAScripts"
 import { HydrationBoundary, RegistryContext } from "@effect/atom-react"
@@ -96,6 +97,7 @@ function RootProviders({ children }: { children: ReactNode }) {
     return (
         <>
             <GAScripts />
+            <CFBeacon />
             <AuthProvider>
                 <SideNavProvider>
                     <PageLoader>

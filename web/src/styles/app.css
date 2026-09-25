@@ -63,7 +63,8 @@
 /* nprogress (previously a separate `styles/nprogress.css` import) */
 #nprogress {
     pointer-events: none;
-}#nprogress .bar {
+}
+#nprogress .bar {
     background: #ffffffaa;
 
     position: fixed;
@@ -100,4 +101,3 @@
 ::view-transition-new(root) {
     animation-duration: 180ms;
 }
-

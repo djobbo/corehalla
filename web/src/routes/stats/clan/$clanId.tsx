@@ -1,5 +1,6 @@
 import { ClanMember } from "@components/stats/clan/ClanMember"
 import { StatsHeader } from "@components/stats/StatsHeader"
+import { AdsenseProfileBottom } from "common/analytics/Adsense"
 import { cleanString } from "common/helpers/cleanString"
 import { clanStatsAtom, loadAtoms, preloadAtom, useQuery } from "@/effect/atoms"
 import { createFileRoute, notFound } from "@tanstack/react-router"
@@ -110,6 +111,7 @@ function Page() {
                     />
                 ))}
             </div>
+            <AdsenseProfileBottom className="mt-8" />
         </>
     )
 }

@@ -33,7 +33,8 @@ export const Route = createFileRoute("/rankings/clans/{-$page}")({
         loadAtoms(context, [
             clansRankingsAtom(deps.q, parseInt(resolvePage(params.page))),
         ]),
-    ssr: ({ search }) => (search.status === "success" && search.value.q ? "data-only" : true),
+    ssr: ({ search }) =>
+        search.status === "success" && search.value.q ? "data-only" : true,
     head({ params }) {
         const page = resolvePage(params?.page)
         return {
@@ -54,10 +55,8 @@ function ClansPage() {
 
     const page = parseInt(resolvePage(pageParam), 10)
 
-    const [search, setSearch, immediateSearch, isDebouncing] = useDebouncedState(
-        q,
-        SEARCH_DEBOUNCE_MS,
-    )
+    const [search, setSearch, immediateSearch, isDebouncing] =
+        useDebouncedState(q, SEARCH_DEBOUNCE_MS)
     const committed = useRef(q)
 
     useEffect(() => {
@@ -110,7 +109,7 @@ function ClansPage() {
                     }
                     exitSearch()
                 },
-                placeholder: "Search clans by name...",
+                placeholder: "Search clan by name...",
             }}
             searchQuery={q}
         >
@@ -132,39 +131,46 @@ function ClansPage() {
                             <p className="w-20 pl-1 text-center">XP</p>
                         </div>
                         <div className="rounded-lg overflow-hidden border border-bg mb-4">
-                            {rows.map(({ row: clan, index, page: rowPage, positionOnPage }) => (
-                                <div
-                                    key={clan.id}
-                                    className={cn(
-                                        "px-4 py-2 w-full h-full flex items-center gap-4 hover:bg-bg",
-                                        { "bg-bgVar2": index % 2 === 0 },
-                                    )}
-                                >
-                                    {showClanRank && (
-                                        <p className="w-16 h-full flex items-center justify-center text-xs">
-                                            {(rowPage - 1) *
-                                                CLANS_RANKINGS_PER_PAGE +
-                                                positionOnPage +
-                                                1}
+                            {rows.map(
+                                ({
+                                    row: clan,
+                                    index,
+                                    page: rowPage,
+                                    positionOnPage,
+                                }) => (
+                                    <div
+                                        key={clan.id}
+                                        className={cn(
+                                            "px-4 py-2 w-full h-full flex items-center gap-4 hover:bg-bg",
+                                            { "bg-bgVar2": index % 2 === 0 },
+                                        )}
+                                    >
+                                        {showClanRank && (
+                                            <p className="w-16 h-full flex items-center justify-center text-xs">
+                                                {(rowPage - 1) *
+                                                    CLANS_RANKINGS_PER_PAGE +
+                                                    positionOnPage +
+                                                    1}
+                                            </p>
+                                        )}
+                                        <p className="flex flex-1 items-center">
+                                            <AppLink
+                                                href={`/stats/clan/${clan.id}`}
+                                            >
+                                                {cleanString(clan.name)}
+                                            </AppLink>
                                         </p>
-                                    )}
-                                    <p className="flex flex-1 items-center">
-                                        <AppLink
-                                            href={`/stats/clan/${clan.id}`}
-                                        >
-                                            {cleanString(clan.name)}
-                                        </AppLink>
-                                    </p>
-                                    <div className="w-40 flex items-center justify-center">
-                                        {!!clan.created && clan.created > 0
-                                            ? formatUnixTime(clan.created)
-                                            : "N/A"}
+                                        <div className="w-40 flex items-center justify-center">
+                                            {!!clan.created && clan.created > 0
+                                                ? formatUnixTime(clan.created)
+                                                : "N/A"}
+                                        </div>
+                                        <p className="w-20 text-center">
+                                            {clan.xp}
+                                        </p>
                                     </div>
-                                    <p className="w-20 text-center">
-                                        {clan.xp}
-                                    </p>
-                                </div>
-                            ))}
+                                ),
+                            )}
                         </div>
                     </>
                 )}

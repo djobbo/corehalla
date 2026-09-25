@@ -83,9 +83,9 @@ export const InfiniteRankings = <A,>({
         from: Math.max(1, initialPage),
         to: Math.max(1, initialPage),
     })
-    const [rowsByPage, setRowsByPage] = useState<
-        Record<number, readonly A[]>
-    >({})
+    const [rowsByPage, setRowsByPage] = useState<Record<number, readonly A[]>>(
+        {},
+    )
     const sentinelRef = useRef<HTMLDivElement>(null)
     const isFirstReset = useRef(true)
 
@@ -93,7 +93,8 @@ export const InfiniteRankings = <A,>({
     // its rows. Further pages arrive through the slices below.
     const firstPage = Math.max(1, initialPage)
     const firstResult = useAtomValue(buildAtom(firstPage))
-    const firstRows = firstResult._tag === "Success" ? firstResult.value : undefined
+    const firstRows =
+        firstResult._tag === "Success" ? firstResult.value : undefined
     const resolvedRows = useMemo(
         () =>
             firstRows ? { ...rowsByPage, [firstPage]: firstRows } : rowsByPage,

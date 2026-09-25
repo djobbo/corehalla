@@ -11,7 +11,9 @@ type ViewTransitionDocument = Document & {
  * (or the header) to the top of the results page. Falls back to a plain update
  * when the API is missing or the user asked for reduced motion.
  */
-export const withViewTransition = (update: () => void | Promise<void>): void => {
+export const withViewTransition = (
+    update: () => void | Promise<void>,
+): void => {
     if (typeof document === "undefined" || typeof window === "undefined") {
         void update()
         return

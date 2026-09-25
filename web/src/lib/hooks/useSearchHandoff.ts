@@ -34,7 +34,9 @@ export const useSearchHandoff = () => {
             setValue("")
 
             withViewTransition(() =>
-                navigate({ to: searchHref({ ...context, q: trimmed }) as never }),
+                navigate({
+                    to: searchHref({ ...context, q: trimmed }) as never,
+                }),
             )
         },
         [navigate, pathname],

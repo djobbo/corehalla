@@ -52,7 +52,10 @@ function Page() {
                 // number into the region slot.
                 params:
                     nextPage > 1
-                        ? { region: regionParam ?? "all", page: String(nextPage) }
+                        ? {
+                              region: regionParam ?? "all",
+                              page: String(nextPage),
+                          }
                         : {
                               region:
                                   regionParam === "all"

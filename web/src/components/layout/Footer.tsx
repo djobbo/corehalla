@@ -77,7 +77,10 @@ export const Footer = ({ className }: FooterProps) => {
                     ))}
                 </div>
                 <p className="mr-1 text-xs text-textVar1 mt-8">
-                    © 2018-{currentYear} Corehalla
+                    © 2018-{currentYear} Corehalla ·{" "}
+                    <AppLink className="p-link" href="/privacy">
+                        Privacy Policy
+                    </AppLink>
                 </p>
             </div>
         </footer>

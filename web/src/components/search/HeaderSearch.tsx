@@ -20,17 +20,17 @@ export const HeaderSearch = ({ className }: HeaderSearchProps) => {
         <button
             type="button"
             data-search-trigger
-            aria-label="Search players and clans"
+            aria-label="Search player or clan"
             style={{ viewTransitionName: "search-bar" }}
             onClick={() => enterSearch()}
             className={cn(
-                "flex h-6 w-full items-center gap-2 rounded-lg border border-bg bg-bgVar1 px-2 text-xs text-textVar1",
+                "flex h-8 w-full items-center gap-2 rounded-lg border border-bg bg-bgVar1 px-2 text-xs text-textVar1",
                 "cursor-text transition-colors hover:border-textVar1/40 hover:text-text",
                 className,
             )}
         >
             <HiOutlineSearch className="h-3.5 w-3.5 shrink-0" />
-            <span className="truncate">Search players and clans...</span>
+            <span className="truncate">Search player or clan...</span>
             <Kbd className="ml-auto shrink-0">/</Kbd>
         </button>
     )

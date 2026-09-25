@@ -1,4 +1,5 @@
 import { HiGlobe } from "@react-icons/all-files/hi/HiGlobe"
+import { AdsenseLandingSearch } from "common/analytics/Adsense"
 import { AnimatedLogo } from "ui/base/AnimatedLogo"
 import { AppLink } from "ui/base/AppLink"
 import { PillSelect } from "@components/search/PillSelect"
@@ -102,6 +103,8 @@ export const HarnessComposer = () => {
                         Join the Discord
                     </AppLink>
                 </p>
+                {/* Same small unit as the rankings pages, just below the bar. */}
+                <AdsenseLandingSearch className="mt-6 w-full" />
             </div>
         </section>
     )

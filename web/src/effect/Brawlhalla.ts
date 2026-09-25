@@ -57,7 +57,14 @@ export const layer = Layer.effect(
     Effect.gen(function* () {
         // Capture the client so the effects returned by this service have no
         // remaining requirements.
-        const client = yield* HttpClient.HttpClient
+        //
+        // `filterStatusOk` turns non-2xx responses into `HttpClientError`s:
+        // Brawlhalla answers a rejected request with its error envelope
+        // (`{"error":{"code":403,"message":"Forbidden"}}`), which would
+        // otherwise be cast to the requested type and surface downstream as a
+        // decode error. As an error it is retried (429/5xx) and falls back to
+        // the official API instead.
+        const client = HttpClient.filterStatusOk(yield* HttpClient.HttpClient)
 
         const getJson = <A>(
             path: string,
