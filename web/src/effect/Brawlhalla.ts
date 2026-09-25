@@ -96,6 +96,11 @@ export const layer = Layer.effect(
             getRankings: (bracket, region, page, name) =>
                 __DEV
                     ? Effect.sync(() => {
+                          // The fixtures only describe the first page; later
+                          // pages are empty so infinite scroll terminates the
+                          // same way it does against the real API.
+                          if (page > 1) return []
+
                           if (bracket === "1v1") {
                               return rankings1v1Mock.filter((r) =>
                                   r.name

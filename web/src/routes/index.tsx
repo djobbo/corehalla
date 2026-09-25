@@ -1,34 +1,16 @@
-import { ArrowSmRightIcon, DiscordIcon } from "ui/icons"
 import { ArticlePreviewGrid } from "@components/articles/ArticlePreviewGrid"
 import { Button } from "ui/base/Button"
-import { DiscordCard } from "@components/DiscordCard"
+import { DiscordIcon } from "ui/icons"
 import { FavoritesGrid } from "@components/favorites/FavoritesGrid"
-import { SearchButton } from "@components/search/SearchButton"
+import { HarnessComposer } from "@components/landing/HarnessComposer"
 import { SectionTitle } from "@components/layout/SectionTitle"
-import { WeeklyRotation } from "@components/WeeklyRotation"
-import {
-    articlesAtom,
-    loadAtoms,
-    useQuery,
-    weeklyRotationAtom,
-} from "@/effect/atoms"
-import { cn } from "common/helpers/classnames"
+import { articlesAtom } from "@/effect/atoms"
 import { createFileRoute } from "@tanstack/react-router"
-import { css } from "ui/theme"
 import { seoTags } from "@components/SEO"
 import { useAtomValue } from "@effect/atom-react"
 import { useAuth, useFavorites } from "@ctx/auth/AuthProvider"
 
-const landingClassName = css({
-    height: "60vh",
-    minHeight: "400px",
-})()
-
 export const Route = createFileRoute("/")({
-    // The free-legend rotation is preloaded so it is present in the server HTML
-    // and hydrated on the client. The news grid stays client-fetched, matching
-    // the Next.js app which opted it out of SSR.
-    loader: ({ context }) => loadAtoms(context, [weeklyRotationAtom()]),
     head: () => ({
         meta: seoTags({
             title: "Track your Brawlhalla stats, view rankings, and more! • Corehalla",
@@ -43,91 +25,16 @@ function Page() {
     const { isLoggedIn, signIn } = useAuth()
     const { favorites } = useFavorites()
 
-    const weeklyRotation = useQuery(weeklyRotationAtom())
+    // The news grid stays client-fetched, matching the Next.js app which opted
+    // it out of SSR.
     const articlesResult = useAtomValue(articlesAtom("", 3))
     const articles =
         articlesResult._tag === "Success" ? articlesResult.value : []
 
     return (
         <>
-            <div className="flex flex-col items-center justify-center lg:gap-16 lg:flex-row">
-                <div
-                    className={cn(
-                        "relative flex flex-col justify-center items-center lg:items-start",
-                        landingClassName,
-                        'after:content[""] after:absolute after:inset-0 after:bg-accent after:blur-[256px] after:opacity-[0.15] after:-z-10',
-                    )}
-                >
-                    <a
-                        href="/discord"
-                        target="_blank"
-                        className="flex items-center gap-2 pl-3 pr-2 py-1 bg-bgVar1/75 rounded-full border border-bg text-sm hover:bg-bgVar2"
-                        aria-label='Join our "Corehalla" Discord server'
-                    >
-                        <span className="border-r border-r-bg pr-2">
-                            Join our community
-                        </span>
-                        <span className="flex items-center gap-1 font-semibold text-center bg-gradient-to-l from-accent to-accentVar1 bg-clip-text text-fill-none">
-                            Discord
-                            <ArrowSmRightIcon className="w-4 h-4" />
-                        </span>
-                    </a>
-                    <h1
-                        className={cn(
-                            "text-center text-5xl sm:text-6xl font-bold mt-6 max-w-5xl",
-                            "lg:text-start lg:max-w-3xl",
-                        )}
-                    >
-                        Stay ahead of <br />
-                        the competition
-                    </h1>
-                    <p
-                        className={cn(
-                            "text-center text-sm sm:text-base mt-3 text-textVar1 max-w-xl ",
-                            "lg:text-start",
-                        )}
-                    >
-                        Improve your Brawlhalla Game, and find your place among
-                        the Elite with our in-depth stats tracking and live
-                        leaderboards.
-                    </p>
-                    <div className="mt-8 flex items-center gap-3 sm:gap-6 flex-col sm:flex-row">
-                        <SearchButton />
-                        <span className="text-textVar1 text-sm sm:text-base">
-                            or
-                        </span>
-                        <div className="flex items-center gap-2">
-                            <Button
-                                as="a"
-                                href="/rankings"
-                                className="whitespace-nowrap font-semibold"
-                            >
-                                View rankings
-                            </Button>
-                            <Button
-                                as="a"
-                                buttonStyle="outline"
-                                href="/rankings/2v2"
-                                className="whitespace-nowrap font-semibold"
-                            >
-                                2v2
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <DiscordCard />
-                    <a
-                        href="/discord"
-                        target="_blank"
-                        aria-label="Discord server link"
-                        className="block text-sm mt-2 text-textVar1 text-center"
-                    >
-                        corehalla.com/discord
-                    </a>
-                </div>
-            </div>
-            <div className="border border-bg border-dashed p-4 rounded-lg my-16">
+            <HarnessComposer />
+            <div className="border border-bg border-dashed p-4 rounded-lg mb-16">
                 {favorites.length > 0 ? (
                     <FavoritesGrid favorites={favorites} />
                 ) : (
@@ -156,7 +63,6 @@ function Page() {
                     </p>
                 )}
             </div>
-            <WeeklyRotation rotation={weeklyRotation} />
             {articles.length > 0 && (
                 <>
                     <SectionTitle className="text-center mt-16">

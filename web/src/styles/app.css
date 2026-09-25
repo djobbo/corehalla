@@ -63,9 +63,7 @@
 /* nprogress (previously a separate `styles/nprogress.css` import) */
 #nprogress {
     pointer-events: none;
-}
-
-#nprogress .bar {
+}#nprogress .bar {
     background: #ffffffaa;
 
     position: fixed;
@@ -85,3 +83,21 @@
 .nprogress-custom-parent #nprogress .bar {
     position: absolute;
 }
+
+/*
+ * Search hand-off transition.
+ *
+ * The search bar carries `view-transition-name: search-bar`, so moving from the
+ * landing hero (or the header pill) to the results page reads as the same bar
+ * travelling. Reduced-motion users get the plain swap from `withViewTransition`.
+ */
+::view-transition-group(search-bar) {
+    animation-duration: 260ms;
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 180ms;
+}
+

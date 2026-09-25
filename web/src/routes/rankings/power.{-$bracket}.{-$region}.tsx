@@ -4,11 +4,7 @@ import { Select } from "ui/base/Select"
 import { Tooltip } from "ui/base/Tooltip"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
-import {
-    createFileRoute,
-    stripSearchParams,
-    useNavigate,
-} from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router"
 import { loadAtoms, powerRankingsAtom, useQuery } from "@/effect/atoms"
 import {
     powerRankingsRegions,
@@ -19,10 +15,7 @@ import {
     resolvePowerRankingsRegion,
 } from "@/lib/routeParams"
 import { seoTags } from "@components/SEO"
-import { useDebouncedState } from "common/hooks/useDebouncedState"
-import { useEffect } from "react"
 import { useSortBy } from "common/hooks/useSortBy"
-import { z } from "zod"
 import type { MiscStat } from "@components/stats/MiscStatGroup"
 import type { PR } from "web-parser/power-rankings/parsePowerRankingsPage"
 
@@ -37,12 +30,6 @@ type PRSortOption =
     | "t32"
 
 export const Route = createFileRoute("/rankings/power/{-$bracket}/{-$region}")({
-    // The text filter is validated and kept in the URL. It filters the loaded
-    // list on the client, so it is intentionally not a loader dependency.
-    validateSearch: z.object({
-        q: z.string().catch(""),
-    }),
-    search: { middlewares: [stripSearchParams<{ q: string }>({ q: "" })] },
     loader: ({ params, context }) =>
         loadAtoms(context, [
             powerRankingsAtom(
@@ -65,8 +52,6 @@ export const Route = createFileRoute("/rankings/power/{-$bracket}/{-$region}")({
 
 function Page() {
     const { bracket: bracketParam, region: regionParam } = Route.useParams()
-    const { q } = Route.useSearch()
-    const navigate = useNavigate()
 
     const bracket = resolvePowerRankingsBracket(bracketParam)
     const region = resolvePowerRankingsRegion(regionParam)
@@ -99,83 +84,51 @@ function Page() {
         "rank",
     )
 
-    const [search, setSearch, immediateSearch, isDebouncing] =
-        useDebouncedState(q, 250)
 
-    useEffect(() => {
-        if (isDebouncing || search === q) return
-
-        navigate({
-            to: "/rankings/power/{-$bracket}/{-$region}",
-            params: { bracket: bracketParam, region: regionParam },
-            search: { q: search },
-            replace: true,
-        })
-    }, [search, q, isDebouncing, navigate, bracketParam, regionParam])
-
-    const filteredlPowerRankings =
-        sortedPowerRankings.filter(({ name }) =>
-            cleanString(name).toLowerCase().startsWith(search.toLowerCase()),
-        ) ?? []
-
-    const goldMedalists = filteredlPowerRankings.filter(({ t1 }) => t1 > 0)
-    const silverMedalists = filteredlPowerRankings.filter(({ t2 }) => t2 > 0)
-    const bronzeMedalists = filteredlPowerRankings.filter(({ t3 }) => t3 > 0)
-    const podiumedPlayers = filteredlPowerRankings.filter(
+    const goldMedalists = sortedPowerRankings.filter(({ t1 }) => t1 > 0)
+    const silverMedalists = sortedPowerRankings.filter(({ t2 }) => t2 > 0)
+    const bronzeMedalists = sortedPowerRankings.filter(({ t3 }) => t3 > 0)
+    const podiumedPlayers = sortedPowerRankings.filter(
         ({ t1, t2, t3 }) => t1 + t2 + t3 > 0,
     )
-    const t8Finalists = filteredlPowerRankings.filter(({ t8 }) => t8 > 0)
-    const t32Finalists = filteredlPowerRankings.filter(({ t32 }) => t32 > 0)
+    const t8Finalists = sortedPowerRankings.filter(({ t8 }) => t8 > 0)
+    const t32Finalists = sortedPowerRankings.filter(({ t32 }) => t32 > 0)
 
     const globalStats: MiscStat[] = [
         {
             name: `Players ranked`,
-            value: filteredlPowerRankings.length,
-            desc: `${filteredlPowerRankings.length} players ${
-                search !== "" ? `starting with ${search}` : ""
-            } are currently power ranked`,
+            value: sortedPowerRankings.length,
+            desc: `${sortedPowerRankings.length} players are currently power ranked`,
         },
         {
             name: `Gold medalists`,
             value: goldMedalists.length,
-            desc: `${goldMedalists.length} players ${
-                search !== "" ? `starting with ${search}` : ""
-            } have a gold medal`,
+            desc: `${goldMedalists.length} players have a gold medal`,
         },
         {
             name: `Silver medalists`,
             value: silverMedalists.length,
-            desc: `${silverMedalists.length} players ${
-                search !== "" ? `starting with ${search}` : ""
-            } have a silver medal`,
+            desc: `${silverMedalists.length} players have a silver medal`,
         },
         {
             name: `Bronze medalists`,
             value: bronzeMedalists.length,
-            desc: `${bronzeMedalists.length} players ${
-                search !== "" ? `starting with ${search}` : ""
-            } have a bronze medal`,
+            desc: `${bronzeMedalists.length} players have a bronze medal`,
         },
         {
             name: `Podiumed players`,
             value: podiumedPlayers.length,
-            desc: `${podiumedPlayers.length} players ${
-                search !== "" ? `starting with ${search}` : ""
-            } have a podium`,
+            desc: `${podiumedPlayers.length} players have a podium`,
         },
         {
             name: `Top 8 finalists`,
             value: t8Finalists.length,
-            desc: `${t8Finalists.length} players ${
-                search !== "" ? `starting with ${search}` : ""
-            } have a top 8 finish`,
+            desc: `${t8Finalists.length} players have a top 8 finish`,
         },
         {
             name: `Top 32 finalists`,
             value: t32Finalists.length,
-            desc: `${t32Finalists.length} players ${
-                search !== "" ? `starting with ${search}` : ""
-            } have a top 32 finish`,
+            desc: `${t32Finalists.length} players have a top 32 finish`,
         },
     ]
 
@@ -185,11 +138,6 @@ function Page() {
             currentBracket={`power/${bracket}`}
             regions={powerRankingsRegions}
             currentRegion={region}
-            hasPagination
-            hasSearch
-            search={immediateSearch}
-            setSearch={setSearch}
-            searchPlaceholder="Search player..."
             defaultRegion="us-e"
         >
             <Select<PRSortOption>
@@ -209,9 +157,9 @@ function Page() {
                 <p className="w-16 text-center">Top 8</p>
                 <p className="w-16 text-center">Top 32</p>
             </div>
-            {filteredlPowerRankings.length > 0 ? (
+            {sortedPowerRankings.length > 0 ? (
                 <div className="rounded-lg overflow-hidden border border-bg mb-4">
-                    {filteredlPowerRankings.map((player, i) => (
+                    {sortedPowerRankings.map((player, i) => (
                         <div
                             className={cn(
                                 "py-1 w-full h-full flex items-center gap-4 hover:bg-bg",

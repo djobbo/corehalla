@@ -195,7 +195,7 @@ export const SideNav = ({ className }: SideNavProps) => {
             />
             <div
                 className={cn(
-                    "fixed w-64 sm:w-auto sm:sticky top-0 flex-col border-r border-bg h-screen bg-bgVar2 z-50 overflow-y-auto",
+                    "fixed w-64 sm:w-16 sm:sticky top-0 flex-col border-r border-bg h-screen bg-bgVar2 z-50 overflow-y-auto",
                     className,
                     {
                         "-translate-x-full sm:translate-x-0": !isSideNavOpen,
@@ -206,7 +206,7 @@ export const SideNav = ({ className }: SideNavProps) => {
                     transition: "0.15s all ease",
                 }}
             >
-                <div className="flex flex-col gap-2 flex-1 p-2">
+                <div className="flex flex-col gap-2 flex-1 p-2 sm:items-center">
                     {nav.map((nav) => (
                         <SideNavIcon
                             key={nav.name}
@@ -222,9 +222,12 @@ export const SideNav = ({ className }: SideNavProps) => {
                         />
                     ))}
                     <hr
-                        className={cn("border-b border-bg rounded-full mx-2", {
-                            hidden: favorites.length <= 0,
-                        })}
+                        className={cn(
+                            "self-stretch border-b border-bg rounded-full",
+                            {
+                                hidden: favorites.length <= 0,
+                            },
+                        )}
                     />
                     {favorites.map((favorite) => {
                         switch (favorite.type) {

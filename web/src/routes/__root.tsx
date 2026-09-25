@@ -15,10 +15,9 @@ import {
 import { ErrorPageContent } from "@components/layout/ErrorPageContent"
 import { GAScripts } from "common/analytics/GAScripts"
 import { HydrationBoundary, RegistryContext } from "@effect/atom-react"
-import { KBarProvider } from "kbar"
 import { Layout } from "@components/layout/Layout"
 import { PageLoader } from "ui/base/PageLoader"
-import { Searchbox } from "@components/search/Searchbox"
+import { SearchShortcut } from "@components/search/SearchShortcut"
 import { SideNavProvider } from "@ctx/SideNavProvider"
 import { Spinner } from "ui/base/Spinner"
 import { Suspense, useMemo } from "react"
@@ -98,22 +97,20 @@ function RootProviders({ children }: { children: ReactNode }) {
         <>
             <GAScripts />
             <AuthProvider>
-                <KBarProvider actions={[]} options={{}}>
-                    <SideNavProvider>
-                        <PageLoader>
-                            <div className="flex items-center gap-4">
-                                <span className="text-sm">Loading...</span>
-                                <AnimatedLogo size={32} />
-                            </div>
-                        </PageLoader>
-                        <Toaster />
-                        <Layout>{children}</Layout>
-                        <Searchbox />
-                        <ClientOnly>
-                            <BackToTopButton />
-                        </ClientOnly>
-                    </SideNavProvider>
-                </KBarProvider>
+                <SideNavProvider>
+                    <PageLoader>
+                        <div className="flex items-center gap-4">
+                            <span className="text-sm">Loading...</span>
+                            <AnimatedLogo size={32} />
+                        </div>
+                    </PageLoader>
+                    <Toaster />
+                    <Layout>{children}</Layout>
+                    <SearchShortcut />
+                    <ClientOnly>
+                        <BackToTopButton />
+                    </ClientOnly>
+                </SideNavProvider>
             </AuthProvider>
         </>
     )

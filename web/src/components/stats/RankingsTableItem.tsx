@@ -11,6 +11,14 @@ type RankingsTableItemProps = Ranking & {
     content: ReactNode
 }
 
+/**
+ * One rankings row, shared by every table.
+ *
+ * A single div tree serves both breakpoints: on mobile it stacks (identity
+ * line, then elo/record) and on desktop it becomes one row with the identity
+ * on the left and the performance block on the right. Keeping one DOM means
+ * the two views cannot drift apart.
+ */
 export const RankingsTableItem = ({
     className,
     index = 0,
@@ -23,133 +31,88 @@ export const RankingsTableItem = ({
     content,
     tier,
 }: RankingsTableItemProps) => {
+    const winrate = calculateWinrate(wins, games)
+    const lossrate = calculateWinrate(games - wins, games)
+
     return (
-        <>
+        <div
+            className={cn(
+                "flex w-full flex-col px-4 py-2 hover:bg-bg",
+                "md:flex-row md:items-center md:gap-6",
+                {
+                    "bg-bgVar2/50": index % 2 === 0,
+                    "bg-bgVar1/50": index % 2 === 1,
+                },
+                className,
+            )}
+        >
+            {/* Identity — the first line on mobile; on desktop the tier icon
+                moves ahead of the name so it stays glued to the rank instead
+                of floating next to the elo. */}
             <div
                 className={cn(
-                    "block md:hidden",
-                    "px-4 py-2 w-full h-full items-center gap-4 hover:bg-bg",
+                    "flex min-w-0 flex-1 items-center border-b py-1 md:border-b-0 md:py-0",
                     {
-                        "bg-bgVar2": index % 2 === 0,
-                        "bg-bgVar1": index % 2 === 1,
+                        "border-bgVar1/50": index % 2 === 0,
+                        "border-bgVar2/50": index % 2 === 1,
                     },
-                    className,
                 )}
             >
-                <div
-                    className={cn("flex border-b border-textVar1 py-1", {
-                        "border-bgVar1": index % 2 === 0,
-                        "border-bgVar2": index % 2 === 1,
-                    })}
-                >
-                    <span className="text-lg font-semibold text-textVar1 mr-2">
-                        {rank} -
-                    </span>
+                <span className="mr-2 text-lg font-semibold text-textVar1">
+                    {rank} -
+                </span>
+                <div className="order-2 flex min-w-0 flex-1 items-center md:order-3">
                     {content}
+                </div>
+                <Image
+                    src={`/images/icons/ranked/${tier}${
+                        tier === "Valhallan" ? ".webp" : ".png"
+                    }`}
+                    alt={region}
+                    containerClassName="order-3 w-6 h-6 md:order-2 md:w-8 md:h-8 md:mr-3 shrink-0 rounded-md overflow-hidden"
+                    className="object-contain object-center"
+                />
+            </div>
+            {/* Performance — under the identity on mobile, beside it on
+                desktop, right-aligned so elo and the winrate bar line up
+                across rows. */}
+            <div className="mt-2 flex flex-col md:mt-0 md:flex-row md:items-center md:gap-6">
+                <p className="flex items-baseline gap-2 text-2xl font-bold">
                     <Image
-                        src={`/images/icons/ranked/${tier}${
-                            tier === "Valhallan" ? ".webp" : ".png"
-                        }`}
+                        src={`/images/icons/flags/${region}.png`}
                         alt={region}
-                        containerClassName="w-6 h-6 rounded-md overflow-hidden"
+                        containerClassName="w-4 h-4 rounded-sm overflow-hidden"
                         className="object-contain object-center"
                     />
-                </div>
-                <div className={cn("mt-2 flex flex-col", className)}>
-                    <p className="flex gap-2 items-baseline text-2xl font-bold">
-                        <Image
-                            src={`/images/icons/flags/${region}.png`}
-                            alt={region}
-                            containerClassName="w-4 h-4 rounded-sm overflow-hidden"
-                            className="object-contain object-center"
-                        />
-                        {rating}
-                        <span>/</span>
-                        <span className="text-textVar1 text-sm">
-                            {peak_rating}
-                        </span>
-                        <span className="ml-2 text-xs font-normal uppercase text-textVar1">
-                            peak ({tier})
-                        </span>
-                    </p>
+                    {rating}
+                    <span>/</span>
+                    <span className="text-textVar1 text-sm">{peak_rating}</span>
+                    <span className="ml-2 text-xs font-normal uppercase text-textVar1 md:hidden">
+                        peak ({tier})
+                    </span>
+                </p>
+                <div className="md:w-40 lg:w-64">
                     <Progress
                         value={(wins / games) * 100}
-                        className="h-1 rounded-full mt-2 overflow-hidden bg-danger"
+                        className="mt-2 h-1 rounded-full overflow-hidden bg-danger md:mt-0"
                         indicatorClassName="h-1 bg-success"
                     />
-                    <div className="flex justify-between font-bold text-sm mt-2">
+                    <div className="mt-2 flex justify-between text-sm font-bold">
                         <span>
                             {wins}W{" "}
                             <span className="text-xs text-textVar1">
-                                ({calculateWinrate(wins, games).toFixed(2)}
-                                %)
+                                ({winrate.toFixed(2)}%)
                             </span>
                         </span>
                         <span>
                             {games - wins}L{" "}
                             <span className="text-xs text-textVar1">
-                                (
-                                {calculateWinrate(games - wins, games).toFixed(
-                                    2,
-                                )}
-                                %)
+                                ({lossrate.toFixed(2)}%)
                             </span>
                         </span>
                     </div>
                 </div>
             </div>
-            <div
-                className={cn(
-                    "hidden md:flex",
-                    "py-1 w-full h-full items-center gap-4 hover:bg-bg",
-                    {
-                        "bg-bgVar2": index % 2 === 0,
-                        "bg-bgVar1": index % 2 === 1,
-                    },
-                    className,
-                )}
-            >
-                <p className="w-16 h-full flex items-center justify-center text-xs">
-                    {rank}
-                </p>
-                <p className="w-8 h-full flex items-center justify-center text-xs">
-                    <Image
-                        src={`/images/icons/ranked/${tier}${
-                            tier === "Valhallan" ? ".webp" : ".png"
-                        }`}
-                        alt={region}
-                        containerClassName="w-8 h-8 rounded-md overflow-hidden"
-                        className="object-contain object-center"
-                    />
-                </p>
-                <p className="w-16 h-full flex items-center justify-center text-xs">
-                    {region}
-                </p>
-                {content}
-                <p className="w-16 text-center">{games}</p>
-                <div className="w-32">
-                    <Progress
-                        value={(wins / games) * 100}
-                        className="h-1 rounded-full mt-2 overflow-hidden bg-danger"
-                        indicatorClassName="h-2 bg-success"
-                    />
-                    <div className="flex justify-between text-xs mt-2">
-                        <span>{wins}W</span>
-                        <span>{games - wins}L</span>
-                    </div>
-                </div>
-                <p className="w-20 text-center">
-                    {calculateWinrate(wins, games).toFixed(2)}%
-                </p>
-                <div className="w-40 flex items-center justify-start">
-                    <p>
-                        <span className="text-xl font-bold">{rating}</span>{" "}
-                        <span className="text-textVar1 text-sm">
-                            / {peak_rating} peak
-                        </span>
-                    </p>
-                </div>
-            </div>
-        </>
+        </div>
     )
 }

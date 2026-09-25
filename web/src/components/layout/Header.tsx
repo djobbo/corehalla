@@ -1,14 +1,16 @@
 import { AlertBar } from "./AlertBar"
 import { AppLink } from "ui/base/AppLink"
 import { Button } from "ui/base/Button"
-import { DiscordIcon, GithubIcon, TwitterIcon } from "ui/icons"
+import { DiscordIcon } from "ui/icons"
 import { HamburgerMenuIcon } from "ui/icons"
+import { HeaderSearch } from "../search/HeaderSearch"
 import { Image } from "@components/Image"
-import { SearchButton, SearchButtonIcon } from "../search/SearchButton"
 import { cn } from "common/helpers/classnames"
 import { useAuth } from "@ctx/auth/AuthProvider"
-import { useRouterState } from "@tanstack/react-router"
+import { useIsLandingPage } from "common/hooks/useIsLandingPage"
 import { useSideNav } from "@ctx/SideNavProvider"
+import { useRouterState } from "@tanstack/react-router"
+import { isSearchableRankingsPath } from "@/lib/search"
 
 type HeaderProps = {
     className?: string
@@ -16,37 +18,39 @@ type HeaderProps = {
 
 export const Header = ({ className }: HeaderProps) => {
     const { isLoggedIn, signIn, signOut, userProfile } = useAuth()
+    const isLandingPage = useIsLandingPage()
+    const { openSideNav } = useSideNav()
     const pathname = useRouterState({
         select: (state) => state.location.pathname,
     })
 
-    const { openSideNav } = useSideNav()
-
-    const isLandingPage = pathname === "/"
+    const showHeaderSearch =
+        !isLandingPage && !isSearchableRankingsPath(pathname)
 
     return (
         <>
             <AlertBar />
-            <header className={cn({ "bg-bgVar2": !isLandingPage })}>
+            <header>
                 <div
                     className={cn(
                         className,
-                        "flex items-center justify-between h-16 sm:h-20 px-4",
+                        "grid grid-cols-[1fr_auto_1fr] items-center gap-3 h-12 px-3",
                     )}
                 >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
                         <button
                             type="button"
+                            aria-label="Open navigation"
                             className="block sm:hidden"
                             onClick={() => {
                                 openSideNav()
                             }}
                         >
-                            <HamburgerMenuIcon size={24} />
+                            <HamburgerMenuIcon size={18} />
                         </button>
                         <AppLink
                             href="/"
-                            className="relative rounded-lg w-32 h-8 overflow-hidden"
+                            className="relative rounded-md w-24 h-6 overflow-hidden"
                         >
                             <Image
                                 src="/images/logo.png"
@@ -56,61 +60,39 @@ export const Header = ({ className }: HeaderProps) => {
                             />
                         </AppLink>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <SearchButton
-                            bg={isLandingPage ? "bg-bgVar2" : "bg-bgVar1"}
-                            className="hidden sm:flex mr-2"
-                        />
+                    <div className="flex justify-center">
+                        {showHeaderSearch && (
+                            <HeaderSearch className="w-40 sm:w-72 lg:w-96" />
+                        )}
+                    </div>
+                    <div className="flex items-center justify-end gap-2">
                         {isLoggedIn ? (
                             <>
                                 {userProfile && (
-                                    <>
-                                        <div className="relative ">
-                                            <Image
-                                                src={userProfile.avatarUrl}
-                                                alt={userProfile.username}
-                                                containerClassName="rounded-lg w-8 h-8 overflow-hidden"
-                                                className="object-cover object-center"
-                                                unoptimized
-                                            />
-                                        </div>
-                                    </>
+                                    <Image
+                                        src={userProfile.avatarUrl}
+                                        alt={userProfile.username}
+                                        containerClassName="rounded-md w-6 h-6 overflow-hidden"
+                                        className="object-cover object-center"
+                                        unoptimized
+                                    />
                                 )}
-                                <Button onClick={signOut}>Sign out</Button>
+                                <Button
+                                    onClick={signOut}
+                                    className="h-6 px-2 text-xs"
+                                >
+                                    Sign out
+                                </Button>
                             </>
                         ) : (
-                            <Button onClick={signIn}>
-                                <DiscordIcon size="16" className="mr-2" />
+                            <Button
+                                onClick={signIn}
+                                className="h-6 px-2 text-xs"
+                            >
+                                <DiscordIcon size="14" className="mr-1.5" />
                                 Sign in
                             </Button>
                         )}
-                        <SearchButtonIcon
-                            className="block sm:hidden px-2"
-                            size={22}
-                        />
-                        <div className="hidden md:flex items-center gap-1 ml-2">
-                            <AppLink
-                                className="text-textVar1 hover:text-text"
-                                href="/discord"
-                                target="_blank"
-                            >
-                                <DiscordIcon size="16" className="mr-2" />
-                            </AppLink>
-                            <AppLink
-                                className="text-textVar1 hover:text-text"
-                                href="/twitter"
-                                target="_blank"
-                            >
-                                <TwitterIcon size="16" className="mr-2" />
-                            </AppLink>
-                            <AppLink
-                                className="text-textVar1 hover:text-text"
-                                href="/github"
-                                target="_blank"
-                            >
-                                <GithubIcon size="16" className="mr-2" />
-                            </AppLink>
-                        </div>
                     </div>
                 </div>
             </header>

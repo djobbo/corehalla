@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react"
 import { cn } from "common/helpers/classnames"
 
 type LandingBackgroundProps = {
@@ -5,9 +6,96 @@ type LandingBackgroundProps = {
     fill?: string
 }
 
+const VIEWBOX_WIDTH = 1930
+const VIEWBOX_HEIGHT = 1266
+
+/**
+ * How far each layer is held back as the page scrolls, as a fraction of the
+ * scroll distance: 0 would ride along with the content, 1 would stay put.
+ * Depth is spread across the layers in paint order — the first path sits
+ * farthest back and the last one (painted on top) reads as nearest.
+ */
+const FARTHEST_DEPTH = 0.8
+const DEPTH_STEP = 0.05
+
+type ParallaxLayer = {
+    path: SVGPathElement
+    depth: number
+}
+
 export const LandingBackground = ({ className }: LandingBackgroundProps) => {
+    const svgRef = useRef<SVGSVGElement>(null)
+
+    useEffect(() => {
+        const svg = svgRef.current
+        if (!svg) return
+
+        // Respect users who asked for less motion.
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+            return
+
+        const layers: ParallaxLayer[] = Array.from(
+            svg.querySelectorAll("path"),
+        ).map((path, index) => ({
+            path,
+            depth: FARTHEST_DEPTH - index * DEPTH_STEP,
+        }))
+
+        // `preserveAspectRatio="slice"` scales the viewBox to cover the
+        // element, so scroll pixels have to be converted back to user units.
+        let userUnitsPerPixel = 1
+
+        const measure = () => {
+            const { width, height } = svg.getBoundingClientRect()
+            const scale = Math.max(
+                width / VIEWBOX_WIDTH,
+                height / VIEWBOX_HEIGHT,
+            )
+
+            userUnitsPerPixel = scale > 0 ? 1 / scale : 1
+        }
+
+        let frame = 0
+
+        const update = () => {
+            frame = 0
+            const scrolled = window.scrollY * userUnitsPerPixel
+
+            // The transform attribute keeps the offsets in user units, which
+            // every SVG renderer agrees on.
+            for (const { path, depth } of layers)
+                path.setAttribute(
+                    "transform",
+                    `translate(0 ${scrolled * depth})`,
+                )
+        }
+
+        // Coalesce scroll events into at most one write per frame.
+        const handleScroll = () => {
+            if (frame) return
+            frame = requestAnimationFrame(update)
+        }
+
+        const handleResize = () => {
+            measure()
+            handleScroll()
+        }
+
+        measure()
+        update()
+        window.addEventListener("scroll", handleScroll, { passive: true })
+        window.addEventListener("resize", handleResize)
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll)
+            window.removeEventListener("resize", handleResize)
+            if (frame) cancelAnimationFrame(frame)
+        }
+    }, [])
+
     return (
         <svg
+            ref={svgRef}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 1930 1266"
             className={cn("stroke-[#292E3D] fill-none", className)}

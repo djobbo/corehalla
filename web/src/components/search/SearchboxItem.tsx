@@ -1,3 +1,4 @@
+import { cn } from "common/helpers/classnames"
 import type { ReactNode } from "react"
 
 type SearchboxItemProps = {
@@ -6,6 +7,7 @@ type SearchboxItemProps = {
     subtitle?: ReactNode
     href: string
     rightContent?: ReactNode
+    className?: string
 }
 
 export const SearchboxItem = ({
@@ -14,11 +16,15 @@ export const SearchboxItem = ({
     title,
     subtitle,
     rightContent,
+    className,
 }: SearchboxItemProps) => {
     return (
         <a
             href={href}
-            className="px-4 py-3 w-full flex items-center justify-between gap-8 border-b cursor-pointer border-bgVar2 hover:bg-bg/75"
+            className={cn(
+                "px-4 py-3 w-full flex items-center justify-between gap-8 border-b cursor-pointer border-bgVar2 hover:bg-bg/75",
+                className,
+            )}
         >
             <div className="min-w-0 flex items-center flex-1">
                 {icon}

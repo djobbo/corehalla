@@ -16,6 +16,7 @@ import { Route as DonateRouteImport } from './routes/donate'
 import { Route as GithubRouteImport } from './routes/github'
 import { Route as KofiRouteImport } from './routes/kofi'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TwitterRouteImport } from './routes/twitter'
 import { Route as WikiRouteImport } from './routes/wiki'
@@ -84,6 +85,11 @@ const KofiRoute = KofiRouteImport.update({
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
   id: '/robots.txt',
   path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -273,6 +279,7 @@ export interface FileRoutesByFullPath {
   '/github': typeof GithubRoute
   '/kofi': typeof KofiRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/twitter': typeof TwitterRoute
   '/wiki': typeof WikiRoute
@@ -316,6 +323,7 @@ export interface FileRoutesByTo {
   '/github': typeof GithubRoute
   '/kofi': typeof KofiRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/twitter': typeof TwitterRoute
   '/wiki': typeof WikiRoute
@@ -360,6 +368,7 @@ export interface FileRoutesById {
   '/github': typeof GithubRoute
   '/kofi': typeof KofiRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/twitter': typeof TwitterRoute
   '/wiki': typeof WikiRoute
@@ -405,6 +414,7 @@ export interface FileRouteTypes {
     | '/github'
     | '/kofi'
     | '/robots.txt'
+    | '/search'
     | '/sitemap.xml'
     | '/twitter'
     | '/wiki'
@@ -448,6 +458,7 @@ export interface FileRouteTypes {
     | '/github'
     | '/kofi'
     | '/robots.txt'
+    | '/search'
     | '/sitemap.xml'
     | '/twitter'
     | '/wiki'
@@ -491,6 +502,7 @@ export interface FileRouteTypes {
     | '/github'
     | '/kofi'
     | '/robots.txt'
+    | '/search'
     | '/sitemap.xml'
     | '/twitter'
     | '/wiki'
@@ -535,6 +547,7 @@ export interface RootRouteChildren {
   GithubRoute: typeof GithubRoute
   KofiRoute: typeof KofiRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TwitterRoute: typeof TwitterRoute
   WikiRoute: typeof WikiRoute
@@ -619,6 +632,13 @@ declare module '@tanstack/react-router' {
       path: '/robots.txt'
       fullPath: '/robots.txt'
       preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -882,6 +902,7 @@ const rootRouteChildren: RootRouteChildren = {
   GithubRoute: GithubRoute,
   KofiRoute: KofiRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
+  SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TwitterRoute: TwitterRoute,
   WikiRoute: WikiRoute,

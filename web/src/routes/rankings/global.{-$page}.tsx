@@ -1,5 +1,6 @@
 import { AppLink } from "ui/base/AppLink"
 import { GLOBAL_PLAYER_RANKINGS_PER_PAGE } from "@util/constants"
+import { InfiniteRankings } from "@components/stats/rankings/InfiniteRankings"
 import { Select } from "ui/base/Select"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
@@ -8,13 +9,14 @@ import {
     stripSearchParams,
     useNavigate,
 } from "@tanstack/react-router"
-import { globalRankingsAtom, loadAtoms, useQuery } from "@/effect/atoms"
+import { globalRankingsAtom, loadAtoms } from "@/effect/atoms"
 import {
     globalRankingsSortOptions,
     sortablePlayerPropSchema,
 } from "@/lib/routeSchemas"
 import { resolvePage } from "@/lib/routeParams"
 import { seoTags } from "@components/SEO"
+import { useCallback } from "react"
 import { z } from "zod"
 import type { SortablePlayerProp } from "@/lib/routeSchemas"
 
@@ -53,8 +55,19 @@ function Page() {
     const { sortBy } = Route.useSearch()
     const navigate = useNavigate()
 
-    const page = resolvePage(pageParam)
-    const players = useQuery(globalRankingsAtom(sortBy, parseInt(page)))
+    const page = parseInt(resolvePage(pageParam), 10)
+
+    const syncPage = useCallback(
+        (nextPage: number) => {
+            navigate({
+                to: "/rankings/global/{-$page}",
+                params: { page: nextPage > 1 ? String(nextPage) : undefined },
+                search: { sortBy },
+                replace: true,
+            })
+        },
+        [navigate, sortBy],
+    )
 
     return (
         <>
@@ -71,32 +84,51 @@ function Page() {
                 value={sortBy}
                 options={globalRankingsSortOptions}
             />
-            <div className="rounded-lg overflow-hidden border border-bg mb-4">
-                {players?.map((player, index) => (
-                    <div
-                        key={player.id}
-                        className={cn(
-                            "px-4 py-2 w-full h-full flex items-center gap-4 hover:bg-bg",
-                            { "bg-bgVar2": index % 2 === 0 },
+            <InfiniteRankings
+                buildAtom={(pageNumber) => globalRankingsAtom(sortBy, pageNumber)}
+                initialPage={page}
+                resetKey={`global:${sortBy}`}
+                onHighestPageChange={syncPage}
+                emptyLabel="No players found"
+            >
+                {(rows) => (
+                    <div className="rounded-lg overflow-hidden border border-bg mb-4 mt-4">
+                        {rows.map(
+                            ({
+                                row: player,
+                                index,
+                                page: rowPage,
+                                positionOnPage,
+                            }) => (
+                                <div
+                                    key={player.id}
+                                    className={cn(
+                                        "px-4 py-2 w-full h-full flex items-center gap-4 hover:bg-bg",
+                                        { "bg-bgVar2": index % 2 === 0 },
+                                    )}
+                                >
+                                    <p className="w-16 h-full flex items-center justify-center text-xs">
+                                        {(rowPage - 1) *
+                                            GLOBAL_PLAYER_RANKINGS_PER_PAGE +
+                                            positionOnPage +
+                                            1}
+                                    </p>
+                                    <p className="flex flex-1 items-center">
+                                        <AppLink
+                                            href={`/stats/player/${player.id}`}
+                                        >
+                                            {cleanString(player.name)}
+                                        </AppLink>
+                                    </p>
+                                    <div className="w-40 flex items-center justify-center">
+                                        {player.prop}
+                                    </div>
+                                </div>
+                            ),
                         )}
-                    >
-                        <p className="w-16 h-full flex items-center justify-center text-xs">
-                            {(parseInt(page, 10) - 1) *
-                                GLOBAL_PLAYER_RANKINGS_PER_PAGE +
-                                index +
-                                1}
-                        </p>
-                        <p className="flex flex-1 items-center">
-                            <AppLink href={`/stats/player/${player.id}`}>
-                                {cleanString(player.name)}
-                            </AppLink>
-                        </p>
-                        <div className="w-40 flex items-center justify-center">
-                            {player.prop}
-                        </div>
                     </div>
-                ))}
-            </div>
+                )}
+            </InfiniteRankings>
         </>
     )
 }

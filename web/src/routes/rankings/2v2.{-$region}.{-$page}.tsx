@@ -1,16 +1,18 @@
 import { AppLink } from "ui/base/AppLink"
+import { InfiniteRankings } from "@components/stats/rankings/InfiniteRankings"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
 import { RankingsTableItem } from "@components/stats/RankingsTableItem"
 import { cleanString } from "common/helpers/cleanString"
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
-import { loadAtoms, rankings2v2Atom, useQuery } from "@/effect/atoms"
+import { loadAtoms, rankings2v2Atom } from "@/effect/atoms"
 import {
     rankingsBrackets,
     rankingsRegions,
 } from "@components/stats/rankings/options"
 import { resolvePage, resolveRankedRegion } from "@/lib/routeParams"
 import { seoTags } from "@components/SEO"
+import { useCallback } from "react"
 
 export const Route = createFileRoute("/rankings/2v2/{-$region}/{-$page}")({
     loader: ({ params, context }) =>
@@ -36,12 +38,32 @@ export const Route = createFileRoute("/rankings/2v2/{-$region}/{-$page}")({
 
 function Page() {
     const { region: regionParam, page: pageParam } = Route.useParams()
+    const navigate = useNavigate()
 
-    const rankings2v2 = useQuery(
-        rankings2v2Atom(
-            resolveRankedRegion(regionParam),
-            parseInt(resolvePage(pageParam)),
-        ),
+    const region = resolveRankedRegion(regionParam)
+    const page = parseInt(resolvePage(pageParam), 10)
+
+    const syncPage = useCallback(
+        (nextPage: number) => {
+            navigate({
+                to: "/rankings/2v2/{-$region}/{-$page}",
+                // The region segment cannot be skipped, so paging past page 1
+                // needs a concrete region ("all") to avoid writing the page
+                // number into the region slot.
+                params:
+                    nextPage > 1
+                        ? { region: regionParam ?? "all", page: String(nextPage) }
+                        : {
+                              region:
+                                  regionParam === "all"
+                                      ? undefined
+                                      : regionParam,
+                              page: undefined,
+                          },
+                replace: true,
+            })
+        },
+        [navigate, regionParam],
     )
 
     return (
@@ -49,51 +71,55 @@ function Page() {
             brackets={rankingsBrackets}
             currentBracket="2v2"
             regions={rankingsRegions}
-            currentRegion={resolveRankedRegion(regionParam)}
-            currentPage={resolvePage(pageParam)}
-            hasPagination
+            currentRegion={region}
         >
-            <div className="py-4 w-full h-full hidden md:flex items-center gap-4">
-                <p className="w-16 text-center">Rank</p>
-                <p className="w-8 text-center">Tier</p>
-                <p className="w-16 text-center">Region</p>
-                <p className="flex-1">Player 1</p>
-                <p className="flex-1">Player 2</p>
-                <p className="w-16 text-center">Games</p>
-                <p className="w-32 text-center">W/L</p>
-                <p className="w-20 text-center">Winrate</p>
-                <p className="w-40 pl-1">Elo</p>
-            </div>
-            <div className="rounded-lg overflow-hidden border border-bg mb-4 flex flex-col">
-                {rankings2v2.map((team, i) => {
-                    const [player1, player2] = getTeamPlayers(team)
-                    return (
-                        <RankingsTableItem
-                            key={`${player1.id}-${player2.id}`}
-                            index={i}
-                            content={
-                                <>
-                                    <p className="flex flex-1 items-center">
-                                        <AppLink
-                                            href={`/stats/player/${player1.id}`}
-                                        >
-                                            {cleanString(player1.name)}
-                                        </AppLink>
-                                    </p>
-                                    <p className="flex flex-1 items-center">
-                                        <AppLink
-                                            href={`/stats/player/${player2.id}`}
-                                        >
-                                            {cleanString(player2.name)}
-                                        </AppLink>
-                                    </p>
-                                </>
-                            }
-                            {...team}
-                        />
-                    )
-                })}
-            </div>
+            <InfiniteRankings
+                buildAtom={(pageNumber) => rankings2v2Atom(region, pageNumber)}
+                initialPage={page}
+                resetKey={`2v2:${region}`}
+                onHighestPageChange={syncPage}
+                emptyLabel="No teams found"
+            >
+                {(rows) => (
+                    <>
+                        <div className="rounded-lg overflow-hidden border border-bg mb-4 flex flex-col">
+                            {rows.map(({ row: team, index }) => {
+                                const [player1, player2] = getTeamPlayers(team)
+
+                                return (
+                                    <RankingsTableItem
+                                        key={`${player1.id}-${player2.id}`}
+                                        index={index}
+                                        content={
+                                            <>
+                                                <p className="flex flex-1 items-center">
+                                                    <AppLink
+                                                        href={`/stats/player/${player1.id}`}
+                                                    >
+                                                        {cleanString(
+                                                            player1.name,
+                                                        )}
+                                                    </AppLink>
+                                                </p>
+                                                <p className="flex flex-1 items-center">
+                                                    <AppLink
+                                                        href={`/stats/player/${player2.id}`}
+                                                    >
+                                                        {cleanString(
+                                                            player2.name,
+                                                        )}
+                                                    </AppLink>
+                                                </p>
+                                            </>
+                                        }
+                                        {...team}
+                                    />
+                                )
+                            })}
+                        </div>
+                    </>
+                )}
+            </InfiniteRankings>
         </RankingsLayout>
     )
 }
