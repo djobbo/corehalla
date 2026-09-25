@@ -4,13 +4,37 @@
         "esModuleInterop": true,
         "allowJs": true,
         "lib": ["esnext", "dom"],
-        "moduleResolution": "node",
+        "module": "esnext",
+        // `db` re-exports Effect and Drizzle, whose packages are ESM-only and
+        // expose their entry points only through `exports` (invisible to the
+        // legacy `node`/node10 resolution).
+        "moduleResolution": "bundler",
         "jsx": "react-jsx",
-        "target": "es6",
+        "target": "es2022",
         "skipLibCheck": true,
         "sourceMap": false,
         "outDir": "dist",
+        // The worker is React 18 (react-reconciler / reaccord). Pinning the
+        // global type packages keeps the React 19 types hoisted for `web` from
+        // leaking into the JSX namespace here.
+        "types": ["node", "react"],
+        // `reaccord` resolves `react` to the hoisted React 19 types, while the
+        // JSX namespace uses this package's React 18 types. Pin both to the
+        // worker's copy so JSX components type-check.
+        "paths": {
+            "react": ["./node_modules/@types/react"],
+            "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime"]
+        }
     },
     "include": ["src"],
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules"],
+    // Runtime stays CommonJS: ts-node transpiles only (no type check) and Node
+    // loads the ESM-only dependencies through require(esm).
+    "ts-node": {
+        "transpileOnly": true,
+        "compilerOptions": {
+            "module": "commonjs",
+            "moduleResolution": "node"
+        }
+    }
 }

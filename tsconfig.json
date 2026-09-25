@@ -1,0 +1,20 @@
+{
+    // The Alchemy stack lives at the repo root; this project type-checks just
+    // that file (run via the root `ts:check` script before the per-package
+    // checks). Everything else is checked by its own package.
+    "include": ["alchemy.run.ts"],
+    "exclude": ["node_modules"],
+    "compilerOptions": {
+        "strict": true,
+        "target": "es2022",
+        "lib": ["esnext"],
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
+        "noEmit": true,
+        "types": ["node"]
+    }
+}

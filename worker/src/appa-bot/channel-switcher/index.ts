@@ -38,18 +38,19 @@ export const startChannelSwitcher = async (
 
         if (!isLobbyChannel(channel, options)) return
 
+        // Stage channels are voice-based but cannot receive messages.
+        if (!("send" in channel)) return
+
         if (isValidBrawlhallaRoomNumber(message.content)) {
             saveRoomNumber(channel, message.content)
-            message.channel.send(
-                `Room number was changed to: \`${message.content}\`.`,
-            )
+            channel.send(`Room number was changed to: \`${message.content}\`.`)
             return
         } else if (message.content === "room") {
             const roomNumber = getRoomNumber(channel)
             if (roomNumber) {
-                message.channel.send(`Room number is \`${roomNumber}\`.`)
+                channel.send(`Room number is \`${roomNumber}\`.`)
             } else {
-                message.channel.send(
+                channel.send(
                     `Room number is not yet set. Just type the room number in this channel to set it.`,
                 )
             }

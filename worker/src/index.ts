@@ -71,7 +71,7 @@ const main = async () => {
 
     logInfo("All services started")
 
-    await Promise.all([crawler]).catch((error) => {
+    await crawler.catch((error) => {
         logError("Error in main", error)
     })
 }

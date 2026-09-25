@@ -9,10 +9,23 @@ node_modules
 # testing
 coverage
 
-# next.js
-.next/
+# build output
 out/
 build
+
+# tanstack start / vite / nitro
+.output/
+.vercel/
+.nitro/
+.nitro
+dist/
+.vercel/output
+
+# alchemy (local state)
+.alchemy/
+
+# generated seed SQL (the checked-in generator is scripts/seed.mts)
+packages/db/seed/generated/
 
 # misc
 .DS_Store
@@ -33,8 +46,11 @@ yarn-error.log*
 .env.dev
 .env.prod
 
-# turbo
-.turbo
+# vite+ (generated git hook dispatcher and task cache)
+.vite-hooks/_
+node_modules/.vite/task-cache
 
 # typescript
 tsconfig.tsbuildinfo
+
+.repos

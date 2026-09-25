@@ -24,11 +24,18 @@ const getBhApi = async <T>(
     params: Record<string, string | undefined> = {},
 ) => {
     return (
-        await axios.get<T>(`${DAIR_GG_API_BASE}${path}`, {
-            params: { ...params, api_key: process.env.BRAWLHALLA_API_KEY },
-        }).catch(() => axios.get<T>(`${BH_API_BASE}${path}`, {
-            params: { ...params, api_key: process.env.BRAWLHALLA_API_KEY },
-        }))
+        await axios
+            .get<T>(`${DAIR_GG_API_BASE}${path}`, {
+                params: { ...params, api_key: process.env.BRAWLHALLA_API_KEY },
+            })
+            .catch(() =>
+                axios.get<T>(`${BH_API_BASE}${path}`, {
+                    params: {
+                        ...params,
+                        api_key: process.env.BRAWLHALLA_API_KEY,
+                    },
+                }),
+            )
     ).data
 }
 
@@ -40,7 +47,7 @@ export const getIdBySteamId = (steamId: string) =>
 
 export const getRankings = async <
     BracketType extends Bracket,
-    RankingType extends BracketType extends "1v1" ? Ranking1v1 : Ranking2v2,
+    RankingType extends (BracketType extends "1v1" ? Ranking1v1 : Ranking2v2),
 >(
     bracket: BracketType,
     region: RankedRegion,
