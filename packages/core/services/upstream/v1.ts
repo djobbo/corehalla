@@ -1,6 +1,5 @@
 import { Effect } from "effect"
 import { HttpClient } from "effect/unstable/http"
-import { envValue } from "../../env"
 import { retryTransient } from "../retry"
 import { legendsMap } from "@crh/bhapi/legends"
 import type { ClanRank, RankedTier } from "@crh/bhapi/constants"
@@ -190,16 +189,11 @@ export const v1Ops = (client: HttpClient.HttpClient) => {
         params: Record<string, string | number> = {},
     ) =>
         Effect.gen(function* () {
-            const query = {
-                ...params,
-                api_key: yield* Effect.promise(() =>
-                    envValue("BRAWLHALLA_API_KEY"),
-                ),
-            }
-
+            // No `api_key`: v1 is unauthenticated. Only the legacy v0 client
+            // carries the key, and only v0 therefore needs the secret.
             const response = yield* http
                 .get(`${V1_BASE}${path}`, {
-                    urlParams: query,
+                    urlParams: params,
                     acceptJson: true,
                 })
                 .pipe(retryTransient)
