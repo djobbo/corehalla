@@ -17,6 +17,53 @@ import { apiHandler } from "./server"
  * Bindings are read lazily inside the handler through `@crh/core/env`, because
  * they do not exist at module scope.
  */
+
+/**
+ * A permissive CORS policy, applied because a second frontend now calls this API
+ * from a different origin.
+ *
+ * `*` is the right wildcard here rather than a list: every route on this worker
+ * is public, read-only and cookie-free — the authenticated surface (sessions,
+ * favourites, OAuth) lives in the Start app and is not served from here at all.
+ * With no credentials involved there is nothing for a narrow origin list to
+ * protect, and `*` keeps preview deployments from needing an allow-list entry
+ * every time one is created.
+ *
+ * The cost is that this becomes wrong the day an authenticated route is added to
+ * this worker; at that point the origin list has to become explicit and
+ * credentials have to be enabled deliberately.
+ */
+const corsHeaders = {
+    "access-control-allow-origin": "*",
+    "access-control-allow-methods": "GET, OPTIONS",
+    "access-control-allow-headers": "content-type",
+    "access-control-max-age": "86400",
+} as const
+
+export const withCors = (response: Response): Response => {
+    const headers = new Headers(response.headers)
+
+    for (const [name, value] of Object.entries(corsHeaders)) {
+        headers.set(name, value)
+    }
+
+    return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+    })
+}
+
+export { corsHeaders }
+
 export default {
-    fetch: (request: Request) => apiHandler(request),
+    fetch: async (request: Request) => {
+        // Preflight never reaches the router: it is a browser question about
+        // permission, not an API request.
+        if (request.method === "OPTIONS") {
+            return new Response(null, { status: 204, headers: corsHeaders })
+        }
+
+        return withCors(await apiHandler(request))
+    },
 }

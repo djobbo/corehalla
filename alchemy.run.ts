@@ -301,6 +301,41 @@ export class Website extends Cloudflare.Website.Vite<Website>()(
 
 export type WebsiteEnv = Cloudflare.InferEnv<typeof Website>
 
+/**
+ * The UX study (`@crh/web-next`).
+ *
+ * Deployed so it can be looked at on a real device, but **without a custom
+ * domain**: no `domain` prop means Alchemy attaches nothing to the zone, so no
+ * DNS record or edge certificate is involved and the app is reachable at its
+ * `workers.dev` URL. That keeps an in-progress UX from holding a hostname.
+ *
+ * ## Why the API origin is a build-time value here
+ *
+ * The browser cannot use a relative `/api/v1/*` path the way it does under the
+ * dev server's proxy: this worker serves no API, so a relative call would hit
+ * itself. `VITE_API_ORIGIN` therefore has to be absolute — and it is what makes
+ * CORS necessary on the API worker, since a workers.dev origin calling the site
+ * hostname is cross-origin.
+ *
+ * In dev the same variable points at the locally running API instead. Both cases
+ * resolve from one value, so there is no second code path to keep in step.
+ */
+export class WebsiteNext extends Cloudflare.Website.Vite<WebsiteNext>()(
+    "CorehallaWebNext",
+    {
+        rootDir: "./apps/web-next",
+        name: "corehalla-web-next",
+        env: {
+            // `isDev` is Alchemy's local run: the API is on the port `alchemy
+            // dev` gave it, not on the public site.
+            VITE_API_ORIGIN: isDev ? "http://localhost:1338" : siteUrl,
+            VITE_SITE_URL: siteUrl,
+        },
+    },
+) {}
+
+export type WebsiteNextEnv = Cloudflare.InferEnv<typeof WebsiteNext>
+
 export default Alchemy.Stack(
     "Corehalla",
     {
@@ -311,6 +346,7 @@ export default Alchemy.Stack(
     },
     Effect.gen(function* () {
         const website = yield* Website
+        const websiteNext = yield* WebsiteNext
         const db = yield* CorehallaDb
         const crawler = yield* CorehallaCrawler
         const crawlQueue = yield* CorehallaCrawlQueue
@@ -342,6 +378,7 @@ export default Alchemy.Stack(
 
         return {
             url: website.url.as<string>(),
+            nextUrl: websiteNext.url.as<string>(),
             databaseId: db.databaseId,
         }
     }),
