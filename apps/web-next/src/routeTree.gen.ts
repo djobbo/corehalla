@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as Rankings1v1Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/1v1.{-$region}.{-$page}'
 import { Route as Rankings2v2Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/2v2.{-$region}.{-$page}'
+import { Route as Rankings3v3Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/3v3.{-$region}.{-$page}'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -30,22 +31,31 @@ const Rankings2v2Char123RegionChar125Char123PageChar125Route =
     path: '/rankings/2v2/{-$region}/{-$page}',
     getParentRoute: () => rootRouteImport,
   } as any)
+const Rankings3v3Char123RegionChar125Char123PageChar125Route =
+  Rankings3v3Char123RegionChar125Char123PageChar125RouteImport.update({
+    id: '/rankings/3v3/{-$region}/{-$page}',
+    path: '/rankings/3v3/{-$region}/{-$page}',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
+  '/rankings/3v3/{-$region}/{-$page}': typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
+  '/rankings/3v3/{-$region}/{-$page}': typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
+  '/rankings/3v3/{-$region}/{-$page}': typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -53,22 +63,26 @@ export interface FileRouteTypes {
     | '/'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
+    | '/rankings/3v3/{-$region}/{-$page}'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
+    | '/rankings/3v3/{-$region}/{-$page}'
   id:
     | '__root__'
     | '/'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
+    | '/rankings/3v3/{-$region}/{-$page}'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   Rankings1v1Char123RegionChar125Char123PageChar125Route: typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   Rankings2v2Char123RegionChar125Char123PageChar125Route: typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
+  Rankings3v3Char123RegionChar125Char123PageChar125Route: typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
 }
 
 declare module '@tanstack/react-router' {
@@ -94,6 +108,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Rankings2v2Char123RegionChar125Char123PageChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rankings/3v3/{-$region}/{-$page}': {
+      id: '/rankings/3v3/{-$region}/{-$page}'
+      path: '/rankings/3v3/{-$region}/{-$page}'
+      fullPath: '/rankings/3v3/{-$region}/{-$page}'
+      preLoaderRoute: typeof Rankings3v3Char123RegionChar125Char123PageChar125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -103,6 +124,8 @@ const rootRouteChildren: RootRouteChildren = {
     Rankings1v1Char123RegionChar125Char123PageChar125Route,
   Rankings2v2Char123RegionChar125Char123PageChar125Route:
     Rankings2v2Char123RegionChar125Char123PageChar125Route,
+  Rankings3v3Char123RegionChar125Char123PageChar125Route:
+    Rankings3v3Char123RegionChar125Char123PageChar125Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

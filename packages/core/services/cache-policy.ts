@@ -1,5 +1,5 @@
 import type { RankedRegion } from "@crh/bhapi/constants"
-import type { Bracket } from "@crh/bhapi/types"
+import type { Ladder } from "@crh/bhapi/types"
 
 /**
  * Cache keys and windows, in one place.
@@ -48,7 +48,7 @@ export const cacheKeys = {
      * warm a different key than the plain page it was filtered from.
      */
     leaderboard: (
-        bracket: Bracket,
+        bracket: Ladder,
         region: RankedRegion,
         page: number,
         name?: string,

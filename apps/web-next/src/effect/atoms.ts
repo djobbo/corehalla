@@ -43,6 +43,14 @@ export const rankings2v2Atom = (region: Region, page: number) =>
         timeToLive: ttl,
     })
 
+/** The 3v3 ladder. v1-only: the legacy API has no 3v3 mode. */
+export const rankings3v3Atom = (region: Region, page: number) =>
+    CorehallaClient.query("rankings", "get3v3Rankings", {
+        query: { region, page },
+        serializationKey: `3v3:${region}:${page}`,
+        timeToLive: ttl,
+    })
+
 export const globalRankingsAtom = (sortBy: SortableProp, page: number) =>
     CorehallaClient.query("rankings", "getGlobalPlayerRankings", {
         query: { sortBy, page },

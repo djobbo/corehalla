@@ -17,6 +17,7 @@ import {
     RankedRegion,
     Ranking1v1Schema,
     Ranking2v2Schema,
+    Ranking3v3Schema,
     SortablePlayerProp,
     WeeklyRotationSchema,
 } from "./schemas"
@@ -47,6 +48,18 @@ const rankings = HttpApiGroup.make("rankings")
                 page: Schema.FiniteFromString,
             },
             success: Ranking2v2Schema,
+        }),
+
+        /**
+         * The 3v3 ladder. v1-only: the legacy API has no 3v3 mode, so there is
+         * no fallback source for it.
+         */
+        HttpApiEndpoint.get("get3v3Rankings", "/api/v1/rankings/3v3", {
+            query: {
+                region: RankedRegion,
+                page: Schema.FiniteFromString,
+            },
+            success: Ranking3v3Schema,
         }),
     )
     .add(

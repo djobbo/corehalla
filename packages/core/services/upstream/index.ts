@@ -12,25 +12,27 @@ import {
     toPlayerStats,
     toRankings1v1,
     toRankings2v2,
+    toRankings3v3,
     v1Ops,
 } from "./v1"
 import type {
-    Bracket,
+    Ladder,
     Clan,
     PlayerRanked,
     PlayerStats,
     Ranking1v1,
     Ranking2v2,
+    Ranking3v3,
 } from "@crh/bhapi/types"
 import type { RankedRegion } from "@crh/bhapi/constants"
 
 type UpstreamShape = {
     readonly getRankings: (
-        bracket: Bracket,
+        bracket: Ladder,
         region: RankedRegion,
         page: number,
         name?: string,
-    ) => Effect.Effect<readonly (Ranking1v1 | Ranking2v2)[]>
+    ) => Effect.Effect<readonly (Ranking1v1 | Ranking2v2 | Ranking3v3)[]>
     readonly getPlayerStats: (
         playerId: number,
     ) => Effect.Effect<PlayerStats | null>
@@ -79,18 +81,37 @@ export const rawLayer = Layer.effect(
                         name,
                     )
 
-                    // A 1v1 row is one player and a 2v2 row is the pair; a page
-                    // whose rows do not have that shape is not the ladder we
-                    // asked for.
-                    const playersPerRow = bracket === "1v1" ? 1 : 2
+                    // A 1v1 row is one player and a 2v2 row is the pair. 3v3 is
+                    // also one player per row: it is a solo queue whose teams
+                    // are assembled per match. Verified against the live
+                    // endpoint — assuming a trio here is what made 3v3 return an
+                    // empty ladder.
+                    const playersPerRow = bracket === "2v2" ? 2 : 1
 
                     if (
                         board !== null &&
                         isCompleteLeaderboard(board, playersPerRow)
                     ) {
-                        return bracket === "1v1"
-                            ? toRankings1v1(board.rankings)
-                            : toRankings2v2(board.rankings)
+                        if (bracket === "1v1") {
+                            return toRankings1v1(board.rankings)
+                        }
+
+                        return bracket === "2v2"
+                            ? toRankings2v2(board.rankings)
+                            : toRankings3v3(board.rankings)
+                    }
+
+                    // 3v3 has no fallback: the legacy API exposes no 3v3 mode
+                    // at all, so there is nothing to fall back *to*. An
+                    // incomplete page is an empty page rather than an error —
+                    // v1 having a bad moment should not 500 the ladder.
+                    if (bracket === "3v3") {
+                        yield* Effect.logDebug(
+                            `v1 could not serve 3v3 rankings ` +
+                                `(${region} page ${page}); no v0 source exists`,
+                        )
+
+                        return []
                     }
 
                     yield* Effect.logDebug(

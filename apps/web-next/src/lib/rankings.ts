@@ -13,7 +13,7 @@ type Region = typeof RankedRegion.Type
  */
 
 /** The ladders the API serves as ranked tables. */
-export const brackets = ["1v1", "2v2"] as const
+export const brackets = ["1v1", "2v2", "3v3"] as const
 export type Bracket = (typeof brackets)[number]
 
 export const regions: readonly { value: Region; label: string }[] = [
@@ -30,7 +30,7 @@ export const regions: readonly { value: Region; label: string }[] = [
 ]
 
 export const bracketLabel = (bracket: Bracket): string =>
-    bracket === "1v1" ? "1v1" : "2v2"
+    bracket
 
 export const regionLabel = (region: Region): string =>
     regions.find((entry) => entry.value === region)?.label ?? "Global"

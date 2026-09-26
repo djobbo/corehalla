@@ -1,4 +1,4 @@
-import type { Ranking1v1, Ranking2v2 } from "@crh/bhapi/types"
+import type { Ranking1v1, Ranking2v2, Ranking3v3 } from "@crh/bhapi/types"
 
 /**
  * The view shape of a ladder row.
@@ -51,3 +51,19 @@ export const to2v2Rows = (
             ].filter((member) => member.id > 0),
         }
     })
+
+/**
+ * A 3v3 row is a single player.
+ *
+ * 3v3 is a solo queue whose teams are assembled per match, so its ladder looks
+ * like 1v1 rather than like a team table — the mode name is about the match, not
+ * about the roster.
+ */
+export const to3v3Rows = (rows: readonly Ranking3v3[]): readonly LadderRow[] =>
+    rows.map((row) => ({
+        key: String(row.brawlhalla_id),
+        rank: row.rank,
+        rating: row.rating,
+        tier: row.tier,
+        members: [{ id: row.brawlhalla_id, name: row.name }],
+    }))

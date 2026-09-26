@@ -5,6 +5,7 @@ import type {
     PlayerStats,
     Ranking1v1,
     Ranking2v2,
+    Ranking3v3,
 } from "@crh/bhapi/types"
 import type { Legend } from "@crh/bhapi/types"
 import type { BHArticle } from "@crh/web-parser/common"
@@ -86,6 +87,7 @@ export type SortablePlayerProp = typeof SortablePlayerProp.Type
 
 export const Ranking1v1Schema = json<readonly Ranking1v1[]>()
 export const Ranking2v2Schema = json<readonly Ranking2v2[]>()
+export const Ranking3v3Schema = json<readonly Ranking3v3[]>()
 export const PlayerStatsSchema = json<PlayerStats>()
 export const PlayerRankedSchema = json<PlayerRanked>()
 export const PlayerAliasesSchema = json<readonly string[]>()

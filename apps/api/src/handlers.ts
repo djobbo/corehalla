@@ -7,7 +7,11 @@ import { Content } from "./services/content"
 import { Database, searchKey } from "@crh/core/services/archive"
 import { Lookup } from "@crh/core/services/lookup"
 import type { BHPlayerAlias } from "@crh/db/schema"
-import type { Ranking1v1, Ranking2v2 } from "@crh/bhapi/types"
+import type {
+    Ranking1v1,
+    Ranking2v2,
+    Ranking3v3,
+} from "@crh/bhapi/types"
 
 /**
  * Server implementations of the `CorehallaApi` contract.
@@ -112,6 +116,17 @@ export const rankingsGroup = HttpApiBuilder.group(
                         query.region,
                         query.page,
                     )) as readonly Ranking2v2[]
+                }),
+            )
+            // v1-only: the legacy API has no 3v3 mode, so there is no fallback
+            // source and an incomplete v1 page surfaces as an empty ladder.
+            .handle("get3v3Rankings", ({ query }) =>
+                Effect.gen(function* () {
+                    return (yield* brawlhalla.getRankings(
+                        "3v3",
+                        query.region,
+                        query.page,
+                    )) as readonly Ranking3v3[]
                 }),
             )
             .handle("getGlobalPlayerRankings", ({ query }) =>

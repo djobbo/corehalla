@@ -2,6 +2,15 @@ import type { ClanRank, RankedRegion, RankedTier, Weapon } from "./constants"
 
 export type Bracket = "1v1" | "2v2"
 
+/**
+ * A bracket that exists as a ranked ladder.
+ *
+ * Wider than `Bracket`, which is the legacy client's vocabulary and also what
+ * power rankings take: `3v3` is served by v1 only, so only the ladder paths
+ * accept it.
+ */
+export type Ladder = "1v1" | "2v2" | "3v3"
+
 export type PlayerStats = {
     brawlhalla_id: number
     name: string
@@ -129,6 +138,23 @@ export type Ranking2v2 = Ranking & {
     brawlhalla_id_two: number
     twitch_name_one?: string
     twitch_name_two?: string
+}
+
+/**
+ * A 3v3 ladder row.
+ *
+ * v1-only: the legacy API exposes no 3v3 mode, so unlike the other two ladders
+ * this one has no fallback source.
+ *
+ * Shaped like `Ranking1v1`, not like `Ranking2v2`, and that is a property of the
+ * mode rather than a modelling choice: v1's 3v3 ladder carries **one player per
+ * row**, because 3v3 is a solo queue whose teams are assembled per match — there
+ * is no persistent trio to represent. Verified against the live endpoint, where
+ * every row has `players.length === 1`.
+ */
+export type Ranking3v3 = Ranking & {
+    name: string
+    brawlhalla_id: number
 }
 
 export type Legend = {

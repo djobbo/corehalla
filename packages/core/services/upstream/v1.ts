@@ -3,7 +3,13 @@ import { HttpClient } from "effect/unstable/http"
 import { retryTransient } from "../retry"
 import { legendsMap } from "@crh/bhapi/legends"
 import type { ClanRank, RankedTier } from "@crh/bhapi/constants"
-import type { Clan, PlayerStats, Ranking1v1, Ranking2v2 } from "@crh/bhapi/types"
+import type {
+    Clan,
+    PlayerStats,
+    Ranking1v1,
+    Ranking2v2,
+    Ranking3v3,
+} from "@crh/bhapi/types"
 
 /**
  * Brawlhalla API **v1** (`https://api.brawlhalla.com/v1`).
@@ -312,6 +318,28 @@ export const toRankings2v2 = (
         teamname: entry.players.map((player) => player.username).join("+"),
         brawlhalla_id_one: entry.players[0]?.id ?? 0,
         brawlhalla_id_two: entry.players[1]?.id ?? 0,
+    }))
+
+/**
+ * A 3v3 row.
+ *
+ * One player per row, exactly like 1v1, because 3v3 is a solo queue whose teams
+ * are assembled per match. Verified against the live endpoint — modelling this
+ * as a trio is what made the 3v3 ladder come back empty.
+ */
+export const toRankings3v3 = (
+    entries: readonly V1RankingEntry[],
+): readonly Ranking3v3[] =>
+    entries.map((entry) => ({
+        rank: entry.rank,
+        rating: entry.rating ?? 0,
+        peak_rating: entry.best_rating ?? 0,
+        games: gamesOf(entry),
+        wins: entry.wins ?? 0,
+        tier: entry.tier as RankedTier,
+        region: fromV1Region(entry.region ?? "ALL") as Ranking3v3["region"],
+        name: entry.players[0]?.username ?? "",
+        brawlhalla_id: entry.players[0]?.id ?? 0,
     }))
 
 /**

@@ -9,7 +9,7 @@ import { CorehallaApi } from "@crh/api-contract/Api"
  * the same origin (see `vite.config.ts`); `fetch` cannot resolve a relative URL
  * on the server, so SSR needs this absolute form.
  */
-const apiOrigin = import.meta.env["VITE_API_ORIGIN"] ?? "http://localhost:8787"
+const apiOrigin = import.meta.env["VITE_API_ORIGIN"] ?? "http://localhost:1338"
 
 /** Identity type for the client service; `Self` has no inference site. */
 export interface CorehallaClientSelf {

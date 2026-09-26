@@ -22,7 +22,7 @@ import { defineConfig } from "vite-plus"
  * usable target: it answers non-browser requests with a Cloudflare bot challenge,
  * so a server-side proxy to it returns 403.
  */
-const apiOrigin = process.env["VITE_API_ORIGIN"] ?? "http://localhost:8787"
+const apiOrigin = process.env["VITE_API_ORIGIN"] ?? "http://localhost:1338"
 
 const PORT = 3001
 

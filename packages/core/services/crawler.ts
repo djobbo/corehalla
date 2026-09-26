@@ -222,9 +222,20 @@ export const layer = Layer.effect(
                     rows,
                     (row) =>
                         Effect.forEach(
-                            playerIdsForRow(target.bracket, row),
+                            // The crawl matrix is 1v1 and 2v2 only, so the rows
+                            // here are always one of those shapes; `3v3` is a
+                            // ladder the crawler does not walk yet.
+                            playerIdsForRow(
+                                target.bracket,
+                                row as Ranking1v1 | Ranking2v2,
+                            ),
                             (playerId) =>
-                                crawlPlayer(target, row, playerId, config),
+                                crawlPlayer(
+                                    target,
+                                    row as Ranking1v1 | Ranking2v2,
+                                    playerId,
+                                    config,
+                                ),
                             { concurrency: 1 },
                         ),
                     { concurrency: config.playerConcurrency },
