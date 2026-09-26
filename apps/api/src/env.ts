@@ -29,6 +29,8 @@ type WorkerEnvironment = {
     DB?: D1Database
     /** The KV namespace backing the read-through cache. */
     CACHE?: KVNamespaceLike
+    /** Cloudflare's rate-limiting binding, used as the refresh damper. */
+    RATE_LIMITER?: RateLimitLike
     BRAWLHALLA_API_KEY?: string
     SITE_URL?: string
     [key: string]: unknown
@@ -104,4 +106,26 @@ export const cacheNamespace = async (): Promise<KVNamespaceLike | undefined> => 
     const env = await workerEnv()
 
     return env.CACHE
+}
+
+/**
+ * The subset of Cloudflare's rate-limiting binding this worker uses.
+ *
+ * Declared structurally for the same reason as `KVNamespaceLike`: the binding
+ * only has to satisfy what the limiter calls.
+ */
+export type RateLimitLike = {
+    limit: (options: { key: string }) => Promise<{ success: boolean }>
+}
+
+/**
+ * The rate-limiting binding, or `undefined` when it is not bound.
+ *
+ * A missing binding is not an error: the limiter fails open, so local runs and
+ * any deploy without it simply have no damper.
+ */
+export const rateLimitBinding = async (): Promise<RateLimitLike | undefined> => {
+    const env = await workerEnv()
+
+    return env.RATE_LIMITER
 }

@@ -175,6 +175,19 @@ export const CorehallaApi = Cloudflare.Worker("CorehallaApi", {
     env: {
         DB: CorehallaDb,
         CACHE: CorehallaCache,
+        // Cloudflare's own rate-limiting binding: a Worker-only binding with no
+        // backing resource to provision.
+        //
+        // The limit is a burst damper, not a meter. It is enforced per colo and
+        // is only eventually consistent, so the aggregate across colos can
+        // exceed this number — Cloudflare documents the API as protection
+        // against overwhelming an upstream rather than as exact accounting.
+        // 10/min per colo sits far above normal traffic once the cache is warm
+        // (a handful of requests a minute) and well below a flood.
+        RATE_LIMITER: Cloudflare.RateLimit("RATE_LIMITER", {
+            namespaceId: 1001,
+            simple: { limit: 10, period: 60 },
+        }),
         SITE_URL: siteUrl,
         BRAWLHALLA_API_KEY: Redacted.make(
             env("BRAWLHALLA_API_KEY", "", true),

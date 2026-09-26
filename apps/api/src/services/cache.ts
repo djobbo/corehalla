@@ -1,5 +1,6 @@
 import { Context, Effect, Layer } from "effect"
 import { cacheNamespace } from "../env"
+import { allowRefresh, UPSTREAM_LIMIT_KEY } from "./rate-limit"
 
 /**
  * Read-through cache for upstream payloads, with a stale tier.
@@ -142,8 +143,13 @@ export const layer = Layer.succeed(Cache, {
             if (found?.fresh) return found.value as never
 
             // Stale or absent: this is the point that may cost a request, so it
-            // is the only place the budget is consulted.
-            const mayRefresh = refresh === undefined ? true : yield* refresh
+            // is the only place the budget is consulted. The default gate lives
+            // here rather than at each call site so a new cached operation
+            // cannot forget to consult it.
+            const mayRefresh =
+                refresh === undefined
+                    ? yield* allowRefresh(UPSTREAM_LIMIT_KEY)
+                    : yield* refresh
 
             if (!mayRefresh) {
                 if (found) {
