@@ -1,12 +1,12 @@
 import { Effect, Layer } from "effect"
 import { FetchHttpClient } from "effect/unstable/http"
 import { layer as sqlLayer } from "@crh/db/client"
-import { d1Database } from "./env"
-import { layer as DatabaseLayer } from "./services/archive"
-import { layer as CacheLayer } from "./services/cache"
-import { rawLayer as UpstreamLayer } from "./services/upstream"
-import { layer as CrawlerLayer } from "./services/crawler"
-import type { Crawler } from "./services/crawler"
+import { d1Database } from "@crh/core/env"
+import { layer as DatabaseLayer } from "@crh/core/services/archive"
+import { layer as CacheLayer } from "@crh/core/services/cache"
+import { rawLayer as UpstreamLayer } from "@crh/core/services/upstream"
+import { layer as CrawlerLayer } from "@crh/core/services/crawler"
+import type { Crawler } from "@crh/core/services/crawler"
 
 /**
  * Runs a crawler effect against services scoped to the invocation.

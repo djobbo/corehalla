@@ -204,6 +204,9 @@ importers:
       '@crh/common':
         specifier: workspace:*
         version: link:../../packages/common
+      '@crh/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@crh/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -226,9 +229,31 @@ importers:
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
-      vitest:
-        specifier: ^4.1.11
-        version: 4.1.11(@types/node@24.13.6)(@vitest/browser-preview@4.1.11)(@voidzero-dev/vite-plus-core@0.3.3(@types/node@24.13.6)(jiti@2.7.0)(terser@5.51.2)(typescript@7.0.2)(yaml@2.9.1))
+
+  apps/crawler:
+    dependencies:
+      '@crh/bhapi':
+        specifier: workspace:*
+        version: link:../../packages/bhapi
+      '@crh/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@crh/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      effect:
+        specifier: 4.0.0-rc.116
+        version: 4.0.0-rc.116
+    devDependencies:
+      '@crh/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.13.6
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
 
   apps/web:
     dependencies:
@@ -459,6 +484,37 @@ importers:
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
+
+  packages/core:
+    dependencies:
+      '@crh/api-contract':
+        specifier: workspace:*
+        version: link:../api-contract
+      '@crh/bhapi':
+        specifier: workspace:*
+        version: link:../bhapi
+      '@crh/db':
+        specifier: workspace:*
+        version: link:../db
+      effect:
+        specifier: 4.0.0-rc.116
+        version: 4.0.0-rc.116
+    devDependencies:
+      '@crh/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@effect/vitest':
+        specifier: 4.0.0-rc.117
+        version: 4.0.0-rc.117(effect@4.0.0-rc.116)(vitest@5.0.2)
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.13.6
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
+      vitest:
+        specifier: ^5.0.2
+        version: 5.0.2(@types/node@24.13.6)(@vitest/browser-preview@4.1.11)(@voidzero-dev/vite-plus-core@0.3.3(@types/node@24.13.6)(jiti@2.7.0)(terser@5.51.2)(typescript@7.0.2)(yaml@2.9.1))
 
   packages/db:
     dependencies:

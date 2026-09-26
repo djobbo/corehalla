@@ -1,5 +1,5 @@
 {
-    "name": "@crh/api",
+    "name": "@crh/crawler",
     "version": "0.0.0",
     "private": true,
     "type": "module",
@@ -12,13 +12,9 @@
         "typescript": "^7.0.2"
     },
     "dependencies": {
-        "@crh/api-contract": "workspace:*",
         "@crh/bhapi": "workspace:*",
-        "@crh/common": "workspace:*",
-        "@crh/db": "workspace:*",
-        "@crh/logger": "workspace:*",
-        "@crh/web-parser": "workspace:*",
+        "@crh/core": "workspace:*",
         "effect": "4.0.0-rc.116",
-        "@crh/core": "workspace:*"
+        "@crh/db": "workspace:*"
     }
 }

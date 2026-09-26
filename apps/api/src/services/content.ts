@@ -4,7 +4,7 @@ import {
     getWeeklyRotation as getWeeklyRotationFn,
 } from "@crh/web-parser/common"
 import { parsePowerRankingsPage } from "@crh/web-parser/power-rankings/parsePowerRankingsPage"
-import { ContentError } from "../errors"
+import { ContentError } from "@crh/core/errors"
 import type { BHArticle, BrawlhallaArticleCategory } from "@crh/web-parser/common"
 import type { Legend } from "@crh/bhapi/types"
 import type {

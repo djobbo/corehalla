@@ -179,28 +179,20 @@ export const CorehallaCrawlQueue = Cloudflare.Queues.Queue(
  *
  * `BRAWLHALLA_API_KEY` belongs here and not on the web worker: nothing under
  * `apps/web` talks to Brawlhalla any more.
+ *
+ * The crawler is a *separate* worker (`CorehallaCrawler` below), so this one
+ * serves traffic only. Neither the cron nor the queue producer lives here.
  */
 export const CorehallaApi = Cloudflare.Worker("CorehallaApi", {
     name: "corehalla-api",
     main: "apps/api/src/index.ts",
     routes: [{ pattern: `${hostname}/api/v1/*` }],
-    // Every ten minutes: one queue delivery per ladder, one page each.
-    //
-    // Sized from the v1 allowance of 2,000 requests per 15 minutes. A page
-    // costs 1 + players requests (the ladder page, then one `/player/stats`
-    // each), so a 20-target pass is ~1,020 requests. At one pass per ten minutes
-    // that is ~1,530 per window — about three quarters of the allowance, leaving
-    // the remainder for user traffic that misses the cache.
-    crons: ["*/10 * * * *"],
     compatibility: {
         flags: ["enable_request_signal"],
     },
     env: {
         DB: CorehallaDb,
         CACHE: CorehallaCache,
-        // Producer side of the crawl queue. The consumer is registered below,
-        // once the worker and the queue have both resolved to real names.
-        CRAWL_QUEUE: CorehallaCrawlQueue,
         // Cloudflare's own rate-limiting binding: a Worker-only binding with no
         // backing resource to provision.
         //
@@ -214,6 +206,52 @@ export const CorehallaApi = Cloudflare.Worker("CorehallaApi", {
             namespaceId: 1001,
             simple: { limit: 10, period: 60 },
         }),
+        SITE_URL: siteUrl,
+        BRAWLHALLA_API_KEY: Redacted.make(
+            env("BRAWLHALLA_API_KEY", "", true),
+        ),
+    },
+})
+
+/**
+ * The crawler worker (`@crh/crawler`).
+ *
+ * Split out from the API so the two stop contending for one upstream allowance.
+ *
+ * Worth being precise about what that does and does not buy. The v1 limit is
+ * **per IP**, and Workers egress from shared Cloudflare addresses, so two
+ * Workers do not receive two allowances — Brawlhalla sees Cloudflare's egress
+ * pool either way. What the split does buy is control: each worker has its own
+ * budget we can pace independently, the crawler can no longer consume the share
+ * reserved for user requests, and a long crawl cannot affect request latency or
+ * share a failure domain with the API.
+ *
+ * It has no route and no `fetch` handler, so it is unreachable from the
+ * internet. No `RATE_LIMITER` either: the crawler paces itself rather than
+ * passing through the cache's damper, which exists to protect user traffic.
+ */
+export const CorehallaCrawler = Cloudflare.Worker("CorehallaCrawler", {
+    name: "corehalla-crawler",
+    main: "apps/crawler/src/index.ts",
+    // Every ten minutes: one queue delivery per ladder, one page each.
+    //
+    // Sized from the v1 allowance of 2,000 requests per 15 minutes. A page
+    // costs 1 + players requests (the ladder page, then one `/player/stats`
+    // each), so a 20-target pass is ~1,020 requests. At one pass per ten minutes
+    // that is ~1,530 per window — about three quarters of the allowance, leaving
+    // the remainder for user traffic that misses the cache.
+    crons: ["*/10 * * * *"],
+    compatibility: {
+        flags: ["enable_request_signal"],
+    },
+    env: {
+        DB: CorehallaDb,
+        // The crawler writes what it fetches into the same namespace the API
+        // reads, which is the point of warming it.
+        CACHE: CorehallaCache,
+        // Producer side of the crawl queue. The consumer is registered below,
+        // once both the worker and the queue have resolved to real names.
+        CRAWL_QUEUE: CorehallaCrawlQueue,
         SITE_URL: siteUrl,
         BRAWLHALLA_API_KEY: Redacted.make(
             env("BRAWLHALLA_API_KEY", "", true),
@@ -273,19 +311,23 @@ export default Alchemy.Stack(
     Effect.gen(function* () {
         const website = yield* Website
         const db = yield* CorehallaDb
-        const api = yield* CorehallaApi
+        const crawler = yield* CorehallaCrawler
         const crawlQueue = yield* CorehallaCrawlQueue
 
         // Registered here rather than on the Worker because a consumer needs
         // both the queue's id and the worker's script name, and those are
         // outputs that only exist after both resources resolve.
         //
+        // The consumer is the *crawler* worker, not the API: a queue delivery is
+        // crawl work, and routing it through the request worker would put the
+        // crawl back on the API's budget and failure domain.
+        //
         // Serialised on purpose: the constraint the crawler works against is the
-        // shared upstream request budget, so concurrent deliveries would contend
-        // for the same allowance rather than finishing sooner.
+        // upstream request budget, so concurrent deliveries would contend for
+        // the same allowance rather than finishing sooner.
         yield* Cloudflare.Queues.Consumer("CorehallaCrawlConsumer", {
             queueId: crawlQueue.queueId,
-            scriptName: api.workerName,
+            scriptName: crawler.workerName,
             settings: {
                 batchSize: 1,
                 maxConcurrency: 1,

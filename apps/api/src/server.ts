@@ -2,7 +2,7 @@ import { Layer } from "effect"
 import { FetchHttpClient, HttpRouter, HttpServer } from "effect/unstable/http"
 import { HttpApiBuilder } from "effect/unstable/httpapi"
 import { layer as sqlLayer } from "@crh/db/client"
-import { d1Database } from "./env"
+import { d1Database } from "@crh/core/env"
 import { CorehallaApi } from "@crh/api-contract/Api"
 import {
     contentGroup,
@@ -10,10 +10,10 @@ import {
     searchGroup,
     statsGroup,
 } from "./handlers"
-import { layer as BrawlhallaLayer } from "./services/upstream"
-import { layer as CacheLayer } from "./services/cache"
+import { layer as BrawlhallaLayer } from "@crh/core/services/upstream"
+import { layer as CacheLayer } from "@crh/core/services/cache"
 import { layer as ContentLayer } from "./services/content"
-import { layer as DatabaseLayer } from "./services/archive"
+import { layer as DatabaseLayer } from "@crh/core/services/archive"
 import type { D1Database } from "@crh/db/client"
 
 /**
