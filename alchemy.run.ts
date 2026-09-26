@@ -335,30 +335,28 @@ export default Alchemy.Stack(
         /**
          * The UX study (`@crh/web-next`).
          *
-         * Deployed so it can be looked at on a real device, but **without a
-         * custom domain**: no `domain` prop means Alchemy attaches nothing to
-         * the zone, so no DNS record or edge certificate is involved and the app
-         * is reachable at its `workers.dev` URL. That keeps an in-progress UX
-         * from holding a hostname.
+         * `next.` rather than the bare hostname, because `corehalla.com` is the
+         * existing app's custom domain and two Workers cannot hold the same one.
+         * The zone must already exist; Alchemy manages the DNS record and the
+         * edge certificate.
          *
-         * Defined here rather than as a class because its API origin is the API
-         * worker's own resolved URL, which only exists once that resource has
-         * been yielded. Writing the origin down — the site hostname in
-         * production, a guessed port in dev — is the thing this avoids: under
-         * `alchemy dev` the port is assigned by Alchemy, so any literal would be
-         * a coincidence that breaks the moment it changes.
-         *
-         * The browser cannot use a relative `/api/v1/*` path: this worker serves
-         * no API, so a relative call would hit itself. An absolute origin makes
-         * every call cross-origin, which is why the API worker sends CORS
-         * headers — and, usefully, in dev as well as production, so a CORS
-         * mistake shows up locally instead of only after a deploy.
+         * It reaches the API over a **service binding** rather than a configured
+         * origin, and that is the point rather than a detail. An origin has to be
+         * written down, and under `alchemy dev` the API's port is reassigned on
+         * every run — so a value captured at build time goes stale and the app
+         * starts calling whatever now occupies that port. That is not
+         * hypothetical: it surfaced as a CORS error in the browser and a decode
+         * error on the server, neither of which pointed at the cause. A binding
+         * is resolved per request from the live environment, behaves the same in
+         * dev and production, and means the browser never makes a cross-origin
+         * call at all.
          */
         const websiteNext = yield* Cloudflare.Website.Vite("CorehallaWebNext", {
             rootDir: "./apps/web-next",
             name: "corehalla-web-next",
+            domain: `next.${hostname}`,
             env: {
-                VITE_API_ORIGIN: api.url.as<string>(),
+                API: CorehallaApi,
             },
         })
 

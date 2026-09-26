@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiV1SplatRouteImport } from './routes/api/v1/$'
 import { Route as Rankings1v1Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/1v1.{-$region}.{-$page}'
 import { Route as Rankings2v2Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/2v2.{-$region}.{-$page}'
 import { Route as Rankings3v3Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/3v3.{-$region}.{-$page}'
@@ -17,6 +18,11 @@ import { Route as Rankings3v3Char123RegionChar125Char123PageChar125RouteImport }
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1SplatRoute = ApiV1SplatRouteImport.update({
+  id: '/api/v1/$',
+  path: '/api/v1/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Rankings1v1Char123RegionChar125Char123PageChar125Route =
@@ -40,12 +46,14 @@ const Rankings3v3Char123RegionChar125Char123PageChar125Route =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/v1/$': typeof ApiV1SplatRoute
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/3v3/{-$region}/{-$page}': typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/v1/$': typeof ApiV1SplatRoute
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/3v3/{-$region}/{-$page}': typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
@@ -53,6 +61,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/v1/$': typeof ApiV1SplatRoute
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/3v3/{-$region}/{-$page}': typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
@@ -61,18 +70,21 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/api/v1/$'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
     | '/rankings/3v3/{-$region}/{-$page}'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/api/v1/$'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
     | '/rankings/3v3/{-$region}/{-$page}'
   id:
     | '__root__'
     | '/'
+    | '/api/v1/$'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
     | '/rankings/3v3/{-$region}/{-$page}'
@@ -80,6 +92,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiV1SplatRoute: typeof ApiV1SplatRoute
   Rankings1v1Char123RegionChar125Char123PageChar125Route: typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   Rankings2v2Char123RegionChar125Char123PageChar125Route: typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   Rankings3v3Char123RegionChar125Char123PageChar125Route: typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
@@ -92,6 +105,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/$': {
+      id: '/api/v1/$'
+      path: '/api/v1/$'
+      fullPath: '/api/v1/$'
+      preLoaderRoute: typeof ApiV1SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rankings/1v1/{-$region}/{-$page}': {
@@ -120,6 +140,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiV1SplatRoute: ApiV1SplatRoute,
   Rankings1v1Char123RegionChar125Char123PageChar125Route:
     Rankings1v1Char123RegionChar125Char123PageChar125Route,
   Rankings2v2Char123RegionChar125Char123PageChar125Route:
