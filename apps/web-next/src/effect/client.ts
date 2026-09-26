@@ -3,13 +3,20 @@ import { FetchHttpClient } from "effect/unstable/http"
 import { CorehallaApi } from "@crh/api-contract/Api"
 
 /**
- * Where the API actually answers, for the **server** render.
+ * Where the API answers, supplied by the deployment as `VITE_API_ORIGIN`.
  *
- * The browser uses relative `/api/v1/*` paths, which the dev server proxies to
- * the same origin (see `vite.config.ts`); `fetch` cannot resolve a relative URL
- * on the server, so SSR needs this absolute form.
+ * There is deliberately **no fallback**. The origin belongs to whoever deployed
+ * the app: under `alchemy dev` it is the API worker's own resolved URL, and in
+ * production it is the API's public URL. A literal here would be a guess that
+ * silently points somewhere wrong the moment the API moves, and the symptom
+ * would be an empty page rather than an error.
+ *
+ * An empty value leaves requests relative, which is the right shape for a
+ * same-origin deployment and simply finds nothing when there is nothing there.
+ * Both the browser and the server render use this one value, so there is no
+ * second path that could disagree with it.
  */
-const apiOrigin = import.meta.env["VITE_API_ORIGIN"] ?? "http://localhost:1338"
+const apiOrigin = import.meta.env["VITE_API_ORIGIN"] ?? ""
 
 /** Identity type for the client service; `Self` has no inference site. */
 export interface CorehallaClientSelf {
@@ -28,6 +35,11 @@ export const CorehallaClient = AtomHttpApi.Service<CorehallaClientSelf>()(
     {
         api: CorehallaApi,
         httpClient: FetchHttpClient.layer,
-        baseUrl: import.meta.env.SSR ? apiOrigin : undefined,
+        // Applied to the browser as well as the server. It used to be
+        // server-only, because the browser reached the API through the dev
+        // server's proxy on a relative path; with the proxy gone a relative call
+        // would hit this app's own origin and 404. An empty origin still means
+        // relative, which is right for a same-origin deployment.
+        baseUrl: apiOrigin === "" ? undefined : apiOrigin,
     },
 )

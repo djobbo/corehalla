@@ -207,9 +207,7 @@ export const CorehallaApi = Cloudflare.Worker("CorehallaApi", {
             simple: { limit: 10, period: 60 },
         }),
         SITE_URL: siteUrl,
-        BRAWLHALLA_API_KEY: Redacted.make(
-            env("BRAWLHALLA_API_KEY", "", true),
-        ),
+        BRAWLHALLA_API_KEY: Redacted.make(env("BRAWLHALLA_API_KEY", "", true)),
     },
 })
 
@@ -254,9 +252,7 @@ export const CorehallaCrawler = Cloudflare.Worker("CorehallaCrawler", {
         // once both the worker and the queue have resolved to real names.
         CRAWL_QUEUE: CorehallaCrawlQueue,
         SITE_URL: siteUrl,
-        BRAWLHALLA_API_KEY: Redacted.make(
-            env("BRAWLHALLA_API_KEY", "", true),
-        ),
+        BRAWLHALLA_API_KEY: Redacted.make(env("BRAWLHALLA_API_KEY", "", true)),
     },
 })
 
@@ -290,51 +286,36 @@ export class Website extends Cloudflare.Website.Vite<Website>()(
             // loading. The browser reaches the same worker over the public
             // `/api/v1/*` route instead.
             API: CorehallaApi,
-            VITE_ADSENSE_SLOT_PROFILE_HEADER: env("VITE_ADSENSE_SLOT_PROFILE_HEADER", "", true),
-            VITE_ADSENSE_SLOT_PROFILE_BOTTOM: env("VITE_ADSENSE_SLOT_PROFILE_BOTTOM", "", true),
-            VITE_ADSENSE_SLOT_ARTICLES: env("VITE_ADSENSE_SLOT_ARTICLES", "", true),
-            VITE_ADSENSE_SLOT_RANKINGS: env("VITE_ADSENSE_SLOT_RANKINGS", "", true),
-            VITE_ADSENSE_SLOT_LANDING: env("VITE_ADSENSE_SLOT_LANDING", "", true),
+            VITE_ADSENSE_SLOT_PROFILE_HEADER: env(
+                "VITE_ADSENSE_SLOT_PROFILE_HEADER",
+                "",
+                true,
+            ),
+            VITE_ADSENSE_SLOT_PROFILE_BOTTOM: env(
+                "VITE_ADSENSE_SLOT_PROFILE_BOTTOM",
+                "",
+                true,
+            ),
+            VITE_ADSENSE_SLOT_ARTICLES: env(
+                "VITE_ADSENSE_SLOT_ARTICLES",
+                "",
+                true,
+            ),
+            VITE_ADSENSE_SLOT_RANKINGS: env(
+                "VITE_ADSENSE_SLOT_RANKINGS",
+                "",
+                true,
+            ),
+            VITE_ADSENSE_SLOT_LANDING: env(
+                "VITE_ADSENSE_SLOT_LANDING",
+                "",
+                true,
+            ),
         },
     },
 ) {}
 
 export type WebsiteEnv = Cloudflare.InferEnv<typeof Website>
-
-/**
- * The UX study (`@crh/web-next`).
- *
- * Deployed so it can be looked at on a real device, but **without a custom
- * domain**: no `domain` prop means Alchemy attaches nothing to the zone, so no
- * DNS record or edge certificate is involved and the app is reachable at its
- * `workers.dev` URL. That keeps an in-progress UX from holding a hostname.
- *
- * ## Why the API origin is a build-time value here
- *
- * The browser cannot use a relative `/api/v1/*` path the way it does under the
- * dev server's proxy: this worker serves no API, so a relative call would hit
- * itself. `VITE_API_ORIGIN` therefore has to be absolute — and it is what makes
- * CORS necessary on the API worker, since a workers.dev origin calling the site
- * hostname is cross-origin.
- *
- * In dev the same variable points at the locally running API instead. Both cases
- * resolve from one value, so there is no second code path to keep in step.
- */
-export class WebsiteNext extends Cloudflare.Website.Vite<WebsiteNext>()(
-    "CorehallaWebNext",
-    {
-        rootDir: "./apps/web-next",
-        name: "corehalla-web-next",
-        env: {
-            // `isDev` is Alchemy's local run: the API is on the port `alchemy
-            // dev` gave it, not on the public site.
-            VITE_API_ORIGIN: isDev ? "http://localhost:1338" : siteUrl,
-            VITE_SITE_URL: siteUrl,
-        },
-    },
-) {}
-
-export type WebsiteNextEnv = Cloudflare.InferEnv<typeof WebsiteNext>
 
 export default Alchemy.Stack(
     "Corehalla",
@@ -346,10 +327,40 @@ export default Alchemy.Stack(
     },
     Effect.gen(function* () {
         const website = yield* Website
-        const websiteNext = yield* WebsiteNext
         const db = yield* CorehallaDb
+        const api = yield* CorehallaApi
         const crawler = yield* CorehallaCrawler
         const crawlQueue = yield* CorehallaCrawlQueue
+
+        /**
+         * The UX study (`@crh/web-next`).
+         *
+         * Deployed so it can be looked at on a real device, but **without a
+         * custom domain**: no `domain` prop means Alchemy attaches nothing to
+         * the zone, so no DNS record or edge certificate is involved and the app
+         * is reachable at its `workers.dev` URL. That keeps an in-progress UX
+         * from holding a hostname.
+         *
+         * Defined here rather than as a class because its API origin is the API
+         * worker's own resolved URL, which only exists once that resource has
+         * been yielded. Writing the origin down — the site hostname in
+         * production, a guessed port in dev — is the thing this avoids: under
+         * `alchemy dev` the port is assigned by Alchemy, so any literal would be
+         * a coincidence that breaks the moment it changes.
+         *
+         * The browser cannot use a relative `/api/v1/*` path: this worker serves
+         * no API, so a relative call would hit itself. An absolute origin makes
+         * every call cross-origin, which is why the API worker sends CORS
+         * headers — and, usefully, in dev as well as production, so a CORS
+         * mistake shows up locally instead of only after a deploy.
+         */
+        const websiteNext = yield* Cloudflare.Website.Vite("CorehallaWebNext", {
+            rootDir: "./apps/web-next",
+            name: "corehalla-web-next",
+            env: {
+                VITE_API_ORIGIN: api.url.as<string>(),
+            },
+        })
 
         // Registered here rather than on the Worker because a consumer needs
         // both the queue's id and the worker's script name, and those are
@@ -377,8 +388,10 @@ export default Alchemy.Stack(
         })
 
         return {
-            url: website.url.as<string>(),
-            nextUrl: websiteNext.url.as<string>(),
+            url: website.url,
+            nextUrl: websiteNext.url,
+            apiUrl: api.url,
+            crawlerUrl: crawler.url,
             databaseId: db.databaseId,
         }
     }),

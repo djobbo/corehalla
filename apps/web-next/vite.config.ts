@@ -10,28 +10,23 @@ import { defineConfig } from "vite-plus"
  * to test the interaction design rather than the visual design. Styling is
  * deliberately minimal: only where a control is unusable without it.
  *
- * ## How it reaches the API
+ * ## There is no API proxy here, on purpose
  *
- * The browser calls `/api/v1/*` as a *relative* path and this dev server proxies
- * it to `VITE_API_ORIGIN`. That keeps the app same-origin — which is the shape it
- * will have in production, where the API worker is routed on the site hostname —
- * and avoids CORS entirely. Server-side rendering cannot use a relative URL, so
- * it talks to `VITE_API_ORIGIN` directly (see `src/effect/client.ts`).
+ * The browser calls the API at an absolute origin supplied by the deployment as
+ * `VITE_API_ORIGIN`. Under `alchemy dev` that is the API worker's own resolved
+ * URL, so the port Alchemy happens to assign never appears in a file.
  *
- * The origin defaults to a locally running API worker. `corehalla.com` is not a
- * usable target: it answers non-browser requests with a Cloudflare bot challenge,
- * so a server-side proxy to it returns 403.
+ * An earlier version proxied `/api/v1/*` instead, which avoided the cross-origin
+ * hop but cost two things that mattered more: the proxy target had to be written
+ * down as a literal port, and the browser then took a *different* path in dev
+ * than in production — so a CORS mistake could only ever surface after a deploy.
+ * Calling the origin directly means both environments exercise the same path.
  */
-const apiOrigin = process.env["VITE_API_ORIGIN"] ?? "http://localhost:1338"
-
 const PORT = 3001
 
 export default defineConfig({
     server: {
         port: PORT,
-        proxy: {
-            "/api/v1": { target: apiOrigin, changeOrigin: true },
-        },
     },
     resolve: {
         tsconfigPaths: true,
