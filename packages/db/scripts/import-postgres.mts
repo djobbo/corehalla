@@ -101,7 +101,7 @@ const AUTH_CREATED_AT: Column = {
  * A mirrored lowercase search column for `source`.
  *
  * The app folds with JS `toLowerCase()` (see `searchKey` in
- * `web/src/effect/Database.ts`); Postgres `lower()` is the closest equivalent
+ * `apps/web/src/effect/Database.ts`); Postgres `lower()` is the closest equivalent
  * available inside the query. They agree on ASCII and on ordinary accented
  * text, and can differ for a handful of characters such as `İ` — if a search
  * ever misses an imported non-ASCII name, `pnpm db:seed:verify`'s prefix check

@@ -13,12 +13,12 @@ import * as Redacted from "effect/Redacted"
  *
  * `Cloudflare.Website.Vite` builds the `web` app's Vite `ssr` environment into a
  * Worker plus static assets; Alchemy supplies the Cloudflare plugin, so
- * `web/vite.config.ts` must not add `@cloudflare/vite-plugin` or Nitro itself.
+ * `apps/web/vite.config.ts` must not add `@cloudflare/vite-plugin` or Nitro itself.
  *
  * The database is a single Cloudflare D1 (SQLite) database. Alchemy applies the
  * generated Drizzle migrations from `packages/db/drizzle` at deploy (and to the
  * local simulator under `alchemy dev`), then binds it to the Worker as `DB` —
- * `web/src/env.ts` reads `env.DB` and `db/client.ts` wraps it for Effect SQL.
+ * `apps/web/src/env.ts` reads `env.DB` and `packages/db/client.ts` wraps it for Effect SQL.
  *
  * Data import is opt-in and one-off:
  *
@@ -31,12 +31,12 @@ import * as Redacted from "effect/Redacted"
  * afterwards. `pnpm db:seed --file=...` + `wrangler d1 execute` still works and
  * is the path used for the synthetic seed.
  *
- * Deploy (the `pnpm` scripts load `.env` and `web/.env` into the process):
+ * Deploy (the `pnpm` scripts load `.env` and `apps/web/.env` into the process):
  *   pnpm deploy
  *
  * Alchemy's own credentials (`CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_API_TOKEN`, or
  * an `alchemy profile`) belong in the repo-root `.env`; the app secrets
- * (`DISCORD_*`, `BRAWLHALLA_API_KEY`, `SITE_URL`) belong in `web/.env`, which is
+ * (`DISCORD_*`, `BRAWLHALLA_API_KEY`, `SITE_URL`) belong in `apps/web/.env`, which is
  * also what `vp dev` reads. Both are loaded by `pnpm dev:cloud` / `pnpm deploy`
  * via `node --env-file-if-exists`, so a plain `alchemy deploy` needs the values
  * exported instead.
@@ -56,7 +56,7 @@ const env = (key: string, fallback: string, required = false): string => {
     if (required) {
         console.warn(
             `Warning: ${key} is not set — deploying an empty value. Add it to ` +
-                "web/.env (loaded by `pnpm dev:cloud` / `pnpm deploy`) or export it.",
+                "apps/web/.env (loaded by `pnpm dev:cloud` / `pnpm deploy`) or export it.",
         )
     }
 
@@ -115,7 +115,7 @@ const isDev = process.env["ALCHEMY_DEV"] === "true"
 /**
  * Fallback origin for the server-side render.
  *
- * SSR loads its data by calling the API handler in-process (`web/src/server.ts`
+ * SSR loads its data by calling the API handler in-process (`apps/web/src/server.ts`
  * installs that client), so this is only used if that client is missing: in
  * production `SITE_URL` is this deployment, under `alchemy dev` the app is
  * served by Alchemy's local dev server instead.
@@ -136,9 +136,9 @@ const hostname = siteUrl.replace(/^https?:\/\//, "").replace(/\/+$/, "")
 export class Website extends Cloudflare.Website.Vite<Website>()(
     "CorehallaWeb",
     {
-        // The app lives in `web/`; Vite's root, its config and the file-hash
+        // The app lives in `apps/web`; Vite's root, its config and the file-hash
         // scope used for rebuild detection all resolve from here.
-        rootDir: "./web",
+        rootDir: "./apps/web",
         // Keep the dev port explicit: `internalOrigin` above refers to it.
         dev: { port: DEV_PORT },
         compatibility: {
@@ -149,7 +149,7 @@ export class Website extends Cloudflare.Website.Vite<Website>()(
         name: "corehalla-web",
         domain: hostname,
         env: {
-            // The Worker reads `env.DB` (see web/src/env.ts).
+            // The Worker reads `env.DB` (see apps/web/src/env.ts).
             DB: CorehallaDb,
             SITE_URL: siteUrl,
             // Inlined into the server bundle for the SSR self-fetch origin.

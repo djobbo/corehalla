@@ -1,10 +1,10 @@
 {
-    "name": "logger",
+    "name": "@crh/logger",
     "version": "0.0.0",
     "main": "index.ts",
     "devDependencies": {
         "@types/node": "^20.11.5",
-        "tsconfig": "workspace:*",
+        "@crh/tsconfig": "workspace:*",
         "typescript": "^7.0.2"
     },
     "scripts": {

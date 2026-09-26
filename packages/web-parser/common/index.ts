@@ -1,6 +1,6 @@
-import { legends } from "bhapi/legends"
+import { legends } from "@crh/bhapi/legends"
 import { load as loadHtml } from "cheerio"
-import { logError, logInfo } from "logger"
+import { logError, logInfo } from "@crh/logger"
 import { z } from "zod"
 import axios from "axios"
 

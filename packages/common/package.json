@@ -1,9 +1,9 @@
 {
-    "name": "common",
+    "name": "@crh/common",
     "version": "0.0.0",
     "devDependencies": {
         "@types/node": "^20.11.5",
-        "tsconfig": "workspace:*",
+        "@crh/tsconfig": "workspace:*",
         "typescript": "^7.0.2"
     },
     "scripts": {

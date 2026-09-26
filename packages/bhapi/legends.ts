@@ -1,4 +1,4 @@
-import { arrayToMap } from "common/helpers/arrayToMap"
+import { arrayToMap } from "@crh/common/helpers/arrayToMap"
 import type { Legend, PlayerRanked, PlayerStats } from "./types"
 import type { Weapon } from "./constants"
 
