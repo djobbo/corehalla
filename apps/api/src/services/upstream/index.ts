@@ -2,6 +2,7 @@ import { Context, Effect, Layer } from "effect"
 import { HttpClient } from "effect/unstable/http"
 import { Database } from "../archive"
 import { Cache } from "../cache"
+import { cacheKeys, cacheTtl } from "../cache-policy"
 import { legacyOps } from "./legacy"
 import {
     isCompleteClan,
@@ -22,24 +23,6 @@ import type {
     Ranking2v2,
 } from "@crh/bhapi/types"
 import type { RankedRegion } from "@crh/bhapi/constants"
-
-/**
- * Cache windows per resource, in seconds.
- *
- * `freshSeconds` is when a value stops being current; `staleSeconds` is how
- * long it is kept so the serve-stale path has something to return when the
- * upstream budget is spent.
- *
- * A ladder page moves constantly and is cheap to refetch, so it stays fresh for
- * a minute but lingers for fifteen. A player or guild profile changes slowly
- * and costs more to assemble (a v1 profile is up to two upstream calls), so it
- * stays fresh for the five minutes the old edge `Cache-Control` used and
- * lingers for an hour.
- */
-const TTL = {
-    leaderboard: { freshSeconds: 60, staleSeconds: 15 * 60 },
-    profile: { freshSeconds: 300, staleSeconds: 60 * 60 },
-} as const
 
 type UpstreamShape = {
     readonly getRankings: (
@@ -219,29 +202,29 @@ export const layer = Layer.effect(
         return {
             getRankings: (bracket, region, page, name) =>
                 cache.getOrSet(
-                    `lb:${bracket}:${region}:${page}:${name ?? ""}`,
-                    TTL.leaderboard,
+                    cacheKeys.leaderboard(bracket, region, page, name),
+                    cacheTtl.leaderboard,
                     upstream.getRankings(bracket, region, page, name),
                 ),
 
             getPlayerStats: (playerId) =>
                 cache.getOrSet(
-                    `player:${playerId}`,
-                    TTL.profile,
+                    cacheKeys.player(playerId),
+                    cacheTtl.profile,
                     upstream.getPlayerStats(playerId),
                 ),
 
             getPlayerRanked: (playerId) =>
                 cache.getOrSet(
-                    `player-ranked:${playerId}`,
-                    TTL.profile,
+                    cacheKeys.playerRanked(playerId),
+                    cacheTtl.profile,
                     upstream.getPlayerRanked(playerId),
                 ),
 
             getClan: (clanId) =>
                 cache.getOrSet(
-                    `clan:${clanId}`,
-                    TTL.profile,
+                    cacheKeys.clan(clanId),
+                    cacheTtl.profile,
                     upstream.getClan(clanId),
                 ),
         }

@@ -3,6 +3,7 @@ import { FetchHttpClient } from "effect/unstable/http"
 import { layer as sqlLayer } from "@crh/db/client"
 import { d1Database } from "./env"
 import { layer as DatabaseLayer } from "./services/archive"
+import { layer as CacheLayer } from "./services/cache"
 import { rawLayer as UpstreamLayer } from "./services/upstream"
 import { layer as CrawlerLayer } from "./services/crawler"
 import type { Crawler } from "./services/crawler"
@@ -34,7 +35,12 @@ export const runCrawler = async <A, E>(
 
     const ServicesLayer = Layer.mergeAll(DatabaseWithSql, UpstreamWithDeps)
 
-    const CrawlerFull = CrawlerLayer.pipe(Layer.provide(ServicesLayer))
+    const CrawlerFull = CrawlerLayer.pipe(
+        Layer.provide(ServicesLayer),
+        // The crawler writes to the cache (warming it) without reading from it,
+        // so it needs the layer even though it never calls getOrSet.
+        Layer.provide(CacheLayer),
+    )
 
     return Effect.runPromise(
         Effect.scoped(

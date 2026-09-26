@@ -1,6 +1,8 @@
 import { Context, Effect, Layer } from "effect"
 import { crawlTargets, playerIdsForRow } from "@crh/bhapi/crawlTargets"
 import { Database } from "./archive"
+import { Cache } from "./cache"
+import { cacheKeys, cacheTtl } from "./cache-policy"
 import { Upstream } from "./upstream"
 import type { CrawlTarget } from "@crh/bhapi/crawlTargets"
 import type { RankedSnapshot } from "./player-writes"
@@ -43,24 +45,29 @@ export type CrawlerConfig = {
 /**
  * Defaults sized to the upstream request budget, not to wall-clock speed.
  *
- * One page costs `1 + players` requests: one for the ladder page, then one
- * `/player/stats` per player on it. Against the historical self-imposed cap of
- * 100 requests per 15 minutes that is roughly one request every 9 seconds,
- * which is what `requestSpacingMs` encodes.
+ * The v1 API allows **2,000 requests per 15 minutes**, which is 2.22 req/s —
+ * `requestSpacingMs` is the inverse of that and nothing more.
  *
- * The consequence is worth stating plainly: **one page per target per pass is
- * all this budget carries.** A pass over the 20 targets costs about 1,000
- * requests, so it takes a couple of hours and the cron period has to match.
- * Raising `pagesPerTarget` multiplies the cost linearly and will spend the
- * budget rather than crawl more.
+ * One page costs `1 + players` requests: the ladder page, then one
+ * `/player/stats` per player on it. At 50 players that is 51 requests, or about
+ * 23 seconds of paced work. A pass over the 20 targets is therefore ~1,020
+ * requests — roughly half the window — which is why the cron runs every ten
+ * minutes: 1.5 passes per window is ~1,530 requests, about three quarters of the
+ * allowance, leaving the rest for user traffic that misses the cache.
  *
- * If Brawlhalla's real limit is higher than the 100/15min the old crawler
- * configured for itself, `requestSpacingMs` is the number to relax — from a
- * measured limit rather than a guess.
+ * Two caveats are worth holding on to:
+ *
+ * - The limit is **per IP**, and Workers egress from shared Cloudflare IPs. The
+ *   budget is therefore not exclusively ours — another tenant on the same egress
+ *   IP spends from it too — so pacing to exactly 2,000 would risk 429s rather
+ *   than use the allowance efficiently.
+ * - Raising `pagesPerTarget` spends the allowance linearly. It does not make the
+ *   crawl faster; it makes the same window carry more of the matrix and less of
+ *   the user traffic.
  */
 export const defaultCrawlerConfig: CrawlerConfig = {
     pagesPerTarget: 1,
-    requestSpacingMs: 9_000,
+    requestSpacingMs: 450,
     playerConcurrency: 1,
 }
 
@@ -126,6 +133,7 @@ export const layer = Layer.effect(
     Effect.gen(function* () {
         const upstream = yield* Upstream
         const database = yield* Database
+        const cache = yield* Cache
 
         /** One player: fetch their stats, then write them. */
         const crawlPlayer = (
@@ -138,6 +146,21 @@ export const layer = Layer.effect(
                 const stats = yield* upstream.getPlayerStats(playerId)
 
                 if (!stats) return
+
+                // Warm the reader's cache with what we just fetched.
+                //
+                // The crawler does not *read* through the cache — it is the
+                // refresh path, so a cached page would mean never re-reading the
+                // ladder — but writing to it means the requests it already paid
+                // for are served without spending the budget again. The key and
+                // window come from `cache-policy`, which is the same source the
+                // gateway reads with, so a warm entry is one the gateway will
+                // actually find.
+                yield* cache.set(
+                    cacheKeys.player(playerId),
+                    stats,
+                    cacheTtl.profile,
+                )
 
                 const ranked =
                     target.bracket === "1v1"
@@ -155,8 +178,7 @@ export const layer = Layer.effect(
                     return
                 }
 
-                yield* database.upsertPlayerStats(stats, ranked)
-            }).pipe(
+                yield* database.upsertPlayerStats(stats, ranked)            }).pipe(
                 // One bad player must not end the pass.
                 Effect.catch((error) =>
                     Effect.logWarning(
@@ -180,6 +202,21 @@ export const layer = Layer.effect(
                 )
 
                 if (rows.length === 0) return 0
+
+                // Non-empty pages only. An empty page is either the end of the
+                // ladder or a transient upstream failure, and caching the
+                // latter would hand the gateway an empty ladder for the whole
+                // freshness window — the one cache entry that would be worse
+                // than a miss.
+                yield* cache.set(
+                    cacheKeys.leaderboard(
+                        target.bracket,
+                        target.region,
+                        page,
+                    ),
+                    rows,
+                    cacheTtl.leaderboard,
+                )
 
                 yield* Effect.forEach(
                     rows,

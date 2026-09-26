@@ -4,12 +4,14 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "ts:check": "tsc --noEmit"
+        "ts:check": "tsc --noEmit",
+        "test": "vp test --run"
     },
     "devDependencies": {
         "@types/node": "^24.0.0",
         "@crh/tsconfig": "workspace:*",
-        "typescript": "^7.0.2"
+        "typescript": "^7.0.2",
+        "vitest": "^4.1.11"
     },
     "dependencies": {
         "@crh/api-contract": "workspace:*",

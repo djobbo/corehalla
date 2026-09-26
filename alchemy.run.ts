@@ -184,15 +184,14 @@ export const CorehallaApi = Cloudflare.Worker("CorehallaApi", {
     name: "corehalla-api",
     main: "apps/api/src/index.ts",
     routes: [{ pattern: `${hostname}/api/v1/*` }],
-    // Every three hours: one queue delivery per ladder, one page each.
+    // Every ten minutes: one queue delivery per ladder, one page each.
     //
-    // The period is set by the request budget, not by a preference for
-    // freshness. A page costs 1 + players requests (the ladder page, then one
-    // `/player/stats` per player), so a pass over the 20 targets is roughly
-    // 1,000 requests. At the historical 100-per-15-minutes cap and the
-    // crawler's 9s spacing, that pass takes a couple of hours — a tighter cron
-    // would only stack invocations against a budget that is already spent.
-    crons: ["0 */3 * * *"],
+    // Sized from the v1 allowance of 2,000 requests per 15 minutes. A page
+    // costs 1 + players requests (the ladder page, then one `/player/stats`
+    // each), so a 20-target pass is ~1,020 requests. At one pass per ten minutes
+    // that is ~1,530 per window — about three quarters of the allowance, leaving
+    // the remainder for user traffic that misses the cache.
+    crons: ["*/10 * * * *"],
     compatibility: {
         flags: ["enable_request_signal"],
     },
