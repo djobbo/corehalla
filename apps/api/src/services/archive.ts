@@ -8,11 +8,25 @@ import {
     SEARCH_MAX_PAGES,
     SEARCH_PLAYERS_ALIASES_PER_PAGE,
 } from "../constants"
-import { bhClan, bhPlayerAlias, bhPlayerData } from "@crh/db/schema"
+import { bhClan, bhPlayerAlias, bhPlayerData, bhPlayerLegend, bhPlayerWeapon, crawlProgress } from "@crh/db/schema"
 import { DatabaseError } from "../errors"
+import {
+    excludedSet,
+    toLegendRows,
+    toPlayerDataRow,
+    toWeaponRows,
+} from "./player-writes"
 import type { D1Database } from "@crh/db/client"
 import type { SQLWrapper } from "@crh/db/query"
-import type { BHClan, BHPlayerAlias, NewBHClan } from "@crh/db/schema"
+import type {
+    BHClan,
+    BHPlayerAlias,
+    NewBHClan,
+    NewBHPlayerLegend,
+    NewBHPlayerWeapon,
+} from "@crh/db/schema"
+import type { PlayerStats } from "@crh/bhapi/types"
+import type { RankedSnapshot } from "./player-writes"
 import type { AliasSearchResult, GlobalPlayerRanking } from "@crh/api-contract/schemas"
 
 /**
@@ -90,6 +104,33 @@ export class Database extends Context.Service<
             alias: string,
             page: number,
         ) => Effect.Effect<readonly AliasSearchResult[], DatabaseError>
+        /**
+         * Writes a player's stats, top legends and top weapons in one call.
+         *
+         * The three tables are one logical fact — a player's current standing —
+         * so they are written together rather than exposing three methods the
+         * caller has to remember to sequence.
+         */
+        readonly upsertPlayerStats: (
+            playerStats: PlayerStats,
+            ranked: RankedSnapshot,
+        ) => Effect.Effect<void, DatabaseError>
+        /**
+         * The page a crawl target resumes from, or `null` when it has never
+         * been crawled.
+         *
+         * Keyed by target, so each ladder keeps its own cursor. The previous
+         * single `"Crawler"` row could only describe one ladder's position,
+         * which is part of why only one ladder was ever walked.
+         */
+        readonly getCrawlProgress: (
+            targetId: string,
+        ) => Effect.Effect<number | null, DatabaseError>
+        readonly setCrawlProgress: (
+            targetId: string,
+            label: string,
+            page: number,
+        ) => Effect.Effect<void, DatabaseError>
     }
 >()("app/Database") {}
 
@@ -232,6 +273,91 @@ export const layer = Layer.effect(
                         rows[0] ? String(rows[0].xp) : null,
                     ),
                 ),
+
+            upsertPlayerStats: (playerStats, ranked) =>
+                run(
+                    Effect.gen(function* () {
+                        const playerId = playerStats.brawlhalla_id.toString()
+                        const playerData = toPlayerDataRow(playerStats, ranked)
+
+                        yield* db
+                            .insert(bhPlayerData)
+                            .values(playerData)
+                            .onConflictDoUpdate({
+                                target: bhPlayerData.id,
+                                set: excludedSet(playerData, ["id"]),
+                            })
+
+                        const legendRows = toLegendRows(playerId, playerStats)
+
+                        if (legendRows.length > 0) {
+                            yield* db
+                                .insert(bhPlayerLegend)
+                                .values(legendRows)
+                                .onConflictDoUpdate({
+                                    target: [
+                                        bhPlayerLegend.player_id,
+                                        bhPlayerLegend.legend_id,
+                                    ],
+                                    // `excluded`, not a literal off the first
+                                    // row: one `SET` covers the whole batch, so
+                                    // literals would give every legend the first
+                                    // legend's statistics.
+                                    set: excludedSet(legendRows[0] as unknown as Record<string, unknown>, [
+                                        "player_id",
+                                        "legend_id",
+                                    ]) as Partial<NewBHPlayerLegend>,
+                                })
+                        }
+
+                        const weaponRows = toWeaponRows(playerId, playerStats)
+
+                        if (weaponRows.length > 0) {
+                            yield* db
+                                .insert(bhPlayerWeapon)
+                                .values(weaponRows)
+                                .onConflictDoUpdate({
+                                    target: [
+                                        bhPlayerWeapon.player_id,
+                                        bhPlayerWeapon.weapon_name,
+                                    ],
+                                    set: excludedSet(weaponRows[0] as unknown as Record<string, unknown>, [
+                                        "player_id",
+                                        "weapon_name",
+                                    ]) as Partial<NewBHPlayerWeapon>,
+                                })
+                        }
+                    }),
+                ),
+
+            getCrawlProgress: (targetId) =>
+                run(
+                    db
+                        .select({ progress: crawlProgress.progress })
+                        .from(crawlProgress)
+                        .where(eq(crawlProgress.id, targetId))
+                        .limit(1),
+                ).pipe(Effect.map((rows) => rows[0]?.progress ?? null)),
+
+            setCrawlProgress: (targetId, label, page) =>
+                run(
+                    db
+                        .insert(crawlProgress)
+                        .values({
+                            id: targetId,
+                            name: label,
+                            progress: page,
+                            lastUpdated: new Date(),
+                        })
+                        .onConflictDoUpdate({
+                            target: crawlProgress.id,
+                            set: {
+                                progress: page,
+                                name: label,
+                                lastUpdated: new Date(),
+                            },
+                        }),
+                ).pipe(Effect.asVoid),
 
             upsertPlayerAliases: (aliases) =>
                 run(
