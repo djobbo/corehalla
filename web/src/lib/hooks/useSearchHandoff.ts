@@ -4,6 +4,7 @@ import {
     requestSearchFocus,
     searchHref,
 } from "@/lib/search"
+import { MIN_SEARCH_LENGTH } from "@/effect/searchQuery"
 import type { SearchContext } from "@/lib/search"
 import { useNavigate, useRouterState } from "@tanstack/react-router"
 import { useCallback, useState } from "react"
@@ -28,6 +29,8 @@ export const useSearchHandoff = () => {
         (query = "", override?: SearchContext) => {
             const context = override ?? deriveSearchContext(pathname)
             const trimmed = query.trim()
+            // Shorter queries are not searched, so they never reach the URL.
+            const effective = trimmed.length >= MIN_SEARCH_LENGTH ? trimmed : ""
 
             markSearchEntry(window.location.pathname + window.location.search)
             requestSearchFocus()
@@ -35,7 +38,7 @@ export const useSearchHandoff = () => {
 
             withViewTransition(() =>
                 navigate({
-                    to: searchHref({ ...context, q: trimmed }) as never,
+                    to: searchHref({ ...context, q: effective }) as never,
                 }),
             )
         },

@@ -4,7 +4,7 @@ import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
 import { CorehallaApi } from "./Api"
 import { Brawlhalla } from "./Brawlhalla"
 import { Content } from "./Content"
-import { Database } from "./Database"
+import { Database, searchKey } from "./Database"
 import type { BHPlayerAlias } from "db/schema"
 import type { Ranking1v1, Ranking2v2 } from "bhapi/types"
 
@@ -24,12 +24,53 @@ import type { Ranking1v1, Ranking2v2 } from "bhapi/types"
 const fireAndForget = (effect: Effect.Effect<unknown, unknown>) =>
     Effect.forkDetach(effect.pipe(Effect.orDie))
 
-const alias = (playerId: string | number, name: string): BHPlayerAlias => ({
-    playerId: playerId.toString(),
-    alias: name,
-    createdAt: new Date(),
-    public: true,
-})
+/**
+ * Whether an upstream row is worth storing as an alias.
+ *
+ * The Brawlhalla payloads use `0` as a "no player" sentinel, and occasionally
+ * ship a blank name (a 2v2 `teamname` can split into an empty half). Storing
+ * either would put a row in the alias indexes that no search can ever
+ * meaningfully return, so they are dropped before they reach the database.
+ *
+ * A present-but-blank name is rejected via `searchKey`, which trims — that
+ * keeps "   " from being stored as a searchable alias.
+ */
+const isStorableAlias = (playerId: string | number, name: string): boolean =>
+    String(playerId) !== "0" && searchKey(name).length > 0
+
+/**
+ * Builds alias rows from an upstream player payload.
+ *
+ * `aliasLower` has to be computed here rather than by SQL `lower()`, which
+ * does not fold non-ASCII. `searchKey` is the same folding the search needle
+ * goes through, so stored keys and lookup keys always agree.
+ *
+ * `createdAt` and `lastSeen` are both "now" on insert; the upsert deliberately
+ * only refreshes `lastSeen`, so `createdAt` keeps meaning "first seen".
+ *
+ * Returns an array so a filtered-out player contributes zero rows without every
+ * caller repeating the guard — the handlers only ever spread this into
+ * `upsertPlayerAliases`.
+ */
+const aliasRows = (player: {
+    readonly id: string | number
+    readonly name: string
+}): BHPlayerAlias[] => {
+    if (!isStorableAlias(player.id, player.name)) return []
+
+    const seenAt = new Date()
+
+    return [
+        {
+            playerId: player.id.toString(),
+            alias: player.name,
+            aliasLower: searchKey(player.name),
+            createdAt: seenAt,
+            lastSeen: seenAt,
+            public: true,
+        },
+    ]
+}
 
 export const rankingsGroup = HttpApiBuilder.group(
     CorehallaApi,
@@ -51,8 +92,11 @@ export const rankingsGroup = HttpApiBuilder.group(
 
                     yield* fireAndForget(
                         db.upsertPlayerAliases(
-                            rankings.map((player) =>
-                                alias(player.brawlhalla_id, player.name),
+                            rankings.flatMap((player) =>
+                                aliasRows({
+                                    id: player.brawlhalla_id,
+                                    name: player.name,
+                                }),
                             ),
                         ),
                     )
@@ -100,9 +144,12 @@ export const statsGroup = HttpApiBuilder.group(
                     if (!stats) return null
 
                     yield* fireAndForget(
-                        db.upsertPlayerAliases([
-                            alias(stats.brawlhalla_id, stats.name),
-                        ]),
+                        db.upsertPlayerAliases(
+                            aliasRows({
+                                id: stats.brawlhalla_id,
+                                name: stats.name,
+                            }),
+                        ),
                     )
 
                     if (stats.clan) {
@@ -111,6 +158,7 @@ export const statsGroup = HttpApiBuilder.group(
                             db.upsertClan({
                                 id: clan.clan_id.toString(),
                                 name: clan.clan_name,
+                                nameLower: searchKey(clan.clan_name),
                                 xp: parseInt(clan.clan_xp),
                             }),
                         )
@@ -127,15 +175,18 @@ export const statsGroup = HttpApiBuilder.group(
 
                     if (!ranked) return null
 
-                    const aliases = [
-                        alias(ranked.brawlhalla_id, ranked.name),
+                    const rankedAliases = [
+                        ...aliasRows({
+                            id: ranked.brawlhalla_id,
+                            name: ranked.name,
+                        }),
                         ...(ranked["2v2"] ?? [])
                             .map(getTeamPlayers)
                             .flat()
-                            .map((player) => alias(player.id, player.name)),
+                            .flatMap((player) => aliasRows(player)),
                     ]
 
-                    yield* fireAndForget(db.upsertPlayerAliases(aliases))
+                    yield* fireAndForget(db.upsertPlayerAliases(rankedAliases))
 
                     return ranked
                 }),
@@ -161,6 +212,7 @@ export const statsGroup = HttpApiBuilder.group(
                         db.upsertClan({
                             id: clan.clan_id.toString(),
                             name: clan.clan_name,
+                            nameLower: searchKey(clan.clan_name),
                             created: clan.clan_create_date,
                             xp: parseInt(clan.clan_xp),
                         }),
@@ -168,8 +220,11 @@ export const statsGroup = HttpApiBuilder.group(
 
                     yield* fireAndForget(
                         db.upsertPlayerAliases(
-                            clan.clan.map((member) =>
-                                alias(member.brawlhalla_id, member.name),
+                            clan.clan.flatMap((member) =>
+                                aliasRows({
+                                    id: member.brawlhalla_id,
+                                    name: member.name,
+                                }),
                             ),
                         ),
                     )

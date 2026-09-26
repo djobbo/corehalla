@@ -193,13 +193,14 @@ export function* generateSeedSql(options: SeedOptions): Generator<string> {
     const clans: Sql[][] = Array.from({ length: clanCount }, (_, i) => [
         `clan-${i}`,
         `Clan ${i}`,
+        `clan ${i}`,
         1_500_000_000 + i,
         (clanCount - i) * 1000,
     ])
 
     for (const statement of insert(
         "BHClan",
-        ["id", "name", "created", "xp"],
+        ["id", "name", "nameLower", "created", "xp"],
         clans,
         chunk,
     )) {
@@ -293,8 +294,22 @@ export function* generateSeedSql(options: SeedOptions): Generator<string> {
                 ])
             }
 
-            aliases.push([id, playerName(i), timestamp, true])
-            aliases.push([id, `Alias ${i}`, timestamp, i % 5 !== 0])
+            aliases.push([
+                id,
+                playerName(i),
+                playerName(i).toLowerCase(),
+                timestamp,
+                timestamp,
+                true,
+            ])
+            aliases.push([
+                id,
+                `Alias ${i}`,
+                `alias ${i}`,
+                timestamp,
+                timestamp,
+                i % 5 !== 0,
+            ])
         }
 
         for (const statement of insert(
@@ -326,7 +341,14 @@ export function* generateSeedSql(options: SeedOptions): Generator<string> {
 
         for (const statement of insert(
             "BHPlayerAlias",
-            ["playerId", "alias", "createdAt", "public"],
+            [
+                "playerId",
+                "alias",
+                "aliasLower",
+                "createdAt",
+                "lastSeen",
+                "public",
+            ],
             aliases,
             chunk,
         )) {

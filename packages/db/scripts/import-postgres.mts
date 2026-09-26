@@ -97,6 +97,22 @@ const AUTH_CREATED_AT: Column = {
     expr: `(extract(epoch from u.created_at) * 1000)::double precision`,
 }
 
+/**
+ * A mirrored lowercase search column for `source`.
+ *
+ * The app folds with JS `toLowerCase()` (see `searchKey` in
+ * `web/src/effect/Database.ts`); Postgres `lower()` is the closest equivalent
+ * available inside the query. They agree on ASCII and on ordinary accented
+ * text, and can differ for a handful of characters such as `İ` — if a search
+ * ever misses an imported non-ASCII name, `pnpm db:seed:verify`'s prefix check
+ * is where to look, and the fix is to re-derive the column in Node rather than
+ * in the `SELECT` list.
+ */
+const derivedLower = (name: string, expr: string): Column => ({
+    name,
+    expr: `lower(${expr})`,
+})
+
 /** `UserProfile` needs `auth`; a plain Postgres source gets this fallback. */
 const userProfileColumns = (hasAuth: boolean): readonly Column[] =>
     hasAuth
@@ -177,7 +193,13 @@ const specs = (hasAuth: boolean): readonly TableSpec[] => [
     {
         table: "BHClan",
         source: `public."BHClan"`,
-        columns: [col("id"), col("name"), col("created"), col("xp")],
+        columns: [
+            col("id"),
+            col("name"),
+            derivedLower("nameLower", `"name"`),
+            col("created"),
+            col("xp"),
+        ],
         order: [{ expr: `"id"`, key: "id" }],
     },
     {
@@ -272,11 +294,33 @@ const specs = (hasAuth: boolean): readonly TableSpec[] => [
     },
     {
         table: "BHPlayerAlias",
-        source: `public."BHPlayerAlias"`,
+        // Rows with no real owner (`playerId` of `0` or empty) or no name are
+        // dropped at the source rather than imported and filtered later: they
+        // cannot match a search, and they would occupy the alias indexes and
+        // inflate the crawl without ever being useful.
+        //
+        // The `NULLIF` also excludes NULL, which a plain `<> '0'` would not
+        // (NULL comparisons are never true); `btrim` catches whitespace-only
+        // aliases, which would otherwise survive as a searchable-but-empty row.
+        //
+        // Filtering here, in the `FROM` clause, keeps `order` as the bare
+        // `(playerId, alias)` keyset the pager walks — a `WHERE` bolted on
+        // beside the cursor comparison would risk paginating on a
+        // filtered-out column.
+        source: `(SELECT * FROM public."BHPlayerAlias"
+                  WHERE NULLIF("playerId", '') IS NOT NULL
+                    AND "playerId" <> '0'
+                    AND btrim("alias") <> '') AS "BHPlayerAlias"`,
         columns: [
             col("playerId"),
             col("alias"),
+            derivedLower("aliasLower", `"alias"`),
             ts("createdAt"),
+            // The old schema had no `lastSeen`; the import is the last time we
+            // know the alias was seen, so seed it from `createdAt` rather than
+            // letting the column default to "now" and claim every historical
+            // alias was just crawled.
+            { ...ts("createdAt"), name: "lastSeen" },
             col("public"),
         ],
         order: [

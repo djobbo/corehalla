@@ -162,6 +162,11 @@ export class Website extends Cloudflare.Website.Vite<Website>()(
             BRAWLHALLA_API_KEY: Redacted.make(
                 env("BRAWLHALLA_API_KEY", "", true),
             ),
+            VITE_ADSENSE_SLOT_PROFILE_HEADER: env("VITE_ADSENSE_SLOT_PROFILE_HEADER", "", true),
+            VITE_ADSENSE_SLOT_PROFILE_BOTTOM: env("VITE_ADSENSE_SLOT_PROFILE_BOTTOM", "", true),
+            VITE_ADSENSE_SLOT_ARTICLES: env("VITE_ADSENSE_SLOT_ARTICLES", "", true),
+            VITE_ADSENSE_SLOT_RANKINGS: env("VITE_ADSENSE_SLOT_RANKINGS", "", true),
+            VITE_ADSENSE_SLOT_LANDING: env("VITE_ADSENSE_SLOT_LANDING", "", true),
         },
     },
 ) {}

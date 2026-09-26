@@ -1,6 +1,6 @@
 import { AppLink } from "ui/base/AppLink"
 import { GLOBAL_PLAYER_RANKINGS_PER_PAGE } from "@util/constants"
-import { InfiniteRankings } from "@components/stats/rankings/InfiniteRankings"
+import { PaginatedRankings } from "@components/stats/rankings/PaginatedRankings"
 import { Select } from "ui/base/Select"
 import { cleanString } from "common/helpers/cleanString"
 import { cn } from "common/helpers/classnames"
@@ -9,14 +9,13 @@ import {
     stripSearchParams,
     useNavigate,
 } from "@tanstack/react-router"
-import { globalRankingsAtom, loadAtoms } from "@/effect/atoms"
+import { globalRankingsAtom, preloadAtoms } from "@/effect/atoms"
 import {
     globalRankingsSortOptions,
     sortablePlayerPropSchema,
 } from "@/lib/routeSchemas"
 import { resolvePage } from "@/lib/routeParams"
 import { seoTags } from "@components/SEO"
-import { useCallback } from "react"
 import { z } from "zod"
 import type { SortablePlayerProp } from "@/lib/routeSchemas"
 
@@ -35,7 +34,7 @@ export const Route = createFileRoute("/rankings/global/{-$page}")({
     },
     loaderDeps: ({ search }) => ({ sortBy: search.sortBy }),
     loader: ({ params, deps, context }) =>
-        loadAtoms(context, [
+        preloadAtoms(context, [
             globalRankingsAtom(deps.sortBy, parseInt(resolvePage(params.page))),
         ]),
     head({ params }) {
@@ -57,17 +56,14 @@ function Page() {
 
     const page = parseInt(resolvePage(pageParam), 10)
 
-    const syncPage = useCallback(
-        (nextPage: number) => {
-            navigate({
-                to: "/rankings/global/{-$page}",
-                params: { page: nextPage > 1 ? String(nextPage) : undefined },
-                search: { sortBy },
-                replace: true,
-            })
-        },
-        [navigate, sortBy],
-    )
+    /**
+     * Page links keep the sort in the query string and drop the page segment
+     * on page 1, which is the canonical URL for the first page.
+     */
+    const pageHref = (nextPage: number) =>
+        nextPage > 1
+            ? `/rankings/global/${nextPage}?sortBy=${sortBy}`
+            : `/rankings/global?sortBy=${sortBy}`
 
     return (
         <>
@@ -84,13 +80,14 @@ function Page() {
                 value={sortBy}
                 options={globalRankingsSortOptions}
             />
-            <InfiniteRankings
+            <PaginatedRankings
                 buildAtom={(pageNumber) =>
                     globalRankingsAtom(sortBy, pageNumber)
                 }
-                initialPage={page}
+                page={page}
+                pageSize={GLOBAL_PLAYER_RANKINGS_PER_PAGE}
                 resetKey={`global:${sortBy}`}
-                onHighestPageChange={syncPage}
+                pageHref={pageHref}
                 emptyLabel="No players found"
             >
                 {(rows) => (
@@ -130,7 +127,7 @@ function Page() {
                         )}
                     </div>
                 )}
-            </InfiniteRankings>
+            </PaginatedRankings>
         </>
     )
 }

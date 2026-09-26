@@ -22,7 +22,6 @@ export const DISCORD_SCOPES = [
     "email",
     "connections",
     "guilds",
-    "offline.access",
 ] as const
 
 export type DiscordToken = {

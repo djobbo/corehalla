@@ -1,22 +1,22 @@
 import { AppLink } from "ui/base/AppLink"
-import { InfiniteRankings } from "@components/stats/rankings/InfiniteRankings"
+import { PaginatedRankings } from "@components/stats/rankings/PaginatedRankings"
+import { RANKINGS_2V2_PER_PAGE } from "@util/constants"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
 import { RankingsTableItem } from "@components/stats/RankingsTableItem"
 import { cleanString } from "common/helpers/cleanString"
-import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router"
 import { getTeamPlayers } from "bhapi/helpers/getTeamPlayers"
-import { loadAtoms, rankings2v2Atom } from "@/effect/atoms"
+import { preloadAtoms, rankings2v2Atom } from "@/effect/atoms"
 import {
     rankingsBrackets,
     rankingsRegions,
 } from "@components/stats/rankings/options"
 import { resolvePage, resolveRankedRegion } from "@/lib/routeParams"
 import { seoTags } from "@components/SEO"
-import { useCallback } from "react"
 
 export const Route = createFileRoute("/rankings/2v2/{-$region}/{-$page}")({
     loader: ({ params, context }) =>
-        loadAtoms(context, [
+        preloadAtoms(context, [
             rankings2v2Atom(
                 resolveRankedRegion(params.region),
                 parseInt(resolvePage(params.page)),
@@ -38,36 +38,25 @@ export const Route = createFileRoute("/rankings/2v2/{-$region}/{-$page}")({
 
 function Page() {
     const { region: regionParam, page: pageParam } = Route.useParams()
-    const navigate = useNavigate()
 
     const region = resolveRankedRegion(regionParam)
     const page = parseInt(resolvePage(pageParam), 10)
 
-    const syncPage = useCallback(
-        (nextPage: number) => {
-            navigate({
-                to: "/rankings/2v2/{-$region}/{-$page}",
-                // The region segment cannot be skipped, so paging past page 1
-                // needs a concrete region ("all") to avoid writing the page
-                // number into the region slot.
-                params:
-                    nextPage > 1
-                        ? {
-                              region: regionParam ?? "all",
-                              page: String(nextPage),
-                          }
-                        : {
-                              region:
-                                  regionParam === "all"
-                                      ? undefined
-                                      : regionParam,
-                              page: undefined,
-                          },
-                replace: true,
-            })
-        },
-        [navigate, regionParam],
-    )
+    /**
+     * The region slot cannot be skipped when a page is present, so pages past 1
+     * spell out `all` rather than leave it empty — otherwise the page number
+     * would land in the region segment. Page 1 drops both segments.
+     */
+    const pageHref = (nextPage: number) => {
+        if (nextPage <= 1) {
+            const regionSegment =
+                regionParam && regionParam !== "all" ? `/${regionParam}` : ""
+
+            return `/rankings/2v2${regionSegment}`
+        }
+
+        return `/rankings/2v2/${regionParam ?? "all"}/${nextPage}`
+    }
 
     return (
         <RankingsLayout
@@ -76,11 +65,12 @@ function Page() {
             regions={rankingsRegions}
             currentRegion={region}
         >
-            <InfiniteRankings
+            <PaginatedRankings
                 buildAtom={(pageNumber) => rankings2v2Atom(region, pageNumber)}
-                initialPage={page}
+                page={page}
+                pageSize={RANKINGS_2V2_PER_PAGE}
                 resetKey={`2v2:${region}`}
-                onHighestPageChange={syncPage}
+                pageHref={pageHref}
                 emptyLabel="No teams found"
             >
                 {(rows) => (
@@ -122,7 +112,7 @@ function Page() {
                         </div>
                     </>
                 )}
-            </InfiniteRankings>
+            </PaginatedRankings>
         </RankingsLayout>
     )
 }

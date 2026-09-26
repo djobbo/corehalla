@@ -74,11 +74,49 @@ if (migrations.length === 0) {
     throw new Error(`No migrations found in ${migrationsDir}`)
 }
 
-for (const migration of migrations) {
-    const file = join(migrationsDir, migration, "migration.sql")
+/**
+ * Splits a generated migration exactly the way D1 does.
+ *
+ * The `--> statement-breakpoint` marker is a *SQL comment*, so running a whole
+ * file through `DatabaseSync#exec` silently succeeds on any SQLite build —
+ * including one that rejects a statement D1 would refuse. D1 splits on the
+ * marker and validates each statement on its own, so mirroring that split is
+ * what makes this script able to catch a migration D1 would reject. It also
+ * means each statement is validated independently rather than as one blob.
+ */
+const splitMigration = (sql: string): string[] =>
+    sql
+        .split("--> statement-breakpoint")
+        .map((statement) => statement.trim())
+        .filter((statement) => statement.length > 0)
 
-    if (existsSync(file)) database.exec(readFileSync(file, "utf8"))
+/**
+ * Applies the migration chain.
+ *
+ * `through` is an inclusive upper bound and `after` an exclusive lower bound, so
+ * the upgrade check can replay "old schema, then everything that came after it"
+ * against a database that already holds data.
+ */
+const applyMigrations = (
+    target: DatabaseSync,
+    through?: string,
+    after?: string,
+): void => {
+    for (const migration of migrations) {
+        if (through !== undefined && migration > through) return
+        if (after !== undefined && migration <= after) continue
+
+        const file = join(migrationsDir, migration, "migration.sql")
+
+        if (!existsSync(file)) continue
+
+        for (const statement of splitMigration(readFileSync(file, "utf8"))) {
+            target.exec(statement)
+        }
+    }
 }
+
+applyMigrations(database)
 
 let statements = 0
 
@@ -178,6 +216,100 @@ const check = (label: string, actual: unknown, expected: unknown) => {
     )
 }
 
+/**
+ * 1b. The upgrade path, which the checks above cannot cover.
+ *
+ * Everything above starts from an empty database, so it only ever exercises the
+ * `CREATE TABLE` route. A database that already ran the previous migrations
+ * reaches the same schema through `ALTER TABLE ... ADD COLUMN`, and SQLite
+ * refuses a non-constant default there ("Cannot add a column with non-constant
+ * default") — the exact failure a real deploy hit. It also leaves the mirrored
+ * lowercase columns at their default, which would make every existing row
+ * unsearchable, so the backfill is asserted here too.
+ */
+if (directory === undefined && migrations.length > 1) {
+    const upgrade = new DatabaseSync(":memory:")
+
+    // The previous schema, with real rows in it.
+    applyMigrations(upgrade, migrations[0])
+
+    upgrade.exec(
+        `INSERT INTO "BHClan" ("id", "name", "created", "xp")
+         VALUES ('upgrade-clan', 'Upgrade Clan', 1, 1)`,
+    )
+    upgrade.exec(
+        `INSERT INTO "BHPlayerAlias" ("playerId", "alias", "createdAt", "public")
+         VALUES ('upgrade-1', 'Upgrade Player', 777, 1),
+                ('upgrade-2', 'UPGRADE TWO', 888, 1)`,
+    )
+
+    // The rest of the chain, as D1 would replay it.
+    applyMigrations(upgrade, undefined, migrations[0])
+
+    const upgradeScalar = (sql: string): number =>
+        Number(
+            (upgrade.prepare(sql).get() as Record<string, unknown> | undefined)
+                ?.n ?? 0,
+        )
+
+    console.log("\n-- upgrade path (previous schema + rows -> current)")
+    // Reaching this line at all is the headline assertion: `applyMigrations`
+    // above replays the chain statement by statement, so a non-constant default
+    // (or any other statement D1 rejects) would have thrown before here.
+    check(
+        "upgraded table set",
+        upgradeScalar(
+            `SELECT count(*) AS n FROM sqlite_master
+             WHERE type = 'table'
+               AND name IN ('BHClan', 'BHPlayerAlias')`,
+        ),
+        2,
+    )
+    check(
+        "upgraded clan names are searchable",
+        upgradeScalar(
+            `SELECT count(*) AS n FROM "BHClan"
+             WHERE "nameLower" >= 'upgrade clan'
+               AND "nameLower" < 'upgrade clao'`,
+        ),
+        1,
+    )
+    check(
+        "upgraded aliases are searchable",
+        upgradeScalar(
+            `SELECT count(*) AS n FROM "BHPlayerAlias"
+             WHERE "aliasLower" >= 'upgrade p'
+               AND "aliasLower" < 'upgrade q'`,
+        ),
+        1,
+    )
+    check(
+        "upgraded aliases are mirrored lowercase",
+        upgradeScalar(
+            `SELECT count(*) AS n FROM "BHPlayerAlias"
+             WHERE "aliasLower" <> lower("alias")`,
+        ),
+        0,
+    )
+    check(
+        "upgraded lastSeen is backfilled",
+        upgradeScalar(
+            `SELECT count(*) AS n FROM "BHPlayerAlias" WHERE "lastSeen" = 0`,
+        ),
+        0,
+    )
+    check(
+        "old nocase indexes are dropped",
+        upgradeScalar(
+            `SELECT count(*) AS n FROM sqlite_master
+             WHERE type = 'index'
+               AND name IN ('BHClan_name_nocase_idx',
+                            'BHPlayerAlias_alias_nocase_idx')`,
+        ),
+        0,
+    )
+}
+
 const checkIndex = (label: string, sql: string, index: string) => {
     const detail = plan(sql)
     const ok = detail.includes(index)
@@ -250,9 +382,10 @@ check(
     0,
 )
 
-// 3. The hot read paths must be indexed.
-const aliasPrefix = prefixOf("BHPlayerAlias", "alias", 3)
-const clanPrefix = prefixOf("BHClan", "name", 3)
+// 3. The hot read paths must be indexed, and the search queries must not fall
+// back to a temp B-tree sort.
+const aliasPrefix = prefixOf("BHPlayerAlias", "aliasLower", 3)
+const clanPrefix = prefixOf("BHClan", "nameLower", 3)
 
 checkIndex(
     "global rankings (ORDER BY xp)",
@@ -260,21 +393,67 @@ checkIndex(
      FROM "BHPlayerData" ORDER BY xp DESC LIMIT 50 OFFSET 0`,
     "BHPlayerData_xp_idx",
 )
-checkIndex(
-    "alias prefix search (selective)",
-    `SELECT "playerId" FROM "BHPlayerAlias"
-     WHERE alias LIKE '${aliasPrefix}%' AND public = 1`,
-    "BHPlayerAlias_alias_nocase_idx",
+
+// The exact shape the alias search runs: filters and orders on `aliasLower`
+// only. It must be an index *search* (a bounded range, not a full index walk)
+// and it must avoid a temp B-tree, which is the difference between a bounded
+// index walk and sorting every prefix match.
+const aliasPlan = plan(
+    `SELECT "playerId", alias FROM "BHPlayerAlias"
+     WHERE "aliasLower" >= '${aliasPrefix}' AND "aliasLower" < '${aliasPrefix}\uFFFF'
+       AND public = 1
+     ORDER BY "aliasLower" LIMIT 50 OFFSET 0`,
 )
-checkIndex(
-    "clan name search",
-    `SELECT * FROM "BHClan" WHERE name LIKE '${clanPrefix}%'
-     ORDER BY xp DESC LIMIT 50 OFFSET 0`,
-    "USING INDEX",
+check(
+    "alias prefix search uses an index range",
+    /SEARCH .* USING INDEX BHPlayerAlias_aliasLower_idx/.test(aliasPlan),
+    true,
+)
+check(
+    "alias search does not sort (no temp B-tree)",
+    /TEMP B-TREE/i.test(aliasPlan),
+    false,
 )
 
+const clanPlan = plan(
+    `SELECT * FROM "BHClan"
+     WHERE "nameLower" >= '${clanPrefix}' AND "nameLower" < '${clanPrefix}\uFFFF'
+     ORDER BY "nameLower" LIMIT 50 OFFSET 0`,
+)
+check(
+    "clan prefix search uses an index range",
+    /SEARCH .* USING INDEX BHClan_nameLower_idx/.test(clanPlan),
+    true,
+)
+check(
+    "clan search does not sort (no temp B-tree)",
+    /TEMP B-TREE/i.test(clanPlan),
+    false,
+)
+
+// The `xp`-ranked clan listing (empty search box) keeps its own index.
+checkIndex(
+    "clan rankings (ORDER BY xp)",
+    `SELECT * FROM "BHClan" ORDER BY xp DESC LIMIT 50 OFFSET 0`,
+    "BHClan_xp_idx",
+)
+
+// The mirrored lowercase columns must actually be lowercase, or every prefix
+// search silently misses: a name stored as "Clan 1" with "Clan 1" in
+// `nameLower` would never match the needle "clan".
+const aliasLowerMismatch = scalar(
+    `SELECT count(*) as n FROM "BHPlayerAlias"
+     WHERE "aliasLower" <> lower("alias")`,
+)
+check("BHPlayerAlias.aliasLower mirrors alias", aliasLowerMismatch, 0)
+
+const clanLowerMismatch = scalar(
+    `SELECT count(*) as n FROM "BHClan" WHERE "nameLower" <> lower("name")`,
+)
+check("BHClan.nameLower mirrors name", clanLowerMismatch, 0)
+
 // The alias prefix index must exist even when a broad prefix makes the planner
-// prefer the `createdAt` index for its ordering.
+// prefer another index.
 const aliasIndexes = (
     database.prepare(`PRAGMA index_list('BHPlayerAlias')`).all() as {
         name?: unknown
@@ -282,8 +461,20 @@ const aliasIndexes = (
 ).map((row) => String(row.name ?? ""))
 
 check(
-    "BHPlayerAlias has the NOCASE alias index",
-    aliasIndexes.includes("BHPlayerAlias_alias_nocase_idx"),
+    "BHPlayerAlias has the aliasLower index",
+    aliasIndexes.includes("BHPlayerAlias_aliasLower_idx"),
+    true,
+)
+
+const clanIndexes = (
+    database.prepare(`PRAGMA index_list('BHClan')`).all() as {
+        name?: unknown
+    }[]
+).map((row) => String(row.name ?? ""))
+
+check(
+    "BHClan has the nameLower index",
+    clanIndexes.includes("BHClan_nameLower_idx"),
     true,
 )
 
@@ -295,10 +486,10 @@ if (directory === undefined) {
             `SELECT * FROM "BHPlayerAlias"
              WHERE "playerId" IN (
                  SELECT "playerId" FROM "BHPlayerAlias"
-                 WHERE alias LIKE '${aliasPrefix}%' AND public = 1
-                 ORDER BY "createdAt" DESC LIMIT 50 OFFSET 0
-             ) AND public = 1
-             ORDER BY "createdAt" DESC`,
+                 WHERE "aliasLower" LIKE '${aliasPrefix}%' AND public = 1
+                 ORDER BY "aliasLower" LIMIT 50 OFFSET 0
+             )
+             ORDER BY "playerId", "alias"`,
         )
         .all() as unknown[]
 

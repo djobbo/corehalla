@@ -3,7 +3,8 @@ import { AppLink } from "ui/base/AppLink"
 import { Atom } from "effect/unstable/reactivity"
 import * as AsyncResult from "effect/unstable/reactivity/AsyncResult"
 import { Image } from "@components/Image"
-import { InfiniteRankings } from "@components/stats/rankings/InfiniteRankings"
+import { PaginatedRankings } from "@components/stats/rankings/PaginatedRankings"
+import { RANKINGS_1V1_PER_PAGE } from "@util/constants"
 import { RankingsLayout } from "@components/stats/rankings/RankingsLayout"
 import { RankingsTableItem } from "@components/stats/RankingsTableItem"
 import { UserIcon } from "ui/icons"
@@ -14,21 +15,23 @@ import {
     useNavigate,
 } from "@tanstack/react-router"
 import { legendsMap } from "bhapi/legends"
-import { loadAtoms, rankings1v1Atom, searchAliasAtom } from "@/effect/atoms"
+import { preloadAtoms, rankings1v1Atom, searchAliasAtom } from "@/effect/atoms"
 import {
     rankingsBrackets,
     rankingsRegions,
 } from "@components/stats/rankings/options"
 import { resolvePage, resolveRankedRegion } from "@/lib/routeParams"
 import { seoTags } from "@components/SEO"
-import { useAtomValue } from "@effect/atom-react"
-import { useCallback, useEffect, useRef } from "react"
-import { useDebouncedState } from "common/hooks/useDebouncedState"
+import {
+    activeSearchQueryAtom,
+    MIN_SEARCH_LENGTH,
+    searchQueryAtom,
+} from "@/effect/searchQuery"
+import { useAtomSet, useAtomValue } from "@effect/atom-react"
+import { useEffect, useRef } from "react"
 import { useExitSearch } from "common/hooks/useExitSearch"
 import { z } from "zod"
 import type { AliasSearchResult } from "@/effect/schemas"
-
-const SEARCH_DEBOUNCE_MS = 400
 
 /**
  * Resolved stand-in so the alias lookup stays lazy: the atom is only mounted
@@ -51,7 +54,7 @@ export const Route = createFileRoute("/rankings/1v1/{-$region}/{-$page}")({
     },
     loaderDeps: ({ search }) => ({ q: search.q }),
     loader: ({ params, deps, context }) =>
-        loadAtoms(context, [
+        preloadAtoms(context, [
             rankings1v1Atom(
                 resolveRankedRegion(params.region),
                 parseInt(resolvePage(params.page)),
@@ -87,64 +90,63 @@ function Page() {
     const region = resolveRankedRegion(regionParam)
     const page = parseInt(resolvePage(pageParam), 10)
 
-    const [search, setSearch, immediateSearch, isDebouncing] =
-        useDebouncedState(q, SEARCH_DEBOUNCE_MS)
-    // The last value this component pushed into the URL, so that an external
-    // change (back/forward) resets the input without clobbering in-flight
-    // typing.
-    const committed = useRef(q)
+    const queryInput = useAtomValue(searchQueryAtom)
+    const setQueryInput = useAtomSet(searchQueryAtom)
+    const activeQuery = useAtomValue(activeSearchQueryAtom)
+    // The last value this component pushed into the URL, so an external change
+    // (back/forward, a deep link) resets the input without clobbering typing.
+    const committed = useRef<string | null>(null)
 
     useEffect(() => {
         if (committed.current === q) return
 
         committed.current = q
-        setSearch(q)
-    }, [q, setSearch])
+        setQueryInput(q)
+    }, [q, setQueryInput])
 
+    // Only the debounced, long-enough query reaches the URL and the atom.
     useEffect(() => {
-        if (isDebouncing || search === q) return
+        if (activeQuery === q) return
 
-        committed.current = search
+        committed.current = activeQuery
         navigate({
             to: "/rankings/1v1/{-$region}/{-$page}",
             params: { region: regionParam, page: pageParam },
-            search: { q: search },
+            search: { q: activeQuery },
             replace: true,
         })
-    }, [search, q, isDebouncing, navigate, regionParam, pageParam])
+    }, [activeQuery, q, navigate, regionParam, pageParam])
 
-    // Follow the table as it grows; page 1 stays out of the URL.
-    const syncPage = useCallback(
-        (nextPage: number) => {
-            navigate({
-                to: "/rankings/1v1/{-$region}/{-$page}",
-                // The region segment cannot be skipped, so paging past page 1
-                // needs a concrete region ("all") to avoid writing the page
-                // number into the region slot.
-                params:
-                    nextPage > 1
-                        ? {
-                              region: regionParam ?? "all",
-                              page: String(nextPage),
-                          }
-                        : {
-                              region:
-                                  regionParam === "all"
-                                      ? undefined
-                                      : regionParam,
-                              page: undefined,
-                          },
-                search: { q },
-                replace: true,
-            })
-        },
-        [navigate, regionParam, q],
-    )
+    /**
+     * Changing the query resets to page 1, and the page lives in its own path
+     * segment after the region, so page links rebuild both segments.
+     *
+     * The region slot cannot be skipped when a page is present, so pages past 1
+     * have to spell out `all` rather than leave it empty — otherwise the page
+     * number would land in the region segment.
+     */
+    const pageHref = (nextPage: number) => {
+        const suffix = q ? `?q=${encodeURIComponent(q)}` : ""
 
-    const trimmedQuery = q.trim()
+        if (nextPage <= 1) {
+            const regionSegment =
+                regionParam && regionParam !== "all" ? `/${regionParam}` : ""
+
+            return `/rankings/1v1${regionSegment}${suffix}`
+        }
+
+        const regionSegment = `/${regionParam ?? "all"}`
+
+        return `/rankings/1v1${regionSegment}/${nextPage}${suffix}`
+    }
+
+    const trimmedQuery = activeQuery
+    // Both result lists page together: the alias matches are the second half
+    // of the same page, so they follow the table's page rather than always
+    // showing the first one.
     const aliasesAtom = (
-        trimmedQuery.length >= 2
-            ? searchAliasAtom(trimmedQuery, 1)
+        trimmedQuery.length >= MIN_SEARCH_LENGTH
+            ? searchAliasAtom(trimmedQuery, page)
             : idleAliasesAtom
     ) as Atom.Atom<
         AsyncResult.AsyncResult<readonly AliasSearchResult[], unknown>
@@ -160,13 +162,13 @@ function Page() {
             regions={rankingsRegions}
             currentRegion={region}
             search={{
-                value: immediateSearch,
-                onChange: setSearch,
+                value: queryInput,
+                onChange: setQueryInput,
                 // Esc clears the query first and only leaves search mode
                 // once the input is already empty.
                 onEscape: () => {
-                    if (immediateSearch) {
-                        setSearch("")
+                    if (queryInput) {
+                        setQueryInput("")
                         return
                     }
                     exitSearch()
@@ -175,18 +177,30 @@ function Page() {
             }}
             searchQuery={q}
         >
-            <InfiniteRankings
+            <PaginatedRankings
                 buildAtom={(pageNumber) =>
                     rankings1v1Atom(region, pageNumber, q || undefined)
                 }
-                initialPage={page}
+                page={page}
+                pageSize={RANKINGS_1V1_PER_PAGE}
                 resetKey={`1v1:${region}:${q}`}
-                onHighestPageChange={syncPage}
+                pageHref={pageHref}
                 emptyLabel={q ? `No players match "${q}"` : "No players found"}
             >
                 {(rows) => {
+                    // Immediate feedback: narrow what is already loaded by the
+                    // raw input while the debounced request is still pending.
+                    const immediate = queryInput.trim().toLowerCase()
+                    const visibleRows = immediate
+                        ? rows.filter(({ row }) =>
+                              cleanString(row.name)
+                                  .toLowerCase()
+                                  .startsWith(immediate),
+                          )
+                        : rows
+
                     const rankedIds = new Set(
-                        rows.map(({ row }) => String(row.brawlhalla_id)),
+                        visibleRows.map(({ row }) => String(row.brawlhalla_id)),
                     )
                     // Ranking rows win; aliases only add renamed players that
                     // the name filter cannot see.
@@ -197,7 +211,7 @@ function Page() {
                     return (
                         <>
                             <div className="rounded-lg overflow-hidden border border-bg mb-4 flex flex-col">
-                                {rows.map(({ row, index }) => {
+                                {visibleRows.map(({ row, index }) => {
                                     const legend = legendsMap[row.best_legend]
 
                                     return (
@@ -271,7 +285,7 @@ function Page() {
                         </>
                     )
                 }}
-            </InfiniteRankings>
+            </PaginatedRankings>
         </RankingsLayout>
     )
 }

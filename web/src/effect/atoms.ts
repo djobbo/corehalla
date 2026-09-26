@@ -147,6 +147,34 @@ export type DehydratedState = ReturnType<typeof dehydrateRegistry>
  * `Hydration.dehydrate` only runs on the server: on the client the atoms are
  * already live, so there is nothing to serialize.
  */
+/**
+ * Loader helper for routes that render their own pending state.
+ *
+ * The server still waits, so the first paint contains the rows. On the client
+ * the route commits immediately and the atoms stream in afterwards — searching
+ * never waits on a rankings request before the user can type.
+ */
+export const preloadAtoms = (
+    context: RouterContext,
+    atoms: ReadonlyArray<Atom.Atom<any>>,
+):
+    | { dehydrated: DehydratedState }
+    | Promise<{ dehydrated: DehydratedState }> => {
+    const pending = Promise.all(
+        atoms.map((atom) => preloadAtom(context.registry, atom)),
+    )
+
+    if (!import.meta.env.SSR) {
+        // Warm the registry in the background; the component reads the atom.
+        void pending
+        return { dehydrated: [] }
+    }
+
+    return pending.then(() => ({
+        dehydrated: dehydrateRegistry(context.registry),
+    }))
+}
+
 export const loadAtoms = async (
     context: RouterContext,
     atoms: ReadonlyArray<Atom.Atom<any>>,

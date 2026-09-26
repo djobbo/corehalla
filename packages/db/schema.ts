@@ -29,8 +29,21 @@ import {
  *
  * The crawl tables carry indexes for the two hot read paths: the global player
  * rankings (one index per sortable column, because the `ORDER BY` column is
- * dynamic) and case-insensitive prefix search on clan names and player aliases
- * (`lower(...)` expression indexes, which SQLite can use for `LIKE 'x%'`).
+ * dynamic) and prefix search on clan names and player aliases.
+ *
+ * Prefix search reads a dedicated lowercase column (`aliasLower`/`nameLower`)
+ * rather than a `COLLATE NOCASE` expression index. SQLite's LIKE optimization
+ * does accept a `COLLATE NOCASE` index, but it only folds ASCII, and the two
+ * search columns are compared with `LIKE` *and* ordered, so the index has to
+ * serve both. A plain indexed column does that unambiguously.
+ *
+ * The ordering matters as much as the index. A prefix `WHERE` is a *range*, so
+ * no B-tree can also satisfy an `ORDER BY` on a different column: SQLite falls
+ * back to reading every matching row into a temp B-tree and sorting it before
+ * the `LIMIT`. On a short prefix that is the whole table, so the search queries
+ * order by the searched column itself (which the index already provides) and
+ * never sort on a second column. See `web/src/effect/Database.ts`.
+ *
  * Indexes add one written row per indexed column on every write, so keep the
  * crawler's write volume in mind when adding more.
  */
@@ -297,9 +310,41 @@ export const bhPlayerAlias = sqliteTable(
     {
         playerId: text("playerId").notNull(),
         alias: text("alias").notNull(),
+        /**
+         * `alias`, lowercased in JavaScript by the writer.
+         *
+         * Never written by SQL `lower()`, which does not fold non-ASCII, and
+         * never re-derived on read: the search needle is lowercased the same
+         * way, so the two always agree.
+         */
+        aliasLower: text("aliasLower").notNull().default(""),
+        /**
+         * When this alias was first seen. Written once on insert and
+         * deliberately never updated, so it stays a real "created" timestamp.
+         */
         createdAt: integer("createdAt", { mode: "timestamp_ms" })
             .notNull()
             .default(now),
+        /**
+         * When the crawler last saw this alias. Refreshed on every crawler hit.
+         *
+         * The default is the constant `0`, not `now`: SQLite forbids a
+         * parenthesized expression as the default of an
+         * `ALTER TABLE ... ADD COLUMN`, which is how this column reaches an
+         * already-migrated database ("Cannot add a column with non-constant
+         * default"). Note the local `node:sqlite` build accepts it anyway, so
+         * `db:seed:verify` cannot catch a regression here — D1 is stricter than
+         * the SQLite this repo tests against.
+         *
+         * Every writer sets `lastSeen` explicitly (see `alias()` in
+         * `web/src/effect/Handlers.ts`), so the default only applies to rows
+         * inserted around the migration itself, and `0` reads honestly as
+         * "never seen" instead of claiming "now". The migration backfills
+         * existing rows from `createdAt`.
+         */
+        lastSeen: integer("lastSeen", { mode: "timestamp_ms" })
+            .notNull()
+            .default(sql`0`),
         public: integer("public", { mode: "boolean" }).notNull().default(true),
     },
     (table) => [
@@ -307,13 +352,19 @@ export const bhPlayerAlias = sqliteTable(
             name: "BHPlayerAlias_pkey",
             columns: [table.playerId, table.alias],
         }),
-        // Case-insensitive prefix search (`alias LIKE 'x%'`). The `NOCASE`
-        // collation on the *index* is what lets SQLite's LIKE optimization use
-        // it; a `lower(alias)` expression index would not be.
-        index("BHPlayerAlias_alias_nocase_idx").on(
-            sql`${table.alias} COLLATE NOCASE`,
-        ),
+        /**
+         * Serves the prefix search end to end: `aliasLower LIKE 'x%'` narrows
+         * the range and the same index provides the `ORDER BY aliasLower`.
+         *
+         * Not partial on `public`: a partial index would drop the non-public
+         * rows, but SQLite still has to read them from the table for the
+         * `public = 1` check, and this table is almost entirely public anyway.
+         */
+        index("BHPlayerAlias_aliasLower_idx").on(table.aliasLower),
+        /** `getPlayerAliases`, ordered by first-seen. */
         index("BHPlayerAlias_createdAt_idx").on(table.createdAt),
+        /** Recency reads and crawler bookkeeping. */
+        index("BHPlayerAlias_lastSeen_idx").on(table.lastSeen),
     ],
 )
 
@@ -322,13 +373,19 @@ export const bhClan = sqliteTable(
     {
         id: text("id").primaryKey(),
         name: text("name").notNull(),
+        /** `name`, lowercased in JavaScript. See `bhPlayerAlias.aliasLower`. */
+        nameLower: text("nameLower").notNull().default(""),
         created: integer("created").default(-1),
         xp: integer("xp").notNull(),
     },
     (table) => [
         index("BHClan_xp_idx").on(table.xp),
-        // Case-insensitive prefix search (`name LIKE 'x%'`).
-        index("BHClan_name_nocase_idx").on(sql`${table.name} COLLATE NOCASE`),
+        /**
+         * Prefix search on `nameLower`, which doubles as its sort order: the
+         * clan search filters by name and re-ranks a bounded window by `xp`
+         * instead of asking SQLite to sort every prefix match.
+         */
+        index("BHClan_nameLower_idx").on(table.nameLower),
     ],
 )
 
