@@ -63,6 +63,18 @@ export class Database extends Context.Service<
             page: number,
         ) => Effect.Effect<readonly BHClan[], DatabaseError>
         /**
+         * The stored XP for a clan, or `null` when we have never seen it.
+         *
+         * `/v1/player/guild` carries a membership but not the clan's own XP, and
+         * the profile both renders that number and divides by it. Reading our
+         * own row keeps a v1-served profile from costing a third upstream
+         * request; `null` lets the caller omit the clan card instead of showing
+         * a fabricated total.
+         */
+        readonly getClanXp: (
+            clanId: string,
+        ) => Effect.Effect<string | null, DatabaseError>
+        /**
          * Exact-alias lookup used by the public `/api/rankings/search/player`
          * route (the grouped prefix search is `searchAliases`).
          */
@@ -207,6 +219,19 @@ export const layer = Layer.effect(
                         )
                         .orderBy(desc(bhPlayerAlias.createdAt)),
                 ).pipe(Effect.map((rows) => rows.map((row) => row.alias))),
+
+            getClanXp: (clanId) =>
+                run(
+                    db
+                        .select({ xp: bhClan.xp })
+                        .from(bhClan)
+                        .where(eq(bhClan.id, clanId))
+                        .limit(1),
+                ).pipe(
+                    Effect.map((rows) =>
+                        rows[0] ? String(rows[0].xp) : null,
+                    ),
+                ),
 
             upsertPlayerAliases: (aliases) =>
                 run(

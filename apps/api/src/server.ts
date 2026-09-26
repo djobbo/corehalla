@@ -36,11 +36,17 @@ const createHandler = (db: D1Database) => {
     // One D1 client for the whole server; `Database.layer` consumes it.
     const SqlLayer = sqlLayer(db)
 
+    // `BrawlhallaLayer` now reads the archive (for `getClanXp`), and
+    // `Layer.mergeAll` does not feed one layer's output into another's input —
+    // it only unions them. So the archive is built once here and provided to
+    // both consumers; Effect memoises the shared value within the build.
+    const DatabaseWithSql = DatabaseLayer.pipe(Layer.provide(SqlLayer))
+
     const ServicesLayer = Layer.mergeAll(
-        BrawlhallaLayer,
-        DatabaseLayer,
-        ContentLayer,
-    ).pipe(Layer.provide(SqlLayer))
+        DatabaseWithSql,
+        ContentLayer.pipe(Layer.provide(SqlLayer)),
+        BrawlhallaLayer.pipe(Layer.provide(DatabaseWithSql)),
+    )
 
     const ApiLayer = HttpApiBuilder.layer(CorehallaApi).pipe(
         Layer.provide(rankingsGroup),
