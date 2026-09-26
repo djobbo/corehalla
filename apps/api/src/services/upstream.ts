@@ -1,6 +1,6 @@
 import { Context, Effect, Layer } from "effect"
 import { HttpClient } from "effect/unstable/http"
-import { envValue } from "@/env"
+import { envValue } from "../env"
 import { rankings1v1Mock } from "@crh/bhapi/mocks/rankings1v1"
 import { rankings2v2Mock } from "@crh/bhapi/mocks/rankings2v2"
 import { playerStatsMock } from "@crh/bhapi/mocks/playerStats"
@@ -20,7 +20,14 @@ import type { RankedRegion } from "@crh/bhapi/constants"
 const BH_API_BASE = "https://api.brawlhalla.com"
 const DAIR_GG_API_BASE = "https://api.dair.gg/proxy/brawlhalla-api"
 
-const __DEV = import.meta.env.DEV
+/**
+ * Serve the bundled fixtures instead of calling Brawlhalla.
+ *
+ * The Start app read `import.meta.env.DEV`, which only exists under Vite; the
+ * API worker is bundled by rolldown, so this reads `NODE_ENV` instead. With
+ * fixtures on, no `BRAWLHALLA_API_KEY` is needed for local work.
+ */
+const __DEV = globalThis.process?.env?.["NODE_ENV"] === "development"
 
 /**
  * Server-side Brawlhalla API access, implemented with Effect's `HttpClient`.

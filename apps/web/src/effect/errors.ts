@@ -1,20 +1,11 @@
 import { Data } from "effect"
 
 /**
- * Typed domain errors.
+ * Typed domain errors for the Start app.
  *
- * `Effect.tryPromise` needs a typed `catch` to keep the error channel
- * meaningful; these tagged errors are what the services fail with before the
- * HTTP layer turns infrastructure failures into defects (HTTP 500).
+ * Only auth remains here: the ranking/alias services moved to the API worker
+ * with their own error module (`apps/api/src/errors.ts`).
  */
-
-export class DatabaseError extends Data.TaggedError("DatabaseError")<{
-    readonly cause: unknown
-}> {}
-
-export class ContentError extends Data.TaggedError("ContentError")<{
-    readonly cause: unknown
-}> {}
 
 export class AuthError extends Data.TaggedError("AuthError")<{
     readonly cause: unknown

@@ -1,29 +1,18 @@
 import type { D1Database } from "@crh/db/client"
 
 /**
- * Runtime environment.
+ * Runtime bindings for the API worker.
  *
- * Node (Vite dev, build) reads `process.env`. On Cloudflare the values arrive as
- * Worker bindings, reached through `cloudflare:workers`. The import is dynamic
- * and guarded so a Node process — where that module does not exist — keeps
- * working unchanged.
+ * The worker reads its values the same way the Start app did: `process.env`
+ * under Node (Vite dev, build) and the `cloudflare:workers` binding table on
+ * Cloudflare. The dynamic import is guarded so a Node process keeps working.
  */
 
 type WorkerEnvironment = {
-    /** The D1 database binding (see `alchemy.run.ts` at the repo root). */
+    /** The shared D1 database binding (see `alchemy.run.ts`). */
     DB?: D1Database
-    /**
-     * Service binding to the API worker (`@crh/api`).
-     *
-     * Server-side data loading goes through this instead of the public origin,
-     * which keeps the call inside Cloudflare and away from the zone's bot
-     * protection (see `src/server.ts`).
-     */
-    API?: { fetch: (request: Request) => Promise<Response> }
+    BRAWLHALLA_API_KEY?: string
     SITE_URL?: string
-    INTERNAL_ORIGIN?: string
-    DISCORD_CLIENT_ID?: string
-    DISCORD_CLIENT_SECRET?: string
     [key: string]: unknown
 }
 
@@ -67,7 +56,7 @@ export const envValue = async (key: string): Promise<string | undefined> => {
 /**
  * The D1 database binding.
  *
- * Only the Worker has it; run the app through `alchemy dev` (or deploy it) when
+ * Only the Worker has it; run the API through `alchemy dev` (or deploy it) when
  * a request needs the database.
  */
 export const d1Database = async (): Promise<D1Database> => {
@@ -82,17 +71,4 @@ export const d1Database = async (): Promise<D1Database> => {
     }
 
     return db
-}
-
-/**
- * The API worker's service binding, or `undefined` when it is not configured.
- *
- * Server-side data loading goes through this rather than the public origin, so
- * the request never leaves Cloudflare's network and cannot be answered with the
- * zone's bot challenge (see `src/server.ts`).
- */
-export const apiBinding = async () => {
-    const env = await workerEnv()
-
-    return env.API
 }

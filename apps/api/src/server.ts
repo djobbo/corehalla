@@ -2,23 +2,23 @@ import { Layer } from "effect"
 import { FetchHttpClient, HttpRouter, HttpServer } from "effect/unstable/http"
 import { HttpApiBuilder } from "effect/unstable/httpapi"
 import { layer as sqlLayer } from "@crh/db/client"
-import { d1Database } from "@/env"
+import { d1Database } from "./env"
 import { CorehallaApi } from "@crh/api-contract/Api"
 import {
     contentGroup,
     rankingsGroup,
     searchGroup,
     statsGroup,
-} from "./Handlers"
-import { layer as BrawlhallaLayer } from "./Brawlhalla"
-import { layer as ContentLayer } from "./Content"
-import { layer as DatabaseLayer } from "./Database"
+} from "./handlers"
+import { layer as BrawlhallaLayer } from "./services/upstream"
+import { layer as ContentLayer } from "./services/content"
+import { layer as DatabaseLayer } from "./services/archive"
 import type { D1Database } from "@crh/db/client"
 
 /**
  * Builds the Effect HTTP API into a WHATWG `fetch` handler.
  *
- * The handler is mounted by the TanStack Start server route at `/api/effect/$`
+ * The handler is the Worker's `fetch` export (see `index.ts`)
  * and serves every endpoint declared in `Api.ts`. `HttpRouter.toWebHandler`
  * owns the router layer; the group handlers, domain services, and HTTP platform
  * services are provided here.

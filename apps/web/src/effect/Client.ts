@@ -8,7 +8,7 @@ import { withRetry } from "./retry"
  * Origin used by the **fallback** server-side client.
  *
  * Route loaders preload atoms on the server, and the atoms call the mounted
- * `/api/effect/*` routes. The default server-side client calls the handler
+ * `/api/v1/*` routes. The default server-side client calls the handler
  * in-process (see `useInProcessHttpClient`), which needs no origin; this is only
  * used if that client was never installed, where the request still has to be
  * absolute because `fetch` cannot resolve a relative URL on the server.
@@ -58,7 +58,7 @@ export interface CorehallaClientSelf {
 /**
  * Typed Effect HTTP client for the app, exposed as atoms.
  *
- * In the browser it calls the mounted `/api/effect/*` routes with
+ * In the browser it calls the mounted `/api/v1/*` routes with
  * `FetchHttpClient` and relative URLs; on the server it resolves to whatever
  * `useInProcessHttpClient` installed.
  */

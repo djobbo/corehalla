@@ -115,8 +115,8 @@ const isDev = process.env["ALCHEMY_DEV"] === "true"
 /**
  * Fallback origin for the server-side render.
  *
- * SSR loads its data by calling the API handler in-process (`apps/web/src/server.ts`
- * installs that client), so this is only used if that client is missing: in
+ * SSR loads its data through the `API` service binding (`apps/web/src/server.ts`
+ * installs that client), so this is only used if the binding is missing: in
  * production `SITE_URL` is this deployment, under `alchemy dev` the app is
  * served by Alchemy's local dev server instead.
  */
@@ -132,6 +132,42 @@ const internalOrigin = isDev ? `http://localhost:${DEV_PORT}` : siteUrl
  * already exist in the account.
  */
 const hostname = siteUrl.replace(/^https?:\/\//, "").replace(/\/+$/, "")
+
+/**
+ * The API worker (`@crh/api`).
+ *
+ * Owns the Effect `HttpApi` served at `/api/v1/*`, the Brawlhalla upstream
+ * calls, and the D1-backed ranking/alias/guild queries. It shares `CorehallaDb`
+ * with the web worker.
+ *
+ * Two choices are deliberate:
+ *
+ * - The route pattern puts the API on the *site hostname* rather than a
+ *   subdomain. The browser calls it directly (the route atoms fetch
+ *   client-side), so a separate origin would need CORS; same-origin does not.
+ * - It is bound into the web worker as `API` so server-side rendering reaches
+ *   it over a service binding. A Worker's subrequest to its own public hostname
+ *   is answered with a managed bot challenge, which is what the previous
+ *   in-process handler existed to work around.
+ *
+ * `BRAWLHALLA_API_KEY` belongs here and not on the web worker: nothing under
+ * `apps/web` talks to Brawlhalla any more.
+ */
+export const CorehallaApi = Cloudflare.Worker("CorehallaApi", {
+    name: "corehalla-api",
+    main: "apps/api/src/index.ts",
+    routes: [{ pattern: `${hostname}/api/v1/*` }],
+    compatibility: {
+        flags: ["enable_request_signal"],
+    },
+    env: {
+        DB: CorehallaDb,
+        SITE_URL: siteUrl,
+        BRAWLHALLA_API_KEY: Redacted.make(
+            env("BRAWLHALLA_API_KEY", "", true),
+        ),
+    },
+})
 
 export class Website extends Cloudflare.Website.Vite<Website>()(
     "CorehallaWeb",
@@ -159,9 +195,10 @@ export class Website extends Cloudflare.Website.Vite<Website>()(
             DISCORD_CLIENT_SECRET: Redacted.make(
                 env("DISCORD_CLIENT_SECRET", "", true),
             ),
-            BRAWLHALLA_API_KEY: Redacted.make(
-                env("BRAWLHALLA_API_KEY", "", true),
-            ),
+            // Service binding to the API worker, used for server-side data
+            // loading. The browser reaches the same worker over the public
+            // `/api/v1/*` route instead.
+            API: CorehallaApi,
             VITE_ADSENSE_SLOT_PROFILE_HEADER: env("VITE_ADSENSE_SLOT_PROFILE_HEADER", "", true),
             VITE_ADSENSE_SLOT_PROFILE_BOTTOM: env("VITE_ADSENSE_SLOT_PROFILE_BOTTOM", "", true),
             VITE_ADSENSE_SLOT_ARTICLES: env("VITE_ADSENSE_SLOT_ARTICLES", "", true),

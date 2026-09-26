@@ -22,8 +22,6 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TwitterRouteImport } from './routes/twitter'
 import { Route as WikiRouteImport } from './routes/wiki'
 import { Route as AtmeFavoritesRouteImport } from './routes/@me/favorites'
-import { Route as ApiBhArticlesRouteImport } from './routes/api/bh-articles'
-import { Route as ApiWeeklyRotationRouteImport } from './routes/api/weekly-rotation'
 import { Route as CSplatRouteImport } from './routes/c.$'
 import { Route as LeaderboardSplatRouteImport } from './routes/leaderboard.$'
 import { Route as PSplatRouteImport } from './routes/p.$'
@@ -31,27 +29,18 @@ import { Route as RankingsIndexRouteImport } from './routes/rankings/index'
 import { Route as StatsMeRouteImport } from './routes/stats/me'
 import { Route as ApiAuthDiscordRouteImport } from './routes/api/auth/discord'
 import { Route as ApiAuthSignoutRouteImport } from './routes/api/auth/signout'
-import { Route as ApiEffectSplatRouteImport } from './routes/api/effect/$'
 import { Route as ApiMeConnectionsRouteImport } from './routes/api/me/connections'
 import { Route as ApiMeFavoritesRouteImport } from './routes/api/me/favorites'
 import { Route as ApiMeSessionRouteImport } from './routes/api/me/session'
-import { Route as ApiRankingsIndexRouteImport } from './routes/api/rankings/index'
-import { Route as ApiRankingsClansRouteImport } from './routes/api/rankings/clans'
-import { Route as ApiRankingsPowerRouteImport } from './routes/api/rankings/power'
 import { Route as RankingsClansChar123PageChar125RouteImport } from './routes/rankings/clans.{-$page}'
 import { Route as RankingsGlobalChar123PageChar125RouteImport } from './routes/rankings/global.{-$page}'
 import { Route as RankingsPowerIndexRouteImport } from './routes/rankings/power/index'
 import { Route as StatsClanClanIdRouteImport } from './routes/stats/clan/$clanId'
 import { Route as StatsPlayerPlayerIdRouteImport } from './routes/stats/player/$playerId'
 import { Route as ApiAuthDiscordCallbackRouteImport } from './routes/api/auth/discord/callback'
-import { Route as ApiRankingsSearchPlayerRouteImport } from './routes/api/rankings/search/player'
-import { Route as ApiStatsClanClanIdRouteImport } from './routes/api/stats/clan/$clanId'
 import { Route as Rankings1v1Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/1v1.{-$region}.{-$page}'
 import { Route as Rankings2v2Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/2v2.{-$region}.{-$page}'
 import { Route as RankingsPowerChar123BracketChar125Char123RegionChar125RouteImport } from './routes/rankings/power.{-$bracket}.{-$region}'
-import { Route as ApiStatsPlayerPlayerIdAliasesRouteImport } from './routes/api/stats/player/$playerId/aliases'
-import { Route as ApiStatsPlayerPlayerIdRankedRouteImport } from './routes/api/stats/player/$playerId/ranked'
-import { Route as ApiStatsPlayerPlayerIdStatsRouteImport } from './routes/api/stats/player/$playerId/stats'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -118,16 +107,6 @@ const AtmeFavoritesRoute = AtmeFavoritesRouteImport.update({
   path: '/@me/favorites',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiBhArticlesRoute = ApiBhArticlesRouteImport.update({
-  id: '/api/bh-articles',
-  path: '/api/bh-articles',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiWeeklyRotationRoute = ApiWeeklyRotationRouteImport.update({
-  id: '/api/weekly-rotation',
-  path: '/api/weekly-rotation',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CSplatRoute = CSplatRouteImport.update({
   id: '/c/$',
   path: '/c/$',
@@ -163,11 +142,6 @@ const ApiAuthSignoutRoute = ApiAuthSignoutRouteImport.update({
   path: '/api/auth/signout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiEffectSplatRoute = ApiEffectSplatRouteImport.update({
-  id: '/api/effect/$',
-  path: '/api/effect/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiMeConnectionsRoute = ApiMeConnectionsRouteImport.update({
   id: '/api/me/connections',
   path: '/api/me/connections',
@@ -181,21 +155,6 @@ const ApiMeFavoritesRoute = ApiMeFavoritesRouteImport.update({
 const ApiMeSessionRoute = ApiMeSessionRouteImport.update({
   id: '/api/me/session',
   path: '/api/me/session',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiRankingsIndexRoute = ApiRankingsIndexRouteImport.update({
-  id: '/api/rankings/',
-  path: '/api/rankings/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiRankingsClansRoute = ApiRankingsClansRouteImport.update({
-  id: '/api/rankings/clans',
-  path: '/api/rankings/clans',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiRankingsPowerRoute = ApiRankingsPowerRouteImport.update({
-  id: '/api/rankings/power',
-  path: '/api/rankings/power',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RankingsClansChar123PageChar125Route =
@@ -230,16 +189,6 @@ const ApiAuthDiscordCallbackRoute = ApiAuthDiscordCallbackRouteImport.update({
   path: '/callback',
   getParentRoute: () => ApiAuthDiscordRoute,
 } as any)
-const ApiRankingsSearchPlayerRoute = ApiRankingsSearchPlayerRouteImport.update({
-  id: '/api/rankings/search/player',
-  path: '/api/rankings/search/player',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiStatsClanClanIdRoute = ApiStatsClanClanIdRouteImport.update({
-  id: '/api/stats/clan/$clanId',
-  path: '/api/stats/clan/$clanId',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const Rankings1v1Char123RegionChar125Char123PageChar125Route =
   Rankings1v1Char123RegionChar125Char123PageChar125RouteImport.update({
     id: '/rankings/1v1/{-$region}/{-$page}',
@@ -258,24 +207,6 @@ const RankingsPowerChar123BracketChar125Char123RegionChar125Route =
     path: '/rankings/power/{-$bracket}/{-$region}',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiStatsPlayerPlayerIdAliasesRoute =
-  ApiStatsPlayerPlayerIdAliasesRouteImport.update({
-    id: '/api/stats/player/$playerId/aliases',
-    path: '/api/stats/player/$playerId/aliases',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiStatsPlayerPlayerIdRankedRoute =
-  ApiStatsPlayerPlayerIdRankedRouteImport.update({
-    id: '/api/stats/player/$playerId/ranked',
-    path: '/api/stats/player/$playerId/ranked',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiStatsPlayerPlayerIdStatsRoute =
-  ApiStatsPlayerPlayerIdStatsRouteImport.update({
-    id: '/api/stats/player/$playerId/stats',
-    path: '/api/stats/player/$playerId/stats',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -291,8 +222,6 @@ export interface FileRoutesByFullPath {
   '/twitter': typeof TwitterRoute
   '/wiki': typeof WikiRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
-  '/api/bh-articles': typeof ApiBhArticlesRoute
-  '/api/weekly-rotation': typeof ApiWeeklyRotationRoute
   '/c/$': typeof CSplatRoute
   '/leaderboard/$': typeof LeaderboardSplatRoute
   '/p/$': typeof PSplatRoute
@@ -300,27 +229,18 @@ export interface FileRoutesByFullPath {
   '/rankings/': typeof RankingsIndexRoute
   '/api/auth/discord': typeof ApiAuthDiscordRouteWithChildren
   '/api/auth/signout': typeof ApiAuthSignoutRoute
-  '/api/effect/$': typeof ApiEffectSplatRoute
   '/api/me/connections': typeof ApiMeConnectionsRoute
   '/api/me/favorites': typeof ApiMeFavoritesRoute
   '/api/me/session': typeof ApiMeSessionRoute
-  '/api/rankings/clans': typeof ApiRankingsClansRoute
-  '/api/rankings/power': typeof ApiRankingsPowerRoute
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
   '/stats/clan/$clanId': typeof StatsClanClanIdRoute
   '/stats/player/$playerId': typeof StatsPlayerPlayerIdRoute
-  '/api/rankings/': typeof ApiRankingsIndexRoute
   '/rankings/power/': typeof RankingsPowerIndexRoute
   '/api/auth/discord/callback': typeof ApiAuthDiscordCallbackRoute
-  '/api/rankings/search/player': typeof ApiRankingsSearchPlayerRoute
-  '/api/stats/clan/$clanId': typeof ApiStatsClanClanIdRoute
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/power/{-$bracket}/{-$region}': typeof RankingsPowerChar123BracketChar125Char123RegionChar125Route
-  '/api/stats/player/$playerId/aliases': typeof ApiStatsPlayerPlayerIdAliasesRoute
-  '/api/stats/player/$playerId/ranked': typeof ApiStatsPlayerPlayerIdRankedRoute
-  '/api/stats/player/$playerId/stats': typeof ApiStatsPlayerPlayerIdStatsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -336,8 +256,6 @@ export interface FileRoutesByTo {
   '/twitter': typeof TwitterRoute
   '/wiki': typeof WikiRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
-  '/api/bh-articles': typeof ApiBhArticlesRoute
-  '/api/weekly-rotation': typeof ApiWeeklyRotationRoute
   '/c/$': typeof CSplatRoute
   '/leaderboard/$': typeof LeaderboardSplatRoute
   '/p/$': typeof PSplatRoute
@@ -345,27 +263,18 @@ export interface FileRoutesByTo {
   '/rankings': typeof RankingsIndexRoute
   '/api/auth/discord': typeof ApiAuthDiscordRouteWithChildren
   '/api/auth/signout': typeof ApiAuthSignoutRoute
-  '/api/effect/$': typeof ApiEffectSplatRoute
   '/api/me/connections': typeof ApiMeConnectionsRoute
   '/api/me/favorites': typeof ApiMeFavoritesRoute
   '/api/me/session': typeof ApiMeSessionRoute
-  '/api/rankings/clans': typeof ApiRankingsClansRoute
-  '/api/rankings/power': typeof ApiRankingsPowerRoute
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
   '/stats/clan/$clanId': typeof StatsClanClanIdRoute
   '/stats/player/$playerId': typeof StatsPlayerPlayerIdRoute
-  '/api/rankings': typeof ApiRankingsIndexRoute
   '/rankings/power': typeof RankingsPowerIndexRoute
   '/api/auth/discord/callback': typeof ApiAuthDiscordCallbackRoute
-  '/api/rankings/search/player': typeof ApiRankingsSearchPlayerRoute
-  '/api/stats/clan/$clanId': typeof ApiStatsClanClanIdRoute
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/power/{-$bracket}/{-$region}': typeof RankingsPowerChar123BracketChar125Char123RegionChar125Route
-  '/api/stats/player/$playerId/aliases': typeof ApiStatsPlayerPlayerIdAliasesRoute
-  '/api/stats/player/$playerId/ranked': typeof ApiStatsPlayerPlayerIdRankedRoute
-  '/api/stats/player/$playerId/stats': typeof ApiStatsPlayerPlayerIdStatsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -382,8 +291,6 @@ export interface FileRoutesById {
   '/twitter': typeof TwitterRoute
   '/wiki': typeof WikiRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
-  '/api/bh-articles': typeof ApiBhArticlesRoute
-  '/api/weekly-rotation': typeof ApiWeeklyRotationRoute
   '/c/$': typeof CSplatRoute
   '/leaderboard/$': typeof LeaderboardSplatRoute
   '/p/$': typeof PSplatRoute
@@ -391,27 +298,18 @@ export interface FileRoutesById {
   '/rankings/': typeof RankingsIndexRoute
   '/api/auth/discord': typeof ApiAuthDiscordRouteWithChildren
   '/api/auth/signout': typeof ApiAuthSignoutRoute
-  '/api/effect/$': typeof ApiEffectSplatRoute
   '/api/me/connections': typeof ApiMeConnectionsRoute
   '/api/me/favorites': typeof ApiMeFavoritesRoute
   '/api/me/session': typeof ApiMeSessionRoute
-  '/api/rankings/clans': typeof ApiRankingsClansRoute
-  '/api/rankings/power': typeof ApiRankingsPowerRoute
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
   '/stats/clan/$clanId': typeof StatsClanClanIdRoute
   '/stats/player/$playerId': typeof StatsPlayerPlayerIdRoute
-  '/api/rankings/': typeof ApiRankingsIndexRoute
   '/rankings/power/': typeof RankingsPowerIndexRoute
   '/api/auth/discord/callback': typeof ApiAuthDiscordCallbackRoute
-  '/api/rankings/search/player': typeof ApiRankingsSearchPlayerRoute
-  '/api/stats/clan/$clanId': typeof ApiStatsClanClanIdRoute
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/power/{-$bracket}/{-$region}': typeof RankingsPowerChar123BracketChar125Char123RegionChar125Route
-  '/api/stats/player/$playerId/aliases': typeof ApiStatsPlayerPlayerIdAliasesRoute
-  '/api/stats/player/$playerId/ranked': typeof ApiStatsPlayerPlayerIdRankedRoute
-  '/api/stats/player/$playerId/stats': typeof ApiStatsPlayerPlayerIdStatsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -429,8 +327,6 @@ export interface FileRouteTypes {
     | '/twitter'
     | '/wiki'
     | '/@me/favorites'
-    | '/api/bh-articles'
-    | '/api/weekly-rotation'
     | '/c/$'
     | '/leaderboard/$'
     | '/p/$'
@@ -438,27 +334,18 @@ export interface FileRouteTypes {
     | '/rankings/'
     | '/api/auth/discord'
     | '/api/auth/signout'
-    | '/api/effect/$'
     | '/api/me/connections'
     | '/api/me/favorites'
     | '/api/me/session'
-    | '/api/rankings/clans'
-    | '/api/rankings/power'
     | '/rankings/clans/{-$page}'
     | '/rankings/global/{-$page}'
     | '/stats/clan/$clanId'
     | '/stats/player/$playerId'
-    | '/api/rankings/'
     | '/rankings/power/'
     | '/api/auth/discord/callback'
-    | '/api/rankings/search/player'
-    | '/api/stats/clan/$clanId'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
     | '/rankings/power/{-$bracket}/{-$region}'
-    | '/api/stats/player/$playerId/aliases'
-    | '/api/stats/player/$playerId/ranked'
-    | '/api/stats/player/$playerId/stats'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -474,8 +361,6 @@ export interface FileRouteTypes {
     | '/twitter'
     | '/wiki'
     | '/@me/favorites'
-    | '/api/bh-articles'
-    | '/api/weekly-rotation'
     | '/c/$'
     | '/leaderboard/$'
     | '/p/$'
@@ -483,27 +368,18 @@ export interface FileRouteTypes {
     | '/rankings'
     | '/api/auth/discord'
     | '/api/auth/signout'
-    | '/api/effect/$'
     | '/api/me/connections'
     | '/api/me/favorites'
     | '/api/me/session'
-    | '/api/rankings/clans'
-    | '/api/rankings/power'
     | '/rankings/clans/{-$page}'
     | '/rankings/global/{-$page}'
     | '/stats/clan/$clanId'
     | '/stats/player/$playerId'
-    | '/api/rankings'
     | '/rankings/power'
     | '/api/auth/discord/callback'
-    | '/api/rankings/search/player'
-    | '/api/stats/clan/$clanId'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
     | '/rankings/power/{-$bracket}/{-$region}'
-    | '/api/stats/player/$playerId/aliases'
-    | '/api/stats/player/$playerId/ranked'
-    | '/api/stats/player/$playerId/stats'
   id:
     | '__root__'
     | '/'
@@ -519,8 +395,6 @@ export interface FileRouteTypes {
     | '/twitter'
     | '/wiki'
     | '/@me/favorites'
-    | '/api/bh-articles'
-    | '/api/weekly-rotation'
     | '/c/$'
     | '/leaderboard/$'
     | '/p/$'
@@ -528,27 +402,18 @@ export interface FileRouteTypes {
     | '/rankings/'
     | '/api/auth/discord'
     | '/api/auth/signout'
-    | '/api/effect/$'
     | '/api/me/connections'
     | '/api/me/favorites'
     | '/api/me/session'
-    | '/api/rankings/clans'
-    | '/api/rankings/power'
     | '/rankings/clans/{-$page}'
     | '/rankings/global/{-$page}'
     | '/stats/clan/$clanId'
     | '/stats/player/$playerId'
-    | '/api/rankings/'
     | '/rankings/power/'
     | '/api/auth/discord/callback'
-    | '/api/rankings/search/player'
-    | '/api/stats/clan/$clanId'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
     | '/rankings/power/{-$bracket}/{-$region}'
-    | '/api/stats/player/$playerId/aliases'
-    | '/api/stats/player/$playerId/ranked'
-    | '/api/stats/player/$playerId/stats'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -565,8 +430,6 @@ export interface RootRouteChildren {
   TwitterRoute: typeof TwitterRoute
   WikiRoute: typeof WikiRoute
   AtmeFavoritesRoute: typeof AtmeFavoritesRoute
-  ApiBhArticlesRoute: typeof ApiBhArticlesRoute
-  ApiWeeklyRotationRoute: typeof ApiWeeklyRotationRoute
   CSplatRoute: typeof CSplatRoute
   LeaderboardSplatRoute: typeof LeaderboardSplatRoute
   PSplatRoute: typeof PSplatRoute
@@ -574,26 +437,17 @@ export interface RootRouteChildren {
   RankingsIndexRoute: typeof RankingsIndexRoute
   ApiAuthDiscordRoute: typeof ApiAuthDiscordRouteWithChildren
   ApiAuthSignoutRoute: typeof ApiAuthSignoutRoute
-  ApiEffectSplatRoute: typeof ApiEffectSplatRoute
   ApiMeConnectionsRoute: typeof ApiMeConnectionsRoute
   ApiMeFavoritesRoute: typeof ApiMeFavoritesRoute
   ApiMeSessionRoute: typeof ApiMeSessionRoute
-  ApiRankingsClansRoute: typeof ApiRankingsClansRoute
-  ApiRankingsPowerRoute: typeof ApiRankingsPowerRoute
   RankingsClansChar123PageChar125Route: typeof RankingsClansChar123PageChar125Route
   RankingsGlobalChar123PageChar125Route: typeof RankingsGlobalChar123PageChar125Route
   StatsClanClanIdRoute: typeof StatsClanClanIdRoute
   StatsPlayerPlayerIdRoute: typeof StatsPlayerPlayerIdRoute
-  ApiRankingsIndexRoute: typeof ApiRankingsIndexRoute
   RankingsPowerIndexRoute: typeof RankingsPowerIndexRoute
-  ApiRankingsSearchPlayerRoute: typeof ApiRankingsSearchPlayerRoute
-  ApiStatsClanClanIdRoute: typeof ApiStatsClanClanIdRoute
   Rankings1v1Char123RegionChar125Char123PageChar125Route: typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   Rankings2v2Char123RegionChar125Char123PageChar125Route: typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   RankingsPowerChar123BracketChar125Char123RegionChar125Route: typeof RankingsPowerChar123BracketChar125Char123RegionChar125Route
-  ApiStatsPlayerPlayerIdAliasesRoute: typeof ApiStatsPlayerPlayerIdAliasesRoute
-  ApiStatsPlayerPlayerIdRankedRoute: typeof ApiStatsPlayerPlayerIdRankedRoute
-  ApiStatsPlayerPlayerIdStatsRoute: typeof ApiStatsPlayerPlayerIdStatsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -689,20 +543,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AtmeFavoritesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/bh-articles': {
-      id: '/api/bh-articles'
-      path: '/api/bh-articles'
-      fullPath: '/api/bh-articles'
-      preLoaderRoute: typeof ApiBhArticlesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/weekly-rotation': {
-      id: '/api/weekly-rotation'
-      path: '/api/weekly-rotation'
-      fullPath: '/api/weekly-rotation'
-      preLoaderRoute: typeof ApiWeeklyRotationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/c/$': {
       id: '/c/$'
       path: '/c/$'
@@ -752,13 +592,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSignoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/effect/$': {
-      id: '/api/effect/$'
-      path: '/api/effect/$'
-      fullPath: '/api/effect/$'
-      preLoaderRoute: typeof ApiEffectSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/me/connections': {
       id: '/api/me/connections'
       path: '/api/me/connections'
@@ -778,27 +611,6 @@ declare module '@tanstack/react-router' {
       path: '/api/me/session'
       fullPath: '/api/me/session'
       preLoaderRoute: typeof ApiMeSessionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/rankings/': {
-      id: '/api/rankings/'
-      path: '/api/rankings'
-      fullPath: '/api/rankings/'
-      preLoaderRoute: typeof ApiRankingsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/rankings/clans': {
-      id: '/api/rankings/clans'
-      path: '/api/rankings/clans'
-      fullPath: '/api/rankings/clans'
-      preLoaderRoute: typeof ApiRankingsClansRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/rankings/power': {
-      id: '/api/rankings/power'
-      path: '/api/rankings/power'
-      fullPath: '/api/rankings/power'
-      preLoaderRoute: typeof ApiRankingsPowerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rankings/clans/{-$page}': {
@@ -843,20 +655,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthDiscordCallbackRouteImport
       parentRoute: typeof ApiAuthDiscordRoute
     }
-    '/api/rankings/search/player': {
-      id: '/api/rankings/search/player'
-      path: '/api/rankings/search/player'
-      fullPath: '/api/rankings/search/player'
-      preLoaderRoute: typeof ApiRankingsSearchPlayerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/stats/clan/$clanId': {
-      id: '/api/stats/clan/$clanId'
-      path: '/api/stats/clan/$clanId'
-      fullPath: '/api/stats/clan/$clanId'
-      preLoaderRoute: typeof ApiStatsClanClanIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/rankings/1v1/{-$region}/{-$page}': {
       id: '/rankings/1v1/{-$region}/{-$page}'
       path: '/rankings/1v1/{-$region}/{-$page}'
@@ -876,27 +674,6 @@ declare module '@tanstack/react-router' {
       path: '/rankings/power/{-$bracket}/{-$region}'
       fullPath: '/rankings/power/{-$bracket}/{-$region}'
       preLoaderRoute: typeof RankingsPowerChar123BracketChar125Char123RegionChar125RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/stats/player/$playerId/aliases': {
-      id: '/api/stats/player/$playerId/aliases'
-      path: '/api/stats/player/$playerId/aliases'
-      fullPath: '/api/stats/player/$playerId/aliases'
-      preLoaderRoute: typeof ApiStatsPlayerPlayerIdAliasesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/stats/player/$playerId/ranked': {
-      id: '/api/stats/player/$playerId/ranked'
-      path: '/api/stats/player/$playerId/ranked'
-      fullPath: '/api/stats/player/$playerId/ranked'
-      preLoaderRoute: typeof ApiStatsPlayerPlayerIdRankedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/stats/player/$playerId/stats': {
-      id: '/api/stats/player/$playerId/stats'
-      path: '/api/stats/player/$playerId/stats'
-      fullPath: '/api/stats/player/$playerId/stats'
-      preLoaderRoute: typeof ApiStatsPlayerPlayerIdStatsRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -928,8 +705,6 @@ const rootRouteChildren: RootRouteChildren = {
   TwitterRoute: TwitterRoute,
   WikiRoute: WikiRoute,
   AtmeFavoritesRoute: AtmeFavoritesRoute,
-  ApiBhArticlesRoute: ApiBhArticlesRoute,
-  ApiWeeklyRotationRoute: ApiWeeklyRotationRoute,
   CSplatRoute: CSplatRoute,
   LeaderboardSplatRoute: LeaderboardSplatRoute,
   PSplatRoute: PSplatRoute,
@@ -937,29 +712,20 @@ const rootRouteChildren: RootRouteChildren = {
   RankingsIndexRoute: RankingsIndexRoute,
   ApiAuthDiscordRoute: ApiAuthDiscordRouteWithChildren,
   ApiAuthSignoutRoute: ApiAuthSignoutRoute,
-  ApiEffectSplatRoute: ApiEffectSplatRoute,
   ApiMeConnectionsRoute: ApiMeConnectionsRoute,
   ApiMeFavoritesRoute: ApiMeFavoritesRoute,
   ApiMeSessionRoute: ApiMeSessionRoute,
-  ApiRankingsClansRoute: ApiRankingsClansRoute,
-  ApiRankingsPowerRoute: ApiRankingsPowerRoute,
   RankingsClansChar123PageChar125Route: RankingsClansChar123PageChar125Route,
   RankingsGlobalChar123PageChar125Route: RankingsGlobalChar123PageChar125Route,
   StatsClanClanIdRoute: StatsClanClanIdRoute,
   StatsPlayerPlayerIdRoute: StatsPlayerPlayerIdRoute,
-  ApiRankingsIndexRoute: ApiRankingsIndexRoute,
   RankingsPowerIndexRoute: RankingsPowerIndexRoute,
-  ApiRankingsSearchPlayerRoute: ApiRankingsSearchPlayerRoute,
-  ApiStatsClanClanIdRoute: ApiStatsClanClanIdRoute,
   Rankings1v1Char123RegionChar125Char123PageChar125Route:
     Rankings1v1Char123RegionChar125Char123PageChar125Route,
   Rankings2v2Char123RegionChar125Char123PageChar125Route:
     Rankings2v2Char123RegionChar125Char123PageChar125Route,
   RankingsPowerChar123BracketChar125Char123RegionChar125Route:
     RankingsPowerChar123BracketChar125Char123RegionChar125Route,
-  ApiStatsPlayerPlayerIdAliasesRoute: ApiStatsPlayerPlayerIdAliasesRoute,
-  ApiStatsPlayerPlayerIdRankedRoute: ApiStatsPlayerPlayerIdRankedRoute,
-  ApiStatsPlayerPlayerIdStatsRoute: ApiStatsPlayerPlayerIdStatsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

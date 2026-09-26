@@ -7,9 +7,9 @@ import {
     GLOBAL_PLAYER_RANKINGS_PER_PAGE,
     SEARCH_MAX_PAGES,
     SEARCH_PLAYERS_ALIASES_PER_PAGE,
-} from "@util/constants"
+} from "../constants"
 import { bhClan, bhPlayerAlias, bhPlayerData } from "@crh/db/schema"
-import { DatabaseError } from "./errors"
+import { DatabaseError } from "../errors"
 import type { D1Database } from "@crh/db/client"
 import type { SQLWrapper } from "@crh/db/query"
 import type { BHClan, BHPlayerAlias, NewBHClan } from "@crh/db/schema"

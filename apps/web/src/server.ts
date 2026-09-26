@@ -17,17 +17,17 @@ import {
 } from "effect/unstable/http"
 import { getCssText } from "@/ui/theme"
 import { useInProcessHttpClient } from "@/effect/Client"
-import { apiHandler } from "@/effect/Server"
+import { apiBinding } from "@/env"
 
 /**
- * SSR data loading runs the API handler in-process.
+ * SSR data loading calls the API worker through its service binding.
  *
- * Route loaders preload their atoms, and the atoms call the mounted
- * `/api/effect/*` routes. Going over HTTP for that needs an absolute origin and,
- * in production, hits the zone's bot protection: the Worker's subrequest to its
- * own hostname is answered with a managed challenge (403), which surfaced as a
- * 500 on every first load. Calling the handler directly removes the network
- * hop, the origin configuration, and the block.
+ * Route loaders preload their atoms, and the atoms call the `/api/v1/*` routes.
+ * Going over HTTP for that needs an absolute origin and, in production, hits the
+ * zone's bot protection: the Worker's subrequest to its own hostname is answered
+ * with a managed challenge (403), which surfaced as a 500 on every first load.
+ * The service binding removes the public origin from the path entirely, so the
+ * call never leaves Cloudflare's network and no challenge can apply.
  */
 useInProcessHttpClient(
     HttpClient.make((request, _url, signal) =>
@@ -47,7 +47,19 @@ useInProcessHttpClient(
             )
 
             const response = yield* Effect.tryPromise({
-                try: () => apiHandler(web),
+                // Resolved per call: the binding only exists inside the Worker.
+                try: async () => {
+                    const api = await apiBinding()
+
+                    if (!api) {
+                        throw new Error(
+                            "No `API` service binding. Deploy (or `pnpm dev:cloud`) " +
+                                "so the Alchemy stack can bind the API worker to web.",
+                        )
+                    }
+
+                    return api.fetch(web)
+                },
                 catch: (cause) =>
                     new HttpClientError.HttpClientError({
                         reason: new HttpClientError.TransportError({

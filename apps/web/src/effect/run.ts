@@ -3,19 +3,18 @@ import { layer as sqlLayer } from "@crh/db/client"
 import { d1Database } from "@/env"
 import { Auth } from "./Auth"
 import { layer as authLayer } from "./Auth"
-import { makeLayer as databaseLayer } from "./Database"
 import type { D1Database } from "@crh/db/client"
 import type { AuthSession } from "./Auth"
 import type { AuthError } from "./errors"
-import type { Database } from "./Database"
 
 /**
  * Runs a server-route effect against services scoped to the call.
  *
- * The shared `/api/effect` handler keeps its services alive for the isolate;
- * one-off TanStack Start server routes (auth, `me/*`) build a fresh D1 client
- * and release it when the request finishes. The `DB` binding is resolved per
- * call because it only exists inside the Worker.
+ * The ranking/alias data now lives behind the API worker, so the Start app only
+ * runs *auth* effects locally: session, favorites and connections are read with
+ * the request's own cookies, which have no business crossing a service binding.
+ * Each call builds a fresh D1 client and releases it when the request finishes;
+ * the `DB` binding is resolved per call because it only exists inside the Worker.
  */
 const runScoped = <A, E, R>(
     effect: Effect.Effect<A, E, R>,
@@ -31,12 +30,6 @@ const runScoped = <A, E, R>(
     )
 
 const resolve = (override?: D1Database) => override ?? d1Database()
-
-/** Runs a stats/database effect on a D1 client scoped to the call. */
-export const runDatabase = async <A, E>(
-    effect: Effect.Effect<A, E, Database>,
-    override?: D1Database,
-): Promise<A> => runScoped(effect, databaseLayer(await resolve(override)))
 
 /** Runs an auth effect on a D1 client scoped to the call. */
 export const runAuth = async <A, E>(

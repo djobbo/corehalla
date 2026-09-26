@@ -193,6 +193,40 @@ importers:
         specifier: 0.3.3
         version: 0.3.3(@types/node@24.13.6)(jiti@2.7.0)(terser@5.51.2)(typescript@7.0.2)(yaml@2.9.1)
 
+  apps/api:
+    dependencies:
+      '@crh/api-contract':
+        specifier: workspace:*
+        version: link:../../packages/api-contract
+      '@crh/bhapi':
+        specifier: workspace:*
+        version: link:../../packages/bhapi
+      '@crh/common':
+        specifier: workspace:*
+        version: link:../../packages/common
+      '@crh/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@crh/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
+      '@crh/web-parser':
+        specifier: workspace:*
+        version: link:../../packages/web-parser
+      effect:
+        specifier: 4.0.0-rc.116
+        version: 4.0.0-rc.116
+    devDependencies:
+      '@crh/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.13.6
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
+
   apps/web:
     dependencies:
       '@crh/api-contract':

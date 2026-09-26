@@ -30,7 +30,7 @@ import {
 
 const rankings = HttpApiGroup.make("rankings")
     .add(
-        HttpApiEndpoint.get("get1v1Rankings", "/api/effect/rankings/1v1", {
+        HttpApiEndpoint.get("get1v1Rankings", "/api/v1/rankings/1v1", {
             query: {
                 region: RankedRegion,
                 page: Schema.FiniteFromString,
@@ -40,7 +40,7 @@ const rankings = HttpApiGroup.make("rankings")
         }),
     )
     .add(
-        HttpApiEndpoint.get("get2v2Rankings", "/api/effect/rankings/2v2", {
+        HttpApiEndpoint.get("get2v2Rankings", "/api/v1/rankings/2v2", {
             query: {
                 region: RankedRegion,
                 page: Schema.FiniteFromString,
@@ -51,7 +51,7 @@ const rankings = HttpApiGroup.make("rankings")
     .add(
         HttpApiEndpoint.get(
             "getGlobalPlayerRankings",
-            "/api/effect/rankings/global",
+            "/api/v1/rankings/global",
             {
                 query: {
                     sortBy: SortablePlayerProp,
@@ -62,7 +62,7 @@ const rankings = HttpApiGroup.make("rankings")
         ),
     )
     .add(
-        HttpApiEndpoint.get("getClansRankings", "/api/effect/rankings/clans", {
+        HttpApiEndpoint.get("getClansRankings", "/api/v1/rankings/clans", {
             query: {
                 name: Schema.String,
                 page: Schema.FiniteFromString,
@@ -71,7 +71,7 @@ const rankings = HttpApiGroup.make("rankings")
         }),
     )
     .add(
-        HttpApiEndpoint.get("getPowerRankings", "/api/effect/rankings/power", {
+        HttpApiEndpoint.get("getPowerRankings", "/api/v1/rankings/power", {
             query: {
                 bracket: Bracket,
                 region: PowerRankingsRegion,
@@ -84,7 +84,7 @@ const stats = HttpApiGroup.make("stats")
     .add(
         HttpApiEndpoint.get(
             "getPlayerStats",
-            "/api/effect/stats/player/:playerId/stats",
+            "/api/v1/stats/player/:playerId/stats",
             {
                 params: { playerId: Schema.FiniteFromString },
                 success: Schema.NullOr(PlayerStatsSchema),
@@ -94,7 +94,7 @@ const stats = HttpApiGroup.make("stats")
     .add(
         HttpApiEndpoint.get(
             "getPlayerRanked",
-            "/api/effect/stats/player/:playerId/ranked",
+            "/api/v1/stats/player/:playerId/ranked",
             {
                 params: { playerId: Schema.FiniteFromString },
                 // A player without ranked games is a valid, empty result.
@@ -105,7 +105,7 @@ const stats = HttpApiGroup.make("stats")
     .add(
         HttpApiEndpoint.get(
             "getPlayerAliases",
-            "/api/effect/stats/player/:playerId/aliases",
+            "/api/v1/stats/player/:playerId/aliases",
             {
                 params: { playerId: Schema.FiniteFromString },
                 success: PlayerAliasesSchema,
@@ -113,14 +113,14 @@ const stats = HttpApiGroup.make("stats")
         ),
     )
     .add(
-        HttpApiEndpoint.get("getClanStats", "/api/effect/stats/clan/:clanId", {
+        HttpApiEndpoint.get("getClanStats", "/api/v1/stats/clan/:clanId", {
             params: { clanId: Schema.FiniteFromString },
             success: Schema.NullOr(ClanSchema),
         }),
     )
 
 const search = HttpApiGroup.make("search").add(
-    HttpApiEndpoint.get("searchPlayerAlias", "/api/effect/search/players", {
+    HttpApiEndpoint.get("searchPlayerAlias", "/api/v1/search/players", {
         query: {
             alias: Schema.String,
             page: Schema.FiniteFromString,
@@ -133,12 +133,12 @@ const content = HttpApiGroup.make("content")
     .add(
         HttpApiEndpoint.get(
             "getWeeklyRotation",
-            "/api/effect/content/weekly-rotation",
+            "/api/v1/content/weekly-rotation",
             { success: WeeklyRotationSchema },
         ),
     )
     .add(
-        HttpApiEndpoint.get("getBHArticles", "/api/effect/content/articles", {
+        HttpApiEndpoint.get("getBHArticles", "/api/v1/content/articles", {
             query: {
                 category: Schema.optionalKey(ArticleCategory),
                 first: Schema.optionalKey(Schema.FiniteFromString),
