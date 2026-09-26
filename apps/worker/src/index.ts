@@ -1,18 +1,24 @@
 import { config as loadEnv } from "dotenv"
-import { logError, logInfo } from "@crh/logger"
-import { startCrawler } from "./crawler"
+import { logInfo } from "@crh/logger"
 import { startBot as startDiscordManagerBot } from "./appa-bot"
 import { z } from "zod"
 
 loadEnv()
 
-const __DEV = process.env.NODE_ENV === "development"
-
-const crawlerMaxRequestsPer15Minutes = parseInt(
-    process.env.CRAWLER_MAX_REQUESTS_PER_15_MINUTES || "100",
-)
-
-const crawlerMaxPages = parseInt(process.env.CRAWLER_MAX_PAGES || "100")
+/**
+ * This process hosts the Discord bot only.
+ *
+ * It used to run the leaderboard crawler as well. That crawled a single
+ * hard-coded ladder (`1v1` / `all`) from an in-process loop, and its resume
+ * branch returned out of the run loop when a progress row existed — so it
+ * terminated itself on the second start and otherwise re-crawled the same first
+ * pages forever.
+ *
+ * Crawling now lives in `@crh/api` as an Effect service, driven by a Cloudflare
+ * cron producing onto a queue. Two crawlers must never run at once: they share
+ * one Brawlhalla API key, so leaving this one in place would halve the budget
+ * available to the new one.
+ */
 
 const main = async () => {
     const {
@@ -56,24 +62,7 @@ const main = async () => {
         },
     })
 
-    const crawler = startCrawler(
-        __DEV
-            ? {
-                  maxRequestsPer15Minutes: 300,
-                  maxPages: 1,
-              }
-            : {
-                  maxRequestsPer15Minutes: crawlerMaxRequestsPer15Minutes,
-                  maxPages: crawlerMaxPages,
-              },
-    )
-    logInfo("Crawler started")
-
     logInfo("All services started")
-
-    await crawler.catch((error) => {
-        logError("Error in main", error)
-    })
 }
 
 main()

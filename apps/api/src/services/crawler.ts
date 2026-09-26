@@ -40,10 +40,28 @@ export type CrawlerConfig = {
     readonly playerConcurrency: number
 }
 
+/**
+ * Defaults sized to the upstream request budget, not to wall-clock speed.
+ *
+ * One page costs `1 + players` requests: one for the ladder page, then one
+ * `/player/stats` per player on it. Against the historical self-imposed cap of
+ * 100 requests per 15 minutes that is roughly one request every 9 seconds,
+ * which is what `requestSpacingMs` encodes.
+ *
+ * The consequence is worth stating plainly: **one page per target per pass is
+ * all this budget carries.** A pass over the 20 targets costs about 1,000
+ * requests, so it takes a couple of hours and the cron period has to match.
+ * Raising `pagesPerTarget` multiplies the cost linearly and will spend the
+ * budget rather than crawl more.
+ *
+ * If Brawlhalla's real limit is higher than the 100/15min the old crawler
+ * configured for itself, `requestSpacingMs` is the number to relax — from a
+ * measured limit rather than a guess.
+ */
 export const defaultCrawlerConfig: CrawlerConfig = {
-    pagesPerTarget: 3,
-    requestSpacingMs: 250,
-    playerConcurrency: 2,
+    pagesPerTarget: 1,
+    requestSpacingMs: 9_000,
+    playerConcurrency: 1,
 }
 
 /** The ranked facts a 1v1 ladder row already carries for that player. */

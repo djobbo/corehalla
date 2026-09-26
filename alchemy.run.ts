@@ -146,6 +146,21 @@ export const CorehallaCache = Cloudflare.KV.Namespace("CorehallaCache", {
 })
 
 /**
+ * The queue the crawl cron produces onto, consumed by the API worker.
+ *
+ * A queue rather than a loop inside the cron handler for two reasons: the
+ * scheduled invocation only produces, so it cannot run into the CPU limit
+ * walking 20 ladders; and each ladder becomes an independent delivery that can
+ * be retried on its own, instead of one failure discarding the whole pass.
+ */
+export const CorehallaCrawlQueue = Cloudflare.Queues.Queue(
+    "CorehallaCrawlQueue",
+    {
+        name: "corehalla-crawl",
+    },
+)
+
+/**
  * The API worker (`@crh/api`).
  *
  * Owns the Effect `HttpApi` served at `/api/v1/*`, the Brawlhalla upstream
@@ -169,12 +184,24 @@ export const CorehallaApi = Cloudflare.Worker("CorehallaApi", {
     name: "corehalla-api",
     main: "apps/api/src/index.ts",
     routes: [{ pattern: `${hostname}/api/v1/*` }],
+    // Every three hours: one queue delivery per ladder, one page each.
+    //
+    // The period is set by the request budget, not by a preference for
+    // freshness. A page costs 1 + players requests (the ladder page, then one
+    // `/player/stats` per player), so a pass over the 20 targets is roughly
+    // 1,000 requests. At the historical 100-per-15-minutes cap and the
+    // crawler's 9s spacing, that pass takes a couple of hours — a tighter cron
+    // would only stack invocations against a budget that is already spent.
+    crons: ["0 */3 * * *"],
     compatibility: {
         flags: ["enable_request_signal"],
     },
     env: {
         DB: CorehallaDb,
         CACHE: CorehallaCache,
+        // Producer side of the crawl queue. The consumer is registered below,
+        // once the worker and the queue have both resolved to real names.
+        CRAWL_QUEUE: CorehallaCrawlQueue,
         // Cloudflare's own rate-limiting binding: a Worker-only binding with no
         // backing resource to provision.
         //
@@ -247,6 +274,29 @@ export default Alchemy.Stack(
     Effect.gen(function* () {
         const website = yield* Website
         const db = yield* CorehallaDb
+        const api = yield* CorehallaApi
+        const crawlQueue = yield* CorehallaCrawlQueue
+
+        // Registered here rather than on the Worker because a consumer needs
+        // both the queue's id and the worker's script name, and those are
+        // outputs that only exist after both resources resolve.
+        //
+        // Serialised on purpose: the constraint the crawler works against is the
+        // shared upstream request budget, so concurrent deliveries would contend
+        // for the same allowance rather than finishing sooner.
+        yield* Cloudflare.Queues.Consumer("CorehallaCrawlConsumer", {
+            queueId: crawlQueue.queueId,
+            scriptName: api.workerName,
+            settings: {
+                batchSize: 1,
+                maxConcurrency: 1,
+                maxRetries: 3,
+                // Long enough to cover a page's paced fetches; a retry that
+                // fires mid-crawl would duplicate work the upserts make harmless
+                // but the budget still pays for.
+                retryDelay: 60,
+            },
+        })
 
         return {
             url: website.url.as<string>(),

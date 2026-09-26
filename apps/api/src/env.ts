@@ -31,6 +31,8 @@ type WorkerEnvironment = {
     CACHE?: KVNamespaceLike
     /** Cloudflare's rate-limiting binding, used as the refresh damper. */
     RATE_LIMITER?: RateLimitLike
+    /** The queue the cron producer enqueues crawl jobs onto. */
+    CRAWL_QUEUE?: QueueProducerLike
     BRAWLHALLA_API_KEY?: string
     SITE_URL?: string
     [key: string]: unknown
@@ -128,4 +130,26 @@ export const rateLimitBinding = async (): Promise<RateLimitLike | undefined> => 
     const env = await workerEnv()
 
     return env.RATE_LIMITER
+}
+
+/**
+ * The subset of the Workers queue producer API this worker uses.
+ *
+ * Structural for the same reason as the other bindings; the crawler only has to
+ * be able to enqueue a job.
+ */
+export type QueueProducerLike = {
+    send: (body: unknown) => Promise<void>
+}
+
+/**
+ * The crawl queue, or `undefined` when it is not bound.
+ *
+ * A missing queue is not an error: the scheduled handler logs and does nothing,
+ * so a deploy without the binding produces no crawl rather than a failing cron.
+ */
+export const crawlQueue = async (): Promise<QueueProducerLike | undefined> => {
+    const env = await workerEnv()
+
+    return env.CRAWL_QUEUE
 }
