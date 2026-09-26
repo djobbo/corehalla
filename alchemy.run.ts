@@ -134,6 +134,15 @@ const internalOrigin = isDev ? `http://localhost:${DEV_PORT}` : siteUrl
 const hostname = siteUrl.replace(/^https?:\/\//, "").replace(/\/+$/, "")
 
 /**
+ * The UX study's hostname.
+ *
+ * `next.` rather than the bare hostname because `corehalla.com` is the existing
+ * app's custom domain and two Workers cannot hold the same one. Declared once so
+ * the app's domain and the API route that serves it cannot disagree.
+ */
+const nextHostname = `next.${hostname}`
+
+/**
  * The KV namespace backing the API worker's read-through cache.
  *
  * KV is chosen for the *eventual consistency* that makes it unsuitable for the
@@ -186,7 +195,13 @@ export const CorehallaCrawlQueue = Cloudflare.Queues.Queue(
 export const CorehallaApi = Cloudflare.Worker("CorehallaApi", {
     name: "corehalla-api",
     main: "apps/api/src/index.ts",
-    routes: [{ pattern: `${hostname}/api/v1/*` }],
+    routes: [
+        { pattern: `${hostname}/api/v1/*` },
+        // The same path on the study's hostname, so its browser calls are
+        // same-origin and Cloudflare routes them here directly — no proxy in
+        // the study's worker, and no CORS.
+        { pattern: `${nextHostname}/api/v1/*` },
+    ],
     compatibility: {
         flags: ["enable_request_signal"],
     },
@@ -354,7 +369,7 @@ export default Alchemy.Stack(
         const websiteNext = yield* Cloudflare.Website.Vite("CorehallaWebNext", {
             rootDir: "./apps/web-next",
             name: "corehalla-web-next",
-            domain: `next.${hostname}`,
+            domain: nextHostname,
             env: {
                 API: CorehallaApi,
             },
