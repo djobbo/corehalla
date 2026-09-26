@@ -26,15 +26,18 @@ import type { RankedRegion } from "@crh/bhapi/constants"
 /**
  * Time-to-live for each cached resource, in seconds.
  *
- * A ladder page moves constantly and is cheap to refetch, so it is cached
- * briefly to absorb the request bursts a leaderboard gets. A player or guild
- * profile changes slowly and costs more to assemble (a v1 profile is up to two
- * upstream calls), so it is held for the five minutes the old edge
- * `Cache-Control` used.
+ * A ladder page moves constantly and is cheap to refetch, so it stays fresh for
+ * a minute but lingers for fifteen. A player or guild profile changes slowly
+ * and costs more to assemble (a v1 profile is up to two upstream calls), so it
+ * stays fresh for the five minutes the old edge `Cache-Control` used and
+ * lingers for an hour.
+ *
+ * `staleSeconds` exists so the serve-stale path has something to return when
+ * the upstream budget is spent.
  */
 const TTL = {
-    leaderboard: 60,
-    profile: 300,
+    leaderboard: { freshSeconds: 60, staleSeconds: 15 * 60 },
+    profile: { freshSeconds: 300, staleSeconds: 60 * 60 },
 } as const
 
 /**
