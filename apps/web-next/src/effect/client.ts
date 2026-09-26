@@ -52,6 +52,20 @@ const serverHttpClient = Layer.suspend(() =>
         : FetchHttpClient.layer,
 )
 
+/**
+ * A placeholder origin for server-side requests.
+ *
+ * The render talks to the API worker over a binding, so no network address is
+ * involved — but `HttpClientRequest.toWeb` needs an absolute URL to build a
+ * `Request`, and a relative path makes it fail with `InvalidUrlError` before the
+ * binding is ever reached. That is exactly what happened when the origin was
+ * removed without this.
+ *
+ * The host is a name that cannot resolve, chosen deliberately: if it ever appears
+ * in a network trace, the request escaped the binding path. Nothing dials it.
+ */
+const SERVER_BASE_URL = "http://api.internal"
+
 export const CorehallaClient = AtomHttpApi.Service<CorehallaClientSelf>()(
     "CorehallaClient",
     {
@@ -59,5 +73,9 @@ export const CorehallaClient = AtomHttpApi.Service<CorehallaClientSelf>()(
         httpClient: import.meta.env.SSR
             ? serverHttpClient
             : FetchHttpClient.layer,
+        // Browser requests stay relative — same-origin, and Cloudflare routes
+        // `/api/v1/*` on the real hostname. Only the render needs the absolute
+        // form, and only so URL parsing succeeds.
+        baseUrl: import.meta.env.SSR ? SERVER_BASE_URL : undefined,
     },
 )

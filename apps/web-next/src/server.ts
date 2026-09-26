@@ -47,6 +47,10 @@ const forwardToApi = async (request: Request): Promise<Response> => {
     const api = await apiBinding()
 
     if (!api) {
+        // Deliberately `text/plain` rather than JSON. The contract's response
+        // schemas accept any value, so a JSON error body would decode cleanly
+        // and this misconfiguration would render as a silently empty page. A
+        // body the client cannot decode surfaces as a visible error instead.
         return new Response(
             "No `API` service binding. Run the app through the Alchemy stack " +
                 "(`pnpm dev:cloud`) so web-next can bind the API worker.",
