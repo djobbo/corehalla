@@ -1,6 +1,11 @@
 import { rankedRegions } from "./constants"
 import type { RankedRegion } from "./constants"
-import type { Bracket, Ranking1v1, Ranking2v2 } from "./types"
+import type {
+    Ladder,
+    Ranking1v1,
+    Ranking2v2,
+    Ranking3v3,
+} from "./types"
 
 /**
  * Every upstream leaderboard the crawler has to walk.
@@ -38,7 +43,7 @@ export type CrawlTarget = {
      * current.
      */
     readonly id: string
-    readonly bracket: Bracket
+    readonly bracket: Ladder
     readonly region: RankedRegion
     /** Human-readable, for logs and the `CrawlProgress.name` column. */
     readonly label: string
@@ -46,11 +51,15 @@ export type CrawlTarget = {
 
 /** The bracket/region pair a target id encodes. */
 export const crawlTargetId = (
-    bracket: Bracket,
+    bracket: Ladder,
     region: RankedRegion,
 ): string => `${bracket}:${region}`
 
-export const crawlTargets: readonly CrawlTarget[] = (["1v1", "2v2"] as const)
+export const crawlTargets: readonly CrawlTarget[] = ([
+    "1v1",
+    "2v2",
+    "3v3",
+] as const)
     .flatMap((bracket) =>
         rankedRegions.map((region) => ({
             id: crawlTargetId(bracket, region),
@@ -63,26 +72,29 @@ export const crawlTargets: readonly CrawlTarget[] = (["1v1", "2v2"] as const)
 /**
  * The player ids on one leaderboard row.
  *
- * A 1v1 row is one player; a 2v2 row is a team of two, and both members are
- * distinct players whose stats are worth having. The `0` sentinel Brawlhalla
- * uses for "no player" is dropped, as is a duplicate id — a malformed row with
- * the same player twice would otherwise fetch and upsert the same player twice
- * in one pass.
+ * Only 2v2 is a team. **1v1 and 3v3 are both one player per row** — 3v3 is a
+ * solo queue whose teams are assembled per match, so its ladder carries single
+ * players and there is no trio to unpack. Assuming otherwise is what made the
+ * 3v3 ladder render empty the first time it was wired up.
+ *
+ * The `0` sentinel Brawlhalla uses for "no player" is dropped, as is a duplicate
+ * id — a malformed row with the same player twice would otherwise fetch and
+ * upsert the same player twice in one pass.
  *
  * Returns ids as numbers so the caller can hand them straight to the stats
  * endpoint.
  */
 export const playerIdsForRow = (
-    bracket: Bracket,
-    row: Ranking1v1 | Ranking2v2,
+    bracket: Ladder,
+    row: Ranking1v1 | Ranking2v2 | Ranking3v3,
 ): readonly number[] => {
     const ids =
-        bracket === "1v1"
-            ? [(row as Ranking1v1).brawlhalla_id]
-            : [
+        bracket === "2v2"
+            ? [
                   (row as Ranking2v2).brawlhalla_id_one,
                   (row as Ranking2v2).brawlhalla_id_two,
               ]
+            : [(row as Ranking1v1 | Ranking3v3).brawlhalla_id]
 
     return [...new Set(ids)].filter((id) => Number.isFinite(id) && id > 0)
 }

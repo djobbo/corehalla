@@ -233,14 +233,15 @@ export const CorehallaApi = Cloudflare.Worker("CorehallaApi", {
 export const CorehallaCrawler = Cloudflare.Worker("CorehallaCrawler", {
     name: "corehalla-crawler",
     main: "apps/crawler/src/index.ts",
-    // Every ten minutes: one queue delivery per ladder, one page each.
+    // Every thirty minutes: one queue delivery per ladder, one page each.
     //
-    // Sized from the v1 allowance of 2,000 requests per 15 minutes. A page
-    // costs 1 + players requests (the ladder page, then one `/player/stats`
-    // each), so a 20-target pass is ~1,020 requests. At one pass per ten minutes
-    // that is ~1,530 per window — about three quarters of the allowance, leaving
-    // the remainder for user traffic that misses the cache.
-    crons: ["*/10 * * * *"],
+    // Sized from the v1 allowance of 2,000 requests per 15 minutes. A *team*
+    // page costs double, because a team rating is not a player's own 1v1 rating:
+    // each member's ranked record is fetched separately, so 2v2 and 3v3 pages
+    // cost 1 + 2 × players. With 3v3 the matrix is 30 targets at ~2,530 requests
+    // a pass — 126% of the allowance per ten minutes, and ~63% per thirty,
+    // leaving the remainder for user traffic that misses the cache.
+    crons: ["*/30 * * * *"],
     compatibility: {
         flags: ["enable_request_signal"],
     },

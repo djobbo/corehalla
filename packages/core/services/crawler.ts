@@ -6,7 +6,12 @@ import { cacheKeys, cacheTtl } from "./cache-policy"
 import { Upstream } from "./upstream"
 import type { CrawlTarget } from "@crh/bhapi/crawlTargets"
 import type { RankedSnapshot } from "./player-writes"
-import type { PlayerRanked, Ranking1v1, Ranking2v2 } from "@crh/bhapi/types"
+import type {
+    PlayerRanked,
+    Ranking1v1,
+    Ranking2v2,
+    Ranking3v3,
+} from "@crh/bhapi/types"
 import type { RankedRegion, RankedTier } from "@crh/bhapi/constants"
 
 /**
@@ -48,12 +53,21 @@ export type CrawlerConfig = {
  * The v1 API allows **2,000 requests per 15 minutes**, which is 2.22 req/s —
  * `requestSpacingMs` is the inverse of that and nothing more.
  *
- * One page costs `1 + players` requests: the ladder page, then one
- * `/player/stats` per player on it. At 50 players that is 51 requests, or about
- * 23 seconds of paced work. A pass over the 20 targets is therefore ~1,020
- * requests — roughly half the window — which is why the cron runs every ten
- * minutes: 1.5 passes per window is ~1,530 requests, about three quarters of the
- * allowance, leaving the rest for user traffic that misses the cache.
+ * What a pass costs depends on the ladder, because a **team row does not carry a
+ * player's own rating**:
+ *
+ * - 1v1 — `1 + players` = 51 requests. The row already holds the player's 1v1
+ *   rating, so nothing else is needed.
+ * - 2v2 and 3v3 — `1 + 2 × players` = 101. A team rating is not the player's own
+ *   1v1 rating, and `BHPlayerData.rating` is the column the 1v1 leaderboard sorts
+ *   by, so each player's own ranked record has to be fetched separately. That
+ *   doubles the cost of a team page.
+ *
+ * Over the 30 targets a pass is about 2,530 requests — roughly 19 minutes of
+ * paced work. That is why the cron is every 30 minutes rather than every ten:
+ * 2,530 per window would be 126% of the allowance and would starve user traffic,
+ * while every 30 minutes is ~1,265, about 63%, leaving the rest for requests that
+ * miss the cache.
  *
  * Two caveats are worth holding on to:
  *
@@ -64,6 +78,11 @@ export type CrawlerConfig = {
  * - Raising `pagesPerTarget` spends the allowance linearly. It does not make the
  *   crawl faster; it makes the same window carry more of the matrix and less of
  *   the user traffic.
+ *
+ * The obvious saving, not taken yet: a team page only needs the per-player
+ * ranked fetch for players we have never seen on a 1v1 ladder. Storing the
+ * account stats for an already-known player without re-reading their ranked
+ * record would roughly halve the cost of 2v2 and 3v3.
  */
 export const defaultCrawlerConfig: CrawlerConfig = {
     pagesPerTarget: 1,
@@ -135,10 +154,16 @@ export const layer = Layer.effect(
         const database = yield* Database
         const cache = yield* Cache
 
-        /** One player: fetch their stats, then write them. */
+        /**
+         * One player: fetch their stats, then write them.
+         *
+         * `row` is the ladder row that surfaced the player. Only a 1v1 row may
+         * supply the ranked snapshot; a 2v2 or 3v3 row's rating belongs to the
+         * team, so those ladders fetch the player's own ranked record instead.
+         */
         const crawlPlayer = (
             target: CrawlTarget,
-            row: Ranking1v1 | Ranking2v2,
+            row: Ranking1v1 | Ranking2v2 | Ranking3v3,
             playerId: number,
             config: CrawlerConfig,
         ) =>
@@ -222,17 +247,14 @@ export const layer = Layer.effect(
                     rows,
                     (row) =>
                         Effect.forEach(
-                            // The crawl matrix is 1v1 and 2v2 only, so the rows
-                            // here are always one of those shapes; `3v3` is a
-                            // ladder the crawler does not walk yet.
                             playerIdsForRow(
                                 target.bracket,
-                                row as Ranking1v1 | Ranking2v2,
+                                row as Ranking1v1 | Ranking2v2 | Ranking3v3,
                             ),
                             (playerId) =>
                                 crawlPlayer(
                                     target,
-                                    row as Ranking1v1 | Ranking2v2,
+                                    row as Ranking1v1 | Ranking2v2 | Ranking3v3,
                                     playerId,
                                     config,
                                 ),
