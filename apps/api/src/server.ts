@@ -83,7 +83,12 @@ const createHandler = (db: D1Database) => {
         Layer.provide(HttpServer.layerServices),
     )
 
-    return HttpRouter.toWebHandler(ApiLayer, { disableLogger: true })
+    // The default logger is kept on. It was disabled here, which meant a defect
+    // produced a bare 500 with nothing written anywhere — the handler's cause
+    // was discarded by the same switch that silenced the request log, so a
+    // failing endpoint could only be diagnosed by guessing. An error nobody can
+    // read is not worth the log volume it saves.
+    return HttpRouter.toWebHandler(ApiLayer)
 }
 
 let webHandler: ReturnType<typeof createHandler> | null = null

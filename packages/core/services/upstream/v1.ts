@@ -104,7 +104,19 @@ export type V1Guild = {
 /** `GetGuildMembers`. */
 export type V1GuildMember = {
     brawlhalla_id: number
-    name: string
+    /**
+     * Optional because v1 omits the key, not because it means "blank".
+     *
+     * Observed against guild 9: the same request returned every member named,
+     * and twice returned two of nineteen members with no `name` at all — the
+     * members are real and their profiles resolve, so the field is
+     * intermittently absent rather than empty. A later refresh fills it in.
+     *
+     * Typing it `string` was a lie that reached the database layer, where a
+     * missing name threw on `.trim()` and turned the whole clan endpoint into a
+     * 500. Whatever v1 does, the mapper has to be able to say "no name".
+     */
+    name?: string
     rank: string
     join_date: number
     xp: number
@@ -375,7 +387,13 @@ export const toClan = (
     clan_xp: String(guild.xp),
     clan: members.map((member) => ({
         brawlhalla_id: member.brawlhalla_id,
-        name: member.name,
+        // A member v1 could not name becomes `""`, never `undefined`. The
+        // member is kept because they are real — the id resolves and the row
+        // carries a rank, a join date and an XP contribution — and dropping
+        // them would understate the roster. `""` is also what the alias filter
+        // is written to reject, so a nameless member simply contributes no
+        // searchable alias instead of failing the request.
+        name: member.name ?? "",
         rank: member.rank as ClanRank,
         join_date: member.join_date,
         xp: member.xp,

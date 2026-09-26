@@ -58,7 +58,23 @@ export const ClanBody = ({ clanId }: { readonly clanId: number }) => {
                         href={playerHref(member.brawlhalla_id)}
                         className="flex-1 underline"
                     >
-                        {cleanString(member.name)}
+                        {/*
+                         * v1 intermittently omits a member's name, and the
+                         * mapper normalises that to `""` so the type stays
+                         * honest. Rendering it would make the row an empty —
+                         * but still clickable — link, so the id stands in. The
+                         * profile it points at resolves, which is why the row is
+                         * worth keeping at all.
+                         *
+                         * `?? ""` because the key can be *absent* on the wire,
+                         * not just empty: a value cached before the mapper
+                         * started normalising — which is served until it goes
+                         * stale — omits it entirely, and `cleanString(undefined)`
+                         * returns the literal text "undefined". Observed, not
+                         * imagined: that is what this row rendered.
+                         */}
+                        {cleanString(member.name ?? "") ||
+                            `#${member.brawlhalla_id}`}
                     </EntityLink>
                     <span className="w-24 text-xs text-textVar1">
                         {member.rank}

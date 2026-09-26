@@ -56,20 +56,42 @@ const isStorableAlias = (playerId: string | number, name: string): boolean =>
  * Returns an array so a filtered-out player contributes zero rows without every
  * caller repeating the guard — the handlers only ever spread this into
  * `upsertPlayerAliases`.
+ *
+ * Exported for its test. It is the unit that took `GET /api/v1/stats/clan/9`
+ * down, and the guard below is the kind of thing that reads as obviously fine
+ * until it is pointed at a payload where the field is simply absent.
  */
-const aliasRows = (player: {
+export const aliasRows = (player: {
     readonly id: string | number
-    readonly name: string
+    /**
+     * Optional because every name reaching this function comes from unvalidated
+     * upstream JSON: a guild member v1 could not name, or the absent half of a
+     * 2v2 `teamname` with no `+`.
+     */
+    readonly name: string | undefined
 }): BHPlayerAlias[] => {
-    if (!isStorableAlias(player.id, player.name)) return []
+    const { id, name } = player
+
+    // The load-bearing check, and the one whose absence was a production 500.
+    // `searchKey` calls `.trim()`, so a missing name threw a `TypeError` out of
+    // the handler and took the whole endpoint down — which is exactly what
+    // `GET /api/v1/stats/clan/9` did, because v1 intermittently omits the `name`
+    // key on guild members. This is also the only place the value can be
+    // narrowed, since a boolean guard cannot teach the compiler that a field is
+    // present: upstream JSON makes "this is a string" an assumption at this
+    // boundary, never a fact. A name we cannot use is a row we skip, not a
+    // request we fail.
+    if (typeof name !== "string") return []
+
+    if (!isStorableAlias(id, name)) return []
 
     const seenAt = new Date()
 
     return [
         {
-            playerId: player.id.toString(),
-            alias: player.name,
-            aliasLower: searchKey(player.name),
+            playerId: id.toString(),
+            alias: name,
+            aliasLower: searchKey(name),
             createdAt: seenAt,
             lastSeen: seenAt,
             public: true,

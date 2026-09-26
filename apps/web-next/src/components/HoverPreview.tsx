@@ -289,8 +289,13 @@ const ClanPreview = ({ target, onEnter, onLeave }: CardProps) => {
                                 key={member.brawlhalla_id}
                                 className="text-xs"
                             >
-                                {cleanString(member.name)} ·{" "}
-                                {member.xp.toLocaleString()} XP
+                                {/* `?? ""` for the same reason as the clan
+                                    roster: the key can be absent on the wire,
+                                    and `cleanString(undefined)` is the literal
+                                    text "undefined". */}
+                                {cleanString(member.name ?? "") ||
+                                    `#${member.brawlhalla_id}`}{" "}
+                                · {member.xp.toLocaleString()} XP
                             </span>
                         ))}
                     </div>
