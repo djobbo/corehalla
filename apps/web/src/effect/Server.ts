@@ -3,7 +3,7 @@ import { FetchHttpClient, HttpRouter, HttpServer } from "effect/unstable/http"
 import { HttpApiBuilder } from "effect/unstable/httpapi"
 import { layer as sqlLayer } from "@crh/db/client"
 import { d1Database } from "@/env"
-import { CorehallaApi } from "./Api"
+import { CorehallaApi } from "@crh/api-contract/Api"
 import {
     contentGroup,
     rankingsGroup,

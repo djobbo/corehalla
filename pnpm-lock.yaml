@@ -195,6 +195,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@crh/api-contract':
+        specifier: workspace:*
+        version: link:../../packages/api-contract
       '@crh/bhapi':
         specifier: workspace:*
         version: link:../../packages/bhapi

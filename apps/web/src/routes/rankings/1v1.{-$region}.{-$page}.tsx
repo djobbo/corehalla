@@ -31,7 +31,7 @@ import { useAtomSet, useAtomValue } from "@effect/atom-react"
 import { useEffect, useRef } from "react"
 import { useExitSearch } from "@/lib/hooks/useExitSearch"
 import { z } from "zod"
-import type { AliasSearchResult } from "@/effect/schemas"
+import type { AliasSearchResult } from "@crh/api-contract/schemas"
 
 /**
  * Resolved stand-in so the alias lookup stays lazy: the atom is only mounted

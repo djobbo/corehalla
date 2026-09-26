@@ -22,6 +22,7 @@
         "@stitches/react": "^1.2.8",
         "@tanstack/react-router": "^1.170.38",
         "@tanstack/react-start": "^1.168.56",
+        "@crh/api-contract": "workspace:*",
         "@crh/bhapi": "workspace:*",
         "@crh/common": "workspace:*",
         "dayjs": "^1.11.13",

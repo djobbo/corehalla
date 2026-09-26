@@ -1,7 +1,7 @@
 import { Effect } from "effect"
 import { HttpApiBuilder } from "effect/unstable/httpapi"
 import { getTeamPlayers } from "@crh/bhapi/helpers/getTeamPlayers"
-import { CorehallaApi } from "./Api"
+import { CorehallaApi } from "@crh/api-contract/Api"
 import { Brawlhalla } from "./Brawlhalla"
 import { Content } from "./Content"
 import { Database, searchKey } from "./Database"

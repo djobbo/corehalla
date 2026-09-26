@@ -10,7 +10,7 @@ import type {
     PowerRankingsRegion,
     RankedRegion,
     SortablePlayerProp,
-} from "./schemas"
+} from "@crh/api-contract/schemas"
 
 /**
  * Query atoms for every `CorehallaApi` endpoint.

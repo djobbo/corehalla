@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { apiHandler } from "@/effect/Server"
 
 /**
- * Mounts the Effect `HttpApi` (see `src/effect/Api.ts`) as a TanStack Start
+ * Mounts the Effect `HttpApi` (see `packages/api-contract/Api.ts`) as a TanStack Start
  * server route.
  *
  * This replaces the tRPC endpoint. `HttpApiBuilder` owns request decoding,

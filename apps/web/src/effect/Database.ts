@@ -13,7 +13,7 @@ import { DatabaseError } from "./errors"
 import type { D1Database } from "@crh/db/client"
 import type { SQLWrapper } from "@crh/db/query"
 import type { BHClan, BHPlayerAlias, NewBHClan } from "@crh/db/schema"
-import type { AliasSearchResult, GlobalPlayerRanking } from "./schemas"
+import type { AliasSearchResult, GlobalPlayerRanking } from "@crh/api-contract/schemas"
 
 /**
  * Server-side database access.
