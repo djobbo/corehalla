@@ -1,15 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router"
+import { LadderView } from "@/components/LadderView"
+import { LADDER_PAGE_SIZE } from "@/lib/rankings"
+import { to1v1Rows } from "@/lib/ladderRows"
 import { preloadAtoms, rankings1v1Atom, useQuery } from "@/effect/atoms"
 
 /**
- * Scaffold smoke test, deliberately undesigned.
+ * The home page is the leaderboard.
  *
- * This route exists to prove the pipeline end to end — SSR, the Effect atom
- * registry, dehydration, and the typed client against the real contract — before
- * any interaction design is layered on. The next step replaces it with the
- * leaderboard-first home from the design.
+ * That is the single biggest action-budget decision in the design: browsing the
+ * rankings costs **zero** actions instead of one, because the live table is what
+ * loads rather than something you navigate to. The hero is therefore one line —
+ * a wordmark and the search affordance — and hands the rest of the viewport to
+ * the table.
  *
- * If rows render, everything below the design is working.
+ * Favorites and news sit below the ladder rather than above it, for the same
+ * reason: anything placed first delays the first row of ranks.
  */
 export const Route = createFileRoute("/")({
     loader: ({ context }) =>
@@ -18,21 +23,36 @@ export const Route = createFileRoute("/")({
 })
 
 function Page() {
-    const rows = useQuery(rankings1v1Atom("all", 1))
+    const rows = to1v1Rows(useQuery(rankings1v1Atom("all", 1)))
 
     return (
         <main className="p-4">
-            <h1 className="text-lg font-bold">Corehalla — UX study</h1>
-            <p className="mt-2 text-sm text-textVar1">
-                Scaffold check: {rows.length} rows from the 1v1 Global ladder.
-            </p>
-            <ol className="mt-4 flex flex-col">
-                {rows.slice(0, 10).map((row) => (
-                    <li key={row.brawlhalla_id} className="py-1">
-                        {row.rank}. {row.name} — {row.rating}
-                    </li>
-                ))}
-            </ol>
+            <header className="flex items-center gap-3">
+                <h1 className="text-lg font-bold">Corehalla</h1>
+                {/*
+                 * Inert until the lookup overlay lands: the design routes this
+                 * control to a search surface that does not exist yet, and
+                 * wiring it to the in-table `?q=` filter instead would be a
+                 * different interaction wearing the same label.
+                 */}
+                <button
+                    type="button"
+                    data-lookup-trigger
+                    className="flex-1 rounded border border-bg bg-bg px-2 py-1 text-left text-sm text-textVar1"
+                >
+                    Search players and clans
+                </button>
+            </header>
+
+            <div className="mt-4">
+                <LadderView
+                    bracket="1v1"
+                    region="all"
+                    page={1}
+                    rows={rows}
+                    hasNextPage={rows.length >= LADDER_PAGE_SIZE}
+                />
+            </div>
         </main>
     )
 }
