@@ -10,6 +10,7 @@ import {
     useMatches,
 } from "@tanstack/react-router"
 import { HydrationBoundary, RegistryContext } from "@effect/atom-react"
+import { HoverPreviewLayer } from "@/components/HoverPreview"
 import { SearchProvider, SearchTrigger } from "@/components/Search"
 import { Suspense, useMemo } from "react"
 import type { ReactNode } from "react"
@@ -73,6 +74,13 @@ function RootComponent() {
                     >
                         <Outlet />
                     </Suspense>
+                    {/*
+                     * Outside the `Suspense` above on purpose. A preview is not
+                     * part of the page, so it must not be torn down when the
+                     * route it was raised from suspends — and it reads its atoms
+                     * without suspending, so it never needs a fallback of its own.
+                     */}
+                    <HoverPreviewLayer />
                 </SearchProvider>
             </HydrationBoundary>
         </RegistryContext.Provider>

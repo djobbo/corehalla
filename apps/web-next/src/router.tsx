@@ -11,7 +11,9 @@ export function getRouter() {
         routeTree,
         context: { registry },
         // Preload a route's data on link intent, so the data is usually
-        // already in the registry by the time a click lands.
+        // already in the registry by the time a click lands. Hover previews
+        // lean on this directly: the card warms the entry the destination
+        // then renders from.
         defaultPreload: "intent",
         scrollRestoration: true,
     })
