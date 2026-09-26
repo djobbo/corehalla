@@ -10,17 +10,15 @@ import { defineConfig } from "vite-plus"
  * to test the interaction design rather than the visual design. Styling is
  * deliberately minimal: only where a control is unusable without it.
  *
- * ## There is no API proxy here, on purpose
+ * ## How it reaches the API
  *
- * The browser calls the API at an absolute origin supplied by the deployment as
- * `VITE_API_ORIGIN`. Under `alchemy dev` that is the API worker's own resolved
- * URL, so the port Alchemy happens to assign never appears in a file.
+ * It does not, directly, and nothing here configures an origin. The browser
+ * calls `/api/v1/*` on its own origin and the app forwards that to the API
+ * worker over a service binding — `src/routes/api/v1/$.ts` for browser requests,
+ * `src/server.ts` for the render.
  *
- * An earlier version proxied `/api/v1/*` instead, which avoided the cross-origin
- * hop but cost two things that mattered more: the proxy target had to be written
- * down as a literal port, and the browser then took a *different* path in dev
- * than in production — so a CORS mistake could only ever surface after a deploy.
- * Calling the origin directly means both environments exercise the same path.
+ * There is deliberately no proxy either: a proxy target would have to name the
+ * API's port, and Alchemy reassigns that port on every dev run.
  */
 const PORT = 3001
 
