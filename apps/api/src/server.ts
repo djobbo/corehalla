@@ -11,6 +11,7 @@ import {
     statsGroup,
 } from "./handlers"
 import { layer as BrawlhallaLayer } from "./services/upstream"
+import { layer as CacheLayer } from "./services/cache"
 import { layer as ContentLayer } from "./services/content"
 import { layer as DatabaseLayer } from "./services/archive"
 import type { D1Database } from "@crh/db/client"
@@ -44,8 +45,12 @@ const createHandler = (db: D1Database) => {
 
     const ServicesLayer = Layer.mergeAll(
         DatabaseWithSql,
+        CacheLayer,
         ContentLayer.pipe(Layer.provide(SqlLayer)),
-        BrawlhallaLayer.pipe(Layer.provide(DatabaseWithSql)),
+        BrawlhallaLayer.pipe(
+            Layer.provide(DatabaseWithSql),
+            Layer.provide(CacheLayer),
+        ),
     )
 
     const ApiLayer = HttpApiBuilder.layer(CorehallaApi).pipe(

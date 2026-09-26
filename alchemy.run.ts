@@ -134,6 +134,18 @@ const internalOrigin = isDev ? `http://localhost:${DEV_PORT}` : siteUrl
 const hostname = siteUrl.replace(/^https?:\/\//, "").replace(/\/+$/, "")
 
 /**
+ * The KV namespace backing the API worker's read-through cache.
+ *
+ * KV is chosen for the *eventual consistency* that makes it unsuitable for the
+ * rate limiter: cached upstream payloads tolerate a stale read, so a value
+ * written in one colo may lag in another without mattering. The cache also has
+ * an in-isolate tier, so a missing namespace degrades rather than breaks.
+ */
+export const CorehallaCache = Cloudflare.KV.Namespace("CorehallaCache", {
+    title: "corehalla-api-cache",
+})
+
+/**
  * The API worker (`@crh/api`).
  *
  * Owns the Effect `HttpApi` served at `/api/v1/*`, the Brawlhalla upstream
@@ -162,6 +174,7 @@ export const CorehallaApi = Cloudflare.Worker("CorehallaApi", {
     },
     env: {
         DB: CorehallaDb,
+        CACHE: CorehallaCache,
         SITE_URL: siteUrl,
         BRAWLHALLA_API_KEY: Redacted.make(
             env("BRAWLHALLA_API_KEY", "", true),

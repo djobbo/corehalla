@@ -8,9 +8,27 @@ import type { D1Database } from "@crh/db/client"
  * Cloudflare. The dynamic import is guarded so a Node process keeps working.
  */
 
+/**
+ * The subset of the Workers KV API this worker uses.
+ *
+ * Declared structurally rather than by pulling in `@cloudflare/workers-types`,
+ * the same way `DB` is: the binding only has to satisfy what the cache calls.
+ */
+export type KVNamespaceLike = {
+    get: (key: string) => Promise<string | null>
+    put: (
+        key: string,
+        value: string,
+        options?: { expirationTtl?: number },
+    ) => Promise<void>
+    delete: (key: string) => Promise<void>
+}
+
 type WorkerEnvironment = {
     /** The shared D1 database binding (see `alchemy.run.ts`). */
     DB?: D1Database
+    /** The KV namespace backing the read-through cache. */
+    CACHE?: KVNamespaceLike
     BRAWLHALLA_API_KEY?: string
     SITE_URL?: string
     [key: string]: unknown
@@ -71,4 +89,19 @@ export const d1Database = async (): Promise<D1Database> => {
     }
 
     return db
+}
+
+/**
+ * The KV namespace backing the read-through cache, or `undefined` when it is
+ * not bound.
+ *
+ * Resolved per call rather than at module scope: bindings do not exist until a
+ * request is in flight. The cache treats a missing namespace as "no L2" and
+ * works from its in-isolate tier alone, so local runs without the binding still
+ * behave.
+ */
+export const cacheNamespace = async (): Promise<KVNamespaceLike | undefined> => {
+    const env = await workerEnv()
+
+    return env.CACHE
 }
