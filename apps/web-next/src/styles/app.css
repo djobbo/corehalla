@@ -1,0 +1,32 @@
+@import "@fontsource/montserrat/400.css";
+@import "@fontsource/montserrat/600.css";
+@import "@fontsource/montserrat/700.css";
+@import "tailwindcss" source("../");
+
+/*
+ * The design tokens from `apps/web`, kept so the study reads as the same product
+ * while the visual design is redone later. Tailwind v4 is configured in CSS, so
+ * this is the whole theme.
+ */
+@theme {
+    --color-bgVar2: #1a1b23;
+    --color-bgVar1: #1e212c;
+    --color-bg: #2b3043;
+    --color-textVar1: #ccd0d6;
+    --color-text: #ffffff;
+    --color-accent: #3861fb;
+    --color-accentVar1: #2095f2;
+    --color-success: #24cd7c;
+    --color-danger: #ed7853;
+    --color-warning: #f3da57;
+    --color-accentAlt: #e568d9;
+    --color-accentAltVar1: #ff99e9;
+}
+
+@layer base {
+    html,
+    body {
+        @apply bg-bgVar1 text-text;
+        font-family: "Montserrat", sans-serif;
+    }
+}
