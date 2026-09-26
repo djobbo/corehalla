@@ -8,6 +8,7 @@ import {
     ClanSchema,
     ClansSchema,
     GlobalPlayerRankingsSchema,
+    LookupResultsSchema,
     PlayerAliasesSchema,
     PlayerRankedSchema,
     PlayerStatsSchema,
@@ -119,15 +120,32 @@ const stats = HttpApiGroup.make("stats")
         }),
     )
 
-const search = HttpApiGroup.make("search").add(
-    HttpApiEndpoint.get("searchPlayerAlias", "/api/v1/search/players", {
-        query: {
-            alias: Schema.String,
-            page: Schema.FiniteFromString,
-        },
-        success: AliasSearchResultsSchema,
-    }),
-)
+const search = HttpApiGroup.make("search")
+    .add(
+        HttpApiEndpoint.get("searchPlayerAlias", "/api/v1/search/players", {
+            query: {
+                alias: Schema.String,
+                page: Schema.FiniteFromString,
+            },
+            success: AliasSearchResultsSchema,
+        }),
+    )
+    .add(
+        /**
+         * The federated lookup: players and clans in one ranked list.
+         *
+         * Separate from `searchPlayerAlias`, which exposes the raw local alias
+         * index. This is the product surface — it merges the upstream ladder
+         * search with the local alias and clan indexes, then ranks the result.
+         */
+        HttpApiEndpoint.get("lookup", "/api/v1/search", {
+            query: {
+                q: Schema.String,
+                limit: Schema.optionalKey(Schema.FiniteFromString),
+            },
+            success: LookupResultsSchema,
+        }),
+    )
 
 const content = HttpApiGroup.make("content")
     .add(

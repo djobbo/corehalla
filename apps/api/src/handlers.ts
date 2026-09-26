@@ -5,6 +5,7 @@ import { CorehallaApi } from "@crh/api-contract/Api"
 import { Brawlhalla } from "@crh/core/services/upstream"
 import { Content } from "./services/content"
 import { Database, searchKey } from "@crh/core/services/archive"
+import { Lookup } from "@crh/core/services/lookup"
 import type { BHPlayerAlias } from "@crh/db/schema"
 import type { Ranking1v1, Ranking2v2 } from "@crh/bhapi/types"
 
@@ -240,10 +241,19 @@ export const searchGroup = HttpApiBuilder.group(
     "search",
     Effect.fnUntraced(function* (handlers) {
         const db = yield* Database
+        const lookup = yield* Lookup
 
-        return handlers.handle("searchPlayerAlias", ({ query }) =>
-            db.searchAliases(query.alias, query.page).pipe(Effect.orDie),
-        )
+        return handlers
+            // The raw local alias index, kept for the existing search surface.
+            .handle("searchPlayerAlias", ({ query }) =>
+                db.searchAliases(query.alias, query.page).pipe(Effect.orDie),
+            )
+            // The federated lookup. Never fails: each source degrades to "no
+            // results", because a partial answer beats an error on a
+            // jump-to-result interaction.
+            .handle("lookup", ({ query }) =>
+                lookup.search(query.q, query.limit),
+            )
     }),
 )
 

@@ -193,6 +193,14 @@ export class Brawlhalla extends Context.Service<Brawlhalla, UpstreamShape>()(
     "app/Brawlhalla",
 ) {}
 
+/**
+ * The cached gateway.
+ *
+ * Requires `Upstream` and `Cache` rather than providing them, so a caller that
+ * also needs `Upstream` directly — the lookup federates over it — can build one
+ * instance and share it, instead of standing up a second behind this service's
+ * back.
+ */
 export const layer = Layer.effect(
     Brawlhalla,
     Effect.gen(function* () {
@@ -229,4 +237,4 @@ export const layer = Layer.effect(
                 ),
         }
     }),
-).pipe(Layer.provide(rawLayer))
+)

@@ -10,10 +10,14 @@ import {
     searchGroup,
     statsGroup,
 } from "./handlers"
-import { layer as BrawlhallaLayer } from "@crh/core/services/upstream"
+import {
+    layer as BrawlhallaLayer,
+    rawLayer as UpstreamLayer,
+} from "@crh/core/services/upstream"
 import { layer as CacheLayer } from "@crh/core/services/cache"
 import { layer as ContentLayer } from "./services/content"
 import { layer as DatabaseLayer } from "@crh/core/services/archive"
+import { layer as LookupLayer } from "@crh/core/services/lookup"
 import type { D1Database } from "@crh/db/client"
 
 /**
@@ -43,13 +47,29 @@ const createHandler = (db: D1Database) => {
     // both consumers; Effect memoises the shared value within the build.
     const DatabaseWithSql = DatabaseLayer.pipe(Layer.provide(SqlLayer))
 
+    // Built once and shared: the lookup federates over the same uncached
+    // `Upstream` the gateway wraps, and `BrawlhallaLayer` now takes it as a
+    // requirement rather than providing its own.
+    const UpstreamWithDeps = UpstreamLayer.pipe(
+        Layer.provide(DatabaseWithSql),
+        Layer.provide(FetchHttpClient.layer),
+    )
+
     const ServicesLayer = Layer.mergeAll(
         DatabaseWithSql,
         CacheLayer,
+        UpstreamWithDeps,
         ContentLayer.pipe(Layer.provide(SqlLayer)),
         BrawlhallaLayer.pipe(
-            Layer.provide(DatabaseWithSql),
             Layer.provide(CacheLayer),
+            Layer.provide(UpstreamWithDeps),
+        ),
+        // The lookup needs both: `Upstream` to federate over, and the archive
+        // for the alias and clan indexes. `mergeAll` only unions layers, so
+        // each requirement is discharged explicitly.
+        LookupLayer.pipe(
+            Layer.provide(UpstreamWithDeps),
+            Layer.provide(DatabaseWithSql),
         ),
     )
 

@@ -114,3 +114,42 @@ export type AliasSearchResult = {
 }
 
 export const AliasSearchResultsSchema = json<readonly AliasSearchResult[]>()
+
+/**
+ * One row of the federated lookup.
+ *
+ * Players and clans share one list, so every row carries the discriminants the
+ * UI needs to render a badge and a link (`type`, `id`) plus whichever prominence
+ * number applies to that type. Fields that do not apply are `null` rather than
+ * absent, so a row's shape does not depend on its type.
+ */
+export type LookupResult = {
+    readonly type: "player" | "clan"
+    readonly id: string
+    /** The name to display: current name for a player, name for a clan. */
+    readonly name: string
+    /**
+     * Other names this player has played under.
+     *
+     * The rankings search only knows current names, so this is the only way a
+     * renamed player is findable by an old name — it comes from the local alias
+     * index.
+     */
+    readonly aliases: readonly string[]
+    /** Current 1v1 rating. `null` for a clan, or for a player found only locally. */
+    readonly rating: number | null
+    /** Clan XP. `null` for a player. */
+    readonly xp: number | null
+    readonly tier: string | null
+    readonly region: string | null
+    /**
+     * Which source produced the row.
+     *
+     * Kept on the wire so the rankings quality is observable: a lookup that
+     * silently stopped reaching the upstream ladder would otherwise look like a
+     * complete result set.
+     */
+    readonly source: "rankings" | "archive"
+}
+
+export const LookupResultsSchema = json<readonly LookupResult[]>()
