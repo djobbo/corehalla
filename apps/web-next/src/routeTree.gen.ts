@@ -10,13 +10,29 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StatsClanClanIdRouteImport } from './routes/stats/clan/$clanId'
+import { Route as StatsPlayerPlayerIdRouteImport } from './routes/stats/player/$playerId'
 import { Route as Rankings1v1Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/1v1.{-$region}.{-$page}'
 import { Route as Rankings2v2Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/2v2.{-$region}.{-$page}'
 import { Route as Rankings3v3Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/3v3.{-$region}.{-$page}'
+import { Route as StatsPlayerPlayerIdIndexRouteImport } from './routes/stats/player/$playerId.index'
+import { Route as StatsPlayerPlayerId2v2RouteImport } from './routes/stats/player/$playerId.2v2'
+import { Route as StatsPlayerPlayerIdLegendsRouteImport } from './routes/stats/player/$playerId.legends'
+import { Route as StatsPlayerPlayerIdWeaponsRouteImport } from './routes/stats/player/$playerId.weapons'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatsClanClanIdRoute = StatsClanClanIdRouteImport.update({
+  id: '/stats/clan/$clanId',
+  path: '/stats/clan/$clanId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatsPlayerPlayerIdRoute = StatsPlayerPlayerIdRouteImport.update({
+  id: '/stats/player/$playerId',
+  path: '/stats/player/$playerId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Rankings1v1Char123RegionChar125Char123PageChar125Route =
@@ -37,49 +53,108 @@ const Rankings3v3Char123RegionChar125Char123PageChar125Route =
     path: '/rankings/3v3/{-$region}/{-$page}',
     getParentRoute: () => rootRouteImport,
   } as any)
+const StatsPlayerPlayerIdIndexRoute =
+  StatsPlayerPlayerIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => StatsPlayerPlayerIdRoute,
+  } as any)
+const StatsPlayerPlayerId2v2Route = StatsPlayerPlayerId2v2RouteImport.update({
+  id: '/2v2',
+  path: '/2v2',
+  getParentRoute: () => StatsPlayerPlayerIdRoute,
+} as any)
+const StatsPlayerPlayerIdLegendsRoute =
+  StatsPlayerPlayerIdLegendsRouteImport.update({
+    id: '/legends',
+    path: '/legends',
+    getParentRoute: () => StatsPlayerPlayerIdRoute,
+  } as any)
+const StatsPlayerPlayerIdWeaponsRoute =
+  StatsPlayerPlayerIdWeaponsRouteImport.update({
+    id: '/weapons',
+    path: '/weapons',
+    getParentRoute: () => StatsPlayerPlayerIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/stats/clan/$clanId': typeof StatsClanClanIdRoute
+  '/stats/player/$playerId': typeof StatsPlayerPlayerIdRouteWithChildren
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/3v3/{-$region}/{-$page}': typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
+  '/stats/player/$playerId/2v2': typeof StatsPlayerPlayerId2v2Route
+  '/stats/player/$playerId/legends': typeof StatsPlayerPlayerIdLegendsRoute
+  '/stats/player/$playerId/weapons': typeof StatsPlayerPlayerIdWeaponsRoute
+  '/stats/player/$playerId/': typeof StatsPlayerPlayerIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/stats/clan/$clanId': typeof StatsClanClanIdRoute
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/3v3/{-$region}/{-$page}': typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
+  '/stats/player/$playerId/2v2': typeof StatsPlayerPlayerId2v2Route
+  '/stats/player/$playerId/legends': typeof StatsPlayerPlayerIdLegendsRoute
+  '/stats/player/$playerId/weapons': typeof StatsPlayerPlayerIdWeaponsRoute
+  '/stats/player/$playerId': typeof StatsPlayerPlayerIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/stats/clan/$clanId': typeof StatsClanClanIdRoute
+  '/stats/player/$playerId': typeof StatsPlayerPlayerIdRouteWithChildren
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/3v3/{-$region}/{-$page}': typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
+  '/stats/player/$playerId/2v2': typeof StatsPlayerPlayerId2v2Route
+  '/stats/player/$playerId/legends': typeof StatsPlayerPlayerIdLegendsRoute
+  '/stats/player/$playerId/weapons': typeof StatsPlayerPlayerIdWeaponsRoute
+  '/stats/player/$playerId/': typeof StatsPlayerPlayerIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/stats/clan/$clanId'
+    | '/stats/player/$playerId'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
     | '/rankings/3v3/{-$region}/{-$page}'
+    | '/stats/player/$playerId/2v2'
+    | '/stats/player/$playerId/legends'
+    | '/stats/player/$playerId/weapons'
+    | '/stats/player/$playerId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/stats/clan/$clanId'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
     | '/rankings/3v3/{-$region}/{-$page}'
+    | '/stats/player/$playerId/2v2'
+    | '/stats/player/$playerId/legends'
+    | '/stats/player/$playerId/weapons'
+    | '/stats/player/$playerId'
   id:
     | '__root__'
     | '/'
+    | '/stats/clan/$clanId'
+    | '/stats/player/$playerId'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
     | '/rankings/3v3/{-$region}/{-$page}'
+    | '/stats/player/$playerId/2v2'
+    | '/stats/player/$playerId/legends'
+    | '/stats/player/$playerId/weapons'
+    | '/stats/player/$playerId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  StatsClanClanIdRoute: typeof StatsClanClanIdRoute
+  StatsPlayerPlayerIdRoute: typeof StatsPlayerPlayerIdRouteWithChildren
   Rankings1v1Char123RegionChar125Char123PageChar125Route: typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   Rankings2v2Char123RegionChar125Char123PageChar125Route: typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   Rankings3v3Char123RegionChar125Char123PageChar125Route: typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
@@ -92,6 +167,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stats/clan/$clanId': {
+      id: '/stats/clan/$clanId'
+      path: '/stats/clan/$clanId'
+      fullPath: '/stats/clan/$clanId'
+      preLoaderRoute: typeof StatsClanClanIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stats/player/$playerId': {
+      id: '/stats/player/$playerId'
+      path: '/stats/player/$playerId'
+      fullPath: '/stats/player/$playerId'
+      preLoaderRoute: typeof StatsPlayerPlayerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rankings/1v1/{-$region}/{-$page}': {
@@ -115,11 +204,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Rankings3v3Char123RegionChar125Char123PageChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/stats/player/$playerId/': {
+      id: '/stats/player/$playerId/'
+      path: '/'
+      fullPath: '/stats/player/$playerId/'
+      preLoaderRoute: typeof StatsPlayerPlayerIdIndexRouteImport
+      parentRoute: typeof StatsPlayerPlayerIdRoute
+    }
+    '/stats/player/$playerId/2v2': {
+      id: '/stats/player/$playerId/2v2'
+      path: '/2v2'
+      fullPath: '/stats/player/$playerId/2v2'
+      preLoaderRoute: typeof StatsPlayerPlayerId2v2RouteImport
+      parentRoute: typeof StatsPlayerPlayerIdRoute
+    }
+    '/stats/player/$playerId/legends': {
+      id: '/stats/player/$playerId/legends'
+      path: '/legends'
+      fullPath: '/stats/player/$playerId/legends'
+      preLoaderRoute: typeof StatsPlayerPlayerIdLegendsRouteImport
+      parentRoute: typeof StatsPlayerPlayerIdRoute
+    }
+    '/stats/player/$playerId/weapons': {
+      id: '/stats/player/$playerId/weapons'
+      path: '/weapons'
+      fullPath: '/stats/player/$playerId/weapons'
+      preLoaderRoute: typeof StatsPlayerPlayerIdWeaponsRouteImport
+      parentRoute: typeof StatsPlayerPlayerIdRoute
+    }
   }
 }
 
+interface StatsPlayerPlayerIdRouteChildren {
+  StatsPlayerPlayerId2v2Route: typeof StatsPlayerPlayerId2v2Route
+  StatsPlayerPlayerIdLegendsRoute: typeof StatsPlayerPlayerIdLegendsRoute
+  StatsPlayerPlayerIdWeaponsRoute: typeof StatsPlayerPlayerIdWeaponsRoute
+  StatsPlayerPlayerIdIndexRoute: typeof StatsPlayerPlayerIdIndexRoute
+}
+
+const StatsPlayerPlayerIdRouteChildren: StatsPlayerPlayerIdRouteChildren = {
+  StatsPlayerPlayerId2v2Route: StatsPlayerPlayerId2v2Route,
+  StatsPlayerPlayerIdLegendsRoute: StatsPlayerPlayerIdLegendsRoute,
+  StatsPlayerPlayerIdWeaponsRoute: StatsPlayerPlayerIdWeaponsRoute,
+  StatsPlayerPlayerIdIndexRoute: StatsPlayerPlayerIdIndexRoute,
+}
+
+const StatsPlayerPlayerIdRouteWithChildren =
+  StatsPlayerPlayerIdRoute._addFileChildren(StatsPlayerPlayerIdRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  StatsClanClanIdRoute: StatsClanClanIdRoute,
+  StatsPlayerPlayerIdRoute: StatsPlayerPlayerIdRouteWithChildren,
   Rankings1v1Char123RegionChar125Char123PageChar125Route:
     Rankings1v1Char123RegionChar125Char123PageChar125Route,
   Rankings2v2Char123RegionChar125Char123PageChar125Route:

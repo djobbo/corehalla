@@ -155,3 +155,13 @@ export type LookupResult = {
 }
 
 export const LookupResultsSchema = json<readonly LookupResult[]>()
+
+/**
+ * How many characters a lookup needs before it is worth a request.
+ *
+ * Shared by the server, which refuses to search below it, and the client, which
+ * shows a "keep typing" hint instead of an empty result list. A private copy on
+ * either side would drift into a state where one sends requests the other
+ * ignores, or the UI promises results for a query the API will not run.
+ */
+export const MIN_LOOKUP_LENGTH = 3

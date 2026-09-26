@@ -27,32 +27,13 @@ function Page() {
 
     return (
         <main className="p-4">
-            <header className="flex items-center gap-3">
-                <h1 className="text-lg font-bold">Corehalla</h1>
-                {/*
-                 * Inert until the lookup overlay lands: the design routes this
-                 * control to a search surface that does not exist yet, and
-                 * wiring it to the in-table `?q=` filter instead would be a
-                 * different interaction wearing the same label.
-                 */}
-                <button
-                    type="button"
-                    data-lookup-trigger
-                    className="flex-1 rounded border border-bg bg-bg px-2 py-1 text-left text-sm text-textVar1"
-                >
-                    Search players and clans
-                </button>
-            </header>
-
-            <div className="mt-4">
-                <LadderView
-                    bracket="1v1"
-                    region="all"
-                    page={1}
-                    rows={rows}
-                    hasNextPage={rows.length >= LADDER_PAGE_SIZE}
-                />
-            </div>
+            <LadderView
+                bracket="1v1"
+                region="all"
+                page={1}
+                rows={rows}
+                hasNextPage={rows.length >= LADDER_PAGE_SIZE}
+            />
         </main>
     )
 }

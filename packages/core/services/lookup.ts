@@ -1,6 +1,7 @@
 import { Context, Effect, Layer } from "effect"
 import { Database, searchKey } from "./archive"
 import { Upstream } from "./upstream"
+import { MIN_LOOKUP_LENGTH } from "@crh/api-contract/schemas"
 import type { LookupResult } from "@crh/api-contract/schemas"
 import type { Ranking1v1, Ranking2v2 } from "@crh/bhapi/types"
 
@@ -38,7 +39,7 @@ import type { Ranking1v1, Ranking2v2 } from "@crh/bhapi/types"
  */
 
 /** Below this, a search is not worth a request. */
-export const MIN_LOOKUP_LENGTH = 3
+export { MIN_LOOKUP_LENGTH }
 
 /** How many rows the merged list returns when no limit is given. */
 export const DEFAULT_LOOKUP_LIMIT = 20

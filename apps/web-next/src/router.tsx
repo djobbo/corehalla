@@ -10,9 +10,8 @@ export function getRouter() {
     const router = createRouter({
         routeTree,
         context: { registry },
-        // Preload a route's data on link intent, which is what makes the
-        // overlay and hover cards feel immediate: the data is usually already
-        // in the registry by the time the click lands.
+        // Preload a route's data on link intent, so the data is usually
+        // already in the registry by the time a click lands.
         defaultPreload: "intent",
         scrollRestoration: true,
     })
