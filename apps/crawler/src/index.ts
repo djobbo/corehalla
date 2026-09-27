@@ -1,5 +1,5 @@
 import { Effect } from "effect"
-import { crawlTargets } from "@crh/bhapi/crawlTargets"
+import { crawlTargets, queueTargets } from "@crh/bhapi/crawlTargets"
 import { crawlQueue } from "@crh/core/env"
 import { Crawler, defaultCrawlerConfig } from "@crh/core/services/crawler"
 import { runCrawler } from "./runtime"
@@ -30,7 +30,17 @@ import { runCrawler } from "./runtime"
  * changes and an in-flight message cannot carry a stale bracket/region pair. A
  * message naming a target that no longer exists is acknowledged and dropped.
  */
-type CrawlJob = { readonly targetId: string }
+type CrawlJob = {
+    readonly targetId: string
+    /**
+     * Which walk to run.
+     *
+     * Optional, and absent means `"ladder"`: it was the only kind when these
+     * messages were first produced, so a message still in flight from a
+     * previous deploy has to keep meaning what it meant.
+     */
+    readonly kind?: "ladder" | "queue"
+}
 
 /** The subset of the Workers queue API this entry uses. */
 type QueueMessage<T> = {
@@ -48,7 +58,19 @@ type MessageBatch<T> = { readonly messages: readonly QueueMessage<T>[] }
  * retry granularity — one failing player would fail the whole pass. One message
  * per ladder means each is retried, paced, and limited on its own.
  */
-const scheduled = async (): Promise<void> => {
+/**
+ * The cron expression that also runs the expensive half.
+ *
+ * Two schedules share this handler. The ten-minute one samples activity, which
+ * is five requests per ladder; the thirty-minute one additionally walks the
+ * ladders in full, which is 250 player fetches each. Running the sampler at the
+ * full crawl's cadence would make the queue up to half an hour stale, and
+ * running the full crawl every ten minutes would spend the allowance three
+ * times over.
+ */
+const FULL_CRAWL_CRON = "*/30 * * * *"
+
+const scheduled = async (event: { readonly cron?: string }): Promise<void> => {
     const queue = await crawlQueue()
 
     if (!queue) {
@@ -61,12 +83,30 @@ const scheduled = async (): Promise<void> => {
         return
     }
 
-    for (const target of crawlTargets) {
-        await queue.send({ targetId: target.id } satisfies CrawlJob)
+    // Every tick samples activity on all 27 per-region ladders.
+    for (const target of queueTargets) {
+        await queue.send({
+            kind: "queue",
+            targetId: target.id,
+        } satisfies CrawlJob)
+    }
+
+    const fullPass = event.cron === FULL_CRAWL_CRON
+
+    if (fullPass) {
+        for (const target of crawlTargets) {
+            await queue.send({
+                kind: "ladder",
+                targetId: target.id,
+            } satisfies CrawlJob)
+        }
     }
 
     await Effect.runPromise(
-        Effect.logInfo(`enqueued ${crawlTargets.length} crawl jobs`),
+        Effect.logInfo(
+            `enqueued ${queueTargets.length} queue samples` +
+                (fullPass ? ` and ${crawlTargets.length} ladder crawls` : ""),
+        ),
     )
 }
 
@@ -89,11 +129,15 @@ const queue = async (batch: MessageBatch<CrawlJob>): Promise<void> => {
         }
 
         try {
+            const kind = message.body.kind ?? "ladder"
+
             await runCrawler(
                 Effect.gen(function* () {
                     const crawler = yield* Crawler
 
-                    yield* crawler.crawlTarget(target, defaultCrawlerConfig)
+                    yield* kind === "queue"
+                        ? crawler.sampleQueue(target, defaultCrawlerConfig)
+                        : crawler.crawlTarget(target, defaultCrawlerConfig)
                 }),
             )
 

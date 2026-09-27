@@ -30,6 +30,16 @@ const json = <A>() => Schema.declare<A>((_u): _u is A => true)
 
 // --- request schemas -------------------------------------------------------
 
+/**
+ * The three ranked brackets, and the axis every ladder surface shares.
+ *
+ * Distinct from `Bracket` below, which is the *power* rankings' axis and has no
+ * 3v3 — that source does not publish one.
+ */
+export const Ladder = Schema.Literals(["1v1", "2v2", "3v3"])
+
+export type Ladder = typeof Ladder.Type
+
 export const RankedRegion = Schema.Literals([
     "all",
     "us-e",
@@ -212,6 +222,26 @@ export type LookupResult = {
 }
 
 export const LookupResultsSchema = json<readonly LookupResult[]>()
+
+/**
+ * One player the activity sampler saw queue.
+ *
+ * `queuedAt` is an epoch millisecond rather than a date because it is only ever
+ * compared against "now" on the client — how long ago they played is the whole
+ * of what it means.
+ */
+export type QueuedPlayer = {
+    readonly id: string
+    readonly name: string
+    readonly rating: number
+    readonly peakRating: number
+    readonly tier: string
+    readonly games: number
+    readonly wins: number
+    readonly queuedAt: number
+}
+
+export const RankedQueueSchema = json<readonly QueuedPlayer[]>()
 
 /**
  * How many characters a lookup needs before it is worth a request.

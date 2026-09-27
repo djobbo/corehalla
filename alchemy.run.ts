@@ -254,7 +254,9 @@ export const CorehallaCrawler = Cloudflare.Worker("CorehallaCrawler", {
     // cost 1 + 2 × players. With 3v3 the matrix is 30 targets at ~2,530 requests
     // a pass — 126% of the allowance per ten minutes, and ~63% per thirty,
     // leaving the remainder for user traffic that misses the cache.
-    crons: ["*/30 * * * *"],
+    // Two schedules, one handler: `*/10` samples activity (5 requests a
+    // ladder), `*/30` also runs the full player crawl. See `FULL_CRAWL_CRON`.
+    crons: ["*/10 * * * *", "*/30 * * * *"],
     compatibility: {
         flags: ["enable_request_signal"],
     },

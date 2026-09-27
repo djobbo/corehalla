@@ -88,3 +88,15 @@ export const playerIdsForRow = (
 
     return [...new Set(ids)].filter((id) => Number.isFinite(id) && id > 0)
 }
+
+/**
+ * The ladders the activity sampler walks.
+ *
+ * Every region except `all`. That entry is the *merge* of the others, so
+ * sampling it as well would file each player a second time under a region they
+ * do not belong to, and spend a fifth of the pass's requests doing it. The
+ * per-region ladders already cover everyone `all` would show.
+ */
+export const queueTargets: readonly CrawlTarget[] = crawlTargets.filter(
+    (target) => target.region !== "all",
+)

@@ -18,3 +18,13 @@ export const CLANS_RANKINGS_PER_PAGE = 50
 export const GLOBAL_PLAYER_RANKINGS_PER_PAGE = 50
 export const SEARCH_MAX_PAGES = 20
 export const CLANS_SEARCH_MAX_CANDIDATES = 500
+
+/**
+ * How long a player stays on the ranked queue after we last saw them play.
+ *
+ * The sampler runs every ten minutes, so half an hour is three passes: long
+ * enough that one missed or failed sample does not drop somebody who is still
+ * playing, short enough that the list means "playing now" rather than "has
+ * played today".
+ */
+export const RANKED_QUEUE_WINDOW_MS = 30 * 60 * 1000

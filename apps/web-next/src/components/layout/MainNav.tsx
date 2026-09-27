@@ -55,6 +55,11 @@ const sections: readonly Section[] = [
         href: "/rankings/clans",
         match: ["/rankings/clans"],
     },
+    {
+        label: "Queue",
+        href: "/queue/1v1",
+        match: ["/queue"],
+    },
 ]
 
 const isCurrent = (pathname: string, section: Section): boolean =>

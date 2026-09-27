@@ -2,6 +2,7 @@ import { regions } from "./rankings"
 import { legends, legendsMap } from "@crh/bhapi/legends"
 import { weapons } from "@crh/bhapi/constants"
 import type { RankedRegion } from "@crh/api-contract/schemas"
+import type { Ladder } from "@crh/api-contract/schemas"
 import type { Weapon } from "@crh/bhapi/constants"
 
 /** The schema is a value; its decoded type is `Type`. */
@@ -57,3 +58,16 @@ export const resolveWeapon = (value: unknown): Weapon =>
     (weapons as readonly string[]).includes(String(value))
         ? (String(value) as Weapon)
         : weapons[0]
+
+const ladders = ["1v1", "2v2", "3v3"] as const
+
+/**
+ * Coerces a URL segment to a bracket, defaulting to the 1v1 ladder.
+ *
+ * The same call the region and page resolvers make: these segments are
+ * user-editable, and landing on the 1v1 queue beats an error page.
+ */
+export const resolveBracket = (value?: string): Ladder =>
+    (ladders as readonly string[]).includes(value ?? "")
+        ? (value as Ladder)
+        : "1v1"

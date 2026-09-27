@@ -1,6 +1,7 @@
 import { Context, Effect, Layer } from "effect"
 import { crawlTargets, playerIdsForRow } from "@crh/bhapi/crawlTargets"
 import { Database } from "./archive"
+import { toRankedQueueRows } from "./player-writes"
 import { Cache } from "./cache"
 import { cacheKeys, cacheTtl } from "./cache-policy"
 import { Upstream } from "./upstream"
@@ -41,6 +42,15 @@ export type CrawlerConfig = {
     readonly requestSpacingMs: number
     /** How many of a page's players are in flight at once. */
     readonly playerConcurrency: number
+    /**
+     * How deep the activity sampler walks each ladder.
+     *
+     * Five pages is the top 250, which is the depth the queue is specified to
+     * cover. Raising it costs one request per extra page per ladder and nothing
+     * else — the sampler reads no player — so it is a cheap dial rather than a
+     * budget decision.
+     */
+    readonly queuePagesPerTarget: number
 }
 
 /**
@@ -84,6 +94,7 @@ export const defaultCrawlerConfig: CrawlerConfig = {
     pagesPerTarget: 1,
     requestSpacingMs: 450,
     playerConcurrency: 1,
+    queuePagesPerTarget: 5,
 }
 
 /** The ranked facts a 1v1 ladder row already carries for that player. */
@@ -125,6 +136,22 @@ export class Crawler extends Context.Service<
         ) => Effect.Effect<void>
         /** One pass over every target. */
         readonly crawlAll: (config: CrawlerConfig) => Effect.Effect<void>
+        /**
+         * Samples one ladder's top for activity, fetching no player at all.
+         *
+         * This is the cheap half of the crawler and the reason a ten-minute
+         * refresh is affordable. Everything the ranked queue needs — `games`,
+         * `rating`, `tier` — is already on the ladder row, so the pass costs one
+         * request per page and nothing per player. The expensive per-player
+         * stats crawl is a separate, slower schedule; this only answers "who
+         * played since we last looked".
+         *
+         * Returns the rows sampled, for logging.
+         */
+        readonly sampleQueue: (
+            target: CrawlTarget,
+            config: CrawlerConfig,
+        ) => Effect.Effect<number>
     }
 >()("app/Crawler") {}
 
@@ -250,6 +277,65 @@ export const layer = Layer.effect(
                 ),
             )
 
+        /**
+         * Samples one ladder's top for activity.
+         *
+         * One request per page, then one write. No player is fetched, which is
+         * what separates this from `crawlTarget`: a 250-deep sample of a single
+         * ladder costs five requests here and 250 there.
+         */
+        const sampleQueue: Context.Service.Shape<
+            typeof Crawler
+        >["sampleQueue"] = (target, config) =>
+            Effect.gen(function* () {
+                let sampled = 0
+
+                for (let page = 1; page <= config.queuePagesPerTarget; page++) {
+                    const rows = yield* upstream.getRankings(
+                        target.bracket,
+                        target.region,
+                        page,
+                    )
+
+                    // Off the end of the ladder: nothing further to sample, and
+                    // the pass is not a failure.
+                    if (rows.length === 0) return sampled
+
+                    yield* database.upsertRankedQueue(
+                        toRankedQueueRows(
+                            target.bracket,
+                            target.region,
+                            rows as readonly (
+                                | Ranking1v1
+                                | Ranking2v2
+                                | Ranking3v3
+                            )[],
+                            new Date(),
+                        ),
+                    )
+
+                    sampled += rows.length
+
+                    // Paced here rather than per player, because there is no
+                    // per-player work to pace.
+                    yield* Effect.sleep(config.requestSpacingMs)
+                }
+
+                yield* Effect.logInfo(
+                    `sampled ${sampled} rows of ${target.label}`,
+                )
+
+                return sampled
+            }).pipe(
+                // A failed ladder must not end the pass; the other 26 still run.
+                Effect.catch((error) =>
+                    Effect.logWarning(
+                        `queue sample failed for ${target.label}`,
+                        error,
+                    ).pipe(Effect.as(0)),
+                ),
+            )
+
         const crawlTarget: Context.Service.Shape<
             typeof Crawler
         >["crawlTarget"] = (target, config) =>
@@ -310,6 +396,7 @@ export const layer = Layer.effect(
         return {
             crawlPage,
             crawlTarget,
+            sampleQueue,
 
             crawlAll: (config) =>
                 Effect.gen(function* () {

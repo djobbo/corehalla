@@ -4,6 +4,7 @@ import {
     desc,
     eq,
     getTableColumns,
+    gte,
     inArray,
     sql,
 } from "@crh/db/query"
@@ -22,6 +23,7 @@ import {
     bhPlayerData,
     bhPlayerLegend,
     bhPlayerWeapon,
+    bhRankedQueue,
     crawlProgress,
 } from "@crh/db/schema"
 import { DatabaseError } from "../errors"
@@ -37,6 +39,8 @@ import type { D1Database } from "@crh/db/client"
 import type { SQLWrapper } from "@crh/db/query"
 import type {
     BHClan,
+    BHRankedQueue,
+    NewBHRankedQueue,
     BHPlayerAlias,
     NewBHClan,
     NewBHPlayerLegend,
@@ -179,6 +183,24 @@ export class Database extends Context.Service<
             player: { readonly id: string; readonly name: string },
             ranked: RankedSnapshot,
         ) => Effect.Effect<void, DatabaseError>
+        /**
+         * Records one ladder page into the ranked queue.
+         *
+         * Whether a player *queued* is decided here rather than by the caller:
+         * the row is only written when its `games` is higher than the stored
+         * one, and only then is `queuedAt` stamped. A page whose figures are
+         * unchanged costs a statement and writes nothing, which is what keeps a
+         * pass every ten minutes from being 6,750 writes.
+         */
+        readonly upsertRankedQueue: (
+            rows: readonly NewBHRankedQueue[],
+        ) => Effect.Effect<void, DatabaseError>
+        /** Everyone on one ladder whose game count rose since `queuedSince`. */
+        readonly getRankedQueue: (
+            bracket: string,
+            region: string,
+            queuedSince: Date,
+        ) => Effect.Effect<readonly BHRankedQueue[], DatabaseError>
         /**
          * The page a crawl target resumes from, or `null` when it has never
          * been crawled.
@@ -451,6 +473,59 @@ export const layer = Layer.effect(
                                 ),
                             })
                     }),
+                ),
+
+            upsertRankedQueue: (rows) =>
+                run(
+                    Effect.gen(function* () {
+                        if (rows.length === 0) return
+
+                        yield* db
+                            .insert(bhRankedQueue)
+                            .values([...rows])
+                            .onConflictDoUpdate({
+                                target: [
+                                    bhRankedQueue.player_id,
+                                    bhRankedQueue.bracket,
+                                ],
+                                set: {
+                                    ...excludedSet(
+                                        rows[0] as unknown as Record<
+                                            string,
+                                            unknown
+                                        >,
+                                        ["player_id", "bracket", "queuedAt"],
+                                    ),
+                                    /*
+                                     * The insert's `queuedAt` is null and the
+                                     * update's is "now", which is why this is
+                                     * not `excluded."queuedAt"`: a first
+                                     * observation is not activity.
+                                     */
+                                    queuedAt: sql`excluded."lastUpdated"`,
+                                },
+                                // The gate. Everything above only runs when the
+                                // game count actually rose.
+                                where: sql`excluded."games" > ${bhRankedQueue.games}`,
+                            })
+                    }),
+                ),
+
+            getRankedQueue: (bracket, region, queuedSince) =>
+                run(
+                    db
+                        .select()
+                        .from(bhRankedQueue)
+                        .where(
+                            and(
+                                eq(bhRankedQueue.bracket, bracket),
+                                eq(bhRankedQueue.region, region),
+                                // Null `queuedAt` — never seen to play — is
+                                // excluded by SQL's own null comparison.
+                                gte(bhRankedQueue.queuedAt, queuedSince),
+                            ),
+                        )
+                        .orderBy(desc(bhRankedQueue.rating)),
                 ),
 
             getCrawlProgress: (targetId) =>

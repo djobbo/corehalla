@@ -8,6 +8,7 @@ import {
     ClanSchema,
     ClansSchema,
     GlobalPlayerRankingsSchema,
+    Ladder,
     LookupResultsSchema,
     Player3v3RankedSchema,
     PlayerAliasesSchema,
@@ -18,6 +19,7 @@ import {
     RankedRegion,
     Ranking1v1Schema,
     Ranking2v2Schema,
+    RankedQueueSchema,
     Ranking3v3Schema,
     SortablePlayerProp,
     SortableLegendProp,
@@ -115,6 +117,23 @@ const rankings = HttpApiGroup.make("rankings")
                 success: GlobalPlayerRankingsSchema,
             },
         ),
+    )
+    .add(
+        /**
+         * Who is playing right now.
+         *
+         * Not a ranking: the rows are the players whose game count rose since
+         * the last sample of that ladder, so membership expires on its own. It
+         * shares the rankings group because it is addressed the same way — one
+         * bracket crossed with one region.
+         */
+        HttpApiEndpoint.get("getRankedQueue", "/api/v1/rankings/queue", {
+            query: {
+                bracket: Ladder,
+                region: RankedRegion,
+            },
+            success: RankedQueueSchema,
+        }),
     )
     .add(
         HttpApiEndpoint.get("getClansRankings", "/api/v1/rankings/clans", {

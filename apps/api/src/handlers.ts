@@ -6,6 +6,7 @@ import { Brawlhalla } from "@crh/core/services/upstream"
 import { Content } from "./services/content"
 import { Database, searchKey } from "@crh/core/services/archive"
 import { Background } from "@crh/core/services/background"
+import { RANKED_QUEUE_WINDOW_MS } from "@crh/core/constants"
 import { Lookup } from "@crh/core/services/lookup"
 import type { BHPlayerAlias } from "@crh/db/schema"
 import type { Ranking1v1, Ranking2v2, Ranking3v3 } from "@crh/bhapi/types"
@@ -177,6 +178,41 @@ export const rankingsGroup = HttpApiBuilder.group(
                             query.page,
                         )
                         .pipe(Effect.orDie),
+                )
+                .handle("getRankedQueue", ({ query }) =>
+                    Effect.gen(function* () {
+                        const since = new Date(
+                            Date.now() - RANKED_QUEUE_WINDOW_MS,
+                        )
+
+                        const rows = yield* db
+                            .getRankedQueue(query.bracket, query.region, since)
+                            .pipe(Effect.orDie)
+
+                        /*
+                         * `queuedAt` is null for a player we have sampled but
+                         * never seen play, and the query excludes those — the
+                         * branch is unreachable rather than defensive, and
+                         * saying so in the type beats a `?? 0` that would
+                         * render as 1970 if it ever were reached.
+                         */
+                        return rows.flatMap((row) =>
+                            row.queuedAt === null
+                                ? []
+                                : [
+                                      {
+                                          id: row.player_id,
+                                          name: row.name,
+                                          rating: row.rating,
+                                          peakRating: row.peakRating,
+                                          tier: row.tier,
+                                          games: row.games,
+                                          wins: row.wins,
+                                          queuedAt: row.queuedAt.getTime(),
+                                      },
+                                  ],
+                        )
+                    }),
                 )
                 .handle("getClansRankings", ({ query }) =>
                     db

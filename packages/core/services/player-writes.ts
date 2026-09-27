@@ -10,9 +10,17 @@ import type { FullLegend } from "@crh/bhapi/legends"
 import type {
     BHPlayerData,
     NewBHPlayerLegend,
+    NewBHRankedQueue,
     NewBHPlayerWeapon,
 } from "@crh/db/schema"
-import type { PlayerRanked, PlayerStats } from "@crh/bhapi/types"
+import type {
+    Ladder,
+    PlayerRanked,
+    PlayerStats,
+    Ranking1v1,
+    Ranking2v2,
+    Ranking3v3,
+} from "@crh/bhapi/types"
 import type { RankedRegion, RankedTier } from "@crh/bhapi/constants"
 
 /**
@@ -296,6 +304,98 @@ export const toPlayerRankedRow = (
     damageGadgets: 0,
     koGadgets: 0,
 })
+
+/** The ladder figures every queue row carries, whatever the bracket. */
+const queueBase = (
+    row: Ranking1v1 | Ranking2v2 | Ranking3v3,
+    bracket: Ladder,
+    region: RankedRegion,
+    seenAt: Date,
+) => ({
+    bracket,
+    region,
+    lastUpdated: seenAt,
+    rating: row.rating,
+    peakRating: row.peak_rating,
+    tier: row.tier,
+    games: row.games,
+    wins: row.wins,
+    /*
+     * Never set here. Whether a player has queued is decided in SQL, by
+     * comparing this row's `games` against the stored one — a single payload
+     * cannot say whether it is new, and the mapper has no business guessing.
+     */
+    queuedAt: null,
+})
+
+/**
+ * One ladder page, as rows for the ranked-queue table.
+ *
+ * The queue is keyed by **(player, bracket)**, so a 2v2 row has to be split:
+ * it carries a team, and both members queued together. The team's `games` is
+ * copied onto each member rather than divided, because the question the column
+ * answers is "did this player's team play", and a shared count answers it for
+ * both.
+ *
+ * A player can hold more than one team near the top of the 2v2 ladder, so the
+ * same key can appear twice in a page. The largest `games` wins, and that is
+ * what keeps the stored figure monotonic: any team playing raises it, while a
+ * quieter team sampled later cannot lower it and read as the player having
+ * stopped.
+ */
+export const toRankedQueueRows = (
+    bracket: Ladder,
+    region: RankedRegion,
+    rows: readonly (Ranking1v1 | Ranking2v2 | Ranking3v3)[],
+    seenAt: Date,
+): NewBHRankedQueue[] => {
+    const byKey = new Map<string, NewBHRankedQueue>()
+
+    const add = (row: NewBHRankedQueue): void => {
+        const key = `${row.player_id}:${row.bracket}`
+        const existing = byKey.get(key)
+
+        if (existing === undefined || row.games > existing.games) {
+            byKey.set(key, row)
+        }
+    }
+
+    for (const row of rows) {
+        if (bracket === "2v2") {
+            const team = row as Ranking2v2
+            const [first = "", second = ""] = team.teamname.split("+")
+
+            for (const member of [
+                { id: team.brawlhalla_id_one, name: first },
+                { id: team.brawlhalla_id_two, name: second },
+            ]) {
+                // The zero id is Brawlhalla's "no player" sentinel, and a solo
+                // queue row carries it for the absent partner.
+                if (member.id <= 0) continue
+
+                add({
+                    ...queueBase(team, bracket, region, seenAt),
+                    player_id: String(member.id),
+                    name: member.name,
+                })
+            }
+
+            continue
+        }
+
+        const solo = row as Ranking1v1 | Ranking3v3
+
+        if (solo.brawlhalla_id <= 0) continue
+
+        add({
+            ...queueBase(solo, bracket, region, seenAt),
+            player_id: String(solo.brawlhalla_id),
+            name: solo.name,
+        })
+    }
+
+    return [...byKey.values()]
+}
 
 /**
  * The player's most-played legends, ranked by XP.

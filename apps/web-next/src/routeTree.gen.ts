@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RankingsIndexRouteImport } from './routes/rankings/index'
+import { Route as QueueChar123BracketChar125Char123RegionChar125RouteImport } from './routes/queue.{-$bracket}.{-$region}'
 import { Route as RankingsClansChar123PageChar125RouteImport } from './routes/rankings/clans.{-$page}'
 import { Route as RankingsGlobalChar123PageChar125RouteImport } from './routes/rankings/global.{-$page}'
 import { Route as RankingsLegendsChar123PageChar125RouteImport } from './routes/rankings/legends.{-$page}'
@@ -35,6 +36,12 @@ const RankingsIndexRoute = RankingsIndexRouteImport.update({
   path: '/rankings/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QueueChar123BracketChar125Char123RegionChar125Route =
+  QueueChar123BracketChar125Char123RegionChar125RouteImport.update({
+    id: '/queue/{-$bracket}/{-$region}',
+    path: '/queue/{-$bracket}/{-$region}',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const RankingsClansChar123PageChar125Route =
   RankingsClansChar123PageChar125RouteImport.update({
     id: '/rankings/clans/{-$page}',
@@ -114,6 +121,7 @@ const StatsPlayerPlayerIdWeaponsRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/rankings/': typeof RankingsIndexRoute
+  '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
   '/rankings/legends/{-$page}': typeof RankingsLegendsChar123PageChar125Route
@@ -131,6 +139,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/rankings': typeof RankingsIndexRoute
+  '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
   '/rankings/legends/{-$page}': typeof RankingsLegendsChar123PageChar125Route
@@ -148,6 +157,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/rankings/': typeof RankingsIndexRoute
+  '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
   '/rankings/legends/{-$page}': typeof RankingsLegendsChar123PageChar125Route
@@ -167,6 +177,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/rankings/'
+    | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
     | '/rankings/global/{-$page}'
     | '/rankings/legends/{-$page}'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/rankings'
+    | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
     | '/rankings/global/{-$page}'
     | '/rankings/legends/{-$page}'
@@ -200,6 +212,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/rankings/'
+    | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
     | '/rankings/global/{-$page}'
     | '/rankings/legends/{-$page}'
@@ -218,6 +231,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   RankingsIndexRoute: typeof RankingsIndexRoute
+  QueueChar123BracketChar125Char123RegionChar125Route: typeof QueueChar123BracketChar125Char123RegionChar125Route
   RankingsClansChar123PageChar125Route: typeof RankingsClansChar123PageChar125Route
   RankingsGlobalChar123PageChar125Route: typeof RankingsGlobalChar123PageChar125Route
   RankingsLegendsChar123PageChar125Route: typeof RankingsLegendsChar123PageChar125Route
@@ -243,6 +257,13 @@ declare module '@tanstack/react-router' {
       path: '/rankings'
       fullPath: '/rankings/'
       preLoaderRoute: typeof RankingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/queue/{-$bracket}/{-$region}': {
+      id: '/queue/{-$bracket}/{-$region}'
+      path: '/queue/{-$bracket}/{-$region}'
+      fullPath: '/queue/{-$bracket}/{-$region}'
+      preLoaderRoute: typeof QueueChar123BracketChar125Char123RegionChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rankings/clans/{-$page}': {
@@ -359,6 +380,8 @@ const StatsPlayerPlayerIdRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   RankingsIndexRoute: RankingsIndexRoute,
+  QueueChar123BracketChar125Char123RegionChar125Route:
+    QueueChar123BracketChar125Char123RegionChar125Route,
   RankingsClansChar123PageChar125Route: RankingsClansChar123PageChar125Route,
   RankingsGlobalChar123PageChar125Route: RankingsGlobalChar123PageChar125Route,
   RankingsLegendsChar123PageChar125Route:

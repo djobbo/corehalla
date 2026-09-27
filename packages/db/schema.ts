@@ -305,6 +305,55 @@ export const bhPlayerWeapon = sqliteTable(
     ],
 )
 
+/**
+ * The top of every ladder, sampled often, so a player who just queued is
+ * visible within minutes rather than within a crawl cycle.
+ *
+ * One row per (player, bracket), holding the *last observed* ladder figures.
+ * Activity is a delta rather than an absolute: a player has queued when the
+ * `games` we now see is higher than the `games` we stored, which is why the
+ * table has to exist at all — the signal is a comparison against the previous
+ * pass, not anything a single payload can say on its own.
+ *
+ * `queuedAt` is therefore nullable, and null means "we have seen this player on
+ * a ladder but have not yet seen them play". A first observation is not
+ * activity: inserting a row for a player we simply had not sampled before would
+ * otherwise announce them as having just queued.
+ */
+export const bhRankedQueue = sqliteTable(
+    "BHRankedQueue",
+    {
+        player_id: text("player_id").notNull(),
+        /** `1v1` | `2v2` | `3v3`. Part of the key: one player, three ladders. */
+        bracket: text("bracket").notNull(),
+        region: text("region").notNull(),
+        /** As the ladder spelled it, so the queue needs no join to render. */
+        name: text("name").notNull(),
+        lastUpdated: integer("lastUpdated", {
+            mode: "timestamp_ms",
+        }).notNull(),
+        rating: integer("rating").notNull(),
+        peakRating: integer("peakRating").notNull(),
+        tier: text("tier").notNull(),
+        games: integer("games").notNull(),
+        wins: integer("wins").notNull(),
+        /** When a `games` increase was last observed. Null until one is. */
+        queuedAt: integer("queuedAt", { mode: "timestamp_ms" }),
+    },
+    (table) => [
+        primaryKey({
+            name: "BHRankedQueue_pkey",
+            columns: [table.player_id, table.bracket],
+        }),
+        /** The read is "this ladder, recently queued", so both are in the key. */
+        index("BHRankedQueue_ladder_idx").on(
+            table.bracket,
+            table.region,
+            table.queuedAt,
+        ),
+    ],
+)
+
 export const bhPlayerAlias = sqliteTable(
     "BHPlayerAlias",
     {
@@ -406,6 +455,7 @@ export type BHPlayerData = typeof bhPlayerData.$inferSelect
 export type BHPlayerLegend = typeof bhPlayerLegend.$inferSelect
 export type BHPlayerWeapon = typeof bhPlayerWeapon.$inferSelect
 export type BHPlayerAlias = typeof bhPlayerAlias.$inferSelect
+export type BHRankedQueue = typeof bhRankedQueue.$inferSelect
 export type BHClan = typeof bhClan.$inferSelect
 export type CrawlProgress = typeof crawlProgress.$inferSelect
 
@@ -419,5 +469,6 @@ export type NewBHPlayerData = typeof bhPlayerData.$inferInsert
 export type NewBHPlayerLegend = typeof bhPlayerLegend.$inferInsert
 export type NewBHPlayerWeapon = typeof bhPlayerWeapon.$inferInsert
 export type NewBHPlayerAlias = typeof bhPlayerAlias.$inferInsert
+export type NewBHRankedQueue = typeof bhRankedQueue.$inferInsert
 export type NewBHClan = typeof bhClan.$inferInsert
 export type NewCrawlProgress = typeof crawlProgress.$inferInsert

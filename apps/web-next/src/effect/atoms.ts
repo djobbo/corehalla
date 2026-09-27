@@ -6,6 +6,7 @@ import { CorehallaClient } from "./client"
 import type * as AsyncResult from "effect/unstable/reactivity/AsyncResult"
 import type {
     Bracket,
+    Ladder,
     PowerRankingsRegion,
     RankedRegion,
     SortableLegendProp,
@@ -29,6 +30,7 @@ const ttl = "5 minutes"
 
 type Region = typeof RankedRegion.Type
 type BracketType = typeof Bracket.Type
+type LadderType = typeof Ladder.Type
 type PowerRegion = typeof PowerRankingsRegion.Type
 type SortableProp = typeof SortablePlayerProp.Type
 type LegendProp = typeof SortableLegendProp.Type
@@ -90,6 +92,20 @@ export const globalWeaponRankingsAtom = (
     CorehallaClient.query("rankings", "getGlobalWeaponRankings", {
         query: { weapon, sortBy, page },
         serializationKey: `global-weapon:${weapon}:${sortBy}:${page}`,
+        timeToLive: ttl,
+    })
+
+/**
+ * Who is playing right now, on one ladder.
+ *
+ * Not a paged ranking: the rows are the players whose game count rose since the
+ * sampler last looked, so the list is short, self-expiring, and has no "next
+ * page" — see `RANKED_QUEUE_WINDOW_MS` on the server.
+ */
+export const rankedQueueAtom = (bracket: LadderType, region: Region) =>
+    CorehallaClient.query("rankings", "getRankedQueue", {
+        query: { bracket, region },
+        serializationKey: `queue:${bracket}:${region}`,
         timeToLive: ttl,
     })
 
