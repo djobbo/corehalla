@@ -9,6 +9,7 @@ import {
     ClansSchema,
     GlobalPlayerRankingsSchema,
     LookupResultsSchema,
+    Player3v3RankedSchema,
     PlayerAliasesSchema,
     PlayerRankedSchema,
     PlayerStatsSchema,
@@ -113,6 +114,27 @@ const stats = HttpApiGroup.make("stats")
                 params: { playerId: Schema.FiniteFromString },
                 // A player without ranked games is a valid, empty result.
                 success: Schema.NullOr(PlayerRankedSchema),
+            },
+        ),
+    )
+    .add(
+        /**
+         * The player's 3v3 ranked record.
+         *
+         * Its own endpoint rather than a field on `getPlayerRanked`, because
+         * the two come from different upstreams: `getPlayerRanked` is v0-only
+         * (which has no 3v3 mode) and this is v1-only (which has no 2v2 mode).
+         * Neither can answer for the other, so a client that wants both makes
+         * both calls, and a client that wants only 1v1 pays for neither.
+         */
+        HttpApiEndpoint.get(
+            "getPlayer3v3Ranked",
+            "/api/v1/stats/player/:playerId/ranked-3v3",
+            {
+                params: { playerId: Schema.FiniteFromString },
+                // Most players have never queued 3v3, so "no record" is an
+                // ordinary result rather than a 404.
+                success: Schema.NullOr(Player3v3RankedSchema),
             },
         ),
     )

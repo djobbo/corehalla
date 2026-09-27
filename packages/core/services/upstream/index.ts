@@ -7,8 +7,10 @@ import { legacyOps } from "./legacy"
 import {
     isCompleteClan,
     isCompleteLeaderboard,
+    isCompletePlayer3v3Ranked,
     isCompletePlayerStats,
     toClan,
+    toPlayer3v3Ranked,
     toPlayerStats,
     toRankings1v1,
     toRankings2v2,
@@ -18,6 +20,7 @@ import {
 import type {
     Ladder,
     Clan,
+    Player3v3Ranked,
     PlayerRanked,
     PlayerStats,
     Ranking1v1,
@@ -39,6 +42,9 @@ type UpstreamShape = {
     readonly getPlayerRanked: (
         playerId: number,
     ) => Effect.Effect<PlayerRanked | null>
+    readonly getPlayer3v3Ranked: (
+        playerId: number,
+    ) => Effect.Effect<Player3v3Ranked | null>
     readonly getClan: (clanId: number) => Effect.Effect<Clan | null>
 }
 
@@ -173,6 +179,32 @@ export const rawLayer = Layer.effect(
             // No v1 equivalent: v1 exposes no 2v2 ranked mode.
             getPlayerRanked: (playerId) => legacy.getPlayerRanked(playerId),
 
+            /*
+             * The mirror image of `getPlayerRanked`: 3v3 exists *only* in v1,
+             * because the legacy API has no 3v3 mode at all. So there is no
+             * fallback to attempt and no second source to disagree with — a
+             * null means v1 could not answer, and the profile's 3v3 card treats
+             * that as "no record" rather than as a failed page.
+             */
+            getPlayer3v3Ranked: (playerId) =>
+                Effect.gen(function* () {
+                    const stats = yield* v1.getPlayer3v3Stats(playerId)
+
+                    if (
+                        stats === null ||
+                        !isCompletePlayer3v3Ranked(stats)
+                    ) {
+                        yield* Effect.logDebug(
+                            `v1 could not serve 3v3 ranked for player ` +
+                                `${playerId}; no v0 source exists`,
+                        )
+
+                        return null
+                    }
+
+                    return toPlayer3v3Ranked(stats)
+                }),
+
             getClan: (clanId) =>
                 Effect.gen(function* () {
                     const [guild, members] = yield* Effect.all(
@@ -208,6 +240,7 @@ export const rawLayer = Layer.effect(
  * | `getRankings`     | v1 (v0 fallback) | v1 rows have no `best_legend`, so the 1v1 legend icon is dropped. Accepted: the row still renders (`{legend && …}`) and that is the field's only reader. |
  * | `getPlayerStats`  | v1 (v0 fallback) | v1 moved the clan to `/player/guild`, which has no `clan_xp`; filled from our own `BHClan` row. |
  * | `getPlayerRanked` | v0 only          | v1 has no 2v2 mode, so the profile's "2v2 Ranked" tab has no v1 source. An absent endpoint, not a missing field. |
+ * | `getPlayer3v3Ranked` | v1 only       | The mirror of `getPlayerRanked`: the legacy API has no 3v3 mode, so there is no fallback. v1 also reports the top tier as `null` and ranks only via a per-region `region_ranks` list, which is dropped. |
  * | `getClan`         | v1 (v0 fallback) | None: `/guild/stats` + `/guild/members` covers every field `Clan` has. |
  */
 export class Brawlhalla extends Context.Service<Brawlhalla, UpstreamShape>()(
@@ -248,6 +281,13 @@ export const layer = Layer.effect(
                     cacheKeys.playerRanked(playerId),
                     cacheTtl.profile,
                     upstream.getPlayerRanked(playerId),
+                ),
+
+            getPlayer3v3Ranked: (playerId) =>
+                cache.getOrSet(
+                    cacheKeys.player3v3Ranked(playerId),
+                    cacheTtl.profile,
+                    upstream.getPlayer3v3Ranked(playerId),
                 ),
 
             getClan: (clanId) =>

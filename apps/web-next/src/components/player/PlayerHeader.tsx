@@ -7,6 +7,7 @@ import { tierColor } from "@/lib/rankings"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatTime } from "@crh/common/helpers/date"
 import type { CSSProperties } from "react"
+import { cn } from "@crh/common/helpers/classnames"
 
 /**
  * Who this page is about.
@@ -40,14 +41,14 @@ type Thumb = {
  * `title` for the pointer.
  */
 const ThumbRow = ({ items }: { readonly items: readonly Thumb[] }) => (
-    <span className="flex items-center gap-1.5">
+    <span className="flex items-center gap-0.5">
         {items.map((item) => (
             <img
                 key={item.key}
                 src={item.src}
                 alt={item.alt}
                 title={item.alt}
-                className="ch-thumb"
+                className={cn("ch-thumb", "bg-accent")}
             />
         ))}
     </span>

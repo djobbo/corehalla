@@ -127,22 +127,6 @@ export const TeamCard = ({
                     </span>
                 </span>
             </div>
-
-            <Card variant="inset" className="mt-3">
-                <StatGrid
-                    stats={[
-                        { title: "Games", value: team.games.toLocaleString() },
-                        {
-                            title: "Winrate",
-                            value: `${calculateWinrate(team.wins, team.games).toFixed(2)}%`,
-                        },
-                        {
-                            title: "Elo reset",
-                            value: `${eloReset} · ${getTierFromRating(eloReset)}`,
-                        },
-                    ]}
-                />
-            </Card>
         </Card>
     )
 }

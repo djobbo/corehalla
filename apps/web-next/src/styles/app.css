@@ -541,7 +541,7 @@
 
     /* A recessed well, for stat grids nested inside a card. */
     .ch-card-inset {
-        background: var(--color-bgVar2);
+        background: var(--color-bgVar1);
     }
 
     /* A flat, quiet card for "no data" notes. */

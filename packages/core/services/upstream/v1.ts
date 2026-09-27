@@ -5,6 +5,7 @@ import { legendsMap } from "@crh/bhapi/legends"
 import type { ClanRank, RankedTier } from "@crh/bhapi/constants"
 import type {
     Clan,
+    Player3v3Ranked,
     PlayerStats,
     Ranking1v1,
     Ranking2v2,
@@ -197,6 +198,42 @@ export type V1PlayerStats = {
     legends: readonly V1PlayerStatsLegend[]
 }
 
+/**
+ * `GetPlayerStats` in a *ranked* mode (`ranked_3v3`).
+ *
+ * A separate shape from {@link V1PlayerStats} rather than one type with
+ * everything optional, because the mode decides which half of the payload
+ * exists: `all` reports `xp`, `level` and the gadget counters and no rating,
+ * while a ranked mode reports the rating fields and drops all of those. That
+ * is also what {@link isCompletePlayerStats} leans on — requiring `xp` is how
+ * it proves v1 answered `all` rather than quietly degrading to a ranked
+ * payload.
+ *
+ * `rating`, `peak_rating` and `tier` are documented as possibly null ("try
+ * your call again later"), so they are tested before the result is served.
+ */
+export type V1PlayerRankedStats = {
+    brawlhalla_id: number
+    name: string
+    games: number
+    wins: number
+    rating?: number | null
+    peak_rating?: number | null
+    tier?: string | null
+    region?: string | null
+    /**
+     * Per-region rank, and the cross-region rank that goes with it.
+     *
+     * Both are absent (or an empty list) for everyone outside the top of a
+     * region — verified live: the world #2 in 3v3 carries
+     * `[{ region: "EU", rank: 2 }]` and `global_rank: 2`, while a lower Diamond
+     * carries `[]` and no `global_rank` at all.
+     */
+    region_ranks?: readonly { region: string; rank: number }[]
+    global_rank?: number | null
+    legends: readonly V1PlayerStatsLegend[]
+}
+
 // --- client ----------------------------------------------------------------
 
 export const v1Ops = (client: HttpClient.HttpClient) => {
@@ -255,6 +292,21 @@ export const v1Ops = (client: HttpClient.HttpClient) => {
             getOptionalJson<V1PlayerStats>("/player/stats", {
                 brawlhalla_id: playerId,
                 mode,
+            }),
+
+        /**
+         * The player's 3v3 ranked record.
+         *
+         * A wrapper over `getPlayerStats` rather than a second endpoint: the
+         * mode is the only difference, and naming it here is what keeps
+         * `"ranked_3v3"` from being spelled at a call site that would then have
+         * to know the payload is {@link V1PlayerRankedStats} and not
+         * {@link V1PlayerStats}.
+         */
+        getPlayer3v3Stats: (playerId: number) =>
+            getOptionalJson<V1PlayerRankedStats>("/player/stats", {
+                brawlhalla_id: playerId,
+                mode: "ranked_3v3" satisfies V1PlayerMode,
             }),
 
         getPlayerGuild: (playerId: number) =>
@@ -490,3 +542,43 @@ export const isCompletePlayerStats = (stats: V1PlayerStats | null): boolean =>
     stats.name.trim().length > 0 &&
     stats.xp !== undefined &&
     stats.level !== undefined
+
+/**
+ * `GetPlayerStats mode=ranked_3v3` -> the shape the overview's 3v3 card renders.
+ *
+ * `region_ranks` is dropped rather than mapped onto a `rank`. It is a *list*
+ * of per-region ranks and is empty for anyone outside the top of a region, so
+ * surfacing it would put a rank on some cards and not others for a reason the
+ * card cannot explain. The ladder's own `rank` column is the place for that.
+ */
+export const toPlayer3v3Ranked = (
+    stats: V1PlayerRankedStats,
+): Player3v3Ranked => ({
+    brawlhalla_id: stats.brawlhalla_id,
+    name: stats.name,
+    rating: stats.rating ?? 0,
+    peak_rating: stats.peak_rating ?? 0,
+    tier: (stats.tier ?? null) as RankedTier | null,
+    wins: stats.wins,
+    games: stats.games,
+    region: fromV1Region(
+        stats.region ?? "ALL",
+    ) as Player3v3Ranked["region"],
+})
+
+/**
+ * Whether a v1 3v3 payload is complete enough to render.
+ *
+ * There is no v0 fallback for this mode, so the predicate's job is not "should
+ * v0 serve instead" but "is this a record at all". A null `rating` is v1 asking
+ * to be retried, and a nameless payload is v1 failing outright; both are
+ * reported as "no record" rather than shown as a zero-rated card.
+ *
+ * `tier` is deliberately not required: v1 reports the top tier as `null`, which
+ * is exactly the value the card already renders as "Valhallan". Requiring it
+ * would drop every Valhallan player's card.
+ */
+export const isCompletePlayer3v3Ranked = (
+    stats: V1PlayerRankedStats | null,
+): boolean =>
+    stats !== null && stats.name.trim().length > 0 && stats.rating != null

@@ -99,6 +99,33 @@ export type PlayerRanked = {
     region: RankedRegion | Uppercase<RankedRegion>
 }
 
+/**
+ * A player's 3v3 ranked record.
+ *
+ * A sibling of {@link PlayerRanked} rather than a `"3v3"` field on it, because
+ * the two come from different upstreams and neither can answer for the other:
+ * `PlayerRanked` is the legacy v0 payload, which has no 3v3 mode at all, while
+ * this comes from v1's `mode=ranked_3v3`, which returns none of the account,
+ * clan or 2v2 data `PlayerRanked` carries. Folding it in as a field would force
+ * the v0 mapper to fabricate a record it cannot fetch.
+ *
+ * Shaped like a row of `PlayerRanked["legends"]` — rating, peak, wins, games,
+ * tier — rather than like the ladder's {@link Ranking3v3}, which additionally
+ * carries a `rank`. A player payload's only rank is v1's `region_ranks`, and
+ * that is empty for everyone outside the top of a region, so it is not a field
+ * the UI can rely on.
+ */
+export type Player3v3Ranked = {
+    brawlhalla_id: number
+    name: string
+    rating: number
+    peak_rating: number
+    tier: RankedTier | null // TOFIX: 'Valhallan' tier is null
+    wins: number
+    games: number
+    region: RankedRegion | Uppercase<RankedRegion>
+}
+
 export type Clan = {
     clan_id: number
     clan_name: string

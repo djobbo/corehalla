@@ -1,5 +1,10 @@
 import { useMemo } from "react"
-import { playerRankedAtom, playerStatsAtom, useQuery } from "@/effect/atoms"
+import {
+    player3v3RankedAtom,
+    playerRankedAtom,
+    playerStatsAtom,
+    useQuery,
+} from "@/effect/atoms"
 import { isPairedTeam } from "@/lib/rankings"
 import {
     getFullLegends,
@@ -9,7 +14,11 @@ import {
     getWeaponsAccumulativeData,
 } from "@crh/bhapi/legends"
 import type { FullLegend } from "@crh/bhapi/legends"
-import type { PlayerRanked, PlayerStats } from "@crh/bhapi/types"
+import type {
+    Player3v3Ranked,
+    PlayerRanked,
+    PlayerStats,
+} from "@crh/bhapi/types"
 
 /** One row of `getWeaponsAccumulativeData`. */
 export type WeaponTotals = ReturnType<typeof getWeaponsAccumulativeData>[number]
@@ -17,6 +26,14 @@ export type WeaponTotals = ReturnType<typeof getWeaponsAccumulativeData>[number]
 export type PlayerDerived = {
     readonly stats: PlayerStats
     readonly ranked: PlayerRanked | null
+    /**
+     * The player's 3v3 ranked record, or `null` when they have none.
+     *
+     * Split out from `ranked` because it comes from a different endpoint: v0
+     * has no 3v3 mode, so this is the one ranked record that cannot ride along
+     * with the 2v2 payload.
+     */
+    readonly ranked3v3: Player3v3Ranked | null
     /** Every legend in the roster, played or not. */
     readonly legends: readonly FullLegend[]
     /** Totals across every legend — the profile's career figures. */
@@ -86,6 +103,7 @@ const TOP_ART_COUNT = 3
 export const usePlayerDerived = (playerId: number): PlayerDerived | null => {
     const stats = useQuery(playerStatsAtom(playerId))
     const ranked = useQuery(playerRankedAtom(playerId))
+    const ranked3v3 = useQuery(player3v3RankedAtom(playerId))
 
     return useMemo(() => {
         if (!stats) return null
@@ -150,6 +168,7 @@ export const usePlayerDerived = (playerId: number): PlayerDerived | null => {
         return {
             stats,
             ranked: safeRanked,
+            ranked3v3,
             legends,
             totals,
             weaponless,
@@ -161,5 +180,5 @@ export const usePlayerDerived = (playerId: number): PlayerDerived | null => {
             topWeapons: weapons.slice(0, TOP_ART_COUNT),
             has2v2: safeRanked !== null && safeRanked["2v2"].some(isPairedTeam),
         }
-    }, [stats, ranked])
+    }, [stats, ranked, ranked3v3])
 }

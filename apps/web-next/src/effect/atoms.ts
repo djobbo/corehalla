@@ -88,6 +88,21 @@ export const playerRankedAtom = (playerId: number) =>
         timeToLive: ttl,
     })
 
+/**
+ * The player's 3v3 ranked record, or `null` when they have never queued it.
+ *
+ * Separate from `playerRankedAtom` because it is a separate endpoint — v0 has
+ * no 3v3 mode, so unlike every other ranked record this one cannot ride along
+ * with the 2v2 payload. Prefetched with the rest of the profile, so the
+ * overview's ranked row never resolves in stages.
+ */
+export const player3v3RankedAtom = (playerId: number) =>
+    CorehallaClient.query("stats", "getPlayer3v3Ranked", {
+        params: { playerId },
+        serializationKey: `player:${playerId}:ranked-3v3`,
+        timeToLive: ttl,
+    })
+
 export const playerAliasesAtom = (playerId: number) =>
     CorehallaClient.query("stats", "getPlayerAliases", {
         params: { playerId },

@@ -229,6 +229,32 @@ export const statsGroup = HttpApiBuilder.group(
                     return ranked
                 }),
             )
+            /*
+             * 3v3 has no v0 fallback and no 2v2 payload to piggyback on, so it
+             * is its own read. It still feeds the alias index, which is what
+             * makes a renamed player findable after a profile view in *any*
+             * ranked mode rather than only in 1v1/2v2.
+             */
+            .handle("getPlayer3v3Ranked", ({ params }) =>
+                Effect.gen(function* () {
+                    const ranked = yield* brawlhalla.getPlayer3v3Ranked(
+                        params.playerId,
+                    )
+
+                    if (!ranked) return null
+
+                    yield* fireAndForget(
+                        db.upsertPlayerAliases(
+                            aliasRows({
+                                id: ranked.brawlhalla_id,
+                                name: ranked.name,
+                            }),
+                        ),
+                    )
+
+                    return ranked
+                }),
+            )
             .handle("getPlayerAliases", ({ params }) =>
                 // Aliases are decorative: a database problem must not take the
                 // player page down.

@@ -8,29 +8,26 @@ import { EntityLink } from "@/components/EntityLink"
 import { cn } from "@/lib/cn"
 import { clanHref, isPairedTeam } from "@/lib/rankings"
 import { percent, perGame, ratio } from "@/lib/stats"
-import {
-    getGlory,
-    getLegendEloReset,
-    getPersonalEloReset,
-} from "@crh/bhapi/calculator"
-import { calculateWinrate } from "@crh/bhapi/helpers/calculateWinrate"
-import { getTierFromRating } from "@crh/bhapi/helpers/getTierFromRating"
 import { rankedRegions } from "@crh/bhapi/constants"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatTime } from "@crh/common/helpers/date"
 import type { Stat } from "@/components/ui/StatGrid"
 import type { BreakdownEntry } from "@/components/ui/Breakdown"
 import type { PlayerDerived } from "./usePlayerDerived"
-import type { PlayerRanked, PlayerStats } from "@crh/bhapi/types"
+import type {
+    Player3v3Ranked,
+    PlayerRanked,
+    PlayerStats,
+} from "@crh/bhapi/types"
 
 /**
  * The overview: what this account is, in card-grid form.
  *
  * The structure follows the newer `kubi` client rather than the legacy app's
- * stack of collapsible sections. Ranked records lead as a pair of comparable
- * cards; volume (games, KOs, damage) follows as a row; the long tail of derived
- * averages collapses into one wide stat grid; and the unarmed/throw/gadget
- * breakdowns close it out.
+ * stack of collapsible sections. Ranked records lead as a row of comparable
+ * cards; volume (games, KOs, damage) follows; the long tail of derived averages
+ * collapses into one wide stat grid; and the unarmed/throw/gadget breakdowns
+ * close it out.
  *
  * Nothing is collapsed by default. The legacy page hid most of this behind
  * disclosures, which meant the answer to "how does this player actually play"
@@ -41,9 +38,6 @@ import type { PlayerRanked, PlayerStats } from "@crh/bhapi/types"
 type Team = PlayerRanked["2v2"][number]
 
 const summed = (value: number): string => value.toLocaleString()
-
-const winrate = (wins: number, games: number): string =>
-    `${calculateWinrate(wins, games).toFixed(2)}%`
 
 // --- ranked -----------------------------------------------------------------
 
@@ -98,6 +92,41 @@ const SoloQueuePanel = ({ solo }: { readonly solo: Team }) => {
             peakRating={solo.peak_rating}
             wins={solo.wins}
             games={solo.games}
+        />
+    )
+}
+
+// --- 3v3 ----------------------------------------------------------------------
+
+/**
+ * The player's 3v3 ranked record, or nothing.
+ *
+ * 3v3 is a solo queue — v1's ladder carries one player per row because the
+ * teams are assembled per match — so this is a record in its own right rather
+ * than a team, exactly like the solo-queue 2v2 card beside it.
+ *
+ * The record itself comes from its own endpoint rather than from `ranked`,
+ * because v0 has no 3v3 mode; see `player3v3RankedAtom`. Gated on games played
+ * for the same reason as the other two: a payload with no games behind it is
+ * not a record, and a player who has never queued 3v3 should not be shown a
+ * zero-rated card for it.
+ */
+const Ranked3v3Panel = ({
+    ranked,
+}: {
+    readonly ranked: Player3v3Ranked | null
+}) => {
+    if (!ranked || ranked.games <= 0) return null
+
+    return (
+        <RankedCard
+            title="Ranked 3v3"
+            tier={ranked.tier}
+            region={ranked.region}
+            rating={ranked.rating}
+            peakRating={ranked.peak_rating}
+            wins={ranked.wins}
+            games={ranked.games}
         />
     )
 }
@@ -410,6 +439,7 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
     const {
         stats,
         ranked,
+        ranked3v3,
         totals,
         weaponless,
         weaponKos,
@@ -438,6 +468,18 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
     const soloRecord = (ranked?.["2v2"] ?? []).find(
         (team) => !isPairedTeam(team),
     )
+    const has3v3 = ranked3v3 !== null && ranked3v3.games > 0
+
+    /*
+     * One, two or three cards. The column count follows the count of cards
+     * actually rendered rather than the count of brackets that exist, so a
+     * lone card keeps its natural width instead of stretching across the row,
+     * and three cards do not leave an orphan alone on a second row once there
+     * is width for all three.
+     */
+    const rankedCardCount = [has1v1, soloRecord !== undefined, has3v3].filter(
+        Boolean,
+    ).length
 
     const koCounts = (weapon: { kos: number; damageDealt: number }): Stat[] => [
         { title: "KOs", value: summed(weapon.kos) },
@@ -455,20 +497,22 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
     return (
         <div className="flex flex-col gap-4">
             {/*
-             * The ranked records, side by side only when there are two of them.
-             * Either can be missing — plenty of players never queue solo, and
-             * plenty never queue 1v1 — and a lone card spanning half a row with
-             * nothing beside it reads as something failed to load.
+             * The ranked records. Any of the three can be missing — plenty of
+             * players never queue 1v1, plenty never queue solo, and 3v3 is the
+             * least-played bracket of all — and a lone card spanning half a row
+             * with nothing beside it reads as something failed to load.
              */}
-            {has1v1 || soloRecord ? (
+            {rankedCardCount > 0 ? (
                 <div
                     className={cn(
                         "grid gap-4",
-                        has1v1 && soloRecord && "md:grid-cols-2",
+                        rankedCardCount > 1 && "md:grid-cols-2",
+                        rankedCardCount > 2 && "lg:grid-cols-3",
                     )}
                 >
                     <Ranked1v1Panel ranked={ranked} />
                     {soloRecord ? <SoloQueuePanel solo={soloRecord} /> : null}
+                    <Ranked3v3Panel ranked={ranked3v3} />
                 </div>
             ) : null}
 

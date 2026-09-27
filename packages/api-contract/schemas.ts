@@ -1,6 +1,7 @@
 import { Schema } from "effect"
 import type {
     Clan,
+    Player3v3Ranked,
     PlayerRanked,
     PlayerStats,
     Ranking1v1,
@@ -90,6 +91,7 @@ export const Ranking2v2Schema = json<readonly Ranking2v2[]>()
 export const Ranking3v3Schema = json<readonly Ranking3v3[]>()
 export const PlayerStatsSchema = json<PlayerStats>()
 export const PlayerRankedSchema = json<PlayerRanked>()
+export const Player3v3RankedSchema = json<Player3v3Ranked>()
 export const PlayerAliasesSchema = json<readonly string[]>()
 export const ClanSchema = json<Clan>()
 export const ClansSchema = json<readonly BHClan[]>()

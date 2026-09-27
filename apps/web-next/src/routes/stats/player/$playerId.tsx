@@ -3,6 +3,7 @@ import { isPairedTeam } from "@/lib/rankings"
 import { PlayerHeader } from "@/components/player/PlayerHeader"
 import { PlayerTabs } from "@/components/player/PlayerTabs"
 import {
+    player3v3RankedAtom,
     playerAliasesAtom,
     playerRankedAtom,
     playerStatsAtom,
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/stats/player/$playerId")({
         preloadAtoms(context, [
             playerStatsAtom(Number(params.playerId)),
             playerRankedAtom(Number(params.playerId)),
+            player3v3RankedAtom(Number(params.playerId)),
             playerAliasesAtom(Number(params.playerId)),
         ]),
     component: Layout,

@@ -59,5 +59,16 @@ export const cacheKeys = {
     playerRanked: (playerId: number | string): string =>
         `player-ranked:${playerId}`,
 
+    /**
+     * A player's 3v3 record.
+     *
+     * Its own key rather than a suffix on `playerRanked`, because the two are
+     * separate upstream reads: v0 serves 2v2 and has no 3v3 mode, while v1
+     * serves 3v3 and no 2v2. Sharing one key would make either read evict the
+     * other's entry, and the two have no reason to share a freshness.
+     */
+    player3v3Ranked: (playerId: number | string): string =>
+        `player-3v3-ranked:${playerId}`,
+
     clan: (clanId: number | string): string => `clan:${clanId}`,
 } as const

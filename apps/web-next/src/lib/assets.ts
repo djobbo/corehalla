@@ -35,26 +35,3 @@ export const regionFlagSrc = (region: string): string =>
  */
 export const rankedBannerSrc = (tier: string | null | undefined): string =>
     `/images/ranked-banners/${tier ?? "Valhallan"}.png`
-
-/**
- * Whether a tier's banner art is tall enough to reach a card's win/loss row.
- *
- * This is a property of the artwork, not of the tier's prestige. Rendered at the
- * width the cards use, the banners fall into two clear clusters: Silver through
- * Platinum come out 88px to 103px and stop above the row, while Diamond and
- * Valhallan are 124px and 131px and cross it. Emerald ships in the same set and
- * is just as tall, so it is listed even though no ladder returns it yet.
- *
- * The cards use this to decide whether the losses figure needs to step aside.
- * Measuring the loaded image instead would buy a state update and a layout shift
- * to settle 48px of padding, which is not a trade worth making.
- */
-const TALL_RANKED_BANNERS: ReadonlySet<string> = new Set([
-    "Diamond",
-    "Emerald",
-    "Valhallan",
-])
-
-export const isTallRankedBanner = (
-    tier: string | null | undefined,
-): boolean => TALL_RANKED_BANNERS.has(tier ?? "Valhallan")
