@@ -1,38 +1,76 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { LadderView } from "@/components/LadderView"
-import { LADDER_PAGE_SIZE } from "@/lib/rankings"
-import { to1v1Rows } from "@/lib/ladderRows"
-import { preloadAtoms, rankings1v1Atom, useQuery } from "@/effect/atoms"
+import { LandingHero } from "@/components/layout/LandingHero"
+import { LandingLadder } from "@/components/LandingLadder"
+import { regionLabel } from "@/lib/rankings"
+import { to1v1Rows, to2v2Rows } from "@/lib/ladderRows"
+import {
+    preloadAtoms,
+    rankings1v1Atom,
+    rankings2v2Atom,
+    useQuery,
+} from "@/effect/atoms"
 
 /**
- * The home page is the leaderboard.
+ * The landing page.
  *
- * That is the single biggest action-budget decision in the design: browsing the
- * rankings costs **zero** actions instead of one, because the live table is what
- * loads rather than something you navigate to. The hero is therefore the
- * masthead plus a single title band — a wordmark, the search affordance, and one
- * heading — and hands the rest of the viewport to the table.
+ * A hero you can act on, then a taste of the ladder. The split is the whole
+ * design: the hero answers "what is this and how do I search it", and the tables
+ * answer "is this thing alive" — which a rank table does better than any amount
+ * of copy, because it is the product itself rather than a claim about it.
  *
- * Favorites and news sit below the ladder rather than above it, for the same
- * reason: anything placed first delays the first row of ranks.
+ * Two ladders, side by side once there is room. 1v1 is the mode most people
+ * mean by "rankings", so it leads; 2v2 is the other one v1 actually serves, and
+ * putting it alongside costs a column instead of a click. Below `lg` they stack,
+ * because a ladder table split much narrower than half of this page starts
+ * wrapping team names onto two lines and stops reading as a table at all.
  */
+
 export const Route = createFileRoute("/")({
-    loader: ({ context }) => preloadAtoms(context, [rankings1v1Atom("all", 1)]),
+    head: () => ({
+        meta: [
+            {
+                title: "Corehalla — Brawlhalla stats, rankings and clans",
+            },
+            {
+                name: "description",
+                content:
+                    "Live Brawlhalla leaderboards, in-depth player statistics and clan rosters — every ranked mode, every region.",
+            },
+        ],
+    }),
+    /*
+     * Both ladders in one loader, so the two columns commit together. Deferred
+     * separately, whichever arrived second would push a reflow through the row
+     * it shares with the first.
+     */
+    loader: ({ context }) =>
+        preloadAtoms(context, [
+            rankings1v1Atom("all", 1),
+            rankings2v2Atom("all", 1),
+        ]),
     component: Page,
 })
 
 function Page() {
-    const rows = to1v1Rows(useQuery(rankings1v1Atom("all", 1)))
+    const oneVone = to1v1Rows(useQuery(rankings1v1Atom("all", 1)))
+    const twoVtwo = to2v2Rows(useQuery(rankings2v2Atom("all", 1)))
 
     return (
         <main className="ch-page">
-            <LadderView
-                bracket="1v1"
-                region="all"
-                page={1}
-                rows={rows}
-                hasNextPage={rows.length >= LADDER_PAGE_SIZE}
-            />
+            <LandingHero />
+
+            <section className="mt-8">
+                <div className="flex flex-wrap items-end justify-between gap-2">
+                    <div>
+                        <p className="ch-kicker">Live rankings</p>
+                    </div>
+                </div>
+
+                <div className="mt-2 grid gap-6 lg:grid-cols-2">
+                    <LandingLadder bracket="1v1" rows={oneVone} />
+                    <LandingLadder bracket="2v2" rows={twoVtwo} />
+                </div>
+            </section>
         </main>
     )
 }

@@ -1,24 +1,16 @@
 import { Link } from "@tanstack/react-router"
-import { EntityLink } from "./EntityLink"
-import {
-    brackets,
-    ladderHref,
-    playerHref,
-    regionLabel,
-    regions,
-    tierColor,
-} from "@/lib/rankings"
+import { LadderTable } from "./LadderTable"
+import { brackets, ladderHref, regionLabel, regions } from "@/lib/rankings"
 import { cn } from "@/lib/cn"
 import type { LadderRow } from "@/lib/ladderRows"
 import type { Bracket } from "@/lib/rankings"
 import type { RankedRegion } from "@crh/api-contract/schemas"
-import type { CSSProperties } from "react"
 
 /** The schema is a value; its decoded type is `Type`. */
 type Region = typeof RankedRegion.Type
 
 /**
- * A ranked ladder: the filter row plus the table.
+ * A ranked ladder: the filter row, the table, and the page controls.
  *
  * Both axes are one tap each, which is the whole point — the app this replaces
  * puts the same choice behind two dropdowns holding ten and five options, so
@@ -27,13 +19,9 @@ type Region = typeof RankedRegion.Type
  * every change into a scroll back up first. It docks at `top-14`, directly under
  * the pinned masthead, so the two read as one fixed header.
  *
- * Rows are whole-row targets: the anchor spans the row rather than sitting on
- * the name, because a name is a few characters wide on a phone and tapping it is
- * a precision task. The legend/rating columns are inside the same target.
- *
- * Visually this is where the poster language does the most work: the filters are
- * parallelograms, the table is one outlined slab, and rank and tier are the two
- * places colour is allowed to speak.
+ * The table itself is `LadderTable`, shared with the home page's preview — this
+ * view adds the parts that only a real ladder page has: the title band, the
+ * filters, and the previous/next controls.
  */
 export type LadderViewProps = {
     readonly bracket: Bracket
@@ -105,56 +93,7 @@ export const LadderView = ({
                 {rows.length} rows
             </p>
 
-            <div className="ch-panel mt-2 overflow-hidden">
-                <div className="ch-table-head">
-                    <span className="w-7 shrink-0">#</span>
-                    <span className="flex-1">Player</span>
-                    <span className="w-14 shrink-0 text-right">Rating</span>
-                    <span className="w-24 shrink-0 text-right">Tier</span>
-                </div>
-
-                {rows.map((row) => (
-                    <div key={row.key} className="ch-row">
-                        <span
-                            className={cn(
-                                "ch-rank",
-                                row.rank <= 3 && `ch-rank-${row.rank}`,
-                            )}
-                        >
-                            <span>{row.rank}</span>
-                        </span>
-                        {/* The whole row is the target. */}
-                        <span className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-0.5">
-                            {row.members.map((member) => (
-                                <EntityLink
-                                    key={member.id}
-                                    type="player"
-                                    id={member.id}
-                                    href={playerHref(member.id)}
-                                    className="ch-link font-semibold"
-                                >
-                                    {member.name}
-                                </EntityLink>
-                            ))}
-                        </span>
-                        <span className="ch-rating w-14 shrink-0 text-right">
-                            {row.rating}
-                        </span>
-                        <span className="w-24 shrink-0 text-right">
-                            <span
-                                className="ch-tier"
-                                style={
-                                    {
-                                        "--ch-tier": tierColor(row.tier),
-                                    } as CSSProperties
-                                }
-                            >
-                                {row.tier}
-                            </span>
-                        </span>
-                    </div>
-                ))}
-            </div>
+            <LadderTable rows={rows} className="mt-2" />
 
             <div className="mt-4 flex gap-2">
                 {page > 1 && (
