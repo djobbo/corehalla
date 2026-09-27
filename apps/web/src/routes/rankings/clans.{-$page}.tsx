@@ -104,7 +104,7 @@ function ClansPage() {
                 onChange: setQueryInput,
                 // Esc clears the query first and only leaves search mode
                 // once the input is already empty.
-                onEscape: () => {
+                onEscape() {
                     if (queryInput) {
                         setQueryInput("")
                         return

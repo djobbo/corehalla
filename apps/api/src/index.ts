@@ -57,7 +57,7 @@ export const withCors = (response: Response): Response => {
 export { corsHeaders }
 
 export default {
-    fetch: async (request: Request) => {
+    async fetch(request: Request) {
         // Preflight never reaches the router: it is a browser question about
         // permission, not an API request.
         if (request.method === "OPTIONS") {

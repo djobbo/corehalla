@@ -190,10 +190,7 @@ export const rawLayer = Layer.effect(
                 Effect.gen(function* () {
                     const stats = yield* v1.getPlayer3v3Stats(playerId)
 
-                    if (
-                        stats === null ||
-                        !isCompletePlayer3v3Ranked(stats)
-                    ) {
+                    if (stats === null || !isCompletePlayer3v3Ranked(stats)) {
                         yield* Effect.logDebug(
                             `v1 could not serve 3v3 ranked for player ` +
                                 `${playerId}; no v0 source exists`,
@@ -208,10 +205,7 @@ export const rawLayer = Layer.effect(
             getClan: (clanId) =>
                 Effect.gen(function* () {
                     const [guild, members] = yield* Effect.all(
-                        [
-                            v1.getGuildStats(clanId),
-                            v1.getGuildMembers(clanId),
-                        ],
+                        [v1.getGuildStats(clanId), v1.getGuildMembers(clanId)],
                         { concurrency: 2 },
                     )
 

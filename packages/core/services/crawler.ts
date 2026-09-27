@@ -203,7 +203,8 @@ export const layer = Layer.effect(
                     return
                 }
 
-                yield* database.upsertPlayerStats(stats, ranked)            }).pipe(
+                yield* database.upsertPlayerStats(stats, ranked)
+            }).pipe(
                 // One bad player must not end the pass.
                 Effect.catch((error) =>
                     Effect.logWarning(
@@ -234,11 +235,7 @@ export const layer = Layer.effect(
                 // freshness window — the one cache entry that would be worse
                 // than a miss.
                 yield* cache.set(
-                    cacheKeys.leaderboard(
-                        target.bracket,
-                        target.region,
-                        page,
-                    ),
+                    cacheKeys.leaderboard(target.bracket, target.region, page),
                     rows,
                     cacheTtl.leaderboard,
                 )
@@ -274,65 +271,62 @@ export const layer = Layer.effect(
                 ),
             )
 
-        const crawlTarget: Context.Service.Shape<typeof Crawler>["crawlTarget"] =
-            (target, config) =>
-                Effect.gen(function* () {
-                    const resume = yield* database
-                        .getCrawlProgress(target.id)
-                        .pipe(Effect.catch(() => Effect.succeed(null)))
+        const crawlTarget: Context.Service.Shape<
+            typeof Crawler
+        >["crawlTarget"] = (target, config) =>
+            Effect.gen(function* () {
+                const resume = yield* database
+                    .getCrawlProgress(target.id)
+                    .pipe(Effect.catch(() => Effect.succeed(null)))
 
-                    const start = resume ?? 1
+                const start = resume ?? 1
 
-                    yield* Effect.logInfo(
-                        `crawling ${target.label} from page ${start}`,
-                    )
+                yield* Effect.logInfo(
+                    `crawling ${target.label} from page ${start}`,
+                )
 
-                    for (
-                        let page = start;
-                        page < start + config.pagesPerTarget;
-                        page++
-                    ) {
-                        const rowCount = yield* crawlPage(target, page, config)
+                for (
+                    let page = start;
+                    page < start + config.pagesPerTarget;
+                    page++
+                ) {
+                    const rowCount = yield* crawlPage(target, page, config)
 
-                        if (rowCount === 0) {
-                            // Off the end of the ladder: wrap, so a continuous
-                            // crawler keeps the top of the table fresh instead
-                            // of stalling past the last page forever.
-                            yield* database
-                                .setCrawlProgress(target.id, target.label, 1)
-                                .pipe(
-                                    Effect.catch(() =>
-                                        Effect.logWarning(
-                                            `could not wrap progress for ` +
-                                                `${target.label}`,
-                                        ),
-                                    ),
-                                )
-
-                            yield* Effect.logInfo(
-                                `${target.label} exhausted at page ${page}; ` +
-                                    `wrapping to 1`,
-                            )
-
-                            return
-                        }
-
+                    if (rowCount === 0) {
+                        // Off the end of the ladder: wrap, so a continuous
+                        // crawler keeps the top of the table fresh instead
+                        // of stalling past the last page forever.
                         yield* database
-                            .setCrawlProgress(
-                                target.id,
-                                target.label,
-                                page + 1,
-                            )
+                            .setCrawlProgress(target.id, target.label, 1)
                             .pipe(
                                 Effect.catch(() =>
                                     Effect.logWarning(
-                                        `could not record progress for ` +
+                                        `could not wrap progress for ` +
                                             `${target.label}`,
                                     ),
                                 ),
                             )
+
+                        yield* Effect.logInfo(
+                            `${target.label} exhausted at page ${page}; ` +
+                                `wrapping to 1`,
+                        )
+
+                        return
                     }
-                })
+
+                    yield* database
+                        .setCrawlProgress(target.id, target.label, page + 1)
+                        .pipe(
+                            Effect.catch(() =>
+                                Effect.logWarning(
+                                    `could not record progress for ` +
+                                        `${target.label}`,
+                                ),
+                            ),
+                        )
+                }
+            })
 
         return {
             crawlPage,

@@ -110,7 +110,9 @@ export const legacyOps = (client: HttpClient.HttpClient) => {
                       name ? { name } : {},
                   ).pipe(Effect.orDie),
 
-        getPlayerStats: (playerId: number): Effect.Effect<PlayerStats | null> =>
+        getPlayerStats: (
+            playerId: number,
+        ): Effect.Effect<PlayerStats | null> =>
             __DEV
                 ? Effect.succeed(playerStatsMock as PlayerStats | null)
                 : getOptionalJson<PlayerStats>(`/player/${playerId}/stats`),

@@ -105,7 +105,11 @@ const rowFromResult = (result: LookupResult): Row => {
  */
 type Status = "idle" | "recents" | "pending" | "miss" | "results"
 
-export const SearchProvider = ({ children }: { readonly children: ReactNode }) => {
+export const SearchProvider = ({
+    children,
+}: {
+    readonly children: ReactNode
+}) => {
     const [isOpen, setIsOpen] = useState(false)
 
     const open = useCallback(() => setIsOpen(true), [])
@@ -178,10 +182,7 @@ const SearchOverlay = () => {
     }, [isOpen, setQuery])
 
     const lookup = useMemo(
-        () =>
-            active === ""
-                ? idleAtom
-                : lookupAtom(active, LOOKUP_LIMIT),
+        () => (active === "" ? idleAtom : lookupAtom(active, LOOKUP_LIMIT)),
         [active],
     )
 
@@ -305,8 +306,8 @@ const SearchOverlay = () => {
                             // what to try instead of just "no results".
                             <p className="px-2 py-3 text-sm text-textVar1">
                                 No players or clans match “{active}”. Try a
-                                shorter spelling, or the start of the name rather
-                                than the middle.
+                                shorter spelling, or the start of the name
+                                rather than the middle.
                             </p>
                         )}
 
@@ -349,7 +350,11 @@ const SearchOverlay = () => {
  * A button that looks like a field rather than a real input: the overlay owns the
  * input, so typing here would mean two sources of truth for the query.
  */
-export const SearchTrigger = ({ className }: { readonly className?: string }) => {
+export const SearchTrigger = ({
+    className,
+}: {
+    readonly className?: string
+}) => {
     const { open } = useSearch()
 
     return (

@@ -131,12 +131,43 @@ export type Clan = {
     clan_name: string
     clan_create_date: number
     clan_xp: string
+    /**
+     * The clan's own guild-point total.
+     *
+     * Read, never recomputed. It is **not** the sum of the roster's points: a
+     * clan keeps the points of everyone who has ever contributed, so the two
+     * disagree — verified live, where guild 9 reports 353,054 here against a
+     * 515,331 sum over its current members, and the leaderboard's top guild
+     * reports 14,425,367 against 13,744,590. Summing the members is a fallback
+     * for when this is absent, not a way to derive it.
+     *
+     * Optional for the same reason as the members' `guild_points`: v1's
+     * `/guild/stats` always sends it, while the legacy `/clan/:id` payload is
+     * cast to this type without a mapper and has no such field.
+     */
+    guild_points?: number
     clan: {
         brawlhalla_id: number
         name: string
         rank: ClanRank
         join_date: number
         xp: number
+        /**
+         * The member's guild points: their share of the clan's score, a
+         * separate figure from the `xp` that levels the clan.
+         *
+         * Optional because the two upstreams disagree, and only one of them can
+         * be normalised. v1's `/guild/members` always sends it — verified live,
+         * where every member of an active guild carries a non-zero value —
+         * while the legacy `/clan/:id` omits the key entirely and is cast
+         * straight to this type with no mapper, so there is nowhere to fill it
+         * in.
+         *
+         * `undefined` therefore means "this source does not report points",
+         * and that is not the same as a real `0`, which is common enough to be
+         * worth showing: guild 9's whole roster is genuinely at zero.
+         */
+        guild_points?: number
     }[]
 }
 

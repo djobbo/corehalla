@@ -11,26 +11,30 @@ import type { AliasHit, ClanHit, PlayerHit } from "./lookup"
  * sources, and whether a renamed player is reachable by the old name.
  */
 
-const player = (over: Partial<PlayerHit> & { playerId: string; name: string }): PlayerHit => ({
+const player = (
+    over: Partial<PlayerHit> & { playerId: string; name: string },
+): PlayerHit => ({
     rating: 2000,
     tier: "Diamond",
     region: "eu",
     ...over,
 })
 
-const clan = (over: Partial<ClanHit> & { id: string; name: string }): ClanHit => ({
+const clan = (
+    over: Partial<ClanHit> & { id: string; name: string },
+): ClanHit => ({
     xp: 1000,
     ...over,
 })
 
-const alias = (over: Partial<AliasHit> & { playerId: string; mainAlias: string }): AliasHit => ({
+const alias = (
+    over: Partial<AliasHit> & { playerId: string; mainAlias: string },
+): AliasHit => ({
     otherAliases: [],
     ...over,
 })
 
-const merge = (
-    over: Partial<Parameters<typeof mergeLookup>[0]> = {},
-) =>
+const merge = (over: Partial<Parameters<typeof mergeLookup>[0]> = {}) =>
     mergeLookup({
         query: "boom",
         players: [],
@@ -130,7 +134,12 @@ describe("mergeLookup sources", () => {
         const rows = merge({
             players: [
                 player({ playerId: "7", name: "boom", rating: 2100 }),
-                player({ playerId: "7", name: "boom", rating: 1500, tier: null }),
+                player({
+                    playerId: "7",
+                    name: "boom",
+                    rating: 1500,
+                    tier: null,
+                }),
             ],
         })
 
@@ -168,7 +177,13 @@ describe("mergeLookup sources", () => {
         const rows = merge({
             query: "boom",
             players: [player({ playerId: "1", name: "zzz" })],
-            aliases: [alias({ playerId: "2", mainAlias: "someone", otherAliases: ["boom"] })],
+            aliases: [
+                alias({
+                    playerId: "2",
+                    mainAlias: "someone",
+                    otherAliases: ["boom"],
+                }),
+            ],
         })
 
         expect(rows[0]?.id).toBe("2")

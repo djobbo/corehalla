@@ -18,7 +18,9 @@ import { MIN_LOOKUP_LENGTH } from "@crh/api-contract/schemas"
 export const searchQueryAtom = Atom.make("")
 
 /** The query, once typing has paused. This is what leaves the browser. */
-export const settledQueryAtom = searchQueryAtom.pipe(Atom.debounce("180 millis"))
+export const settledQueryAtom = searchQueryAtom.pipe(
+    Atom.debounce("180 millis"),
+)
 
 /**
  * The settled query, but only once it is worth sending.

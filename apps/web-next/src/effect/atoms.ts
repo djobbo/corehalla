@@ -165,7 +165,9 @@ export type DehydratedState = ReturnType<typeof dehydrateRegistry>
 export const preloadAtoms = (
     context: RouterContext,
     atoms: ReadonlyArray<Atom.Atom<any>>,
-): { dehydrated: DehydratedState } | Promise<{ dehydrated: DehydratedState }> => {
+):
+    | { dehydrated: DehydratedState }
+    | Promise<{ dehydrated: DehydratedState }> => {
     const pending = Promise.all(
         atoms.map((atom) => preloadAtom(context.registry, atom)),
     )

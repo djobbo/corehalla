@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { ClanBody, ClanIdentity } from "@/components/clan/ClanBody"
+import { ClanBody } from "@/components/clan/ClanBody"
+import { ClanHeader } from "@/components/clan/ClanHeader"
 import { clanStatsAtom, preloadAtoms } from "@/effect/atoms"
 
 /**
@@ -19,7 +20,7 @@ function Page() {
 
     return (
         <main className="ch-page">
-            <ClanIdentity clanId={Number(clanId)} />
+            <ClanHeader clanId={Number(clanId)} />
             <div className="mt-4">
                 <ClanBody clanId={Number(clanId)} />
             </div>

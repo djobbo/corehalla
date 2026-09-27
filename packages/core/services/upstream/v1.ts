@@ -266,10 +266,7 @@ export const v1Ops = (client: HttpClient.HttpClient) => {
     const getOptionalJson = <A>(
         path: string,
         params: Record<string, string | number>,
-    ) =>
-        getJson<A>(path, params).pipe(
-            Effect.catch(() => Effect.succeed(null)),
-        )
+    ) => getJson<A>(path, params).pipe(Effect.catch(() => Effect.succeed(null)))
 
     return {
         getLeaderboard: (
@@ -437,6 +434,12 @@ export const toClan = (
     clan_name: guild.name,
     clan_create_date: guild.create_date,
     clan_xp: String(guild.xp),
+    /*
+     * Passed through, never summed from the members below: the clan's total
+     * includes everyone who has ever contributed, so the roster's sum is a
+     * different and smaller number. See the field's own note on `Clan`.
+     */
+    guild_points: guild.guild_points,
     clan: members.map((member) => ({
         brawlhalla_id: member.brawlhalla_id,
         // A member v1 could not name becomes `""`, never `undefined`. The
@@ -449,6 +452,12 @@ export const toClan = (
         rank: member.rank as ClanRank,
         join_date: member.join_date,
         xp: member.xp,
+        /*
+         * v1 always sends this, so it is normalised to a number here even
+         * though `Clan` allows it to be absent — the absence is the legacy
+         * path's, which has no mapper to do this in. See the field's own note.
+         */
+        guild_points: member.guild_points ?? 0,
     })),
 })
 
@@ -561,9 +570,7 @@ export const toPlayer3v3Ranked = (
     tier: (stats.tier ?? null) as RankedTier | null,
     wins: stats.wins,
     games: stats.games,
-    region: fromV1Region(
-        stats.region ?? "ALL",
-    ) as Player3v3Ranked["region"],
+    region: fromV1Region(stats.region ?? "ALL") as Player3v3Ranked["region"],
 })
 
 /**

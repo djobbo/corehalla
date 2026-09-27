@@ -19,8 +19,16 @@ export const PlayerTabs = ({
     /** The legacy client hides the tab entirely when there is no team record. */
     readonly show2v2: boolean
 }) => {
-    const tabs: readonly { readonly tab: string; readonly label: string; readonly href: string }[] = [
-        { tab: "overview", label: "Overview", href: `/stats/player/${playerId}` },
+    const tabs: readonly {
+        readonly tab: string
+        readonly label: string
+        readonly href: string
+    }[] = [
+        {
+            tab: "overview",
+            label: "Overview",
+            href: `/stats/player/${playerId}`,
+        },
         ...(show2v2
             ? [
                   {
@@ -30,8 +38,16 @@ export const PlayerTabs = ({
                   },
               ]
             : []),
-        { tab: "legends", label: "Legends", href: `/stats/player/${playerId}/legends` },
-        { tab: "weapons", label: "Weapons", href: `/stats/player/${playerId}/weapons` },
+        {
+            tab: "legends",
+            label: "Legends",
+            href: `/stats/player/${playerId}/legends`,
+        },
+        {
+            tab: "weapons",
+            label: "Weapons",
+            href: `/stats/player/${playerId}/weapons`,
+        },
     ]
 
     return (

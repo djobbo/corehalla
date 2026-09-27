@@ -12,7 +12,7 @@ export const Route = createFileRoute("/search")({
     validateSearch: z.object({
         q: z.string().catch(""),
     }),
-    beforeLoad: ({ search }) => {
+    beforeLoad({ search }) {
         throw redirect({
             href: search.q
                 ? `/rankings/1v1?q=${encodeURIComponent(search.q)}`

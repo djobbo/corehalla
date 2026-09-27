@@ -83,7 +83,9 @@ export const WeaponsTab = ({ playerId }: { readonly playerId: number }) => {
     if (weapons.length === 0) {
         return (
             <Card variant="muted" className="grid place-items-center py-10">
-                <p className="text-sm text-textVar1">No weapon usage recorded.</p>
+                <p className="text-sm text-textVar1">
+                    No weapon usage recorded.
+                </p>
             </Card>
         )
     }

@@ -71,7 +71,6 @@ export const withRecent = (
     [
         entry,
         ...current.filter(
-            (recent) =>
-                !(recent.type === entry.type && recent.id === entry.id),
+            (recent) => !(recent.type === entry.type && recent.id === entry.id),
         ),
     ].slice(0, MAX_RECENTS)

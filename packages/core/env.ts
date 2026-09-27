@@ -104,7 +104,9 @@ export const d1Database = async (): Promise<D1Database> => {
  * works from its in-isolate tier alone, so local runs without the binding still
  * behave.
  */
-export const cacheNamespace = async (): Promise<KVNamespaceLike | undefined> => {
+export const cacheNamespace = async (): Promise<
+    KVNamespaceLike | undefined
+> => {
     const env = await workerEnv()
 
     return env.CACHE
@@ -126,7 +128,9 @@ export type RateLimitLike = {
  * A missing binding is not an error: the limiter fails open, so local runs and
  * any deploy without it simply have no damper.
  */
-export const rateLimitBinding = async (): Promise<RateLimitLike | undefined> => {
+export const rateLimitBinding = async (): Promise<
+    RateLimitLike | undefined
+> => {
     const env = await workerEnv()
 
     return env.RATE_LIMITER

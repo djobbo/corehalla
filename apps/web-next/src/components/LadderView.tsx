@@ -60,9 +60,7 @@ export const LadderView = ({
              */}
             <header className="ch-hero mb-3">
                 <p className="ch-kicker">Live ladder</p>
-                <h1 className="ch-display mt-1 text-2xl">
-                    {bracket} rankings
-                </h1>
+                <h1 className="ch-display mt-1 text-2xl">{bracket} rankings</h1>
                 <p className="mt-1 text-xs text-textVar1">
                     {regionLabel(region)} · page {page}
                 </p>

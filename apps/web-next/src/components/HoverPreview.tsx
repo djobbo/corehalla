@@ -2,7 +2,11 @@ import { useAtomSet, useAtomValue } from "@effect/atom-react"
 import { Link } from "@tanstack/react-router"
 import { useEffect, useMemo } from "react"
 import type { CSSProperties, ReactNode } from "react"
-import { clanStatsAtom, playerRankedAtom, playerStatsAtom } from "@/effect/atoms"
+import {
+    clanStatsAtom,
+    playerRankedAtom,
+    playerStatsAtom,
+} from "@/effect/atoms"
 import { hoveredAtom, previewAtom } from "@/effect/hover"
 import type { PreviewTarget } from "@/effect/hover"
 import { clanHref, playerHref } from "@/lib/rankings"
@@ -204,9 +208,8 @@ const PlayerPreview = ({ target, onEnter, onLeave }: CardProps) => {
             ? null
             : (getFullLegends(stats.legends, ranked?.legends)
                   .filter((legend) => (legend.stats?.games ?? 0) > 0)
-                  .sort(
-                      (a, b) => (b.stats?.xp ?? 0) - (a.stats?.xp ?? 0),
-                  )[0] ?? null)
+                  .sort((a, b) => (b.stats?.xp ?? 0) - (a.stats?.xp ?? 0))[0] ??
+              null)
 
     return (
         <CardShell target={target} onEnter={onEnter} onLeave={onLeave}>
@@ -247,7 +250,10 @@ const PlayerPreview = ({ target, onEnter, onLeave }: CardProps) => {
                 ) : null}
 
                 {stats?.clan ? (
-                    <Row label="Clan" value={cleanString(stats.clan.clan_name)} />
+                    <Row
+                        label="Clan"
+                        value={cleanString(stats.clan.clan_name)}
+                    />
                 ) : null}
             </div>
         </CardShell>

@@ -768,6 +768,60 @@
     }
 
     /*
+     * The rank cap: the flag's slot, on a clan member's plate.
+     *
+     * Same cut, size and position as `.ch-nameplate-flag`, because a member
+     * card is meant to read as the same template as a team card — but it holds
+     * a glyph rather than art. A member has no region, and the left end of
+     * their plate is where their standing in the clan belongs.
+     *
+     * The deeper accent is what separates the cap from the plate. The plate is
+     * already `--color-accent`, so without a second field the glyph would sit
+     * on the plate's own blue with no shape around it.
+     */
+    .ch-nameplate-rank {
+        display: grid;
+        place-items: center;
+        flex: none;
+        width: calc(var(--ch-flag-size) + var(--ch-plate-slant));
+        height: var(--ch-flag-size);
+        background: var(--color-accentDeep);
+        color: var(--color-text);
+        clip-path: polygon(
+            var(--ch-plate-slant) 0,
+            100% 0,
+            calc(100% - var(--ch-plate-slant)) 100%,
+            0 100%
+        );
+    }
+
+    /*
+     * `fill` is inherited in SVG, so stating it once here colours every glyph's
+     * shapes without each of them repeating it.
+     */
+    .ch-nameplate-rank svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        fill: currentColor;
+    }
+
+    /*
+     * A plate with no ranked banner above it.
+     *
+     * The default `max-width` reserves the top-right corner for the banner art.
+     * A clan member card has no banner, so that reserve would only wrap long
+     * names early — 5.65rem of the card's width spent on a corner nothing is
+     * drawn in.
+     *
+     * `+1.65rem` is what the plate's own `-1.65rem` left margin already
+     * overhangs the card's padding box by, measured so that the plate stops
+     * 1rem short of the card's right edge.
+     */
+    .ch-nameplate-wide {
+        max-width: calc(100% + 1.65rem);
+    }
+
+    /*
      * The row's height is pinned to the flag's rather than left to its own line
      * box. The line height it would otherwise inherit from the page is 1.5, so
      * a 0.875rem font gave a 21px line: 21 + 16px of padding is 37px against a

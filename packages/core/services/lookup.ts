@@ -118,8 +118,10 @@ const compare =
         }
 
         if (a.type === b.type) {
-            const prominenceA = a.type === "player" ? (a.rating ?? 0) : (a.xp ?? 0)
-            const prominenceB = b.type === "player" ? (b.rating ?? 0) : (b.xp ?? 0)
+            const prominenceA =
+                a.type === "player" ? (a.rating ?? 0) : (a.xp ?? 0)
+            const prominenceB =
+                b.type === "player" ? (b.rating ?? 0) : (b.xp ?? 0)
 
             if (prominenceA !== prominenceB) return prominenceB - prominenceA
         }
@@ -148,10 +150,7 @@ export const mergeLookup = (input: {
     readonly clans: readonly ClanHit[]
     readonly limit: number
 }): readonly LookupResult[] => {
-    const playersById = new Map<
-        string,
-        { hit: PlayerHit; aliases: string[] }
-    >()
+    const playersById = new Map<string, { hit: PlayerHit; aliases: string[] }>()
 
     for (const hit of input.players) {
         if (playersById.has(hit.playerId)) continue
@@ -180,40 +179,36 @@ export const mergeLookup = (input: {
     }
 
     const results: LookupResult[] = [
-        ...[...playersById.values()].map(
-            ({ hit, aliases }): LookupResult => ({
-                type: "player",
-                id: hit.playerId,
-                name: hit.name,
-                // Dedupe: a player's current name can also appear in their
-                // alias list, and repeating it reads as a different person.
-                aliases: [
-                    ...new Set(
-                        aliases.filter(
-                            (alias) => searchKey(alias) !== searchKey(hit.name),
-                        ),
+        ...[...playersById.values()].map(({ hit, aliases }): LookupResult => ({
+            type: "player",
+            id: hit.playerId,
+            name: hit.name,
+            // Dedupe: a player's current name can also appear in their
+            // alias list, and repeating it reads as a different person.
+            aliases: [
+                ...new Set(
+                    aliases.filter(
+                        (alias) => searchKey(alias) !== searchKey(hit.name),
                     ),
-                ],
-                rating: hit.rating,
-                xp: null,
-                tier: hit.tier,
-                region: hit.region,
-                source: hit.rating === null ? "archive" : "rankings",
-            }),
-        ),
-        ...input.clans.map(
-            (clan): LookupResult => ({
-                type: "clan",
-                id: clan.id,
-                name: clan.name,
-                aliases: [],
-                rating: null,
-                xp: clan.xp,
-                tier: null,
-                region: null,
-                source: "archive",
-            }),
-        ),
+                ),
+            ],
+            rating: hit.rating,
+            xp: null,
+            tier: hit.tier,
+            region: hit.region,
+            source: hit.rating === null ? "archive" : "rankings",
+        })),
+        ...input.clans.map((clan): LookupResult => ({
+            type: "clan",
+            id: clan.id,
+            name: clan.name,
+            aliases: [],
+            rating: null,
+            xp: clan.xp,
+            tier: null,
+            region: null,
+            source: "archive",
+        })),
     ]
 
     return results.sort(compare(input.query)).slice(0, input.limit)
@@ -251,17 +246,30 @@ export const layer = Layer.effect(
                 Effect.gen(function* () {
                     if (searchKey(query).length < MIN_LOOKUP_LENGTH) return []
 
-                    const [oneVsOne, twoVsTwo, aliases, clans] = yield* Effect.all(
-                        [
-                            soft(
-                                upstream.getRankings("1v1", "all", 1, query),
-                            ),
-                            soft(upstream.getRankings("2v2", "all", 1, query)),
-                            soft(database.searchAliases(query, 1)),
-                            soft(database.getClansRankings(query, 1)),
-                        ],
-                        { concurrency: 4 },
-                    )
+                    const [oneVsOne, twoVsTwo, aliases, clans] =
+                        yield* Effect.all(
+                            [
+                                soft(
+                                    upstream.getRankings(
+                                        "1v1",
+                                        "all",
+                                        1,
+                                        query,
+                                    ),
+                                ),
+                                soft(
+                                    upstream.getRankings(
+                                        "2v2",
+                                        "all",
+                                        1,
+                                        query,
+                                    ),
+                                ),
+                                soft(database.searchAliases(query, 1)),
+                                soft(database.getClansRankings(query, 1)),
+                            ],
+                            { concurrency: 4 },
+                        )
 
                     // `getRankings` returns the union of both row shapes — the
                     // bracket argument does not narrow it — so the two results
@@ -294,7 +302,11 @@ export const layer = Layer.effect(
                             ]
 
                             return members
-                                .filter((member) => member.playerId !== "0" && member.name.length > 0)
+                                .filter(
+                                    (member) =>
+                                        member.playerId !== "0" &&
+                                        member.name.length > 0,
+                                )
                                 .map((member) => ({
                                     playerId: member.playerId,
                                     name: member.name,

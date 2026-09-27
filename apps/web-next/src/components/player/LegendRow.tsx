@@ -77,7 +77,10 @@ export const LegendRow = ({
                     />
                     <StatGrid
                         stats={[
-                            { title: "KOs", value: (stats?.kos ?? 0).toLocaleString() },
+                            {
+                                title: "KOs",
+                                value: (stats?.kos ?? 0).toLocaleString(),
+                            },
                             {
                                 title: "Falls",
                                 value: (stats?.falls ?? 0).toLocaleString(),
@@ -108,7 +111,10 @@ export const LegendRow = ({
                             },
                             {
                                 title: "KOs per game",
-                                value: perGame(stats?.kos ?? 0, stats?.games ?? 0).toFixed(2),
+                                value: perGame(
+                                    stats?.kos ?? 0,
+                                    stats?.games ?? 0,
+                                ).toFixed(2),
                             },
                         ]}
                     />

@@ -1,4 +1,12 @@
-import { and, asc, desc, eq, getTableColumns, inArray, sql } from "@crh/db/query"
+import {
+    and,
+    asc,
+    desc,
+    eq,
+    getTableColumns,
+    inArray,
+    sql,
+} from "@crh/db/query"
 import { Database as SqlDatabase, layer as sqlLayer } from "@crh/db/client"
 import { Context, Effect, Layer } from "effect"
 import {
@@ -8,7 +16,14 @@ import {
     SEARCH_MAX_PAGES,
     SEARCH_PLAYERS_ALIASES_PER_PAGE,
 } from "../constants"
-import { bhClan, bhPlayerAlias, bhPlayerData, bhPlayerLegend, bhPlayerWeapon, crawlProgress } from "@crh/db/schema"
+import {
+    bhClan,
+    bhPlayerAlias,
+    bhPlayerData,
+    bhPlayerLegend,
+    bhPlayerWeapon,
+    crawlProgress,
+} from "@crh/db/schema"
 import { DatabaseError } from "../errors"
 import {
     excludedSet,
@@ -27,7 +42,10 @@ import type {
 } from "@crh/db/schema"
 import type { PlayerStats } from "@crh/bhapi/types"
 import type { RankedSnapshot } from "./player-writes"
-import type { AliasSearchResult, GlobalPlayerRanking } from "@crh/api-contract/schemas"
+import type {
+    AliasSearchResult,
+    GlobalPlayerRanking,
+} from "@crh/api-contract/schemas"
 
 /**
  * Server-side database access.
@@ -269,9 +287,7 @@ export const layer = Layer.effect(
                         .where(eq(bhClan.id, clanId))
                         .limit(1),
                 ).pipe(
-                    Effect.map((rows) =>
-                        rows[0] ? String(rows[0].xp) : null,
-                    ),
+                    Effect.map((rows) => (rows[0] ? String(rows[0].xp) : null)),
                 ),
 
             upsertPlayerStats: (playerStats, ranked) =>
@@ -303,10 +319,13 @@ export const layer = Layer.effect(
                                     // row: one `SET` covers the whole batch, so
                                     // literals would give every legend the first
                                     // legend's statistics.
-                                    set: excludedSet(legendRows[0] as unknown as Record<string, unknown>, [
-                                        "player_id",
-                                        "legend_id",
-                                    ]) as Partial<NewBHPlayerLegend>,
+                                    set: excludedSet(
+                                        legendRows[0] as unknown as Record<
+                                            string,
+                                            unknown
+                                        >,
+                                        ["player_id", "legend_id"],
+                                    ) as Partial<NewBHPlayerLegend>,
                                 })
                         }
 
@@ -321,10 +340,13 @@ export const layer = Layer.effect(
                                         bhPlayerWeapon.player_id,
                                         bhPlayerWeapon.weapon_name,
                                     ],
-                                    set: excludedSet(weaponRows[0] as unknown as Record<string, unknown>, [
-                                        "player_id",
-                                        "weapon_name",
-                                    ]) as Partial<NewBHPlayerWeapon>,
+                                    set: excludedSet(
+                                        weaponRows[0] as unknown as Record<
+                                            string,
+                                            unknown
+                                        >,
+                                        ["player_id", "weapon_name"],
+                                    ) as Partial<NewBHPlayerWeapon>,
                                 })
                         }
                     }),

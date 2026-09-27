@@ -29,8 +29,7 @@ export const regions: readonly { value: Region; label: string }[] = [
     { value: "me", label: "ME" },
 ]
 
-export const bracketLabel = (bracket: Bracket): string =>
-    bracket
+export const bracketLabel = (bracket: Bracket): string => bracket
 
 export const regionLabel = (region: Region): string =>
     regions.find((entry) => entry.value === region)?.label ?? "Global"

@@ -133,8 +133,7 @@ export const usePlayerDerived = (playerId: number): PlayerDerived | null => {
         const topLegends = legends
             .filter((legend) => (legend.stats?.games ?? 0) > 0)
             .sort(
-                (a, b) =>
-                    (b.stats?.matchtime ?? 0) - (a.stats?.matchtime ?? 0),
+                (a, b) => (b.stats?.matchtime ?? 0) - (a.stats?.matchtime ?? 0),
             )
             .slice(0, TOP_ART_COUNT)
 

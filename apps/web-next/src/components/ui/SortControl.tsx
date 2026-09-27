@@ -9,7 +9,7 @@ import type { SortChoice, SortDirection } from "@/lib/useSortBy"
  * flipping the direction is the one sort action taken repeatedly and it deserves
  * a single always-visible target.
  */
-export const SortControl = <K extends string,>({
+export const SortControl = <K extends string>({
     label,
     value,
     choices,

@@ -120,11 +120,11 @@ const makeStatement = (
     }),
     raw: async () =>
         (await query(config, sql, params)).map((row) => Object.values(row)),
-    run: async () => {
+    async run() {
         await query(config, sql, params)
         return { results: [], success: true, meta: {} }
     },
-    first: async (column?: string) => {
+    async first(column?: string) {
         const row = (await query(config, sql, params))[0]
 
         return column ? row?.[column] : row
@@ -142,11 +142,11 @@ const makeDatabase = (config: D1HttpConfig): D1Client.D1ClientConfig["db"] =>
         prepare: (sql: string) => makeStatement(config, sql),
         batch: async (statements: RestStatement[]) =>
             Promise.all(statements.map((statement) => statement.all())),
-        exec: async (sql: string) => {
+        async exec(sql: string) {
             await query(config, sql, [])
             return { count: 0, duration: 0 }
         },
-        dump: async () => {
+        async dump() {
             throw new Error("D1 dump is not supported over the HTTP API")
         },
     }) as unknown as D1Client.D1ClientConfig["db"]

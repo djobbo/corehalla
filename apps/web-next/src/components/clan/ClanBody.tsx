@@ -1,38 +1,111 @@
-import { EntityLink } from "@/components/EntityLink"
-import { playerHref } from "@/lib/rankings"
+import { SortControl } from "@/components/ui/SortControl"
+import { MemberCard } from "./MemberCard"
 import { clanStatsAtom, useQuery } from "@/effect/atoms"
-import { cleanString } from "@crh/common/helpers/cleanString"
+import { useSortBy } from "@/lib/useSortBy"
 import { formatUnixTime } from "@crh/common/helpers/date"
+import type { Clan } from "@crh/bhapi/types"
+import type { ClanRank } from "@crh/bhapi/constants"
+import type { SortOption } from "@/lib/useSortBy"
 
 /**
- * A clan's header and roster.
+ * A clan's roster.
  *
  * The roster is the point of a clan page: a clan exists to be a set of players,
  * so every member links into their profile. That makes a clan something you
  * browse *through* rather than just a summary.
+ *
+ * The header above it lives in `./ClanHeader`, alongside this rather than in
+ * it. The two answer to different atoms and different questions, and the player
+ * page already splits the same way — `PlayerHeader` next to the tab bodies.
  */
 
-export const ClanIdentity = ({ clanId }: { readonly clanId: number }) => {
-    const clan = useQuery(clanStatsAtom(clanId))
+// --- roster -----------------------------------------------------------------
 
-    if (!clan) {
-        return (
-            <p className="text-sm text-textVar1">No clan with id {clanId}.</p>
-        )
-    }
+type Member = Clan["clan"][number]
+
+type MemberSort = "rank" | "xp" | "joined"
+
+/**
+ * A clan's standing order, lowest number first.
+ *
+ * The API sends the rank as a word, and the words have no alphabetical order
+ * that means anything: `Leader < Member < Officer < Recruit` is exactly
+ * backwards from how a clan is read.
+ */
+const rankWeight: Record<ClanRank, number> = {
+    Leader: 0,
+    Officer: 1,
+    Member: 2,
+    Recruit: 3,
+}
+
+const sortOptions: Record<MemberSort, SortOption<Member>> = {
+    /*
+     * Rank, then longest-serving first within a rank. The tiebreak is the
+     * point: most of a clan shares the `Member` rank, so a comparator that
+     * stopped at the rank would leave the majority of the roster in whatever
+     * order the upstream happened to return — which today is join order, but
+     * nothing promises that, and "the officers, then everyone else in the order
+     * we got them" is not a sort.
+     */
+    rank: {
+        label: "Rank",
+        compare: (a, b) =>
+            rankWeight[a.rank] - rankWeight[b.rank] ||
+            a.join_date - b.join_date,
+        display: (member) => member.rank,
+    },
+    xp: {
+        label: "XP",
+        compare: (a, b) => a.xp - b.xp,
+        display: (member) => `${member.xp.toLocaleString()} XP`,
+    },
+    joined: {
+        label: "Join date",
+        compare: (a, b) => a.join_date - b.join_date,
+        display: (member) => formatUnixTime(member.join_date),
+    },
+}
+
+/**
+ * The roster itself.
+ *
+ * Split out from `ClanBody` rather than inlined, because `useSortBy` is a hook
+ * and has to run on every render while `ClanBody` needs to bail out when the
+ * clan does not exist. Handing the resolved clan to a component that only ever
+ * sees a real one is what lets both be true.
+ */
+const Roster = ({ clan }: { readonly clan: Clan }) => {
+    const clanXp = Number(clan.clan_xp)
+
+    /*
+     * Rank ascending by default: a clan's own order is the one its members
+     * would expect to find it in, and XP descending is one toggle away for
+     * anyone who came to see who earns the most.
+     */
+    const sort = useSortBy(clan.clan, sortOptions, "rank", "asc")
 
     return (
-        <div className="ch-hero">
-            <p className="ch-kicker">Clan</p>
-            <h2 className="ch-display mt-1 text-xl sm:text-2xl">
-                {cleanString(clan.clan_name)}
-            </h2>
-            <p className="mt-2 text-xs text-textVar1">
-                {Number(clan.clan_xp).toLocaleString()} XP ·{" "}
-                {clan.clan.length} member
-                {clan.clan.length === 1 ? "" : "s"} · created{" "}
-                {formatUnixTime(clan.clan_create_date)}
-            </p>
+        <div className="flex flex-col gap-4">
+            <SortControl
+                label="Sort members by"
+                value={sort.key}
+                choices={sort.choices}
+                onChange={sort.setKey}
+                direction={sort.direction}
+                onToggleDirection={sort.toggleDirection}
+                className="sm:max-w-sm"
+            />
+
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                {sort.sorted.map((member) => (
+                    <MemberCard
+                        key={member.brawlhalla_id}
+                        member={member}
+                        clanXp={clanXp}
+                    />
+                ))}
+            </div>
         </div>
     )
 }
@@ -42,49 +115,5 @@ export const ClanBody = ({ clanId }: { readonly clanId: number }) => {
 
     if (!clan) return null
 
-    const members = [...clan.clan].sort((a, b) => b.xp - a.xp)
-
-    return (
-        <div className="ch-panel overflow-hidden">
-            <div className="ch-table-head">
-                <span className="flex-1">Member</span>
-                <span className="w-24">Rank</span>
-                <span className="w-24 text-right">XP</span>
-            </div>
-            {members.map((member) => (
-                <div key={member.brawlhalla_id} className="ch-row text-sm">
-                    <EntityLink
-                        type="player"
-                        id={member.brawlhalla_id}
-                        href={playerHref(member.brawlhalla_id)}
-                        className="ch-link flex-1 font-semibold"
-                    >
-                        {/*
-                         * v1 intermittently omits a member's name, and the
-                         * mapper normalises that to `""` so the type stays
-                         * honest. Rendering it would make the row an empty —
-                         * but still clickable — link, so the id stands in. The
-                         * profile it points at resolves, which is why the row is
-                         * worth keeping at all.
-                         *
-                         * `?? ""` because the key can be *absent* on the wire,
-                         * not just empty: a value cached before the mapper
-                         * started normalising — which is served until it goes
-                         * stale — omits it entirely, and `cleanString(undefined)`
-                         * returns the literal text "undefined". Observed, not
-                         * imagined: that is what this row rendered.
-                         */}
-                        {cleanString(member.name ?? "") ||
-                            `#${member.brawlhalla_id}`}
-                    </EntityLink>
-                    <span className="w-24 text-xs text-textVar1">
-                        {member.rank}
-                    </span>
-                    <span className="w-24 text-right font-semibold">
-                        {member.xp.toLocaleString()}
-                    </span>
-                </div>
-            ))}
-        </div>
-    )
+    return <Roster clan={clan} />
 }

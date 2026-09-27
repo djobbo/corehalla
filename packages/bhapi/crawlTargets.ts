@@ -1,11 +1,6 @@
 import { rankedRegions } from "./constants"
 import type { RankedRegion } from "./constants"
-import type {
-    Ladder,
-    Ranking1v1,
-    Ranking2v2,
-    Ranking3v3,
-} from "./types"
+import type { Ladder, Ranking1v1, Ranking2v2, Ranking3v3 } from "./types"
 
 /**
  * Every upstream leaderboard the crawler has to walk.
@@ -50,24 +45,19 @@ export type CrawlTarget = {
 }
 
 /** The bracket/region pair a target id encodes. */
-export const crawlTargetId = (
-    bracket: Ladder,
-    region: RankedRegion,
-): string => `${bracket}:${region}`
+export const crawlTargetId = (bracket: Ladder, region: RankedRegion): string =>
+    `${bracket}:${region}`
 
-export const crawlTargets: readonly CrawlTarget[] = ([
-    "1v1",
-    "2v2",
-    "3v3",
-] as const)
-    .flatMap((bracket) =>
-        rankedRegions.map((region) => ({
-            id: crawlTargetId(bracket, region),
-            bracket,
-            region,
-            label: `${bracket} ${region}`,
-        })),
-    )
+export const crawlTargets: readonly CrawlTarget[] = (
+    ["1v1", "2v2", "3v3"] as const
+).flatMap((bracket) =>
+    rankedRegions.map((region) => ({
+        id: crawlTargetId(bracket, region),
+        bracket,
+        region,
+        label: `${bracket} ${region}`,
+    })),
+)
 
 /**
  * The player ids on one leaderboard row.

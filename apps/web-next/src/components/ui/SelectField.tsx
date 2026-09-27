@@ -8,7 +8,7 @@ import { cn } from "@/lib/cn"
  * would have to re-earn. Only the appearance is overridden — `appearance: none`
  * removes the platform arrow, so the chevron is drawn as a sibling.
  */
-export const SelectField = <K extends string,>({
+export const SelectField = <K extends string>({
     label,
     value,
     options,
@@ -23,7 +23,9 @@ export const SelectField = <K extends string,>({
 }) => {
     return (
         <div className={cn("flex min-w-0 flex-col gap-1", className)}>
-            {label !== undefined && <span className="ch-stat-label">{label}</span>}
+            {label !== undefined && (
+                <span className="ch-stat-label">{label}</span>
+            )}
             <div className="relative min-w-0">
                 <select
                     className="ch-select"

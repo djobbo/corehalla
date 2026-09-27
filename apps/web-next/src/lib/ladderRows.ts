@@ -16,9 +16,7 @@ export type LadderRow = {
     readonly members: readonly { readonly id: number; readonly name: string }[]
 }
 
-export const to1v1Rows = (
-    rows: readonly Ranking1v1[],
-): readonly LadderRow[] =>
+export const to1v1Rows = (rows: readonly Ranking1v1[]): readonly LadderRow[] =>
     rows.map((row) => ({
         key: String(row.brawlhalla_id),
         rank: row.rank,
@@ -34,9 +32,7 @@ export const to1v1Rows = (
  * that string, so the round trip is exact and the ids still come from the
  * payload rather than being parsed out of a name.
  */
-export const to2v2Rows = (
-    rows: readonly Ranking2v2[],
-): readonly LadderRow[] =>
+export const to2v2Rows = (rows: readonly Ranking2v2[]): readonly LadderRow[] =>
     rows.map((row) => {
         const [first = "", second = ""] = row.teamname.split("+")
 

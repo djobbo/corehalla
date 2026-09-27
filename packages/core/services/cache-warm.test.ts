@@ -1,7 +1,7 @@
 import { describe, expect, it } from "@effect/vitest"
 import { Effect } from "effect"
 import { make } from "./cache"
-import { cacheKeys, cacheTtl } from "./cache-policy"
+import { cacheKeys, cacheTtl, emptyTtl } from "./cache-policy"
 import type { KVNamespaceLike } from "../env"
 import type { Ranking1v1 } from "@crh/bhapi/types"
 
@@ -27,10 +27,10 @@ const fakeKv = () => {
 
     const kv: KVNamespaceLike = {
         get: async (key) => store.get(key) ?? null,
-        put: async (key, value) => {
+        async put(key, value) {
             store.set(key, value)
         },
-        delete: async (key) => {
+        async delete(key) {
             store.delete(key)
         },
     }
@@ -89,28 +89,26 @@ describe("crawler -> gateway cache warming", () => {
             }),
     )
 
-    it.effect(
-        "the stored envelope carries the value and stays fresh",
-        () =>
-            Effect.gen(function* () {
-                const { store, kv } = fakeKv()
-                const crawlerCache = make(async () => kv)
+    it.effect("the stored envelope carries the value and stays fresh", () =>
+        Effect.gen(function* () {
+            const { store, kv } = fakeKv()
+            const crawlerCache = make(async () => kv)
 
-                const rows = [row(9)]
-                const key = cacheKeys.leaderboard("2v2", "brz", 1)
+            const rows = [row(9)]
+            const key = cacheKeys.leaderboard("2v2", "brz", 1)
 
-                yield* crawlerCache.set(key, rows, cacheTtl.leaderboard)
+            yield* crawlerCache.set(key, rows, cacheTtl.leaderboard)
 
-                const envelope = JSON.parse(store.get(key) as string) as {
-                    value: unknown
-                    freshUntil: number
-                }
+            const envelope = JSON.parse(store.get(key) as string) as {
+                value: unknown
+                freshUntil: number
+            }
 
-                expect(envelope.value).toEqual(rows)
-                // Fresh, not merely present: a stale write would be re-fetched
-                // by the gateway and the crawler's work would buy nothing.
-                expect(envelope.freshUntil).toBeGreaterThan(Date.now())
-            }),
+            expect(envelope.value).toEqual(rows)
+            // Fresh, not merely present: a stale write would be re-fetched
+            // by the gateway and the crawler's work would buy nothing.
+            expect(envelope.freshUntil).toBeGreaterThan(Date.now())
+        }),
     )
 
     it.effect(
@@ -174,4 +172,70 @@ describe("crawler -> gateway cache warming", () => {
 
         expect(new Set(keys).size).toBe(keys.length)
     })
+})
+
+/**
+ * What a `null` is allowed to mean once it is stored.
+ *
+ * `null` is this codebase's "the upstream could not answer" sentinel — v1
+ * answering 404 and v1 being unreachable collapse into it deliberately — so the
+ * cache must not keep it with the confidence of a value. These cases pin the
+ * two directions of that: an absence is short-lived, and a real value is not.
+ */
+describe("caching an absent answer", () => {
+    const envelopeOf = (store: Map<string, string>, key: string) =>
+        JSON.parse(store.get(key) as string) as {
+            value: unknown
+            freshUntil: number
+        }
+
+    it.effect(
+        "a null is stored on the empty window rather than the resource's own",
+        () =>
+            Effect.gen(function* () {
+                const { store, kv } = fakeKv()
+                const cache = make(async () => kv)
+                const key = cacheKeys.player(999)
+
+                yield* cache.getOrSet(
+                    key,
+                    cacheTtl.profile,
+                    Effect.succeed(null),
+                )
+
+                const envelope = envelopeOf(store, key)
+
+                expect(envelope.value).toBeNull()
+                /*
+                 * Stored on `cacheTtl.profile` — as it was — the absence would
+                 * have stayed fresh for five minutes and been retained for an
+                 * hour, which is how a player the app had merely failed to read
+                 * ended up reported as not existing long after upstream would
+                 * have answered.
+                 */
+                expect(envelope.freshUntil - Date.now()).toBeLessThanOrEqual(
+                    emptyTtl.freshSeconds * 1000,
+                )
+            }),
+    )
+
+    it.effect("a real value still gets the window its resource asked for", () =>
+        Effect.gen(function* () {
+            const { store, kv } = fakeKv()
+            const cache = make(async () => kv)
+            const key = cacheKeys.player(1)
+
+            yield* cache.getOrSet(
+                key,
+                cacheTtl.profile,
+                Effect.succeed({ name: "Lopes", xp: 10 }),
+            )
+
+            // The fix is about `null` only. Shortening every entry would throw
+            // away the profile window the rest of the app is tuned around.
+            expect(
+                envelopeOf(store, key).freshUntil - Date.now(),
+            ).toBeGreaterThan(emptyTtl.freshSeconds * 1000)
+        }),
+    )
 })

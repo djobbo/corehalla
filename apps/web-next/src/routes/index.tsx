@@ -17,8 +17,7 @@ import { preloadAtoms, rankings1v1Atom, useQuery } from "@/effect/atoms"
  * reason: anything placed first delays the first row of ranks.
  */
 export const Route = createFileRoute("/")({
-    loader: ({ context }) =>
-        preloadAtoms(context, [rankings1v1Atom("all", 1)]),
+    loader: ({ context }) => preloadAtoms(context, [rankings1v1Atom("all", 1)]),
     component: Page,
 })
 

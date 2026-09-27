@@ -1,6 +1,7 @@
 import { Context, Effect, Layer } from "effect"
 import { cacheNamespace } from "../env"
 import { allowRefresh, UPSTREAM_LIMIT_KEY } from "./rate-limit"
+import { emptyTtl } from "./cache-policy"
 import type { KVNamespaceLike } from "../env"
 import type { CacheWindow } from "./cache-policy"
 
@@ -195,7 +196,9 @@ export const make = (
 
                 if (!mayRefresh) {
                     if (found) {
-                        yield* Effect.logDebug(`Over budget; serving stale ${key}`)
+                        yield* Effect.logDebug(
+                            `Over budget; serving stale ${key}`,
+                        )
                         // Deliberately not re-stored: freshness must not be
                         // pushed forward by a stale read, or the entry would
                         // never expire.
@@ -209,7 +212,18 @@ export const make = (
 
                 const value = yield* effect
 
-                yield* cache.set(key, value, options)
+                /*
+                 * A `null` is this codebase's "the upstream could not answer"
+                 * sentinel rather than a finding, so it is stored on
+                 * `emptyTtl` instead of on the window its resource asked for.
+                 * Without this an absence is cached with all the confidence of
+                 * a value — see that constant for the failure it caused.
+                 */
+                yield* cache.set(
+                    key,
+                    value,
+                    value === null ? emptyTtl : options,
+                )
 
                 return value
             }),

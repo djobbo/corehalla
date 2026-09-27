@@ -7,11 +7,7 @@ import { Content } from "./services/content"
 import { Database, searchKey } from "@crh/core/services/archive"
 import { Lookup } from "@crh/core/services/lookup"
 import type { BHPlayerAlias } from "@crh/db/schema"
-import type {
-    Ranking1v1,
-    Ranking2v2,
-    Ranking3v3,
-} from "@crh/bhapi/types"
+import type { Ranking1v1, Ranking2v2, Ranking3v3 } from "@crh/bhapi/types"
 
 /**
  * Server implementations of the `CorehallaApi` contract.
@@ -107,61 +103,65 @@ export const rankingsGroup = HttpApiBuilder.group(
         const db = yield* Database
         const content = yield* Content
 
-        return handlers
-            .handle("get1v1Rankings", ({ query }) =>
-                Effect.gen(function* () {
-                    const rankings = (yield* brawlhalla.getRankings(
-                        "1v1",
-                        query.region,
-                        query.page,
-                        query.name,
-                    )) as readonly Ranking1v1[]
+        return (
+            handlers
+                .handle("get1v1Rankings", ({ query }) =>
+                    Effect.gen(function* () {
+                        const rankings = (yield* brawlhalla.getRankings(
+                            "1v1",
+                            query.region,
+                            query.page,
+                            query.name,
+                        )) as readonly Ranking1v1[]
 
-                    yield* fireAndForget(
-                        db.upsertPlayerAliases(
-                            rankings.flatMap((player) =>
-                                aliasRows({
-                                    id: player.brawlhalla_id,
-                                    name: player.name,
-                                }),
+                        yield* fireAndForget(
+                            db.upsertPlayerAliases(
+                                rankings.flatMap((player) =>
+                                    aliasRows({
+                                        id: player.brawlhalla_id,
+                                        name: player.name,
+                                    }),
+                                ),
                             ),
-                        ),
-                    )
+                        )
 
-                    return rankings
-                }),
-            )
-            .handle("get2v2Rankings", ({ query }) =>
-                Effect.gen(function* () {
-                    return (yield* brawlhalla.getRankings(
-                        "2v2",
-                        query.region,
-                        query.page,
-                    )) as readonly Ranking2v2[]
-                }),
-            )
-            // v1-only: the legacy API has no 3v3 mode, so there is no fallback
-            // source and an incomplete v1 page surfaces as an empty ladder.
-            .handle("get3v3Rankings", ({ query }) =>
-                Effect.gen(function* () {
-                    return (yield* brawlhalla.getRankings(
-                        "3v3",
-                        query.region,
-                        query.page,
-                    )) as readonly Ranking3v3[]
-                }),
-            )
-            .handle("getGlobalPlayerRankings", ({ query }) =>
-                db
-                    .getGlobalPlayerRankings(query.sortBy, query.page)
-                    .pipe(Effect.orDie),
-            )
-            .handle("getClansRankings", ({ query }) =>
-                db.getClansRankings(query.name, query.page).pipe(Effect.orDie),
-            )
-            .handle("getPowerRankings", ({ query }) =>
-                content.getPowerRankings(query.bracket, query.region),
-            )
+                        return rankings
+                    }),
+                )
+                .handle("get2v2Rankings", ({ query }) =>
+                    Effect.gen(function* () {
+                        return (yield* brawlhalla.getRankings(
+                            "2v2",
+                            query.region,
+                            query.page,
+                        )) as readonly Ranking2v2[]
+                    }),
+                )
+                // v1-only: the legacy API has no 3v3 mode, so there is no fallback
+                // source and an incomplete v1 page surfaces as an empty ladder.
+                .handle("get3v3Rankings", ({ query }) =>
+                    Effect.gen(function* () {
+                        return (yield* brawlhalla.getRankings(
+                            "3v3",
+                            query.region,
+                            query.page,
+                        )) as readonly Ranking3v3[]
+                    }),
+                )
+                .handle("getGlobalPlayerRankings", ({ query }) =>
+                    db
+                        .getGlobalPlayerRankings(query.sortBy, query.page)
+                        .pipe(Effect.orDie),
+                )
+                .handle("getClansRankings", ({ query }) =>
+                    db
+                        .getClansRankings(query.name, query.page)
+                        .pipe(Effect.orDie),
+                )
+                .handle("getPowerRankings", ({ query }) =>
+                    content.getPowerRankings(query.bracket, query.region),
+                )
+        )
     }),
 )
 
@@ -172,130 +172,134 @@ export const statsGroup = HttpApiBuilder.group(
         const brawlhalla = yield* Brawlhalla
         const db = yield* Database
 
-        return handlers
-            .handle("getPlayerStats", ({ params }) =>
-                Effect.gen(function* () {
-                    const stats = yield* brawlhalla.getPlayerStats(
-                        params.playerId,
-                    )
+        return (
+            handlers
+                .handle("getPlayerStats", ({ params }) =>
+                    Effect.gen(function* () {
+                        const stats = yield* brawlhalla.getPlayerStats(
+                            params.playerId,
+                        )
 
-                    if (!stats) return null
+                        if (!stats) return null
 
-                    yield* fireAndForget(
-                        db.upsertPlayerAliases(
-                            aliasRows({
-                                id: stats.brawlhalla_id,
-                                name: stats.name,
+                        yield* fireAndForget(
+                            db.upsertPlayerAliases(
+                                aliasRows({
+                                    id: stats.brawlhalla_id,
+                                    name: stats.name,
+                                }),
+                            ),
+                        )
+
+                        if (stats.clan) {
+                            const clan = stats.clan
+                            yield* fireAndForget(
+                                db.upsertClan({
+                                    id: clan.clan_id.toString(),
+                                    name: clan.clan_name,
+                                    nameLower: searchKey(clan.clan_name),
+                                    xp: parseInt(clan.clan_xp),
+                                }),
+                            )
+                        }
+
+                        return stats
+                    }),
+                )
+                .handle("getPlayerRanked", ({ params }) =>
+                    Effect.gen(function* () {
+                        const ranked = yield* brawlhalla.getPlayerRanked(
+                            params.playerId,
+                        )
+
+                        if (!ranked) return null
+
+                        const rankedAliases = [
+                            ...aliasRows({
+                                id: ranked.brawlhalla_id,
+                                name: ranked.name,
                             }),
-                        ),
-                    )
+                            ...(ranked["2v2"] ?? [])
+                                .map(getTeamPlayers)
+                                .flat()
+                                .flatMap((player) => aliasRows(player)),
+                        ]
 
-                    if (stats.clan) {
-                        const clan = stats.clan
+                        yield* fireAndForget(
+                            db.upsertPlayerAliases(rankedAliases),
+                        )
+
+                        return ranked
+                    }),
+                )
+                /*
+                 * 3v3 has no v0 fallback and no 2v2 payload to piggyback on, so it
+                 * is its own read. It still feeds the alias index, which is what
+                 * makes a renamed player findable after a profile view in *any*
+                 * ranked mode rather than only in 1v1/2v2.
+                 */
+                .handle("getPlayer3v3Ranked", ({ params }) =>
+                    Effect.gen(function* () {
+                        const ranked = yield* brawlhalla.getPlayer3v3Ranked(
+                            params.playerId,
+                        )
+
+                        if (!ranked) return null
+
+                        yield* fireAndForget(
+                            db.upsertPlayerAliases(
+                                aliasRows({
+                                    id: ranked.brawlhalla_id,
+                                    name: ranked.name,
+                                }),
+                            ),
+                        )
+
+                        return ranked
+                    }),
+                )
+                .handle("getPlayerAliases", ({ params }) =>
+                    // Aliases are decorative: a database problem must not take the
+                    // player page down.
+                    db
+                        .getPlayerAliases(params.playerId.toString())
+                        .pipe(
+                            Effect.catch(() =>
+                                Effect.succeed([] as readonly string[]),
+                            ),
+                        ),
+                )
+                .handle("getClanStats", ({ params }) =>
+                    Effect.gen(function* () {
+                        const clan = yield* brawlhalla.getClan(params.clanId)
+
+                        if (!clan) return null
+
                         yield* fireAndForget(
                             db.upsertClan({
                                 id: clan.clan_id.toString(),
                                 name: clan.clan_name,
                                 nameLower: searchKey(clan.clan_name),
+                                created: clan.clan_create_date,
                                 xp: parseInt(clan.clan_xp),
                             }),
                         )
-                    }
 
-                    return stats
-                }),
-            )
-            .handle("getPlayerRanked", ({ params }) =>
-                Effect.gen(function* () {
-                    const ranked = yield* brawlhalla.getPlayerRanked(
-                        params.playerId,
-                    )
-
-                    if (!ranked) return null
-
-                    const rankedAliases = [
-                        ...aliasRows({
-                            id: ranked.brawlhalla_id,
-                            name: ranked.name,
-                        }),
-                        ...(ranked["2v2"] ?? [])
-                            .map(getTeamPlayers)
-                            .flat()
-                            .flatMap((player) => aliasRows(player)),
-                    ]
-
-                    yield* fireAndForget(db.upsertPlayerAliases(rankedAliases))
-
-                    return ranked
-                }),
-            )
-            /*
-             * 3v3 has no v0 fallback and no 2v2 payload to piggyback on, so it
-             * is its own read. It still feeds the alias index, which is what
-             * makes a renamed player findable after a profile view in *any*
-             * ranked mode rather than only in 1v1/2v2.
-             */
-            .handle("getPlayer3v3Ranked", ({ params }) =>
-                Effect.gen(function* () {
-                    const ranked = yield* brawlhalla.getPlayer3v3Ranked(
-                        params.playerId,
-                    )
-
-                    if (!ranked) return null
-
-                    yield* fireAndForget(
-                        db.upsertPlayerAliases(
-                            aliasRows({
-                                id: ranked.brawlhalla_id,
-                                name: ranked.name,
-                            }),
-                        ),
-                    )
-
-                    return ranked
-                }),
-            )
-            .handle("getPlayerAliases", ({ params }) =>
-                // Aliases are decorative: a database problem must not take the
-                // player page down.
-                db
-                    .getPlayerAliases(params.playerId.toString())
-                    .pipe(
-                        Effect.catch(() =>
-                            Effect.succeed([] as readonly string[]),
-                        ),
-                    ),
-            )
-            .handle("getClanStats", ({ params }) =>
-                Effect.gen(function* () {
-                    const clan = yield* brawlhalla.getClan(params.clanId)
-
-                    if (!clan) return null
-
-                    yield* fireAndForget(
-                        db.upsertClan({
-                            id: clan.clan_id.toString(),
-                            name: clan.clan_name,
-                            nameLower: searchKey(clan.clan_name),
-                            created: clan.clan_create_date,
-                            xp: parseInt(clan.clan_xp),
-                        }),
-                    )
-
-                    yield* fireAndForget(
-                        db.upsertPlayerAliases(
-                            clan.clan.flatMap((member) =>
-                                aliasRows({
-                                    id: member.brawlhalla_id,
-                                    name: member.name,
-                                }),
+                        yield* fireAndForget(
+                            db.upsertPlayerAliases(
+                                clan.clan.flatMap((member) =>
+                                    aliasRows({
+                                        id: member.brawlhalla_id,
+                                        name: member.name,
+                                    }),
+                                ),
                             ),
-                        ),
-                    )
+                        )
 
-                    return clan
-                }),
-            )
+                        return clan
+                    }),
+                )
+        )
     }),
 )
 
@@ -306,17 +310,21 @@ export const searchGroup = HttpApiBuilder.group(
         const db = yield* Database
         const lookup = yield* Lookup
 
-        return handlers
-            // The raw local alias index, kept for the existing search surface.
-            .handle("searchPlayerAlias", ({ query }) =>
-                db.searchAliases(query.alias, query.page).pipe(Effect.orDie),
-            )
-            // The federated lookup. Never fails: each source degrades to "no
-            // results", because a partial answer beats an error on a
-            // jump-to-result interaction.
-            .handle("lookup", ({ query }) =>
-                lookup.search(query.q, query.limit),
-            )
+        return (
+            handlers
+                // The raw local alias index, kept for the existing search surface.
+                .handle("searchPlayerAlias", ({ query }) =>
+                    db
+                        .searchAliases(query.alias, query.page)
+                        .pipe(Effect.orDie),
+                )
+                // The federated lookup. Never fails: each source degrades to "no
+                // results", because a partial answer beats an error on a
+                // jump-to-result interaction.
+                .handle("lookup", ({ query }) =>
+                    lookup.search(query.q, query.limit),
+                )
+        )
     }),
 )
 

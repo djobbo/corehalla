@@ -48,7 +48,7 @@ useInProcessHttpClient(
 
             const response = yield* Effect.tryPromise({
                 // Resolved per call: the binding only exists inside the Worker.
-                try: async () => {
+                async try() {
                     const api = await apiBinding()
 
                     if (!api) {
