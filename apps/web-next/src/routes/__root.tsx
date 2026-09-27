@@ -2,6 +2,7 @@
 import "../styles/app.css"
 
 import {
+    ClientOnly,
     HeadContent,
     Link,
     Outlet,
@@ -10,6 +11,7 @@ import {
     useMatches,
 } from "@tanstack/react-router"
 import { HydrationBoundary, RegistryContext } from "@effect/atom-react"
+import { AccountControl } from "@/components/account/AccountControl"
 import { HoverPreviewLayer } from "@/components/HoverPreview"
 import { LandingBackground } from "@/components/layout/LandingBackground"
 import { MainNav } from "@/components/layout/MainNav"
@@ -90,6 +92,16 @@ function RootComponent() {
                             </span>
                         </Link>
                         <SearchTrigger className="flex-1" />
+                        {/*
+                         * The account control is client-only: the session is an
+                         * `HttpOnly` cookie the server render cannot read, so a
+                         * server-rendered answer would only be replaced on
+                         * hydration. The placeholder it shows until then is the
+                         * one state that is true for both.
+                         */}
+                        <ClientOnly>
+                            <AccountControl />
+                        </ClientOnly>
                     </header>
                     <MainNav />
                     <Suspense

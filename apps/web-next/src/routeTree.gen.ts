@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AtmeFavoritesRouteImport } from './routes/@me/favorites'
 import { Route as RankingsIndexRouteImport } from './routes/rankings/index'
 import { Route as QueueChar123BracketChar125Char123RegionChar125RouteImport } from './routes/queue.{-$bracket}.{-$region}'
 import { Route as RankingsClansChar123PageChar125RouteImport } from './routes/rankings/clans.{-$page}'
@@ -29,6 +30,11 @@ import { Route as StatsPlayerPlayerIdWeaponsRouteImport } from './routes/stats/p
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AtmeFavoritesRoute = AtmeFavoritesRouteImport.update({
+  id: '/@me/favorites',
+  path: '/@me/favorites',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RankingsIndexRoute = RankingsIndexRouteImport.update({
@@ -120,6 +126,7 @@ const StatsPlayerPlayerIdWeaponsRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/@me/favorites': typeof AtmeFavoritesRoute
   '/rankings/': typeof RankingsIndexRoute
   '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
@@ -138,6 +145,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/@me/favorites': typeof AtmeFavoritesRoute
   '/rankings': typeof RankingsIndexRoute
   '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
@@ -156,6 +164,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/@me/favorites': typeof AtmeFavoritesRoute
   '/rankings/': typeof RankingsIndexRoute
   '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
@@ -176,6 +185,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/@me/favorites'
     | '/rankings/'
     | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/@me/favorites'
     | '/rankings'
     | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
@@ -211,6 +222,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/@me/favorites'
     | '/rankings/'
     | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
@@ -230,6 +242,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AtmeFavoritesRoute: typeof AtmeFavoritesRoute
   RankingsIndexRoute: typeof RankingsIndexRoute
   QueueChar123BracketChar125Char123RegionChar125Route: typeof QueueChar123BracketChar125Char123RegionChar125Route
   RankingsClansChar123PageChar125Route: typeof RankingsClansChar123PageChar125Route
@@ -250,6 +263,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/@me/favorites': {
+      id: '/@me/favorites'
+      path: '/@me/favorites'
+      fullPath: '/@me/favorites'
+      preLoaderRoute: typeof AtmeFavoritesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rankings/': {
@@ -379,6 +399,7 @@ const StatsPlayerPlayerIdRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AtmeFavoritesRoute: AtmeFavoritesRoute,
   RankingsIndexRoute: RankingsIndexRoute,
   QueueChar123BracketChar125Char123RegionChar125Route:
     QueueChar123BracketChar125Char123RegionChar125Route,

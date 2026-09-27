@@ -223,6 +223,18 @@ export const CorehallaApi = Cloudflare.Worker("CorehallaApi", {
         }),
         SITE_URL: siteUrl,
         BRAWLHALLA_API_KEY: Redacted.make(env("BRAWLHALLA_API_KEY", "", true)),
+        /*
+         * Discord OAuth credentials for the app-owned sign-in flow.
+         *
+         * They belong here rather than on a web worker because the API owns the
+         * session table and mints the session cookie. The callback URI is
+         * derived from the request's own host, so one pair serves every hostname
+         * this worker is routed on.
+         */
+        DISCORD_CLIENT_ID: env("DISCORD_CLIENT_ID", "", true),
+        DISCORD_CLIENT_SECRET: Redacted.make(
+            env("DISCORD_CLIENT_SECRET", "", true),
+        ),
     },
 })
 

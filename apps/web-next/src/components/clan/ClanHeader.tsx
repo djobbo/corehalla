@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/Card"
+import { FavoriteButton } from "@/components/account/FavoriteButton"
 import { StatGrid } from "@/components/ui/StatGrid"
 import { clanStatsAtom, useQuery } from "@/effect/atoms"
 import { cleanString } from "@crh/common/helpers/cleanString"
@@ -90,6 +91,11 @@ export const ClanHeader = ({ clanId }: { readonly clanId: number }) => {
                     <span>{name.slice(0, 1).toUpperCase()}</span>
                 </span>
                 <h1 className="ch-display text-2xl sm:text-3xl">{name}</h1>
+                <FavoriteButton
+                    type="clan"
+                    id={String(clan.clan_id)}
+                    name={name}
+                />
             </div>
 
             <Card variant="ghost">

@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/Card"
+import { FavoriteButton } from "@/components/account/FavoriteButton"
 import { StatGrid } from "@/components/ui/StatGrid"
 import { usePlayerDerived } from "./usePlayerDerived"
 import { playerAliasesAtom, useQuery } from "@/effect/atoms"
@@ -129,6 +130,26 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
                         {ranked.tier}
                     </span>
                 ) : null}
+                {/*
+                 * The saved row carries the player's main legend so the
+                 * favourites grid can show the same art this header does,
+                 * without a second request when the grid renders.
+                 */}
+                <FavoriteButton
+                    type="player"
+                    id={String(stats.brawlhalla_id)}
+                    name={name}
+                    meta={
+                        topLegends[0]
+                            ? {
+                                  icon: {
+                                      legend_key:
+                                          topLegends[0].legend_name_key,
+                                  },
+                              }
+                            : {}
+                    }
+                />
             </div>
 
             {shownAliases.length > 0 ? (

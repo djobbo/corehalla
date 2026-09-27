@@ -252,3 +252,67 @@ export const RankedQueueSchema = json<readonly QueuedPlayer[]>()
  * ignores, or the UI promises results for a query the API will not run.
  */
 export const MIN_LOOKUP_LENGTH = 3
+
+// --- app-owned auth ---------------------------------------------------------
+
+/**
+ * A signed-in user's profile.
+ *
+ * Deliberately a subset of the `UserProfile` row: the Discord id and email are
+ * the only identity fields a page shows, and `createdAt` is shown nowhere.
+ * `HttpApi` encodes to exactly this shape, so a column added to the table later
+ * cannot leak into a response by default.
+ */
+export const UserProfileSchema = Schema.Struct({
+    id: Schema.String,
+    discordId: Schema.NullOr(Schema.String),
+    username: Schema.String,
+    avatarUrl: Schema.String,
+    email: Schema.NullOr(Schema.String),
+})
+
+export type UserProfile = typeof UserProfileSchema.Type
+
+/**
+ * The session endpoint's answer.
+ *
+ * `user: null` is an ordinary value rather than a 401, so a client can render
+ * "signed out" without treating it as a failed request.
+ */
+export const SessionSchema = Schema.Struct({
+    user: Schema.NullOr(UserProfileSchema),
+})
+
+/**
+ * A saved player or clan.
+ *
+ * `meta` is presentation only — currently a player's main-legend key, so a
+ * favourites grid can show the same art the profile header does. It is
+ * `Unknown` because it is client-authored: the server stores it verbatim and
+ * never reads it.
+ */
+export const FavoriteSchema = Schema.Struct({
+    id: Schema.String,
+    type: Schema.String,
+    name: Schema.String,
+    meta: Schema.Unknown,
+})
+
+export type Favorite = typeof FavoriteSchema.Type
+
+export const FavoriteInputSchema = Schema.Struct({
+    id: Schema.String,
+    type: Schema.String,
+    name: Schema.String,
+    meta: Schema.Unknown,
+})
+
+/** One linked Discord account. */
+export const ConnectionSchema = Schema.Struct({
+    type: Schema.String,
+    appId: Schema.String,
+    name: Schema.String,
+    verified: Schema.Boolean,
+})
+
+export type Connection = typeof ConnectionSchema.Type

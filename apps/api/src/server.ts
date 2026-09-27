@@ -10,6 +10,8 @@ import {
     searchGroup,
     statsGroup,
 } from "./handlers"
+import { authGroup, meGroup } from "./auth/handlers"
+import { layer as AuthLayer } from "./auth/Auth"
 import {
     layer as BrawlhallaLayer,
     rawLayer as UpstreamLayer,
@@ -69,6 +71,13 @@ const createHandler = (db: D1Database) => {
         UpstreamWithDeps,
         ContentLayer.pipe(Layer.provide(SqlLayer)),
         /*
+         * App-owned auth: sessions, favourites and Discord connections. It
+         * reads the same D1 client the archive does, but is deliberately not
+         * merged into `DatabaseWithSql` — that service is the ranking archive,
+         * and auth has no business depending on it.
+         */
+        AuthLayer.pipe(Layer.provide(SqlLayer)),
+        /*
          * The cached gateway writes what a refresh returns, so it needs the
          * archive and somewhere to put the write. Both are also in `mergeAll`
          * below and `mergeAll` only unions — it does not feed one layer's output
@@ -94,6 +103,8 @@ const createHandler = (db: D1Database) => {
         Layer.provide(statsGroup),
         Layer.provide(searchGroup),
         Layer.provide(contentGroup),
+        Layer.provide(meGroup),
+        Layer.provide(authGroup),
         Layer.provide(ServicesLayer),
         Layer.provide(FetchHttpClient.layer),
         Layer.provide(HttpServer.layerServices),

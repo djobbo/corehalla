@@ -1,4 +1,9 @@
-import { HttpApi, HttpApiEndpoint, HttpApiGroup } from "effect/unstable/httpapi"
+import {
+    HttpApi,
+    HttpApiEndpoint,
+    HttpApiGroup,
+    HttpApiSchema,
+} from "effect/unstable/httpapi"
 import { Schema } from "effect"
 import {
     AliasSearchResultsSchema,
@@ -7,6 +12,9 @@ import {
     Bracket,
     ClanSchema,
     ClansSchema,
+    ConnectionSchema,
+    FavoriteInputSchema,
+    FavoriteSchema,
     GlobalPlayerRankingsSchema,
     Ladder,
     LookupResultsSchema,
@@ -21,6 +29,7 @@ import {
     Ranking2v2Schema,
     RankedQueueSchema,
     Ranking3v3Schema,
+    SessionSchema,
     SortablePlayerProp,
     SortableLegendProp,
     SortableWeaponProp,
@@ -259,10 +268,99 @@ const content = HttpApiGroup.make("content")
         }),
     )
 
+/**
+ * The signed-in user's own data.
+ *
+ * These are the first endpoints on this worker that are not public: they read
+ * the app session cookie and scope every query to that session's user. They are
+ * grouped apart from the ladders because their results must never be
+ * shared-cached, and because a caller that is not signed in gets a 401 rather
+ * than an empty board.
+ */
+const me = HttpApiGroup.make("me")
+    .add(
+        HttpApiEndpoint.get("getSession", "/api/v1/me/session", {
+            success: SessionSchema,
+        }),
+    )
+    .add(
+        HttpApiEndpoint.get("getFavorites", "/api/v1/me/favorites", {
+            success: Schema.Array(FavoriteSchema),
+        }),
+    )
+    .add(
+        HttpApiEndpoint.post("addFavorite", "/api/v1/me/favorites", {
+            payload: FavoriteInputSchema,
+            success: FavoriteSchema,
+        }),
+    )
+    .add(
+        /**
+         * The removal key travels as a query rather than a body.
+         *
+         * `DELETE` with a payload is legal HTTP but sits awkwardly in the typed
+         * client — the method decides whether a body is part of the request —
+         * and a favourite is fully identified by its `(type, id)` pair, so a
+         * query is the natural shape.
+         */
+        HttpApiEndpoint.delete("deleteFavorite", "/api/v1/me/favorites", {
+            query: { type: Schema.String, id: Schema.String },
+            success: HttpApiSchema.NoContent,
+        }),
+    )
+    .add(
+        HttpApiEndpoint.get("getConnections", "/api/v1/me/connections", {
+            success: Schema.Array(ConnectionSchema),
+        }),
+    )
+    .add(
+        HttpApiEndpoint.post("syncConnections", "/api/v1/me/connections", {
+            success: Schema.Array(ConnectionSchema),
+        }),
+    )
+
+/**
+ * Sign-in and sign-out.
+ *
+ * These answer with redirects and `Set-Cookie` rather than JSON, which is why
+ * the declared success is a placeholder: the handlers return an
+ * `HttpServerResponse`, and the redirect *is* the payload. They live on the API
+ * because the session cookie must be minted by the worker that owns the session
+ * table, and the API is routed on the app's own hostname — so the cookie is
+ * same-site with the page that started the flow.
+ */
+const auth = HttpApiGroup.make("auth")
+    .add(
+        HttpApiEndpoint.get("discordLogin", "/api/v1/auth/discord", {
+            success: Schema.String,
+        }),
+    )
+    .add(
+        HttpApiEndpoint.get(
+            "discordCallback",
+            "/api/v1/auth/discord/callback",
+            {
+                query: {
+                    code: Schema.optionalKey(Schema.String),
+                    state: Schema.optionalKey(Schema.String),
+                    error: Schema.optionalKey(Schema.String),
+                },
+                success: Schema.String,
+            },
+        ),
+    )
+    .add(
+        HttpApiEndpoint.post("signOut", "/api/v1/auth/signout", {
+            success: HttpApiSchema.NoContent,
+        }),
+    )
+
 export const CorehallaApi = HttpApi.make("CorehallaApi")
     .add(rankings)
     .add(stats)
     .add(search)
     .add(content)
+    .add(me)
+    .add(auth)
 
 export type CorehallaApi = typeof CorehallaApi
