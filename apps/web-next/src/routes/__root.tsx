@@ -12,6 +12,7 @@ import {
 import { HydrationBoundary, RegistryContext } from "@effect/atom-react"
 import { HoverPreviewLayer } from "@/components/HoverPreview"
 import { LandingBackground } from "@/components/layout/LandingBackground"
+import { MainNav } from "@/components/layout/MainNav"
 import { SearchProvider, SearchTrigger } from "@/components/Search"
 import { Suspense, useMemo } from "react"
 import type { ReactNode } from "react"
@@ -62,18 +63,22 @@ function RootComponent() {
                  */}
                 <LandingBackground className="ch-landing" />
                 {/*
-                 * One header for every page, holding the two things that must
-                 * never move: the way home and the way to search. Home has no
-                 * hero of its own because this *is* the compact hero — the
-                 * ladder then starts immediately under it.
+                 * One header for every page, holding the things that must never
+                 * move: the way home, the way to search, and the way to each
+                 * rankings surface. Home has no hero of its own because this
+                 * *is* the compact hero — the ladder then starts immediately
+                 * under it.
                  */}
                 <SearchProvider>
                     {/*
                      * The masthead is the poster's title bar: a skewed accent
                      * badge, the wordmark in the display cut, and the search
-                     * field as the one wide control. It stays pinned so the
-                     * ladder's own sticky filter row can dock directly beneath
-                     * it at `top-14` — see `LadderView`.
+                     * field as the one wide control.
+                     *
+                     * It and the nav below are one pinned stack, and the ladder's
+                     * own sticky filter row docks under the pair of them — see
+                     * `--ch-header-h`. Their heights are shared variables rather
+                     * than two numbers that happen to agree.
                      */}
                     <header className="ch-masthead">
                         <Link to="/" className="flex items-center gap-2">
@@ -86,6 +91,7 @@ function RootComponent() {
                         </Link>
                         <SearchTrigger className="flex-1" />
                     </header>
+                    <MainNav />
                     <Suspense
                         fallback={
                             <div className="p-8 text-textVar1">Loading…</div>

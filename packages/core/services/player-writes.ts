@@ -12,7 +12,7 @@ import type {
     NewBHPlayerLegend,
     NewBHPlayerWeapon,
 } from "@crh/db/schema"
-import type { PlayerStats } from "@crh/bhapi/types"
+import type { PlayerRanked, PlayerStats } from "@crh/bhapi/types"
 import type { RankedRegion, RankedTier } from "@crh/bhapi/constants"
 
 /**
@@ -74,10 +74,122 @@ export const excludedSet = (
             .map((column) => [column, sql.raw(`excluded."${column}"`)]),
     )
 
+/**
+ * The `BHPlayerData` columns that come from the ranked record rather than from
+ * the career stats.
+ *
+ * Named so a writer that has no ranked record can exclude exactly these from
+ * its `SET` clause. A stats-only write is not a partial row — the columns are
+ * all there and the schema requires them — it is a write that declines to
+ * overwrite facts it was not given.
+ */
+export const RANKED_PLAYER_COLUMNS = [
+    "rating",
+    "peakRating",
+    "rankedGames",
+    "rankedWins",
+    "tier",
+    "region",
+] as const
+
+/**
+ * The `BHPlayerData` columns that come from the career stats alone.
+ *
+ * The mirror of the list above, and the reason both exist: two callers each
+ * hold one half, and each has to know which columns are not its to write.
+ * `name` appears in neither, because both payloads carry it — a rename is
+ * visible from either path, so either may record it.
+ */
+export const STATS_PLAYER_COLUMNS = [
+    "xp",
+    "level",
+    "games",
+    "wins",
+    "damageDealt",
+    "damageTaken",
+    "kos",
+    "falls",
+    "suicides",
+    "teamKos",
+    "matchTime",
+    "damageUnarmed",
+    "matchTimeUnarmed",
+    "koUnarmed",
+    "damageThrownItem",
+    "koThrownItem",
+    "damageGadgets",
+    "koGadgets",
+] as const
+
+/**
+ * The 1v1 snapshot for a player whose own ranked record we hold.
+ *
+ * Shared by both write paths rather than kept private to the crawler: the
+ * crawler reaches it from a 2v2 or 3v3 ladder row, and the profile's ranked
+ * endpoint reaches it directly, and the two must agree on what a
+ * `BHPlayerData` rating means.
+ *
+ * A player with no 1v1 record yields `null`. That is not a failure — the ranked
+ * columns are `NOT NULL`, and inventing zeros would insert a player into the
+ * 1v1 ladder who is not on it.
+ *
+ * `null` *inside* the record is a different thing entirely, and the tier below
+ * is the one place the two nearly got confused: v0 reports the top tier as
+ * null, so it is named rather than passed through.
+ */
+export const snapshotFromRanked = (
+    ranked: PlayerRanked | null,
+): RankedSnapshot | null =>
+    ranked === null
+        ? null
+        : {
+              rating: ranked.rating,
+              peak: ranked.peak_rating,
+              games: ranked.games,
+              wins: ranked.wins,
+              /*
+               * `null` here is the top tier, not a missing value: v0 has no
+               * "Valhallan" in its vocabulary and reports the tier above
+               * Diamond as null. Casting it straight through, as this did,
+               * wrote null into a `NOT NULL` column and would fail the insert
+               * for exactly the players most likely to be on a leaderboard.
+               * The name is the one the rest of the app already maps that null
+               * to (`rankedBannerSrc`, `RankedCard`).
+               */
+              tier: ranked.tier ?? "Valhallan",
+              // Our stored vocabulary is lowercase and v0 answers in one case
+              // or the other depending on the field; the canonical form is the
+              // one the region chips and flags are built from.
+              region: ranked.region.toLowerCase() as RankedRegion,
+          }
+
+/**
+ * Which `BHPlayerData` columns an upsert may overwrite.
+ *
+ * Returns the *omit* list `excludedSet` takes, so the answer lives here rather
+ * than inline in the statement that builds the SQL. It is a decision about
+ * ownership — a caller holding only one half does not own the other — and it
+ * needs to be checkable without a database, because the failure it prevents is
+ * silent: a profile view resetting a crawled player's tier to `""` would look
+ * like missing data rather than like a write.
+ *
+ * `id` is always omitted: it is the conflict target, so setting it is either
+ * redundant or a rename. `name` and `lastUpdated` are never omitted, because
+ * every caller has both.
+ */
+export const playerDataOmitColumns = (parts: {
+    readonly stats: boolean
+    readonly ranked: boolean
+}): readonly string[] => [
+    "id",
+    ...(parts.ranked ? [] : RANKED_PLAYER_COLUMNS),
+    ...(parts.stats ? [] : STATS_PLAYER_COLUMNS),
+]
+
 /** The `BHPlayerData` row for a player, from their stats and ranked snapshot. */
 export const toPlayerDataRow = (
     playerStats: PlayerStats,
-    ranked: RankedSnapshot,
+    ranked: RankedSnapshot | null,
 ): BHPlayerData => {
     const legends = getFullLegends(
         playerStats.legends,
@@ -105,12 +217,20 @@ export const toPlayerDataRow = (
         level: playerStats.level,
         games: playerStats.games,
         wins: playerStats.wins,
-        rating: ranked.rating,
-        peakRating: ranked.peak,
-        rankedGames: ranked.games,
-        rankedWins: ranked.wins,
-        tier: ranked.tier,
-        region: ranked.region,
+        /*
+         * Zeroed when the caller holds no ranked record, which is an ordinary
+         * state rather than a failure: the profile's stats endpoint carries no
+         * ranked data, and a player surfaced from a 2v2 or 3v3 ladder row has
+         * no 1v1 record to read one from. These zeros only ever reach the
+         * database on *insert* — a stats-only write keeps them out of `SET`,
+         * so an existing row keeps whatever the crawler last recorded.
+         */
+        rating: ranked?.rating ?? 0,
+        peakRating: ranked?.peak ?? 0,
+        rankedGames: ranked?.games ?? 0,
+        rankedWins: ranked?.wins ?? 0,
+        tier: ranked?.tier ?? "",
+        region: ranked?.region ?? "",
         damageDealt: damagedealt,
         damageTaken: damagetaken,
         kos,
@@ -127,6 +247,55 @@ export const toPlayerDataRow = (
         koGadgets: gadgets.kos,
     }
 }
+
+/**
+ * The `BHPlayerData` row for a player known only by their ranked record.
+ *
+ * The mirror of {@link toPlayerDataRow}: that one has the career stats and may
+ * lack the standing, this one has the standing and lacks the career stats. Both
+ * produce a complete row, because the schema has no partial ones — the
+ * zero-filled half is a placeholder that only reaches the database on *insert*,
+ * and `playerDataOmitColumns` keeps it out of `SET` so the other writer's real
+ * numbers survive.
+ *
+ * Both writers race on a cold profile view, and the order they land in decides
+ * which half is real for a moment. It resolves as soon as the second one
+ * arrives, which is the same request round, so the only observable state is a
+ * row that briefly has one half filled.
+ */
+export const toPlayerRankedRow = (
+    player: { readonly id: string; readonly name: string },
+    ranked: RankedSnapshot,
+): BHPlayerData => ({
+    id: player.id,
+    name: player.name,
+    lastUpdated: new Date(),
+    rating: ranked.rating,
+    peakRating: ranked.peak,
+    rankedGames: ranked.games,
+    rankedWins: ranked.wins,
+    tier: ranked.tier,
+    region: ranked.region,
+    // The stats half, placeholders only.
+    xp: 0,
+    level: 0,
+    games: 0,
+    wins: 0,
+    damageDealt: 0,
+    damageTaken: 0,
+    kos: 0,
+    falls: 0,
+    suicides: 0,
+    teamKos: 0,
+    matchTime: 0,
+    damageUnarmed: 0,
+    matchTimeUnarmed: 0,
+    koUnarmed: 0,
+    damageThrownItem: 0,
+    koThrownItem: 0,
+    damageGadgets: 0,
+    koGadgets: 0,
+})
 
 /**
  * The player's most-played legends, ranked by XP.

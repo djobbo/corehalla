@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { LadderTable } from "./LadderTable"
+import { PageNav } from "@/components/ui/PageNav"
 import { brackets, ladderHref, regionLabel, regions } from "@/lib/rankings"
 import { cn } from "@/lib/cn"
 import type { LadderRow } from "@/lib/ladderRows"
@@ -16,8 +17,9 @@ type Region = typeof RankedRegion.Type
  * puts the same choice behind two dropdowns holding ten and five options, so
  * changing ladder and region cost four taps. The filter row is sticky because
  * the ladder is a surface to scroll, and losing the controls off the top turns
- * every change into a scroll back up first. It docks at `top-14`, directly under
- * the pinned masthead, so the two read as one fixed header.
+ * every change into a scroll back up first. It docks at `--ch-header-h`, the
+ * combined height of the pinned masthead and nav, so the three read as one
+ * fixed header rather than as bars that happen to be near each other.
  *
  * The table itself is `LadderTable`, shared with the home page's preview — this
  * view adds the parts that only a real ladder page has: the title band, the
@@ -54,7 +56,7 @@ export const LadderView = ({
                 </p>
             </header>
 
-            <div className="sticky top-14 z-20 -mx-4 bg-bgVar1/95 px-4 py-2 shadow-[0_3px_0_0_var(--color-ink)] backdrop-blur">
+            <div className="sticky top-[var(--ch-header-h)] z-20 -mx-4 bg-bgVar1/95 px-4 py-2 shadow-[0_3px_0_0_var(--color-ink)] backdrop-blur">
                 <div className="flex flex-wrap gap-1.5">
                     {brackets.map((option) => (
                         <Link
@@ -95,24 +97,16 @@ export const LadderView = ({
 
             <LadderTable rows={rows} className="mt-2" />
 
-            <div className="mt-4 flex gap-2">
-                {page > 1 && (
-                    <Link
-                        to={ladderHref(bracket, region, page - 1)}
-                        className="ch-btn"
-                    >
-                        ← Previous
-                    </Link>
-                )}
-                {hasNextPage && (
-                    <Link
-                        to={ladderHref(bracket, region, page + 1)}
-                        className="ch-btn"
-                    >
-                        Next →
-                    </Link>
-                )}
-            </div>
+            <PageNav
+                prevHref={
+                    page > 1 ? ladderHref(bracket, region, page - 1) : undefined
+                }
+                nextHref={
+                    hasNextPage
+                        ? ladderHref(bracket, region, page + 1)
+                        : undefined
+                }
+            />
         </div>
     )
 }

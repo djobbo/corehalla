@@ -1,4 +1,5 @@
 import { apiHandler } from "./server"
+import { pendingWork } from "@crh/core/services/background"
 
 /**
  * Cloudflare Worker entry for the Corehalla API.
@@ -56,14 +57,40 @@ export const withCors = (response: Response): Response => {
 
 export { corsHeaders }
 
+/**
+ * The slice of Cloudflare's `ExecutionContext` this worker uses.
+ *
+ * Declared locally rather than pulled from `@cloudflare/workers-types`, which
+ * would otherwise be the only reason this file names a platform type.
+ */
+type ExecutionContext = {
+    readonly waitUntil: (promise: Promise<unknown>) => void
+}
+
 export default {
-    async fetch(request: Request) {
+    async fetch(request: Request, _env: unknown, ctx: ExecutionContext) {
         // Preflight never reaches the router: it is a browser question about
         // permission, not an API request.
         if (request.method === "OPTIONS") {
             return new Response(null, { status: 204, headers: corsHeaders })
         }
 
-        return withCors(await apiHandler(request))
+        const response = withCors(await apiHandler(request))
+
+        /*
+         * The response exists; the work the request started may not have
+         * finished. Handlers hand their bookkeeping writes to `Background`
+         * rather than awaiting them, which keeps them off the response's
+         * critical path — but a fiber the runtime cannot see is cancelled the
+         * moment this function returns, so those writes would be lost in
+         * silence.
+         *
+         * `waitUntil` is the only thing that buys both: the response leaves
+         * immediately *and* the isolate stays alive until the writes land.
+         * Called unconditionally — an empty set is an already-resolved promise.
+         */
+        ctx.waitUntil(pendingWork())
+
+        return response
     },
 }

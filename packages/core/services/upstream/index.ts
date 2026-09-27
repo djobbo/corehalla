@@ -1,9 +1,11 @@
 import { Context, Effect, Layer } from "effect"
 import { HttpClient } from "effect/unstable/http"
 import { Database } from "../archive"
+import { Background } from "../background"
 import { Cache } from "../cache"
 import { cacheKeys, cacheTtl } from "../cache-policy"
 import { legacyOps } from "./legacy"
+import { snapshotFromRanked } from "../player-writes"
 import {
     isCompleteClan,
     isCompleteLeaderboard,
@@ -254,7 +256,24 @@ export const layer = Layer.effect(
     Effect.gen(function* () {
         const cache = yield* Cache
         const upstream = yield* Upstream
+        const database = yield* Database
+        const background = yield* Background
 
+        /**
+         * Whether there is anything new to write.
+         *
+         * The write belongs on the *refresh* path, not the read path, and that
+         * is the difference between one write per five minutes and one per
+         * view. A request served from cache has learned nothing new, so writing
+         * again would re-issue the same rows for data the archive already holds
+         * — a popular profile would run a full upsert (a player row, three
+         * legends and three weapons) every time anybody opened it. The cache
+         * only runs the effect below on a miss, so the write cannot outpace the
+         * read it came from.
+         *
+         * `null` means "the upstream could not answer" rather than "no such
+         * player", so there is nothing to store and nothing to erase.
+         */
         return {
             getRankings: (bracket, region, page, name) =>
                 cache.getOrSet(
@@ -263,18 +282,58 @@ export const layer = Layer.effect(
                     upstream.getRankings(bracket, region, page, name),
                 ),
 
+            /*
+             * Both halves of the player row are written here rather than by the
+             * handler, because only the refresh knows whether there is anything
+             * new to write. `getPlayerStats` carries the career stats — the
+             * row's stats half, plus the legend and weapon tables — and
+             * `getPlayerRanked` carries the standing the other half is made of.
+             */
             getPlayerStats: (playerId) =>
                 cache.getOrSet(
                     cacheKeys.player(playerId),
                     cacheTtl.profile,
-                    upstream.getPlayerStats(playerId),
+                    upstream
+                        .getPlayerStats(playerId)
+                        .pipe(
+                            Effect.tap((stats) =>
+                                stats === null
+                                    ? Effect.void
+                                    : background.run(
+                                          database.upsertPlayerStats(
+                                              stats,
+                                              null,
+                                          ),
+                                      ),
+                            ),
+                        ),
                 ),
 
             getPlayerRanked: (playerId) =>
                 cache.getOrSet(
                     cacheKeys.playerRanked(playerId),
                     cacheTtl.profile,
-                    upstream.getPlayerRanked(playerId),
+                    upstream.getPlayerRanked(playerId).pipe(
+                        Effect.tap((ranked) => {
+                            if (ranked === null) return Effect.void
+
+                            const snapshot = snapshotFromRanked(ranked)
+
+                            // No 1v1 record is an ordinary answer rather than a
+                            // failure — there is simply nothing to add.
+                            return snapshot === null
+                                ? Effect.void
+                                : background.run(
+                                      database.upsertPlayerRanked(
+                                          {
+                                              id: ranked.brawlhalla_id.toString(),
+                                              name: ranked.name,
+                                          },
+                                          snapshot,
+                                      ),
+                                  )
+                        }),
+                    ),
                 ),
 
             getPlayer3v3Ranked: (playerId) =>

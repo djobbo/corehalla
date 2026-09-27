@@ -73,6 +73,18 @@ export const clanHref = (clanId: number | string): string =>
 export const LADDER_PAGE_SIZE = 50
 
 /**
+ * Page sizes for the two archive-backed leaderboards.
+ *
+ * Mirrors of `GLOBAL_PLAYER_RANKINGS_PER_PAGE` and `CLANS_RANKINGS_PER_PAGE` in
+ * `@crh/core/constants`, and for the same reason as `LADDER_PAGE_SIZE` above:
+ * they exist here only to decide whether a "next" control is worth showing. The
+ * client does not depend on `@crh/core` — taking that dependency for two
+ * integers would pull a whole server package into the browser's module graph.
+ */
+export const GLOBAL_RANKINGS_PAGE_SIZE = 50
+export const CLAN_RANKINGS_PAGE_SIZE = 50
+
+/**
  * The colour a tier chip wears.
  *
  * The value is a CSS custom property rather than a hex literal so the tier ramp

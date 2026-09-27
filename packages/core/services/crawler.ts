@@ -5,14 +5,10 @@ import { Cache } from "./cache"
 import { cacheKeys, cacheTtl } from "./cache-policy"
 import { Upstream } from "./upstream"
 import type { CrawlTarget } from "@crh/bhapi/crawlTargets"
+import { snapshotFromRanked } from "./player-writes"
 import type { RankedSnapshot } from "./player-writes"
-import type {
-    PlayerRanked,
-    Ranking1v1,
-    Ranking2v2,
-    Ranking3v3,
-} from "@crh/bhapi/types"
-import type { RankedRegion, RankedTier } from "@crh/bhapi/constants"
+import type { Ranking1v1, Ranking2v2, Ranking3v3 } from "@crh/bhapi/types"
+import type { RankedRegion } from "@crh/bhapi/constants"
 
 /**
  * Walks every upstream leaderboard and writes the players it finds.
@@ -101,33 +97,18 @@ const snapshotFromRow = (row: Ranking1v1): RankedSnapshot => ({
 })
 
 /**
- * The 1v1 snapshot for a player discovered on a **2v2** ladder.
+ * The 1v1 snapshot for a player discovered on a **2v2** or **3v3** ladder.
  *
  * A 2v2 row's `rating` is a *team* rating, while `BHPlayerData.rating` is the
  * player's own 1v1 rating — the column the 1v1 leaderboard sorts by and the
  * global rankings read. Writing a team rating into it would corrupt both, so a
- * 2v2 discovery never contributes the row's numbers: the player's own ranked
- * record is fetched instead.
+ * team-ladder discovery never contributes the row's numbers: the player's own
+ * ranked record is fetched instead.
  *
- * A player with no 1v1 record yields `null`. That is not a failure —
- * `rating`/`tier`/`region` are `NOT NULL`, and inventing zeros would insert a
- * player into the 1v1 ladder who is not on it. They are skipped, logged at
- * debug, and picked up by a later 1v1 pass if they ever place.
+ * `snapshotFromRanked` itself now lives in `player-writes`, because the
+ * profile's ranked endpoint reaches the same mapping directly and the two must
+ * agree on what a stored rating means.
  */
-const snapshotFromRanked = (
-    ranked: PlayerRanked | null,
-): RankedSnapshot | null =>
-    ranked === null
-        ? null
-        : {
-              rating: ranked.rating,
-              peak: ranked.peak_rating,
-              games: ranked.games,
-              wins: ranked.wins,
-              tier: ranked.tier as RankedTier,
-              region: ranked.region.toLowerCase() as RankedRegion,
-          }
-
 export class Crawler extends Context.Service<
     Crawler,
     {
@@ -193,16 +174,14 @@ export const layer = Layer.effect(
                         : snapshotFromRanked(
                               yield* upstream.getPlayerRanked(playerId),
                           )
-
-                if (!ranked) {
-                    yield* Effect.logDebug(
-                        `player ${playerId} has no 1v1 record; skipping ` +
-                            `rather than writing a placeholder`,
-                    )
-
-                    return
-                }
-
+                /*
+                 * Written either way, and that is a change: a player with no
+                 * 1v1 record used to be skipped whole, which meant a 3v3-only
+                 * player appeared in no table at all despite having been
+                 * fetched. Their career stats, legends and weapons are real
+                 * whether or not a 1v1 record exists, so only the ranked
+                 * columns wait for a pass that can fill them.
+                 */
                 yield* database.upsertPlayerStats(stats, ranked)
             }).pipe(
                 // One bad player must not end the pass.

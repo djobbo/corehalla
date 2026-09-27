@@ -37,7 +37,13 @@ export const LandingLadder = ({
     return (
         <div className="flex flex-col gap-3">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h3 className="ch-display text-lg">{bracket}</h3>
+                {/*
+                 * An `h2`, not an `h3`: the landing's section heading used to
+                 * sit above these, and with it gone these are the first
+                 * headings under the page's `h1` — an `h3` here would skip a
+                 * level in the outline.
+                 */}
+                <h2 className="ch-display text-lg">{bracket}</h2>
             </div>
 
             {preview.length === 0 ? (

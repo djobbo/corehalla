@@ -27,8 +27,10 @@ import {
 import { DatabaseError } from "../errors"
 import {
     excludedSet,
+    playerDataOmitColumns,
     toLegendRows,
     toPlayerDataRow,
+    toPlayerRankedRow,
     toWeaponRows,
 } from "./player-writes"
 import type { D1Database } from "@crh/db/client"
@@ -118,6 +120,30 @@ export class Database extends Context.Service<
             sortBy: string,
             page: number,
         ) => Effect.Effect<readonly GlobalPlayerRanking[], DatabaseError>
+        /**
+         * The same board, restricted to players who have played one legend.
+         *
+         * `sortBy` is a column of `BHPlayerLegend`, so the numbers are that
+         * legend's own — "most games with Bodvar", not "most games, among
+         * players who have played Bodvar".
+         */
+        readonly getGlobalLegendRankings: (
+            legendId: number,
+            sortBy: string,
+            page: number,
+        ) => Effect.Effect<readonly GlobalPlayerRanking[], DatabaseError>
+        /**
+         * The same board again, restricted to one weapon.
+         *
+         * Reads `BHPlayerWeapon`, which the ingest materialises from the
+         * legend rows, so the sum is done once when a player is written rather
+         * than on every request.
+         */
+        readonly getGlobalWeaponRankings: (
+            weapon: string,
+            sortBy: string,
+            page: number,
+        ) => Effect.Effect<readonly GlobalPlayerRanking[], DatabaseError>
         readonly searchAliases: (
             alias: string,
             page: number,
@@ -131,6 +157,26 @@ export class Database extends Context.Service<
          */
         readonly upsertPlayerStats: (
             playerStats: PlayerStats,
+            /**
+             * The player's 1v1 standing, or `null` when the caller has none.
+             *
+             * Nullable rather than optional so every caller has to say which it
+             * is: `null` means "I looked and there is nothing" or "this request
+             * never had it", and either way the ranked columns are left alone
+             * on an existing row rather than overwritten with zeros.
+             */
+            ranked: RankedSnapshot | null,
+        ) => Effect.Effect<void, DatabaseError>
+        /**
+         * The ranked half of a `BHPlayerData` row, on its own.
+         *
+         * The counterpart to `upsertPlayerStats`: a profile's ranked endpoint
+         * holds the standing but none of the career stats, and this is how it
+         * contributes what it has without waiting for the crawler. Neither
+         * caller overwrites the other's columns — see `playerDataOmitColumns`.
+         */
+        readonly upsertPlayerRanked: (
+            player: { readonly id: string; readonly name: string },
             ranked: RankedSnapshot,
         ) => Effect.Effect<void, DatabaseError>
         /**
@@ -264,6 +310,10 @@ export const layer = Layer.effect(
          */
         const playerColumns = getTableColumns(bhPlayerData)
 
+        /** The sortable columns of the two per-legend / per-weapon boards. */
+        const legendColumns = getTableColumns(bhPlayerLegend)
+        const weaponColumns = getTableColumns(bhPlayerWeapon)
+
         return Database.of({
             getPlayerAliases: (playerId) =>
                 run(
@@ -301,7 +351,24 @@ export const layer = Layer.effect(
                             .values(playerData)
                             .onConflictDoUpdate({
                                 target: bhPlayerData.id,
-                                set: excludedSet(playerData, ["id"]),
+                                /*
+                                 * A caller with no ranked record leaves those
+                                 * columns out of `SET`. Without that, a profile
+                                 * view — which has the career stats but not the
+                                 * ranked snapshot — would reset a crawled
+                                 * player's tier, rating and region to zero on
+                                 * every visit.
+                                 */
+                                set: excludedSet(
+                                    playerData,
+                                    // This writer owns the stats; it may only
+                                    // set the ranked columns when it was handed
+                                    // a snapshot to set them from.
+                                    playerDataOmitColumns({
+                                        stats: true,
+                                        ranked: ranked !== null,
+                                    }),
+                                ),
                             })
 
                         const legendRows = toLegendRows(playerId, playerStats)
@@ -349,6 +416,40 @@ export const layer = Layer.effect(
                                     ) as Partial<NewBHPlayerWeapon>,
                                 })
                         }
+                    }),
+                ),
+
+            upsertPlayerRanked: (player, ranked) =>
+                run(
+                    Effect.gen(function* () {
+                        /*
+                         * Built once: `toPlayerRankedRow` stamps
+                         * `lastUpdated`, so calling it twice would write one
+                         * timestamp and set another.
+                         */
+                        const row = toPlayerRankedRow(player, ranked)
+
+                        yield* db
+                            .insert(bhPlayerData)
+                            .values(row)
+                            .onConflictDoUpdate({
+                                target: bhPlayerData.id,
+                                /*
+                                 * The stats columns are the ones left out here.
+                                 * A profile's ranked endpoint has the standing
+                                 * and none of the career totals, so letting it
+                                 * write them would zero every stat the moment
+                                 * somebody viewed a player whose stats request
+                                 * had not landed yet.
+                                 */
+                                set: excludedSet(
+                                    row,
+                                    playerDataOmitColumns({
+                                        stats: false,
+                                        ranked: true,
+                                    }),
+                                ),
+                            })
                     }),
                 ),
 
@@ -572,6 +673,96 @@ export const layer = Layer.effect(
                         // Every sortable property is an integer column, so
                         // the union of column value types narrows to
                         // `number`.
+                        return rows.map((row) => ({
+                            ...row,
+                            prop: row.prop as number,
+                        }))
+                    }),
+                ),
+
+            getGlobalLegendRankings: (legendId, sortBy, page) =>
+                run(
+                    Effect.gen(function* () {
+                        const column =
+                            legendColumns[sortBy as keyof typeof legendColumns]
+
+                        if (!column) {
+                            return yield* new DatabaseError({
+                                cause: `Unknown sort column: ${sortBy}`,
+                            })
+                        }
+
+                        const rows = yield* db
+                            .select({
+                                id: bhPlayerData.id,
+                                name: bhPlayerData.name,
+                                tier: bhPlayerData.tier,
+                                rating: bhPlayerData.rating,
+                                region: bhPlayerData.region,
+                                peakRating: bhPlayerData.peakRating,
+                                prop: column,
+                            })
+                            .from(bhPlayerLegend)
+                            .innerJoin(
+                                bhPlayerData,
+                                eq(bhPlayerLegend.player_id, bhPlayerData.id),
+                            )
+                            .where(eq(bhPlayerLegend.legend_id, legendId))
+                            /*
+                             * `id` breaks ties, and it is not cosmetic: the
+                             * leaderboard is paged by offset, so two players
+                             * level on the sorted column could otherwise swap
+                             * places between requests — showing one of them
+                             * twice across a page boundary and never showing
+                             * the other.
+                             */
+                            .orderBy(desc(column), asc(bhPlayerData.id))
+                            .limit(GLOBAL_PLAYER_RANKINGS_PER_PAGE)
+                            .offset(
+                                (page - 1) * GLOBAL_PLAYER_RANKINGS_PER_PAGE,
+                            )
+
+                        return rows.map((row) => ({
+                            ...row,
+                            prop: row.prop as number,
+                        }))
+                    }),
+                ),
+
+            getGlobalWeaponRankings: (weapon, sortBy, page) =>
+                run(
+                    Effect.gen(function* () {
+                        const column =
+                            weaponColumns[sortBy as keyof typeof weaponColumns]
+
+                        if (!column) {
+                            return yield* new DatabaseError({
+                                cause: `Unknown sort column: ${sortBy}`,
+                            })
+                        }
+
+                        const rows = yield* db
+                            .select({
+                                id: bhPlayerData.id,
+                                name: bhPlayerData.name,
+                                tier: bhPlayerData.tier,
+                                rating: bhPlayerData.rating,
+                                region: bhPlayerData.region,
+                                peakRating: bhPlayerData.peakRating,
+                                prop: column,
+                            })
+                            .from(bhPlayerWeapon)
+                            .innerJoin(
+                                bhPlayerData,
+                                eq(bhPlayerWeapon.player_id, bhPlayerData.id),
+                            )
+                            .where(eq(bhPlayerWeapon.weapon_name, weapon))
+                            .orderBy(desc(column), asc(bhPlayerData.id))
+                            .limit(GLOBAL_PLAYER_RANKINGS_PER_PAGE)
+                            .offset(
+                                (page - 1) * GLOBAL_PLAYER_RANKINGS_PER_PAGE,
+                            )
+
                         return rows.map((row) => ({
                             ...row,
                             prop: row.prop as number,

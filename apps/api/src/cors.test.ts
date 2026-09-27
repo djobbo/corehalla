@@ -11,11 +11,30 @@ import worker, { withCors } from "./index"
  * so it is asserted here rather than assumed.
  */
 
+/**
+ * The slice of `ExecutionContext` the worker uses.
+ *
+ * Recorded rather than stubbed away, so the cases below can assert that the
+ * entry hands its background work to the platform. Without that call the
+ * runtime cancels every write still in flight when the response returns, and
+ * does it silently.
+ */
+const fakeContext = () => {
+    const waited: Promise<unknown>[] = []
+
+    return {
+        waited,
+        ctx: { waitUntil: (promise: Promise<unknown>) => waited.push(promise) },
+    }
+}
+
 describe("CORS", () => {
     it("answers a preflight without reaching the router", async () => {
         // No D1 or upstream is available in a unit test, so this passing at all
         // is also proof that the OPTIONS branch short-circuits before the API
         // handler runs.
+        const { ctx } = fakeContext()
+
         const response = await worker.fetch(
             new Request("https://api.test/api/v1/search?q=boom", {
                 method: "OPTIONS",
@@ -24,6 +43,8 @@ describe("CORS", () => {
                     "access-control-request-method": "GET",
                 },
             }),
+            {},
+            ctx,
         )
 
         expect(response.status).toBe(204)
@@ -31,6 +52,23 @@ describe("CORS", () => {
         expect(response.headers.get("access-control-allow-methods")).toContain(
             "GET",
         )
+    })
+
+    it("registers no background work for a preflight", async () => {
+        // The OPTIONS branch returns before the router, so there is nothing to
+        // keep alive. Asserted because the opposite would mean a preflight was
+        // reaching the API handler — the thing that test above rules out.
+        const { waited, ctx } = fakeContext()
+
+        await worker.fetch(
+            new Request("https://api.test/api/v1/search?q=boom", {
+                method: "OPTIONS",
+            }),
+            {},
+            ctx,
+        )
+
+        expect(waited).toHaveLength(0)
     })
 
     it("adds the headers to an ordinary response without losing its own", () => {

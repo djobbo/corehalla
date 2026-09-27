@@ -9,6 +9,7 @@ import type {
     Ranking3v3,
 } from "@crh/bhapi/types"
 import type { Legend } from "@crh/bhapi/types"
+import { weapons } from "@crh/bhapi/constants"
 import type { BHArticle } from "@crh/web-parser/common"
 import type { PR } from "@crh/web-parser/power-rankings/parsePowerRankingsPage"
 import type { BHClan } from "@crh/db/schema"
@@ -83,6 +84,60 @@ export const sortablePlayerProps = [
 export const SortablePlayerProp = Schema.Literals(sortablePlayerProps)
 
 export type SortablePlayerProp = typeof SortablePlayerProp.Type
+
+/**
+ * The stats a *legend* leaderboard can order by.
+ *
+ * The columns of `BHPlayerLegend`, minus the ones that describe a pairing of
+ * two weapons rather than a legend: `damageWeaponOne`/`Two`, `koWeaponOne`/`Two`
+ * and the unarmed/thrown/gadget breakdowns are all readable per legend, but on a
+ * board filtered to one legend the slot numbers are not what anyone is asking —
+ * "who has the most Bodvar games" is. The weapon boards cover the per-weapon
+ * question properly, from their own table.
+ */
+export const sortableLegendProps = [
+    "games",
+    "wins",
+    "kos",
+    "falls",
+    "suicides",
+    "teamKos",
+    "matchTime",
+    "damageDealt",
+    "damageTaken",
+    "timeHeldWeaponOne",
+    "timeHeldWeaponTwo",
+    "xp",
+    "level",
+] as const
+
+export const SortableLegendProp = Schema.Literals(sortableLegendProps)
+
+export type SortableLegendProp = typeof SortableLegendProp.Type
+
+/** The stats a *weapon* leaderboard can order by — the columns its table has. */
+export const sortableWeaponProps = [
+    "games",
+    "wins",
+    "kos",
+    "matchTime",
+    "damageDealt",
+    "xp",
+    "level",
+] as const
+
+export const SortableWeaponProp = Schema.Literals(sortableWeaponProps)
+
+export type SortableWeaponProp = typeof SortableWeaponProp.Type
+
+/**
+ * The weapon a weapon leaderboard is filtered to.
+ *
+ * The published list rather than a free string: the value is a column match
+ * against `weapon_name`, so an unlisted one would silently return an empty board
+ * instead of being rejected.
+ */
+export const Weapon = Schema.Literals(weapons)
 
 // --- response schemas ------------------------------------------------------
 

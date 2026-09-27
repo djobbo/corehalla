@@ -8,8 +8,11 @@ import type {
     Bracket,
     PowerRankingsRegion,
     RankedRegion,
+    SortableLegendProp,
     SortablePlayerProp,
+    SortableWeaponProp,
 } from "@crh/api-contract/schemas"
+import type { Weapon as WeaponName } from "@crh/bhapi/constants"
 
 /**
  * Query atoms for the endpoints the study uses.
@@ -28,6 +31,8 @@ type Region = typeof RankedRegion.Type
 type BracketType = typeof Bracket.Type
 type PowerRegion = typeof PowerRankingsRegion.Type
 type SortableProp = typeof SortablePlayerProp.Type
+type LegendProp = typeof SortableLegendProp.Type
+type WeaponProp = typeof SortableWeaponProp.Type
 
 export const rankings1v1Atom = (region: Region, page: number, name?: string) =>
     CorehallaClient.query("rankings", "get1v1Rankings", {
@@ -55,6 +60,36 @@ export const globalRankingsAtom = (sortBy: SortableProp, page: number) =>
     CorehallaClient.query("rankings", "getGlobalPlayerRankings", {
         query: { sortBy, page },
         serializationKey: `global:${sortBy}:${page}`,
+        timeToLive: ttl,
+    })
+
+/**
+ * The same board restricted to one legend.
+ *
+ * A separate atom rather than a parameter on the one above, because it is a
+ * separate request: the archive filters `BHPlayerLegend` by the legend and
+ * sorts *that legend's* columns, so the two share a row shape and nothing else.
+ */
+export const globalLegendRankingsAtom = (
+    legendId: number,
+    sortBy: LegendProp,
+    page: number,
+) =>
+    CorehallaClient.query("rankings", "getGlobalLegendRankings", {
+        query: { legendId, sortBy, page },
+        serializationKey: `global-legend:${legendId}:${sortBy}:${page}`,
+        timeToLive: ttl,
+    })
+
+/** The weapon board, read from the table the ingest materialises. */
+export const globalWeaponRankingsAtom = (
+    weapon: WeaponName,
+    sortBy: WeaponProp,
+    page: number,
+) =>
+    CorehallaClient.query("rankings", "getGlobalWeaponRankings", {
+        query: { weapon, sortBy, page },
+        serializationKey: `global-weapon:${weapon}:${sortBy}:${page}`,
         timeToLive: ttl,
     })
 

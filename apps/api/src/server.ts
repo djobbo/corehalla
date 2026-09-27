@@ -15,6 +15,7 @@ import {
     rawLayer as UpstreamLayer,
 } from "@crh/core/services/upstream"
 import { layer as CacheLayer } from "@crh/core/services/cache"
+import { layer as BackgroundLayer } from "@crh/core/services/background"
 import { layer as ContentLayer } from "./services/content"
 import { layer as DatabaseLayer } from "@crh/core/services/archive"
 import { layer as LookupLayer } from "@crh/core/services/lookup"
@@ -58,11 +59,26 @@ const createHandler = (db: D1Database) => {
     const ServicesLayer = Layer.mergeAll(
         DatabaseWithSql,
         CacheLayer,
+        /*
+         * Bookkeeping writes are handed here rather than awaited, and the
+         * worker entry keeps the isolate alive for them with `waitUntil` — see
+         * `@crh/core/services/background`. Provided at build time because
+         * `toWebHandler` accepts no requirement other than the router's own.
+         */
+        BackgroundLayer,
         UpstreamWithDeps,
         ContentLayer.pipe(Layer.provide(SqlLayer)),
+        /*
+         * The cached gateway writes what a refresh returns, so it needs the
+         * archive and somewhere to put the write. Both are also in `mergeAll`
+         * below and `mergeAll` only unions — it does not feed one layer's output
+         * into another's input — so each is provided explicitly.
+         */
         BrawlhallaLayer.pipe(
             Layer.provide(CacheLayer),
             Layer.provide(UpstreamWithDeps),
+            Layer.provide(BackgroundLayer),
+            Layer.provide(DatabaseWithSql),
         ),
         // The lookup needs both: `Upstream` to federate over, and the archive
         // for the alias and clan indexes. `mergeAll` only unions layers, so

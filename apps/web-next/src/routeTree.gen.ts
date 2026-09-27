@@ -10,6 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RankingsIndexRouteImport } from './routes/rankings/index'
+import { Route as RankingsClansChar123PageChar125RouteImport } from './routes/rankings/clans.{-$page}'
+import { Route as RankingsGlobalChar123PageChar125RouteImport } from './routes/rankings/global.{-$page}'
+import { Route as RankingsLegendsChar123PageChar125RouteImport } from './routes/rankings/legends.{-$page}'
+import { Route as RankingsWeaponsChar123PageChar125RouteImport } from './routes/rankings/weapons.{-$page}'
 import { Route as StatsClanClanIdRouteImport } from './routes/stats/clan/$clanId'
 import { Route as StatsPlayerPlayerIdRouteImport } from './routes/stats/player/$playerId'
 import { Route as Rankings1v1Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/1v1.{-$region}.{-$page}'
@@ -25,6 +30,35 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RankingsIndexRoute = RankingsIndexRouteImport.update({
+  id: '/rankings/',
+  path: '/rankings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RankingsClansChar123PageChar125Route =
+  RankingsClansChar123PageChar125RouteImport.update({
+    id: '/rankings/clans/{-$page}',
+    path: '/rankings/clans/{-$page}',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const RankingsGlobalChar123PageChar125Route =
+  RankingsGlobalChar123PageChar125RouteImport.update({
+    id: '/rankings/global/{-$page}',
+    path: '/rankings/global/{-$page}',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const RankingsLegendsChar123PageChar125Route =
+  RankingsLegendsChar123PageChar125RouteImport.update({
+    id: '/rankings/legends/{-$page}',
+    path: '/rankings/legends/{-$page}',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const RankingsWeaponsChar123PageChar125Route =
+  RankingsWeaponsChar123PageChar125RouteImport.update({
+    id: '/rankings/weapons/{-$page}',
+    path: '/rankings/weapons/{-$page}',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const StatsClanClanIdRoute = StatsClanClanIdRouteImport.update({
   id: '/stats/clan/$clanId',
   path: '/stats/clan/$clanId',
@@ -79,6 +113,11 @@ const StatsPlayerPlayerIdWeaponsRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/rankings/': typeof RankingsIndexRoute
+  '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
+  '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
+  '/rankings/legends/{-$page}': typeof RankingsLegendsChar123PageChar125Route
+  '/rankings/weapons/{-$page}': typeof RankingsWeaponsChar123PageChar125Route
   '/stats/clan/$clanId': typeof StatsClanClanIdRoute
   '/stats/player/$playerId': typeof StatsPlayerPlayerIdRouteWithChildren
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
@@ -91,6 +130,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/rankings': typeof RankingsIndexRoute
+  '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
+  '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
+  '/rankings/legends/{-$page}': typeof RankingsLegendsChar123PageChar125Route
+  '/rankings/weapons/{-$page}': typeof RankingsWeaponsChar123PageChar125Route
   '/stats/clan/$clanId': typeof StatsClanClanIdRoute
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
@@ -103,6 +147,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/rankings/': typeof RankingsIndexRoute
+  '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
+  '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
+  '/rankings/legends/{-$page}': typeof RankingsLegendsChar123PageChar125Route
+  '/rankings/weapons/{-$page}': typeof RankingsWeaponsChar123PageChar125Route
   '/stats/clan/$clanId': typeof StatsClanClanIdRoute
   '/stats/player/$playerId': typeof StatsPlayerPlayerIdRouteWithChildren
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
@@ -117,6 +166,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/rankings/'
+    | '/rankings/clans/{-$page}'
+    | '/rankings/global/{-$page}'
+    | '/rankings/legends/{-$page}'
+    | '/rankings/weapons/{-$page}'
     | '/stats/clan/$clanId'
     | '/stats/player/$playerId'
     | '/rankings/1v1/{-$region}/{-$page}'
@@ -129,6 +183,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/rankings'
+    | '/rankings/clans/{-$page}'
+    | '/rankings/global/{-$page}'
+    | '/rankings/legends/{-$page}'
+    | '/rankings/weapons/{-$page}'
     | '/stats/clan/$clanId'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
@@ -140,6 +199,11 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/rankings/'
+    | '/rankings/clans/{-$page}'
+    | '/rankings/global/{-$page}'
+    | '/rankings/legends/{-$page}'
+    | '/rankings/weapons/{-$page}'
     | '/stats/clan/$clanId'
     | '/stats/player/$playerId'
     | '/rankings/1v1/{-$region}/{-$page}'
@@ -153,6 +217,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  RankingsIndexRoute: typeof RankingsIndexRoute
+  RankingsClansChar123PageChar125Route: typeof RankingsClansChar123PageChar125Route
+  RankingsGlobalChar123PageChar125Route: typeof RankingsGlobalChar123PageChar125Route
+  RankingsLegendsChar123PageChar125Route: typeof RankingsLegendsChar123PageChar125Route
+  RankingsWeaponsChar123PageChar125Route: typeof RankingsWeaponsChar123PageChar125Route
   StatsClanClanIdRoute: typeof StatsClanClanIdRoute
   StatsPlayerPlayerIdRoute: typeof StatsPlayerPlayerIdRouteWithChildren
   Rankings1v1Char123RegionChar125Char123PageChar125Route: typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
@@ -167,6 +236,41 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rankings/': {
+      id: '/rankings/'
+      path: '/rankings'
+      fullPath: '/rankings/'
+      preLoaderRoute: typeof RankingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rankings/clans/{-$page}': {
+      id: '/rankings/clans/{-$page}'
+      path: '/rankings/clans/{-$page}'
+      fullPath: '/rankings/clans/{-$page}'
+      preLoaderRoute: typeof RankingsClansChar123PageChar125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rankings/global/{-$page}': {
+      id: '/rankings/global/{-$page}'
+      path: '/rankings/global/{-$page}'
+      fullPath: '/rankings/global/{-$page}'
+      preLoaderRoute: typeof RankingsGlobalChar123PageChar125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rankings/legends/{-$page}': {
+      id: '/rankings/legends/{-$page}'
+      path: '/rankings/legends/{-$page}'
+      fullPath: '/rankings/legends/{-$page}'
+      preLoaderRoute: typeof RankingsLegendsChar123PageChar125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rankings/weapons/{-$page}': {
+      id: '/rankings/weapons/{-$page}'
+      path: '/rankings/weapons/{-$page}'
+      fullPath: '/rankings/weapons/{-$page}'
+      preLoaderRoute: typeof RankingsWeaponsChar123PageChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/stats/clan/$clanId': {
@@ -254,6 +358,13 @@ const StatsPlayerPlayerIdRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  RankingsIndexRoute: RankingsIndexRoute,
+  RankingsClansChar123PageChar125Route: RankingsClansChar123PageChar125Route,
+  RankingsGlobalChar123PageChar125Route: RankingsGlobalChar123PageChar125Route,
+  RankingsLegendsChar123PageChar125Route:
+    RankingsLegendsChar123PageChar125Route,
+  RankingsWeaponsChar123PageChar125Route:
+    RankingsWeaponsChar123PageChar125Route,
   StatsClanClanIdRoute: StatsClanClanIdRoute,
   StatsPlayerPlayerIdRoute: StatsPlayerPlayerIdRouteWithChildren,
   Rankings1v1Char123RegionChar125Char123PageChar125Route:

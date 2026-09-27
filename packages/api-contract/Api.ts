@@ -20,6 +20,9 @@ import {
     Ranking2v2Schema,
     Ranking3v3Schema,
     SortablePlayerProp,
+    SortableLegendProp,
+    SortableWeaponProp,
+    Weapon,
     WeeklyRotationSchema,
 } from "./schemas"
 
@@ -70,6 +73,43 @@ const rankings = HttpApiGroup.make("rankings")
             {
                 query: {
                     sortBy: SortablePlayerProp,
+                    page: Schema.FiniteFromString,
+                },
+                success: GlobalPlayerRankingsSchema,
+            },
+        ),
+    )
+    /*
+     * The two boards that rank a player *within one legend or weapon*.
+     *
+     * They return the same row shape as the global board — a player and one
+     * number — because that is genuinely all they are; what differs is the
+     * filter and the column, both of which are query parameters rather than
+     * fields. A row carries no legend or weapon, because every row on a given
+     * board has the same one and the caller supplied it.
+     */
+    .add(
+        HttpApiEndpoint.get(
+            "getGlobalLegendRankings",
+            "/api/v1/rankings/legends",
+            {
+                query: {
+                    legendId: Schema.FiniteFromString,
+                    sortBy: SortableLegendProp,
+                    page: Schema.FiniteFromString,
+                },
+                success: GlobalPlayerRankingsSchema,
+            },
+        ),
+    )
+    .add(
+        HttpApiEndpoint.get(
+            "getGlobalWeaponRankings",
+            "/api/v1/rankings/weapons",
+            {
+                query: {
+                    weapon: Weapon,
+                    sortBy: SortableWeaponProp,
                     page: Schema.FiniteFromString,
                 },
                 success: GlobalPlayerRankingsSchema,

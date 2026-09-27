@@ -5,6 +5,7 @@ import { CorehallaApi } from "@crh/api-contract/Api"
 import { Brawlhalla } from "@crh/core/services/upstream"
 import { Content } from "./services/content"
 import { Database, searchKey } from "@crh/core/services/archive"
+import { Background } from "@crh/core/services/background"
 import { Lookup } from "@crh/core/services/lookup"
 import type { BHPlayerAlias } from "@crh/db/schema"
 import type { Ranking1v1, Ranking2v2, Ranking3v3 } from "@crh/bhapi/types"
@@ -17,13 +18,12 @@ import type { Ranking1v1, Ranking2v2, Ranking3v3 } from "@crh/bhapi/types"
  * would move it into `HttpRouter.Request<"Requires", …>`, which cannot be
  * discharged with `Layer.provide`.
  *
- * The database "warm the cache" writes the tRPC procedures fired and forgot are
- * kept as detached fibers so they never block the response.
+ * The archive writes a request makes about what it just read are handed to
+ * `Background` rather than awaited. `Effect.forkDetach` used to stand in for
+ * that, which detached the work but told the platform nothing: on Workers a
+ * fiber the runtime cannot see is cancelled when the response returns, so those
+ * writes were best-effort in the worst way. See `@crh/core/services/background`.
  */
-
-/** Runs a bookkeeping write without blocking the response. */
-const fireAndForget = (effect: Effect.Effect<unknown, unknown>) =>
-    Effect.forkDetach(effect.pipe(Effect.orDie))
 
 /**
  * Whether an upstream row is worth storing as an alias.
@@ -102,6 +102,7 @@ export const rankingsGroup = HttpApiBuilder.group(
         const brawlhalla = yield* Brawlhalla
         const db = yield* Database
         const content = yield* Content
+        const background = yield* Background
 
         return (
             handlers
@@ -114,7 +115,7 @@ export const rankingsGroup = HttpApiBuilder.group(
                             query.name,
                         )) as readonly Ranking1v1[]
 
-                        yield* fireAndForget(
+                        yield* background.run(
                             db.upsertPlayerAliases(
                                 rankings.flatMap((player) =>
                                     aliasRows({
@@ -153,6 +154,30 @@ export const rankingsGroup = HttpApiBuilder.group(
                         .getGlobalPlayerRankings(query.sortBy, query.page)
                         .pipe(Effect.orDie),
                 )
+                /*
+                 * The two per-legend / per-weapon boards. Archive reads like
+                 * the global one above: these are ours, not upstream, so there
+                 * is nothing to fall back to and a database failure is a real
+                 * failure rather than a reason to try somewhere else.
+                 */
+                .handle("getGlobalLegendRankings", ({ query }) =>
+                    db
+                        .getGlobalLegendRankings(
+                            query.legendId,
+                            query.sortBy,
+                            query.page,
+                        )
+                        .pipe(Effect.orDie),
+                )
+                .handle("getGlobalWeaponRankings", ({ query }) =>
+                    db
+                        .getGlobalWeaponRankings(
+                            query.weapon,
+                            query.sortBy,
+                            query.page,
+                        )
+                        .pipe(Effect.orDie),
+                )
                 .handle("getClansRankings", ({ query }) =>
                     db
                         .getClansRankings(query.name, query.page)
@@ -171,6 +196,7 @@ export const statsGroup = HttpApiBuilder.group(
     Effect.fnUntraced(function* (handlers) {
         const brawlhalla = yield* Brawlhalla
         const db = yield* Database
+        const background = yield* Background
 
         return (
             handlers
@@ -182,7 +208,7 @@ export const statsGroup = HttpApiBuilder.group(
 
                         if (!stats) return null
 
-                        yield* fireAndForget(
+                        yield* background.run(
                             db.upsertPlayerAliases(
                                 aliasRows({
                                     id: stats.brawlhalla_id,
@@ -193,7 +219,7 @@ export const statsGroup = HttpApiBuilder.group(
 
                         if (stats.clan) {
                             const clan = stats.clan
-                            yield* fireAndForget(
+                            yield* background.run(
                                 db.upsertClan({
                                     id: clan.clan_id.toString(),
                                     name: clan.clan_name,
@@ -225,7 +251,7 @@ export const statsGroup = HttpApiBuilder.group(
                                 .flatMap((player) => aliasRows(player)),
                         ]
 
-                        yield* fireAndForget(
+                        yield* background.run(
                             db.upsertPlayerAliases(rankedAliases),
                         )
 
@@ -246,7 +272,7 @@ export const statsGroup = HttpApiBuilder.group(
 
                         if (!ranked) return null
 
-                        yield* fireAndForget(
+                        yield* background.run(
                             db.upsertPlayerAliases(
                                 aliasRows({
                                     id: ranked.brawlhalla_id,
@@ -275,7 +301,7 @@ export const statsGroup = HttpApiBuilder.group(
 
                         if (!clan) return null
 
-                        yield* fireAndForget(
+                        yield* background.run(
                             db.upsertClan({
                                 id: clan.clan_id.toString(),
                                 name: clan.clan_name,
@@ -285,7 +311,7 @@ export const statsGroup = HttpApiBuilder.group(
                             }),
                         )
 
-                        yield* fireAndForget(
+                        yield* background.run(
                             db.upsertPlayerAliases(
                                 clan.clan.flatMap((member) =>
                                     aliasRows({

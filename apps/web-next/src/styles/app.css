@@ -58,6 +58,27 @@
         background-color: var(--color-bgVar1);
     }
 
+    /*
+     * The height of the sticky header stack, in one place.
+     *
+     * Two bars pin themselves to the top of the page — the masthead at `0`, the
+     * section nav directly beneath it — and a third thing pins itself *below*
+     * both: the ladder's filter row, which has to dock exactly under them or it
+     * either floats in the middle of the nav or leaves a strip of scrolling
+     * content showing through.
+     *
+     * That third offset used to be a hardcoded `top-14` matching a hardcoded
+     * masthead height, which worked only for as long as there was one bar. These
+     * variables are what let a second bar be added without the filter row
+     * silently landing in the wrong place — a failure that is invisible until
+     * someone scrolls.
+     */
+    :root {
+        --ch-masthead-h: 3.5rem;
+        --ch-nav-h: 2.5rem;
+        --ch-header-h: calc(var(--ch-masthead-h) + var(--ch-nav-h));
+    }
+
     body {
         min-height: 100dvh;
     }
@@ -344,10 +365,49 @@
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        height: 3.5rem;
+        height: var(--ch-masthead-h);
         padding-inline: 1rem;
         background: color-mix(in srgb, var(--color-bgVar2) 92%, transparent);
         backdrop-filter: blur(10px);
+    }
+
+    /*
+     * The section nav: the second pinned bar, holding the way to each rankings
+     * surface.
+     *
+     * `top: var(--ch-masthead-h)` rather than `0`, so the two bars stack instead
+     * of fighting for the same strip — and `z-index` one below the masthead, so
+     * the masthead's shadow falls on it rather than under it.
+     *
+     * The chips inside are the same parallelograms the ladder filters use, which
+     * is the point: the app already had a nav primitive and this is it. A
+     * separate set of nav styles would have to re-earn the cut, the uppercase
+     * cut and the hard shadow, and would then drift from them.
+     *
+     * `overflow-y: hidden` with `overflow-x: auto` is not decoration — a chip's
+     * shadow is drawn outside its own box, and a scroll container clips what it
+     * scrolls. The row is tall enough that the 3px shadow stays inside it, so
+     * horizontal overflow is available without shaving the chips' edges off.
+     */
+    .ch-nav {
+        position: sticky;
+        top: var(--ch-masthead-h);
+        z-index: 25;
+        height: var(--ch-nav-h);
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding-inline: 1rem;
+        background: color-mix(in srgb, var(--color-bgVar2) 92%, transparent);
+        box-shadow: 0 3px 0 0 var(--color-ink);
+        backdrop-filter: blur(10px);
+    }
+
+    .ch-nav > * {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        height: 100%;
+        width: fit-content;
     }
 
     .ch-mark {
