@@ -31,7 +31,7 @@ function Page() {
     const rows = to3v3Rows(useQuery(rankings3v3Atom(region, page)))
 
     return (
-        <main className="p-4">
+        <main className="ch-page">
             <LadderView
                 bracket="3v3"
                 region={region}

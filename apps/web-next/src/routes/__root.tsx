@@ -11,6 +11,7 @@ import {
 } from "@tanstack/react-router"
 import { HydrationBoundary, RegistryContext } from "@effect/atom-react"
 import { HoverPreviewLayer } from "@/components/HoverPreview"
+import { LandingBackground } from "@/components/layout/LandingBackground"
 import { SearchProvider, SearchTrigger } from "@/components/Search"
 import { Suspense, useMemo } from "react"
 import type { ReactNode } from "react"
@@ -55,15 +56,33 @@ function RootComponent() {
         <RegistryContext.Provider value={registry}>
             <HydrationBoundary state={dehydrated}>
                 {/*
+                 * Mounted once, outside every surface: the pattern is page
+                 * chrome, not a page's content, so it lives at the root and
+                 * nothing else paints a page-wide background over it.
+                 */}
+                <LandingBackground className="ch-landing" />
+                {/*
                  * One header for every page, holding the two things that must
                  * never move: the way home and the way to search. Home has no
                  * hero of its own because this *is* the compact hero — the
                  * ladder then starts immediately under it.
                  */}
                 <SearchProvider>
-                    <header className="flex items-center gap-3 border-b border-bg px-4 py-2">
-                        <Link to="/" className="font-bold">
-                            Corehalla
+                    {/*
+                     * The masthead is the poster's title bar: a skewed accent
+                     * badge, the wordmark in the display cut, and the search
+                     * field as the one wide control. It stays pinned so the
+                     * ladder's own sticky filter row can dock directly beneath
+                     * it at `top-14` — see `LadderView`.
+                     */}
+                    <header className="ch-masthead">
+                        <Link to="/" className="flex items-center gap-2">
+                            <span aria-hidden className="ch-mark">
+                                <span>C</span>
+                            </span>
+                            <span className="ch-display text-lg tracking-[0.02em]">
+                                Corehalla
+                            </span>
                         </Link>
                         <SearchTrigger className="flex-1" />
                     </header>

@@ -1,12 +1,18 @@
 @import "@fontsource/montserrat/400.css";
+@import "@fontsource/montserrat/500.css";
 @import "@fontsource/montserrat/600.css";
 @import "@fontsource/montserrat/700.css";
+@import "@fontsource/montserrat/800.css";
+@import "@fontsource/montserrat/900.css";
 @import "tailwindcss" source("../");
 
 /*
- * The design tokens from `apps/web`, kept so the study reads as the same product
- * while the visual design is redone later. Tailwind v4 is configured in CSS, so
- * this is the whole theme.
+ * Corehalla's palette, unchanged.
+ *
+ * The brand colours below are the same values `apps/web` ships, so the two apps
+ * still read as one product. The flat-vector treatment adds only neutrals:
+ * `ink` for the hard shadow, `panelDeep` for inset surfaces, and `accentDeep`
+ * for the solid hero plate.
  */
 @theme {
     --color-bgVar2: #1a1b23;
@@ -21,12 +27,959 @@
     --color-warning: #f3da57;
     --color-accentAlt: #e568d9;
     --color-accentAltVar1: #ff99e9;
+
+    /* Additions for the flat-vector treatment. */
+    --color-ink: #0b0c12;
+    --color-panelDeep: #232838;
+    --color-accentDeep: #2440b8;
+
+    --font-display: "Montserrat", sans-serif;
 }
 
 @layer base {
     html,
     body {
-        @apply bg-bgVar1 text-text;
+        @apply text-text;
         font-family: "Montserrat", sans-serif;
+    }
+
+    /*
+     * The page colour belongs on the root element, not on `body`, and that is
+     * load-bearing rather than tidiness. A background on `body` paints in the
+     * in-flow layer, which comes *after* every negative-z-index element — so an
+     * opaque `body` hides the landing pattern completely. On the root element
+     * the same colour becomes the canvas background instead, and the pattern
+     * paints on top of it.
+     *
+     * `body` is therefore deliberately left transparent. Anything that needs a
+     * surface of its own paints one, and the pattern shows through the gaps.
+     */
+    html {
+        background-color: var(--color-bgVar1);
+    }
+
+    body {
+        min-height: 100dvh;
+    }
+
+    ::selection {
+        background: var(--color-accent);
+        color: var(--color-text);
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--color-accentVar1);
+        outline-offset: 2px;
+    }
+
+    ::-webkit-scrollbar {
+        width: 0.6rem;
+        height: 0.6rem;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--color-bgVar2);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-bg);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--color-accent);
+    }
+}
+
+/*
+ * The visual language, in one place.
+ *
+ * Surfaces are flat, solid fills separated from the page by a hard, unblurred
+ * black shadow — no outlines, no gradients. Chips and tabs are parallelograms
+ * cut with `clip-path`, which is what gives the layout its diagonal momentum
+ * without rotating any content; because `clip-path` would clip a `box-shadow`,
+ * those use `filter: drop-shadow` so the shadow follows the cut silhouette.
+ */
+@layer components {
+    /* --- type ------------------------------------------------------------ */
+
+    .ch-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.64rem;
+        font-weight: 800;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: var(--color-accentVar1);
+    }
+
+    .ch-display {
+        font-family: var(--font-display);
+        font-weight: 800;
+        letter-spacing: -0.01em;
+        line-height: 0.98;
+        text-transform: uppercase;
+        color: var(--color-text);
+    }
+
+    /* A section label with an accent block, the poster's "bullet". */
+    .ch-section-title {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: var(--font-display);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--color-text);
+    }
+
+    .ch-section-title::before {
+        content: "";
+        display: block;
+        flex: none;
+        width: 0.3rem;
+        height: 0.9rem;
+        transform: skewX(-14deg);
+        background: var(--color-accent);
+    }
+
+    /* --- surfaces -------------------------------------------------------- */
+
+    .ch-panel {
+        background: var(--color-bg);
+    }
+
+    .ch-panel-deep {
+        background: var(--color-bgVar2);
+    }
+
+    /*
+     * The page hero: a solid accent plate. The kicker switches to warning
+     * yellow because the accent blue it normally wears would sit on top of a
+     * blue field.
+     */
+    .ch-hero {
+        background: var(--color-accentDeep);
+        padding: 0.9rem 1rem;
+    }
+
+    .ch-hero .ch-kicker {
+        color: var(--color-warning);
+    }
+
+    /* A panel with a solid accent block along its top edge. */
+    .ch-panel-ribbon {
+        position: relative;
+        overflow: hidden;
+        background: var(--color-bg);
+    }
+
+    .ch-panel-ribbon::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 5px;
+        background: var(--color-accent);
+    }
+
+    /* --- chips and tabs (parallelograms) --------------------------------- */
+
+    .ch-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.28rem 0.7rem;
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        clip-path: polygon(7px 0, 100% 0, calc(100% - 7px) 100%, 0 100%);
+        filter: drop-shadow(3px 3px 0 var(--color-ink));
+        transition:
+            transform 120ms ease,
+            filter 120ms ease,
+            background-color 120ms ease,
+            color 120ms ease;
+    }
+
+    .ch-chip:hover {
+        transform: translate(-1px, -1px);
+        filter: drop-shadow(4px 4px 0 var(--color-ink));
+    }
+
+    .ch-chip:active {
+        transform: translate(2px, 2px);
+        filter: drop-shadow(1px 1px 0 var(--color-ink));
+    }
+
+    .ch-chip-on {
+        background: var(--color-accent);
+        color: var(--color-text);
+    }
+
+    .ch-chip-off {
+        background: var(--color-panelDeep);
+        color: var(--color-textVar1);
+    }
+
+    .ch-chip-off:hover {
+        background: var(--color-bg);
+        color: var(--color-text);
+    }
+
+    .ch-tab {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.38rem 0.95rem;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        color: var(--color-textVar1);
+        background: var(--color-panelDeep);
+        clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+        filter: drop-shadow(3px 3px 0 var(--color-ink));
+        transition:
+            background-color 120ms ease,
+            color 120ms ease;
+    }
+
+    .ch-tab:hover {
+        background: var(--color-bg);
+        color: var(--color-text);
+    }
+
+    .ch-tab-on {
+        background: var(--color-accent);
+        color: var(--color-text);
+    }
+
+    /* --- buttons and fields ---------------------------------------------- */
+
+    .ch-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: var(--color-bg);
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-text);
+        box-shadow: 4px 4px 0 0 var(--color-ink);
+        transition:
+            transform 120ms ease,
+            box-shadow 120ms ease,
+            background-color 120ms ease;
+    }
+
+    .ch-btn:hover {
+        background: var(--color-accent);
+        transform: translate(-1px, -1px);
+        box-shadow: 5px 5px 0 0 var(--color-ink);
+    }
+
+    .ch-btn:active {
+        transform: translate(3px, 3px);
+        box-shadow: 1px 1px 0 0 var(--color-ink);
+    }
+
+    .ch-field {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        background: var(--color-bg);
+        padding: 0.3rem 0.6rem;
+        font-size: 0.78rem;
+        text-align: left;
+        color: var(--color-textVar1);
+        transition:
+            background-color 120ms ease,
+            color 120ms ease;
+    }
+
+    .ch-field:hover {
+        background: var(--color-bgVar2);
+        color: var(--color-text);
+    }
+
+    .ch-kbd {
+        display: grid;
+        place-items: center;
+        flex: none;
+        min-width: 1.3rem;
+        height: 1.3rem;
+        padding-inline: 0.25rem;
+        background: var(--color-bgVar2);
+        font-size: 0.68rem;
+        font-weight: 800;
+        color: var(--color-textVar1);
+    }
+
+    /* Recessed by an inset shadow rather than an outline. */
+    .ch-input {
+        width: 100%;
+        background: var(--color-bgVar2);
+        padding: 0.5rem 0.65rem;
+        font-size: 0.85rem;
+        color: var(--color-text);
+    }
+
+    .ch-input::placeholder {
+        color: var(--color-textVar1);
+    }
+
+    /* --- masthead -------------------------------------------------------- */
+
+    .ch-masthead {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        height: 3.5rem;
+        padding-inline: 1rem;
+        background: color-mix(in srgb, var(--color-bgVar2) 92%, transparent);
+        backdrop-filter: blur(10px);
+    }
+
+    .ch-mark {
+        display: grid;
+        place-items: center;
+        flex: none;
+        width: 1.85rem;
+        height: 1.85rem;
+        transform: skewX(-12deg);
+        background: var(--color-accent);
+        color: var(--color-text);
+        font-size: 0.9rem;
+        font-weight: 900;
+        box-shadow: 3px 3px 0 0 var(--color-ink);
+    }
+
+    .ch-mark > * {
+        transform: skewX(12deg);
+    }
+
+    /* --- layout ---------------------------------------------------------- */
+
+    /*
+     * One page column for every route.
+     *
+     * 72rem is deliberately between two failure modes: the old 58rem hemmed the
+     * card grids in on a large display, while taking it as wide as the viewport
+     * turns the ladder's player column into a corridor of empty space. The
+     * legacy client runs at 80rem if you want to go further.
+     */
+    .ch-page {
+        width: 100%;
+        max-width: 72rem;
+        margin-inline: auto;
+        padding: 1.25rem 1rem 4rem;
+    }
+
+    /* --- table ----------------------------------------------------------- */
+
+    .ch-table-head {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: var(--color-bgVar2);
+        padding: 0.4rem 0.75rem;
+        font-size: 0.6rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--color-textVar1);
+        box-shadow: 0 3px 0 0 var(--color-ink);
+    }
+
+    .ch-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid rgb(11 12 18 / 0.55);
+        transition: background-color 120ms ease;
+    }
+
+    .ch-row:last-child {
+        border-bottom: 0;
+    }
+
+    .ch-row:hover {
+        background: var(--color-bgVar2);
+    }
+
+    .ch-rank {
+        display: grid;
+        place-items: center;
+        flex: none;
+        width: 1.75rem;
+        height: 1.75rem;
+        transform: skewX(-10deg);
+        background: var(--color-panelDeep);
+        color: var(--color-textVar1);
+        font-size: 0.7rem;
+        font-weight: 800;
+        box-shadow: 3px 3px 0 0 var(--color-ink);
+    }
+
+    .ch-rank > * {
+        transform: skewX(10deg);
+    }
+
+    .ch-rank-1 {
+        background: var(--color-warning);
+        color: var(--color-ink);
+    }
+
+    .ch-rank-2 {
+        background: var(--color-accentVar1);
+        color: var(--color-ink);
+    }
+
+    .ch-rank-3 {
+        background: var(--color-accent);
+        color: var(--color-text);
+    }
+
+    /* The tier colour arrives as `--ch-tier` from the row's data. */
+    .ch-tier {
+        display: inline-block;
+        background: color-mix(
+            in srgb,
+            var(--ch-tier, var(--color-textVar1)) 18%,
+            transparent
+        );
+        color: var(--ch-tier, var(--color-textVar1));
+        padding: 0.1rem 0.42rem;
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .ch-rating {
+        flex: none;
+        font-size: 0.85rem;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        color: var(--color-text);
+    }
+
+    /* --- stat tiles ------------------------------------------------------ */
+
+    .ch-stat {
+        background: var(--color-bgVar2);
+        padding: 0.45rem 0.55rem;
+    }
+
+    .ch-stat-label {
+        font-size: 0.6rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--color-textVar1);
+    }
+
+    .ch-stat-value {
+        font-size: 0.98rem;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        color: var(--color-text);
+    }
+
+    /* --- links and search rows ------------------------------------------- */
+
+    .ch-link {
+        color: var(--color-text);
+        text-decoration: none;
+        transition: color 120ms ease;
+    }
+
+    .ch-link:hover {
+        color: var(--color-accentVar1);
+    }
+
+    .ch-result {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.1rem;
+        padding: 0.45rem 0.6rem;
+        text-align: left;
+        transition:
+            background-color 100ms ease,
+            box-shadow 100ms ease;
+    }
+
+    /* The active row is marked with an inset accent shadow, not a border. */
+    .ch-result-on {
+        background: var(--color-bg);
+        box-shadow: inset 4px 0 0 0 var(--color-accent);
+    }
+
+    /* --- cards ----------------------------------------------------------- */
+
+    .ch-card-title {
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--color-textVar1);
+    }
+
+    /* A recessed well, for stat grids nested inside a card. */
+    .ch-card-inset {
+        background: var(--color-bgVar2);
+    }
+
+    /* A flat, quiet card for "no data" notes. */
+    .ch-card-muted {
+        background: var(--color-bgVar2);
+    }
+
+    /* --- progress -------------------------------------------------------- */
+
+    /*
+     * Bars are cut like the chips — the same lean the chips and the legend dots
+     * carry, so a filled bar reads as the same family of shape.
+     *
+     * The whole bar is skewed as one element rather than each piece being
+     * clipped. That keeps every edge parallel, including the gaps between
+     * pieces, and leaves a piece free to carry a real border — a border and a
+     * `clip-path` cannot coexist, because the clip cuts the border away exactly
+     * where the slant is.
+     *
+     * `--ch-fill` is the only thing a role class sets; the shape rules never
+     * mention colour, which is what lets a piece and its legend dot share one.
+     */
+    .ch-progress {
+        --ch-skew: 15deg;
+        --ch-fill: var(--color-accent);
+        position: relative;
+        width: 100%;
+        height: 0.5rem;
+        background: var(--color-bgVar2);
+        transform: skewX(calc(-1 * var(--ch-skew)));
+    }
+
+    .ch-progress-sm {
+        height: 0.3rem;
+    }
+
+    /* A plain rectangle inside a skewed bar: the skew supplies the cut. */
+    .ch-progress > span {
+        position: absolute;
+        inset: 0 auto 0 0;
+        display: block;
+        background: var(--ch-fill);
+    }
+
+    /*
+     * A bar split into proportional pieces. No track: the gap is transparent, so
+     * a split bar shows the surface it sits on between its pieces.
+     */
+    .ch-progress-split {
+        --ch-skew: 15deg;
+        display: flex;
+        gap: 5px;
+        width: 100%;
+        height: 0.5rem;
+        transform: skewX(calc(-1 * var(--ch-skew)));
+    }
+
+    .ch-progress-split-sm {
+        gap: 4px;
+        height: 0.3rem;
+    }
+
+    .ch-progress-split > span {
+        flex-basis: 0;
+        min-width: 0;
+        background: var(--ch-fill);
+    }
+
+    /*
+     * The share no piece accounts for: a hollow slot rather than one more
+     * category, so a breakdown that does not add up reads as unfinished. It
+     * still holds its space, which is what keeps the pieces sized against the
+     * total rather than against their own sum.
+     */
+    .ch-progress-rest {
+        flex-basis: 0;
+        min-width: 0;
+        border: 1.5px solid
+            color-mix(in srgb, var(--color-textVar1) 32%, transparent);
+    }
+
+    /* --- fill roles ------------------------------------------------------ */
+
+    /*
+     * One vocabulary for "which colour", shared by the bar segments and the
+     * legend marks that name them. Each rule sets `--ch-fill` and nothing else,
+     * so the shape rules stay colour-blind and a dot and the segment it labels
+     * can carry the same class.
+     */
+    .ch-fill-blue {
+        --ch-fill: var(--color-accent);
+    }
+
+    .ch-fill-cyan {
+        --ch-fill: var(--color-accentVar1);
+    }
+
+    .ch-fill-green {
+        --ch-fill: var(--color-success);
+    }
+
+    .ch-fill-orange {
+        --ch-fill: var(--color-danger);
+    }
+
+    .ch-fill-yellow {
+        --ch-fill: var(--color-warning);
+    }
+
+    .ch-fill-pink {
+        --ch-fill: var(--color-accentAlt);
+    }
+
+    /* The legend mark for a segment: the same cut, scaled down. */
+    .ch-dot {
+        display: block;
+        flex: none;
+        width: 0.6rem;
+        height: 0.6rem;
+        margin-top: 0.15rem;
+        transform: skewX(-15deg);
+        background: var(--ch-fill, var(--color-accent));
+    }
+
+    /*
+     * A slanted art tile — a region flag, a legend portrait, a weapon.
+     *
+     * `clip-path` rather than `transform: skew` on purpose: a skew would lean the
+     * artwork itself, and a flag or a face that leans reads as broken rather than
+     * as styled. Cutting the frame leaves the image upright inside a leaning
+     * tile, which is the same trick the chips use. The shadow goes through
+     * `drop-shadow` because `clip-path` discards a `box-shadow`.
+     *
+     * The width is the height *plus* the slant. The cut removes a slant's worth
+     * of width from every row, so a square source would otherwise render as a
+     * noticeably tall rectangle; adding it back makes the top edge exactly as
+     * long as the tile is tall, which is what reads as a sheared square.
+     *
+     * Sizing therefore lives here rather than at the call site — a caller
+     * passing `w-8 h-8` would undo the compensation.
+     */
+    .ch-thumb {
+        --ch-thumb-size: 2rem;
+        --ch-thumb-slant: 5px;
+        display: block;
+        flex: none;
+        width: calc(var(--ch-thumb-size) + var(--ch-thumb-slant));
+        height: var(--ch-thumb-size);
+        object-fit: cover;
+        clip-path: polygon(
+            var(--ch-thumb-slant) 0,
+            100% 0,
+            calc(100% - var(--ch-thumb-slant)) 100%,
+            0 100%
+        );
+        filter: drop-shadow(2px 2px 0 var(--color-ink));
+    }
+
+    .ch-thumb-lg {
+        --ch-thumb-size: 2.25rem;
+    }
+
+    /* --- nameplate ------------------------------------------------------- */
+
+    /*
+     * The players' names, on an accent plate with the region flag filling its
+     * left end.
+     *
+     * The plate is the one place on a card where text sits on a fill rather than
+     * on the card itself, which is what makes a 2v2 pair read as a single unit
+     * instead of two links that happen to be adjacent.
+     *
+     * It is pulled left past the card's padding so it overhangs the card edge —
+     * the names start where the card does, and the plate's slant is what carries
+     * the eye back in. The overhang is a quarter rem, well inside the team
+     * grid's gap, so it never reaches a neighbouring card.
+     *
+     * The right margin is not spacing: it reserves the corner the ranked banner
+     * occupies. `max-width` does the same job for a plate that grows, and the
+     * two together keep the names out from under the banner at any name length.
+     */
+    .ch-nameplate {
+        --ch-flag-size: 2.25rem;
+        --ch-plate-slant: 0.55rem;
+        display: flex;
+        align-items: stretch;
+        width: fit-content;
+        max-width: calc(100% - 3rem);
+        margin: 0rem 0 0.75rem -1.65rem;
+        background: var(--color-accent);
+        clip-path: polygon(
+            var(--ch-plate-slant) 0,
+            100% 0,
+            calc(100% - var(--ch-plate-slant)) 100%,
+            0 100%
+        );
+        filter: drop-shadow(3px 3px 0 var(--color-ink));
+    }
+
+    /*
+     * The flag is cut and sized exactly like the header's portrait tiles: the
+     * width is the height *plus* the slant, so the cut leaves a top edge as long
+     * as the tile is tall — a sheared square rather than a tall rectangle.
+     *
+     * The height is stated rather than left to the plate for that reason.
+     * `align-self: stretch` would fill the plate, but the width would have
+     * nothing to measure against, so the square relationship would be lost.
+     * Stating 2.25rem also lands the plate on the same height a bare names row
+     * had, which is what keeps the ranked banner's height deciding whether the
+     * win/loss row below it needs to step aside.
+     */
+    .ch-nameplate-flag {
+        display: block;
+        flex: none;
+        width: calc(var(--ch-flag-size) + var(--ch-plate-slant));
+        height: var(--ch-flag-size);
+        object-fit: cover;
+        clip-path: polygon(
+            var(--ch-plate-slant) 0,
+            100% 0,
+            calc(100% - var(--ch-plate-slant)) 100%,
+            0 100%
+        );
+    }
+
+    /*
+     * The row's height is pinned to the flag's rather than left to its own line
+     * box. The line height it would otherwise inherit from the page is 1.5, so
+     * a 0.875rem font gave a 21px line: 21 + 16px of padding is 37px against a
+     * 36px flag, which left a one-pixel strip of the plate showing under the
+     * flag. Stating both the line height and a `min-height` keeps the two the
+     * same height by construction.
+     */
+    .ch-nameplate-names {
+        display: flex;
+        min-width: 0;
+        min-height: var(--ch-flag-size);
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.5rem 1.4rem 0.5rem 0.85rem;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        font-weight: 600;
+        color: var(--color-text);
+    }
+
+    /*
+     * Links on the plate: white, then yellow on hover. The usual accent hover
+     * would be invisible here — it is the plate's own colour.
+     */
+    .ch-nameplate .ch-link {
+        color: var(--color-text);
+    }
+
+    .ch-nameplate .ch-link:hover {
+        color: var(--color-warning);
+    }
+
+    /*
+     * The tier's ranked banner, pinned to the card's top-right corner as a solid
+     * sticker and laid over the content.
+     *
+     * Solid rather than ghosted: this is the only piece of the game's own rank
+     * art on the profile, and at full opacity it reads as one of the card's
+     * shapes instead of a smudge behind the text.
+     *
+     * It carries no cut and no tilt — the banner art is a finished rectangle and
+     * the parallelogram treatment belongs to the small square tiles, not to it.
+     * The shadow goes through `drop-shadow` rather than `box-shadow` so it hugs
+     * the art, which has transparent margins: a `box-shadow` would draw a hard
+     * rectangle behind them.
+     *
+     * The height is left to the image rather than fixed, because a fixed box
+     * means `object-fit: cover` and a crop — the banners are 246px to 330px tall
+     * at the same width, so a fixed box cuts a quarter off the tallest ones.
+     * Running their natural length costs a little variation between tiers and
+     * keeps every banner whole.
+     *
+     * It sits above the content so it reads as pinned over the card, and the
+     * win/loss bar passes underneath it. The one thing it must not swallow is a
+     * team name, so the name row reserves this corner with its own right padding
+     * rather than relying on names happening to be short.
+     *
+     * It overhangs the card's top and right. The overhang is kept inside the team
+     * grid's `gap-4` — with room to spare for the shadow — so it never lands on
+     * a neighbouring card, and the corner gets its layered look without any
+     * z-index juggling.
+     */
+    .ch-card-banner {
+        position: absolute;
+        top: -0.32rem;
+        right: 0.5rem;
+        z-index: 1;
+        width: 4.5rem;
+        height: auto;
+        filter: drop-shadow(3px 3px 0 var(--color-ink));
+        pointer-events: none;
+    }
+
+    /* --- underline tabs -------------------------------------------------- */
+
+    /* The track is an inset neutral shadow, so the active tab's accent bar
+       reads as sitting in a groove rather than on a black rule. */
+    .ch-tabline {
+        display: flex;
+        overflow-x: auto;
+        box-shadow: inset 0 -3px 0 0 var(--color-panelDeep);
+    }
+
+    .ch-tablink {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        height: 3rem;
+        padding-inline: 1rem;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        color: var(--color-textVar1);
+        transition:
+            color 120ms ease,
+            background-color 120ms ease;
+    }
+
+    .ch-tablink::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 3px;
+        background: var(--color-accent);
+        transform: scaleX(0);
+        transition: transform 150ms ease;
+    }
+
+    .ch-tablink:hover {
+        background: var(--color-bgVar2);
+        color: var(--color-text);
+    }
+
+    .ch-tablink:hover::after {
+        transform: scaleX(0.35);
+    }
+
+    .ch-tablink-on {
+        color: var(--color-text);
+    }
+
+    .ch-tablink-on::after {
+        transform: scaleX(1);
+    }
+
+    /* --- disclosure ------------------------------------------------------ */
+
+    .ch-collapse {
+        overflow: hidden;
+        background: var(--color-bg);
+    }
+
+    .ch-collapse > summary {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.6rem 0.8rem;
+        cursor: pointer;
+        list-style: none;
+        transition: background-color 120ms ease;
+    }
+
+    .ch-collapse > summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .ch-collapse > summary:hover {
+        background: var(--color-bgVar2);
+    }
+
+    .ch-collapse[open] > summary {
+        box-shadow: 0 3px 0 0 var(--color-ink);
+    }
+
+    .ch-collapse-body {
+        padding: 0.85rem;
+        background: var(--color-bgVar2);
+    }
+
+    /* --- select ---------------------------------------------------------- */
+
+    .ch-select {
+        width: 100%;
+        appearance: none;
+        cursor: pointer;
+        background: var(--color-bg);
+        padding: 0.45rem 2rem 0.45rem 0.7rem;
+        font-family: inherit;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--color-text);
+        transition: background-color 120ms ease;
+    }
+
+    .ch-select:hover {
+        background: var(--color-bgVar2);
+    }
+
+    .ch-select:focus {
+        background: var(--color-bgVar2);
+    }
+
+    /* --- landing background --------------------------------------------- */
+
+    /*
+     * The landing pattern sits behind everything: `absolute` at the document
+     * origin on a negative z-index, so it scrolls away with the page while the
+     * component's own parallax pushes its layers down at different rates.
+     *
+     * It paints above the canvas background and below every in-flow box, which
+     * is why nothing else may paint a page-wide background — the cards are
+     * opaque and the pattern shows through the gaps between them.
+     *
+     * It occupies the top five sixths and fades out at its lower edge, so the
+     * shapes dissolve into the page rather than being sliced off at the SVG's
+     * boundary. The gradient is an alpha ramp in a `mask-image`, not a painted
+     * gradient — it never contributes colour to the design.
+     */
+    .ch-landing {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: -10;
+        width: 100%;
+        height: 83.3333vh;
+        pointer-events: none;
+        mask-image: linear-gradient(0deg, transparent 0%, #000 40%);
     }
 }

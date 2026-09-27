@@ -263,10 +263,10 @@ const SearchOverlay = () => {
     return (
         <Dialog.Root open={isOpen} onOpenChange={(next) => !next && close()}>
             <Dialog.Portal>
-                <Dialog.Overlay className="fixed inset-0 z-40 bg-black/60" />
+                <Dialog.Overlay className="fixed inset-0 z-40 bg-ink/75 backdrop-blur-sm" />
                 <Dialog.Content
                     aria-describedby={undefined}
-                    className="fixed left-1/2 top-16 z-50 w-[95vw] max-w-xl -translate-x-1/2 rounded-lg border border-bg bg-bgVar2 p-3"
+                    className="ch-panel fixed left-1/2 top-16 z-50 w-[95vw] max-w-xl -translate-x-1/2 p-3"
                 >
                     <Dialog.Title className="sr-only">
                         Search players and clans
@@ -282,7 +282,7 @@ const SearchOverlay = () => {
                         onKeyDown={onKeyDown}
                         placeholder="Search players and clans…"
                         aria-label="Search players and clans"
-                        className="w-full rounded border border-bg bg-bgVar1 px-2 py-2 text-sm outline-none"
+                        className="ch-input"
                     />
 
                     <div className="mt-2 max-h-[60vh] overflow-y-auto">
@@ -311,9 +311,7 @@ const SearchOverlay = () => {
                         )}
 
                         {status === "recents" && (
-                            <p className="px-2 py-1 text-xs uppercase text-textVar1">
-                                Recent
-                            </p>
+                            <p className="ch-kicker px-2 py-1">Recent</p>
                         )}
 
                         {status !== "pending" &&
@@ -324,11 +322,15 @@ const SearchOverlay = () => {
                                     onMouseEnter={() => setHighlighted(index)}
                                     onClick={() => go(row)}
                                     className={
-                                        "flex w-full flex-col items-start gap-0.5 rounded px-2 py-2 text-left " +
-                                        (index === highlighted ? "bg-bg" : "")
+                                        "ch-result " +
+                                        (index === highlighted
+                                            ? "ch-result-on"
+                                            : "")
                                     }
                                 >
-                                    <span className="text-sm">{row.name}</span>
+                                    <span className="text-sm font-semibold">
+                                        {row.name}
+                                    </span>
                                     <span className="text-xs text-textVar1">
                                         {row.meta}
                                     </span>
@@ -355,12 +357,10 @@ export const SearchTrigger = ({ className }: { readonly className?: string }) =>
             type="button"
             onClick={open}
             data-search-trigger
-            className={
-                "rounded border border-bg bg-bg px-2 py-1 text-left text-sm text-textVar1 hover:text-text " +
-                (className ?? "")
-            }
+            className={"ch-field " + (className ?? "")}
         >
-            Search players and clans <span className="opacity-60">/</span>
+            <span>Search players and clans</span>
+            <kbd className="ch-kbd">/</kbd>
         </button>
     )
 }

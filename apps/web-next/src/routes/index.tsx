@@ -9,9 +9,9 @@ import { preloadAtoms, rankings1v1Atom, useQuery } from "@/effect/atoms"
  *
  * That is the single biggest action-budget decision in the design: browsing the
  * rankings costs **zero** actions instead of one, because the live table is what
- * loads rather than something you navigate to. The hero is therefore one line —
- * a wordmark and the search affordance — and hands the rest of the viewport to
- * the table.
+ * loads rather than something you navigate to. The hero is therefore the
+ * masthead plus a single title band — a wordmark, the search affordance, and one
+ * heading — and hands the rest of the viewport to the table.
  *
  * Favorites and news sit below the ladder rather than above it, for the same
  * reason: anything placed first delays the first row of ranks.
@@ -26,7 +26,7 @@ function Page() {
     const rows = to1v1Rows(useQuery(rankings1v1Atom("all", 1)))
 
     return (
-        <main className="p-4">
+        <main className="ch-page">
             <LadderView
                 bracket="1v1"
                 region="all"

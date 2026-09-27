@@ -158,7 +158,7 @@ const CardShell = ({
             style={{ width: CARD_WIDTH, ...cardStyle(target) }}
             onMouseEnter={onEnter}
             onMouseLeave={onLeave}
-            className="pointer-events-auto fixed z-40 block rounded-lg border border-bg bg-bgVar2 p-3 text-sm shadow-lg"
+            className="ch-panel pointer-events-auto fixed z-40 block p-3 text-sm"
         >
             {children}
         </Link>
@@ -211,7 +211,10 @@ const PlayerPreview = ({ target, onEnter, onLeave }: CardProps) => {
     return (
         <CardShell target={target} onEnter={onEnter} onLeave={onLeave}>
             <div className="flex flex-col gap-1.5">
-                <p className="font-semibold">{name}</p>
+                <div>
+                    <p className="ch-kicker">Player</p>
+                    <p className="ch-display mt-0.5 text-base">{name}</p>
+                </div>
 
                 {ranked ? (
                     <Row
@@ -266,9 +269,12 @@ const ClanPreview = ({ target, onEnter, onLeave }: CardProps) => {
     return (
         <CardShell target={target} onEnter={onEnter} onLeave={onLeave}>
             <div className="flex flex-col gap-1.5">
-                <p className="font-semibold">
-                    {cleanString(clan.clan_name)}
-                </p>
+                <div>
+                    <p className="ch-kicker">Clan</p>
+                    <p className="ch-display mt-0.5 text-base">
+                        {cleanString(clan.clan_name)}
+                    </p>
+                </div>
                 <Row
                     label="Clan XP"
                     value={Number(clan.clan_xp).toLocaleString()}
@@ -280,10 +286,8 @@ const ClanPreview = ({ target, onEnter, onLeave }: CardProps) => {
                     )}`}
                 />
                 {members.length > 0 ? (
-                    <div className="flex flex-col gap-0.5 border-t border-bg pt-1.5">
-                        <span className="text-xs text-textVar1">
-                            Top members
-                        </span>
+                    <div className="flex flex-col gap-0.5 border-t border-ink/50 pt-1.5">
+                        <span className="ch-kicker">Top members</span>
                         {members.slice(0, 3).map((member) => (
                             <span
                                 key={member.brawlhalla_id}
@@ -315,7 +319,9 @@ const Row = ({
     readonly value: string
 }) => (
     <div className="flex gap-2">
-        <span className="w-16 shrink-0 text-xs text-textVar1">{label}</span>
+        <span className="w-16 shrink-0 text-[0.6rem] font-bold uppercase tracking-[0.12em] text-textVar1">
+            {label}
+        </span>
         <span className="flex-1 text-xs">{value}</span>
     </div>
 )

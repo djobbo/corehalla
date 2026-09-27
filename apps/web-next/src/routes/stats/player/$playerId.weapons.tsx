@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { PlayerTabContent } from "@/components/player/PlayerTabContent"
+import { WeaponsTab } from "@/components/player/WeaponsTab"
 
 export const Route = createFileRoute("/stats/player/$playerId/weapons")({
     component: Page,
@@ -8,5 +8,5 @@ export const Route = createFileRoute("/stats/player/$playerId/weapons")({
 function Page() {
     const { playerId } = Route.useParams()
 
-    return <PlayerTabContent playerId={Number(playerId)} tab="weapons" />
+    return <WeaponsTab playerId={Number(playerId)} />
 }

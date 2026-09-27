@@ -31,7 +31,7 @@ function Page() {
     const rows = to1v1Rows(useQuery(rankings1v1Atom(region, page)))
 
     return (
-        <main className="p-4">
+        <main className="ch-page">
             <LadderView
                 bracket="1v1"
                 region={region}

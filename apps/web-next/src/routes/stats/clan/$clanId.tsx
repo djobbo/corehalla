@@ -18,7 +18,7 @@ function Page() {
     const { clanId } = Route.useParams()
 
     return (
-        <main className="p-4">
+        <main className="ch-page">
             <ClanIdentity clanId={Number(clanId)} />
             <div className="mt-4">
                 <ClanBody clanId={Number(clanId)} />

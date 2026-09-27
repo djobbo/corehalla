@@ -1,0 +1,204 @@
+import { useMemo, useState } from "react"
+import { Card } from "@/components/ui/Card"
+import { SelectField } from "@/components/ui/SelectField"
+import { SortControl } from "@/components/ui/SortControl"
+import { StatGrid } from "@/components/ui/StatGrid"
+import { LegendRow } from "./LegendRow"
+import { usePlayerDerived } from "./usePlayerDerived"
+import { ratio } from "@/lib/stats"
+import { useSortBy } from "@/lib/useSortBy"
+import { calculateWinrate } from "@crh/bhapi/helpers/calculateWinrate"
+import { weapons as allWeapons } from "@crh/bhapi/constants"
+import { formatTime } from "@crh/common/helpers/date"
+import type { FullLegend } from "@crh/bhapi/legends"
+import type { SortOption } from "@/lib/useSortBy"
+import type { Stat } from "@/components/ui/StatGrid"
+import type { Weapon } from "@crh/bhapi/constants"
+
+/**
+ * Every legend on the account, as one sortable, filterable list.
+ *
+ * The list is the tab, so it is ordered by whatever the control says and each
+ * collapsed row shows the figure being sorted on. That is the whole reason the
+ * rows are collapsed: sixty legends is a table, not sixty cards.
+ */
+
+type LegendSort =
+    | "level"
+    | "matchtime"
+    | "games"
+    | "wins"
+    | "losses"
+    | "winrate"
+    | "rating"
+    | "peak"
+    | "name"
+
+const games = (legend: FullLegend): number => legend.stats?.games ?? 0
+const wins = (legend: FullLegend): number => legend.stats?.wins ?? 0
+const losses = (legend: FullLegend): number => games(legend) - wins(legend)
+const winrate = (legend: FullLegend): number =>
+    calculateWinrate(wins(legend), games(legend))
+
+/*
+ * Module scope on purpose: `useSortBy` sorts on every render and reads the
+ * comparator by key, so a fresh record per render would only churn.
+ */
+const sortOptions: Record<LegendSort, SortOption<FullLegend>> = {
+    level: {
+        label: "Level",
+        compare: (a, b) => (a.stats?.level ?? 0) - (b.stats?.level ?? 0),
+        display: (legend) =>
+            `Level ${legend.stats?.level ?? 0} · ${(legend.stats?.xp ?? 0).toLocaleString()} xp`,
+    },
+    matchtime: {
+        label: "Time played",
+        compare: (a, b) =>
+            (a.stats?.matchtime ?? 0) - (b.stats?.matchtime ?? 0),
+        display: (legend) => formatTime(legend.stats?.matchtime ?? 0),
+    },
+    games: {
+        label: "Games",
+        compare: (a, b) => games(a) - games(b),
+        display: (legend) => `${games(legend).toLocaleString()} games`,
+    },
+    wins: {
+        label: "Wins",
+        compare: (a, b) => wins(a) - wins(b),
+        display: (legend) => `${wins(legend).toLocaleString()} wins`,
+    },
+    losses: {
+        label: "Losses",
+        compare: (a, b) => losses(a) - losses(b),
+        display: (legend) => `${losses(legend).toLocaleString()} losses`,
+    },
+    winrate: {
+        label: "Winrate",
+        compare: (a, b) => winrate(a) - winrate(b),
+        display: (legend) => `${winrate(legend).toFixed(2)}% winrate`,
+    },
+    rating: {
+        label: "Elo",
+        compare: (a, b) => (a.ranked?.rating ?? 0) - (b.ranked?.rating ?? 0),
+        display: (legend) => `${legend.ranked?.rating ?? 0} elo`,
+    },
+    peak: {
+        label: "Peak elo",
+        compare: (a, b) =>
+            (a.ranked?.peak_rating ?? 0) - (b.ranked?.peak_rating ?? 0),
+        display: (legend) => `${legend.ranked?.peak_rating ?? 0} peak elo`,
+    },
+    name: {
+        label: "Name",
+        compare: (a, b) => a.bio_name.localeCompare(b.bio_name),
+    },
+}
+
+const weaponChoices: readonly { value: Weapon | ""; label: string }[] = [
+    { value: "", label: "All weapons" },
+    ...allWeapons.map((weapon) => ({ value: weapon, label: weapon })),
+]
+
+export const LegendsTab = ({ playerId }: { readonly playerId: number }) => {
+    const player = usePlayerDerived(playerId)
+    const [weaponFilter, setWeaponFilter] = useState<Weapon | "">("")
+
+    const legends = useMemo(() => player?.legends ?? [], [player])
+
+    const filtered = useMemo(
+        () =>
+            legends.filter(
+                (legend) =>
+                    weaponFilter === "" ||
+                    legend.weapon_one === weaponFilter ||
+                    legend.weapon_two === weaponFilter,
+            ),
+        [legends, weaponFilter],
+    )
+
+    const sort = useSortBy(filtered, sortOptions, "level", "desc")
+
+    if (!player) return null
+
+    const { stats, totals } = player
+    const matchtime = totals.matchtime
+
+    const played = filtered.filter(
+        (legend) => (legend.stats?.matchtime ?? 0) > 0,
+    ).length
+    const rankedPlayed = filtered.filter(
+        (legend) => (legend.ranked?.games ?? 0) > 0,
+    ).length
+    const totalLevel = filtered.reduce(
+        (sum, legend) => sum + (legend.stats?.level ?? 0),
+        0,
+    )
+
+    const summary: Stat[] = [
+        {
+            title: "Legends played",
+            value: `${played} / ${filtered.length}`,
+            hint: "Legends played at least once",
+        },
+        {
+            title: "Played in ranked",
+            value: `${rankedPlayed} / ${filtered.length}`,
+            hint: "Legends played at least once in ranked 1v1 this season",
+        },
+        { title: "Total legend levels", value: totalLevel.toLocaleString() },
+        {
+            title: "Average level",
+            value: ratio(totalLevel, filtered.length).toFixed(0),
+        },
+    ]
+
+    return (
+        <div className="flex flex-col gap-4">
+            <div className="grid gap-3 sm:grid-cols-2">
+                <SortControl
+                    label="Sort by"
+                    value={sort.key}
+                    choices={sort.choices}
+                    onChange={sort.setKey}
+                    direction={sort.direction}
+                    onToggleDirection={sort.toggleDirection}
+                />
+                <SelectField
+                    label="Filter by weapon"
+                    value={weaponFilter}
+                    options={weaponChoices}
+                    onChange={setWeaponFilter}
+                />
+            </div>
+
+            <Card variant="inset">
+                <StatGrid stats={summary} />
+            </Card>
+
+            {sort.sorted.length === 0 ? (
+                <Card variant="muted" className="grid place-items-center py-10">
+                    <p className="text-sm text-textVar1">
+                        No legends use {weaponFilter}.
+                    </p>
+                </Card>
+            ) : (
+                <div className="flex flex-col gap-3">
+                    {sort.sorted.map((legend, index) => (
+                        <LegendRow
+                            key={legend.legend_id}
+                            legend={legend}
+                            rank={
+                                sort.direction === "asc"
+                                    ? sort.sorted.length - index
+                                    : index + 1
+                            }
+                            matchtime={matchtime}
+                            games={stats.games}
+                            display={sort.display?.(legend)}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+    )
+}
