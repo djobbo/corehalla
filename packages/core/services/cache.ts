@@ -1,7 +1,9 @@
 import { Context, Effect, Layer } from "effect"
 import { cacheNamespace } from "../env"
+import { Background } from "./background"
 import { allowRefresh, UPSTREAM_LIMIT_KEY } from "./rate-limit"
 import { emptyTtl } from "./cache-policy"
+import type { BackgroundShape } from "./background"
 import type { KVNamespaceLike } from "../env"
 import type { CacheWindow } from "./cache-policy"
 
@@ -21,10 +23,20 @@ import type { CacheWindow } from "./cache-policy"
  * ## Freshness is tracked separately from retention
  *
  * An entry carries its own `freshUntil`, while the store retains it for a
- * longer `staleSeconds`. That split is what makes "serve stale when over
- * budget" possible: a value past `freshUntil` is not what we would choose to
- * serve, but it beats an error, so it stays available to a caller that has run
- * out of budget.
+ * longer `staleSeconds` (`staleUntil`). That split produces three outcomes, and
+ * the reader never has to wait unless there is nothing else to do:
+ *
+ * - **Fresh** — answer from the entry and touch nothing else.
+ * - **Stale but retained** — answer from the stale entry *now* and refresh
+ *   behind the response, so the next reader gets something current instead of
+ *   the same wait. The refresh is handed to `Background`, because on Workers a
+ *   fiber the platform cannot see is cancelled the moment the response returns.
+ * - **Gone** — no entry at all, or one past `staleUntil`. There is nothing to
+ *   answer with, so the caller waits for the fetch.
+ *
+ * The budget damper is consulted only in the middle case, and only to decide
+ * whether to refresh: being over budget turns a stale read into a stale read
+ * with no refresh, never into an error or a wait.
  *
  * ## Readers and writers
  *
@@ -41,13 +53,20 @@ export class Cache extends Context.Service<
     Cache,
     {
         /**
-         * Returns a cached value, refreshing it when stale and the caller still
-         * has budget.
+         * Returns a cached value, refreshing it when it is stale.
          *
-         * `refresh` is consulted only when an entry needs refreshing. When it
-         * resolves `false` (over budget) a stale entry is served instead; with
-         * nothing to serve there is no non-outage option, so the effect runs
-         * anyway — deliberately, so a cold cache cannot take the site down.
+         * Three cases, in the order the store is consulted: a fresh entry is
+         * returned as-is; a stale entry still inside its retention window is
+         * returned immediately and refreshed in the background; anything else —
+         * absent, or stale past retention — is fetched before returning, since
+         * there is no answer to give in the meantime.
+         *
+         * `refresh` is consulted only for the middle case, to decide whether the
+         * background refresh may run. When it resolves `false` (over budget) the
+         * stale entry is still served, just without a refresh. When there is
+         * nothing to serve the budget is not consulted at all: the only
+         * alternatives would be an error or an outage, and neither is a cache
+         * policy.
          */
         readonly getOrSet: <A>(
             key: string,
@@ -82,11 +101,34 @@ type L1Entry = {
     readonly staleUntil: number
 }
 
-/** The envelope stored in KV: the value plus when it stops being current. */
-type Envelope = { readonly value: unknown; readonly freshUntil: number }
+/**
+ * The envelope stored in KV: the value plus when it stops being current and
+ * when it stops being usable.
+ *
+ * `staleUntil` is optional because envelopes written before it existed do not
+ * carry one. Such an entry is still trusted while it is fresh, but once stale
+ * its retention is unknown, so it is refetched rather than served on a window
+ * nobody recorded.
+ */
+type Envelope = {
+    readonly value: unknown
+    readonly freshUntil: number
+    readonly staleUntil?: number
+}
 
 /**
- * Builds the cache over a namespace resolver.
+ * How the cache hands a refresh to the platform.
+ *
+ * `Background`'s `run`, and the cache is deliberately built with it rather than
+ * around it: `Effect.forkDetach` would return before the refresh finished, but
+ * on Workers the runtime would also cancel it when the response returns.
+ * Threading the scheduler through `make` keeps the cache testable — a test can
+ * run the refresh on its own fiber — without a second way to detach work.
+ */
+type Schedule = BackgroundShape["run"]
+
+/**
+ * Builds the cache over a namespace resolver and a background scheduler.
  *
  * The resolver is a parameter rather than a direct import so the cache can be
  * exercised against a fake namespace — production passes `cacheNamespace`, which
@@ -99,6 +141,7 @@ type Envelope = { readonly value: unknown; readonly freshUntil: number }
  */
 export const make = (
     resolveNamespace: () => Promise<KVNamespaceLike | undefined>,
+    schedule: Schedule,
 ) => {
     const l1 = new Map<string, L1Entry>()
 
@@ -127,18 +170,35 @@ export const make = (
         value: unknown,
         options: CacheWindow,
     ) =>
-        Effect.tryPromise(() =>
-            kv.put(
+        Effect.tryPromise(() => {
+            const now = Date.now()
+
+            return kv.put(
                 key,
                 JSON.stringify({
                     value,
-                    freshUntil: Date.now() + options.freshSeconds * 1000,
+                    freshUntil: now + options.freshSeconds * 1000,
+                    staleUntil: now + options.staleSeconds * 1000,
                 }),
                 // Retention, not freshness: freshness lives inside the envelope
-                // so the serve-stale window is ours to choose.
+                // so the stale window is ours to choose. `staleUntil` is stored
+                // too, because KV expiry is eventually consistent — it is the
+                // envelope, not the TTL, that decides when an entry is too old
+                // to serve.
                 { expirationTtl: options.staleSeconds },
-            ),
-        ).pipe(Effect.catch(() => Effect.void))
+            )
+        }).pipe(Effect.catch(() => Effect.void))
+
+    /**
+     * Stores a fetched value, downgrading a `null` to `emptyTtl`.
+     *
+     * A `null` is this codebase's "the upstream could not answer" sentinel
+     * rather than a finding, so it is stored on `emptyTtl` instead of on the
+     * window its resource asked for. Without this an absence is cached with all
+     * the confidence of a value — see that constant for the failure it caused.
+     */
+    const store = <A>(key: string, value: A, options: CacheWindow) =>
+        cache.set(key, value, value === null ? emptyTtl : options)
 
     const cache = {
         getOrSet: <A>(
@@ -175,9 +235,19 @@ export const make = (
                         }).pipe(Effect.catch(() => Effect.succeed(null)))
 
                         if (envelope) {
-                            found = {
-                                value: envelope.value,
-                                fresh: envelope.freshUntil > now,
+                            const fresh = envelope.freshUntil > now
+
+                            /*
+                             * An envelope written before `staleUntil` existed
+                             * reports `undefined`, which is not `> now`: the
+                             * entry is still served while fresh, but once stale
+                             * it is refetched rather than trusted for a window
+                             * nobody recorded.
+                             */
+                            const retained = (envelope.staleUntil ?? 0) > now
+
+                            if (fresh || retained) {
+                                found = { value: envelope.value, fresh }
                             }
                         }
                     }
@@ -185,45 +255,52 @@ export const make = (
 
                 if (found?.fresh) return found.value as A
 
-                // Stale or absent: the point that may cost a request, so the
-                // only place the budget is consulted. The default gate lives
-                // here rather than at each call site so a newly cached operation
-                // cannot forget to consult it.
-                const mayRefresh =
-                    refresh === undefined
-                        ? yield* allowRefresh(UPSTREAM_LIMIT_KEY)
-                        : yield* refresh
+                /*
+                 * Stale but retained: answer now and refresh behind the
+                 * response. The entry is already stored, so the refresh is not
+                 * there to answer this request — it is there to make the next
+                 * one current, which is what keeps the wait from landing on
+                 * every reader in turn.
+                 */
+                if (found) {
+                    const mayRefresh =
+                        refresh === undefined
+                            ? yield* allowRefresh(UPSTREAM_LIMIT_KEY)
+                            : yield* refresh
 
-                if (!mayRefresh) {
-                    if (found) {
+                    if (mayRefresh) {
                         yield* Effect.logDebug(
-                            `Over budget; serving stale ${key}`,
+                            `Serving stale ${key}; refreshing behind the response`,
                         )
-                        // Deliberately not re-stored: freshness must not be
-                        // pushed forward by a stale read, or the entry would
-                        // never expire.
-                        return found.value as A
+
+                        yield* schedule(
+                            effect.pipe(
+                                Effect.flatMap((value) =>
+                                    store(key, value, options),
+                                ),
+                            ),
+                        )
+                    } else {
+                        yield* Effect.logDebug(
+                            `Over budget; serving stale ${key} without refreshing`,
+                        )
                     }
 
-                    yield* Effect.logWarning(
-                        `Over budget with no cached ${key}; fetching anyway`,
-                    )
+                    // Deliberately not re-stored: freshness must not be pushed
+                    // forward by a stale read, or the entry would never expire.
+                    return found.value as A
                 }
 
+                /*
+                 * Nothing to serve — absent, or stale past `staleUntil`. The
+                 * budget is not consulted: it exists to choose between a
+                 * refresh and a stale answer, and there is no stale answer to
+                 * choose. The alternatives here are a fetch or an outage, and
+                 * an outage is not a cache policy.
+                 */
                 const value = yield* effect
 
-                /*
-                 * A `null` is this codebase's "the upstream could not answer"
-                 * sentinel rather than a finding, so it is stored on
-                 * `emptyTtl` instead of on the window its resource asked for.
-                 * Without this an absence is cached with all the confidence of
-                 * a value — see that constant for the failure it caused.
-                 */
-                yield* cache.set(
-                    key,
-                    value,
-                    value === null ? emptyTtl : options,
-                )
+                yield* store(key, value, options)
 
                 return value
             }),
@@ -259,10 +336,26 @@ export const make = (
     return cache
 }
 
-/** A Cache layer over an explicit namespace resolver. */
+/**
+ * A Cache layer over an explicit namespace resolver.
+ *
+ * Requires `Background` rather than building one, because the refresh it
+ * schedules has to be kept alive by the same mechanism — and provided by the
+ * same layer — as every other write that outlives a response. A Node entry
+ * point with no request lifetime provides `Background.inlineLayer`; the Worker
+ * provides the detaching one.
+ */
 export const layerFrom = (
     resolveNamespace: () => Promise<KVNamespaceLike | undefined>,
-): Layer.Layer<Cache> => Layer.succeed(Cache, make(resolveNamespace))
+): Layer.Layer<Cache, never, Background> =>
+    Layer.effect(
+        Cache,
+        Effect.gen(function* () {
+            const background = yield* Background
+
+            return make(resolveNamespace, background.run)
+        }),
+    )
 
 /** The production layer: reads the `CACHE` binding lazily, per call. */
 export const layer = layerFrom(cacheNamespace)

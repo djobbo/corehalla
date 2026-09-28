@@ -19,23 +19,31 @@ import type { Ladder } from "@crh/bhapi/types"
 export type CacheWindow = {
     /** When a value stops being current. */
     readonly freshSeconds: number
-    /** How long it is retained afterwards, for the serve-stale path. */
+    /**
+     * How long it is retained afterwards.
+     *
+     * While an entry is inside this window the reader answers from it
+     * immediately and refreshes behind the response. Past it there is nothing
+     * worth serving, so the reader waits for the fetch.
+     */
     readonly staleSeconds: number
 }
 
 export const cacheTtl = {
     /**
      * A ladder page moves constantly and is cheap to refetch, so it stays fresh
-     * for a minute but lingers for fifteen so the serve-stale path has
-     * something to return.
+     * for two minutes but lingers for two hours, which is long enough that a
+     * request arriving just past freshness is answered from the stale page
+     * while the refresh runs rather than waiting for it.
      */
-    leaderboard: { freshSeconds: 120, staleSeconds: 60 * 60 },
+    leaderboard: { freshSeconds: 120, staleSeconds: 2 * 60 * 60 },
     /**
      * A profile changes slowly and costs more to assemble (a v1 profile is up
      * to two upstream calls), so it keeps the five minutes the old edge
-     * `Cache-Control` used, and lingers for an hour.
+     * `Cache-Control` used, and lingers for twenty-four hours so a profile page is
+     * almost always answered without a wait.
      */
-    profile: { freshSeconds: 300, staleSeconds: 240 * 60 },
+    profile: { freshSeconds: 300, staleSeconds: 24 * 60 * 60 },
 } as const satisfies Record<string, CacheWindow>
 
 /**
@@ -60,8 +68,10 @@ export const cacheTtl = {
  * is not exceptional: most players have no 3v3 record, and that is a `null` on
  * every profile view.
  *
- * There is no serve-stale tier: a stale "we do not know" is worth nothing, so
- * the entry is dropped rather than lingered over.
+ * There is no serve-stale tier: the retention window equals the freshness
+ * window, so an absence is past `staleUntil` the moment it stops being current
+ * — a stale "we do not know" is worth nothing, so it is refetched for the
+ * caller rather than lingered over.
  */
 export const emptyTtl: CacheWindow = {
     freshSeconds: 60,

@@ -16,6 +16,12 @@ import { Context, Effect, Layer } from "effect"
  * worker entry hands `pendingWork()` to the platform. Nothing in `core` needs
  * to know it is running on Workers.
  *
+ * A chain has to stay inside one promise. The cache now refreshes a stale entry
+ * behind the response, and that refresh writes the archive — background work
+ * handing more work to `Background`. Detaching the child would put it outside
+ * the only promise the platform holds, so `run` executes inline when its caller
+ * is itself background work; see `InBackground`.
+ *
  * ## Why the registry rather than a per-request context
  *
  * The obvious shape — a `Background` supplied per request through the router's
@@ -51,11 +57,32 @@ export class Background extends Context.Service<Background, BackgroundShape>()(
     "app/Background",
 ) {}
 
+/**
+ * Whether the current fiber is itself running as background work.
+ *
+ * A tracked effect gets its own runtime, and the only `waitUntil` promise the
+ * platform holds is the one covering the work the *request* started. So when
+ * background work hands more work to `Background` — a cache refresh writes the
+ * archive, and that write is detached in turn — the child is not covered by
+ * anything: the parent promise settles without it, and the runtime is then free
+ * to cancel a fiber it never saw. That is the same silent loss this service
+ * exists to prevent, one level down.
+ *
+ * Marking the tracked run and running nested work inline folds the whole chain
+ * back into the parent promise. The request path is the default, so only
+ * background work overrides it.
+ */
+const InBackground = Context.Reference<boolean>("app/Background/InBackground", {
+    defaultValue: () => false,
+})
+
 /** Everything handed to `run` that has not settled yet. */
 const inFlight = new Set<Promise<unknown>>()
 
 const track = (effect: Effect.Effect<unknown, unknown>): void => {
-    const promise = Effect.runPromise(effect.pipe(Effect.orDie))
+    const promise = Effect.runPromise(
+        effect.pipe(Effect.provideService(InBackground, true), Effect.orDie),
+    )
         .catch(() => undefined)
         .finally(() => {
             inFlight.delete(promise)
@@ -78,9 +105,20 @@ const track = (effect: Effect.Effect<unknown, unknown>): void => {
  */
 export const pendingWork = (): Promise<unknown> => Promise.all(inFlight)
 
-/** The production layer: work runs detached, and the entry keeps it alive. */
+/**
+ * The production layer: work runs detached, and the entry keeps it alive.
+ *
+ * Detached *unless* the caller is already background work, which is what keeps
+ * a chain of it inside the one promise the platform is holding. See
+ * {@link InBackground}.
+ */
 export const layer: Layer.Layer<Background> = Layer.succeed(Background, {
-    run: (effect) => Effect.sync(() => track(effect)),
+    run: (effect) =>
+        Effect.withFiber((fiber) =>
+            fiber.getRef(InBackground)
+                ? effect.pipe(Effect.orDie, Effect.asVoid)
+                : Effect.sync(() => track(effect)),
+        ),
 })
 
 /**

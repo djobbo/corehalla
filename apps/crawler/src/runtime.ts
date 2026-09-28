@@ -3,6 +3,7 @@ import { FetchHttpClient } from "effect/unstable/http"
 import { layer as sqlLayer } from "@crh/db/client"
 import { d1Database } from "@crh/core/env"
 import { layer as DatabaseLayer } from "@crh/core/services/archive"
+import { inlineLayer as inlineBackgroundLayer } from "@crh/core/services/background"
 import { layer as CacheLayer } from "@crh/core/services/cache"
 import { rawLayer as UpstreamLayer } from "@crh/core/services/upstream"
 import { layer as CrawlerLayer } from "@crh/core/services/crawler"
@@ -37,9 +38,15 @@ export const runCrawler = async <A, E>(
 
     const CrawlerFull = CrawlerLayer.pipe(
         Layer.provide(ServicesLayer),
-        // The crawler writes to the cache (warming it) without reading from it,
-        // so it needs the layer even though it never calls getOrSet.
+        /*
+         * The crawler writes to the cache (warming it) without reading from it,
+         * so it needs the layer even though it never calls `getOrSet`. The
+         * cache schedules stale refreshes through `Background`, and this graph
+         * has no request lifetime to extend, so the inline layer is the right
+         * one: nothing here should detach from the invocation that started it.
+         */
         Layer.provide(CacheLayer),
+        Layer.provide(inlineBackgroundLayer),
     )
 
     return Effect.runPromise(

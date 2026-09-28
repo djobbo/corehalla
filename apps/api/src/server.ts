@@ -60,7 +60,14 @@ const createHandler = (db: D1Database) => {
 
     const ServicesLayer = Layer.mergeAll(
         DatabaseWithSql,
-        CacheLayer,
+        /*
+         * The cache refreshes a stale entry behind the response, so it needs
+         * `Background` to keep that refresh alive. `mergeAll` only unions — it
+         * does not feed one layer's output into another's input — so the
+         * requirement is discharged here rather than by the `BackgroundLayer`
+         * beside it.
+         */
+        CacheLayer.pipe(Layer.provide(BackgroundLayer)),
         /*
          * Bookkeeping writes are handed here rather than awaited, and the
          * worker entry keeps the isolate alive for them with `waitUntil` — see

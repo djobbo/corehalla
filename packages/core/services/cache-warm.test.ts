@@ -38,6 +38,18 @@ const fakeKv = () => {
     return { store, kv }
 }
 
+/**
+ * A scheduler that runs a background refresh on the caller's own fiber.
+ *
+ * Production hands the refresh to `Background`, which detaches it and keeps the
+ * isolate alive with `waitUntil`; running it inline here makes the ordering
+ * deterministic — the stale value is returned, and whatever the refresh wrote
+ * has landed by the time the assertion runs. The detachment itself is
+ * `background.test.ts`'s subject.
+ */
+const inlineSchedule = (effect: Effect.Effect<unknown, unknown>) =>
+    effect.pipe(Effect.orDie, Effect.asVoid)
+
 const row = (id: number): Ranking1v1 => ({
     rank: id,
     rating: 2000 + id,
@@ -62,8 +74,8 @@ describe("crawler -> gateway cache warming", () => {
 
                 // The crawler's cache instance, and the gateway's — separate L1
                 // maps, so the gateway has to go to KV.
-                const crawlerCache = make(async () => kv)
-                const gatewayCache = make(async () => kv)
+                const crawlerCache = make(async () => kv, inlineSchedule)
+                const gatewayCache = make(async () => kv, inlineSchedule)
 
                 const rows = [row(1), row(2), row(3)]
                 const key = cacheKeys.leaderboard("1v1", "eu", 7)
@@ -92,7 +104,7 @@ describe("crawler -> gateway cache warming", () => {
     it.effect("the stored envelope carries the value and stays fresh", () =>
         Effect.gen(function* () {
             const { store, kv } = fakeKv()
-            const crawlerCache = make(async () => kv)
+            const crawlerCache = make(async () => kv, inlineSchedule)
 
             const rows = [row(9)]
             const key = cacheKeys.leaderboard("2v2", "brz", 1)
@@ -116,7 +128,7 @@ describe("crawler -> gateway cache warming", () => {
         () =>
             Effect.gen(function* () {
                 const { kv } = fakeKv()
-                const cache = make(async () => kv)
+                const cache = make(async () => kv, inlineSchedule)
 
                 const key = cacheKeys.player(42)
                 const stale = { name: "stale", xp: 1 }
@@ -175,6 +187,170 @@ describe("crawler -> gateway cache warming", () => {
 })
 
 /**
+ * The three outcomes the freshness/retention split produces.
+ *
+ * A fresh entry is answered and nothing else happens. A stale entry inside its
+ * retention window is answered *now* and refreshed behind the response, so the
+ * wait lands on nobody. An entry past retention — or no entry at all — has
+ * nothing to answer with, so the caller waits for the fetch. The middle case is
+ * the new one; the retention boundary is what keeps it from swallowing the
+ * third.
+ */
+describe("the freshness outcomes", () => {
+    /**
+     * Stale on arrival but retained for an hour: fresh for zero seconds is the
+     * shortest way to be past `freshUntil` without being past `staleUntil`.
+     */
+    const staleButRetained = { freshSeconds: 0, staleSeconds: 3600 }
+
+    const envelopeOf = (store: Map<string, string>, key: string) =>
+        JSON.parse(store.get(key) as string) as {
+            value: unknown
+            freshUntil: number
+        }
+
+    it.effect("a fresh entry is answered without a fetch", () =>
+        Effect.gen(function* () {
+            const { kv } = fakeKv()
+            const cache = make(async () => kv, inlineSchedule)
+            const key = cacheKeys.player(1)
+
+            yield* cache.set(key, { name: "current" }, cacheTtl.profile)
+
+            let fetched = false
+
+            const served = yield* cache.getOrSet(
+                key,
+                cacheTtl.profile,
+                Effect.sync(() => {
+                    fetched = true
+
+                    return { name: "refetched" }
+                }),
+            )
+
+            expect(served).toEqual({ name: "current" })
+            expect(fetched).toBe(false)
+        }),
+    )
+
+    it.effect(
+        "a stale entry is answered now and refreshed behind the response",
+        () =>
+            Effect.gen(function* () {
+                const { store, kv } = fakeKv()
+                const key = cacheKeys.player(2)
+                const stale = { name: "stale", xp: 1 }
+                const current = { name: "current", xp: 2 }
+
+                /*
+                 * The scheduled effect is captured rather than run, so the test
+                 * can prove it had not run by the time the caller was answered.
+                 * Production's scheduler detaches for real — see `Background`.
+                 */
+                let scheduled: Effect.Effect<void> | null = null
+
+                const cache = make(
+                    async () => kv,
+                    (effect) =>
+                        Effect.sync(() => {
+                            scheduled = effect as Effect.Effect<void>
+                        }),
+                )
+
+                yield* cache.set(key, stale, staleButRetained)
+
+                let fetched = false
+
+                const served = yield* cache.getOrSet(
+                    key,
+                    cacheTtl.profile,
+                    Effect.sync(() => {
+                        fetched = true
+
+                        return current
+                    }),
+                )
+
+                // The response leaves with the stale value...
+                expect(served).toEqual(stale)
+                // ...before the refresh has run at all.
+                expect(fetched).toBe(false)
+                expect(scheduled).not.toBeNull()
+
+                // Once it does run, the next reader is served something current
+                // instead of the same stale entry.
+                yield* scheduled!
+                expect(fetched).toBe(true)
+                expect(envelopeOf(store, key).value).toEqual(current)
+            }),
+    )
+
+    it.effect(
+        "a stale entry past its retention window is refetched for the caller",
+        () =>
+            Effect.gen(function* () {
+                const { kv } = fakeKv()
+                const cache = make(async () => kv, inlineSchedule)
+                const key = cacheKeys.player(3)
+
+                // Retained for zero seconds: past `staleUntil` the moment it
+                // lands. A second instance reads it, so L1 cannot be the reason
+                // it is not served.
+                yield* cache.set(
+                    key,
+                    { name: "ancient" },
+                    {
+                        freshSeconds: 0,
+                        staleSeconds: 0,
+                    },
+                )
+
+                const reader = make(async () => kv, inlineSchedule)
+
+                const served = yield* reader.getOrSet(
+                    key,
+                    cacheTtl.profile,
+                    Effect.succeed({ name: "current" }),
+                )
+
+                expect(served).toEqual({ name: "current" })
+            }),
+    )
+
+    it.effect(
+        "a refresh that finds nothing is stored on the empty window",
+        () =>
+            Effect.gen(function* () {
+                const { store, kv } = fakeKv()
+                const cache = make(async () => kv, inlineSchedule)
+                const key = cacheKeys.player(4)
+
+                yield* cache.set(key, { name: "stale" }, staleButRetained)
+
+                const served = yield* cache.getOrSet(
+                    key,
+                    cacheTtl.profile,
+                    Effect.succeed(null),
+                )
+
+                // The reader keeps the stale value — a refresh that could not
+                // answer is not an answer that replaces one...
+                expect(served).toEqual({ name: "stale" })
+
+                // ...but what it wrote is the absence, on the short window, so the
+                // next reader does not treat it as a fact for five minutes.
+                const envelope = envelopeOf(store, key)
+
+                expect(envelope.value).toBeNull()
+                expect(envelope.freshUntil - Date.now()).toBeLessThanOrEqual(
+                    emptyTtl.freshSeconds * 1000,
+                )
+            }),
+    )
+})
+
+/**
  * What a `null` is allowed to mean once it is stored.
  *
  * `null` is this codebase's "the upstream could not answer" sentinel — v1
@@ -194,7 +370,7 @@ describe("caching an absent answer", () => {
         () =>
             Effect.gen(function* () {
                 const { store, kv } = fakeKv()
-                const cache = make(async () => kv)
+                const cache = make(async () => kv, inlineSchedule)
                 const key = cacheKeys.player(999)
 
                 yield* cache.getOrSet(
@@ -222,7 +398,7 @@ describe("caching an absent answer", () => {
     it.effect("a real value still gets the window its resource asked for", () =>
         Effect.gen(function* () {
             const { store, kv } = fakeKv()
-            const cache = make(async () => kv)
+            const cache = make(async () => kv, inlineSchedule)
             const key = cacheKeys.player(1)
 
             yield* cache.getOrSet(
