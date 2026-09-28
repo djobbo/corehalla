@@ -28,7 +28,7 @@ import type { Ranking1v1, Ranking2v2 } from "@crh/bhapi/types"
  * `1v1` and `2v2` are searched, not just `1v1`. A player who has only ever
  * placed in 2v2 is invisible to a 1v1 ladder search, which would make the lookup
  * silently miss a whole class of player. The cost is one extra request per
- * submit, which is affordable now that the budget is 2,000 per 15 minutes — and
+ * submit, which is affordable now that the budget is 2,000 per 5 minutes — and
  * unlike the crawler this runs per user search, not continuously.
  *
  * ## Degrading, never failing
@@ -293,11 +293,11 @@ export const layer = Layer.effect(
                             const members = [
                                 {
                                     playerId: String(row.brawlhalla_id_one),
-                                    name: row.teamname.split("+")[0] ?? "",
+                                    name: row.name_one,
                                 },
                                 {
                                     playerId: String(row.brawlhalla_id_two),
-                                    name: row.teamname.split("+")[1] ?? "",
+                                    name: row.name_two,
                                 },
                             ]
 

@@ -23,10 +23,10 @@
         "ci:install": "vp install --frozen-lockfile"
     },
     "devDependencies": {
-        "@effect/platform-node": "4.0.0-rc.116",
+        "@effect/platform-node": "4.0.0-rc.117",
         "@types/node": "^24.0.0",
         "alchemy": "2.0.0-beta.79",
-        "effect": "4.0.0-rc.116",
+        "effect": "4.0.0-rc.117",
         "typescript": "^7.0.2",
         "vite": "^8.0.14",
         "vite-plus": "0.3.3"

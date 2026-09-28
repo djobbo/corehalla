@@ -27,6 +27,35 @@ import type { Ranking1v1, Ranking2v2, Ranking3v3 } from "@crh/bhapi/types"
  */
 
 /**
+ * The players of a queue entry, as links.
+ *
+ * A solo ladder has one and a team has two, and both come from their own
+ * columns — the entry's ids from the member fields, its names from the name
+ * fields. Nothing here takes a joined string apart, which is the whole reason
+ * the table stores two names in the first place.
+ */
+const entryMembers = (entry: {
+    readonly entry_id: string
+    readonly name_one: string
+    readonly name_two: string | null
+    readonly member_one_id: string | null
+    readonly member_two_id: string | null
+}): readonly { readonly id: string; readonly name: string }[] => {
+    if (entry.member_one_id === null) {
+        return [{ id: entry.entry_id, name: entry.name_one }]
+    }
+
+    const members = [
+        { id: entry.member_one_id, name: entry.name_one },
+        { id: entry.member_two_id, name: entry.name_two ?? "" },
+    ]
+
+    return members.flatMap((member) =>
+        member.id === null ? [] : [{ id: member.id, name: member.name }],
+    )
+}
+
+/**
  * Whether an upstream row is worth storing as an alias.
  *
  * The Brawlhalla payloads use `0` as a "no player" sentinel, and occasionally
@@ -201,14 +230,17 @@ export const rankingsGroup = HttpApiBuilder.group(
                                 ? []
                                 : [
                                       {
-                                          id: row.player_id,
-                                          name: row.name,
+                                          id: row.entry_id,
+                                          members: entryMembers(row),
                                           rating: row.rating,
                                           peakRating: row.peakRating,
                                           tier: row.tier,
                                           games: row.games,
                                           wins: row.wins,
                                           queuedAt: row.queuedAt.getTime(),
+                                          rank: row.rank,
+                                          ratingDelta: row.ratingDelta,
+                                          rankDelta: row.rankDelta,
                                       },
                                   ],
                         )

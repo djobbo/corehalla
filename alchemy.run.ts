@@ -155,17 +155,37 @@ export const CorehallaCache = Cloudflare.KV.Namespace("CorehallaCache", {
 })
 
 /**
- * The queue the crawl cron produces onto, consumed by the API worker.
+ * The queue the half-hourly ladder walk produces onto, consumed by the crawler.
  *
  * A queue rather than a loop inside the cron handler for two reasons: the
  * scheduled invocation only produces, so it cannot run into the CPU limit
- * walking 20 ladders; and each ladder becomes an independent delivery that can
+ * walking 30 ladders; and each ladder becomes an independent delivery that can
  * be retried on its own, instead of one failure discarding the whole pass.
+ *
+ * Two queues rather than one because the two halves of the crawl cost wildly
+ * different amounts. The name is kept from when they shared a lane, so this
+ * resource and its consumer survive the split.
  */
 export const CorehallaCrawlQueue = Cloudflare.Queues.Queue(
     "CorehallaCrawlQueue",
     {
         name: "corehalla-crawl",
+    },
+)
+
+/**
+ * The queue the ten-minute activity sampler produces onto.
+ *
+ * The sampler is one request per ladder page and the ladder walk is one request
+ * per player, so a shared FIFO lane meant every ten-minute sample queued behind
+ * up to half an hour of walking — the freshness surface waiting on the archive
+ * job. Separate queues give them separate consumers, so neither can block the
+ * other; the sampler's lane is a fraction of the walk's, and both drain.
+ */
+export const CorehallaSampleQueue = Cloudflare.Queues.Queue(
+    "CorehallaSampleQueue",
+    {
+        name: "corehalla-crawl-samples",
     },
 )
 
@@ -219,7 +239,7 @@ export const CorehallaApi = Cloudflare.Worker("CorehallaApi", {
         // (a handful of requests a minute) and well below a flood.
         RATE_LIMITER: Cloudflare.RateLimit("RATE_LIMITER", {
             namespaceId: 1001,
-            simple: { limit: 10, period: 60 },
+            simple: { limit: 30, period: 10 },
         }),
         SITE_URL: siteUrl,
         BRAWLHALLA_API_KEY: Redacted.make(env("BRAWLHALLA_API_KEY", "", true)),
@@ -260,14 +280,15 @@ export const CorehallaCrawler = Cloudflare.Worker("CorehallaCrawler", {
     main: "apps/crawler/src/index.ts",
     // Every thirty minutes: one queue delivery per ladder, one page each.
     //
-    // Sized from the v1 allowance of 2,000 requests per 15 minutes. A *team*
-    // page costs double, because a team rating is not a player's own 1v1 rating:
-    // each member's ranked record is fetched separately, so 2v2 and 3v3 pages
-    // cost 1 + 2 × players. With 3v3 the matrix is 30 targets at ~2,530 requests
-    // a pass — 126% of the allowance per ten minutes, and ~63% per thirty,
-    // leaving the remainder for user traffic that misses the cache.
-    // Two schedules, one handler: `*/10` samples activity (5 requests a
-    // ladder), `*/30` also runs the full player crawl. See `FULL_CRAWL_CRON`.
+    // Sized from the v1 allowance, which the request path spends from too; the
+    // arithmetic behind the pacing lives in `defaultCrawlerConfig` in
+    // `@crh/core/services/crawler`. A *team* page costs double, because a team
+    // rating is not a player's own 1v1 rating: each member's ranked record is
+    // fetched separately, so 2v2 and 3v3 pages cost 1 + 2 × players. Across the
+    // 30 targets that is ~2,530 requests a pass.
+    // Two schedules, one handler: `*/10` samples activity (ten requests a
+    // ladder, one per page), `*/30` also runs the full player crawl. See
+    // `FULL_CRAWL_CRON`.
     crons: ["*/10 * * * *", "*/30 * * * *"],
     compatibility: {
         flags: ["enable_request_signal"],
@@ -277,9 +298,12 @@ export const CorehallaCrawler = Cloudflare.Worker("CorehallaCrawler", {
         // The crawler writes what it fetches into the same namespace the API
         // reads, which is the point of warming it.
         CACHE: CorehallaCache,
-        // Producer side of the crawl queue. The consumer is registered below,
-        // once both the worker and the queue have resolved to real names.
+        // Producer side of the crawl queues. The consumers are registered
+        // below, once the worker and the queues have resolved to real names.
         CRAWL_QUEUE: CorehallaCrawlQueue,
+        // The sampler's own lane — see `CorehallaSampleQueue` for why the two
+        // workloads are not one queue.
+        CRAWL_SAMPLE_QUEUE: CorehallaSampleQueue,
         SITE_URL: siteUrl,
         BRAWLHALLA_API_KEY: Redacted.make(env("BRAWLHALLA_API_KEY", "", true)),
     },
@@ -360,6 +384,7 @@ export default Alchemy.Stack(
         const api = yield* CorehallaApi
         const crawler = yield* CorehallaCrawler
         const crawlQueue = yield* CorehallaCrawlQueue
+        const sampleQueue = yield* CorehallaSampleQueue
 
         /**
          * The UX study (`@crh/web-next`).
@@ -397,9 +422,26 @@ export default Alchemy.Stack(
         // crawl work, and routing it through the request worker would put the
         // crawl back on the API's budget and failure domain.
         //
-        // Serialised on purpose: the constraint the crawler works against is the
-        // upstream request budget, so concurrent deliveries would contend for
-        // the same allowance rather than finishing sooner.
+        // One consumer per queue, and **both pinned to a single concurrent
+        // invocation on purpose**. The constraint the crawler works against is
+        // the upstream request budget, which is per IP and shared with the
+        // request path, so extra invocations *within a lane* multiply that
+        // lane's request rate rather than finishing its backlog sooner — and a
+        // fixed maximum is exactly what stopped Cloudflare adding invocations
+        // while both workloads shared one queue.
+        //
+        // Two lanes at one invocation each is therefore the shape that helps.
+        // Each carries a workload that fits inside its own interval, and the
+        // aggregate stays under the allowance even when both run at once: a
+        // paced ladder walk is ~3.2 requests/second and a paced sample ~2.4,
+        // against the ~6.7 the pacing is derived from. The split buys the
+        // sampler not having to wait out the walk; it does not raise either
+        // lane's ceiling.
+        //
+        // Sized against the real per-job cost: the walk's lane carries 30 jobs
+        // per half hour at ~14 minutes of paced work, and the sampler's carries
+        // 27 jobs per ten minutes at ~3 minutes. Each is a fraction of its own
+        // interval, which is the property the shared lane never had.
         yield* Cloudflare.Queues.Consumer("CorehallaCrawlConsumer", {
             queueId: crawlQueue.queueId,
             scriptName: crawler.workerName,
@@ -411,6 +453,19 @@ export default Alchemy.Stack(
                 // fires mid-crawl would duplicate work the upserts make harmless
                 // but the budget still pays for.
                 retryDelay: 60,
+            },
+        })
+
+        yield* Cloudflare.Queues.Consumer("CorehallaCrawlSampleConsumer", {
+            queueId: sampleQueue.queueId,
+            scriptName: crawler.workerName,
+            settings: {
+                batchSize: 1,
+                maxConcurrency: 1,
+                maxRetries: 3,
+                // A sample is short and idempotent, so a retry can come back
+                // quickly without colliding with the next tick.
+                retryDelay: 30,
             },
         })
 

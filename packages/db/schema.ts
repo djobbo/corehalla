@@ -306,29 +306,54 @@ export const bhPlayerWeapon = sqliteTable(
 )
 
 /**
- * The top of every ladder, sampled often, so a player who just queued is
+ * The top of every ladder, sampled often, so an entry that just queued is
  * visible within minutes rather than within a crawl cycle.
  *
- * One row per (player, bracket), holding the *last observed* ladder figures.
- * Activity is a delta rather than an absolute: a player has queued when the
+ * One row per **(ladder entry, bracket)**, holding the last observed figures.
+ * What an entry is depends on the bracket, because the ladders differ: a 1v1 or
+ * 3v3 row is one player, and a 2v2 row is a *team* with a single shared game
+ * count. Keying 2v2 by player was wrong and quietly so — a player can hold
+ * several teams near the top, each with its own count, so their stored figure
+ * depended on which team happened to be sampled last and a quieter one
+ * reappearing read as them having played.
+ *
+ * Activity is a delta rather than an absolute: an entry has queued when the
  * `games` we now see is higher than the `games` we stored, which is why the
  * table has to exist at all — the signal is a comparison against the previous
  * pass, not anything a single payload can say on its own.
  *
- * `queuedAt` is therefore nullable, and null means "we have seen this player on
- * a ladder but have not yet seen them play". A first observation is not
- * activity: inserting a row for a player we simply had not sampled before would
- * otherwise announce them as having just queued.
+ * `queuedAt` is therefore nullable, and null means "we have seen this entry on
+ * a ladder but have not yet seen it play". A first observation is not activity:
+ * inserting a row for an entry we simply had not sampled before would otherwise
+ * announce it as having just queued.
  */
 export const bhRankedQueue = sqliteTable(
     "BHRankedQueue",
     {
-        player_id: text("player_id").notNull(),
-        /** `1v1` | `2v2` | `3v3`. Part of the key: one player, three ladders. */
+        /**
+         * The player id for a solo ladder, or `<one>-<two>` for a team.
+         *
+         * A composite rather than the two member columns below because a
+         * primary key cannot be nullable, and those two are null for every
+         * bracket but 2v2.
+         */
+        entry_id: text("entry_id").notNull(),
+        /** `1v1` | `2v2` | `3v3`. Part of the key: one entry, three ladders. */
         bracket: text("bracket").notNull(),
         region: text("region").notNull(),
-        /** As the ladder spelled it, so the queue needs no join to render. */
-        name: text("name").notNull(),
+        /**
+         * The names the ladder gave, one field per player.
+         *
+         * Two fields rather than one joined string, for the same reason the
+         * domain rows have two: a joined pair has to be taken apart to be
+         * useful, and taking it apart is what gets usernames wrong. `name_two`
+         * is null on a solo ladder, where there is only one.
+         */
+        name_one: text("name_one").notNull(),
+        name_two: text("name_two"),
+        /** The two players of a team entry. Null for a solo ladder. */
+        member_one_id: text("member_one_id"),
+        member_two_id: text("member_two_id"),
         lastUpdated: integer("lastUpdated", {
             mode: "timestamp_ms",
         }).notNull(),
@@ -337,13 +362,29 @@ export const bhRankedQueue = sqliteTable(
         tier: text("tier").notNull(),
         games: integer("games").notNull(),
         wins: integer("wins").notNull(),
+        /** Position on this ladder, as the ladder numbered it. */
+        rank: integer("rank").notNull().default(0),
+        /**
+         * What the last queue event cost or earned.
+         *
+         * Both are computed inside the upsert from the row's *previous* values,
+         * and they are the one part of this row that is not simply "what the
+         * ladder said". They only exist because the row is written exactly when
+         * a player's game count rises: `rating` and `rank` therefore hold the
+         * figures from the last time they played, which is the comparison a
+         * reader wants — "you are up 14 since we last saw you".
+         *
+         * Zero on insert, where there is no previous value to subtract.
+         */
+        ratingDelta: integer("ratingDelta").notNull().default(0),
+        rankDelta: integer("rankDelta").notNull().default(0),
         /** When a `games` increase was last observed. Null until one is. */
         queuedAt: integer("queuedAt", { mode: "timestamp_ms" }),
     },
     (table) => [
         primaryKey({
             name: "BHRankedQueue_pkey",
-            columns: [table.player_id, table.bracket],
+            columns: [table.entry_id, table.bracket],
         }),
         /** The read is "this ladder, recently queued", so both are in the key. */
         index("BHRankedQueue_ladder_idx").on(

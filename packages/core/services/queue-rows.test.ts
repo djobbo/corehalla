@@ -42,6 +42,8 @@ const team = (
     games,
     wins: games - 4,
     region: "eu",
+    name_one: teamname.split("+")[0] ?? "",
+    name_two: teamname.split("+")[1] ?? "",
     teamname,
     brawlhalla_id_one: one,
     brawlhalla_id_two: two,
@@ -57,15 +59,21 @@ describe("toRankedQueueRows", () => {
         )
 
         expect(row).toMatchObject({
-            player_id: "7",
+            entry_id: "7",
             bracket: "1v1",
             region: "eu",
-            name: "Seven",
+            name_one: "Seven",
+            name_two: null,
             rating: 2000,
             peakRating: 2100,
             tier: "Diamond",
             games: 42,
             wins: 37,
+            rank: 1,
+            // Placeholders: the real deltas are computed in SQL against the
+            // row's previous values, which the mapper never sees.
+            ratingDelta: 0,
+            rankDelta: 0,
         })
     })
 
@@ -85,7 +93,7 @@ describe("toRankedQueueRows", () => {
         expect(rows[0]?.queuedAt).toBeNull()
     })
 
-    it("splits a 2v2 team into one row per player", () => {
+    it("emits one row per team, keyed by the pair", () => {
         const rows = toRankedQueueRows(
             "2v2",
             "eu",
@@ -93,17 +101,21 @@ describe("toRankedQueueRows", () => {
             seenAt,
         )
 
-        expect(rows).toHaveLength(2)
-        expect(rows.map((row) => [row.player_id, row.name])).toEqual([
-            ["1", "Alpha"],
-            ["2", "Beta"],
-        ])
-        // The team's count is copied, not divided: the question the column
-        // answers is "did this player's team play", and both did.
-        expect(rows.every((row) => row.games === 30)).toBe(true)
+        expect(rows).toHaveLength(1)
+        expect(rows[0]).toMatchObject({
+            entry_id: "1-2",
+            name_one: "Alpha",
+            name_two: "Beta",
+            member_one_id: "1",
+            member_two_id: "2",
+            games: 30,
+        })
     })
 
-    it("drops the zero id a solo-queue 2v2 row carries", () => {
+    it("drops a solo-queue 2v2 row, which is not a team", () => {
+        // The zero id is Brawlhalla's "no player" sentinel. The row is the
+        // player's own solo record rather than a pairing, so there is no team
+        // to track and nothing to report.
         const rows = toRankedQueueRows(
             "2v2",
             "eu",
@@ -111,18 +123,17 @@ describe("toRankedQueueRows", () => {
             seenAt,
         )
 
-        expect(rows).toHaveLength(1)
-        expect(rows[0]?.player_id).toBe("9")
+        expect(rows).toHaveLength(0)
     })
 
     /*
-     * A player can hold more than one team near the top of the 2v2 ladder, so
-     * the page can carry their key twice. Keeping the largest count is what
-     * makes the stored figure monotonic — without it, a quieter team sampled
-     * after a busier one would *lower* `games`, and the next real game would
-     * look like the player returning from an absence.
+     * A player can hold several teams near the top of the 2v2 ladder. Each is
+     * its own entry with its own count, and none of them can be mistaken for
+     * another — which is the whole reason the queue is keyed by team rather
+     * than by player. Under a player key these two rows collided, and which
+     * count survived depended on the order the pages were sampled.
      */
-    it("keeps the largest game count when a player appears twice", () => {
+    it("keeps a player's two teams as separate entries", () => {
         const rows = toRankedQueueRows(
             "2v2",
             "eu",
@@ -130,10 +141,10 @@ describe("toRankedQueueRows", () => {
             seenAt,
         )
 
-        const alpha = rows.filter((row) => row.player_id === "1")
-
-        expect(alpha).toHaveLength(1)
-        expect(alpha[0]?.games).toBe(400)
+        expect(rows.map((row) => [row.entry_id, row.games])).toEqual([
+            ["1-2", 10],
+            ["1-3", 400],
+        ])
     })
 
     it("drops the zero id a 3v3 row would carry, and keeps real ones", () => {
@@ -147,7 +158,7 @@ describe("toRankedQueueRows", () => {
             seenAt,
         )
 
-        expect(rows.map((row) => row.player_id)).toEqual(["5"])
+        expect(rows.map((row) => row.entry_id)).toEqual(["5"])
         expect(rows[0]?.bracket).toBe("3v3")
         expect(rows[0]?.region).toBe("brz")
     })

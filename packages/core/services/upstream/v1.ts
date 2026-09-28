@@ -1,6 +1,7 @@
 import { Effect } from "effect"
 import { HttpClient } from "effect/unstable/http"
 import { retryTransient } from "../retry"
+import { withUserAgent } from "./user-agent"
 import { legendsMap } from "@crh/bhapi/legends"
 import type { ClanRank, RankedTier } from "@crh/bhapi/constants"
 import type {
@@ -237,7 +238,10 @@ export type V1PlayerRankedStats = {
 // --- client ----------------------------------------------------------------
 
 export const v1Ops = (client: HttpClient.HttpClient) => {
-    const http = HttpClient.filterStatusOk(client)
+    // `filterStatusOk` turns non-2xx responses into `HttpClientError`s, and
+    // `withUserAgent` names the project on every request. Both are applied here
+    // rather than at the call sites so no v1 request can miss either.
+    const http = withUserAgent(HttpClient.filterStatusOk(client))
 
     const getJson = <A>(
         path: string,
@@ -376,6 +380,10 @@ export const toRankings2v2 = (
         wins: entry.wins ?? 0,
         tier: entry.tier as RankedTier,
         region: fromV1Region(entry.region ?? "ALL") as Ranking2v2["region"],
+        name_one: entry.players[0]?.username ?? "",
+        name_two: entry.players[1]?.username ?? "",
+        // Display only. Its two halves are already above, so nothing needs to
+        // take it apart again.
         teamname: entry.players.map((player) => player.username).join("+"),
         brawlhalla_id_one: entry.players[0]?.id ?? 0,
         brawlhalla_id_two: entry.players[1]?.id ?? 0,

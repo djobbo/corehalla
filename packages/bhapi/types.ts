@@ -82,6 +82,13 @@ export type PlayerRanked = {
     "2v2": {
         brawlhalla_id_one: number
         brawlhalla_id_two: number
+        /**
+         * Optional because v0 does not send them — it ships only the joined
+         * `teamname`. Populated where a source provides separate names, and
+         * `getTeamPlayers` is the single place that falls back.
+         */
+        name_one?: string
+        name_two?: string
         rating: number
         peak_rating: number
         tier: RankedTier
@@ -191,6 +198,18 @@ export type Ranking1v1 = Ranking & {
 }
 
 export type Ranking2v2 = Ranking & {
+    /**
+     * The two players' names, separately.
+     *
+     * v1 sends `players[]` with one username per member, so these come straight
+     * off the wire rather than being recovered from `teamname`. That recovery
+     * is the bug this replaces: a username containing a `+` splits into the
+     * wrong halves, which is a defect the legacy payload is known for and which
+     * every consumer used to inherit by having no other option.
+     */
+    name_one: string
+    name_two: string
+    /** The two names joined with `+`. Display only — never parse it. */
     teamname: string
     brawlhalla_id_one: number
     brawlhalla_id_two: number

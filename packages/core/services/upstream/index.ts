@@ -38,8 +38,25 @@ type UpstreamShape = {
         page: number,
         name?: string,
     ) => Effect.Effect<readonly (Ranking1v1 | Ranking2v2 | Ranking3v3)[]>
+    /**
+     * The player's career stats, and the clan card that goes with them.
+     *
+     * `withClan: false` is the **crawl** path's read and only its. Assembling
+     * the card costs a second upstream request (`/v1/player/guild`) plus a look
+     * up of our own clan XP, and the archive never stores it —
+     * `upsertPlayerStats` writes the career half, the legends and the weapons
+     * and drops `clan` on the floor. Paying a request per crawled player for a
+     * value that is discarded made a full ladder pass ~4,030 requests instead
+     * of the ~2,530 the crawl's budget is sized for, which is what ran the
+     * crawl queue at more than one consumer-invocation's worth of work.
+     *
+     * The request path must leave the option unset: a profile renders the clan
+     * card, and a crawl-warmed entry without it would be served as though the
+     * player had no clan at all.
+     */
     readonly getPlayerStats: (
         playerId: number,
+        options?: { readonly withClan?: boolean },
     ) => Effect.Effect<PlayerStats | null>
     readonly getPlayerRanked: (
         playerId: number,
@@ -135,7 +152,7 @@ export const rawLayer = Layer.effect(
                     )
                 }),
 
-            getPlayerStats: (playerId) =>
+            getPlayerStats: (playerId, options) =>
                 Effect.gen(function* () {
                     const stats = yield* v1.getPlayerStats(playerId, "all")
 
@@ -149,6 +166,19 @@ export const rawLayer = Layer.effect(
                         )
 
                         return yield* legacy.getPlayerStats(playerId)
+                    }
+
+                    /*
+                     * The crawl stops here, one request in.
+                     *
+                     * Its caller writes the career stats, the legends and the
+                     * weapons into the archive, and none of those are the clan
+                     * card — so the guild read below would be spent on a value
+                     * that is thrown away. The card is the profile's, and the
+                     * profile asks for it on its own path.
+                     */
+                    if (options?.withClan === false) {
+                        return toPlayerStats(stats, undefined)
                     }
 
                     const membership = yield* v1.getPlayerGuild(playerId)

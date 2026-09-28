@@ -7,6 +7,7 @@ import { playerStatsMock } from "@crh/bhapi/mocks/playerStats"
 import { rankings1v1Mock } from "@crh/bhapi/mocks/rankings1v1"
 import { rankings2v2Mock } from "@crh/bhapi/mocks/rankings2v2"
 import { retryTransient } from "../retry"
+import { withUserAgent } from "./user-agent"
 import type {
     Bracket,
     Clan,
@@ -45,7 +46,11 @@ export const legacyOps = (client: HttpClient.HttpClient) => {
     // (`{"error":{"code":403,"message":"Forbidden"}}`), which would otherwise be
     // cast to the requested type and surface downstream as a decode error. As an
     // error it is retried (429/5xx) and falls back to the official API instead.
-    const http = HttpClient.filterStatusOk(client)
+    //
+    // `withUserAgent` is applied here too: this path reaches Brawlhalla through
+    // the dair.gg proxy and then the official API, and the official API is the
+    // one that has to be able to identify us.
+    const http = withUserAgent(HttpClient.filterStatusOk(client))
 
     const getJson = <A>(
         path: string,

@@ -29,13 +29,13 @@ export const cacheTtl = {
      * for a minute but lingers for fifteen so the serve-stale path has
      * something to return.
      */
-    leaderboard: { freshSeconds: 60, staleSeconds: 15 * 60 },
+    leaderboard: { freshSeconds: 120, staleSeconds: 60 * 60 },
     /**
      * A profile changes slowly and costs more to assemble (a v1 profile is up
      * to two upstream calls), so it keeps the five minutes the old edge
      * `Cache-Control` used, and lingers for an hour.
      */
-    profile: { freshSeconds: 300, staleSeconds: 60 * 60 },
+    profile: { freshSeconds: 300, staleSeconds: 240 * 60 },
 } as const satisfies Record<string, CacheWindow>
 
 /**

@@ -1,6 +1,6 @@
 import { Effect } from "effect"
 import { crawlTargets, queueTargets } from "@crh/bhapi/crawlTargets"
-import { crawlQueue } from "@crh/core/env"
+import { crawlSampleQueue, crawlQueue } from "@crh/core/env"
 import { Crawler, defaultCrawlerConfig } from "@crh/core/services/crawler"
 import { runCrawler } from "./runtime"
 
@@ -57,26 +57,36 @@ type MessageBatch<T> = { readonly messages: readonly QueueMessage<T>[] }
  * every ladder in a single invocation, which risks the CPU limit and gives no
  * retry granularity — one failing player would fail the whole pass. One message
  * per ladder means each is retried, paced, and limited on its own.
+ *
+ * The two halves go onto **two queues**, and that split is the fix for a backlog
+ * that grew without bound. They used to share one lane served by a single
+ * serialised consumer, so the half-hourly walk — thirty jobs at a stats read per
+ * player — sat in front of every ten-minute sample, and the two together asked
+ * for more work per hour than one invocation could do. Separated, each lane is
+ * comfortably under capacity on its own: the sampler is one request per page and
+ * the walk is one per player, and neither can starve the other.
  */
 /**
  * The cron expression that also runs the expensive half.
  *
  * Two schedules share this handler. The ten-minute one samples activity, which
- * is five requests per ladder; the thirty-minute one additionally walks the
- * ladders in full, which is 250 player fetches each. Running the sampler at the
- * full crawl's cadence would make the queue up to half an hour stale, and
- * running the full crawl every ten minutes would spend the allowance three
- * times over.
+ * is ten requests per ladder; the thirty-minute one additionally walks the
+ * ladders in full, which is 51 requests for a 1v1 page and 101 for a team page.
+ * Running the sampler at the full crawl's cadence would make the queue up to
+ * half an hour stale, and running the full crawl every ten minutes would spend
+ * the allowance three times over.
  */
 const FULL_CRAWL_CRON = "*/30 * * * *"
 
 const scheduled = async (event: { readonly cron?: string }): Promise<void> => {
+    const samples = await crawlSampleQueue()
     const queue = await crawlQueue()
 
-    if (!queue) {
+    if (!samples || !queue) {
         await Effect.runPromise(
             Effect.logWarning(
-                "No CRAWL_QUEUE binding; scheduled crawl did nothing",
+                "Missing CRAWL_QUEUE/CRAWL_SAMPLE_QUEUE binding; " +
+                    "scheduled crawl did nothing",
             ),
         )
 
@@ -85,7 +95,7 @@ const scheduled = async (event: { readonly cron?: string }): Promise<void> => {
 
     // Every tick samples activity on all 27 per-region ladders.
     for (const target of queueTargets) {
-        await queue.send({
+        await samples.send({
             kind: "queue",
             targetId: target.id,
         } satisfies CrawlJob)
@@ -110,7 +120,14 @@ const scheduled = async (event: { readonly cron?: string }): Promise<void> => {
     )
 }
 
-/** Queue: crawl one ladder, acknowledging only what completed. */
+/**
+ * Queue: process one message per ladder, acknowledging only what completed.
+ *
+ * Serves both queues, because the batch does not have to say which one it came
+ * from — the payload's `kind` already does, and it has since the sampler was
+ * added. A message produced before the split still carries it, so the backlog
+ * the old single queue was holding drains through this same path.
+ */
 const queue = async (batch: MessageBatch<CrawlJob>): Promise<void> => {
     for (const message of batch.messages) {
         const target = crawlTargets.find(

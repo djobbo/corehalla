@@ -26,25 +26,23 @@ export const to1v1Rows = (rows: readonly Ranking1v1[]): readonly LadderRow[] =>
     }))
 
 /**
- * A 2v2 row carries one `teamname` string rather than the two players.
+ * A 2v2 row names both players separately, and those are what this reads.
  *
- * Splitting on `"+"` is the same convention the API's own mapping uses to build
- * that string, so the round trip is exact and the ids still come from the
- * payload rather than being parsed out of a name.
+ * It used to split `teamname` on `"+"`, which is the same defect the legacy API
+ * has: a username containing a `+` produces the wrong two names, and nothing
+ * downstream can tell. The joined string is display-only.
  */
 export const to2v2Rows = (rows: readonly Ranking2v2[]): readonly LadderRow[] =>
     rows.map((row) => {
-        const [first = "", second = ""] = row.teamname.split("+")
-
         return {
             key: `${row.brawlhalla_id_one}-${row.brawlhalla_id_two}`,
             rank: row.rank,
             rating: row.rating,
             tier: row.tier,
             members: [
-                { id: row.brawlhalla_id_one, name: first },
-                { id: row.brawlhalla_id_two, name: second },
-            ].filter((member) => member.id > 0),
+                { id: row.brawlhalla_id_one, name: row.name_one },
+                { id: row.brawlhalla_id_two, name: row.name_two },
+            ].filter((member) => member.id > 0 && member.name !== ""),
         }
     })
 

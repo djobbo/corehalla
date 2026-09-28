@@ -6,6 +6,7 @@ import {
     getTableColumns,
     gte,
     inArray,
+    lt,
     sql,
 } from "@crh/db/query"
 import { Database as SqlDatabase, layer as sqlLayer } from "@crh/db/client"
@@ -84,6 +85,14 @@ import type {
  * becomes a defect (HTTP 500) or an empty result (e.g. optional player
  * aliases).
  */
+/**
+ * D1's bound-parameter ceiling, per statement.
+ *
+ * Documented rather than measured, and enforced by the local simulator as well
+ * as by the deployed database — which is the only reason the two agree.
+ */
+const D1_MAX_BOUND_PARAMS = 100
+
 export class Database extends Context.Service<
     Database,
     {
@@ -194,6 +203,15 @@ export class Database extends Context.Service<
          */
         readonly upsertRankedQueue: (
             rows: readonly NewBHRankedQueue[],
+        ) => Effect.Effect<void, DatabaseError>
+        /**
+         * Drops one ladder's entries the sampler has not seen change since
+         * `before` — see `RANKED_QUEUE_RETENTION_MS` for why that is safe.
+         */
+        readonly pruneRankedQueue: (
+            bracket: string,
+            region: string,
+            before: Date,
         ) => Effect.Effect<void, DatabaseError>
         /** Everyone on one ladder whose game count rose since `queuedSince`. */
         readonly getRankedQueue: (
@@ -480,35 +498,106 @@ export const layer = Layer.effect(
                     Effect.gen(function* () {
                         if (rows.length === 0) return
 
-                        yield* db
-                            .insert(bhRankedQueue)
-                            .values([...rows])
-                            .onConflictDoUpdate({
-                                target: [
-                                    bhRankedQueue.player_id,
-                                    bhRankedQueue.bracket,
-                                ],
-                                set: {
-                                    ...excludedSet(
-                                        rows[0] as unknown as Record<
-                                            string,
-                                            unknown
-                                        >,
-                                        ["player_id", "bracket", "queuedAt"],
-                                    ),
-                                    /*
-                                     * The insert's `queuedAt` is null and the
-                                     * update's is "now", which is why this is
-                                     * not `excluded."queuedAt"`: a first
-                                     * observation is not activity.
-                                     */
-                                    queuedAt: sql`excluded."lastUpdated"`,
-                                },
-                                // The gate. Everything above only runs when the
-                                // game count actually rose.
-                                where: sql`excluded."games" > ${bhRankedQueue.games}`,
-                            })
+                        /*
+                         * D1 caps a statement at 100 bound parameters, and a
+                         * ladder page is ~50 rows of 11 columns — 550 of them.
+                         * Sending the page in one statement fails outright with
+                         * nothing in the response to say why, which is how this
+                         * shipped broken: the local simulator enforces the same
+                         * cap the deployed database does, and the error surfaced
+                         * only as a Caught warning in the crawler's log.
+                         *
+                         * Nine rows fit in the budget with one to spare. The
+                         * alternative — reading the ladder first and writing only
+                         * what changed — would be fewer statements, but this is
+                         * the one that is correct for the first pass too, when
+                         * every row is new.
+                         */
+                        const columns = Object.keys(rows[0] ?? {}).length
+                        const perStatement = Math.max(
+                            1,
+                            Math.floor(
+                                D1_MAX_BOUND_PARAMS / Math.max(1, columns),
+                            ),
+                        )
+
+                        for (
+                            let index = 0;
+                            index < rows.length;
+                            index += perStatement
+                        ) {
+                            const batch = rows.slice(
+                                index,
+                                index + perStatement,
+                            )
+
+                            yield* db
+                                .insert(bhRankedQueue)
+                                .values([...batch])
+                                .onConflictDoUpdate({
+                                    target: [
+                                        bhRankedQueue.entry_id,
+                                        bhRankedQueue.bracket,
+                                    ],
+                                    set: {
+                                        ...excludedSet(
+                                            batch[0] as unknown as Record<
+                                                string,
+                                                unknown
+                                            >,
+                                            ["entry_id", "bracket", "queuedAt"],
+                                        ),
+                                        /*
+                                         * The insert's `queuedAt` is null and
+                                         * the update's is "now", which is why
+                                         * this is not `excluded."queuedAt"`: a
+                                         * first observation is not activity.
+                                         */
+                                        queuedAt: sql`excluded."lastUpdated"`,
+                                        /*
+                                         * Evaluated against the *original* row,
+                                         * so these read as "new minus old".
+                                         * SQLite resolves the bare table columns
+                                         * in a `DO UPDATE` to the existing
+                                         * values regardless of the order these
+                                         * appear in, so assigning `rating`
+                                         * below does not disturb the
+                                         * subtraction above it.
+                                         *
+                                         * The `= 0` guard is not defensive: 0 is
+                                         * what a row carries when we have never
+                                         * recorded that figure, which is every
+                                         * row that predates this column. Without
+                                         * it the first event after the migration
+                                         * subtracts zero and reports the player's
+                                         * *whole rank* as places gained — a
+                                         * number that looks like a real result
+                                         * and is not. Zero is never a genuine
+                                         * ladder position or rating, so the
+                                         * sentinel is unambiguous.
+                                         */
+                                        ratingDelta: sql`CASE WHEN ${bhRankedQueue.rating} = 0 THEN 0 ELSE excluded."rating" - ${bhRankedQueue.rating} END`,
+                                        rankDelta: sql`CASE WHEN ${bhRankedQueue.rank} = 0 THEN 0 ELSE excluded."rank" - ${bhRankedQueue.rank} END`,
+                                    },
+                                    // The gate: everything above only runs
+                                    // when the game count actually rose.
+                                    where: sql`excluded."games" > ${bhRankedQueue.games}`,
+                                })
+                        }
                     }),
+                ),
+
+            pruneRankedQueue: (bracket, region, before) =>
+                run(
+                    db
+                        .delete(bhRankedQueue)
+                        .where(
+                            and(
+                                eq(bhRankedQueue.bracket, bracket),
+                                eq(bhRankedQueue.region, region),
+                                lt(bhRankedQueue.lastUpdated, before),
+                            ),
+                        ),
                 ),
 
             getRankedQueue: (bracket, region, queuedSince) =>
@@ -519,7 +608,22 @@ export const layer = Layer.effect(
                         .where(
                             and(
                                 eq(bhRankedQueue.bracket, bracket),
-                                eq(bhRankedQueue.region, region),
+                                /*
+                                 * `all` is the merge of the real regions, and
+                                 * the sampler never writes a row for it — that
+                                 * would file every entry a second time under a
+                                 * region it does not belong to. So the merged
+                                 * view is the *absence* of this predicate
+                                 * rather than a row that does not exist:
+                                 * everyone queued anywhere, under one heading.
+                                 *
+                                 * An entry belongs to exactly one region, and
+                                 * the key is (entry, bracket), so nothing is
+                                 * duplicated by dropping the filter.
+                                 */
+                                region === "all"
+                                    ? undefined
+                                    : eq(bhRankedQueue.region, region),
                                 // Null `queuedAt` — never seen to play — is
                                 // excluded by SQL's own null comparison.
                                 gte(bhRankedQueue.queuedAt, queuedSince),

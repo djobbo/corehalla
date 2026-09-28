@@ -21,7 +21,7 @@
         "@crh/db": "workspace:*",
         "@crh/logger": "workspace:*",
         "@crh/web-parser": "workspace:*",
-        "effect": "4.0.0-rc.116",
+        "effect": "4.0.0-rc.117",
         "@crh/core": "workspace:*"
     }
 }

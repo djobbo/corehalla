@@ -320,8 +320,16 @@ const queueBase = (
     tier: row.tier,
     games: row.games,
     wins: row.wins,
+    rank: row.rank,
     /*
-     * Never set here. Whether a player has queued is decided in SQL, by
+     * Placeholders. The real deltas are computed in SQL against the row's
+     * previous values, which the mapper cannot see — and on insert there is no
+     * previous value to subtract, so zero is also the honest answer.
+     */
+    ratingDelta: 0,
+    rankDelta: 0,
+    /*
+     * Never set here. Whether an entry has queued is decided in SQL, by
      * comparing this row's `games` against the stored one — a single payload
      * cannot say whether it is new, and the mapper has no business guessing.
      */
@@ -329,19 +337,16 @@ const queueBase = (
 })
 
 /**
- * One ladder page, as rows for the ranked-queue table.
+ * One ladder, as rows for the ranked-queue table.
  *
- * The queue is keyed by **(player, bracket)**, so a 2v2 row has to be split:
- * it carries a team, and both members queued together. The team's `games` is
- * copied onto each member rather than divided, because the question the column
- * answers is "did this player's team play", and a shared count answers it for
- * both.
+ * The queue tracks **ladder entries**, and what an entry is depends on the
+ * bracket: a 1v1 or 3v3 row is one player, a 2v2 row is a team. A team is
+ * therefore one row keyed by the pair, not one row per member — the team has a
+ * single game count, and copying it onto two player keys made that count mean
+ * "whichever team of theirs was sampled last".
  *
- * A player can hold more than one team near the top of the 2v2 ladder, so the
- * same key can appear twice in a page. The largest `games` wins, and that is
- * what keeps the stored figure monotonic: any team playing raises it, while a
- * quieter team sampled later cannot lower it and read as the player having
- * stopped.
+ * The members are stored alongside rather than parsed back out of the entry id,
+ * so the read side can link both profiles without decoding a composite string.
  */
 export const toRankedQueueRows = (
     bracket: Ladder,
@@ -349,37 +354,33 @@ export const toRankedQueueRows = (
     rows: readonly (Ranking1v1 | Ranking2v2 | Ranking3v3)[],
     seenAt: Date,
 ): NewBHRankedQueue[] => {
+    /*
+     * Keyed to survive a malformed page that repeats an entry. A well-formed
+     * ladder lists each entry once, so this is a guard rather than a merge.
+     */
     const byKey = new Map<string, NewBHRankedQueue>()
-
-    const add = (row: NewBHRankedQueue): void => {
-        const key = `${row.player_id}:${row.bracket}`
-        const existing = byKey.get(key)
-
-        if (existing === undefined || row.games > existing.games) {
-            byKey.set(key, row)
-        }
-    }
 
     for (const row of rows) {
         if (bracket === "2v2") {
             const team = row as Ranking2v2
-            const [first = "", second = ""] = team.teamname.split("+")
 
-            for (const member of [
-                { id: team.brawlhalla_id_one, name: first },
-                { id: team.brawlhalla_id_two, name: second },
-            ]) {
-                // The zero id is Brawlhalla's "no player" sentinel, and a solo
-                // queue row carries it for the absent partner.
-                if (member.id <= 0) continue
-
-                add({
-                    ...queueBase(team, bracket, region, seenAt),
-                    player_id: String(member.id),
-                    name: member.name,
-                })
+            // The zero id is Brawlhalla's "no player" sentinel, which a solo
+            // queue row carries for the absent partner. Such a row is not a
+            // team and has nothing to track.
+            if (team.brawlhalla_id_one <= 0 || team.brawlhalla_id_two <= 0) {
+                continue
             }
 
+            const entry: NewBHRankedQueue = {
+                ...queueBase(team, bracket, region, seenAt),
+                entry_id: `${team.brawlhalla_id_one}-${team.brawlhalla_id_two}`,
+                name_one: team.name_one,
+                name_two: team.name_two,
+                member_one_id: String(team.brawlhalla_id_one),
+                member_two_id: String(team.brawlhalla_id_two),
+            }
+
+            byKey.set(entry.entry_id, entry)
             continue
         }
 
@@ -387,11 +388,16 @@ export const toRankedQueueRows = (
 
         if (solo.brawlhalla_id <= 0) continue
 
-        add({
+        const entry: NewBHRankedQueue = {
             ...queueBase(solo, bracket, region, seenAt),
-            player_id: String(solo.brawlhalla_id),
-            name: solo.name,
-        })
+            entry_id: String(solo.brawlhalla_id),
+            name_one: solo.name,
+            name_two: null,
+            member_one_id: null,
+            member_two_id: null,
+        }
+
+        byKey.set(entry.entry_id, entry)
     }
 
     return [...byKey.values()]

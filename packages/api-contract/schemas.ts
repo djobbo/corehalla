@@ -224,24 +224,38 @@ export type LookupResult = {
 export const LookupResultsSchema = json<readonly LookupResult[]>()
 
 /**
- * One player the activity sampler saw queue.
+ * One ladder entry the activity sampler saw queue.
+ *
+ * An entry rather than a player, because the ladders differ: a 1v1 or 3v3 entry
+ * is one player and a 2v2 entry is a team. `members` is where that shows, and
+ * it is always a list so the renderer does not branch — one name for a solo
+ * ladder, two for a team.
  *
  * `queuedAt` is an epoch millisecond rather than a date because it is only ever
  * compared against "now" on the client — how long ago they played is the whole
  * of what it means.
  */
-export type QueuedPlayer = {
+export type QueuedEntry = {
     readonly id: string
-    readonly name: string
+    readonly members: readonly {
+        readonly id: string
+        readonly name: string
+    }[]
     readonly rating: number
     readonly peakRating: number
     readonly tier: string
     readonly games: number
     readonly wins: number
     readonly queuedAt: number
+    /** Position on this ladder when they last queued. */
+    readonly rank: number
+    /** Rating change since their previous game. Signed. */
+    readonly ratingDelta: number
+    /** Places gained (positive) or lost (negative). Signed. */
+    readonly rankDelta: number
 }
 
-export const RankedQueueSchema = json<readonly QueuedPlayer[]>()
+export const RankedQueueSchema = json<readonly QueuedEntry[]>()
 
 /**
  * How many characters a lookup needs before it is worth a request.

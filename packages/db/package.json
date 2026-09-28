@@ -17,8 +17,8 @@
         "typescript": "^7.0.2"
     },
     "dependencies": {
-        "@effect/sql-d1": "4.0.0-rc.116",
+        "@effect/sql-d1": "4.0.0-rc.117",
         "drizzle-orm": "1.0.0-rc.5-5935859",
-        "effect": "4.0.0-rc.116"
+        "effect": "4.0.0-rc.117"
     }
 }

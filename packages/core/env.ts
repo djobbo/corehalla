@@ -31,8 +31,16 @@ type WorkerEnvironment = {
     CACHE?: KVNamespaceLike
     /** Cloudflare's rate-limiting binding, used as the refresh damper. */
     RATE_LIMITER?: RateLimitLike
-    /** The queue the cron producer enqueues crawl jobs onto. */
+    /** The queue the cron producer enqueues ladder crawls onto. */
     CRAWL_QUEUE?: QueueProducerLike
+    /**
+     * The queue the cron producer enqueues activity samples onto.
+     *
+     * A second queue rather than a second kind on the first: the sampler is the
+     * freshness surface and the ladder walk is the expensive one, so a shared
+     * lane made every ten-minute sample wait behind the half-hourly crawl.
+     */
+    CRAWL_SAMPLE_QUEUE?: QueueProducerLike
     BRAWLHALLA_API_KEY?: string
     SITE_URL?: string
     [key: string]: unknown
@@ -156,4 +164,20 @@ export const crawlQueue = async (): Promise<QueueProducerLike | undefined> => {
     const env = await workerEnv()
 
     return env.CRAWL_QUEUE
+}
+
+/**
+ * The activity-sampling queue, or `undefined` when it is not bound.
+ *
+ * Kept apart from {@link crawlQueue} so a sample — one request per page, ten
+ * pages a ladder — is never queued behind a ladder walk — a stats read for each
+ * of 50 players. The two were one lane, and the expensive half starved the
+ * cheap one. Missing-binding handling is the same as above.
+ */
+export const crawlSampleQueue = async (): Promise<
+    QueueProducerLike | undefined
+> => {
+    const env = await workerEnv()
+
+    return env.CRAWL_SAMPLE_QUEUE
 }
