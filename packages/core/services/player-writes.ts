@@ -130,6 +130,33 @@ export const STATS_PLAYER_COLUMNS = [
 ] as const
 
 /**
+ * The literal v0 writes into `tier`/`region` when a player has never placed.
+ *
+ * It is the whole signal that a payload is a placeholder rather than a
+ * standing: `"none"` is not a tier or a region in our vocabulary
+ * (`rankedTiersComplete`, `rankedRegions`).
+ */
+const NO_RANKED_RECORD = "none"
+
+/**
+ * Whether a v0 player payload is its zeroed "no ranked record" placeholder.
+ *
+ * `/player/{id}/ranked` answers 200 with `{ name: "", rating: 0, games: 0,
+ * tier: "none", region: "none" }` for anyone who has never placed, rather than
+ * a 404 or a JSON `null`. Cast to `PlayerRanked`, that placeholder is
+ * indistinguishable from a real standing unless it is tested for — which is
+ * exactly how a profile view came to overwrite a crawled player's name with
+ * `""` and stamp `tier = "none"` on every unranked player.
+ *
+ * Both fields are checked because either one alone is a strong sentinel: a
+ * genuine record always has a rating (the floor is Tin, 200) and a real region
+ * code.
+ */
+const isNoRankedRecord = (ranked: PlayerRanked): boolean =>
+    ranked.rating <= 0 ||
+    String(ranked.region).trim().toLowerCase() === NO_RANKED_RECORD
+
+/**
  * The 1v1 snapshot for a player whose own ranked record we hold.
  *
  * Shared by both write paths rather than kept private to the crawler: the
@@ -137,9 +164,10 @@ export const STATS_PLAYER_COLUMNS = [
  * endpoint reaches it directly, and the two must agree on what a
  * `BHPlayerData` rating means.
  *
- * A player with no 1v1 record yields `null`. That is not a failure — the ranked
- * columns are `NOT NULL`, and inventing zeros would insert a player into the
- * 1v1 ladder who is not on it.
+ * A player with no 1v1 record yields `null`, and that now includes the zeroed
+ * placeholder v0 returns instead of a `null` — see {@link isNoRankedRecord}.
+ * That is not a failure: the ranked columns are `NOT NULL`, and inventing
+ * zeros would insert a player into the 1v1 ladder who is not on it.
  *
  * `null` *inside* the record is a different thing entirely, and the tier below
  * is the one place the two nearly got confused: v0 reports the top tier as
@@ -148,7 +176,7 @@ export const STATS_PLAYER_COLUMNS = [
 export const snapshotFromRanked = (
     ranked: PlayerRanked | null,
 ): RankedSnapshot | null =>
-    ranked === null
+    ranked === null || isNoRankedRecord(ranked)
         ? null
         : {
               rating: ranked.rating,
@@ -172,6 +200,19 @@ export const snapshotFromRanked = (
           }
 
 /**
+ * Whether a name is worth writing.
+ *
+ * The upstream payloads are cast rather than validated, so `string` on the
+ * type is an assumption at the boundary, never a fact: v0 ships the empty
+ * string for a player it could not name, and v1 intermittently omits the key
+ * altogether (the same behaviour `aliasRows` guards against). A name that is
+ * absent or only whitespace must not be allowed to overwrite one a previous
+ * write stored.
+ */
+export const hasStorableName = (name: string | undefined): boolean =>
+    typeof name === "string" && name.trim().length > 0
+
+/**
  * Which `BHPlayerData` columns an upsert may overwrite.
  *
  * Returns the *omit* list `excludedSet` takes, so the answer lives here rather
@@ -182,14 +223,23 @@ export const snapshotFromRanked = (
  * like missing data rather than like a write.
  *
  * `id` is always omitted: it is the conflict target, so setting it is either
- * redundant or a rename. `name` and `lastUpdated` are never omitted, because
- * every caller has both.
+ * redundant or a rename. `lastUpdated` is never omitted, because every caller
+ * has one.
+ *
+ * `name` is omitted unless the caller holds a usable one. Both payloads are
+ * *supposed* to carry it, but the types are casts over unvalidated JSON, and a
+ * payload that arrives without a name would otherwise blank the row — see
+ * {@link hasStorableName} for the failure that caused. The insert still carries
+ * the value it has (the column is `NOT NULL`); it just cannot win a conflict.
  */
 export const playerDataOmitColumns = (parts: {
     readonly stats: boolean
     readonly ranked: boolean
+    /** Whether the caller holds a usable name, not merely a `name` field. */
+    readonly name: boolean
 }): readonly string[] => [
     "id",
+    ...(parts.name ? [] : ["name"]),
     ...(parts.ranked ? [] : RANKED_PLAYER_COLUMNS),
     ...(parts.stats ? [] : STATS_PLAYER_COLUMNS),
 ]

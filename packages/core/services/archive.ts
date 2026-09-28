@@ -30,6 +30,7 @@ import {
 import { DatabaseError } from "../errors"
 import {
     excludedSet,
+    hasStorableName,
     playerDataOmitColumns,
     toLegendRows,
     toPlayerDataRow,
@@ -403,10 +404,13 @@ export const layer = Layer.effect(
                                     playerData,
                                     // This writer owns the stats; it may only
                                     // set the ranked columns when it was handed
-                                    // a snapshot to set them from.
+                                    // a snapshot to set them from — and it may
+                                    // only set the name when the payload it was
+                                    // handed actually carried one.
                                     playerDataOmitColumns({
                                         stats: true,
                                         ranked: ranked !== null,
+                                        name: hasStorableName(playerData.name),
                                     }),
                                 ),
                             })
@@ -487,6 +491,7 @@ export const layer = Layer.effect(
                                     playerDataOmitColumns({
                                         stats: false,
                                         ranked: true,
+                                        name: hasStorableName(row.name),
                                     }),
                                 ),
                             })

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import {
     excludedSet,
+    hasStorableName,
     playerDataOmitColumns,
     RANKED_PLAYER_COLUMNS,
     snapshotFromRanked,
@@ -11,6 +12,7 @@ import {
 import { playerRankedMock } from "@crh/bhapi/mocks/playerRanked"
 import { playerStatsMock } from "@crh/bhapi/mocks/playerStats"
 import type { BHPlayerData } from "@crh/db/schema"
+import type { PlayerRanked } from "@crh/bhapi/types"
 import type { RankedSnapshot } from "./player-writes"
 
 /**
@@ -41,6 +43,24 @@ const snapshot: RankedSnapshot = {
     region: "eu",
 }
 
+/**
+ * The payload v0 really answers for a player who has never placed.
+ *
+ * Captured from a live response: 200, not a 404, with the name blanked and
+ * `tier`/`region` set to the literal `"none"`. It is the whole reason a profile
+ * view used to erase a name — see `snapshotFromRanked`.
+ */
+const noRankedRecord = {
+    ...playerRankedMock,
+    name: "",
+    rating: 0,
+    peak_rating: 0,
+    tier: "none",
+    region: "none",
+    games: 0,
+    wins: 0,
+} as unknown as PlayerRanked
+
 /** Which halves of the row a given caller holds. */
 type Source = "stats" | "ranked" | "both"
 
@@ -53,13 +73,14 @@ const rowFor = (source: Source): BHPlayerData => {
 }
 
 /** The columns an upsert from that caller is permitted to overwrite. */
-const writableColumns = (source: Source): readonly string[] =>
+const writableColumns = (source: Source, name = true): readonly string[] =>
     Object.keys(
         excludedSet(
             rowFor(source),
             playerDataOmitColumns({
                 stats: source !== "ranked",
                 ranked: source !== "stats",
+                name,
             }),
         ),
     )
@@ -94,6 +115,34 @@ describe("snapshotFromRanked", () => {
 
     it("yields null for a player with no 1v1 record", () => {
         expect(snapshotFromRanked(null)).toBeNull()
+    })
+
+    /*
+     * The bug this pins, reproduced from the cache: v0 answers 200 with a
+     * zeroed placeholder for an unranked player rather than `null`. Treating
+     * it as a standing wrote `tier = "none"` and a blank name over the row the
+     * stats half had just stored — the archive's career board then showed the
+     * player with no name at all.
+     */
+    it("yields null for v0's zeroed placeholder, not just for a JSON null", () => {
+        expect(snapshotFromRanked(noRankedRecord)).toBeNull()
+    })
+
+    it("treats either sentinel as no record", () => {
+        // Whichever field v0 blanks first, the payload is still a placeholder.
+        expect(
+            snapshotFromRanked({
+                ...noRankedRecord,
+                region: "us-e",
+            } as PlayerRanked),
+        ).toBeNull()
+
+        expect(
+            snapshotFromRanked({
+                ...noRankedRecord,
+                rating: 1500,
+            } as PlayerRanked),
+        ).toBeNull()
     })
 })
 
@@ -168,6 +217,38 @@ describe("toPlayerRankedRow", () => {
     })
 })
 
+describe("hasStorableName", () => {
+    it("accepts a real name", () => {
+        expect(hasStorableName("music is math")).toBe(true)
+    })
+
+    it("rejects the shapes upstream ships when it cannot name a player", () => {
+        // v0 blanks it; v1 omits the key and the cast would read `undefined`.
+        expect(hasStorableName("")).toBe(false)
+        expect(hasStorableName("   ")).toBe(false)
+        expect(hasStorableName(undefined)).toBe(false)
+    })
+})
+
+describe("a write whose payload carried no name", () => {
+    /*
+     * The other half of the blank-name bug. The two writers run in the same
+     * request and each used to set `name` unconditionally, so whichever landed
+     * second decided the row — and a payload without a name erased the one the
+     * other half had just stored.
+     */
+    it("leaves the stored name alone from either half", () => {
+        expect(writableColumns("stats", false)).not.toContain("name")
+        expect(writableColumns("ranked", false)).not.toContain("name")
+    })
+
+    it("still updates everything else that half owns", () => {
+        expect(writableColumns("stats", false)).toContain("lastUpdated")
+        expect(writableColumns("ranked", false)).toContain("lastUpdated")
+        expect(writableColumns("ranked", false)).toContain("rating")
+    })
+})
+
 describe("a write with no ranked record", () => {
     it("keeps every ranked column out of SET", () => {
         const columns = writableColumns("stats")
@@ -229,7 +310,8 @@ describe("a ranked-only write", () => {
             expect(columns).toContain(column)
         }
 
-        // Both payloads carry the name, so either path may record a rename.
+        // Either path may record a rename — when the payload it was handed
+        // actually carries the new name (see the blank-name case below).
         expect(columns).toContain("name")
         expect(columns).toContain("lastUpdated")
     })
