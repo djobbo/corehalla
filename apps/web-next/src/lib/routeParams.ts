@@ -13,7 +13,7 @@ type Region = typeof RankedRegion.Type
  *
  * An unknown region or an unparseable page resolves to the default rather than
  * throwing a 404: these segments are user-editable, and a mistyped URL landing
- * on Global page 1 is a better answer than an error page. The canonical URL is
+ * on Career page 1 is a better answer than an error page. The canonical URL is
  * what the chip row writes, so a coercing read never becomes a redirect loop.
  */
 
@@ -41,7 +41,8 @@ export const legendOptions: readonly { value: string; label: string }[] =
  * Validated against the bundled legend table rather than parsed as a number,
  * because the value is a filter on a column: an id nothing uses would return an
  * empty board that looks like "nobody has played this legend" instead of like a
- * bad URL. Defaults to the first legend, so `/rankings/legends` is a real page.
+ * bad URL. Defaults to the first legend, so `/rankings/career/legends` is a
+ * real page as well as `/rankings/career/legends/3`.
  */
 export const resolveLegendId = (value: unknown): number => {
     const id = Number(value)

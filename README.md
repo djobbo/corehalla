@@ -55,7 +55,7 @@ connections stay app-owned; every write is scoped to the session's `userId` in
 
 `packages/db/schema.ts` indexes the hot read paths:
 
-- `BHPlayerData` — one index per global-ranking sort column (`xp`, `games`,
+- `BHPlayerData` — one index per career-ranking sort column (`xp`, `games`,
   `wins`, …, `damageGadgets`) plus `lastUpdated` for the crawler's flush pass.
   The `ORDER BY` column is dynamic, so each sortable column needs its own index;
   without one every ranking page is a full scan (and D1 bills rows read).

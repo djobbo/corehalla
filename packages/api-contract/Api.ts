@@ -10,12 +10,12 @@ import {
     ArticleCategory,
     ArticlesSchema,
     Bracket,
+    CareerRankingsSchema,
     ClanSchema,
     ClansSchema,
     ConnectionSchema,
     FavoriteInputSchema,
     FavoriteSchema,
-    GlobalPlayerRankingsSchema,
     Ladder,
     LookupResultsSchema,
     Player3v3RankedSchema,
@@ -86,14 +86,14 @@ const rankings = HttpApiGroup.make("rankings")
                     sortBy: SortablePlayerProp,
                     page: Schema.FiniteFromString,
                 },
-                success: GlobalPlayerRankingsSchema,
+                success: CareerRankingsSchema,
             },
         ),
     )
     /*
      * The two boards that rank a player *within one legend or weapon*.
      *
-     * They return the same row shape as the global board — a player and one
+     * They return the same row shape as the career board — a player and one
      * number — because that is genuinely all they are; what differs is the
      * filter and the column, both of which are query parameters rather than
      * fields. A row carries no legend or weapon, because every row on a given
@@ -109,7 +109,7 @@ const rankings = HttpApiGroup.make("rankings")
                     sortBy: SortableLegendProp,
                     page: Schema.FiniteFromString,
                 },
-                success: GlobalPlayerRankingsSchema,
+                success: CareerRankingsSchema,
             },
         ),
     )
@@ -123,7 +123,7 @@ const rankings = HttpApiGroup.make("rankings")
                     sortBy: SortableWeaponProp,
                     page: Schema.FiniteFromString,
                 },
-                success: GlobalPlayerRankingsSchema,
+                success: CareerRankingsSchema,
             },
         ),
     )

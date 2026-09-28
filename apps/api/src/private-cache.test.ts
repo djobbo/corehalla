@@ -44,7 +44,9 @@ describe("withNoStore", () => {
         // `new Response(response.body, …)` re-wraps a stream; getting that wrong
         // yields an empty body rather than an error, which a status-only
         // assertion would miss.
-        const response = withNoStore(new Response('{"ok":true}', { status: 401 }))
+        const response = withNoStore(
+            new Response('{"ok":true}', { status: 401 }),
+        )
 
         expect(response.status).toBe(401)
         expect(await response.text()).toBe('{"ok":true}')

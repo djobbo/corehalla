@@ -170,7 +170,9 @@ export const authGroup = HttpApiBuilder.group(
                         HttpServerResponse.redirect(
                             discordAuthorizeUrl({
                                 clientId,
-                                redirectUri: discordRedirectUri(request.originalUrl),
+                                redirectUri: discordRedirectUri(
+                                    request.originalUrl,
+                                ),
                                 state,
                             }),
                             { status: 302 },
@@ -240,7 +242,9 @@ export const authGroup = HttpApiBuilder.group(
                             code,
                             clientId,
                             clientSecret,
-                            redirectUri: discordRedirectUri(request.originalUrl),
+                            redirectUri: discordRedirectUri(
+                                request.originalUrl,
+                            ),
                         })
 
                         const profile = yield* fetchDiscordProfile(
@@ -277,10 +281,9 @@ export const authGroup = HttpApiBuilder.group(
 
                     return yield* clearState(
                         HttpServerResponse.setCookieUnsafe(
-                            HttpServerResponse.redirect(
-                                appUrl("/?auth=ok"),
-                                { status: 303 },
-                            ),
+                            HttpServerResponse.redirect(appUrl("/?auth=ok"), {
+                                status: 303,
+                            }),
                             SESSION_COOKIE,
                             session.value.token,
                             {

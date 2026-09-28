@@ -85,13 +85,13 @@ export const ClanRankingsView = ({
                  * read as the same kind of control.
                  */}
                 <label htmlFor={searchId} className="ch-stat-label">
-                    Search clans
+                    Search guilds
                 </label>
                 <Input
                     id={searchId}
                     type="search"
                     value={query}
-                    placeholder="Clan name"
+                    placeholder="Guild name"
                     onChange={(event) => onQueryChange(event.target.value)}
                 />
             </div>
@@ -101,8 +101,8 @@ export const ClanRankingsView = ({
                     <EmptyHeader>
                         <EmptyDescription>
                             {resultQuery
-                                ? `No clans match “${resultQuery}”.`
-                                : "No clans have been indexed yet."}
+                                ? `No guilds match “${resultQuery}”.`
+                                : "No guilds have been indexed yet."}
                         </EmptyDescription>
                     </EmptyHeader>
                 </Empty>
@@ -114,7 +114,7 @@ export const ClanRankingsView = ({
                                 {rankOffset === null ? null : (
                                     <TableHead className="w-7">#</TableHead>
                                 )}
-                                <TableHead>Clan</TableHead>
+                                <TableHead>Guild</TableHead>
                                 <TableHead className="w-28 text-right">
                                     Created
                                 </TableHead>

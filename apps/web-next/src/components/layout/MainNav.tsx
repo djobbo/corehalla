@@ -26,7 +26,7 @@ import { cn } from "@/lib/cn"
  * every surface was a peer, but it spent the whole row on links the reader
  * mostly does not want, and it left nowhere to put the *relationships*: the
  * three queues belong to the same idea as the three ladders, and legends and
- * weapons are views of one global board. A menu is what says so, and it is
+ * weapons are views of one career board. A menu is what says so, and it is
  * `NavigationMenu` rather than hand-rolled disclosure because the hard parts —
  * roving focus across top-level items, open-on-hover with a shared viewport,
  * Escape and outside-click dismissal, the `aria-expanded`/`aria-controls` wiring
@@ -61,53 +61,60 @@ type NavSection = {
 }
 
 /*
- * The prefixes are spelled out rather than derived, because two of these are
- * *prefixes* of the third's neighbourhood: `/rankings/global` must not light up
- * `/rankings/1v1`. The queues are folded into `Ranked` because that is where
- * they live in the menu, and legends and weapons into `Global` for the same
- * reason — a section is current whenever one of its own surfaces is.
+ * The prefixes are spelled out rather than derived: `matches` below is a
+ * prefix test, and a section is current whenever one of its surfaces is. The
+ * ladders and the queues share the `Ranked` section because they are two views
+ * of the same live standings — so its `match` lists all four prefixes — while
+ * the three career boards collapse into one `/rankings/career` prefix because
+ * they are views of one archive.
  */
 const sections: readonly NavSection[] = [
     {
         label: "Ranked",
-        href: "/rankings/1v1",
-        match: ["/rankings/1v1", "/rankings/2v2", "/rankings/3v3", "/queue"],
+        href: "/rankings/live/1v1",
+        match: [
+            "/rankings/live/1v1",
+            "/rankings/live/2v2",
+            "/rankings/live/3v3",
+            "/rankings/queues",
+        ],
         columns: [
             {
                 heading: "Ladders",
                 links: [
-                    { label: "1v1", href: "/rankings/1v1" },
-                    { label: "2v2", href: "/rankings/2v2" },
-                    { label: "3v3", href: "/rankings/3v3" },
+                    { label: "1v1", href: "/rankings/live/1v1" },
+                    { label: "2v2", href: "/rankings/live/2v2" },
+                    { label: "3v3", href: "/rankings/live/3v3" },
                 ],
             },
             {
                 heading: "Queues",
                 links: [
-                    { label: "1v1", href: "/queue/1v1" },
-                    { label: "2v2", href: "/queue/2v2" },
-                    { label: "3v3", href: "/queue/3v3" },
+                    { label: "1v1", href: "/rankings/queues/1v1" },
+                    { label: "2v2", href: "/rankings/queues/2v2" },
+                    { label: "3v3", href: "/rankings/queues/3v3" },
                 ],
             },
         ],
     },
     {
-        label: "Global",
-        href: "/rankings/global",
-        match: ["/rankings/global", "/rankings/legends", "/rankings/weapons"],
+        label: "Career",
+        href: "/rankings/career/players",
+        match: ["/rankings/career"],
         columns: [
             {
                 links: [
-                    { label: "Legends", href: "/rankings/legends" },
-                    { label: "Weapons", href: "/rankings/weapons" },
+                    { label: "Players", href: "/rankings/career/players" },
+                    { label: "Legends", href: "/rankings/career/legends" },
+                    { label: "Weapons", href: "/rankings/career/weapons" },
                 ],
             },
         ],
     },
     {
         label: "Guilds",
-        href: "/rankings/clans",
-        match: ["/rankings/clans"],
+        href: "/rankings/guilds",
+        match: ["/rankings/guilds"],
     },
 ]
 

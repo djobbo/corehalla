@@ -81,7 +81,7 @@ export const ClanHeader = ({ clanId }: { readonly clanId: number }) => {
                 <span aria-hidden className="text-muted-foreground/40">
                     /
                 </span>
-                <span>Clans</span>
+                <span>Guilds</span>
                 <span aria-hidden className="text-muted-foreground/40">
                     /
                 </span>

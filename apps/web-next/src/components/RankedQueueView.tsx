@@ -249,7 +249,9 @@ export const RankedQueueView = ({
 
 /** Where a queue page lives. Bracket and region are both path segments. */
 export const queueHref = (bracket: Ladder, region: Region): string =>
-    region === "all" ? `/queue/${bracket}` : `/queue/${bracket}/${region}`
+    region === "all"
+        ? `/rankings/queues/${bracket}`
+        : `/rankings/queues/${bracket}/${region}`
 
 /**
  * How long ago, coarsely.

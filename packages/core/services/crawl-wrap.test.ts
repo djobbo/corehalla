@@ -44,9 +44,7 @@ const harness = (options: {
             Effect.sync(() => {
                 readPages.push(page)
 
-                return options.rows === false
-                    ? []
-                    : rankings1v1Mock.slice(0, 1)
+                return options.rows === false ? [] : rankings1v1Mock.slice(0, 1)
             }),
         /*
          * `null` is "the upstream could not answer", and it is enough here: the

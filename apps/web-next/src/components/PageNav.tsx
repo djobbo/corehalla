@@ -5,7 +5,7 @@ import { Link } from "@tanstack/react-router"
 /**
  * Previous/next controls for a paged list.
  *
- * Extracted once a third list needed them. The ladder, the global leaderboards
+ * Extracted once a third list needed them. The ladder, the career leaderboards
  * and the clan rankings are all "one page of many", and three hand-written
  * copies of the same two buttons would eventually disagree about which end
  * disappears when — or about whether the first page offers a "previous" at all.

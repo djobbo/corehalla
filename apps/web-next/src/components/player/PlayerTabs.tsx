@@ -27,26 +27,26 @@ export const PlayerTabs = ({
         {
             tab: "overview",
             label: "Overview",
-            href: `/stats/player/${playerId}`,
+            href: `/stats/players/${playerId}`,
         },
         ...(show2v2
             ? [
                   {
                       tab: "2v2",
                       label: "2v2 Ranked",
-                      href: `/stats/player/${playerId}/2v2`,
+                      href: `/stats/players/${playerId}/2v2`,
                   },
               ]
             : []),
         {
             tab: "legends",
             label: "Legends",
-            href: `/stats/player/${playerId}/legends`,
+            href: `/stats/players/${playerId}/legends`,
         },
         {
             tab: "weapons",
             label: "Weapons",
-            href: `/stats/player/${playerId}/weapons`,
+            href: `/stats/players/${playerId}/weapons`,
         },
     ]
 

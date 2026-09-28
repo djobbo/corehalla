@@ -1,44 +1,22 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { LadderView } from "@/components/LadderView"
-import { LADDER_PAGE_SIZE } from "@/lib/rankings"
-import { to1v1Rows } from "@/lib/ladderRows"
-import { resolvePage, resolveRegion } from "@/lib/routeParams"
-import { preloadAtoms, rankings1v1Atom, useQuery } from "@/effect/atoms"
+import { createFileRoute, redirect } from "@tanstack/react-router"
 
 /**
- * The canonical 1v1 ladder URL.
+ * The old address of the 1v1 ladder.
  *
- * Home renders the same view without the region being in the path, so this route
- * is what a shared, indexable ladder link points at — the filter is part of the
- * address, not client state.
+ * The ladders are the "live" rankings — current standings, as opposed to the
+ * career archive — so the 1v1 ladder lives at `/rankings/live/1v1` now. The
+ * region and page segments carry across unchanged, which keeps the indexed URLs
+ * working.
  */
+
 export const Route = createFileRoute("/rankings/1v1/{-$region}/{-$page}")({
-    loader: ({ params, context }) =>
-        preloadAtoms(context, [
-            rankings1v1Atom(
-                resolveRegion(params.region),
-                resolvePage(params.page),
-            ),
-        ]),
-    component: Page,
+    beforeLoad({ params }) {
+        const region = params.region ? `/${params.region}` : ""
+        const page = params.page ? `/${params.page}` : ""
+
+        throw redirect({
+            href: `/rankings/live/1v1${region}${page}`,
+            statusCode: 308,
+        })
+    },
 })
-
-function Page() {
-    const { region: regionParam, page: pageParam } = Route.useParams()
-
-    const region = resolveRegion(regionParam)
-    const page = resolvePage(pageParam)
-    const rows = to1v1Rows(useQuery(rankings1v1Atom(region, page)))
-
-    return (
-        <main className="ch-page">
-            <LadderView
-                bracket="1v1"
-                region={region}
-                page={page}
-                rows={rows}
-                hasNextPage={rows.length >= LADDER_PAGE_SIZE}
-            />
-        </main>
-    )
-}

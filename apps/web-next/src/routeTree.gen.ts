@@ -10,26 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as AtmeFavoritesRouteImport } from './routes/@me/favorites'
 import { Route as RankingsIndexRouteImport } from './routes/rankings/index'
 import { Route as QueueChar123BracketChar125Char123RegionChar125RouteImport } from './routes/queue.{-$bracket}.{-$region}'
+import { Route as RankingsCareerIndexRouteImport } from './routes/rankings/career/index'
 import { Route as RankingsClansChar123PageChar125RouteImport } from './routes/rankings/clans.{-$page}'
 import { Route as RankingsGlobalChar123PageChar125RouteImport } from './routes/rankings/global.{-$page}'
+import { Route as RankingsGuildsChar123PageChar125RouteImport } from './routes/rankings/guilds.{-$page}'
 import { Route as RankingsLegendsChar123PageChar125RouteImport } from './routes/rankings/legends.{-$page}'
 import { Route as RankingsWeaponsChar123PageChar125RouteImport } from './routes/rankings/weapons.{-$page}'
-import { Route as StatsClanClanIdRouteImport } from './routes/stats/clan/$clanId'
-import { Route as StatsPlayerPlayerIdRouteImport } from './routes/stats/player/$playerId'
+import { Route as StatsClanSplatRouteImport } from './routes/stats/clan.$'
+import { Route as StatsGuildsIdRouteImport } from './routes/stats/guilds/$id'
+import { Route as StatsPlayerSplatRouteImport } from './routes/stats/player.$'
+import { Route as StatsPlayersIdRouteImport } from './routes/stats/players/$id'
 import { Route as Rankings1v1Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/1v1.{-$region}.{-$page}'
 import { Route as Rankings2v2Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/2v2.{-$region}.{-$page}'
 import { Route as Rankings3v3Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/3v3.{-$region}.{-$page}'
-import { Route as StatsPlayerPlayerIdIndexRouteImport } from './routes/stats/player/$playerId.index'
-import { Route as StatsPlayerPlayerId2v2RouteImport } from './routes/stats/player/$playerId.2v2'
-import { Route as StatsPlayerPlayerIdLegendsRouteImport } from './routes/stats/player/$playerId.legends'
-import { Route as StatsPlayerPlayerIdWeaponsRouteImport } from './routes/stats/player/$playerId.weapons'
+import { Route as RankingsCareerPlayersChar123PageChar125RouteImport } from './routes/rankings/career/players.{-$page}'
+import { Route as RankingsQueuesChar123BracketChar125Char123RegionChar125RouteImport } from './routes/rankings/queues/{-$bracket}.{-$region}'
+import { Route as StatsPlayersIdIndexRouteImport } from './routes/stats/players/$id.index'
+import { Route as StatsPlayersId2v2RouteImport } from './routes/stats/players/$id.2v2'
+import { Route as StatsPlayersIdLegendsRouteImport } from './routes/stats/players/$id.legends'
+import { Route as StatsPlayersIdWeaponsRouteImport } from './routes/stats/players/$id.weapons'
+import { Route as RankingsCareerLegendsChar123LegendIdChar125Char123PageChar125RouteImport } from './routes/rankings/career/legends.{-$legendId}.{-$page}'
+import { Route as RankingsCareerWeaponsChar123WeaponChar125Char123PageChar125RouteImport } from './routes/rankings/career/weapons.{-$weapon}.{-$page}'
+import { Route as RankingsLive1v1Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/live/1v1.{-$region}.{-$page}'
+import { Route as RankingsLive2v2Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/live/2v2.{-$region}.{-$page}'
+import { Route as RankingsLive3v3Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/live/3v3.{-$region}.{-$page}'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeaderboardRoute = LeaderboardRouteImport.update({
+  id: '/leaderboard',
+  path: '/leaderboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AtmeFavoritesRoute = AtmeFavoritesRouteImport.update({
@@ -48,6 +65,11 @@ const QueueChar123BracketChar125Char123RegionChar125Route =
     path: '/queue/{-$bracket}/{-$region}',
     getParentRoute: () => rootRouteImport,
   } as any)
+const RankingsCareerIndexRoute = RankingsCareerIndexRouteImport.update({
+  id: '/rankings/career/',
+  path: '/rankings/career/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RankingsClansChar123PageChar125Route =
   RankingsClansChar123PageChar125RouteImport.update({
     id: '/rankings/clans/{-$page}',
@@ -58,6 +80,12 @@ const RankingsGlobalChar123PageChar125Route =
   RankingsGlobalChar123PageChar125RouteImport.update({
     id: '/rankings/global/{-$page}',
     path: '/rankings/global/{-$page}',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const RankingsGuildsChar123PageChar125Route =
+  RankingsGuildsChar123PageChar125RouteImport.update({
+    id: '/rankings/guilds/{-$page}',
+    path: '/rankings/guilds/{-$page}',
     getParentRoute: () => rootRouteImport,
   } as any)
 const RankingsLegendsChar123PageChar125Route =
@@ -72,14 +100,24 @@ const RankingsWeaponsChar123PageChar125Route =
     path: '/rankings/weapons/{-$page}',
     getParentRoute: () => rootRouteImport,
   } as any)
-const StatsClanClanIdRoute = StatsClanClanIdRouteImport.update({
-  id: '/stats/clan/$clanId',
-  path: '/stats/clan/$clanId',
+const StatsClanSplatRoute = StatsClanSplatRouteImport.update({
+  id: '/stats/clan/$',
+  path: '/stats/clan/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const StatsPlayerPlayerIdRoute = StatsPlayerPlayerIdRouteImport.update({
-  id: '/stats/player/$playerId',
-  path: '/stats/player/$playerId',
+const StatsGuildsIdRoute = StatsGuildsIdRouteImport.update({
+  id: '/stats/guilds/$id',
+  path: '/stats/guilds/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatsPlayerSplatRoute = StatsPlayerSplatRouteImport.update({
+  id: '/stats/player/$',
+  path: '/stats/player/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatsPlayersIdRoute = StatsPlayersIdRouteImport.update({
+  id: '/stats/players/$id',
+  path: '/stats/players/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Rankings1v1Char123RegionChar125Char123PageChar125Route =
@@ -100,160 +138,287 @@ const Rankings3v3Char123RegionChar125Char123PageChar125Route =
     path: '/rankings/3v3/{-$region}/{-$page}',
     getParentRoute: () => rootRouteImport,
   } as any)
-const StatsPlayerPlayerIdIndexRoute =
-  StatsPlayerPlayerIdIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => StatsPlayerPlayerIdRoute,
+const RankingsCareerPlayersChar123PageChar125Route =
+  RankingsCareerPlayersChar123PageChar125RouteImport.update({
+    id: '/rankings/career/players/{-$page}',
+    path: '/rankings/career/players/{-$page}',
+    getParentRoute: () => rootRouteImport,
   } as any)
-const StatsPlayerPlayerId2v2Route = StatsPlayerPlayerId2v2RouteImport.update({
+const RankingsQueuesChar123BracketChar125Char123RegionChar125Route =
+  RankingsQueuesChar123BracketChar125Char123RegionChar125RouteImport.update({
+    id: '/rankings/queues/{-$bracket}/{-$region}',
+    path: '/rankings/queues/{-$bracket}/{-$region}',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const StatsPlayersIdIndexRoute = StatsPlayersIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => StatsPlayersIdRoute,
+} as any)
+const StatsPlayersId2v2Route = StatsPlayersId2v2RouteImport.update({
   id: '/2v2',
   path: '/2v2',
-  getParentRoute: () => StatsPlayerPlayerIdRoute,
+  getParentRoute: () => StatsPlayersIdRoute,
 } as any)
-const StatsPlayerPlayerIdLegendsRoute =
-  StatsPlayerPlayerIdLegendsRouteImport.update({
-    id: '/legends',
-    path: '/legends',
-    getParentRoute: () => StatsPlayerPlayerIdRoute,
+const StatsPlayersIdLegendsRoute = StatsPlayersIdLegendsRouteImport.update({
+  id: '/legends',
+  path: '/legends',
+  getParentRoute: () => StatsPlayersIdRoute,
+} as any)
+const StatsPlayersIdWeaponsRoute = StatsPlayersIdWeaponsRouteImport.update({
+  id: '/weapons',
+  path: '/weapons',
+  getParentRoute: () => StatsPlayersIdRoute,
+} as any)
+const RankingsCareerLegendsChar123LegendIdChar125Char123PageChar125Route =
+  RankingsCareerLegendsChar123LegendIdChar125Char123PageChar125RouteImport.update(
+    {
+      id: '/rankings/career/legends/{-$legendId}/{-$page}',
+      path: '/rankings/career/legends/{-$legendId}/{-$page}',
+      getParentRoute: () => rootRouteImport,
+    } as any,
+  )
+const RankingsCareerWeaponsChar123WeaponChar125Char123PageChar125Route =
+  RankingsCareerWeaponsChar123WeaponChar125Char123PageChar125RouteImport.update(
+    {
+      id: '/rankings/career/weapons/{-$weapon}/{-$page}',
+      path: '/rankings/career/weapons/{-$weapon}/{-$page}',
+      getParentRoute: () => rootRouteImport,
+    } as any,
+  )
+const RankingsLive1v1Char123RegionChar125Char123PageChar125Route =
+  RankingsLive1v1Char123RegionChar125Char123PageChar125RouteImport.update({
+    id: '/rankings/live/1v1/{-$region}/{-$page}',
+    path: '/rankings/live/1v1/{-$region}/{-$page}',
+    getParentRoute: () => rootRouteImport,
   } as any)
-const StatsPlayerPlayerIdWeaponsRoute =
-  StatsPlayerPlayerIdWeaponsRouteImport.update({
-    id: '/weapons',
-    path: '/weapons',
-    getParentRoute: () => StatsPlayerPlayerIdRoute,
+const RankingsLive2v2Char123RegionChar125Char123PageChar125Route =
+  RankingsLive2v2Char123RegionChar125Char123PageChar125RouteImport.update({
+    id: '/rankings/live/2v2/{-$region}/{-$page}',
+    path: '/rankings/live/2v2/{-$region}/{-$page}',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const RankingsLive3v3Char123RegionChar125Char123PageChar125Route =
+  RankingsLive3v3Char123RegionChar125Char123PageChar125RouteImport.update({
+    id: '/rankings/live/3v3/{-$region}/{-$page}',
+    path: '/rankings/live/3v3/{-$region}/{-$page}',
+    getParentRoute: () => rootRouteImport,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/leaderboard': typeof LeaderboardRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/rankings/': typeof RankingsIndexRoute
   '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
+  '/rankings/guilds/{-$page}': typeof RankingsGuildsChar123PageChar125Route
   '/rankings/legends/{-$page}': typeof RankingsLegendsChar123PageChar125Route
   '/rankings/weapons/{-$page}': typeof RankingsWeaponsChar123PageChar125Route
-  '/stats/clan/$clanId': typeof StatsClanClanIdRoute
-  '/stats/player/$playerId': typeof StatsPlayerPlayerIdRouteWithChildren
+  '/stats/clan/$': typeof StatsClanSplatRoute
+  '/stats/guilds/$id': typeof StatsGuildsIdRoute
+  '/stats/player/$': typeof StatsPlayerSplatRoute
+  '/stats/players/$id': typeof StatsPlayersIdRouteWithChildren
+  '/rankings/career/': typeof RankingsCareerIndexRoute
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/3v3/{-$region}/{-$page}': typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
-  '/stats/player/$playerId/2v2': typeof StatsPlayerPlayerId2v2Route
-  '/stats/player/$playerId/legends': typeof StatsPlayerPlayerIdLegendsRoute
-  '/stats/player/$playerId/weapons': typeof StatsPlayerPlayerIdWeaponsRoute
-  '/stats/player/$playerId/': typeof StatsPlayerPlayerIdIndexRoute
+  '/rankings/career/players/{-$page}': typeof RankingsCareerPlayersChar123PageChar125Route
+  '/rankings/queues/{-$bracket}/{-$region}': typeof RankingsQueuesChar123BracketChar125Char123RegionChar125Route
+  '/stats/players/$id/2v2': typeof StatsPlayersId2v2Route
+  '/stats/players/$id/legends': typeof StatsPlayersIdLegendsRoute
+  '/stats/players/$id/weapons': typeof StatsPlayersIdWeaponsRoute
+  '/stats/players/$id/': typeof StatsPlayersIdIndexRoute
+  '/rankings/career/legends/{-$legendId}/{-$page}': typeof RankingsCareerLegendsChar123LegendIdChar125Char123PageChar125Route
+  '/rankings/career/weapons/{-$weapon}/{-$page}': typeof RankingsCareerWeaponsChar123WeaponChar125Char123PageChar125Route
+  '/rankings/live/1v1/{-$region}/{-$page}': typeof RankingsLive1v1Char123RegionChar125Char123PageChar125Route
+  '/rankings/live/2v2/{-$region}/{-$page}': typeof RankingsLive2v2Char123RegionChar125Char123PageChar125Route
+  '/rankings/live/3v3/{-$region}/{-$page}': typeof RankingsLive3v3Char123RegionChar125Char123PageChar125Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/leaderboard': typeof LeaderboardRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/rankings': typeof RankingsIndexRoute
   '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
+  '/rankings/guilds/{-$page}': typeof RankingsGuildsChar123PageChar125Route
   '/rankings/legends/{-$page}': typeof RankingsLegendsChar123PageChar125Route
   '/rankings/weapons/{-$page}': typeof RankingsWeaponsChar123PageChar125Route
-  '/stats/clan/$clanId': typeof StatsClanClanIdRoute
+  '/stats/clan/$': typeof StatsClanSplatRoute
+  '/stats/guilds/$id': typeof StatsGuildsIdRoute
+  '/stats/player/$': typeof StatsPlayerSplatRoute
+  '/rankings/career': typeof RankingsCareerIndexRoute
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/3v3/{-$region}/{-$page}': typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
-  '/stats/player/$playerId/2v2': typeof StatsPlayerPlayerId2v2Route
-  '/stats/player/$playerId/legends': typeof StatsPlayerPlayerIdLegendsRoute
-  '/stats/player/$playerId/weapons': typeof StatsPlayerPlayerIdWeaponsRoute
-  '/stats/player/$playerId': typeof StatsPlayerPlayerIdIndexRoute
+  '/rankings/career/players/{-$page}': typeof RankingsCareerPlayersChar123PageChar125Route
+  '/rankings/queues/{-$bracket}/{-$region}': typeof RankingsQueuesChar123BracketChar125Char123RegionChar125Route
+  '/stats/players/$id/2v2': typeof StatsPlayersId2v2Route
+  '/stats/players/$id/legends': typeof StatsPlayersIdLegendsRoute
+  '/stats/players/$id/weapons': typeof StatsPlayersIdWeaponsRoute
+  '/stats/players/$id': typeof StatsPlayersIdIndexRoute
+  '/rankings/career/legends/{-$legendId}/{-$page}': typeof RankingsCareerLegendsChar123LegendIdChar125Char123PageChar125Route
+  '/rankings/career/weapons/{-$weapon}/{-$page}': typeof RankingsCareerWeaponsChar123WeaponChar125Char123PageChar125Route
+  '/rankings/live/1v1/{-$region}/{-$page}': typeof RankingsLive1v1Char123RegionChar125Char123PageChar125Route
+  '/rankings/live/2v2/{-$region}/{-$page}': typeof RankingsLive2v2Char123RegionChar125Char123PageChar125Route
+  '/rankings/live/3v3/{-$region}/{-$page}': typeof RankingsLive3v3Char123RegionChar125Char123PageChar125Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/leaderboard': typeof LeaderboardRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/rankings/': typeof RankingsIndexRoute
   '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
+  '/rankings/guilds/{-$page}': typeof RankingsGuildsChar123PageChar125Route
   '/rankings/legends/{-$page}': typeof RankingsLegendsChar123PageChar125Route
   '/rankings/weapons/{-$page}': typeof RankingsWeaponsChar123PageChar125Route
-  '/stats/clan/$clanId': typeof StatsClanClanIdRoute
-  '/stats/player/$playerId': typeof StatsPlayerPlayerIdRouteWithChildren
+  '/stats/clan/$': typeof StatsClanSplatRoute
+  '/stats/guilds/$id': typeof StatsGuildsIdRoute
+  '/stats/player/$': typeof StatsPlayerSplatRoute
+  '/stats/players/$id': typeof StatsPlayersIdRouteWithChildren
+  '/rankings/career/': typeof RankingsCareerIndexRoute
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/3v3/{-$region}/{-$page}': typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
-  '/stats/player/$playerId/2v2': typeof StatsPlayerPlayerId2v2Route
-  '/stats/player/$playerId/legends': typeof StatsPlayerPlayerIdLegendsRoute
-  '/stats/player/$playerId/weapons': typeof StatsPlayerPlayerIdWeaponsRoute
-  '/stats/player/$playerId/': typeof StatsPlayerPlayerIdIndexRoute
+  '/rankings/career/players/{-$page}': typeof RankingsCareerPlayersChar123PageChar125Route
+  '/rankings/queues/{-$bracket}/{-$region}': typeof RankingsQueuesChar123BracketChar125Char123RegionChar125Route
+  '/stats/players/$id/2v2': typeof StatsPlayersId2v2Route
+  '/stats/players/$id/legends': typeof StatsPlayersIdLegendsRoute
+  '/stats/players/$id/weapons': typeof StatsPlayersIdWeaponsRoute
+  '/stats/players/$id/': typeof StatsPlayersIdIndexRoute
+  '/rankings/career/legends/{-$legendId}/{-$page}': typeof RankingsCareerLegendsChar123LegendIdChar125Char123PageChar125Route
+  '/rankings/career/weapons/{-$weapon}/{-$page}': typeof RankingsCareerWeaponsChar123WeaponChar125Char123PageChar125Route
+  '/rankings/live/1v1/{-$region}/{-$page}': typeof RankingsLive1v1Char123RegionChar125Char123PageChar125Route
+  '/rankings/live/2v2/{-$region}/{-$page}': typeof RankingsLive2v2Char123RegionChar125Char123PageChar125Route
+  '/rankings/live/3v3/{-$region}/{-$page}': typeof RankingsLive3v3Char123RegionChar125Char123PageChar125Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/leaderboard'
     | '/@me/favorites'
     | '/rankings/'
     | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
     | '/rankings/global/{-$page}'
+    | '/rankings/guilds/{-$page}'
     | '/rankings/legends/{-$page}'
     | '/rankings/weapons/{-$page}'
-    | '/stats/clan/$clanId'
-    | '/stats/player/$playerId'
+    | '/stats/clan/$'
+    | '/stats/guilds/$id'
+    | '/stats/player/$'
+    | '/stats/players/$id'
+    | '/rankings/career/'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
     | '/rankings/3v3/{-$region}/{-$page}'
-    | '/stats/player/$playerId/2v2'
-    | '/stats/player/$playerId/legends'
-    | '/stats/player/$playerId/weapons'
-    | '/stats/player/$playerId/'
+    | '/rankings/career/players/{-$page}'
+    | '/rankings/queues/{-$bracket}/{-$region}'
+    | '/stats/players/$id/2v2'
+    | '/stats/players/$id/legends'
+    | '/stats/players/$id/weapons'
+    | '/stats/players/$id/'
+    | '/rankings/career/legends/{-$legendId}/{-$page}'
+    | '/rankings/career/weapons/{-$weapon}/{-$page}'
+    | '/rankings/live/1v1/{-$region}/{-$page}'
+    | '/rankings/live/2v2/{-$region}/{-$page}'
+    | '/rankings/live/3v3/{-$region}/{-$page}'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/leaderboard'
     | '/@me/favorites'
     | '/rankings'
     | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
     | '/rankings/global/{-$page}'
+    | '/rankings/guilds/{-$page}'
     | '/rankings/legends/{-$page}'
     | '/rankings/weapons/{-$page}'
-    | '/stats/clan/$clanId'
+    | '/stats/clan/$'
+    | '/stats/guilds/$id'
+    | '/stats/player/$'
+    | '/rankings/career'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
     | '/rankings/3v3/{-$region}/{-$page}'
-    | '/stats/player/$playerId/2v2'
-    | '/stats/player/$playerId/legends'
-    | '/stats/player/$playerId/weapons'
-    | '/stats/player/$playerId'
+    | '/rankings/career/players/{-$page}'
+    | '/rankings/queues/{-$bracket}/{-$region}'
+    | '/stats/players/$id/2v2'
+    | '/stats/players/$id/legends'
+    | '/stats/players/$id/weapons'
+    | '/stats/players/$id'
+    | '/rankings/career/legends/{-$legendId}/{-$page}'
+    | '/rankings/career/weapons/{-$weapon}/{-$page}'
+    | '/rankings/live/1v1/{-$region}/{-$page}'
+    | '/rankings/live/2v2/{-$region}/{-$page}'
+    | '/rankings/live/3v3/{-$region}/{-$page}'
   id:
     | '__root__'
     | '/'
+    | '/leaderboard'
     | '/@me/favorites'
     | '/rankings/'
     | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
     | '/rankings/global/{-$page}'
+    | '/rankings/guilds/{-$page}'
     | '/rankings/legends/{-$page}'
     | '/rankings/weapons/{-$page}'
-    | '/stats/clan/$clanId'
-    | '/stats/player/$playerId'
+    | '/stats/clan/$'
+    | '/stats/guilds/$id'
+    | '/stats/player/$'
+    | '/stats/players/$id'
+    | '/rankings/career/'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
     | '/rankings/3v3/{-$region}/{-$page}'
-    | '/stats/player/$playerId/2v2'
-    | '/stats/player/$playerId/legends'
-    | '/stats/player/$playerId/weapons'
-    | '/stats/player/$playerId/'
+    | '/rankings/career/players/{-$page}'
+    | '/rankings/queues/{-$bracket}/{-$region}'
+    | '/stats/players/$id/2v2'
+    | '/stats/players/$id/legends'
+    | '/stats/players/$id/weapons'
+    | '/stats/players/$id/'
+    | '/rankings/career/legends/{-$legendId}/{-$page}'
+    | '/rankings/career/weapons/{-$weapon}/{-$page}'
+    | '/rankings/live/1v1/{-$region}/{-$page}'
+    | '/rankings/live/2v2/{-$region}/{-$page}'
+    | '/rankings/live/3v3/{-$region}/{-$page}'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LeaderboardRoute: typeof LeaderboardRoute
   AtmeFavoritesRoute: typeof AtmeFavoritesRoute
   RankingsIndexRoute: typeof RankingsIndexRoute
   QueueChar123BracketChar125Char123RegionChar125Route: typeof QueueChar123BracketChar125Char123RegionChar125Route
   RankingsClansChar123PageChar125Route: typeof RankingsClansChar123PageChar125Route
   RankingsGlobalChar123PageChar125Route: typeof RankingsGlobalChar123PageChar125Route
+  RankingsGuildsChar123PageChar125Route: typeof RankingsGuildsChar123PageChar125Route
   RankingsLegendsChar123PageChar125Route: typeof RankingsLegendsChar123PageChar125Route
   RankingsWeaponsChar123PageChar125Route: typeof RankingsWeaponsChar123PageChar125Route
-  StatsClanClanIdRoute: typeof StatsClanClanIdRoute
-  StatsPlayerPlayerIdRoute: typeof StatsPlayerPlayerIdRouteWithChildren
+  StatsClanSplatRoute: typeof StatsClanSplatRoute
+  StatsGuildsIdRoute: typeof StatsGuildsIdRoute
+  StatsPlayerSplatRoute: typeof StatsPlayerSplatRoute
+  StatsPlayersIdRoute: typeof StatsPlayersIdRouteWithChildren
+  RankingsCareerIndexRoute: typeof RankingsCareerIndexRoute
   Rankings1v1Char123RegionChar125Char123PageChar125Route: typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   Rankings2v2Char123RegionChar125Char123PageChar125Route: typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   Rankings3v3Char123RegionChar125Char123PageChar125Route: typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
+  RankingsCareerPlayersChar123PageChar125Route: typeof RankingsCareerPlayersChar123PageChar125Route
+  RankingsQueuesChar123BracketChar125Char123RegionChar125Route: typeof RankingsQueuesChar123BracketChar125Char123RegionChar125Route
+  RankingsCareerLegendsChar123LegendIdChar125Char123PageChar125Route: typeof RankingsCareerLegendsChar123LegendIdChar125Char123PageChar125Route
+  RankingsCareerWeaponsChar123WeaponChar125Char123PageChar125Route: typeof RankingsCareerWeaponsChar123WeaponChar125Char123PageChar125Route
+  RankingsLive1v1Char123RegionChar125Char123PageChar125Route: typeof RankingsLive1v1Char123RegionChar125Char123PageChar125Route
+  RankingsLive2v2Char123RegionChar125Char123PageChar125Route: typeof RankingsLive2v2Char123RegionChar125Char123PageChar125Route
+  RankingsLive3v3Char123RegionChar125Char123PageChar125Route: typeof RankingsLive3v3Char123RegionChar125Char123PageChar125Route
 }
 
 declare module '@tanstack/react-router' {
@@ -263,6 +428,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leaderboard': {
+      id: '/leaderboard'
+      path: '/leaderboard'
+      fullPath: '/leaderboard'
+      preLoaderRoute: typeof LeaderboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/@me/favorites': {
@@ -286,6 +458,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QueueChar123BracketChar125Char123RegionChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rankings/career/': {
+      id: '/rankings/career/'
+      path: '/rankings/career'
+      fullPath: '/rankings/career/'
+      preLoaderRoute: typeof RankingsCareerIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rankings/clans/{-$page}': {
       id: '/rankings/clans/{-$page}'
       path: '/rankings/clans/{-$page}'
@@ -298,6 +477,13 @@ declare module '@tanstack/react-router' {
       path: '/rankings/global/{-$page}'
       fullPath: '/rankings/global/{-$page}'
       preLoaderRoute: typeof RankingsGlobalChar123PageChar125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rankings/guilds/{-$page}': {
+      id: '/rankings/guilds/{-$page}'
+      path: '/rankings/guilds/{-$page}'
+      fullPath: '/rankings/guilds/{-$page}'
+      preLoaderRoute: typeof RankingsGuildsChar123PageChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rankings/legends/{-$page}': {
@@ -314,18 +500,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RankingsWeaponsChar123PageChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/stats/clan/$clanId': {
-      id: '/stats/clan/$clanId'
-      path: '/stats/clan/$clanId'
-      fullPath: '/stats/clan/$clanId'
-      preLoaderRoute: typeof StatsClanClanIdRouteImport
+    '/stats/clan/$': {
+      id: '/stats/clan/$'
+      path: '/stats/clan/$'
+      fullPath: '/stats/clan/$'
+      preLoaderRoute: typeof StatsClanSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/stats/player/$playerId': {
-      id: '/stats/player/$playerId'
-      path: '/stats/player/$playerId'
-      fullPath: '/stats/player/$playerId'
-      preLoaderRoute: typeof StatsPlayerPlayerIdRouteImport
+    '/stats/guilds/$id': {
+      id: '/stats/guilds/$id'
+      path: '/stats/guilds/$id'
+      fullPath: '/stats/guilds/$id'
+      preLoaderRoute: typeof StatsGuildsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stats/player/$': {
+      id: '/stats/player/$'
+      path: '/stats/player/$'
+      fullPath: '/stats/player/$'
+      preLoaderRoute: typeof StatsPlayerSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stats/players/$id': {
+      id: '/stats/players/$id'
+      path: '/stats/players/$id'
+      fullPath: '/stats/players/$id'
+      preLoaderRoute: typeof StatsPlayersIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rankings/1v1/{-$region}/{-$page}': {
@@ -349,74 +549,143 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Rankings3v3Char123RegionChar125Char123PageChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/stats/player/$playerId/': {
-      id: '/stats/player/$playerId/'
+    '/rankings/career/players/{-$page}': {
+      id: '/rankings/career/players/{-$page}'
+      path: '/rankings/career/players/{-$page}'
+      fullPath: '/rankings/career/players/{-$page}'
+      preLoaderRoute: typeof RankingsCareerPlayersChar123PageChar125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rankings/queues/{-$bracket}/{-$region}': {
+      id: '/rankings/queues/{-$bracket}/{-$region}'
+      path: '/rankings/queues/{-$bracket}/{-$region}'
+      fullPath: '/rankings/queues/{-$bracket}/{-$region}'
+      preLoaderRoute: typeof RankingsQueuesChar123BracketChar125Char123RegionChar125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stats/players/$id/': {
+      id: '/stats/players/$id/'
       path: '/'
-      fullPath: '/stats/player/$playerId/'
-      preLoaderRoute: typeof StatsPlayerPlayerIdIndexRouteImport
-      parentRoute: typeof StatsPlayerPlayerIdRoute
+      fullPath: '/stats/players/$id/'
+      preLoaderRoute: typeof StatsPlayersIdIndexRouteImport
+      parentRoute: typeof StatsPlayersIdRoute
     }
-    '/stats/player/$playerId/2v2': {
-      id: '/stats/player/$playerId/2v2'
+    '/stats/players/$id/2v2': {
+      id: '/stats/players/$id/2v2'
       path: '/2v2'
-      fullPath: '/stats/player/$playerId/2v2'
-      preLoaderRoute: typeof StatsPlayerPlayerId2v2RouteImport
-      parentRoute: typeof StatsPlayerPlayerIdRoute
+      fullPath: '/stats/players/$id/2v2'
+      preLoaderRoute: typeof StatsPlayersId2v2RouteImport
+      parentRoute: typeof StatsPlayersIdRoute
     }
-    '/stats/player/$playerId/legends': {
-      id: '/stats/player/$playerId/legends'
+    '/stats/players/$id/legends': {
+      id: '/stats/players/$id/legends'
       path: '/legends'
-      fullPath: '/stats/player/$playerId/legends'
-      preLoaderRoute: typeof StatsPlayerPlayerIdLegendsRouteImport
-      parentRoute: typeof StatsPlayerPlayerIdRoute
+      fullPath: '/stats/players/$id/legends'
+      preLoaderRoute: typeof StatsPlayersIdLegendsRouteImport
+      parentRoute: typeof StatsPlayersIdRoute
     }
-    '/stats/player/$playerId/weapons': {
-      id: '/stats/player/$playerId/weapons'
+    '/stats/players/$id/weapons': {
+      id: '/stats/players/$id/weapons'
       path: '/weapons'
-      fullPath: '/stats/player/$playerId/weapons'
-      preLoaderRoute: typeof StatsPlayerPlayerIdWeaponsRouteImport
-      parentRoute: typeof StatsPlayerPlayerIdRoute
+      fullPath: '/stats/players/$id/weapons'
+      preLoaderRoute: typeof StatsPlayersIdWeaponsRouteImport
+      parentRoute: typeof StatsPlayersIdRoute
+    }
+    '/rankings/career/legends/{-$legendId}/{-$page}': {
+      id: '/rankings/career/legends/{-$legendId}/{-$page}'
+      path: '/rankings/career/legends/{-$legendId}/{-$page}'
+      fullPath: '/rankings/career/legends/{-$legendId}/{-$page}'
+      preLoaderRoute: typeof RankingsCareerLegendsChar123LegendIdChar125Char123PageChar125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rankings/career/weapons/{-$weapon}/{-$page}': {
+      id: '/rankings/career/weapons/{-$weapon}/{-$page}'
+      path: '/rankings/career/weapons/{-$weapon}/{-$page}'
+      fullPath: '/rankings/career/weapons/{-$weapon}/{-$page}'
+      preLoaderRoute: typeof RankingsCareerWeaponsChar123WeaponChar125Char123PageChar125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rankings/live/1v1/{-$region}/{-$page}': {
+      id: '/rankings/live/1v1/{-$region}/{-$page}'
+      path: '/rankings/live/1v1/{-$region}/{-$page}'
+      fullPath: '/rankings/live/1v1/{-$region}/{-$page}'
+      preLoaderRoute: typeof RankingsLive1v1Char123RegionChar125Char123PageChar125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rankings/live/2v2/{-$region}/{-$page}': {
+      id: '/rankings/live/2v2/{-$region}/{-$page}'
+      path: '/rankings/live/2v2/{-$region}/{-$page}'
+      fullPath: '/rankings/live/2v2/{-$region}/{-$page}'
+      preLoaderRoute: typeof RankingsLive2v2Char123RegionChar125Char123PageChar125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rankings/live/3v3/{-$region}/{-$page}': {
+      id: '/rankings/live/3v3/{-$region}/{-$page}'
+      path: '/rankings/live/3v3/{-$region}/{-$page}'
+      fullPath: '/rankings/live/3v3/{-$region}/{-$page}'
+      preLoaderRoute: typeof RankingsLive3v3Char123RegionChar125Char123PageChar125RouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface StatsPlayerPlayerIdRouteChildren {
-  StatsPlayerPlayerId2v2Route: typeof StatsPlayerPlayerId2v2Route
-  StatsPlayerPlayerIdLegendsRoute: typeof StatsPlayerPlayerIdLegendsRoute
-  StatsPlayerPlayerIdWeaponsRoute: typeof StatsPlayerPlayerIdWeaponsRoute
-  StatsPlayerPlayerIdIndexRoute: typeof StatsPlayerPlayerIdIndexRoute
+interface StatsPlayersIdRouteChildren {
+  StatsPlayersId2v2Route: typeof StatsPlayersId2v2Route
+  StatsPlayersIdLegendsRoute: typeof StatsPlayersIdLegendsRoute
+  StatsPlayersIdWeaponsRoute: typeof StatsPlayersIdWeaponsRoute
+  StatsPlayersIdIndexRoute: typeof StatsPlayersIdIndexRoute
 }
 
-const StatsPlayerPlayerIdRouteChildren: StatsPlayerPlayerIdRouteChildren = {
-  StatsPlayerPlayerId2v2Route: StatsPlayerPlayerId2v2Route,
-  StatsPlayerPlayerIdLegendsRoute: StatsPlayerPlayerIdLegendsRoute,
-  StatsPlayerPlayerIdWeaponsRoute: StatsPlayerPlayerIdWeaponsRoute,
-  StatsPlayerPlayerIdIndexRoute: StatsPlayerPlayerIdIndexRoute,
+const StatsPlayersIdRouteChildren: StatsPlayersIdRouteChildren = {
+  StatsPlayersId2v2Route: StatsPlayersId2v2Route,
+  StatsPlayersIdLegendsRoute: StatsPlayersIdLegendsRoute,
+  StatsPlayersIdWeaponsRoute: StatsPlayersIdWeaponsRoute,
+  StatsPlayersIdIndexRoute: StatsPlayersIdIndexRoute,
 }
 
-const StatsPlayerPlayerIdRouteWithChildren =
-  StatsPlayerPlayerIdRoute._addFileChildren(StatsPlayerPlayerIdRouteChildren)
+const StatsPlayersIdRouteWithChildren = StatsPlayersIdRoute._addFileChildren(
+  StatsPlayersIdRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LeaderboardRoute: LeaderboardRoute,
   AtmeFavoritesRoute: AtmeFavoritesRoute,
   RankingsIndexRoute: RankingsIndexRoute,
   QueueChar123BracketChar125Char123RegionChar125Route:
     QueueChar123BracketChar125Char123RegionChar125Route,
   RankingsClansChar123PageChar125Route: RankingsClansChar123PageChar125Route,
   RankingsGlobalChar123PageChar125Route: RankingsGlobalChar123PageChar125Route,
+  RankingsGuildsChar123PageChar125Route: RankingsGuildsChar123PageChar125Route,
   RankingsLegendsChar123PageChar125Route:
     RankingsLegendsChar123PageChar125Route,
   RankingsWeaponsChar123PageChar125Route:
     RankingsWeaponsChar123PageChar125Route,
-  StatsClanClanIdRoute: StatsClanClanIdRoute,
-  StatsPlayerPlayerIdRoute: StatsPlayerPlayerIdRouteWithChildren,
+  StatsClanSplatRoute: StatsClanSplatRoute,
+  StatsGuildsIdRoute: StatsGuildsIdRoute,
+  StatsPlayerSplatRoute: StatsPlayerSplatRoute,
+  StatsPlayersIdRoute: StatsPlayersIdRouteWithChildren,
+  RankingsCareerIndexRoute: RankingsCareerIndexRoute,
   Rankings1v1Char123RegionChar125Char123PageChar125Route:
     Rankings1v1Char123RegionChar125Char123PageChar125Route,
   Rankings2v2Char123RegionChar125Char123PageChar125Route:
     Rankings2v2Char123RegionChar125Char123PageChar125Route,
   Rankings3v3Char123RegionChar125Char123PageChar125Route:
     Rankings3v3Char123RegionChar125Char123PageChar125Route,
+  RankingsCareerPlayersChar123PageChar125Route:
+    RankingsCareerPlayersChar123PageChar125Route,
+  RankingsQueuesChar123BracketChar125Char123RegionChar125Route:
+    RankingsQueuesChar123BracketChar125Char123RegionChar125Route,
+  RankingsCareerLegendsChar123LegendIdChar125Char123PageChar125Route:
+    RankingsCareerLegendsChar123LegendIdChar125Char123PageChar125Route,
+  RankingsCareerWeaponsChar123WeaponChar125Char123PageChar125Route:
+    RankingsCareerWeaponsChar123WeaponChar125Char123PageChar125Route,
+  RankingsLive1v1Char123RegionChar125Char123PageChar125Route:
+    RankingsLive1v1Char123RegionChar125Char123PageChar125Route,
+  RankingsLive2v2Char123RegionChar125Char123PageChar125Route:
+    RankingsLive2v2Char123RegionChar125Char123PageChar125Route,
+  RankingsLive3v3Char123RegionChar125Char123PageChar125Route:
+    RankingsLive3v3Char123RegionChar125Char123PageChar125Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -186,7 +186,7 @@ export const rankingsGroup = HttpApiBuilder.group(
                 )
                 /*
                  * The two per-legend / per-weapon boards. Archive reads like
-                 * the global one above: these are ours, not upstream, so there
+                 * the career one above: these are ours, not upstream, so there
                  * is nothing to fall back to and a database failure is a real
                  * failure rather than a reason to try somewhere else.
                  */

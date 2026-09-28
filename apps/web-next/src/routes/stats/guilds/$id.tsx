@@ -9,14 +9,14 @@ import { clanStatsAtom, preloadAtoms } from "@/effect/atoms"
  * A shared link lands here and so does a reload, which is the property that
  * matters: the URL is what describes the clan.
  */
-export const Route = createFileRoute("/stats/clan/$clanId")({
+export const Route = createFileRoute("/stats/guilds/$id")({
     loader: ({ params, context }) =>
-        preloadAtoms(context, [clanStatsAtom(Number(params.clanId))]),
+        preloadAtoms(context, [clanStatsAtom(Number(params.id))]),
     component: Page,
 })
 
 function Page() {
-    const { clanId } = Route.useParams()
+    const { id: clanId } = Route.useParams()
 
     return (
         <main className="ch-page">

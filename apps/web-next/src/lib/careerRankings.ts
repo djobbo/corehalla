@@ -15,20 +15,20 @@ import type {
  * literals, so a mismatch is a compile error rather than a 500.
  */
 
-export type GlobalSortOption<K extends string> = {
+export type CareerSortOption<K extends string> = {
     readonly value: K
     readonly label: string
     /** Renders the sorted figure. Its column header is `label`. */
     readonly format: (value: number) => string
 }
 
-export type GlobalBoard<K extends string> = {
-    readonly sorts: readonly GlobalSortOption<K>[]
+export type CareerBoard<K extends string> = {
+    readonly sorts: readonly CareerSortOption<K>[]
     readonly defaultSort: K
     /** Coerces a URL value to a sort this board accepts, defaulting. */
     readonly sort: (value: unknown) => K
     /** The descriptor for a sort key. Total, because `sort` guarantees one. */
-    readonly option: (value: K) => GlobalSortOption<K>
+    readonly option: (value: K) => CareerSortOption<K>
 }
 
 /**
@@ -40,11 +40,11 @@ export type GlobalBoard<K extends string> = {
  * list contains it or handling an impossible `undefined` at every call site.
  */
 const board = <K extends string>(
-    fallback: GlobalSortOption<K>,
-    others: readonly GlobalSortOption<K>[],
-): GlobalBoard<K> => {
+    fallback: CareerSortOption<K>,
+    others: readonly CareerSortOption<K>[],
+): CareerBoard<K> => {
     const sorts = [fallback, ...others]
-    const byValue = new Map<string, GlobalSortOption<K>>(
+    const byValue = new Map<string, CareerSortOption<K>>(
         sorts.map((entry) => [entry.value, entry]),
     )
 

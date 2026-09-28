@@ -451,13 +451,15 @@ export const layer = Layer.effect(
          * on its own, so losing it costs a re-read and nothing else.
          */
         const recordProgress = (target: CrawlTarget, page: number) =>
-            database.setCrawlProgress(target.id, target.label, page).pipe(
-                Effect.catch(() =>
-                    Effect.logWarning(
-                        `could not record progress for ${target.label}`,
+            database
+                .setCrawlProgress(target.id, target.label, page)
+                .pipe(
+                    Effect.catch(() =>
+                        Effect.logWarning(
+                            `could not record progress for ${target.label}`,
+                        ),
                     ),
-                ),
-            )
+                )
 
         const crawlTarget: Context.Service.Shape<
             typeof Crawler

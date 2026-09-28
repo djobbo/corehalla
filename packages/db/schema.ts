@@ -27,7 +27,7 @@ import {
  * rows inserted without them (for example by `Auth.upsertDiscordUser`) still
  * get a millisecond timestamp.
  *
- * The crawl tables carry indexes for the two hot read paths: the global player
+ * The crawl tables carry indexes for the two hot read paths: the career player
  * rankings (one index per sortable column, because the `ORDER BY` column is
  * dynamic) and prefix search on clan names and player aliases.
  *

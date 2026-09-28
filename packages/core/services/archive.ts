@@ -51,7 +51,7 @@ import type { PlayerStats } from "@crh/bhapi/types"
 import type { RankedSnapshot } from "./player-writes"
 import type {
     AliasSearchResult,
-    GlobalPlayerRanking,
+    CareerRanking,
 } from "@crh/api-contract/schemas"
 
 /**
@@ -132,7 +132,7 @@ export class Database extends Context.Service<
         readonly getGlobalPlayerRankings: (
             sortBy: string,
             page: number,
-        ) => Effect.Effect<readonly GlobalPlayerRanking[], DatabaseError>
+        ) => Effect.Effect<readonly CareerRanking[], DatabaseError>
         /**
          * The same board, restricted to players who have played one legend.
          *
@@ -144,7 +144,7 @@ export class Database extends Context.Service<
             legendId: number,
             sortBy: string,
             page: number,
-        ) => Effect.Effect<readonly GlobalPlayerRanking[], DatabaseError>
+        ) => Effect.Effect<readonly CareerRanking[], DatabaseError>
         /**
          * The same board again, restricted to one weapon.
          *
@@ -156,7 +156,7 @@ export class Database extends Context.Service<
             weapon: string,
             sortBy: string,
             page: number,
-        ) => Effect.Effect<readonly GlobalPlayerRanking[], DatabaseError>
+        ) => Effect.Effect<readonly CareerRanking[], DatabaseError>
         readonly searchAliases: (
             alias: string,
             page: number,

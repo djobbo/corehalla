@@ -12,7 +12,7 @@ import { PageNav } from "@/components/PageNav"
 import { SelectField } from "@/components/SelectField"
 import { playerHref, tierColor } from "@/lib/rankings"
 import { cleanString } from "@crh/common/helpers/cleanString"
-import type { GlobalPlayerRanking } from "@crh/api-contract/schemas"
+import type { CareerRanking } from "@crh/api-contract/schemas"
 import type { CSSProperties } from "react"
 
 /**
@@ -35,7 +35,7 @@ import type { CSSProperties } from "react"
  * rather than restarting at 1, which is what makes row 51 of a board read as
  * 51st rather than as first.
  */
-export const GlobalRankingsView = <K extends string>({
+export const CareerRankingsView = <K extends string>({
     rows,
     sortBy,
     sorts,
@@ -45,7 +45,7 @@ export const GlobalRankingsView = <K extends string>({
     prevHref,
     nextHref,
 }: {
-    readonly rows: readonly GlobalPlayerRanking[]
+    readonly rows: readonly CareerRanking[]
     readonly sortBy: K
     readonly sorts: readonly { readonly value: K; readonly label: string }[]
     readonly onSortChange: (value: K) => void

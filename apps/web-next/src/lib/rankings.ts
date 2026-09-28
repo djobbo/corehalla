@@ -37,9 +37,11 @@ export const regionLabel = (region: Region): string =>
 /**
  * The canonical URL for a ladder page.
  *
- * The region slot cannot be skipped when a page number follows it, so pages past
- * the first spell out `all` rather than leaving the segment empty — otherwise
- * the page number would land in the region segment.
+ * The ladders are the live rankings, so they live under `/rankings/live` beside
+ * the `career` archive and the `queues`. The region slot cannot be skipped when
+ * a page number follows it, so pages past the first spell out `all` rather than
+ * leaving the segment empty — otherwise the page number would land in the region
+ * segment.
  */
 export const ladderHref = (
     bracket: Bracket,
@@ -48,20 +50,25 @@ export const ladderHref = (
 ): string => {
     if (page <= 1) {
         return region === "all"
-            ? `/rankings/${bracket}`
-            : `/rankings/${bracket}/${region}`
+            ? `/rankings/live/${bracket}`
+            : `/rankings/live/${bracket}/${region}`
     }
 
-    return `/rankings/${bracket}/${region}/${page}`
+    return `/rankings/live/${bracket}/${region}/${page}`
 }
 
 /** Where a player's profile lives. The canonical, indexable page. */
 export const playerHref = (playerId: number | string, tab?: string): string =>
-    tab ? `/stats/player/${playerId}/${tab}` : `/stats/player/${playerId}`
+    tab ? `/stats/players/${playerId}/${tab}` : `/stats/players/${playerId}`
 
-/** Where a clan's page lives. */
+/**
+ * Where a guild's page lives.
+ *
+ * The route is `guilds` because that is what the app calls them now; the code
+ * and the database still say clan, so the parameter keeps that name.
+ */
 export const clanHref = (clanId: number | string): string =>
-    `/stats/clan/${clanId}`
+    `/stats/guilds/${clanId}`
 
 /**
  * The page size the API returns per ladder request.
@@ -73,15 +80,21 @@ export const clanHref = (clanId: number | string): string =>
 export const LADDER_PAGE_SIZE = 50
 
 /**
- * Page sizes for the two archive-backed leaderboards.
+ * Page sizes for the two archive-backed leaderboard families.
  *
  * Mirrors of `GLOBAL_PLAYER_RANKINGS_PER_PAGE` and `CLANS_RANKINGS_PER_PAGE` in
  * `@crh/core/constants`, and for the same reason as `LADDER_PAGE_SIZE` above:
  * they exist here only to decide whether a "next" control is worth showing. The
  * client does not depend on `@crh/core` — taking that dependency for two
  * integers would pull a whole server package into the browser's module graph.
+ * All three career boards — players, legends and weapons — page at the one
+ * server-side size, so one constant covers them.
+ *
+ * The core constant keeps its `GLOBAL_` name because the deployed legacy app is
+ * built against it; here the section is `Career`, so the value is named for
+ * where it is used rather than for its counterpart on the server.
  */
-export const GLOBAL_RANKINGS_PAGE_SIZE = 50
+export const CAREER_RANKINGS_PAGE_SIZE = 50
 export const CLAN_RANKINGS_PAGE_SIZE = 50
 
 /**

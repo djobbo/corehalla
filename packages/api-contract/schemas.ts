@@ -164,7 +164,7 @@ export const WeeklyRotationSchema = json<readonly Legend[]>()
 export const ArticlesSchema = json<readonly BHArticle[]>()
 export const PowerRankingsSchema = json<readonly PR[]>()
 
-export type GlobalPlayerRanking = {
+export type CareerRanking = {
     id: string
     name: string
     tier: string
@@ -174,7 +174,7 @@ export type GlobalPlayerRanking = {
     prop: number
 }
 
-export const GlobalPlayerRankingsSchema = json<readonly GlobalPlayerRanking[]>()
+export const CareerRankingsSchema = json<readonly CareerRanking[]>()
 
 export type AliasSearchResult = {
     playerId: string

@@ -58,10 +58,19 @@ export const rankings3v3Atom = (region: Region, page: number) =>
         timeToLive: ttl,
     })
 
-export const globalRankingsAtom = (sortBy: SortableProp, page: number) =>
+/*
+ * The three career boards.
+ *
+ * Named for what they rank rather than for the contract's `getGlobal*`
+ * operations: those operation names and their `/rankings/global` path are
+ * pinned by the deployed legacy app, which shares this contract. Only
+ * web-next's own surface says "Career"; the wire keeps calling them global.
+ */
+
+export const careerRankingsAtom = (sortBy: SortableProp, page: number) =>
     CorehallaClient.query("rankings", "getGlobalPlayerRankings", {
         query: { sortBy, page },
-        serializationKey: `global:${sortBy}:${page}`,
+        serializationKey: `career:${sortBy}:${page}`,
         timeToLive: ttl,
     })
 
@@ -72,26 +81,26 @@ export const globalRankingsAtom = (sortBy: SortableProp, page: number) =>
  * separate request: the archive filters `BHPlayerLegend` by the legend and
  * sorts *that legend's* columns, so the two share a row shape and nothing else.
  */
-export const globalLegendRankingsAtom = (
+export const careerLegendRankingsAtom = (
     legendId: number,
     sortBy: LegendProp,
     page: number,
 ) =>
     CorehallaClient.query("rankings", "getGlobalLegendRankings", {
         query: { legendId, sortBy, page },
-        serializationKey: `global-legend:${legendId}:${sortBy}:${page}`,
+        serializationKey: `career-legend:${legendId}:${sortBy}:${page}`,
         timeToLive: ttl,
     })
 
 /** The weapon board, read from the table the ingest materialises. */
-export const globalWeaponRankingsAtom = (
+export const careerWeaponRankingsAtom = (
     weapon: WeaponName,
     sortBy: WeaponProp,
     page: number,
 ) =>
     CorehallaClient.query("rankings", "getGlobalWeaponRankings", {
         query: { weapon, sortBy, page },
-        serializationKey: `global-weapon:${weapon}:${sortBy}:${page}`,
+        serializationKey: `career-weapon:${weapon}:${sortBy}:${page}`,
         timeToLive: ttl,
     })
 

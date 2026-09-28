@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { LegendsTab } from "@/components/player/LegendsTab"
 
-export const Route = createFileRoute("/stats/player/$playerId/legends")({
+export const Route = createFileRoute("/stats/players/$id/legends")({
     component: Page,
 })
 
 function Page() {
-    const { playerId } = Route.useParams()
+    const { id: playerId } = Route.useParams()
 
     return <LegendsTab playerId={Number(playerId)} />
 }

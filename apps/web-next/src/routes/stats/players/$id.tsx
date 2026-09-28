@@ -15,7 +15,7 @@ import {
  * A player's profile page.
  *
  * The layout owns the header and the tab strip; each tab is a real child route,
- * so `/stats/player/123/legends` is a page you can link, share and reload rather
+ * so `/stats/players/123/legends` is a page you can link, share and reload rather
  * than a mode of a page. That split is also what keeps the header from
  * re-rendering when a tab changes, and lets each tab declare the atoms it needs
  * in its own loader.
@@ -23,19 +23,19 @@ import {
  * The tab content itself lives in `@/components/player`, one module per tab —
  * the layout's job is only to establish what the page *is*.
  */
-export const Route = createFileRoute("/stats/player/$playerId")({
+export const Route = createFileRoute("/stats/players/$id")({
     loader: ({ params, context }) =>
         preloadAtoms(context, [
-            playerStatsAtom(Number(params.playerId)),
-            playerRankedAtom(Number(params.playerId)),
-            player3v3RankedAtom(Number(params.playerId)),
-            playerAliasesAtom(Number(params.playerId)),
+            playerStatsAtom(Number(params.id)),
+            playerRankedAtom(Number(params.id)),
+            player3v3RankedAtom(Number(params.id)),
+            playerAliasesAtom(Number(params.id)),
         ]),
     component: Layout,
 })
 
 function Layout() {
-    const { playerId } = Route.useParams()
+    const { id: playerId } = Route.useParams()
     const id = Number(playerId)
 
     // The legacy client hides the 2v2 tab entirely when the player has no team
