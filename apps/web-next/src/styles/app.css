@@ -979,8 +979,11 @@
         position: fixed;
         inset: 0;
         z-index: 60;
-        display: grid;
-        place-items: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
         overflow: hidden;
         /*
          * Translucent and frosted rather than opaque. The page underneath is
@@ -1015,6 +1018,20 @@
         transition: opacity 320ms ease 200ms;
     }
 
+    /*
+     * The splash column. The bar is the widest thing in it and so sets its
+     * width, with the mark centred above — deliberately wider than the mark,
+     * because a bar the exact width of the logo reads as part of the mark
+     * rather than as a measure of the wait.
+     */
+    .ch-pageloader-splash {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.25rem;
+        width: min(12rem, 72vw);
+    }
+
     .ch-pageloader-mark {
         width: clamp(4.5rem, 12vw, 7rem);
         height: auto;
@@ -1047,6 +1064,102 @@
         transition:
             transform 520ms cubic-bezier(0.4, 0, 0.2, 1),
             opacity 340ms ease-in 140ms;
+    }
+
+    /*
+     * The bar. It is a `.ch-progress` — the same track, skew, height and fill
+     * rule a team card's wins/losses bar wears — with a single child instead of
+     * proportional pieces, because this is the one bar in the app that reports a
+     * value rather than a breakdown.
+     *
+     * `z-index` is load-bearing: the mark swells to fourteen times its size on
+     * the way out, and the bar has to stay in front of it. `transform` on the
+     * mark makes it a stacking context, and this rule lifts the bar above that
+     * context rather than leaving the two to compete on document order.
+     */
+    .ch-pageloader-bar {
+        position: relative;
+        z-index: 1;
+        opacity: 0;
+        /*
+         * One token off `.ch-progress`, and only this one. A team card's track
+         * is `bgVar2` because it sits on a card, which is a step lighter; the
+         * loader's sits on the frosted scrim, where that same colour is the
+         * scrim and the track vanishes. Reading a fraction needs both halves of
+         * the bar to be visible, so the track takes the card's own fill.
+         */
+        background: var(--color-bg);
+        transition: opacity 180ms ease;
+    }
+
+    .ch-pageloader[data-entered] .ch-pageloader-bar {
+        opacity: 1;
+    }
+
+    /*
+     * Progress that never lies. A route that takes a long time must not be shown
+     * as finished, and must not be shown as stuck either, so the fill creeps to
+     * 92% over 22 seconds on a strongly decelerating curve: quick enough in the
+     * first second to acknowledge the wait, then slower and slower, holding at
+     * 92% for as long as the load runs past that. Only a page that has actually
+     * arrived is allowed to claim the rest.
+     *
+     * A transition rather than a keyframe animation, and that is load-bearing
+     * rather than stylistic. Completion has to *interrupt* the trickle from
+     * wherever it had reached, and a transition interrupting a transition starts
+     * from the current value by definition. A running animation, by contrast,
+     * cannot be taken over: removing it does not produce a transition in Chrome,
+     * and the bar would snap to full instead of filling to it.
+     *
+     * The fill is scaled rather than widened, which is not a micro-optimisation
+     * either: this bar sits under a full-viewport `backdrop-filter`, so every
+     * frame that changes layout re-blurs the whole screen. `.ch-progress`'s own
+     * skew still supplies the cut, exactly as it does for the flex-grown pieces
+     * on a team card.
+     */
+    .ch-pageloader-bar > span {
+        width: 100%;
+        transform: scaleX(0);
+        transform-origin: left center;
+    }
+
+    .ch-pageloader[data-entered] .ch-pageloader-bar > span {
+        transform: scaleX(0.92);
+        transition: transform 22s cubic-bezier(0.16, 0.5, 0.3, 1);
+    }
+
+    /*
+     * Complete, then leave. The bar finishes before it fades so that the last
+     * thing read before the page appears is a full bar, and it fades on opacity
+     * alone — the mark is the thing that swells, and dragging a progress bar
+     * through that scale would make the one honest element on screen dishonest.
+     */
+    .ch-pageloader[data-phase="exiting"] .ch-pageloader-bar > span {
+        transform: scaleX(1);
+        opacity: 0;
+        transition:
+            transform 240ms ease-out,
+            opacity 220ms ease 260ms;
+    }
+
+    /*
+     * The one way out of a wait. Above the mark for the same reason the bar is,
+     * and faded on the same beat as the bar so the splash leaves as one thing.
+     */
+    .ch-pageloader-cancel {
+        position: relative;
+        z-index: 1;
+        opacity: 0;
+        transition: opacity 180ms ease;
+    }
+
+    .ch-pageloader[data-entered] .ch-pageloader-cancel {
+        opacity: 1;
+    }
+
+    .ch-pageloader[data-phase="exiting"] .ch-pageloader-cancel {
+        opacity: 0;
+        transition: opacity 220ms ease 260ms;
     }
 
     /*
@@ -1089,6 +1202,10 @@
  * Reduced motion keeps the sequence and drops the scale: the loader still
  * appears for exactly as long, and still fades, but it no longer grows out of
  * nothing or swells past the frame. The rotations stop for the same reason.
+ *
+ * The bar is deliberately not in this block. A fill is information, not motion
+ * — it is the one thing on screen that says the wait is still progressing, and
+ * flattening it would take that away without sparing anyone any movement.
  *
  * The mark selectors are listed together so that this block's equal-or-later
  * rules win on specificity as well as on order.

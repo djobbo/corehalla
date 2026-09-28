@@ -7,7 +7,9 @@ import {
     useRef,
     useState,
 } from "react"
+import { useRouter } from "@tanstack/react-router"
 import type { ReactNode } from "react"
+import { Button } from "@/components/ui/button"
 import { AnimatedLogo } from "./AnimatedLogo"
 
 /**
@@ -205,11 +207,6 @@ export const PageLoaderProbe = () => {
  * full-viewport element in the tree at all — and so that `PageLoaderOverlay`
  * below mounts afresh on each appearance, which is what makes its enter step
  * run once per appearance rather than once per app.
- *
- * The root is `<output>`, not `<div role="status">`, for the same reason
- * `Spinner` is: `output` already *is* a status live region, so the semantics
- * come from the element instead of from an ARIA attribute asserting them. The
- * label is what a screen reader announces, since the mark itself is decorative.
  */
 export const PageLoader = () => {
     const loader = useContext(PageLoaderContext)
@@ -224,6 +221,8 @@ type PageLoaderOverlayProps = {
 }
 
 const PageLoaderOverlay = ({ phase }: PageLoaderOverlayProps) => {
+    const router = useRouter()
+
     /*
      * The overlay is *inserted* in its loading state, so a transition written
      * straight onto that state has no earlier value to move from and the mark
@@ -236,7 +235,7 @@ const PageLoaderOverlay = ({ phase }: PageLoaderOverlayProps) => {
      * one change rather than two.
      */
     const [entered, setEntered] = useState(false)
-    const ref = useRef<HTMLOutputElement>(null)
+    const ref = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         void ref.current?.getBoundingClientRect()
@@ -246,15 +245,59 @@ const PageLoaderOverlay = ({ phase }: PageLoaderOverlayProps) => {
         return () => cancelAnimationFrame(frame)
     }, [])
 
+    /*
+     * A synchronous read of the history index, so it is safe in render and
+     * cannot change while the overlay is up. Without somewhere to go back to
+     * there is nothing to cancel *to* — the wait is the only thing this route
+     * has — so the button is not offered rather than offered and inert.
+     */
+    const canCancel = router.history.canGoBack()
+
+    const cancel = useCallback(() => {
+        /*
+         * Cancelling is going back, not aborting the request. The router has
+         * already committed the destination's URL by the time a loader is
+         * showing, so the only way out of the wait is the way in. The discarded
+         * load is not wasted either: whatever it fetches lands in the atom
+         * registry, so a later visit to that route starts warm.
+         */
+        router.history.back()
+    }, [router])
+
     return (
-        <output
+        <div
             ref={ref}
             className="ch-pageloader"
             data-phase={phase}
             data-entered={entered ? "" : undefined}
-            aria-label="Loading"
         >
-            <AnimatedLogo className="ch-pageloader-mark" />
-        </output>
+            {/*
+             * The status region holds the mark and the bar and nothing else.
+             * It is `<output>` rather than `<div role="status">` for the same
+             * reason `Spinner` is: `output` already *is* a status live region,
+             * so the semantics come from the element instead of from an ARIA
+             * attribute asserting them. The label is what a screen reader
+             * announces — the mark is decorative and the bar is a picture of a
+             * wait, not a value anyone can read.
+             */}
+            <output className="ch-pageloader-splash" aria-label="Loading">
+                <AnimatedLogo className="ch-pageloader-mark" />
+                <div className="ch-progress ch-pageloader-bar" aria-hidden>
+                    <span />
+                </div>
+            </output>
+
+            {canCancel && (
+                <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    className="ch-pageloader-cancel"
+                    onClick={cancel}
+                >
+                    Cancel
+                </Button>
+            )}
+        </div>
     )
 }
