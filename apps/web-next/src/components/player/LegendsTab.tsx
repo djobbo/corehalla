@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react"
-import { Card } from "@/components/ui/Card"
-import { SelectField } from "@/components/ui/SelectField"
-import { SortControl } from "@/components/ui/SortControl"
-import { StatGrid } from "@/components/ui/StatGrid"
+import { Card, CardContent } from "@/components/ui/card"
+import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
+import { SelectField } from "@/components/SelectField"
+import { SortControl } from "@/components/SortControl"
+import { StatGrid } from "@/components/StatGrid"
 import { LegendRow } from "./LegendRow"
 import { usePlayerDerived } from "./usePlayerDerived"
 import { ratio } from "@/lib/stats"
@@ -12,7 +13,7 @@ import { weapons as allWeapons } from "@crh/bhapi/constants"
 import { formatTime } from "@crh/common/helpers/date"
 import type { FullLegend } from "@crh/bhapi/legends"
 import type { SortOption } from "@/lib/useSortBy"
-import type { Stat } from "@/components/ui/StatGrid"
+import type { Stat } from "@/components/StatGrid"
 import type { Weapon } from "@crh/bhapi/constants"
 
 /**
@@ -171,16 +172,25 @@ export const LegendsTab = ({ playerId }: { readonly playerId: number }) => {
                 />
             </div>
 
-            <Card variant="inset">
-                <StatGrid stats={summary} />
+            <Card className="bg-background">
+                <CardContent>
+                    <StatGrid stats={summary} />
+                </CardContent>
             </Card>
 
             {sort.sorted.length === 0 ? (
-                <Card variant="muted" className="grid place-items-center py-10">
-                    <p className="text-sm text-textVar1">
-                        No legends use {weaponFilter}.
-                    </p>
-                </Card>
+                /*
+                 * shadcn's `Empty`, so a "no rows" note is the same shape here
+                 * as it is on every other list in the app. The well is the
+                 * muted fill an empty panel wears rather than a card surface.
+                 */
+                <Empty className="bg-bgVar2 py-10">
+                    <EmptyHeader>
+                        <EmptyDescription>
+                            No legends use {weaponFilter}.
+                        </EmptyDescription>
+                    </EmptyHeader>
+                </Empty>
             ) : (
                 <div className="flex flex-col gap-3">
                     {sort.sorted.map((legend, index) => (

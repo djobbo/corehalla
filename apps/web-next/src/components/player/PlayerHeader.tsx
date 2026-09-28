@@ -1,6 +1,6 @@
-import { Card } from "@/components/ui/Card"
+import { Card, CardContent } from "@/components/ui/card"
 import { FavoriteButton } from "@/components/account/FavoriteButton"
-import { StatGrid } from "@/components/ui/StatGrid"
+import { StatGrid } from "@/components/StatGrid"
 import { usePlayerDerived } from "./usePlayerDerived"
 import { playerAliasesAtom, useQuery } from "@/effect/atoms"
 import { legendIconSrc, regionFlagSrc, weaponIconSrc } from "@/lib/assets"
@@ -8,7 +8,7 @@ import { tierColor } from "@/lib/rankings"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatTime } from "@crh/common/helpers/date"
 import type { CSSProperties } from "react"
-import { cn } from "@crh/common/helpers/classnames"
+import { cn } from "@/lib/cn"
 
 /**
  * Who this page is about.
@@ -49,7 +49,7 @@ const ThumbRow = ({ items }: { readonly items: readonly Thumb[] }) => (
                 src={item.src}
                 alt={item.alt}
                 title={item.alt}
-                className={cn("ch-thumb", "bg-accent")}
+                className={cn("ch-thumb", "bg-primary")}
             />
         ))}
     </span>
@@ -61,7 +61,7 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
 
     if (!player) {
         return (
-            <p className="text-sm text-textVar1">
+            <p className="text-sm text-muted-foreground">
                 No player with id {playerId}.
             </p>
         )
@@ -85,14 +85,14 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
         <header className="flex flex-col gap-3">
             <nav
                 aria-label="Breadcrumb"
-                className="flex flex-wrap items-center gap-2 text-[0.64rem] font-bold uppercase tracking-[0.18em] text-textVar1"
+                className="flex flex-wrap items-center gap-2 text-[0.64rem] font-bold uppercase tracking-[0.18em] text-muted-foreground"
             >
                 <span>Brawlhalla</span>
-                <span aria-hidden className="text-textVar1/40">
+                <span aria-hidden className="text-muted-foreground/40">
                     /
                 </span>
                 <span>Players</span>
-                <span aria-hidden className="text-textVar1/40">
+                <span aria-hidden className="text-muted-foreground/40">
                     /
                 </span>
                 <span>#{stats.brawlhalla_id}</span>
@@ -143,8 +143,7 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
                         topLegends[0]
                             ? {
                                   icon: {
-                                      legend_key:
-                                          topLegends[0].legend_name_key,
+                                      legend_key: topLegends[0].legend_name_key,
                                   },
                               }
                             : {}
@@ -165,57 +164,61 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
                 </ul>
             ) : null}
 
-            <Card variant="ghost">
+            <Card className="bg-transparent shadow-none">
                 {/*
                  * Five figures, so the ladder tops out at five: at the default
                  * four they would sit four-then-one on a wide display.
                  */}
-                <StatGrid
-                    maxColumns={5}
-                    stats={[
-                        { title: "Account level", value: stats.level },
-                        {
-                            title: "Account XP",
-                            value: stats.xp.toLocaleString(),
-                        },
-                        {
-                            title: "In-game time",
-                            value: formatTime(totals.matchtime),
-                        },
-                        {
-                            title: "Main legends",
-                            value:
-                                topLegends.length > 0 ? (
-                                    <ThumbRow
-                                        items={topLegends.map((legend) => ({
-                                            key: String(legend.legend_id),
-                                            src: legendIconSrc(
-                                                legend.legend_name_key,
-                                            ),
-                                            alt: legend.bio_name,
-                                        }))}
-                                    />
-                                ) : (
-                                    "—"
-                                ),
-                        },
-                        {
-                            title: "Main weapons",
-                            value:
-                                topWeapons.length > 0 ? (
-                                    <ThumbRow
-                                        items={topWeapons.map((weapon) => ({
-                                            key: weapon.weapon,
-                                            src: weaponIconSrc(weapon.weapon),
-                                            alt: weapon.weapon,
-                                        }))}
-                                    />
-                                ) : (
-                                    "—"
-                                ),
-                        },
-                    ]}
-                />
+                <CardContent>
+                    <StatGrid
+                        maxColumns={5}
+                        stats={[
+                            { title: "Account level", value: stats.level },
+                            {
+                                title: "Account XP",
+                                value: stats.xp.toLocaleString(),
+                            },
+                            {
+                                title: "In-game time",
+                                value: formatTime(totals.matchtime),
+                            },
+                            {
+                                title: "Main legends",
+                                value:
+                                    topLegends.length > 0 ? (
+                                        <ThumbRow
+                                            items={topLegends.map((legend) => ({
+                                                key: String(legend.legend_id),
+                                                src: legendIconSrc(
+                                                    legend.legend_name_key,
+                                                ),
+                                                alt: legend.bio_name,
+                                            }))}
+                                        />
+                                    ) : (
+                                        "—"
+                                    ),
+                            },
+                            {
+                                title: "Main weapons",
+                                value:
+                                    topWeapons.length > 0 ? (
+                                        <ThumbRow
+                                            items={topWeapons.map((weapon) => ({
+                                                key: weapon.weapon,
+                                                src: weaponIconSrc(
+                                                    weapon.weapon,
+                                                ),
+                                                alt: weapon.weapon,
+                                            }))}
+                                        />
+                                    ) : (
+                                        "—"
+                                    ),
+                            },
+                        ]}
+                    />
+                </CardContent>
             </Card>
         </header>
     )

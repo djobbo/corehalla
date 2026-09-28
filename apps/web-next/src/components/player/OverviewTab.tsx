@@ -1,7 +1,7 @@
-import { Card } from "@/components/ui/Card"
-import { Breakdown } from "@/components/ui/Breakdown"
-import { SplitProgress } from "@/components/ui/Progress"
-import { StatGrid } from "@/components/ui/StatGrid"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Breakdown } from "@/components/Breakdown"
+import { SplitProgress } from "@/components/SplitProgress"
+import { StatGrid } from "@/components/StatGrid"
 import { RankedCard } from "./RankedCard"
 import { usePlayerDerived } from "./usePlayerDerived"
 import { EntityLink } from "@/components/EntityLink"
@@ -11,8 +11,8 @@ import { percent, perGame, ratio } from "@/lib/stats"
 import { rankedRegions } from "@crh/bhapi/constants"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatTime } from "@crh/common/helpers/date"
-import type { Stat } from "@/components/ui/StatGrid"
-import type { BreakdownEntry } from "@/components/ui/Breakdown"
+import type { Stat } from "@/components/StatGrid"
+import type { BreakdownEntry } from "@/components/Breakdown"
 import type { PlayerDerived } from "./usePlayerDerived"
 import type {
     Player3v3Ranked,
@@ -141,30 +141,39 @@ const ClanPanel = ({ stats }: { readonly stats: PlayerStats }) => {
     const clanXp = Number(clan.clan_xp)
 
     return (
-        <Card title="Clan">
-            <div className="flex flex-wrap items-baseline gap-2">
-                <EntityLink
-                    type="clan"
-                    id={clan.clan_id}
-                    href={clanHref(clan.clan_id)}
-                    className="ch-link ch-display text-xl"
-                >
-                    {cleanString(clan.clan_name)}
-                </EntityLink>
-                <span className="text-xs text-textVar1">#{clan.clan_id}</span>
-            </div>
-            <Card variant="inset" className="mt-3">
-                <StatGrid
-                    stats={[
-                        { title: "Clan XP", value: summed(clanXp) },
-                        {
-                            title: "Contribution",
-                            value: `${percent(clan.personal_xp, clanXp).toFixed(2)}%`,
-                            hint: `Share of the clan's XP earned by this player`,
-                        },
-                    ]}
-                />
-            </Card>
+        <Card>
+            <CardHeader>
+                <CardTitle>Clan</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="flex flex-wrap items-baseline gap-2">
+                    <EntityLink
+                        type="clan"
+                        id={clan.clan_id}
+                        href={clanHref(clan.clan_id)}
+                        className="ch-display text-xl transition-colors hover:text-ring"
+                    >
+                        {cleanString(clan.clan_name)}
+                    </EntityLink>
+                    <span className="text-xs text-muted-foreground">
+                        #{clan.clan_id}
+                    </span>
+                </div>
+                <Card className="mt-3 bg-background">
+                    <CardContent>
+                        <StatGrid
+                            stats={[
+                                { title: "Clan XP", value: summed(clanXp) },
+                                {
+                                    title: "Contribution",
+                                    value: `${percent(clan.personal_xp, clanXp).toFixed(2)}%`,
+                                    hint: `Share of the clan's XP earned by this player`,
+                                },
+                            ]}
+                        />
+                    </CardContent>
+                </Card>
+            </CardContent>
         </Card>
     )
 }
@@ -178,34 +187,39 @@ const GamesPanel = ({
     readonly games: number
     readonly wins: number
 }) => (
-    <Card title="Games">
-        <p className="ch-display text-4xl">
-            {summed(games)}
-            <span className="ml-2 text-xs font-normal tracking-normal text-textVar1">
-                games
-            </span>
-        </p>
-        <SplitProgress
-            className="mt-3"
-            parts={[
-                { key: "wins", value: wins, intent: "green" },
-                { key: "losses", value: games - wins, intent: "orange" },
-            ]}
-        />
-        <div className="mt-2 flex justify-between text-sm font-bold">
-            <span>
-                {summed(wins)}W{" "}
-                <span className="text-xs font-normal text-textVar1">
-                    ({percent(wins, games).toFixed(2)}%)
+    <Card>
+        <CardHeader>
+            <CardTitle>Games</CardTitle>
+        </CardHeader>
+        <CardContent>
+            <p className="ch-display text-4xl">
+                {summed(games)}
+                <span className="ml-2 text-xs font-normal tracking-normal text-muted-foreground">
+                    games
                 </span>
-            </span>
-            <span>
-                {summed(games - wins)}L{" "}
-                <span className="text-xs font-normal text-textVar1">
-                    ({percent(games - wins, games).toFixed(2)}%)
+            </p>
+            <SplitProgress
+                className="mt-3"
+                parts={[
+                    { key: "wins", value: wins, intent: "green" },
+                    { key: "losses", value: games - wins, intent: "orange" },
+                ]}
+            />
+            <div className="mt-2 flex justify-between text-sm font-bold">
+                <span>
+                    {summed(wins)}W{" "}
+                    <span className="text-xs font-normal text-muted-foreground">
+                        ({percent(wins, games).toFixed(2)}%)
+                    </span>
                 </span>
-            </span>
-        </div>
+                <span>
+                    {summed(games - wins)}L{" "}
+                    <span className="text-xs font-normal text-muted-foreground">
+                        ({percent(games - wins, games).toFixed(2)}%)
+                    </span>
+                </span>
+            </div>
+        </CardContent>
     </Card>
 )
 
@@ -248,66 +262,71 @@ const KosFallsPanel = ({
     const sharedMax = Math.max(kos, falls)
 
     return (
-        <Card title="KOs & Falls">
-            <div className="flex flex-col gap-6">
-                <Breakdown
-                    title="Total KOs"
-                    total={kos}
-                    max={sharedMax}
-                    entries={[
-                        {
-                            key: "weapons",
-                            label: "using weapons",
-                            value: weaponKos,
-                            intent: "blue",
-                        },
-                        {
-                            key: "unarmed",
-                            label: "unarmed",
-                            value: unarmed.kos,
-                            intent: "cyan",
-                        },
-                        {
-                            key: "gadgets",
-                            label: "using gadgets",
-                            value: gadgets.kos,
-                            intent: "green",
-                        },
-                        {
-                            key: "throws",
-                            label: "using throws",
-                            value: thrownKos,
-                            intent: "yellow",
-                        },
-                        {
-                            key: "teamkos",
-                            label: "team KOs",
-                            value: teamkos,
-                            intent: "pink",
-                        },
-                    ]}
-                />
+        <Card>
+            <CardHeader>
+                <CardTitle>KOs &amp; Falls</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="flex flex-col gap-6">
+                    <Breakdown
+                        title="Total KOs"
+                        total={kos}
+                        max={sharedMax}
+                        entries={[
+                            {
+                                key: "weapons",
+                                label: "using weapons",
+                                value: weaponKos,
+                                intent: "blue",
+                            },
+                            {
+                                key: "unarmed",
+                                label: "unarmed",
+                                value: unarmed.kos,
+                                intent: "cyan",
+                            },
+                            {
+                                key: "gadgets",
+                                label: "using gadgets",
+                                value: gadgets.kos,
+                                intent: "green",
+                            },
+                            {
+                                key: "throws",
+                                label: "using throws",
+                                value: thrownKos,
+                                intent: "yellow",
+                            },
+                            {
+                                key: "teamkos",
+                                label: "team KOs",
+                                value: teamkos,
+                                intent: "pink",
+                            },
+                        ]}
+                    />
 
-                <Breakdown
-                    title="Falls"
-                    total={falls}
-                    max={sharedMax}
-                    entries={[
-                        {
-                            key: "koed",
-                            label: "KOed",
-                            value: koed,
-                            intent: "orange",
-                        },
-                        {
-                            key: "suicides",
-                            label: "Suicides",
-                            value: suicides,
-                            intent: "yellow",
-                        },
-                    ]}
-                />
-            </div>
+                    <Breakdown
+                        title="Falls"
+                        total={falls}
+                        max={sharedMax}
+                        entries={[
+                            {
+                                key: "koed",
+                                label: "KOed",
+                                value: koed,
+                                intent: "orange",
+                            },
+                            {
+                                key: "suicides",
+                                label: "Suicides",
+                                value: suicides,
+                                intent: "yellow",
+                            },
+                        ]}
+                    />
+                </div>
+            </CardContent>
         </Card>
     )
 }
@@ -368,49 +387,56 @@ const DamagePanel = ({
     ]
 
     return (
-        <Card title="Damage">
-            <div className="flex flex-col gap-6">
-                <Breakdown
-                    title="Damage dealt"
-                    total={dealt}
-                    max={sharedMax}
-                    entries={dealtEntries}
-                />
+        <Card>
+            <CardHeader>
+                <CardTitle>Damage</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="flex flex-col gap-6">
+                    <Breakdown
+                        title="Damage dealt"
+                        total={dealt}
+                        max={sharedMax}
+                        entries={dealtEntries}
+                    />
 
-                {/*
-                 * Damage taken has no source in either API version — the
-                 * payload carries a total and nothing else — so it is one piece
-                 * against the shared scale, and needs no key.
-                 */}
-                <Breakdown
-                    title="Damage taken"
-                    total={taken}
-                    max={sharedMax}
-                    entries={[
-                        {
-                            key: "taken",
-                            label: "taken",
-                            value: taken,
-                            intent: "orange",
-                        },
-                    ]}
-                />
-            </div>
+                    {/*
+                     * Damage taken has no source in either API version — the
+                     * payload carries a total and nothing else — so it is one piece
+                     * against the shared scale, and needs no key.
+                     */}
+                    <Breakdown
+                        title="Damage taken"
+                        total={taken}
+                        max={sharedMax}
+                        entries={[
+                            {
+                                key: "taken",
+                                label: "taken",
+                                value: taken,
+                                intent: "orange",
+                            },
+                        ]}
+                    />
+                </div>
 
-            <Card variant="inset" className="mt-4">
-                <StatGrid
-                    stats={[
-                        {
-                            title: "Dealt per second",
-                            value: `${ratio(dealt, matchtime).toFixed(1)} dmg/s`,
-                        },
-                        {
-                            title: "Taken per second",
-                            value: `${ratio(taken, matchtime).toFixed(1)} dmg/s`,
-                        },
-                    ]}
-                />
-            </Card>
+                <Card className="mt-4 bg-background">
+                    <CardContent>
+                        <StatGrid
+                            stats={[
+                                {
+                                    title: "Dealt per second",
+                                    value: `${ratio(dealt, matchtime).toFixed(1)} dmg/s`,
+                                },
+                                {
+                                    title: "Taken per second",
+                                    value: `${ratio(taken, matchtime).toFixed(1)} dmg/s`,
+                                },
+                            ]}
+                        />
+                    </CardContent>
+                </Card>
+            </CardContent>
         </Card>
     )
 }
@@ -424,8 +450,13 @@ const BreakdownPanel = ({
     readonly title: string
     readonly stats: readonly Stat[]
 }) => (
-    <Card title={title}>
-        <StatGrid stats={stats} />
+    <Card>
+        <CardHeader>
+            <CardTitle>{title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+            <StatGrid stats={stats} />
+        </CardContent>
     </Card>
 )
 

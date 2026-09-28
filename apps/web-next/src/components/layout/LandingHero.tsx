@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { SearchTrigger } from "@/components/Search"
+import { Button } from "@/components/ui/button"
 import { ladderHref } from "@/lib/rankings"
 
 /**
@@ -8,9 +9,9 @@ import { ladderHref } from "@/lib/rankings"
  * Modelled on the legacy app's harness composer — the mark, the wordmark, a
  * line of orientation, and the search field as the one obvious thing to do —
  * but built from this app's parts rather than as a second design. The field is
- * the same `ch-field` the masthead wears and opens the same overlay; it is just
- * sized up to carry the page, and the buttons under it are the same `ch-btn`
- * the ladder uses for its page controls.
+ * the same trigger the masthead wears and opens the same overlay; it is just
+ * sized up to carry the page, and the button under it is the same shadcn
+ * `Button` the ladder uses for its page controls.
  *
  * Deliberately not an opaque plate. `LandingBackground` is painted page-wide at
  * the top of the viewport and masked out further down, so the art is strongest
@@ -32,7 +33,7 @@ export const LandingHero = () => (
 
         <h1 className="ch-display mt-2 text-4xl sm:text-6xl">Corehalla</h1>
 
-        <p className="mt-4 max-w-xl text-sm text-textVar1 sm:text-base">
+        <p className="mt-4 max-w-xl text-sm text-muted-foreground sm:text-base">
             Live leaderboards for every ranked mode and region, in-depth player
             profiles and clan rosters.
         </p>
@@ -46,9 +47,19 @@ export const LandingHero = () => (
         <SearchTrigger className="mt-7 w-full max-w-xl px-4 py-3.5 text-base" />
 
         <div className="mt-5 flex flex-wrap justify-center gap-2">
-            <Link to={ladderHref("1v1", "all")} className="ch-btn px-4 py-2.5">
+            {/*
+             * A `Button` rendering the router `Link`, so this stays a real
+             * anchor — shareable and middle-clickable — while carrying the
+             * poster slab's shape. `nativeButton={false}` because `render`
+             * swaps the button element for that anchor.
+             */}
+            <Button
+                size="lg"
+                nativeButton={false}
+                render={<Link to={ladderHref("1v1", "all")} />}
+            >
                 Browse the leaderboards
-            </Link>
+            </Button>
         </div>
     </section>
 )

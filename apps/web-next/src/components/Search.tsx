@@ -1,6 +1,5 @@
 import { Atom } from "effect/unstable/reactivity"
 import * as AsyncResult from "effect/unstable/reactivity/AsyncResult"
-import * as Dialog from "@radix-ui/react-dialog"
 import { useAtomSet, useAtomValue } from "@effect/atom-react"
 import { useNavigate } from "@tanstack/react-router"
 import {
@@ -11,10 +10,23 @@ import {
     useMemo,
     useState,
 } from "react"
+import { SearchIcon } from "lucide-react"
 import { lookupAtom } from "@/effect/atoms"
 import { recentsAtom, withRecent } from "@/effect/recents"
 import { activeQueryAtom, searchQueryAtom } from "@/effect/search"
 import { clanHref, playerHref } from "@/lib/rankings"
+import { cn } from "@/lib/cn"
+import { Button } from "@/components/ui/button"
+import {
+    Command,
+    CommandDialog,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command"
+import { Kbd } from "@/components/ui/kbd"
 import { MIN_LOOKUP_LENGTH } from "@crh/api-contract/schemas"
 import type { LookupResult } from "@crh/api-contract/schemas"
 import type { ReactNode } from "react"
@@ -27,9 +39,23 @@ import type { ReactNode } from "react"
  * still behind you. A search *route* would replace that page and make the back
  * button the way out.
  *
- * Its state is Effect-native: the query and its debounce are atoms
+ * The overlay is shadcn's `Command` inside its `Dialog`, which is the part of
+ * this file that used to be hand-written and is now the part that is not. cmdk
+ * owns the listbox: `role="listbox"`/`role="option"` wiring, arrow-key movement,
+ * Home/End, the typeahead buffer, `aria-activedescendant` tracking and scrolling
+ * the active row into view. The previous implementation re-derived the highlight
+ * index by hand, which is exactly the kind of state that drifts out of step with
+ * the DOM — and it announced no roles at all, so a screen reader saw a stack of
+ * anonymous buttons.
+ *
+ * Filtering is switched off (`shouldFilter={false}`) because the ranking happens
+ * on the server, in `lookupAtom`. cmdk's own filter would fight it: it would
+ * re-rank prefix matches by its own fuzzy score and drop rows the API returned
+ * deliberately.
+ *
+ * Its state stays Effect-native: the query and its debounce are atoms
  * (`effect/search`), and recents are a `KeyValueStore`-backed atom
- * (`effect/recents`). What remains here is presentation and keyboard handling.
+ * (`effect/recents`). What remains here is presentation.
  */
 
 type SearchContextValue = {
@@ -169,8 +195,6 @@ const SearchOverlay = () => {
     const recents = useAtomValue(recentsAtom)
     const setRecents = useAtomSet(recentsAtom)
 
-    const [highlighted, setHighlighted] = useState(0)
-
     // Cleared on close rather than on open: the settled query lags the raw one by
     // the debounce, so clearing at open time would briefly show the previous
     // query's results. Clearing on the way out means the next open starts clean.
@@ -178,7 +202,6 @@ const SearchOverlay = () => {
         if (isOpen) return
 
         setQuery("")
-        setHighlighted(0)
     }, [isOpen, setQuery])
 
     const lookup = useMemo(
@@ -231,124 +254,106 @@ const SearchOverlay = () => {
         [close, navigate, recents, setRecents],
     )
 
-    const onKeyDown = (event: React.KeyboardEvent) => {
-        if (event.key === "ArrowDown") {
-            event.preventDefault()
-            setHighlighted((current) =>
-                rows.length === 0 ? 0 : (current + 1) % rows.length,
-            )
-            return
-        }
-
-        if (event.key === "ArrowUp") {
-            event.preventDefault()
-            setHighlighted((current) =>
-                rows.length === 0
-                    ? 0
-                    : (current - 1 + rows.length) % rows.length,
-            )
-            return
-        }
-
-        if (event.key === "Enter") {
-            event.preventDefault()
-
-            // Enter opens the highlighted row, which defaults to the first — the
-            // whole point of ranking the list.
-            const row = rows[highlighted] ?? rows[0]
-
-            if (row) go(row)
-        }
-    }
-
     return (
-        <Dialog.Root open={isOpen} onOpenChange={(next) => !next && close()}>
-            <Dialog.Portal>
-                <Dialog.Overlay className="fixed inset-0 z-40 bg-ink/75 backdrop-blur-sm" />
-                <Dialog.Content
-                    aria-describedby={undefined}
-                    className="ch-panel fixed left-1/2 top-16 z-50 w-[95vw] max-w-xl -translate-x-1/2 p-3"
-                >
-                    <Dialog.Title className="sr-only">
-                        Search players and clans
-                    </Dialog.Title>
+        <CommandDialog
+            open={isOpen}
+            onOpenChange={(next) => !next && close()}
+            title="Search players and clans"
+            description="Type a player or clan name to open its profile."
+            // The overlay is anchored near the top rather than centred, so the
+            // list grows downward from where the eye already is and the results
+            // do not shift the field as they arrive.
+            className="top-16 w-[95vw] max-w-xl translate-y-0"
+        >
+            <Command shouldFilter={false} loop>
+                <CommandInput
+                    /*
+                     * Focusing the field is the whole point of the shortcut: the
+                     * overlay only opens because the user asked for it (⌘K, `/`,
+                     * or the trigger), so this is not the page-load focus grab
+                     * the rule warns about.
+                     */
+                    /* oxlint-disable-next-line jsx-a11y/no-autofocus */
+                    autoFocus
+                    value={query}
+                    onValueChange={setQuery}
+                    placeholder="Search players and clans…"
+                    aria-label="Search players and clans"
+                />
 
-                    <input
-                        autoFocus
-                        value={query}
-                        onChange={(event) => {
-                            setQuery(event.target.value)
-                            setHighlighted(0)
-                        }}
-                        onKeyDown={onKeyDown}
-                        placeholder="Search players and clans…"
-                        aria-label="Search players and clans"
-                        className="ch-input"
-                    />
+                <CommandList className="max-h-[60vh]">
+                    {status === "recents" && (
+                        <CommandGroup heading="Recent">
+                            {rows.map((row) => (
+                                <Row key={row.key} row={row} onSelect={go} />
+                            ))}
+                        </CommandGroup>
+                    )}
 
-                    <div className="mt-2 max-h-[60vh] overflow-y-auto">
-                        {status === "pending" && (
-                            <p className="px-2 py-3 text-sm text-textVar1">
-                                Searching…
-                            </p>
-                        )}
+                    {status === "results" && (
+                        <CommandGroup heading="Results">
+                            {rows.map((row) => (
+                                <Row key={row.key} row={row} onSelect={go} />
+                            ))}
+                        </CommandGroup>
+                    )}
+
+                    {/*
+                     * `CommandEmpty` is cmdk's "nothing to show" slot, so every
+                     * non-list state renders through it and the list keeps one
+                     * shape. It is the honest miss, too: prefix-only search means
+                     * a typo finds nothing, so this says what was searched and
+                     * what to try instead of just "no results".
+                     */}
+                    <CommandEmpty className="px-3 py-4 text-left text-sm text-muted-foreground">
+                        {status === "pending" && "Searching…"}
 
                         {status === "idle" && (
-                            <p className="px-2 py-3 text-sm text-textVar1">
+                            <>
                                 Type at least {MIN_LOOKUP_LENGTH} characters to
                                 search players and clans.
-                            </p>
+                            </>
                         )}
 
                         {status === "miss" && (
-                            // An honest miss. Prefix-only search means a typo
-                            // finds nothing, so this says what was searched and
-                            // what to try instead of just "no results".
-                            <p className="px-2 py-3 text-sm text-textVar1">
+                            <>
                                 No players or clans match “{active}”. Try a
                                 shorter spelling, or the start of the name
                                 rather than the middle.
-                            </p>
+                            </>
                         )}
-
-                        {status === "recents" && (
-                            <p className="ch-kicker px-2 py-1">Recent</p>
-                        )}
-
-                        {status !== "pending" &&
-                            rows.map((row, index) => (
-                                <button
-                                    key={row.key}
-                                    type="button"
-                                    onMouseEnter={() => setHighlighted(index)}
-                                    onClick={() => go(row)}
-                                    className={
-                                        "ch-result " +
-                                        (index === highlighted
-                                            ? "ch-result-on"
-                                            : "")
-                                    }
-                                >
-                                    <span className="text-sm font-semibold">
-                                        {row.name}
-                                    </span>
-                                    <span className="text-xs text-textVar1">
-                                        {row.meta}
-                                    </span>
-                                </button>
-                            ))}
-                    </div>
-                </Dialog.Content>
-            </Dialog.Portal>
-        </Dialog.Root>
+                    </CommandEmpty>
+                </CommandList>
+            </Command>
+        </CommandDialog>
     )
 }
+
+/** One result row: a name, and the line of facts that identify it. */
+const Row = ({
+    row,
+    onSelect,
+}: {
+    readonly row: Row
+    readonly onSelect: (row: Row) => void
+}) => (
+    <CommandItem value={row.key} onSelect={() => onSelect(row)}>
+        <span className="flex min-w-0 flex-col gap-0.5">
+            <span className="truncate text-sm font-semibold">{row.name}</span>
+            <span className="truncate text-xs text-muted-foreground">
+                {row.meta}
+            </span>
+        </span>
+    </CommandItem>
+)
 
 /**
  * The visible way in.
  *
  * A button that looks like a field rather than a real input: the overlay owns the
- * input, so typing here would mean two sources of truth for the query.
+ * input, so typing here would mean two sources of truth for the query. It is
+ * shadcn's `Button` so it inherits the focus ring and disabled handling, with the
+ * uppercase button casing turned back off — a field reads as a field.
  */
 export const SearchTrigger = ({
     className,
@@ -358,14 +363,21 @@ export const SearchTrigger = ({
     const { open } = useSearch()
 
     return (
-        <button
+        <Button
             type="button"
+            variant="ghost"
             onClick={open}
             data-search-trigger
-            className={"ch-field " + (className ?? "")}
+            className={cn(
+                "h-auto w-full justify-between gap-2 bg-card px-2.5 py-1.5 text-sm font-normal tracking-normal normal-case text-muted-foreground hover:bg-bgVar2 hover:text-foreground",
+                className,
+            )}
         >
-            <span>Search players and clans</span>
-            <kbd className="ch-kbd">/</kbd>
-        </button>
+            <span className="flex min-w-0 items-center gap-2">
+                <SearchIcon data-icon="inline-start" />
+                <span className="truncate">Search players and clans</span>
+            </span>
+            <Kbd>/</Kbd>
+        </Button>
     )
 }

@@ -1,7 +1,7 @@
+import { SplitProgress } from "@/components/SplitProgress"
+import { fillClass } from "@/lib/fill"
 import { cn } from "@/lib/cn"
-import { SplitProgress } from "./Progress"
-import { fillClass } from "./fill"
-import type { FillIntent } from "./fill"
+import type { FillIntent } from "@/lib/fill"
 
 /** One named cause within a total. */
 export type BreakdownEntry = {
@@ -51,12 +51,13 @@ export const Breakdown = ({
         <div className={cn("flex flex-col gap-3", className)}>
             <p className="ch-display text-3xl">
                 {total.toLocaleString()}
-                <span className="ml-2 text-sm font-normal normal-case tracking-normal text-textVar1">
+                <span className="ml-2 text-sm font-normal tracking-normal normal-case text-muted-foreground">
                     {title}
                 </span>
             </p>
 
             <SplitProgress
+                label={`${title}, ${total.toLocaleString()} in total`}
                 total={max ?? total}
                 parts={shown.map((entry) => ({
                     key: entry.key,
@@ -82,10 +83,10 @@ export const Breakdown = ({
                                 )}
                             />
                             <span className="flex flex-col leading-tight">
-                                <span className="text-sm font-bold">
+                                <span className="text-sm font-bold tabular-nums">
                                     {entry.value.toLocaleString()}
                                 </span>
-                                <span className="text-xs text-textVar1">
+                                <span className="text-xs text-muted-foreground">
                                     {entry.label}
                                 </span>
                             </span>

@@ -5,14 +5,47 @@
 @import "@fontsource/montserrat/800.css";
 @import "@fontsource/montserrat/900.css";
 @import "tailwindcss" source("../");
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 /*
- * Corehalla's palette, unchanged.
+ * Corehalla's visual language, layered on shadcn/ui.
  *
- * The brand colours below are the same values `apps/web` ships, so the two apps
- * still read as one product. The flat-vector treatment adds only neutrals:
- * `ink` for the hard shadow, `panelDeep` for inset surfaces, and `accentDeep`
- * for the solid hero plate.
+ * The components in `src/components/ui` are shadcn's own source — structure,
+ * keyboard behaviour and ARIA come from there. This file is the skin: it decides
+ * what shadcn's semantic tokens *mean* in Corehalla's palette, and it keeps the
+ * few shapes that no component library ships (the parallelogram cut, the hard
+ * offset shadow, the sheared art tile).
+ *
+ * Four layers, in order:
+ *
+ *   1. `@theme` — the brand palette, plus overrides of Tailwind's own scales
+ *      (shadows, fonts) so every shadcn component inherits the poster treatment
+ *      without a single `className` at the call site.
+ *   2. `:root` — shadcn's semantic tokens, resolved from that palette. This is
+ *      the whole point of the mapping: `bg-card` is `#2b3043` because `--card`
+ *      is, and a shadcn `Card` therefore matches the design as written.
+ *   3. `@layer base` — document defaults.
+ *   4. `@layer components` — the bespoke shapes and idioms that are genuinely
+ *      Corehalla's own (`.ch-nameplate`, `.ch-thumb`, `.ch-chip`, …).
+ *
+ * `dark:` utilities appear throughout shadcn's components. There is no dark mode
+ * here and no `.dark` ancestor, so those branches are inert.
+ */
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * The brand palette, unchanged.
+ *
+ * These are the same values `apps/web` ships, so the two apps still read as one
+ * product. The flat-vector treatment adds only neutrals: `ink` for the hard
+ * shadow, `panelDeep` for inset surfaces, and `brandDeep` for the solid hero
+ * plate.
+ *
+ * The accent family is named `brand` rather than `accent` on purpose. shadcn
+ * spends `accent` on the hover/active surface token, and two meanings for one
+ * name would silently repaint every hoverable row; `brand` is the blue the
+ * product is actually built around, which shadcn calls `primary`.
  */
 @theme {
     --color-bgVar2: #1a1b23;
@@ -20,27 +53,136 @@
     --color-bg: #2b3043;
     --color-textVar1: #ccd0d6;
     --color-text: #ffffff;
-    --color-accent: #3861fb;
-    --color-accentVar1: #2095f2;
+
+    --color-brand: #3861fb;
+    --color-brandVar1: #2095f2;
+    --color-brandDeep: #2440b8;
+    --color-brandAlt: #e568d9;
+    --color-brandAltVar1: #ff99e9;
+
     --color-success: #24cd7c;
     --color-danger: #ed7853;
     --color-warning: #f3da57;
-    --color-accentAlt: #e568d9;
-    --color-accentAltVar1: #ff99e9;
 
-    /* Additions for the flat-vector treatment. */
     --color-ink: #0b0c12;
     --color-panelDeep: #232838;
-    --color-accentDeep: #2440b8;
 
     --font-display: "Montserrat", sans-serif;
+    --font-sans: "Montserrat", sans-serif;
+    --font-heading: "Montserrat", sans-serif;
+
+    /*
+     * The hard shadow, applied by redefining Tailwind's own scale.
+     *
+     * Every shadcn component reaches for `shadow-sm`, `shadow-md` or `shadow-lg`
+     * to lift itself off the page. Redefining those tokens here is what turns a
+     * soft drop shadow into Corehalla's unblurred black offset — without editing
+     * a single component and without a `className` at any call site. The steps
+     * stay distinct so a dialog still reads as further off the page than a card.
+     */
+    --shadow-2xs: 2px 2px 0 0 var(--color-ink);
+    --shadow-xs: 2px 2px 0 0 var(--color-ink);
+    --shadow-sm: 3px 3px 0 0 var(--color-ink);
+    --shadow-md: 4px 4px 0 0 var(--color-ink);
+    --shadow-lg: 5px 5px 0 0 var(--color-ink);
+    --shadow-xl: 6px 6px 0 0 var(--color-ink);
+    --shadow-2xl: 8px 8px 0 0 var(--color-ink);
+}
+
+/*
+ * shadcn's semantic tokens.
+ *
+ * Each one is an existing Corehalla value rather than a new colour, so the
+ * mapping is a translation and not a redesign. Reading it is the fastest way to
+ * answer "what does this shadcn component look like here":
+ *
+ *   background  the page canvas, on `html` rather than `body` (see below)
+ *   card        a raised slab          popover  an overlay surface
+ *   muted       an inset well          accent   a hovered/active surface
+ *   border      the near-black row rule          ring  the focus blue
+ */
+:root {
+    --background: #1e212c;
+    --foreground: #ffffff;
+
+    --card: #2b3043;
+    --card-foreground: #ffffff;
+
+    --popover: #2b3043;
+    --popover-foreground: #ffffff;
+
+    --primary: #3861fb;
+    --primary-foreground: #ffffff;
+
+    --secondary: #232838;
+    --secondary-foreground: #ffffff;
+
+    --muted: #232838;
+    --muted-foreground: #ccd0d6;
+
+    --accent: #1a1b23;
+    --accent-foreground: #ffffff;
+
+    --destructive: #ed7853;
+
+    --border: rgb(11 12 18 / 0.55);
+    --input: rgb(11 12 18 / 0.55);
+    --ring: #2095f2;
+
+    /*
+     * The bar roles, in the order the fill vocabulary lists them. A breakdown
+     * reads them as series colours; the account surfaces read the same six as
+     * meaning (wins green, losses orange).
+     */
+    --chart-1: #3861fb;
+    --chart-2: #2095f2;
+    --chart-3: #24cd7c;
+    --chart-4: #ed7853;
+    --chart-5: #f3da57;
+
+    /* No rounding anywhere: every corner in this design is square. */
+    --radius: 0;
+}
+
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 @layer base {
     html,
     body {
-        @apply text-text;
-        font-family: "Montserrat", sans-serif;
+        @apply text-foreground;
+        font-family: var(--font-sans);
     }
 
     /*
@@ -51,11 +193,13 @@
      * the same colour becomes the canvas background instead, and the pattern
      * paints on top of it.
      *
-     * `body` is therefore deliberately left transparent. Anything that needs a
-     * surface of its own paints one, and the pattern shows through the gaps.
+     * `body` is therefore deliberately left transparent, which is also why
+     * shadcn's `body { @apply bg-background }` is deliberately *not* here.
+     * Anything that needs a surface of its own paints one, and the pattern shows
+     * through the gaps.
      */
     html {
-        background-color: var(--color-bgVar1);
+        background-color: var(--background);
     }
 
     /*
@@ -84,12 +228,12 @@
     }
 
     ::selection {
-        background: var(--color-accent);
-        color: var(--color-text);
+        background: var(--primary);
+        color: var(--foreground);
     }
 
     :focus-visible {
-        outline: 2px solid var(--color-accentVar1);
+        outline: 2px solid var(--ring);
         outline-offset: 2px;
     }
 
@@ -107,12 +251,18 @@
     }
 
     ::-webkit-scrollbar-thumb:hover {
-        background: var(--color-accent);
+        background: var(--primary);
     }
 }
 
 /*
- * The visual language, in one place.
+ * Corehalla's own shapes and idioms.
+ *
+ * What is left here is only what a component library cannot supply: the
+ * parallelogram cut, the hard unblurred shadow, the sheared art tile, and the
+ * geometry of the pinned header stack. Everything else — buttons, cards, menus,
+ * tables, inputs, tabs, the command palette — is a shadcn component wearing the
+ * tokens above.
  *
  * Surfaces are flat, solid fills separated from the page by a hard, unblurred
  * black shadow — no outlines, no gradients. Chips and tabs are parallelograms
@@ -131,7 +281,7 @@
         font-weight: 800;
         letter-spacing: 0.24em;
         text-transform: uppercase;
-        color: var(--color-accentVar1);
+        color: var(--ring);
     }
 
     .ch-display {
@@ -140,41 +290,12 @@
         letter-spacing: -0.01em;
         line-height: 0.98;
         text-transform: uppercase;
-        color: var(--color-text);
+        color: var(--foreground);
     }
 
     /* A section label with an accent block, the poster's "bullet". */
-    .ch-section-title {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-family: var(--font-display);
-        font-size: 0.78rem;
-        font-weight: 800;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--color-text);
-    }
-
-    .ch-section-title::before {
-        content: "";
-        display: block;
-        flex: none;
-        width: 0.3rem;
-        height: 0.9rem;
-        transform: skewX(-14deg);
-        background: var(--color-accent);
-    }
 
     /* --- surfaces -------------------------------------------------------- */
-
-    .ch-panel {
-        background: var(--color-bg);
-    }
-
-    .ch-panel-deep {
-        background: var(--color-bgVar2);
-    }
 
     /*
      * The page hero: a solid accent plate. The kicker switches to warning
@@ -182,7 +303,7 @@
      * blue field.
      */
     .ch-hero {
-        background: var(--color-accentDeep);
+        background: var(--color-brandDeep);
         padding: 0.9rem 1rem;
     }
 
@@ -191,21 +312,8 @@
     }
 
     /* A panel with a solid accent block along its top edge. */
-    .ch-panel-ribbon {
-        position: relative;
-        overflow: hidden;
-        background: var(--color-bg);
-    }
 
-    .ch-panel-ribbon::before {
-        content: "";
-        position: absolute;
-        inset: 0 0 auto 0;
-        height: 5px;
-        background: var(--color-accent);
-    }
-
-    /* --- chips and tabs (parallelograms) --------------------------------- */
+    /* --- chips (parallelograms) ------------------------------------------ */
 
     .ch-chip {
         display: inline-flex;
@@ -237,123 +345,18 @@
     }
 
     .ch-chip-on {
-        background: var(--color-accent);
-        color: var(--color-text);
+        background: var(--primary);
+        color: var(--primary-foreground);
     }
 
     .ch-chip-off {
         background: var(--color-panelDeep);
-        color: var(--color-textVar1);
+        color: var(--muted-foreground);
     }
 
     .ch-chip-off:hover {
-        background: var(--color-bg);
-        color: var(--color-text);
-    }
-
-    .ch-tab {
-        display: inline-flex;
-        align-items: center;
-        padding: 0.38rem 0.95rem;
-        font-size: 0.72rem;
-        font-weight: 800;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        white-space: nowrap;
-        color: var(--color-textVar1);
-        background: var(--color-panelDeep);
-        clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
-        filter: drop-shadow(3px 3px 0 var(--color-ink));
-        transition:
-            background-color 120ms ease,
-            color 120ms ease;
-    }
-
-    .ch-tab:hover {
-        background: var(--color-bg);
-        color: var(--color-text);
-    }
-
-    .ch-tab-on {
-        background: var(--color-accent);
-        color: var(--color-text);
-    }
-
-    /* --- buttons and fields ---------------------------------------------- */
-
-    .ch-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        background: var(--color-bg);
-        padding: 0.4rem 0.8rem;
-        font-size: 0.75rem;
-        font-weight: 800;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--color-text);
-        box-shadow: 4px 4px 0 0 var(--color-ink);
-        transition:
-            transform 120ms ease,
-            box-shadow 120ms ease,
-            background-color 120ms ease;
-    }
-
-    .ch-btn:hover {
-        background: var(--color-accent);
-        transform: translate(-1px, -1px);
-        box-shadow: 5px 5px 0 0 var(--color-ink);
-    }
-
-    .ch-btn:active {
-        transform: translate(3px, 3px);
-        box-shadow: 1px 1px 0 0 var(--color-ink);
-    }
-
-    .ch-field {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 0.5rem;
-        background: var(--color-bg);
-        padding: 0.3rem 0.6rem;
-        font-size: 0.78rem;
-        text-align: left;
-        color: var(--color-textVar1);
-        transition:
-            background-color 120ms ease,
-            color 120ms ease;
-    }
-
-    .ch-field:hover {
-        background: var(--color-bgVar2);
-        color: var(--color-text);
-    }
-
-    .ch-kbd {
-        display: grid;
-        place-items: center;
-        flex: none;
-        min-width: 1.3rem;
-        height: 1.3rem;
-        padding-inline: 0.25rem;
-        background: var(--color-bgVar2);
-        font-size: 0.68rem;
-        font-weight: 800;
-        color: var(--color-textVar1);
-    }
-
-    /* Recessed by an inset shadow rather than an outline. */
-    .ch-input {
-        width: 100%;
-        background: var(--color-bgVar2);
-        padding: 0.5rem 0.65rem;
-        font-size: 0.85rem;
-        color: var(--color-text);
-    }
-
-    .ch-input::placeholder {
-        color: var(--color-textVar1);
+        background: var(--card);
+        color: var(--foreground);
     }
 
     /* --- masthead -------------------------------------------------------- */
@@ -417,8 +420,8 @@
         width: 1.85rem;
         height: 1.85rem;
         transform: skewX(-12deg);
-        background: var(--color-accent);
-        color: var(--color-text);
+        background: var(--primary);
+        color: var(--primary-foreground);
         font-size: 0.9rem;
         font-weight: 900;
         box-shadow: 3px 3px 0 0 var(--color-ink);
@@ -445,38 +448,7 @@
         padding: 1.25rem 1rem 4rem;
     }
 
-    /* --- table ----------------------------------------------------------- */
-
-    .ch-table-head {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        background: var(--color-bgVar2);
-        padding: 0.4rem 0.75rem;
-        font-size: 0.6rem;
-        font-weight: 800;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        color: var(--color-textVar1);
-        box-shadow: 0 3px 0 0 var(--color-ink);
-    }
-
-    .ch-row {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.5rem 0.75rem;
-        border-bottom: 1px solid rgb(11 12 18 / 0.55);
-        transition: background-color 120ms ease;
-    }
-
-    .ch-row:last-child {
-        border-bottom: 0;
-    }
-
-    .ch-row:hover {
-        background: var(--color-bgVar2);
-    }
+    /* --- rank badge ------------------------------------------------------ */
 
     .ch-rank {
         display: grid;
@@ -486,7 +458,7 @@
         height: 1.75rem;
         transform: skewX(-10deg);
         background: var(--color-panelDeep);
-        color: var(--color-textVar1);
+        color: var(--muted-foreground);
         font-size: 0.7rem;
         font-weight: 800;
         box-shadow: 3px 3px 0 0 var(--color-ink);
@@ -502,13 +474,13 @@
     }
 
     .ch-rank-2 {
-        background: var(--color-accentVar1);
+        background: var(--ring);
         color: var(--color-ink);
     }
 
     .ch-rank-3 {
-        background: var(--color-accent);
-        color: var(--color-text);
+        background: var(--primary);
+        color: var(--primary-foreground);
     }
 
     /* The tier colour arrives as `--ch-tier` from the row's data. */
@@ -516,10 +488,10 @@
         display: inline-block;
         background: color-mix(
             in srgb,
-            var(--ch-tier, var(--color-textVar1)) 18%,
+            var(--ch-tier, var(--muted-foreground)) 18%,
             transparent
         );
-        color: var(--ch-tier, var(--color-textVar1));
+        color: var(--ch-tier, var(--muted-foreground));
         padding: 0.1rem 0.42rem;
         font-size: 0.62rem;
         font-weight: 800;
@@ -528,85 +500,21 @@
         white-space: nowrap;
     }
 
-    .ch-rating {
-        flex: none;
-        font-size: 0.85rem;
-        font-weight: 800;
-        font-variant-numeric: tabular-nums;
-        color: var(--color-text);
-    }
-
     /* --- stat tiles ------------------------------------------------------ */
-
-    .ch-stat {
-        background: var(--color-bgVar2);
-        padding: 0.45rem 0.55rem;
-    }
 
     .ch-stat-label {
         font-size: 0.6rem;
         font-weight: 800;
         letter-spacing: 0.12em;
         text-transform: uppercase;
-        color: var(--color-textVar1);
+        color: var(--muted-foreground);
     }
 
     .ch-stat-value {
         font-size: 0.98rem;
         font-weight: 800;
         font-variant-numeric: tabular-nums;
-        color: var(--color-text);
-    }
-
-    /* --- links and search rows ------------------------------------------- */
-
-    .ch-link {
-        color: var(--color-text);
-        text-decoration: none;
-        transition: color 120ms ease;
-    }
-
-    .ch-link:hover {
-        color: var(--color-accentVar1);
-    }
-
-    .ch-result {
-        display: flex;
-        width: 100%;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.1rem;
-        padding: 0.45rem 0.6rem;
-        text-align: left;
-        transition:
-            background-color 100ms ease,
-            box-shadow 100ms ease;
-    }
-
-    /* The active row is marked with an inset accent shadow, not a border. */
-    .ch-result-on {
-        background: var(--color-bg);
-        box-shadow: inset 4px 0 0 0 var(--color-accent);
-    }
-
-    /* --- cards ----------------------------------------------------------- */
-
-    .ch-card-title {
-        font-size: 0.72rem;
-        font-weight: 800;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        color: var(--color-textVar1);
-    }
-
-    /* A recessed well, for stat grids nested inside a card. */
-    .ch-card-inset {
-        background: var(--color-bgVar1);
-    }
-
-    /* A flat, quiet card for "no data" notes. */
-    .ch-card-muted {
-        background: var(--color-bgVar2);
+        color: var(--foreground);
     }
 
     /* --- progress -------------------------------------------------------- */
@@ -626,7 +534,7 @@
      */
     .ch-progress {
         --ch-skew: 15deg;
-        --ch-fill: var(--color-accent);
+        --ch-fill: var(--primary);
         position: relative;
         width: 100%;
         height: 0.5rem;
@@ -680,7 +588,7 @@
         flex-basis: 0;
         min-width: 0;
         border: 1.5px solid
-            color-mix(in srgb, var(--color-textVar1) 32%, transparent);
+            color-mix(in srgb, var(--muted-foreground) 32%, transparent);
     }
 
     /* --- fill roles ------------------------------------------------------ */
@@ -692,11 +600,11 @@
      * can carry the same class.
      */
     .ch-fill-blue {
-        --ch-fill: var(--color-accent);
+        --ch-fill: var(--primary);
     }
 
     .ch-fill-cyan {
-        --ch-fill: var(--color-accentVar1);
+        --ch-fill: var(--ring);
     }
 
     .ch-fill-green {
@@ -712,7 +620,7 @@
     }
 
     .ch-fill-pink {
-        --ch-fill: var(--color-accentAlt);
+        --ch-fill: var(--color-brandAlt);
     }
 
     /* The legend mark for a segment: the same cut, scaled down. */
@@ -723,7 +631,7 @@
         height: 0.6rem;
         margin-top: 0.15rem;
         transform: skewX(-15deg);
-        background: var(--ch-fill, var(--color-accent));
+        background: var(--ch-fill, var(--primary));
     }
 
     /*
@@ -791,7 +699,7 @@
         width: fit-content;
         max-width: calc(100% - 3rem);
         margin: 0rem 0 0.75rem -1.65rem;
-        background: var(--color-accent);
+        background: var(--primary);
         clip-path: polygon(
             var(--ch-plate-slant) 0,
             100% 0,
@@ -836,8 +744,8 @@
      * their plate is where their standing in the clan belongs.
      *
      * The deeper accent is what separates the cap from the plate. The plate is
-     * already `--color-accent`, so without a second field the glyph would sit
-     * on the plate's own blue with no shape around it.
+     * already `--primary`, so without a second field the glyph would sit on the
+     * plate's own blue with no shape around it.
      */
     .ch-nameplate-rank {
         display: grid;
@@ -845,8 +753,8 @@
         flex: none;
         width: calc(var(--ch-flag-size) + var(--ch-plate-slant));
         height: var(--ch-flag-size);
-        background: var(--color-accentDeep);
-        color: var(--color-text);
+        background: var(--color-brandDeep);
+        color: var(--primary-foreground);
         clip-path: polygon(
             var(--ch-plate-slant) 0,
             100% 0,
@@ -900,18 +808,20 @@
         font-size: 0.875rem;
         line-height: 1.25rem;
         font-weight: 600;
-        color: var(--color-text);
+        color: var(--primary-foreground);
     }
 
     /*
      * Links on the plate: white, then yellow on hover. The usual accent hover
      * would be invisible here — it is the plate's own colour.
      */
-    .ch-nameplate .ch-link {
-        color: var(--color-text);
+    .ch-nameplate a {
+        color: var(--primary-foreground);
+        text-decoration: none;
+        transition: color 120ms ease;
     }
 
-    .ch-nameplate .ch-link:hover {
+    .ch-nameplate a:hover {
         color: var(--color-warning);
     }
 
@@ -977,7 +887,7 @@
         letter-spacing: 0.12em;
         text-transform: uppercase;
         white-space: nowrap;
-        color: var(--color-textVar1);
+        color: var(--muted-foreground);
         transition:
             color 120ms ease,
             background-color 120ms ease;
@@ -990,14 +900,14 @@
         right: 0;
         bottom: 0;
         height: 3px;
-        background: var(--color-accent);
+        background: var(--primary);
         transform: scaleX(0);
         transition: transform 150ms ease;
     }
 
     .ch-tablink:hover {
         background: var(--color-bgVar2);
-        color: var(--color-text);
+        color: var(--foreground);
     }
 
     .ch-tablink:hover::after {
@@ -1005,68 +915,11 @@
     }
 
     .ch-tablink-on {
-        color: var(--color-text);
+        color: var(--foreground);
     }
 
     .ch-tablink-on::after {
         transform: scaleX(1);
-    }
-
-    /* --- disclosure ------------------------------------------------------ */
-
-    .ch-collapse {
-        overflow: hidden;
-        background: var(--color-bg);
-    }
-
-    .ch-collapse > summary {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.6rem 0.8rem;
-        cursor: pointer;
-        list-style: none;
-        transition: background-color 120ms ease;
-    }
-
-    .ch-collapse > summary::-webkit-details-marker {
-        display: none;
-    }
-
-    .ch-collapse > summary:hover {
-        background: var(--color-bgVar2);
-    }
-
-    .ch-collapse[open] > summary {
-        box-shadow: 0 3px 0 0 var(--color-ink);
-    }
-
-    .ch-collapse-body {
-        padding: 0.85rem;
-        background: var(--color-bgVar2);
-    }
-
-    /* --- select ---------------------------------------------------------- */
-
-    .ch-select {
-        width: 100%;
-        appearance: none;
-        cursor: pointer;
-        background: var(--color-bg);
-        padding: 0.45rem 2rem 0.45rem 0.7rem;
-        font-family: inherit;
-        font-size: 0.78rem;
-        font-weight: 700;
-        color: var(--color-text);
-        transition: background-color 120ms ease;
-    }
-
-    .ch-select:hover {
-        background: var(--color-bgVar2);
-    }
-
-    .ch-select:focus {
-        background: var(--color-bgVar2);
     }
 
     /* --- landing background --------------------------------------------- */

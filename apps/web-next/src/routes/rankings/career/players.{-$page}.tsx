@@ -51,7 +51,7 @@ function Page() {
             <header className="ch-hero mb-3">
                 <p className="ch-kicker">Archive</p>
                 <h1 className="ch-display mt-1 text-2xl">Global rankings</h1>
-                <p className="mt-1 text-xs text-textVar1">
+                <p className="mt-1 text-xs text-muted-foreground">
                     Career totals · page {page}
                 </p>
             </header>

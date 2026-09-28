@@ -1,6 +1,7 @@
-import { Card } from "@/components/ui/Card"
-import { SortControl } from "@/components/ui/SortControl"
-import { StatGrid } from "@/components/ui/StatGrid"
+import { Card, CardContent } from "@/components/ui/card"
+import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
+import { SortControl } from "@/components/SortControl"
+import { StatGrid } from "@/components/StatGrid"
 import { TeamCard } from "./TeamCard"
 import { playerRankedAtom, useQuery } from "@/effect/atoms"
 import { isPairedTeam } from "@/lib/rankings"
@@ -9,7 +10,7 @@ import { useSortBy } from "@/lib/useSortBy"
 import { calculateWinrate } from "@crh/bhapi/helpers/calculateWinrate"
 import type { PlayerRanked } from "@crh/bhapi/types"
 import type { SortOption } from "@/lib/useSortBy"
-import type { Stat } from "@/components/ui/StatGrid"
+import type { Stat } from "@/components/StatGrid"
 
 /**
  * Every 2v2 team this player has queued with.
@@ -68,11 +69,13 @@ export const TeamsTab = ({ playerId }: { readonly playerId: number }) => {
 
     if (teams.length === 0) {
         return (
-            <Card variant="muted" className="grid place-items-center py-10">
-                <p className="text-sm text-textVar1">
-                    No 2v2 ranked record for this player.
-                </p>
-            </Card>
+            <Empty className="bg-bgVar2 py-10">
+                <EmptyHeader>
+                    <EmptyDescription>
+                        No 2v2 ranked record for this player.
+                    </EmptyDescription>
+                </EmptyHeader>
+            </Empty>
         )
     }
 
@@ -116,8 +119,10 @@ export const TeamsTab = ({ playerId }: { readonly playerId: number }) => {
 
     return (
         <div className="flex flex-col gap-4">
-            <Card variant="inset">
-                <StatGrid stats={summary} />
+            <Card className="bg-background">
+                <CardContent>
+                    <StatGrid stats={summary} />
+                </CardContent>
             </Card>
 
             <SortControl

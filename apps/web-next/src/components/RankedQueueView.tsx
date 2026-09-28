@@ -1,6 +1,15 @@
 import { Link } from "@tanstack/react-router"
 import { EntityLink } from "./EntityLink"
-import { PageNav } from "@/components/ui/PageNav"
+import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+import { PageNav } from "@/components/PageNav"
 import {
     brackets,
     playerHref,
@@ -29,7 +38,7 @@ const Delta = ({ value }: { readonly value: number }) => {
         <span
             className={cn(
                 "ml-1.5 text-xs font-bold",
-                value > 0 ? "text-success" : "text-danger",
+                value > 0 ? "text-success" : "text-destructive",
             )}
         >
             {value > 0 ? `+${value}` : value}
@@ -51,6 +60,10 @@ type Region = typeof RankedRegion.Type
  * The chips are the same bracket/region pair the ladders use, because the queue
  * is addressed the same way and a reader arriving from a ladder page should not
  * have to learn a second control.
+ *
+ * The rows are a real `<table>` so the rank, the rating and the queue age are
+ * each attached to the heading that names them — the deltas printed beside
+ * those figures would otherwise have nothing to belong to.
  */
 export const RankedQueueView = ({
     bracket,
@@ -75,13 +88,17 @@ export const RankedQueueView = ({
         <header className="ch-hero mb-3">
             <p className="ch-kicker">Live</p>
             <h1 className="ch-display mt-1 text-2xl">Ranked queue</h1>
-            <p className="mt-1 text-xs text-textVar1">
+            <p className="mt-1 text-xs text-muted-foreground">
                 {bracket} · {regionLabel(region)} · {rows.length} playing in the
                 last 30 minutes
             </p>
         </header>
 
-        <div className="flex flex-wrap gap-1.5">
+        {/*
+         * Two named landmarks, the same pair the ladder pages use: the queue is
+         * addressed the same way, so it should be navigable the same way too.
+         */}
+        <nav aria-label="Bracket" className="flex flex-wrap gap-1.5">
             {brackets.map((option) => (
                 <Link
                     key={option}
@@ -94,8 +111,8 @@ export const RankedQueueView = ({
                     {option}
                 </Link>
             ))}
-        </div>
-        <div className="mt-1.5 flex flex-wrap gap-1.5">
+        </nav>
+        <nav aria-label="Region" className="mt-1.5 flex flex-wrap gap-1.5">
             {regions.map((option) => (
                 <Link
                     key={option.value}
@@ -108,97 +125,121 @@ export const RankedQueueView = ({
                     {option.label}
                 </Link>
             ))}
-        </div>
+        </nav>
 
         {rows.length === 0 ? (
-            <p className="ch-panel mt-4 px-4 py-10 text-center text-sm text-textVar1">
-                Nobody has queued on this ladder in the last 30 minutes.
-            </p>
+            <Empty className="mt-4 bg-card py-10">
+                <EmptyHeader>
+                    <EmptyDescription>
+                        Nobody has queued on this ladder in the last 30 minutes.
+                    </EmptyDescription>
+                </EmptyHeader>
+            </Empty>
         ) : (
-            <div className="ch-panel mt-4 overflow-hidden">
-                <div className="ch-table-head">
-                    <span className="w-16 shrink-0 text-right">#</span>
-                    <span className="flex-1">Player</span>
-                    <span className="w-24 shrink-0 text-right">Rating</span>
-                    <span className="w-24 shrink-0 text-right">Tier</span>
-                    <span className="w-20 shrink-0 text-right">Queued</span>
-                </div>
+            <div className="mt-4 overflow-hidden bg-card">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="w-16 text-right">#</TableHead>
+                            <TableHead>Player</TableHead>
+                            <TableHead className="w-24 text-right">
+                                Rating
+                            </TableHead>
+                            <TableHead className="w-24 text-right">
+                                Tier
+                            </TableHead>
+                            <TableHead className="w-20 text-right">
+                                Queued
+                            </TableHead>
+                        </TableRow>
+                    </TableHeader>
 
-                {rows.map((row) => (
-                    <div key={row.id} className="ch-row">
-                        {/*
-                         * One name for a solo ladder, two for a team — the
-                         * same "A & B" shape the 2v2 ladder row uses, so an
-                         * entry reads the same here as where it came from.
-                         */}
-                        <span className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2">
-                            {row.members.map((member, index) => (
-                                <span
-                                    key={member.id}
-                                    className="flex items-center gap-x-2"
-                                >
-                                    {index > 0 ? (
+                    <TableBody>
+                        {rows.map((row) => (
+                            <TableRow key={row.id}>
+                                <TableCell className="text-right">
+                                    {/*
+                                     * A pre-change row has no rank until its
+                                     * first event after the migration, and the
+                                     * column's placeholder for that is 0 — which
+                                     * is not a position, so it prints as an
+                                     * unknown rather than as "#0".
+                                     */}
+                                    <span className="font-bold tabular-nums">
+                                        {row.rank === 0 ? "—" : row.rank}
+                                    </span>
+                                    {/*
+                                     * Places, not positions. `rankDelta` is
+                                     * literally new minus old, so a *climb* is
+                                     * negative — which reads as a loss if shown
+                                     * raw. Negating it here makes the sign mean
+                                     * what a reader assumes: up is positive,
+                                     * and green.
+                                     */}
+                                    <Delta value={-row.rankDelta} />
+                                </TableCell>
+                                <TableCell>
+                                    {/*
+                                     * One name for a solo ladder, two for a
+                                     * team — the same "A & B" shape the 2v2
+                                     * ladder row uses, so an entry reads the
+                                     * same here as where it came from.
+                                     */}
+                                    <span className="flex min-w-0 flex-wrap items-center gap-x-2">
+                                        {row.members.map((member, index) => (
+                                            <span
+                                                key={member.id}
+                                                className="flex items-center gap-x-2"
+                                            >
+                                                {index > 0 ? (
+                                                    <span
+                                                        aria-hidden
+                                                        className="text-white/70"
+                                                    >
+                                                        &
+                                                    </span>
+                                                ) : null}
+                                                <EntityLink
+                                                    type="player"
+                                                    id={member.id}
+                                                    href={playerHref(member.id)}
+                                                    className="font-semibold"
+                                                >
+                                                    {cleanString(member.name)}
+                                                </EntityLink>
+                                            </span>
+                                        ))}
+                                    </span>
+                                </TableCell>
+                                <TableCell className="text-right">
+                                    <span className="font-bold tabular-nums">
+                                        {row.rating}
+                                    </span>
+                                    <Delta value={row.ratingDelta} />
+                                </TableCell>
+                                <TableCell className="text-right">
+                                    {row.tier ? (
                                         <span
-                                            aria-hidden
-                                            className="text-white/70"
+                                            className="ch-tier"
+                                            style={
+                                                {
+                                                    "--ch-tier": tierColor(
+                                                        row.tier,
+                                                    ),
+                                                } as CSSProperties
+                                            }
                                         >
-                                            &
+                                            {row.tier}
                                         </span>
                                     ) : null}
-                                    <EntityLink
-                                        type="player"
-                                        id={member.id}
-                                        href={playerHref(member.id)}
-                                        className="ch-link font-semibold"
-                                    >
-                                        {cleanString(member.name)}
-                                    </EntityLink>
-                                </span>
-                            ))}
-                        </span>
-                        <span className="w-16 shrink-0 text-right">
-                            {/*
-                             * A pre-change row has no rank until its first
-                             * event after the migration, and the column's
-                             * placeholder for that is 0 — which is not a
-                             * position, so it prints as an unknown rather than
-                             * as "#0".
-                             */}
-                            <span className="ch-rating">
-                                {row.rank === 0 ? "—" : row.rank}
-                            </span>
-                            {/*
-                             * Places, not positions. `rankDelta` is literally
-                             * new minus old, so a *climb* is negative — which
-                             * reads as a loss if shown raw. Negating it here
-                             * makes the sign mean what a reader assumes: up is
-                             * positive, and green.
-                             */}
-                            <Delta value={-row.rankDelta} />
-                        </span>
-                        <span className="w-24 shrink-0 text-right">
-                            <span className="ch-rating">{row.rating}</span>
-                            <Delta value={row.ratingDelta} />
-                        </span>
-                        <span className="w-24 shrink-0 text-right">
-                            {row.tier ? (
-                                <span
-                                    className="ch-tier"
-                                    style={
-                                        {
-                                            "--ch-tier": tierColor(row.tier),
-                                        } as CSSProperties
-                                    }
-                                >
-                                    {row.tier}
-                                </span>
-                            ) : null}
-                        </span>
-                        <span className="w-20 shrink-0 text-right text-xs text-textVar1">
-                            {now === 0 ? "" : since(row.queuedAt, now)}
-                        </span>
-                    </div>
-                ))}
+                                </TableCell>
+                                <TableCell className="text-right text-xs text-muted-foreground">
+                                    {now === 0 ? "" : since(row.queuedAt, now)}
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
             </div>
         )}
 

@@ -1,10 +1,10 @@
-import { Card } from "@/components/ui/Card"
+import { Card, CardContent } from "@/components/ui/card"
 import { FavoriteButton } from "@/components/account/FavoriteButton"
-import { StatGrid } from "@/components/ui/StatGrid"
+import { StatGrid } from "@/components/StatGrid"
 import { clanStatsAtom, useQuery } from "@/effect/atoms"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatUnixTime } from "@crh/common/helpers/date"
-import type { Stat } from "@/components/ui/StatGrid"
+import type { Stat } from "@/components/StatGrid"
 
 /**
  * Who this page is about.
@@ -26,7 +26,9 @@ export const ClanHeader = ({ clanId }: { readonly clanId: number }) => {
 
     if (!clan) {
         return (
-            <p className="text-sm text-textVar1">No clan with id {clanId}.</p>
+            <p className="text-sm text-muted-foreground">
+                No clan with id {clanId}.
+            </p>
         )
     }
 
@@ -73,14 +75,14 @@ export const ClanHeader = ({ clanId }: { readonly clanId: number }) => {
         <header className="flex flex-col gap-3">
             <nav
                 aria-label="Breadcrumb"
-                className="flex flex-wrap items-center gap-2 text-[0.64rem] font-bold uppercase tracking-[0.18em] text-textVar1"
+                className="flex flex-wrap items-center gap-2 text-[0.64rem] font-bold uppercase tracking-[0.18em] text-muted-foreground"
             >
                 <span>Brawlhalla</span>
-                <span aria-hidden className="text-textVar1/40">
+                <span aria-hidden className="text-muted-foreground/40">
                     /
                 </span>
                 <span>Clans</span>
-                <span aria-hidden className="text-textVar1/40">
+                <span aria-hidden className="text-muted-foreground/40">
                     /
                 </span>
                 <span>#{clan.clan_id}</span>
@@ -98,13 +100,22 @@ export const ClanHeader = ({ clanId }: { readonly clanId: number }) => {
                 />
             </div>
 
-            <Card variant="ghost">
-                {/*
-                 * Four figures, so the ladder tops out at four. The ladder is a
-                 * ceiling, not a target: asking for more than there are items
-                 * lays them across tracks that stay empty on a wide display.
-                 */}
-                <StatGrid maxColumns={4} stats={stats} />
+            {/*
+             * The same ghost card `PlayerHeader` wears: no fill, so the clan's
+             * own figures sit on the page rather than on a second plate under
+             * the name. `p-4` is the old card's inset — the shadcn `Card` pads
+             * its own content but not its edges — and `@container` is the query
+             * context the figures' ladder measures against.
+             */}
+            <Card className="@container bg-transparent p-4 shadow-none">
+                <CardContent className="p-0">
+                    {/*
+                     * Four figures, so the ladder tops out at four. The ladder is a
+                     * ceiling, not a target: asking for more than there are items
+                     * lays them across tracks that stay empty on a wide display.
+                     */}
+                    <StatGrid maxColumns={4} stats={stats} />
+                </CardContent>
             </Card>
         </header>
     )

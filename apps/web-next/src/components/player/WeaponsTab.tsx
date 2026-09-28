@@ -1,5 +1,5 @@
-import { Card } from "@/components/ui/Card"
-import { SortControl } from "@/components/ui/SortControl"
+import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
+import { SortControl } from "@/components/SortControl"
 import { WeaponRow } from "./WeaponRow"
 import { usePlayerDerived } from "./usePlayerDerived"
 import { useSortBy } from "@/lib/useSortBy"
@@ -82,11 +82,13 @@ export const WeaponsTab = ({ playerId }: { readonly playerId: number }) => {
 
     if (weapons.length === 0) {
         return (
-            <Card variant="muted" className="grid place-items-center py-10">
-                <p className="text-sm text-textVar1">
-                    No weapon usage recorded.
-                </p>
-            </Card>
+            <Empty className="bg-bgVar2 py-10">
+                <EmptyHeader>
+                    <EmptyDescription>
+                        No weapon usage recorded.
+                    </EmptyDescription>
+                </EmptyHeader>
+            </Empty>
         )
     }
 

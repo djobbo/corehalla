@@ -1,9 +1,15 @@
 import { Link } from "@tanstack/react-router"
 import { useAtomSet, useAtomValue } from "@effect/atom-react"
-import { useRef } from "react"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
 import { sessionAtom, signIn, signOutAtom } from "@/effect/account"
-import { SignOutIcon } from "@/components/ui/icons"
-import { cn } from "@/lib/cn"
+import { LogOut } from "lucide-react"
 
 /**
  * Who is signed in, and the way in or out.
@@ -13,19 +19,19 @@ import { cn } from "@/lib/cn"
  * The caller mounts this behind `<ClientOnly>`; the placeholder below is what
  * the first client pass shows while the session request is in flight.
  *
- * The menu is a native `<details>`. A dropdown is the one thing here that needs
- * open/closed state, and the browser already owns that interaction — including
- * keyboard and click-outside behaviour — so a menu primitive would be a
- * dependency bought for a triangle.
+ * The account actions are a shadcn `DropdownMenu`, which is what this popover
+ * always meant to be: a menu of two things. It brings the roles, arrow-key
+ * roving focus, Escape-to-close and click-outside handling that used to be
+ * borrowed from a native `<details>`, and — unlike that — a menu that stays
+ * anchored to its trigger and announces itself as a menu.
+ *
+ * The trigger and both actions keep the parallelogram chip, the app's own
+ * shape: see `.ch-chip` in `styles/app.css`. Only the sign-in button, which is
+ * a genuine button, wears shadcn's `Button`.
  */
 export const AccountControl = () => {
     const session = useAtomValue(sessionAtom)
     const signOut = useAtomSet(signOutAtom, { mode: "promise" })
-    const details = useRef<HTMLDetailsElement>(null)
-
-    const close = () => {
-        if (details.current) details.current.open = false
-    }
 
     const handleSignOut = () => {
         void signOut({
@@ -51,26 +57,24 @@ export const AccountControl = () => {
 
     if (!user) {
         return (
-            <button type="button" className="ch-btn" onClick={signIn}>
+            <Button type="button" variant="secondary" onClick={signIn}>
                 Sign in
-            </button>
+            </Button>
         )
     }
 
     return (
-        <details ref={details} className="relative">
-            <summary
-                className={cn(
-                    "ch-chip ch-chip-off cursor-pointer list-none",
-                    "marker:content-none",
-                )}
+        <DropdownMenu>
+            <DropdownMenuTrigger
+                aria-label={`Account menu for ${user.username}`}
                 title={user.username}
+                className="ch-chip ch-chip-off cursor-pointer"
             >
                 {user.avatarUrl ? (
                     <img
                         src={user.avatarUrl}
                         alt=""
-                        className="h-5 w-5 object-cover"
+                        className="size-5 object-cover"
                     />
                 ) : (
                     <span aria-hidden>
@@ -78,25 +82,32 @@ export const AccountControl = () => {
                     </span>
                 )}
                 <span className="max-w-24 truncate">{user.username}</span>
-            </summary>
+            </DropdownMenuTrigger>
 
-            <div className="ch-panel absolute right-0 z-30 mt-2 w-52 p-2">
-                <Link
-                    to="/@me/favorites"
-                    onClick={close}
-                    className="ch-field w-full"
-                >
-                    My favorites
-                </Link>
-                <button
-                    type="button"
-                    onClick={handleSignOut}
-                    className="ch-field w-full"
-                >
-                    <span>Sign out</span>
-                    <SignOutIcon className="h-4 w-4" />
-                </button>
-            </div>
-        </details>
+            <DropdownMenuContent align="end">
+                <DropdownMenuGroup>
+                    {/*
+                     * A real link, not a button with a handler: the favourites
+                     * page is a place, so it should stay middle-clickable and
+                     * shareable. `closeOnClick` is the menu clearing itself as
+                     * the navigation starts.
+                     */}
+                    <DropdownMenuItem
+                        nativeButton={false}
+                        render={<Link to="/@me/favorites" />}
+                        closeOnClick
+                    >
+                        My favorites
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        variant="destructive"
+                        onClick={handleSignOut}
+                    >
+                        <LogOut aria-hidden />
+                        Sign out
+                    </DropdownMenuItem>
+                </DropdownMenuGroup>
+            </DropdownMenuContent>
+        </DropdownMenu>
     )
 }

@@ -40,6 +40,11 @@ export type StatGridColumns = keyof typeof gridColumns
  * Wrapping also makes the measurement more truthful: the wrapper is exactly the
  * space the grid has to fill, whereas an ancestor card's content box includes its
  * own padding.
+ *
+ * The labels and figures wear `.ch-stat-label` / `.ch-stat-value` rather than
+ * shadcn's `Field`, because this is a definition list of read-only numbers: there
+ * is no control to label, so the field vocabulary would describe a form that is
+ * not there. `Card` is still the surface it is normally placed in.
  */
 export const StatGrid = ({
     stats,

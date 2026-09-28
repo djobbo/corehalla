@@ -1,13 +1,21 @@
-import { SelectField } from "@/components/ui/SelectField"
+import { SelectField } from "@/components/SelectField"
+import { Button } from "@/components/ui/button"
+import { ArrowDownIcon, ArrowUpIcon } from "lucide-react"
 import { cn } from "@/lib/cn"
 import type { SortChoice, SortDirection } from "@/lib/useSortBy"
 
 /**
  * A sort key picker plus a direction toggle.
  *
- * The toggle is the app's chunky button rather than a second select, because
- * flipping the direction is the one sort action taken repeatedly and it deserves
- * a single always-visible target.
+ * The toggle is a button rather than a second select, because flipping the
+ * direction is the one sort action taken repeatedly and it deserves a single
+ * always-visible target. It is shadcn's `Button` at `icon-sm`, which already
+ * carries the app's chunky slab shape and hard shadow — the icon is passed
+ * through `data-icon` so the component owns its sizing (see `button.tsx`).
+ *
+ * The accessible name states the *next* direction, not the current one: the
+ * label describes what pressing it does, which is what a screen-reader user
+ * needs to hear before deciding.
  */
 export const SortControl = <K extends string>({
     label,
@@ -27,6 +35,7 @@ export const SortControl = <K extends string>({
     readonly className?: string
 }) => {
     const nextDirection = direction === "asc" ? "descending" : "ascending"
+    const ascending = direction === "asc"
 
     return (
         <div className={cn("flex min-w-0 items-end gap-2", className)}>
@@ -37,15 +46,20 @@ export const SortControl = <K extends string>({
                 options={choices}
                 onChange={onChange}
             />
-            <button
+            <Button
                 type="button"
+                variant="secondary"
+                size="icon-sm"
                 onClick={onToggleDirection}
-                className="ch-btn justify-center px-3 py-3"
                 aria-label={`Sort ${nextDirection}`}
                 title={`Sort ${nextDirection}`}
             >
-                <span aria-hidden>{direction === "asc" ? "↑" : "↓"}</span>
-            </button>
+                {ascending ? (
+                    <ArrowUpIcon data-icon="inline-start" />
+                ) : (
+                    <ArrowDownIcon data-icon="inline-start" />
+                )}
+            </Button>
         </div>
     )
 }

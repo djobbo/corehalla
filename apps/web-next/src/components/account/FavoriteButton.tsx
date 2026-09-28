@@ -8,7 +8,7 @@ import {
     removeFavoriteAtom,
     sessionAtom,
 } from "@/effect/account"
-import { HeartIcon } from "@/components/ui/icons"
+import { Heart } from "lucide-react"
 import { cn } from "@/lib/cn"
 
 /**
@@ -83,6 +83,13 @@ const FavoriteControl = ({ type, id, name, meta }: FavoriteButtonProps) => {
     }
 
     return (
+        /*
+         * The chip, not a shadcn `Button`: the parallelogram cut and its
+         * `drop-shadow` cannot be expressed through `Button`'s variants, and
+         * layering the two makes their shadows fight — see `.ch-chip` in
+         * `styles/app.css`. `aria-pressed` is what a chip cannot say on its
+         * own, and it is why this is a real toggle rather than two buttons.
+         */
         <button
             type="button"
             onClick={toggle}
@@ -94,7 +101,11 @@ const FavoriteControl = ({ type, id, name, meta }: FavoriteButtonProps) => {
                 busy && "opacity-60",
             )}
         >
-            <HeartIcon filled={active} className="h-3.5 w-3.5" />
+            <Heart
+                aria-hidden
+                className="size-3.5"
+                fill={active ? "currentColor" : "none"}
+            />
             {active ? "Saved" : "Favorite"}
         </button>
     )

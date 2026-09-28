@@ -58,12 +58,16 @@ function Page() {
         <main className="ch-page">
             <LandingHero />
 
-            <section className="mt-8">
-                <div className="flex flex-wrap items-end justify-between gap-2">
-                    <div>
-                        <p className="ch-kicker">Live rankings</p>
-                    </div>
-                </div>
+            {/*
+             * Named by the kicker rather than an `sr-only` heading: the kicker
+             * already is the section's label, so pointing `aria-labelledby` at
+             * it gives the landmark a name without adding a heading that would
+             * double it in the outline.
+             */}
+            <section aria-labelledby="live-rankings">
+                <p id="live-rankings" className="ch-kicker mt-8">
+                    Live rankings
+                </p>
 
                 <div className="mt-2 grid gap-6 lg:grid-cols-2">
                     <LandingLadder bracket="1v1" rows={oneVone} />

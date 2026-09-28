@@ -3,6 +3,7 @@ import { GlobalRankingsView } from "@/components/GlobalRankingsView"
 import { GLOBAL_RANKINGS_PAGE_SIZE } from "@/lib/rankings"
 import { weaponBoard } from "@/lib/globalRankings"
 import { resolvePage, resolveWeapon, weaponOptions } from "@/lib/routeParams"
+import { cn } from "@/lib/cn"
 import {
     globalWeaponRankingsAtom,
     preloadAtoms,
@@ -79,7 +80,7 @@ function Page() {
             <header className="ch-hero mb-3">
                 <p className="ch-kicker">Per weapon</p>
                 <h1 className="ch-display mt-1 text-2xl">{weapon} rankings</h1>
-                <p className="mt-1 text-xs text-textVar1">
+                <p className="mt-1 text-xs text-muted-foreground">
                     Totals with this weapon · page {page}
                 </p>
             </header>
@@ -100,8 +101,16 @@ function Page() {
             />
 
             {/* Fifteen weapons, so the same chip row a legend's seventy get. */}
-            <div className="mt-6">
-                <p className="ch-stat-label">Weapon</p>
+            <fieldset className="mt-6 min-w-0">
+                <legend className="ch-stat-label">Weapon</legend>
+                {/*
+                 * A `fieldset`, not a bare flex row: the chips are the one
+                 * "choose a weapon" control, and `legend` is the native way to
+                 * name it — so a screen reader announces the question when it
+                 * lands on the first chip. `min-w-0` undoes the fieldset's
+                 * default minimum content width, which would otherwise stop the
+                 * row from wrapping.
+                 */}
                 <div className="mt-2 flex flex-wrap gap-1.5">
                     {weaponOptions.map((option) => {
                         const current = option.value === weapon
@@ -114,18 +123,17 @@ function Page() {
                                 onClick={() =>
                                     go({ weapon: option.value, sortBy })
                                 }
-                                className={
-                                    current
-                                        ? "ch-chip ch-chip-on"
-                                        : "ch-chip ch-chip-off"
-                                }
+                                className={cn(
+                                    "ch-chip",
+                                    current ? "ch-chip-on" : "ch-chip-off",
+                                )}
                             >
                                 {option.label}
                             </button>
                         )
                     })}
                 </div>
-            </div>
+            </fieldset>
         </main>
     )
 }

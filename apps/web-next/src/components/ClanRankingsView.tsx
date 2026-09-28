@@ -1,7 +1,18 @@
 import { EntityLink } from "./EntityLink"
-import { PageNav } from "@/components/ui/PageNav"
+import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
+import { Input } from "@/components/ui/input"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+import { PageNav } from "@/components/PageNav"
 import { clanHref } from "@/lib/rankings"
 import { cn } from "@/lib/cn"
+import { useId } from "react"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatUnixTime } from "@crh/common/helpers/date"
 import type { ClansSchema } from "@crh/api-contract/schemas"
@@ -56,73 +67,108 @@ export const ClanRankingsView = ({
     readonly rankOffset: number | null
     readonly prevHref?: string | undefined
     readonly nextHref?: string | undefined
-}) => (
-    <div>
-        <label className="flex flex-col gap-1 sm:max-w-sm">
-            <span className="ch-stat-label">Search clans</span>
-            <input
-                type="search"
-                className="ch-input"
-                value={query}
-                placeholder="Clan name"
-                onChange={(event) => onQueryChange(event.target.value)}
-            />
-        </label>
+}) => {
+    /*
+     * `htmlFor`/`id` rather than a label wrapped around the control: shadcn's
+     * `Input` is a component, so the `<input>` it renders is not visible to a
+     * static checker reading this JSX — the association has to be explicit. The
+     * id has to be unique in the document, which is what `useId` is for.
+     */
+    const searchId = useId()
 
-        {rows.length === 0 ? (
-            <p className="ch-panel mt-4 px-4 py-8 text-center text-sm text-textVar1">
-                {resultQuery
-                    ? `No clans match “${resultQuery}”.`
-                    : "No clans have been indexed yet."}
-            </p>
-        ) : (
-            <div className="ch-panel mt-4 overflow-hidden">
-                <div className="ch-table-head">
-                    {rankOffset === null ? null : (
-                        <span className="w-7 shrink-0">#</span>
-                    )}
-                    <span className="flex-1">Clan</span>
-                    <span className="w-28 shrink-0 text-right">Created</span>
-                    <span className="w-24 shrink-0 text-right">XP</span>
-                </div>
-
-                {rows.map((clan, index) => (
-                    <div key={clan.id} className="ch-row">
-                        {rankOffset === null ? null : (
-                            <span className="ch-rank">
-                                <span>{rankOffset + index + 1}</span>
-                            </span>
-                        )}
-                        <span className="flex min-w-0 flex-1">
-                            <EntityLink
-                                type="clan"
-                                id={clan.id}
-                                href={clanHref(clan.id)}
-                                className="ch-link font-semibold"
-                            >
-                                {cleanString(clan.name)}
-                            </EntityLink>
-                        </span>
-                        <span
-                            className={cn(
-                                "w-28 shrink-0 text-right text-xs",
-                                clan.created && clan.created > 0
-                                    ? "text-textVar1"
-                                    : "text-textVar1/50",
-                            )}
-                        >
-                            {clan.created && clan.created > 0
-                                ? formatUnixTime(clan.created)
-                                : "—"}
-                        </span>
-                        <span className="ch-rating w-24 shrink-0 text-right">
-                            {clan.xp.toLocaleString()}
-                        </span>
-                    </div>
-                ))}
+    return (
+        <div>
+            <div className="flex flex-col gap-1 sm:max-w-sm">
+                {/*
+                 * The label wears `.ch-stat-label`, the same micro-label the
+                 * migrated `SelectField` uses, so a text filter and a select
+                 * read as the same kind of control.
+                 */}
+                <label htmlFor={searchId} className="ch-stat-label">
+                    Search clans
+                </label>
+                <Input
+                    id={searchId}
+                    type="search"
+                    value={query}
+                    placeholder="Clan name"
+                    onChange={(event) => onQueryChange(event.target.value)}
+                />
             </div>
-        )}
 
-        <PageNav prevHref={prevHref} nextHref={nextHref} />
-    </div>
-)
+            {rows.length === 0 ? (
+                <Empty className="mt-4 bg-card py-8">
+                    <EmptyHeader>
+                        <EmptyDescription>
+                            {resultQuery
+                                ? `No clans match “${resultQuery}”.`
+                                : "No clans have been indexed yet."}
+                        </EmptyDescription>
+                    </EmptyHeader>
+                </Empty>
+            ) : (
+                <div className="mt-4 overflow-hidden bg-card">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                {rankOffset === null ? null : (
+                                    <TableHead className="w-7">#</TableHead>
+                                )}
+                                <TableHead>Clan</TableHead>
+                                <TableHead className="w-28 text-right">
+                                    Created
+                                </TableHead>
+                                <TableHead className="w-24 text-right">
+                                    XP
+                                </TableHead>
+                            </TableRow>
+                        </TableHeader>
+
+                        <TableBody>
+                            {rows.map((clan, index) => (
+                                <TableRow key={clan.id}>
+                                    {rankOffset === null ? null : (
+                                        <TableCell>
+                                            <span className="ch-rank">
+                                                <span>
+                                                    {rankOffset + index + 1}
+                                                </span>
+                                            </span>
+                                        </TableCell>
+                                    )}
+                                    <TableCell>
+                                        <EntityLink
+                                            type="clan"
+                                            id={clan.id}
+                                            href={clanHref(clan.id)}
+                                            className="font-semibold"
+                                        >
+                                            {cleanString(clan.name)}
+                                        </EntityLink>
+                                    </TableCell>
+                                    <TableCell
+                                        className={cn(
+                                            "text-right text-xs",
+                                            clan.created && clan.created > 0
+                                                ? "text-muted-foreground"
+                                                : "text-muted-foreground/50",
+                                        )}
+                                    >
+                                        {clan.created && clan.created > 0
+                                            ? formatUnixTime(clan.created)
+                                            : "—"}
+                                    </TableCell>
+                                    <TableCell className="text-right font-bold tabular-nums">
+                                        {clan.xp.toLocaleString()}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
+            )}
+
+            <PageNav prevHref={prevHref} nextHref={nextHref} />
+        </div>
+    )
+}

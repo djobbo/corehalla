@@ -1,5 +1,5 @@
-import { Card } from "@/components/ui/Card"
-import { SplitProgress } from "@/components/ui/Progress"
+import { Card, CardContent } from "@/components/ui/card"
+import { SplitProgress } from "@/components/SplitProgress"
 import { EntityLink } from "@/components/EntityLink"
 import { ClanRankIcon } from "./ClanRankIcon"
 import { playerHref } from "@/lib/rankings"
@@ -56,91 +56,101 @@ export const MemberCard = ({
     const points = member.guild_points
 
     return (
-        <Card>
+        <Card className="overflow-visible py-0">
             {/*
-             * `ch-nameplate-wide` because this card has no ranked banner in its
-             * corner — the default plate reserves room for one, which here
-             * would only wrap long names early.
+             * `py-0` and a single `CardContent` because the plate below is inset
+             * against this card's edge, not against a padded column: the old card
+             * was one `p-4` box, and the shadcn `Card` splits that into its own
+             * block padding plus the content's inline padding. `overflow-visible`
+             * because `ch-nameplate` hangs off the left edge with its shadow — the
+             * card's default clip would cut both away.
              */}
-            <div className="ch-nameplate ch-nameplate-wide">
-                <ClanRankIcon rank={member.rank} />
-                <div className="ch-nameplate-names">
-                    <EntityLink
-                        type="player"
-                        id={member.brawlhalla_id}
-                        href={playerHref(member.brawlhalla_id)}
-                        className="ch-link"
-                    >
-                        {/*
-                         * v1 intermittently omits a member's name, and the
-                         * mapper normalises that to `""` so the type stays
-                         * honest. Rendering it would make the plate an empty —
-                         * but still clickable — link, so the id stands in. The
-                         * profile it points at resolves, which is why the
-                         * member is worth showing at all.
-                         *
-                         * `?? ""` because the key can be *absent* on the wire,
-                         * not just empty: a value cached before the mapper
-                         * started normalising — served until it goes stale —
-                         * omits it entirely, and `cleanString(undefined)`
-                         * returns the literal text "undefined".
-                         */}
-                        {cleanString(member.name ?? "") ||
-                            `#${member.brawlhalla_id}`}
-                    </EntityLink>
+            <CardContent className="p-4">
+                {/*
+                 * `ch-nameplate-wide` because this card has no ranked banner in its
+                 * corner — the default plate reserves room for one, which here
+                 * would only wrap long names early.
+                 */}
+                <div className="ch-nameplate ch-nameplate-wide">
+                    <ClanRankIcon rank={member.rank} />
+                    <div className="ch-nameplate-names">
+                        <EntityLink
+                            type="player"
+                            id={member.brawlhalla_id}
+                            href={playerHref(member.brawlhalla_id)}
+                            className="transition-colors hover:text-ring"
+                        >
+                            {/*
+                             * v1 intermittently omits a member's name, and the
+                             * mapper normalises that to `""` so the type stays
+                             * honest. Rendering it would make the plate an empty —
+                             * but still clickable — link, so the id stands in. The
+                             * profile it points at resolves, which is why the
+                             * member is worth showing at all.
+                             *
+                             * `?? ""` because the key can be *absent* on the wire,
+                             * not just empty: a value cached before the mapper
+                             * started normalising — served until it goes stale —
+                             * omits it entirely, and `cleanString(undefined)`
+                             * returns the literal text "undefined".
+                             */}
+                            {cleanString(member.name ?? "") ||
+                                `#${member.brawlhalla_id}`}
+                        </EntityLink>
+                    </div>
                 </div>
-            </div>
 
-            {/*
-             * The headline figure, with the clan's total beside it. It is the
-             * same "mine against the whole" shape the team card uses for elo
-             * against peak elo, and it is what makes the percentage below
-             * checkable by eye rather than a number on its own.
-             */}
-            <p className="ch-display mt-2 text-2xl">
-                {member.xp.toLocaleString()}
-                <span className="ml-2 text-xs font-normal tracking-normal text-textVar1">
-                    / {clanXp.toLocaleString()} XP
-                </span>
-            </p>
-
-            <SplitProgress
-                className="mt-2"
-                total={clanXp}
-                parts={[{ key: "xp", value: member.xp, intent: "blue" }]}
-            />
-
-            {/*
-             * The two contributions, as the bold pair the team card puts in
-             * this position. `flex-wrap` so the pair stacks rather than
-             * overflowing when the card is narrow — a member card has no
-             * banner, so it has no other reason to be short of room.
-             */}
-            <div className="mt-1.5 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-sm font-bold">
-                <span className="whitespace-nowrap">
-                    {share.toFixed(2)}%{" "}
-                    <span className="text-xs font-normal text-textVar1">
-                        of clan XP
+                {/*
+                 * The headline figure, with the clan's total beside it. It is the
+                 * same "mine against the whole" shape the team card uses for elo
+                 * against peak elo, and it is what makes the percentage below
+                 * checkable by eye rather than a number on its own.
+                 */}
+                <p className="ch-display mt-2 text-2xl">
+                    {member.xp.toLocaleString()}
+                    <span className="ml-2 text-xs font-normal tracking-normal text-muted-foreground">
+                        / {clanXp.toLocaleString()} XP
                     </span>
-                </span>
-                {points === undefined ? null : (
+                </p>
+
+                <SplitProgress
+                    className="mt-2"
+                    total={clanXp}
+                    parts={[{ key: "xp", value: member.xp, intent: "blue" }]}
+                />
+
+                {/*
+                 * The two contributions, as the bold pair the team card puts in
+                 * this position. `flex-wrap` so the pair stacks rather than
+                 * overflowing when the card is narrow — a member card has no
+                 * banner, so it has no other reason to be short of room.
+                 */}
+                <div className="mt-1.5 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-sm font-bold">
                     <span className="whitespace-nowrap">
-                        {points.toLocaleString()}{" "}
-                        <span className="text-xs font-normal text-textVar1">
-                            guild points
+                        {share.toFixed(2)}%{" "}
+                        <span className="text-xs font-normal text-muted-foreground">
+                            of clan XP
                         </span>
                     </span>
-                )}
-            </div>
+                    {points === undefined ? null : (
+                        <span className="whitespace-nowrap">
+                            {points.toLocaleString()}{" "}
+                            <span className="text-xs font-normal text-muted-foreground">
+                                guild points
+                            </span>
+                        </span>
+                    )}
+                </div>
 
-            {/*
-             * Lighter and on its own line, deliberately: this is the one figure
-             * on the card that is not a contribution, and the sort control is
-             * where a reader goes when the date is what they came for.
-             */}
-            <p className="mt-0.5 text-xs font-normal text-textVar1">
-                joined {formatUnixTime(member.join_date)}
-            </p>
+                {/*
+                 * Lighter and on its own line, deliberately: this is the one figure
+                 * on the card that is not a contribution, and the sort control is
+                 * where a reader goes when the date is what they came for.
+                 */}
+                <p className="mt-0.5 text-xs font-normal text-muted-foreground">
+                    joined {formatUnixTime(member.join_date)}
+                </p>
+            </CardContent>
         </Card>
     )
 }

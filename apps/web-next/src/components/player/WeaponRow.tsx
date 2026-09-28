@@ -1,12 +1,16 @@
-import { Card } from "@/components/ui/Card"
-import { Collapse } from "@/components/ui/Collapse"
-import { SplitProgress } from "@/components/ui/Progress"
-import { StatGrid } from "@/components/ui/StatGrid"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+import { SplitProgress } from "@/components/SplitProgress"
+import { StatGrid } from "@/components/StatGrid"
 import { percent, perGame, ratio } from "@/lib/stats"
 import { calculateWinrate } from "@crh/bhapi/helpers/calculateWinrate"
 import { formatTime } from "@crh/common/helpers/date"
 import type { getWeaponsAccumulativeData } from "@crh/bhapi/legends"
-import type { Stat } from "@/components/ui/StatGrid"
+import type { Stat } from "@/components/StatGrid"
 import type { ReactNode } from "react"
 
 /** One row of `getWeaponsAccumulativeData` — a weapon plus its totals. */
@@ -109,130 +113,163 @@ export const WeaponRow = ({
         : []
 
     return (
-        <Collapse
-            summary={
-                <span className="flex min-w-0 flex-1 items-center justify-between gap-3">
-                    <span className="flex min-w-0 items-center gap-2">
-                        <span className="w-6 shrink-0 text-right text-xs text-textVar1">
-                            {rank}
+        /*
+         * Same disclosure contract as `LegendRow`: Base UI's `Collapsible`
+         * mounts the panel only while it is open, which is what makes one
+         * instance per weapon cheap, and `Card` is the slab the collapsed row
+         * sits on.
+         */
+        <Card size="sm">
+            <Collapsible>
+                <CollapsibleTrigger className="flex w-full flex-1 items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-bgVar2 data-[panel-open]:shadow-[0_3px_0_0_var(--color-ink)]">
+                    <span className="flex min-w-0 flex-1 items-center justify-between gap-3">
+                        <span className="flex min-w-0 items-center gap-2">
+                            <span className="w-6 shrink-0 text-right text-xs text-muted-foreground">
+                                {rank}
+                            </span>
+                            <span className="truncate font-semibold">
+                                {weapon.weapon}
+                            </span>
                         </span>
-                        <span className="truncate font-semibold">
-                            {weapon.weapon}
+                        <span className="shrink-0 text-xs text-muted-foreground">
+                            {display}
                         </span>
                     </span>
-                    <span className="shrink-0 text-xs text-textVar1">
-                        {display}
-                    </span>
-                </span>
-            }
-        >
-            <div className="flex flex-col gap-4">
-                <StatGrid
-                    stats={[
-                        { title: "Weapon level", value: weapon.level },
-                        {
-                            title: "Avg. legend level",
-                            value: ratio(
-                                weapon.level,
-                                weapon.legends.length,
-                            ).toFixed(0),
-                        },
-                        {
-                            title: "Weapon XP",
-                            value: weapon.xp.toLocaleString(),
-                        },
-                        {
-                            title: "Avg. legend XP",
-                            value: ratio(
-                                weapon.xp,
-                                weapon.legends.length,
-                            ).toFixed(0),
-                        },
-                        {
-                            title: "Time held",
-                            value: formatTime(weapon.matchtime),
-                        },
-                        {
-                            title: "Time held (%)",
-                            value: `${percent(weapon.matchtime, matchtime).toFixed(2)}%`,
-                        },
-                        {
-                            title: "Usage rate",
-                            value: `${percent(weapon.games, games).toFixed(2)}%`,
-                        },
-                        { title: "KOs", value: weapon.kos.toLocaleString() },
-                        {
-                            title: "KOs per game",
-                            value: perGame(weapon.kos, weapon.games).toFixed(2),
-                        },
-                        {
-                            title: "Damage dealt",
-                            value: weapon.damageDealt.toLocaleString(),
-                        },
-                        {
-                            title: "DPS",
-                            value: `${ratio(weapon.damageDealt, weapon.matchtime).toFixed(2)} dmg/s`,
-                        },
-                        {
-                            title: "Damage per game",
-                            value: perGame(
-                                weapon.damageDealt,
-                                weapon.games,
-                            ).toFixed(2),
-                        },
-                    ]}
-                />
+                </CollapsibleTrigger>
 
-                <Card title="Games">
-                    <p className="ch-display text-3xl">
-                        {weapon.games.toLocaleString()}
-                        <span className="ml-2 text-xs font-normal tracking-normal text-textVar1">
-                            games
-                        </span>
-                    </p>
-                    <SplitProgress
-                        className="mt-3"
-                        parts={[
-                            {
-                                key: "wins",
-                                value: weapon.wins,
-                                intent: "green",
-                            },
-                            {
-                                key: "losses",
-                                value: weapon.games - weapon.wins,
-                                intent: "orange",
-                            },
-                        ]}
-                    />
-                    <div className="mt-2 flex justify-between text-sm font-bold">
-                        <span>
-                            {weapon.wins.toLocaleString()}W{" "}
-                            <span className="text-xs font-normal text-textVar1">
-                                ({percent(weapon.wins, weapon.games).toFixed(2)}
-                                %)
-                            </span>
-                        </span>
-                        <span>
-                            {(weapon.games - weapon.wins).toLocaleString()}L{" "}
-                            <span className="text-xs font-normal text-textVar1">
-                                (
-                                {percent(
-                                    weapon.games - weapon.wins,
-                                    weapon.games,
-                                ).toFixed(2)}
-                                %)
-                            </span>
-                        </span>
+                <CollapsibleContent className="bg-bgVar2 p-3.5">
+                    <div className="flex flex-col gap-4">
+                        <StatGrid
+                            stats={[
+                                { title: "Weapon level", value: weapon.level },
+                                {
+                                    title: "Avg. legend level",
+                                    value: ratio(
+                                        weapon.level,
+                                        weapon.legends.length,
+                                    ).toFixed(0),
+                                },
+                                {
+                                    title: "Weapon XP",
+                                    value: weapon.xp.toLocaleString(),
+                                },
+                                {
+                                    title: "Avg. legend XP",
+                                    value: ratio(
+                                        weapon.xp,
+                                        weapon.legends.length,
+                                    ).toFixed(0),
+                                },
+                                {
+                                    title: "Time held",
+                                    value: formatTime(weapon.matchtime),
+                                },
+                                {
+                                    title: "Time held (%)",
+                                    value: `${percent(weapon.matchtime, matchtime).toFixed(2)}%`,
+                                },
+                                {
+                                    title: "Usage rate",
+                                    value: `${percent(weapon.games, games).toFixed(2)}%`,
+                                },
+                                {
+                                    title: "KOs",
+                                    value: weapon.kos.toLocaleString(),
+                                },
+                                {
+                                    title: "KOs per game",
+                                    value: perGame(
+                                        weapon.kos,
+                                        weapon.games,
+                                    ).toFixed(2),
+                                },
+                                {
+                                    title: "Damage dealt",
+                                    value: weapon.damageDealt.toLocaleString(),
+                                },
+                                {
+                                    title: "DPS",
+                                    value: `${ratio(weapon.damageDealt, weapon.matchtime).toFixed(2)} dmg/s`,
+                                },
+                                {
+                                    title: "Damage per game",
+                                    value: perGame(
+                                        weapon.damageDealt,
+                                        weapon.games,
+                                    ).toFixed(2),
+                                },
+                            ]}
+                        />
+
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Games</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="ch-display text-3xl">
+                                    {weapon.games.toLocaleString()}
+                                    <span className="ml-2 text-xs font-normal tracking-normal text-muted-foreground">
+                                        games
+                                    </span>
+                                </p>
+                                <SplitProgress
+                                    className="mt-3"
+                                    parts={[
+                                        {
+                                            key: "wins",
+                                            value: weapon.wins,
+                                            intent: "green",
+                                        },
+                                        {
+                                            key: "losses",
+                                            value: weapon.games - weapon.wins,
+                                            intent: "orange",
+                                        },
+                                    ]}
+                                />
+                                <div className="mt-2 flex justify-between text-sm font-bold">
+                                    <span>
+                                        {weapon.wins.toLocaleString()}W{" "}
+                                        <span className="text-xs font-normal text-muted-foreground">
+                                            (
+                                            {percent(
+                                                weapon.wins,
+                                                weapon.games,
+                                            ).toFixed(2)}
+                                            %)
+                                        </span>
+                                    </span>
+                                    <span>
+                                        {(
+                                            weapon.games - weapon.wins
+                                        ).toLocaleString()}
+                                        L{" "}
+                                        <span className="text-xs font-normal text-muted-foreground">
+                                            (
+                                            {percent(
+                                                weapon.games - weapon.wins,
+                                                weapon.games,
+                                            ).toFixed(2)}
+                                            %)
+                                        </span>
+                                    </span>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {rankedStats.length > 0 ? (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Ranked season</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <StatGrid stats={rankedStats} />
+                                </CardContent>
+                            </Card>
+                        ) : null}
                     </div>
-                </Card>
-
-                {rankedStats.length > 0 ? (
-                    <Card title="Ranked season">
-                        <StatGrid stats={rankedStats} />
-                    </Card>
-                ) : null}
-            </div>
-        </Collapse>
+                </CollapsibleContent>
+            </Collapsible>
+        </Card>
     )
 }

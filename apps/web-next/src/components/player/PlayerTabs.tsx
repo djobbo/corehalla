@@ -51,7 +51,7 @@ export const PlayerTabs = ({
     ]
 
     return (
-        <nav className="ch-tabline mt-4">
+        <nav aria-label="Profile sections" className="ch-tabline mt-4">
             {tabs.map(({ tab, label, href }) => (
                 <Link
                     key={tab}

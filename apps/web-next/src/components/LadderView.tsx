@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { LadderTable } from "./LadderTable"
-import { PageNav } from "@/components/ui/PageNav"
+import { PageNav } from "@/components/PageNav"
 import { brackets, ladderHref, regionLabel, regions } from "@/lib/rankings"
 import { cn } from "@/lib/cn"
 import type { LadderRow } from "@/lib/ladderRows"
@@ -51,13 +51,19 @@ export const LadderView = ({
             <header className="ch-hero mb-3">
                 <p className="ch-kicker">Live ladder</p>
                 <h1 className="ch-display mt-1 text-2xl">{bracket} rankings</h1>
-                <p className="mt-1 text-xs text-textVar1">
+                <p className="mt-1 text-xs text-muted-foreground">
                     {regionLabel(region)} · page {page}
                 </p>
             </header>
 
-            <div className="sticky top-[var(--ch-header-h)] z-20 -mx-4 bg-bgVar1/95 px-4 py-2 shadow-[0_3px_0_0_var(--color-ink)] backdrop-blur">
-                <div className="flex flex-wrap gap-1.5">
+            <div className="sticky top-[var(--ch-header-h)] z-20 -mx-4 bg-background/95 px-4 py-2 shadow-[0_3px_0_0_var(--color-ink)] backdrop-blur">
+                {/*
+                 * Two named landmarks rather than two anonymous rows of links:
+                 * a screen reader lists "Bracket" and "Region" as navigation and
+                 * can jump straight to either, which is the same promise the
+                 * visible layout makes to a sighted reader.
+                 */}
+                <nav aria-label="Bracket" className="flex flex-wrap gap-1.5">
                     {brackets.map((option) => (
                         <Link
                             key={option}
@@ -72,8 +78,11 @@ export const LadderView = ({
                             {option}
                         </Link>
                     ))}
-                </div>
-                <div className="mt-1.5 flex flex-wrap gap-1.5">
+                </nav>
+                <nav
+                    aria-label="Region"
+                    className="mt-1.5 flex flex-wrap gap-1.5"
+                >
                     {regions.map((option) => (
                         <Link
                             key={option.value}
@@ -88,10 +97,10 @@ export const LadderView = ({
                             {option.label}
                         </Link>
                     ))}
-                </div>
+                </nav>
             </div>
 
-            <p className="mt-3 text-[0.66rem] font-bold uppercase tracking-[0.16em] text-textVar1">
+            <p className="mt-3 text-[0.66rem] font-bold uppercase tracking-[0.16em] text-muted-foreground">
                 {rows.length} rows
             </p>
 

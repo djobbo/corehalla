@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { LadderTable } from "./LadderTable"
+import { Button } from "@/components/ui/button"
+import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
 import { ladderHref } from "@/lib/rankings"
 import type { Bracket } from "@/lib/rankings"
 import type { LadderRow } from "@/lib/ladderRows"
@@ -54,23 +56,36 @@ export const LandingLadder = ({
                  * reads as a loading state that never finished, so it says so
                  * instead.
                  */
-                <p className="ch-panel px-4 py-6 text-center text-xs text-textVar1">
-                    The {bracket} ladder could not be read right now.
-                </p>
+                <Empty className="flex-none bg-card py-6">
+                    <EmptyHeader>
+                        <EmptyDescription className="text-xs">
+                            The {bracket} ladder could not be read right now.
+                        </EmptyDescription>
+                    </EmptyHeader>
+                </Empty>
             ) : (
                 <LadderTable rows={preview} />
             )}
 
             {hasMore ? (
-                <Link
-                    to={ladderHref(bracket, "all")}
+                /*
+                 * The link stays an anchor — it is a destination, and it should
+                 * page, middle-click and copy like one. `Button` is only the
+                 * slab; `render` swaps its element for the router's `Link`, and
+                 * `nativeButton={false}` tells Base UI the result is no longer a
+                 * `<button>` (see shadcn's composition rules).
+                 */
+                <Button
+                    variant="default"
+                    nativeButton={false}
+                    render={<Link to={ladderHref(bracket, "all")} />}
                     // Two "Load more" links on one page need to be told apart
                     // by name as well as by position.
                     aria-label={`Load more ${bracket} rankings`}
-                    className="ch-btn mt-auto w-full justify-center py-3"
+                    className="mt-auto w-full"
                 >
                     Load more
-                </Link>
+                </Button>
             ) : null}
         </div>
     )
