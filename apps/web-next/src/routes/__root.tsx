@@ -14,8 +14,12 @@ import { HydrationBoundary, RegistryContext } from "@effect/atom-react"
 import { AccountControl } from "@/components/account/AccountControl"
 import { LandingBackground } from "@/components/layout/LandingBackground"
 import { MainNav } from "@/components/layout/MainNav"
+import {
+    PageLoader,
+    PageLoaderProbe,
+    PageLoaderProvider,
+} from "@/components/layout/PageLoader"
 import { SearchProvider, SearchTrigger } from "@/components/Search"
-import { Spinner } from "@/components/ui/spinner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Suspense, useMemo } from "react"
 import type { ReactNode } from "react"
@@ -67,68 +71,72 @@ function RootComponent() {
                  */}
                 <TooltipProvider>
                     {/*
-                     * Mounted once, outside every surface: the pattern is page
-                     * chrome, not a page's content, so it lives at the root and
-                     * nothing else paints a page-wide background over it.
+                     * The loader is a sibling of the boundary below, not its
+                     * fallback, and it is mounted at the root for the same
+                     * reason: it has to outlive the commit that reveals the
+                     * page, so that its exit animation can play over the
+                     * finished route. See `PageLoader.tsx`.
                      */}
-                    <LandingBackground className="ch-landing" />
-                    {/*
-                     * One header for every page, holding the things that must never
-                     * move: the way home, the way to search, and the way to each
-                     * rankings surface. Home has no hero of its own because this
-                     * *is* the compact hero — the ladder then starts immediately
-                     * under it.
-                     */}
-                    <SearchProvider>
+                    <PageLoaderProvider>
                         {/*
-                         * The masthead is the poster's title bar: a skewed accent
-                         * badge, the wordmark in the display cut, and the search
-                         * field as the one wide control.
-                         *
-                         * It and the nav below are one pinned stack, and the ladder's
-                         * own sticky filter row docks under the pair of them — see
-                         * `--ch-header-h`. Their heights are shared variables rather
-                         * than two numbers that happen to agree.
+                         * Mounted once, outside every surface: the pattern is page
+                         * chrome, not a page's content, so it lives at the root and
+                         * nothing else paints a page-wide background over it.
                          */}
-                        <header className="ch-masthead">
-                            <Link to="/" className="flex items-center gap-2">
-                                <span aria-hidden className="ch-mark">
-                                    <span>C</span>
-                                </span>
-                                <span className="ch-display text-lg tracking-[0.02em]">
-                                    Corehalla
-                                </span>
-                            </Link>
-                            <SearchTrigger className="flex-1" />
+                        <LandingBackground className="ch-landing" />
+                        {/*
+                         * One header for every page, holding the things that must never
+                         * move: the way home, the way to search, and the way to each
+                         * rankings surface. Home has no hero of its own because this
+                         * *is* the compact hero — the ladder then starts immediately
+                         * under it.
+                         */}
+                        <SearchProvider>
                             {/*
-                             * The account control is client-only: the session is an
-                             * `HttpOnly` cookie the server render cannot read, so a
-                             * server-rendered answer would only be replaced on
-                             * hydration. The placeholder it shows until then is the
-                             * one state that is true for both.
+                             * The masthead is the poster's title bar: a skewed accent
+                             * badge, the wordmark in the display cut, and the search
+                             * field as the one wide control.
+                             *
+                             * It and the nav below are one pinned stack, and the ladder's
+                             * own sticky filter row docks under the pair of them — see
+                             * `--ch-header-h`. Their heights are shared variables rather
+                             * than two numbers that happen to agree.
                              */}
-                            <ClientOnly>
-                                <AccountControl />
-                            </ClientOnly>
-                        </header>
-                        <MainNav />
-                        <Suspense
-                            fallback={
-                                /*
-                                 * The spinner carries `role="status"` and the
-                                 * label, so the text beside it is only the
-                                 * visible reassurance — marking it `aria-hidden`
-                                 * keeps the name from being announced twice.
-                                 */
-                                <div className="flex items-center gap-2 p-8 text-muted-foreground">
-                                    <Spinner />
-                                    <span aria-hidden>Loading…</span>
-                                </div>
-                            }
-                        >
-                            <Outlet />
-                        </Suspense>
-                    </SearchProvider>
+                            <header className="ch-masthead">
+                                <Link to="/" className="flex items-center gap-2">
+                                    <span aria-hidden className="ch-mark">
+                                        <span>C</span>
+                                    </span>
+                                    <span className="ch-display text-lg tracking-[0.02em]">
+                                        Corehalla
+                                    </span>
+                                </Link>
+                                <SearchTrigger className="flex-1" />
+                                {/*
+                                 * The account control is client-only: the session is an
+                                 * `HttpOnly` cookie the server render cannot read, so a
+                                 * server-rendered answer would only be replaced on
+                                 * hydration. The placeholder it shows until then is the
+                                 * one state that is true for both.
+                                 */}
+                                <ClientOnly>
+                                    <AccountControl />
+                                </ClientOnly>
+                            </header>
+                            <MainNav />
+                            {/*
+                             * The boundary every route's data suspends behind. Its
+                             * fallback is a probe rather than a loader: it renders
+                             * nothing and reports the wait to the overlay above, which
+                             * is what lets one animation cover both the wait and the
+                             * reveal.
+                             */}
+                            <Suspense fallback={<PageLoaderProbe />}>
+                                <Outlet />
+                            </Suspense>
+                        </SearchProvider>
+                        <PageLoader />
+                    </PageLoaderProvider>
                 </TooltipProvider>
             </HydrationBoundary>
         </RegistryContext.Provider>

@@ -219,27 +219,31 @@ export type DehydratedState = ReturnType<typeof dehydrateRegistry>
  * Preloads atoms in a route loader and returns dehydrated state so the server
  * HTML and the first client render agree.
  *
- * On the client the route commits immediately and the atoms stream in: a click
- * must never wait on a network round trip before the UI responds.
+ * Both sides await, and that is what makes the page loader possible. A route
+ * waiting on its data stays `pending` in the router, and pending is the one state
+ * the router can substitute loading UI for. Resolving immediately on the client
+ * and letting the component suspend instead is invisible to the router: React
+ * keeps the previous page on screen for the whole wait, so there is nothing to
+ * hang a loader on and a click appears to do nothing until the data lands.
+ *
+ * The trade is deliberate: a navigation now commits when its data does. Warm
+ * navigations are unaffected — `defaultPreload: "intent"` means the atoms are
+ * usually already settled, so the loader never appears at all.
  */
 export const preloadAtoms = (
     context: RouterContext,
     atoms: ReadonlyArray<Atom.Atom<any>>,
-):
-    | { dehydrated: DehydratedState }
-    | Promise<{ dehydrated: DehydratedState }> => {
+): Promise<{ dehydrated: DehydratedState }> => {
     const pending = Promise.all(
         atoms.map((atom) => preloadAtom(context.registry, atom)),
     )
 
-    if (!import.meta.env.SSR) {
-        void pending
-        return { dehydrated: [] }
-    }
-
-    return pending.then(() => ({
-        dehydrated: dehydrateRegistry(context.registry),
-    }))
+    // Only the render has state to hand over; the browser just has to wait.
+    return import.meta.env.SSR
+        ? pending.then(() => ({
+              dehydrated: dehydrateRegistry(context.registry),
+          }))
+        : pending.then(() => ({ dehydrated: [] }))
 }
 
 /** Reads a query atom, suspending until it resolves. */

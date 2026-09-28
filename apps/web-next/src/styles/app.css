@@ -949,4 +949,176 @@
         pointer-events: none;
         mask-image: linear-gradient(0deg, transparent 0%, #000 40%);
     }
+
+    /* --- page loader ----------------------------------------------------- */
+
+    /*
+     * The transition between two pages.
+     *
+     * A client-side navigation waits for its route's data before it commits, and
+     * this is what fills that wait. It is deliberately not `Suspense`'s fallback:
+     * the loading UI is split in two, so that the part that draws can outlive the
+     * commit that reveals the page — see `PageLoader.tsx`. The component only
+     * decides *when*; every duration below is mirrored there, because the
+     * component has to keep the element mounted for exactly as long as the
+     * animation runs.
+     *
+     * The motion is one idea in two halves. Arriving, the mark grows out of
+     * nothing to its working size. Leaving, it keeps growing — past the frame —
+     * while it fades, so the finished page is revealed *through* the mark rather
+     * than beside it. Nothing fades in place; the mark removes itself, which is
+     * what makes the reveal feel quick.
+     *
+     * The `[data-entered]` step is not decoration. The overlay is *inserted* in
+     * its loading state, so a transition written straight onto that state has no
+     * earlier value to move from and the mark would simply appear at full size.
+     * The component holds it at its starting size for one laid-out frame and
+     * then sets the attribute, and that is the change the transition runs from.
+     */
+    .ch-pageloader {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        /*
+         * Translucent and frosted rather than opaque. The page underneath is
+         * usually the *previous* page — not an empty canvas — and hiding it
+         * entirely would make navigation feel slower than it is. Same treatment
+         * as the two pinned bars, at a heavier mix because this covers
+         * everything.
+         */
+        background: color-mix(in srgb, var(--color-bgVar2) 82%, transparent);
+        backdrop-filter: blur(8px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 180ms ease;
+    }
+
+    .ch-pageloader[data-phase="loading"] {
+        /* The page behind is mid-render, so nothing behind this is worth a click. */
+        pointer-events: auto;
+    }
+
+    .ch-pageloader[data-entered] {
+        opacity: 1;
+    }
+
+    /*
+     * Leaving: the scrim holds while the mark swells, then clears beneath it.
+     * The delay is what keeps the mark from being cut out against bare page
+     * while it is still large.
+     */
+    .ch-pageloader[data-phase="exiting"] {
+        opacity: 0;
+        transition: opacity 320ms ease 200ms;
+    }
+
+    .ch-pageloader-mark {
+        width: clamp(4.5rem, 12vw, 7rem);
+        height: auto;
+        transform: scale(0);
+        opacity: 0;
+        transition:
+            transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+            opacity 200ms ease 40ms;
+        will-change: transform, opacity;
+    }
+
+    .ch-pageloader[data-entered] .ch-pageloader-mark {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    /*
+     * Fourteen times a 7rem mark is 98rem — wider than any viewport, so the
+     * last frames of the fade are of the frame's own colour rather than of a
+     * mark that stopped growing.
+     *
+     * This rule is also what a wait that starts again mid-exit drops back out
+     * of: the overlay stays mounted rather than being remounted, so returning to
+     * `[data-entered]` slides the mark down from wherever it had reached instead
+     * of restarting it from nothing.
+     */
+    .ch-pageloader[data-phase="exiting"] .ch-pageloader-mark {
+        transform: scale(14);
+        opacity: 0;
+        transition:
+            transform 520ms cubic-bezier(0.4, 0, 0.2, 1),
+            opacity 340ms ease-in 140ms;
+    }
+
+    /*
+     * The turning centre. `transform-box: view-box` is what makes
+     * `transform-origin: center` mean the middle of the 448x436.48 viewBox
+     * rather than the middle of this path's own bounding box — without it the
+     * centre would orbit its own oblong bounds instead of spinning in place.
+     */
+    .ch-logo-center {
+        transform-box: view-box;
+        transform-origin: center;
+        animation: ch-logo-spin 2s linear infinite;
+    }
+}
+
+/*
+ * The mark's own animation — the legacy client's, unchanged: quarter opacity at
+ * rest, full on the way through, two full turns per cycle. Declared outside the
+ * `components` layer because keyframes are not layered, and named with the
+ * `ch-` prefix so it cannot collide with one Tailwind ships.
+ */
+@keyframes ch-logo-spin {
+    0% {
+        opacity: 0.25;
+        transform: rotate(0deg);
+    }
+
+    40% {
+        opacity: 1;
+        transform: rotate(360deg);
+    }
+
+    100% {
+        opacity: 0.25;
+        transform: rotate(720deg);
+    }
+}
+
+/*
+ * Reduced motion keeps the sequence and drops the scale: the loader still
+ * appears for exactly as long, and still fades, but it no longer grows out of
+ * nothing or swells past the frame. The rotations stop for the same reason.
+ *
+ * The mark selectors are listed together so that this block's equal-or-later
+ * rules win on specificity as well as on order.
+ */
+@media (prefers-reduced-motion: reduce) {
+    .ch-pageloader-mark,
+    .ch-pageloader[data-entered] .ch-pageloader-mark,
+    .ch-pageloader[data-phase="exiting"] .ch-pageloader-mark {
+        transform: none;
+        transition: opacity 180ms ease;
+    }
+
+    .ch-pageloader[data-entered] {
+        opacity: 1;
+    }
+
+    .ch-pageloader[data-phase="exiting"] {
+        opacity: 0;
+    }
+
+    .ch-pageloader[data-entered] .ch-pageloader-mark {
+        opacity: 1;
+    }
+
+    .ch-pageloader[data-phase="exiting"] .ch-pageloader-mark {
+        opacity: 0;
+    }
+
+    .ch-logo-center {
+        animation: none;
+        opacity: 1;
+    }
 }
