@@ -1,11 +1,11 @@
 import { downloadImage } from "./downloadImage"
 import { existsSync, mkdirSync, rmdirSync } from "fs"
-import { legends } from "bhapi/legends"
+import { legends } from "@crh/bhapi/legends"
 import { load } from "cheerio"
-import { logInfo } from "logger"
+import { logInfo } from "@crh/logger"
 import axios from "axios"
 
-const APP_DIR = "../../app"
+const APP_DIR = "../../web"
 const PUBLIC_DIR = `${APP_DIR}/public`
 const LEGENDS_URL = "https://www.brawlhalla.com/legends/"
 const OUT_DIR = `${PUBLIC_DIR}/images/icons/roster`
@@ -32,7 +32,7 @@ export const downloadImages = async () => {
         .get()
         .filter(({ name, src }) => (console.log({ name, src }), name && src))
 
-    imgs.forEach((img, i) => {
+    imgs.forEach((img) => {
         if (!img.src || !img.name) return
 
         // TODO: readd crossovers
@@ -45,8 +45,8 @@ export const downloadImages = async () => {
             img.src,
             `${OUT_DIR}/${prefix}s/${
                 isLegend
-                    ? legends.find((l) => l.bio_name === img.name)
-                          ?.legend_name_key ?? img.name
+                    ? (legends.find((l) => l.bio_name === img.name)
+                          ?.legend_name_key ?? img.name)
                     : img.name
             }.png`,
         )

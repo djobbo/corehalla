@@ -1,5 +1,21 @@
 {
-    "extends": "tsconfig/nextjs.json",
     "include": ["."],
-    "exclude": ["node_modules", "generated"]
+    "exclude": ["node_modules", "drizzle"],
+    "compilerOptions": {
+        "strict": true,
+        "target": "es2022",
+        "lib": ["esnext"],
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "noEmit": true,
+        // The scripts run as ESM under `node`'s type stripping, which requires
+        // explicit extensions for relative imports (e.g. `../schema.ts`).
+        "allowImportingTsExtensions": true,
+        "types": ["node"]
+    }
 }

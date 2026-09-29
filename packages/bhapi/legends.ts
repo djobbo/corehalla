@@ -1,4 +1,4 @@
-import { arrayToMap } from "common/helpers/arrayToMap"
+import { arrayToMap } from "@crh/common/helpers/arrayToMap"
 import type { Legend, PlayerRanked, PlayerStats } from "./types"
 import type { Weapon } from "./constants"
 
@@ -784,65 +784,65 @@ export const legends: Legend[] = [
         speed: "7",
     },
     {
-        "legend_id": 68,
-        "legend_name_key": "ransom",
-        "bio_name": "Ransom",
-        "bio_aka": "The Virus",
-        "weapon_one": "Chakram",
-        "weapon_two": "Bow",
-        "strength": "7",
-        "dexterity": "4",
-        "defense": "3",
-        "speed": "8"
+        legend_id: 68,
+        legend_name_key: "ransom",
+        bio_name: "Ransom",
+        bio_aka: "The Virus",
+        weapon_one: "Chakram",
+        weapon_two: "Bow",
+        strength: "7",
+        dexterity: "4",
+        defense: "3",
+        speed: "8",
     },
     {
-        "legend_id": 69,
-        "legend_name_key": "lady vera",
-        "bio_name": "Lady Vera",
-        "bio_aka": "The Luminary",
-        "weapon_one": "Chakram",
-        "weapon_two": "Scythe",
-        "strength": "3",
-        "dexterity": "7",
-        "defense": "8",
-        "speed": "4"
+        legend_id: 69,
+        legend_name_key: "lady vera",
+        bio_name: "Lady Vera",
+        bio_aka: "The Luminary",
+        weapon_one: "Chakram",
+        weapon_two: "Scythe",
+        strength: "3",
+        dexterity: "7",
+        defense: "8",
+        speed: "4",
     },
     {
-        "legend_id": 70,
-        "legend_name_key": "rupture",
-        "bio_name": "Rupture",
-        "bio_aka": "The Nemesis",
-        "weapon_one": "Katars",
-        "weapon_two": "Rocket Lance",
-        "strength": "9",
-        "dexterity": "3",
-        "defense": "5",
-        "speed": "5"
+        legend_id: 70,
+        legend_name_key: "rupture",
+        bio_name: "Rupture",
+        bio_aka: "The Nemesis",
+        weapon_one: "Katars",
+        weapon_two: "Rocket Lance",
+        strength: "9",
+        dexterity: "3",
+        defense: "5",
+        speed: "5",
     },
     {
-        "legend_id": 71,
-        "legend_name": "AURUS",
-        "bio_name": "Aurus",
-        "bio_aka": "The Gladiator",
-        "weapon_one": "Chakram",
-        "weapon_two": "Spear",
-        "strength": "6",
-        "dexterity": "6",
-        "defense": "6",
-        "speed": "4"
+        legend_id: 71,
+        legend_name_key: "aurus",
+        bio_name: "Aurus",
+        bio_aka: "The Gladiator",
+        weapon_one: "Chakram",
+        weapon_two: "Spear",
+        strength: "6",
+        dexterity: "6",
+        defense: "6",
+        speed: "4",
     },
     {
-        "legend_id": 72,
-        "legend_name": "QINGHUA & BAOBAO",
-        "bio_name": "Qinghua & Baobao",
-        "bio_aka": "The Voyager & The Void",
-        "weapon_one": "Orb",
-        "weapon_two": "Cannon",
-        "strength": "5",
-        "dexterity": "4",
-        "defense": "5",
-        "speed": "8"
-    }
+        legend_id: 72,
+        legend_name_key: "qinghua & baobao",
+        bio_name: "Qinghua & Baobao",
+        bio_aka: "The Voyager & The Void",
+        weapon_one: "Orb",
+        weapon_two: "Cannon",
+        strength: "5",
+        dexterity: "4",
+        defense: "5",
+        speed: "8",
+    },
 ]
 
 export const legendsMap = arrayToMap(legends, "legend_id")
@@ -876,7 +876,9 @@ export const getFullLegends = (
         : Object.values(fullLegends).filter((legend) => legend.stats?.games)
 }
 
-export const getLegendsAccumulativeData = (fullLegends: FullLegend[]) => {
+export const getLegendsAccumulativeData = (
+    fullLegends: readonly FullLegend[],
+) => {
     return fullLegends.reduce<{
         matchtime: number
         kos: number
@@ -918,7 +920,9 @@ export type FullWeapon = {
     legends: FullLegend[]
 }
 
-export const getFullWeapons = (legends: FullLegend[]): FullWeapon[] => {
+export const getFullWeapons = (
+    legends: readonly FullLegend[],
+): FullWeapon[] => {
     const weaponsMap = legends.reduce(
         (acc, legend) => {
             const legendData = legendsMap[legend.legend_id]
@@ -943,7 +947,7 @@ export const getFullWeapons = (legends: FullLegend[]): FullWeapon[] => {
     return weapons
 }
 
-export const getWeaponlessData = (legends: FullLegend[]) => {
+export const getWeaponlessData = (legends: readonly FullLegend[]) => {
     return legends.reduce(
         (acc, legend) => ({
             unarmed: {
@@ -1007,7 +1011,7 @@ export const getWeaponsAccumulativeData = (weapons: FullWeapon[]) => {
                         acc.damageDealt +
                         parseInt(
                             (isWeaponOne
-                                ? legend.stats?.damageweapontwo
+                                ? legend.stats?.damageweaponone
                                 : legend.stats?.damageweapontwo) ?? "0",
                         ),
                     matchtime:

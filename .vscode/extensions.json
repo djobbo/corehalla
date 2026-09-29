@@ -1,5 +1,7 @@
 {
     "recommendations": [
+        "VoidZero.vite-plus-extension-pack",
+        "oxc.oxc-vscode",
         "github.copilot"
     ]
 }

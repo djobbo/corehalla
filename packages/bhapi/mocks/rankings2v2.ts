@@ -3,6 +3,8 @@ import type { Ranking2v2 } from "../types"
 export const rankings2v2Mock: Ranking2v2[] = [
     {
         rank: 1,
+        name_one: "GP | Pier",
+        name_two: "Teke?",
         teamname: "GP | Pier+Teke?",
         brawlhalla_id_one: 3138661,
         brawlhalla_id_two: 74980283,
@@ -15,6 +17,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 2,
+        name_one: "Fozey",
+        name_two: "Sarme",
         teamname: "Fozey+Sarme",
         brawlhalla_id_one: 1844521,
         brawlhalla_id_two: 6049888,
@@ -27,6 +31,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 3,
+        name_one: "simpLe",
+        name_two: "Godly",
         teamname: "simpLe+Godly",
         brawlhalla_id_one: 1034305,
         brawlhalla_id_two: 5156845,
@@ -39,6 +45,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 4,
+        name_one: "SAC marreta fofa",
+        name_two: "LX",
         teamname: "SAC marreta fofa+LX",
         brawlhalla_id_one: 4502783,
         brawlhalla_id_two: 4537869,
@@ -52,6 +60,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 5,
+        name_one: "SAC marreta fofa",
+        name_two: "GP | Kyna",
         teamname: "SAC marreta fofa+GP | Kyna",
         brawlhalla_id_one: 4502783,
         brawlhalla_id_two: 8851646,
@@ -64,6 +74,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 6,
+        name_one: "Fiend",
+        name_two: "yuz",
         teamname: "Fiend+yuz",
         brawlhalla_id_one: 1823822,
         brawlhalla_id_two: 5989758,
@@ -77,6 +89,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 7,
+        name_one: "santy",
+        name_two: "The FOOL",
         teamname: "santy+The FOOL",
         brawlhalla_id_one: 1930102,
         brawlhalla_id_two: 4690119,
@@ -89,6 +103,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 8,
+        name_one: "Macheeeete",
+        name_two: "Rakushain",
         teamname: "Macheeeete+Rakushain",
         brawlhalla_id_one: 200122,
         brawlhalla_id_two: 2869327,
@@ -101,6 +117,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 9,
+        name_one: "Simba",
+        name_two: "GB | Hardymj",
         teamname: "Simba+GB | Hardymj",
         brawlhalla_id_one: 3001049,
         brawlhalla_id_two: 4822165,
@@ -113,6 +131,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 10,
+        name_one: "Spyrox",
+        name_two: "Koko",
         teamname: "Spyrox+Koko",
         brawlhalla_id_one: 3570888,
         brawlhalla_id_two: 45168975,
@@ -125,6 +145,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 11,
+        name_one: "âKurisu Makiseâ <3",
+        name_two: "hysen",
         teamname: "âKurisu Makiseâ <3+hysen",
         brawlhalla_id_one: 173537,
         brawlhalla_id_two: 2333611,
@@ -137,6 +159,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 12,
+        name_one: "MounirKO",
+        name_two: "Koko",
         teamname: "MounirKO+Koko",
         brawlhalla_id_one: 31675679,
         brawlhalla_id_two: 45168975,
@@ -149,6 +173,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 13,
+        name_one: "VipR3",
+        name_two: "Solarson",
         teamname: "VipR3+Solarson",
         brawlhalla_id_one: 2210991,
         brawlhalla_id_two: 7940781,
@@ -161,6 +187,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 14,
+        name_one: "Iluz | STING RAY",
+        name_two: "java",
         teamname: "Iluz | STING RAY+java",
         brawlhalla_id_one: 1396588,
         brawlhalla_id_two: 5832489,
@@ -173,6 +201,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 15,
+        name_one: "walshy",
+        name_two: "dawg",
         teamname: "walshy+dawg",
         brawlhalla_id_one: 10169047,
         brawlhalla_id_two: 35728589,
@@ -185,6 +215,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 16,
+        name_one: "POWER",
+        name_two: "Wess",
         teamname: "POWER+Wess",
         brawlhalla_id_one: 1266179,
         brawlhalla_id_two: 2277541,
@@ -197,6 +229,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 17,
+        name_one: "Kyzer",
+        name_two: "Toast",
         teamname: "Kyzer+Toast",
         brawlhalla_id_one: 7231896,
         brawlhalla_id_two: 34431111,
@@ -209,6 +243,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 18,
+        name_one: "Kokea",
+        name_two: "Kyzer",
         teamname: "Kokea+Kyzer",
         brawlhalla_id_one: 4690119,
         brawlhalla_id_two: 7231896,
@@ -221,6 +257,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 19,
+        name_one: "Citrus",
+        name_two: "Teke?",
         teamname: "Citrus+Teke?",
         brawlhalla_id_one: 10475904,
         brawlhalla_id_two: 74980283,
@@ -233,6 +271,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 20,
+        name_one: "Blaze",
+        name_two: "acno?",
         teamname: "Blaze+acno?",
         brawlhalla_id_one: 1766641,
         brawlhalla_id_two: 2768493,
@@ -245,6 +285,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 21,
+        name_one: "dawg",
+        name_two: "Teke?",
         teamname: "dawg+Teke?",
         brawlhalla_id_one: 35728589,
         brawlhalla_id_two: 74980283,
@@ -257,6 +299,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 22,
+        name_one: "Fezaru80",
+        name_two: "IceCream",
         teamname: "Fezaru80+IceCream",
         brawlhalla_id_one: 3540146,
         brawlhalla_id_two: 27433024,
@@ -269,6 +313,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 23,
+        name_one: "Rygunduz",
+        name_two: "GB | Elsom",
         teamname: "Rygunduz+GB | Elsom",
         brawlhalla_id_one: 792380,
         brawlhalla_id_two: 5009789,
@@ -281,6 +327,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 24,
+        name_one: "Qewdiy",
+        name_two: "Shotgun",
         teamname: "Qewdiy+Shotgun",
         brawlhalla_id_one: 12620130,
         brawlhalla_id_two: 34807214,
@@ -293,6 +341,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 25,
+        name_one: "Linox",
+        name_two: "MG",
         teamname: "Linox+MG",
         brawlhalla_id_one: 6202261,
         brawlhalla_id_two: 7294526,
@@ -305,6 +355,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 26,
+        name_one: "PINK BOBBY BUB BABA WOOOOOOSH",
+        name_two: "Wess",
         teamname: "PINK BOBBY BUB BABA WOOOOOOSH+Wess",
         brawlhalla_id_one: 824310,
         brawlhalla_id_two: 2277541,
@@ -317,6 +369,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 27,
+        name_one: "Nagi",
+        name_two: "Ping Jog Bun Tcha Bo",
         teamname: "Nagi+Ping Jog Bun Tcha Bo",
         brawlhalla_id_one: 3103582,
         brawlhalla_id_two: 9144432,
@@ -329,6 +383,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 28,
+        name_one: "Dirty Dan",
+        name_two: "carti",
         teamname: "Dirty Dan+carti",
         brawlhalla_id_one: 564773,
         brawlhalla_id_two: 52695844,
@@ -341,6 +397,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 29,
+        name_one: "TM.",
+        name_two: "Delta",
         teamname: "TM.+Delta",
         brawlhalla_id_one: 338489,
         brawlhalla_id_two: 48772510,
@@ -353,6 +411,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 30,
+        name_one: "Glass",
+        name_two: "Magi",
         teamname: "Glass+Magi",
         brawlhalla_id_one: 3683652,
         brawlhalla_id_two: 7482619,
@@ -365,6 +425,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 31,
+        name_one: "bunny",
+        name_two: "spring",
         teamname: "bunny+spring",
         brawlhalla_id_one: 357789,
         brawlhalla_id_two: 5827766,
@@ -377,6 +439,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 32,
+        name_one: "Casey",
+        name_two: "Teke?",
         teamname: "Casey+Teke?",
         brawlhalla_id_one: 8916468,
         brawlhalla_id_two: 74980283,
@@ -389,6 +453,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 33,
+        name_one: "Kuro'",
+        name_two: "Akeno",
         teamname: "Kuro'+Akeno",
         brawlhalla_id_one: 5270270,
         brawlhalla_id_two: 10336731,
@@ -401,6 +467,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 34,
+        name_one: "MachÃ¨Ã¨Ã¨Ã¨tÃ©",
+        name_two: "Delta",
         teamname: "MachÃ¨Ã¨Ã¨Ã¨tÃ©+Delta",
         brawlhalla_id_one: 200122,
         brawlhalla_id_two: 48772510,
@@ -413,6 +481,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 35,
+        name_one: "kimowo",
+        name_two: "Bleron",
         teamname: "kimowo+Bleron",
         brawlhalla_id_one: 5013091,
         brawlhalla_id_two: 10313538,
@@ -425,6 +495,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 36,
+        name_one: "Art",
+        name_two: "Marc",
         teamname: "Art+Marc",
         brawlhalla_id_one: 1249157,
         brawlhalla_id_two: 8483273,
@@ -437,6 +509,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 37,
+        name_one: "Hypka",
+        name_two: "Dooblakek",
         teamname: "Hypka+Dooblakek",
         brawlhalla_id_one: 5222910,
         brawlhalla_id_two: 9391441,
@@ -449,6 +523,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 38,
+        name_one: "Rakushain",
+        name_two: "Urbador",
         teamname: "Rakushain+Urbador",
         brawlhalla_id_one: 2869327,
         brawlhalla_id_two: 3252577,
@@ -461,6 +537,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 39,
+        name_one: "Cedero",
+        name_two: "Spectre.",
         teamname: "Cedero+Spectre.",
         brawlhalla_id_one: 208328,
         brawlhalla_id_two: 25296520,
@@ -473,6 +551,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 40,
+        name_one: "TM.",
+        name_two: "Swata",
         teamname: "TM.+Swata",
         brawlhalla_id_one: 338489,
         brawlhalla_id_two: 2412539,
@@ -485,6 +565,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 41,
+        name_one: "Koko",
+        name_two: "Delta",
         teamname: "Koko+Delta",
         brawlhalla_id_one: 45168975,
         brawlhalla_id_two: 48772510,
@@ -497,6 +579,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 42,
+        name_one: "Papermoon",
+        name_two: "maidski",
         teamname: "Papermoon+maidski",
         brawlhalla_id_one: 8573717,
         brawlhalla_id_two: 25762732,
@@ -509,6 +593,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 43,
+        name_one: "TOBI",
+        name_two: "OxVenn",
         teamname: "TOBI+OxVenn",
         brawlhalla_id_one: 9888648,
         brawlhalla_id_two: 63730170,
@@ -521,6 +607,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 44,
+        name_one: "Wolves | Llama",
+        name_two: "megD <3",
         teamname: "Wolves | Llama+megD <3",
         brawlhalla_id_one: 487815,
         brawlhalla_id_two: 33116656,
@@ -533,6 +621,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 45,
+        name_one: "mountain mama",
+        name_two: "pinx",
         teamname: "mountain mama+pinx",
         brawlhalla_id_one: 6269868,
         brawlhalla_id_two: 6560836,
@@ -545,6 +635,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 46,
+        name_one: "Kbob<3",
+        name_two: "Legit<3",
         teamname: "Kbob<3+Legit<3",
         brawlhalla_id_one: 79069044,
         brawlhalla_id_two: 82829100,
@@ -557,6 +649,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 47,
+        name_one: "Scyotic",
+        name_two: "Seijaru",
         teamname: "Scyotic+Seijaru",
         brawlhalla_id_one: 6580484,
         brawlhalla_id_two: 9485777,
@@ -569,6 +663,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 48,
+        name_one: "DJ Jittleyang",
+        name_two: "maidski",
         teamname: "DJ Jittleyang+maidski",
         brawlhalla_id_one: 4690119,
         brawlhalla_id_two: 25762732,
@@ -581,6 +677,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 49,
+        name_one: "GTG",
+        name_two: "Buttpoundr7",
         teamname: "GTG+Buttpoundr7",
         brawlhalla_id_one: 1806809,
         brawlhalla_id_two: 4715514,
@@ -593,6 +691,8 @@ export const rankings2v2Mock: Ranking2v2[] = [
     },
     {
         rank: 50,
+        name_one: "juniror watanabe",
+        name_two: "V3M_TAR4D0",
         teamname: "juniror watanabe+V3M_TAR4D0",
         brawlhalla_id_one: 9765382,
         brawlhalla_id_two: 78140092,

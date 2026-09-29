@@ -1,0 +1,27 @@
+{
+    "name": "@crh/api",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "ts:check": "tsc --noEmit",
+        "test": "vitest run"
+    },
+    "devDependencies": {
+        "@types/node": "^24.0.0",
+        "@crh/tsconfig": "workspace:*",
+        "typescript": "^7.0.2",
+        "vitest": "^5.0.2",
+        "@effect/vitest": "4.0.0-rc.117"
+    },
+    "dependencies": {
+        "@crh/api-contract": "workspace:*",
+        "@crh/bhapi": "workspace:*",
+        "@crh/common": "workspace:*",
+        "@crh/db": "workspace:*",
+        "@crh/logger": "workspace:*",
+        "@crh/web-parser": "workspace:*",
+        "effect": "4.0.0-rc.117",
+        "@crh/core": "workspace:*"
+    }
+}

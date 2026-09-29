@@ -1,0 +1,23 @@
+{
+    "name": "@crh/core",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "ts:check": "tsc --noEmit",
+        "test": "vitest run"
+    },
+    "devDependencies": {
+        "@effect/vitest": "4.0.0-rc.117",
+        "@types/node": "^24.0.0",
+        "@crh/tsconfig": "workspace:*",
+        "typescript": "^7.0.2",
+        "vitest": "^5.0.2"
+    },
+    "dependencies": {
+        "@crh/api-contract": "workspace:*",
+        "@crh/bhapi": "workspace:*",
+        "@crh/db": "workspace:*",
+        "effect": "4.0.0-rc.117"
+    }
+}
