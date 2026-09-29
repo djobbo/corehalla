@@ -2,15 +2,6 @@ import { describe, expect, it } from "@effect/vitest"
 import { OpenApi } from "effect/unstable/httpapi"
 import { CorehallaApi } from "@crh/api-contract/Api"
 
-/**
- * The generated OpenAPI document.
- *
- * It is easy to add an endpoint whose response schema is a `Schema.declare`
- * passthrough and never notice: the route works, the typed client works, and
- * the only symptom is a reference page that shows `unknown` for it. These
- * assertions pin the two properties that make `/api/v1/docs` worth opening —
- * the paths exist, and the aggregate paths describe real object schemas.
- */
 describe("OpenAPI document", () => {
     const spec = OpenApi.fromApi(CorehallaApi)
     const paths = Object.keys(spec.paths)
@@ -35,20 +26,13 @@ describe("OpenAPI document", () => {
 
         const schema = response?.content?.["application/json"]?.schema
 
-        // The envelope is a `$ref` to the named `PlayerEnvelope`-ish schema, or
-        // an inline object; either way it must not be the open `{}` a
-        // passthrough produces.
+        // Must not be the open `{}` a Schema.declare passthrough produces.
         expect(schema).toBeDefined()
         expect(JSON.stringify(schema)).not.toBe("{}")
     })
 
     it("tags each group", () => {
-        /*
-         * A path item's values are a mix of operations and shared parameter
-         * arrays, and only the operations carry tags. The cast is the honest
-         * way to say "read the field if this value is an operation" without
-         * re-deriving the spec's own union.
-         */
+        // Path-item values mix operations and parameter arrays; only ops have tags.
         const tags = new Set(
             Object.values(spec.paths).flatMap((path) =>
                 Object.values(path).flatMap(

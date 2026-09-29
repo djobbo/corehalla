@@ -1,12 +1,4 @@
-/**
- * The two cookies the app owns, and the token primitives behind them.
- *
- * Reading is deliberately absent: the API's `HttpServerRequest` already exposes
- * parsed cookies, and writing goes through `HttpServerResponse`'s own cookie
- * encoder. What is left is the pair of names the two sides must agree on, and
- * the opaque-token helpers — which is all the API needs, because it is the side
- * that mints and digests the token rather than the side that serialises it.
- */
+/** Cookie names shared with the handlers. The raw token is never stored. */
 
 export const SESSION_COOKIE = "corehalla_session"
 export const OAUTH_STATE_COOKIE = "corehalla_oauth_state"
@@ -28,12 +20,7 @@ const toBase64Url = (bytes: Uint8Array) => {
 export const randomToken = (size = 32) =>
     toBase64Url(crypto.getRandomValues(new Uint8Array(size)))
 
-/**
- * Hex-encoded SHA-256 digest, used as the session storage key.
- *
- * The browser holds the token; the database holds only this, so a database leak
- * cannot be replayed as a login.
- */
+/** Session row key. The database stores the digest, not the cookie value. */
 export const sha256Hex = async (value: string) => {
     const digest = await crypto.subtle.digest("SHA-256", encoder.encode(value))
 

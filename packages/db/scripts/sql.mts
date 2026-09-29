@@ -1,31 +1,23 @@
 /**
- * Shared SQL-literal helpers for the checked-in generators (`seed.mts`,
- * `import-postgres.mts`).
+ * Shared SQL helpers for seed/import generators.
  *
- * Both write SQL that D1 ingests verbatim, so the two hard limits are enforced
- * while the statements are built:
- *
- * - **100 KB per statement.** `insertStatements` splits a batch whenever the
- *   next row would push the statement over `bytes` (default 90 KB, leaving
- *   headroom for the header).
- * - **One statement per line.** Every statement is emitted as a single line
- *   (values are joined with `, `, never a newline) so the offline verifier can
- *   replay a generated file line by line without parsing SQL.
+ * Enforces D1's ~100 KB statement limit (default 90 KB headroom) and one
+ * statement per line for line-by-line offline replay.
  */
 
 export type Sql = string | number | boolean | null
 
 export type InsertLimits = {
-    /** Maximum rows per statement (default 150). */
+    /** Default 150. */
     readonly rows?: number
-    /** Maximum bytes per statement (default 90_000, D1's limit is 100_000). */
+    /** Default 90_000 (D1 limit is 100_000). */
     readonly bytes?: number
 }
 
 const DEFAULT_ROWS = 150
 const DEFAULT_BYTES = 90_000
 
-/** Quote a value as a SQLite literal. Dates/booleans must be encoded first. */
+/** Dates/booleans must be encoded before quoting. */
 export const quoteSql = (value: Sql): string => {
     if (value === null) return "NULL"
     if (typeof value === "boolean") return value ? "1" : "0"
@@ -34,11 +26,7 @@ export const quoteSql = (value: Sql): string => {
     return `'${value.replace(/'/g, "''")}'`
 }
 
-/**
- * Render rows as `INSERT OR IGNORE` statements, greedily grouped so that no
- * statement exceeds the row or byte limit. Returns one single-line statement
- * per group.
- */
+/** Greedy `INSERT OR IGNORE` groups under the row and byte limits. */
 export const insertStatements = (
     table: string,
     columns: readonly string[],
@@ -66,8 +54,7 @@ export const insertStatements = (
         const tuple = `(${row.map(quoteSql).join(", ")})`
         const width = tuple.length + 2
 
-        // A single row wider than the byte budget still gets its own statement:
-        // splitting a row is impossible, so let D1 report the oversized row.
+        // Oversized single row still gets its own statement — cannot split a row.
         if (
             group.length > 0 &&
             (group.length >= maxRows || bytes + width > maxBytes)

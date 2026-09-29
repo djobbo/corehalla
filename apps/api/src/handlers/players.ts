@@ -9,24 +9,6 @@ import { aliasRows } from "../helpers/aliases"
 import { buildPlayer } from "../aggregate/player"
 import type { Clan } from "@crh/bhapi/types"
 
-/**
- * The player profile, in one request.
- *
- * The page used to cost four: career stats, v0 ranked, v1 3v3 and the alias
- * index — and then the browser rolled the legends and weapons up itself. All of
- * that happens here, so the client renders a settled payload.
- *
- * Every upstream read comes back with the time it was fetched, and the response
- * reports the **oldest** of them. A profile is assembled from four cache entries
- * with independent freshness, so stamping it with the moment of assembly would
- * claim the clan card is as current as the stats beside it; `meta.updated_at`
- * is the age of the least-current part.
- *
- * The alias index is the exception to "fail loudly": it is decorative, and a
- * database problem must not take a profile down, so it degrades to "no aliases".
- * The clan card is enrichment too — its absence is a shorter page, not a failed
- * one.
- */
 export const playersGroup = HttpApiBuilder.group(
     CorehallaApi,
     "players",
@@ -50,23 +32,15 @@ export const playersGroup = HttpApiBuilder.group(
                     return yield* new HttpApiError.NotFound()
                 }
 
-                /*
-                 * The roster read needs the player's guild id, which only the
-                 * stats payload carries — `/player/guild` gives the membership,
-                 * `/guild/stats` + `/guild/members` give the guild. So it runs
-                 * after rather than beside the other three. It is cached under
-                 * its own key and is enrichment, so a failure is an absent card.
-                 */
-                const clan: { readonly value: Clan | null; readonly updatedAt: number } | null =
-                    stats.value.clan
-                        ? yield* brawlhalla
-                              .getClan(stats.value.clan.clan_id)
-                              .pipe(
-                                  Effect.catch(() =>
-                                      Effect.succeed(null),
-                                  ),
-                              )
-                        : null
+                // Needs guild id from stats; enrichment only — failure → absent card.
+                const clan: {
+                    readonly value: Clan | null
+                    readonly updatedAt: number
+                } | null = stats.value.clan
+                    ? yield* brawlhalla
+                          .getClan(stats.value.clan.clan_id)
+                          .pipe(Effect.catch(() => Effect.succeed(null)))
+                    : null
 
                 const aliases = yield* db
                     .getPlayerAliases(String(params.playerId))
@@ -76,20 +50,7 @@ export const playersGroup = HttpApiBuilder.group(
                         ),
                     )
 
-                /*
-                 * The player's own name, plus every 2v2 partner's.
-                 *
-                 * The partner half is not decoration: alias rows are written
-                 * *only* here — neither the gateway's `upsertPlayerStats` nor the
-                 * crawler touches `BHPlayerAlias` — so this is the only way a
-                 * teammate seen on a profile becomes searchable. It used to be
-                 * the ranked endpoint's job, and the aggregate has to carry it
-                 * now that a profile view no longer calls that endpoint.
-                 *
-                 * `aliasRows` drops the zero-id sentinel of a solo-queue row, so
-                 * spreading the pair is safe whether or not a real partner is
-                 * present.
-                 */
+                // Only write site for BHPlayerAlias (self + 2v2 partners); `aliasRows` drops solo-queue zero ids.
                 const rankedAliases = [
                     ...aliasRows({
                         id: stats.value.brawlhalla_id,
@@ -116,11 +77,7 @@ export const playersGroup = HttpApiBuilder.group(
                     )
                 }
 
-                /*
-                 * The oldest part, not now. `getPlayerStats` has already folded
-                 * its own clan *card* into that timestamp; this folds in the
-                 * roster read.
-                 */
+                // Oldest upstream part, not assembly time.
                 const updatedAt = Math.min(
                     stats.updatedAt,
                     ranked.updatedAt,

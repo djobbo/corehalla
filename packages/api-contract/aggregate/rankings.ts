@@ -1,26 +1,6 @@
 import { Schema } from "effect"
 import { PlayerRefSchema, TierSchema, envelope } from "./common"
 
-/**
- * The three live ladders, in `kubi`'s row shape.
- *
- * The gateway hands handlers the raw upstream rows (`Ranking1v1`,
- * `Ranking2v2`, `Ranking3v3`), which are a near-verbatim copy of v1's payload.
- * These are the product view of the same rows: a slug to link to, both members
- * of a team rather than a pre-joined `teamname` string, and — for 1v1 — an
- * optional best legend.
- *
- * ## Adaptations from kubi
- *
- * - `best_legend` is nullable on purpose. v1 stopped sending it, so a row only
- *   carries one when our own archive has crawled that player's legend table;
- *   `null` is "we do not know", not "no legend".
- * - `region` is our lowercase vocabulary (`us-e`, `jpn`), not v1's uppercase
- *   codes, so a row matches the `region` query parameter that asked for it.
- * - No `slug` on teammates inside `team`: the pair is one `PlayerRef` each, and
- *   a `PlayerRef` already carries its own slug.
- */
-
 const RankedRowSchema = Schema.Struct({
     rank: Schema.Number,
     rating: Schema.Number,
@@ -31,7 +11,6 @@ const RankedRowSchema = Schema.Struct({
     region: Schema.String,
 })
 
-/** The legend a player has the most games on, when we know it. */
 const BestLegendSchema = Schema.Struct({
     id: Schema.Number,
     name: Schema.String,
@@ -45,6 +24,7 @@ export const Ranking1v1RowSchema = Schema.Struct({
     id: Schema.Number,
     name: Schema.String,
     slug: Schema.String,
+    /** Null means unknown (v1 stopped sending it), not "no legend". */
     best_legend: Schema.NullOr(BestLegendSchema),
 })
 
@@ -78,14 +58,7 @@ export type Rankings1v1Envelope = typeof Rankings1v1EnvelopeSchema.Type
 export type Rankings2v2Envelope = typeof Rankings2v2EnvelopeSchema.Type
 export type Rankings3v3Envelope = typeof Rankings3v3EnvelopeSchema.Type
 
-/**
- * One row of the archive-backed career boards.
- *
- * These are ours, not upstream: the crawler materialises a row per player (and
- * per legend, and per weapon) and the board sorts on one of its columns. That
- * is why the same shape serves all three — the filter and the sorted column are
- * query parameters, not fields.
- */
+/** Same shape for player/legend/weapon boards; filter and sort column are query params. */
 export const CareerRankingSchema = Schema.Struct({
     id: Schema.String,
     name: Schema.String,
@@ -94,28 +67,20 @@ export const CareerRankingSchema = Schema.Struct({
     rating: Schema.Number,
     region: Schema.String,
     peakRating: Schema.Number,
-    /** The value of whichever column the request sorted by. */
+    /** Value of whichever column the request sorted by. */
     prop: Schema.Number,
 })
 
 export type CareerRanking = typeof CareerRankingSchema.Type
 
-/**
- * A career-board row before the HTTP layer adds its URL segment.
- *
- * As with the lookup rows, the archive builds the data and has no business
- * knowing what a profile URL looks like. See `LookupResultInput`.
- */
+/** Archive builds the row; HTTP layer adds the slug. See `LookupResultInput`. */
 export type CareerRankingInput = Omit<CareerRanking, "slug">
 
 export const CareerRankingsSchema = Schema.Array(CareerRankingSchema)
 
 /**
- * One ladder entry the activity sampler saw queue.
- *
- * An entry rather than a player, because the ladders differ: a 1v1 or 3v3 row
- * is one player and a 2v2 row is a team. `members` is where that shows, and it
- * is always a list so the renderer does not branch.
+ * One ladder entry (player or team). `members` is always a list so the
+ * renderer does not branch on bracket.
  */
 export const QueuedEntrySchema = Schema.Struct({
     id: Schema.String,
@@ -131,7 +96,7 @@ export const QueuedEntrySchema = Schema.Struct({
     tier: Schema.String,
     games: Schema.Number,
     wins: Schema.Number,
-    /** Epoch milliseconds; only ever compared against "now". */
+    /** Epoch milliseconds; only compared against "now". */
     queuedAt: Schema.Number,
     rank: Schema.Number,
     ratingDelta: Schema.Number,
@@ -142,7 +107,6 @@ export type QueuedEntry = typeof QueuedEntrySchema.Type
 
 export const RankedQueueSchema = Schema.Array(QueuedEntrySchema)
 
-/** One row of the clan leaderboard, straight off the `BHClan` table. */
 export const ClanRankingSchema = Schema.Struct({
     id: Schema.String,
     name: Schema.String,
@@ -156,7 +120,6 @@ export type ClanRanking = typeof ClanRankingSchema.Type
 
 export const ClansSchema = Schema.Array(ClanRankingSchema)
 
-/** One legend's participation totals in a weekly rotation. */
 export const LegendSchema = Schema.Struct({
     legend_id: Schema.Number,
     legend_name_key: Schema.String,

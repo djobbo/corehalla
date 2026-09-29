@@ -1,21 +1,11 @@
 import { useState } from "react"
 import type { ReactNode } from "react"
 
-/**
- * Client-side sorting for the player page's lists.
- *
- * The legacy app grew a comparable hook around `useMemo`; this one sorts on
- * every render instead. That is deliberate: the lists are at most a few dozen
- * rows, the comparator is a numeric subtraction, and a memo keyed on an options
- * object literal — which callers rebuild every render anyway — is a dependency
- * trap for no measurable gain.
- */
 export type SortDirection = "asc" | "desc"
 
 export type SortOption<T> = {
     readonly label: string
     readonly compare: (a: T, b: T) => number
-    /** Shown at the end of the row, so the sorted figure is the visible one. */
     readonly display?: (item: T) => ReactNode
 }
 
@@ -24,6 +14,7 @@ export type SortChoice<K extends string> = {
     readonly label: string
 }
 
+/** Sorts every render on purpose — lists are small; memoizing options is a trap. */
 export const useSortBy = <T, K extends string>(
     items: readonly T[],
     options: Record<K, SortOption<T>>,

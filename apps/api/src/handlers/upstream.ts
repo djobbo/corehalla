@@ -6,26 +6,8 @@ import { Brawlhalla } from "@crh/core/services/upstream"
 import { Database, searchKey } from "@crh/core/services/archive"
 import { Background } from "@crh/core/services/background"
 import { aliasRows } from "../helpers/aliases"
-import type {
-    Ranking1v1,
-    Ranking2v2,
-    Ranking3v3,
-} from "@crh/bhapi/types"
+import type { Ranking1v1, Ranking2v2, Ranking3v3 } from "@crh/bhapi/types"
 
-/**
- * Brawlhalla's own answers, verbatim.
- *
- * This is the old pass-through surface, moved under one prefix so the split
- * between "our product endpoints" and "Brawlhalla's payloads" is visible in the
- * URL. The handlers are otherwise unchanged: they still feed the alias and clan
- * indexes, because a client that asks for the raw payload has still told us
- * that this player exists, and dropping that write would make the raw surface
- * strictly worse than it was.
- *
- * A client should prefer the aggregate beside each of these. They exist for
- * parity and debugging — when an aggregate looks wrong, the way to tell whether
- * the bug is ours or upstream's is to ask for the raw payload next to it.
- */
 export const upstreamGroup = HttpApiBuilder.group(
     CorehallaApi,
     "upstream",
@@ -38,9 +20,8 @@ export const upstreamGroup = HttpApiBuilder.group(
             handlers
                 .handle("getPlayerStats", ({ params }) =>
                     Effect.gen(function* () {
-                        const { value: stats } = yield* brawlhalla.getPlayerStats(
-                            params.playerId,
-                        )
+                        const { value: stats } =
+                            yield* brawlhalla.getPlayerStats(params.playerId)
 
                         if (!stats) return null
 
@@ -70,9 +51,8 @@ export const upstreamGroup = HttpApiBuilder.group(
                 )
                 .handle("getPlayerRanked", ({ params }) =>
                     Effect.gen(function* () {
-                        const { value: ranked } = yield* brawlhalla.getPlayerRanked(
-                            params.playerId,
-                        )
+                        const { value: ranked } =
+                            yield* brawlhalla.getPlayerRanked(params.playerId)
 
                         if (!ranked) return null
 
@@ -94,17 +74,12 @@ export const upstreamGroup = HttpApiBuilder.group(
                         return ranked
                     }),
                 )
-                /*
-                 * 3v3 has no v0 fallback and no 2v2 payload to piggyback on, so it
-                 * is its own read. It still feeds the alias index, which is what
-                 * makes a renamed player findable after a profile view in *any*
-                 * ranked mode rather than only in 1v1/2v2.
-                 */
                 .handle("getPlayer3v3Ranked", ({ params }) =>
                     Effect.gen(function* () {
-                        const { value: ranked } = yield* brawlhalla.getPlayer3v3Ranked(
-                            params.playerId,
-                        )
+                        const { value: ranked } =
+                            yield* brawlhalla.getPlayer3v3Ranked(
+                                params.playerId,
+                            )
 
                         if (!ranked) return null
 
@@ -121,13 +96,14 @@ export const upstreamGroup = HttpApiBuilder.group(
                     }),
                 )
                 .handle("getPlayerAliases", ({ params }) =>
-                    // Aliases are decorative: a database problem must not take the
-                    // player page down.
-                    db.getPlayerAliases(params.playerId.toString()).pipe(
-                        Effect.catch(() =>
-                            Effect.succeed([] as readonly string[]),
+                    // Decorative: a DB failure must not take the page down.
+                    db
+                        .getPlayerAliases(params.playerId.toString())
+                        .pipe(
+                            Effect.catch(() =>
+                                Effect.succeed([] as readonly string[]),
+                            ),
                         ),
-                    ),
                 )
                 .handle("getClanStats", ({ params }) =>
                     Effect.gen(function* () {
@@ -196,8 +172,7 @@ export const upstreamGroup = HttpApiBuilder.group(
                         return board.value as readonly Ranking2v2[]
                     }),
                 )
-                // v1-only: the legacy API has no 3v3 mode, so there is no fallback
-                // source and an incomplete v1 page surfaces as an empty ladder.
+                // v1-only: no legacy fallback; incomplete page → empty ladder.
                 .handle("get3v3Rankings", ({ query }) =>
                     Effect.gen(function* () {
                         const board = yield* brawlhalla.getRankings(

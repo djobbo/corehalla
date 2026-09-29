@@ -1,7 +1,5 @@
 {
-    // The Alchemy stack lives at the repo root; this project type-checks just
-    // that file (run via the root `ts:check` script before the per-package
-    // checks). Everything else is checked by its own package.
+    // Type-checks `alchemy.run.ts` only. Each package checks its own sources.
     "include": ["alchemy.run.ts"],
     "exclude": ["node_modules"],
     "compilerOptions": {

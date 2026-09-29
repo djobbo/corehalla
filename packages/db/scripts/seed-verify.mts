@@ -1,21 +1,7 @@
 #!/usr/bin/env node
 /**
- * Local, offline validation of the D1 schema, the seed generator and any
- * generated import file.
- *
- * Applies every generated migration to a `node:sqlite` database (no D1, no
- * billing, no wrangler), then either runs a small deterministic slice of the
- * seed generator or replays real `.sql` files line by line. Finally it checks
- * the row counts, foreign keys and that the hot queries use the indexes they
- * are supposed to.
- *
- *   pnpm db:seed:verify
- *   pnpm db:seed:verify -- --rows=50000
- *   pnpm db:seed:verify -- --dir=packages/db/seed/generated/supabase
- *   pnpm db:seed:verify -- --dir=... --db=/tmp/corehalla-verify.sqlite
- *
- * `--dir` paths are resolved from the repo root. Generated files hold one
- * statement per line, which is what makes the line-by-line replay possible.
+ * Offline validation: apply migrations to `node:sqlite`, seed or replay `.sql`,
+ * then check FKs and that hot queries use the expected indexes.
  */
 import {
     createReadStream,
@@ -65,7 +51,6 @@ if (databasePath !== ":memory:" && existsSync(databasePath)) {
 
 const database = new DatabaseSync(databasePath)
 
-// 1. Schema — the same migrations Alchemy applies at deploy.
 const migrations = readdirSync(migrationsDir)
     .filter((entry) => /^\d/.test(entry))
     .sort()
@@ -75,14 +60,8 @@ if (migrations.length === 0) {
 }
 
 /**
- * Splits a generated migration exactly the way D1 does.
- *
- * The `--> statement-breakpoint` marker is a *SQL comment*, so running a whole
- * file through `DatabaseSync#exec` silently succeeds on any SQLite build —
- * including one that rejects a statement D1 would refuse. D1 splits on the
- * marker and validates each statement on its own, so mirroring that split is
- * what makes this script able to catch a migration D1 would reject. It also
- * means each statement is validated independently rather than as one blob.
+ * Split on `--> statement-breakpoint` the way D1 does — `exec` of a whole file
+ * would silently accept statements D1 rejects when run alone.
  */
 const splitMigration = (sql: string): string[] =>
     sql
@@ -90,13 +69,7 @@ const splitMigration = (sql: string): string[] =>
         .map((statement) => statement.trim())
         .filter((statement) => statement.length > 0)
 
-/**
- * Applies the migration chain.
- *
- * `through` is an inclusive upper bound and `after` an exclusive lower bound, so
- * the upgrade check can replay "old schema, then everything that came after it"
- * against a database that already holds data.
- */
+/** `through` inclusive upper bound; `after` exclusive lower bound. */
 const applyMigrations = (
     target: DatabaseSync,
     through?: string,
@@ -123,7 +96,6 @@ let statements = 0
 if (directory === undefined) {
     database.exec("PRAGMA foreign_keys = ON")
 
-    // 2a. Seed — a small, deterministic slice of the same generator the CLI uses.
     for (const statement of generateSeedSql({
         rows,
         chunk,
@@ -134,9 +106,7 @@ if (directory === undefined) {
         statements++
     }
 } else {
-    // 2b. Replay generated files. Foreign keys are checked once at the end so
-    // the load can run inside a single transaction and in files that follow the
-    // generator's parent-before-child ordering.
+    // FK check once at end so load can stay in one txn with parent-before-child files.
     const files = readdirSync(directory)
         .filter((entry) => entry.endsWith(".sql"))
         .sort()
@@ -217,20 +187,12 @@ const check = (label: string, actual: unknown, expected: unknown) => {
 }
 
 /**
- * 1b. The upgrade path, which the checks above cannot cover.
- *
- * Everything above starts from an empty database, so it only ever exercises the
- * `CREATE TABLE` route. A database that already ran the previous migrations
- * reaches the same schema through `ALTER TABLE ... ADD COLUMN`, and SQLite
- * refuses a non-constant default there ("Cannot add a column with non-constant
- * default") — the exact failure a real deploy hit. It also leaves the mirrored
- * lowercase columns at their default, which would make every existing row
- * unsearchable, so the backfill is asserted here too.
+ * Upgrade path: empty-DB checks miss `ALTER TABLE ... ADD COLUMN` (D1 rejects
+ * non-constant defaults) and lowercase-column backfill.
  */
 if (directory === undefined && migrations.length > 1) {
     const upgrade = new DatabaseSync(":memory:")
 
-    // The previous schema, with real rows in it.
     applyMigrations(upgrade, migrations[0])
 
     upgrade.exec(
@@ -243,7 +205,6 @@ if (directory === undefined && migrations.length > 1) {
                 ('upgrade-2', 'UPGRADE TWO', 888, 1)`,
     )
 
-    // The rest of the chain, as D1 would replay it.
     applyMigrations(upgrade, undefined, migrations[0])
 
     const upgradeScalar = (sql: string): number =>
@@ -253,9 +214,7 @@ if (directory === undefined && migrations.length > 1) {
         )
 
     console.log("\n-- upgrade path (previous schema + rows -> current)")
-    // Reaching this line at all is the headline assertion: `applyMigrations`
-    // above replays the chain statement by statement, so a non-constant default
-    // (or any other statement D1 rejects) would have thrown before here.
+    // Reaching here means statement-by-statement replay did not throw (e.g. non-constant default).
     check(
         "upgraded table set",
         upgradeScalar(
@@ -318,9 +277,7 @@ const checkIndex = (label: string, sql: string, index: string) => {
         if (!ok) failures++
         console.log(`${ok ? "PASS" : "FAIL"} ${label} uses ${index}: ${detail}`)
     } else {
-        // A small or partial import cannot prove planner behaviour, so report
-        // the plan instead of failing: seed mode is where the index
-        // assertions are meaningful.
+        // Partial import cannot prove planner behaviour — report only; seed mode asserts.
         console.log(
             `INFO ${label} ${ok ? "uses" : "does NOT use"} ${index}: ${detail}`,
         )
@@ -382,8 +339,7 @@ check(
     0,
 )
 
-// 3. The hot read paths must be indexed, and the search queries must not fall
-// back to a temp B-tree sort.
+// Hot paths must use indexes; searches must not fall back to a temp B-tree sort.
 const aliasPrefix = prefixOf("BHPlayerAlias", "aliasLower", 3)
 const clanPrefix = prefixOf("BHClan", "nameLower", 3)
 
@@ -394,10 +350,7 @@ checkIndex(
     "BHPlayerData_xp_idx",
 )
 
-// The exact shape the alias search runs: filters and orders on `aliasLower`
-// only. It must be an index *search* (a bounded range, not a full index walk)
-// and it must avoid a temp B-tree, which is the difference between a bounded
-// index walk and sorting every prefix match.
+// Alias search: index range on aliasLower only — no full walk, no temp B-tree.
 const aliasPlan = plan(
     `SELECT "playerId", alias FROM "BHPlayerAlias"
      WHERE "aliasLower" >= '${aliasPrefix}' AND "aliasLower" < '${aliasPrefix}\uFFFF'
@@ -431,16 +384,13 @@ check(
     false,
 )
 
-// The `xp`-ranked clan listing (empty search box) keeps its own index.
 checkIndex(
     "clan rankings (ORDER BY xp)",
     `SELECT * FROM "BHClan" ORDER BY xp DESC LIMIT 50 OFFSET 0`,
     "BHClan_xp_idx",
 )
 
-// The mirrored lowercase columns must actually be lowercase, or every prefix
-// search silently misses: a name stored as "Clan 1" with "Clan 1" in
-// `nameLower` would never match the needle "clan".
+// Mirrored lowercase must actually be lowercase or prefix search silently misses.
 const aliasLowerMismatch = scalar(
     `SELECT count(*) as n FROM "BHPlayerAlias"
      WHERE "aliasLower" <> lower("alias")`,
@@ -452,8 +402,7 @@ const clanLowerMismatch = scalar(
 )
 check("BHClan.nameLower mirrors name", clanLowerMismatch, 0)
 
-// The alias prefix index must exist even when a broad prefix makes the planner
-// prefer another index.
+// Index must exist even when a broad prefix makes the planner prefer another.
 const aliasIndexes = (
     database.prepare(`PRAGMA index_list('BHPlayerAlias')`).all() as {
         name?: unknown
@@ -478,8 +427,7 @@ check(
     true,
 )
 
-// 4. The grouped alias search (what `/api/effect/search/players` runs). Only
-// meaningful for the synthetic seed, where the aliases are known.
+// Grouped alias search — meaningful for the synthetic seed only.
 if (directory === undefined) {
     const aliasRows = database
         .prepare(

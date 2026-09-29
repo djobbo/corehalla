@@ -9,16 +9,6 @@ import { legacyOps } from "./legacy"
 import { v1Ops } from "./v1"
 import { USER_AGENT, withUserAgent } from "./user-agent"
 
-/**
- * The identifying `User-Agent`.
- *
- * Effect's fetch client sends none, so without this the crawler is an anonymous
- * client making a few thousand requests an hour — the first thing a provider
- * blocks. These assertions exist so the header cannot quietly disappear from one
- * of the two client construction points.
- */
-
-/** A client that records the requests it is asked to send and answers `{}`. */
 export const capturingClient = () => {
     const requests: HttpClientRequest.HttpClientRequest[] = []
 
@@ -55,8 +45,6 @@ describe("withUserAgent", () => {
         const agent = userAgentOf(requests[0]!)
 
         expect(agent).toBe(USER_AGENT)
-        // The identity has to be actionable: a project name and somewhere to
-        // read about it, not a bare token like "node-fetch".
         expect(agent).toContain("Corehalla")
         expect(agent).toContain("https://corehalla.com")
     })
@@ -72,8 +60,6 @@ describe("withUserAgent", () => {
             ),
         )
 
-        // A single value, not `some-other/9, Corehalla/1.0`: two identities in
-        // one header is worse than none, because neither can be acted on.
         expect(userAgentOf(requests[0]!)).toBe(USER_AGENT)
     })
 })
@@ -100,9 +86,6 @@ describe("v1 client", () => {
 
 describe("legacy v0 client", () => {
     it("sends the identifying User-Agent on a rankings read", async () => {
-        // `legacyOps` attaches the API key on every request, and the key
-        // resolver reads `process.env` before the Worker bindings. Stubbing it
-        // here keeps the assertion about the header rather than about secrets.
         process.env["BRAWLHALLA_API_KEY"] = "test-key"
 
         try {

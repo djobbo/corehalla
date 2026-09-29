@@ -1,29 +1,12 @@
-/**
- * Brawlhalla's guild level curve, taken from kubi.
- *
- * `guildLevels[i]` is the cumulative XP required to reach level `i + 1`, and
- * the values are the game's own thresholds rather than anything the API
- * reports — `/guild/stats` sends total XP and nothing about levelling, so the
- * level and the progress bar are derived here or not at all.
- */
+// `guildLevels[i]` is cumulative XP to reach level `i + 1` (game thresholds; API sends XP only).
 const guildLevels = [0, 20_000, 200_000, 800_000, 2_000_000] as const
 
 const clamp = (value: number, min: number, max: number): number =>
     Math.min(Math.max(value, min), max)
 
 /**
- * The guild's level and how far it is through it, as a percentage.
- *
- * `findIndex` finds the first threshold at or above the guild's XP, so the
- * index is the *next* level's slot and the level itself is one below it. Two
- * inputs fall outside that reading and are handled explicitly:
- *
- * - Past the last threshold, `findIndex` is `-1`. The curve has no next slot,
- *   so the guild sits at the cap, level `guildLevels.length`, at `100%`.
- * - At zero XP the index is `0`, which has no previous slot to measure from.
- *   Kubi's original divides by that missing slot and reports the cap, which
- *   would put a brand-new guild at max level; this returns level 1 at `0%`
- *   instead.
+ * `findIndex` is the next threshold. Past the last → cap at 100%. Index 0 (zero XP)
+ * has no previous slot — return level 1 at 0%, not the cap.
  */
 export const guildLevel = (
     guildXp: number,

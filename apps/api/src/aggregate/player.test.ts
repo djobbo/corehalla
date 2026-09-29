@@ -4,16 +4,6 @@ import { playerRankedMock } from "@crh/bhapi/mocks/playerRanked"
 import { playerStatsMock } from "@crh/bhapi/mocks/playerStats"
 import { buildPlayer } from "./player"
 
-/**
- * The player aggregate.
- *
- * It is pure — every network and database read is a parameter — so the rules
- * that decide what a profile says are testable without either. These pin the
- * things a reader would notice if they broke: that the totals add up, that a
- * weapon list contains only weapons actually held, that the current name is not
- * repeated as an alias, and that the two upstreams' vocabularies are translated
- * rather than passed through.
- */
 const build = () =>
     buildPlayer(
         {
@@ -28,9 +18,6 @@ const build = () =>
 
 describe("buildPlayer", () => {
     it("stamps the envelope with the age it was handed, not its own clock", () => {
-        // The handler passes the *oldest* upstream read behind the payload;
-        // taking `Date.now()` here instead would report the moment of assembly
-        // and overstate how current the profile is.
         expect(build().meta.updated_at).toBe(1_700_000_000_000)
     })
 
@@ -94,8 +81,6 @@ describe("buildPlayer", () => {
         const ranked = build().data.ranked
 
         expect(ranked?.["1v1"]?.region).toBe("us-e")
-        // 3v3 was not supplied, so there is no 3v3 card — a payload existing is
-        // not the same as a record.
         expect(ranked?.["3v3"]).toBeNull()
     })
 

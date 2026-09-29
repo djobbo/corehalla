@@ -5,7 +5,6 @@ import { to2v2Rows } from "@/lib/ladderRows"
 import { resolvePage, resolveRegion } from "@/lib/routeParams"
 import { preloadAtoms, rankings2v2Atom, useQuery } from "@/effect/atoms"
 
-/** The 2v2 ladder. Same view as 1v1; a row is a team of two. */
 export const Route = createFileRoute("/rankings/live/2v2/{-$region}/{-$page}")({
     loader: ({ params, context }) =>
         preloadAtoms(context, [

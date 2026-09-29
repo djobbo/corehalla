@@ -1,14 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
-/**
- * The old address of the guild leaderboard.
- *
- * Clans are guilds now, so the public URL is `/rankings/guilds`. The code and
- * the database still say clan; this redirect and the `clan` column names are the
- * only places the old name survives, purely for backwards compatibility with
- * indexed links. The `?q=` search rides along unchanged.
- */
-
 type LegacyClanSearch = { q?: string | undefined }
 
 export const Route = createFileRoute("/rankings/clans/{-$page}")({

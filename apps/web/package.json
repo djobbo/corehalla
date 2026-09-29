@@ -51,6 +51,6 @@
         "tailwindcss": "^4.3.3",
         "typescript": "7.0.2",
         "vite": "^8.0.14",
-        "vite-plus": "0.3.3"
+        "vite-plus": "1.0.0"
     }
 }

@@ -2,16 +2,6 @@ import { describe, expect, it } from "vitest"
 import { toRankedQueueRows } from "./player-writes"
 import type { Ranking1v1, Ranking2v2, Ranking3v3 } from "@crh/bhapi/types"
 
-/**
- * A ladder page as queue rows.
- *
- * The queue is keyed by (player, bracket) but a 2v2 ladder row carries a *team*
- * — two players and one shared game count — so the mapping has real decisions
- * in it rather than being a rename. Getting one wrong is quiet: the row still
- * writes, and the queue simply reports the wrong people, or reports the same
- * person as having played when a quieter team of theirs was sampled.
- */
-
 const seenAt = new Date("2026-01-01T00:00:00Z")
 
 const solo = (id: number, name: string, games: number): Ranking1v1 => ({
@@ -70,18 +60,11 @@ describe("toRankedQueueRows", () => {
             games: 42,
             wins: 37,
             rank: 1,
-            // Placeholders: the real deltas are computed in SQL against the
-            // row's previous values, which the mapper never sees.
             ratingDelta: 0,
             rankDelta: 0,
         })
     })
 
-    /*
-     * Whether the player queued is decided in SQL, by comparing this row's
-     * `games` against the stored one. Setting it here would announce every
-     * first observation as activity.
-     */
     it("never stamps queuedAt itself", () => {
         const rows = toRankedQueueRows(
             "1v1",
@@ -113,9 +96,6 @@ describe("toRankedQueueRows", () => {
     })
 
     it("drops a solo-queue 2v2 row, which is not a team", () => {
-        // The zero id is Brawlhalla's "no player" sentinel. The row is the
-        // player's own solo record rather than a pairing, so there is no team
-        // to track and nothing to report.
         const rows = toRankedQueueRows(
             "2v2",
             "eu",
@@ -126,13 +106,6 @@ describe("toRankedQueueRows", () => {
         expect(rows).toHaveLength(0)
     })
 
-    /*
-     * A player can hold several teams near the top of the 2v2 ladder. Each is
-     * its own entry with its own count, and none of them can be mistaken for
-     * another — which is the whole reason the queue is keyed by team rather
-     * than by player. Under a player key these two rows collided, and which
-     * count survived depended on the order the pages were sampled.
-     */
     it("keeps a player's two teams as separate entries", () => {
         const rows = toRankedQueueRows(
             "2v2",

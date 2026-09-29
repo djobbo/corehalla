@@ -1,5 +1,6 @@
 import { and, eq, sql } from "@crh/db/query"
 import { Context, Effect, Layer, Option } from "effect"
+import { HttpClient } from "effect/unstable/http"
 import { Database as SqlDatabase } from "@crh/db/client"
 import {
     userConnection,
@@ -19,17 +20,8 @@ import type {
 } from "@crh/db/schema"
 
 /**
- * App-owned authentication.
- *
- * Supabase Auth used to own identity and hand the browser a JWT plus the
- * Discord provider token. Here the tokens stay on the server: the browser holds
- * one opaque session cookie, `UserSession.id` is its SHA-256 digest, and the
- * Discord access/refresh tokens live in the same row. Every read or write is
- * scoped by the `userId` this service resolves from that cookie.
- *
- * The service takes the request's *parsed* cookies rather than a `Headers`, so
- * it has no opinion about the HTTP platform. The API's handlers hand it
- * `HttpServerRequest.cookies`, and a test can hand it a literal record.
+ * Sessions and favourites keyed by the opaque session cookie.
+ * Discord tokens stay in the session row; callers pass parsed cookies.
  */
 
 export type AuthSession = {
@@ -100,21 +92,25 @@ export const layer = Layer.effect(
     Auth,
     Effect.gen(function* () {
         const db = yield* SqlDatabase
+        const http = yield* HttpClient.HttpClient
 
-        /** Wraps the whole auth program so failures stay in the error channel. */
         const guard = <A, E, R>(
             effect: Effect.Effect<A, E, R>,
-        ): Effect.Effect<A, AuthError, R> =>
-            effect.pipe(Effect.mapError((cause) => new AuthError({ cause })))
+        ): Effect.Effect<A, AuthError, Exclude<R, HttpClient.HttpClient>> =>
+            effect.pipe(
+                Effect.mapError((cause) => new AuthError({ cause })),
+                Effect.provideService(HttpClient.HttpClient, http),
+            )
 
-        const sessionIdOf = (cookies: Readonly<Record<string, string>>) =>
-            Effect.gen(function* () {
-                const token = cookies[SESSION_COOKIE]
+        const sessionIdOf = Effect.fnUntraced(function* (
+            cookies: Readonly<Record<string, string>>,
+        ) {
+            const token = cookies[SESSION_COOKIE]
 
-                if (!token) return null
+            if (!token) return null
 
-                return yield* Effect.promise(() => sha256Hex(token))
-            })
+            return yield* Effect.promise(() => sha256Hex(token))
+        })
 
         return Auth.of({
             getSession: (cookies) =>
@@ -254,9 +250,11 @@ export const layer = Layer.effect(
                             .returning()
 
                         if (!user) {
-                            throw new Error(
-                                "Failed to upsert the Discord profile",
-                            )
+                            return yield* new AuthError({
+                                cause: new Error(
+                                    "Failed to upsert the Discord profile",
+                                ),
+                            })
                         }
 
                         return user
@@ -297,7 +295,9 @@ export const layer = Layer.effect(
                             .returning()
 
                         if (!row) {
-                            throw new Error("Failed to save the favorite")
+                            return yield* new AuthError({
+                                cause: new Error("Failed to save the favorite"),
+                            })
                         }
 
                         return row

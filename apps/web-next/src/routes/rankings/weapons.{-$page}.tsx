@@ -1,16 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
 import { resolvePage, resolveWeapon } from "@/lib/routeParams"
 
-/**
- * The old address of the per-weapon board.
- *
- * Weapons used to be a filter on a shared `/rankings/weapons` page, selected by
- * `?weapon=`. They live at `/rankings/career/weapons/:weapon` now, so this
- * exists to keep the indexed URLs working: the weapon is folded into the path
- * (and the old query value honoured) while a 308 marks the new address
- * canonical.
- */
-
 type LegacyWeaponSearch = {
     weapon?: string | undefined
     sortBy?: string | undefined

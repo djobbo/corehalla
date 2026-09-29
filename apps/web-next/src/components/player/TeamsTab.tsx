@@ -11,18 +11,6 @@ import type { PlayerRankedTeam } from "@crh/api-contract/schemas"
 import type { SortOption } from "@/lib/useSortBy"
 import type { Stat } from "@/components/StatGrid"
 
-/**
- * Every 2v2 team this player has queued with.
- *
- * A summary of the season's teams first — totals are what a 2v2 profile is
- * usually asked for — then the teams themselves as a grid of cards, because each
- * one is a pair of people rather than a row in a table.
- *
- * The teams come from the profile aggregate's `ranked["2v2"]`, which the server
- * already split into real pairings and solo-queue rows. Only the pairings are
- * teams; the solo row gets its own card on the overview.
- */
-
 type Team = PlayerRankedTeam
 
 type TeamSort = "rating" | "peak" | "games" | "wins" | "losses" | "winrate"
@@ -65,7 +53,7 @@ const sortOptions: Record<TeamSort, SortOption<Team>> = {
 
 export const TeamsTab = ({ playerId }: { readonly playerId: number }) => {
     const envelope = useQuery(playerProfileAtom(playerId))
-    /* Solo-queue rows are not teams and get their own card on the overview. */
+
     const teams = (envelope.data.ranked?.["2v2"]?.teams ?? []).filter(
         (team: Team) => team.paired,
     )
@@ -129,7 +117,6 @@ export const TeamsTab = ({ playerId }: { readonly playerId: number }) => {
                     <StatGrid stats={summary} />
                 </CardContent>
             </Card>
-
             <SortControl
                 label="Sort by"
                 value={sort.key}
@@ -139,7 +126,6 @@ export const TeamsTab = ({ playerId }: { readonly playerId: number }) => {
                 onToggleDirection={sort.toggleDirection}
                 className="sm:max-w-sm"
             />
-
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {sort.sorted.map((team) => (
                     <TeamCard

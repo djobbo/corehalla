@@ -75,11 +75,6 @@ export const getGlory = (
     }
 }
 
-/**
- * Get Legend or Team elo after season reset
- * @param rating Rating
- * @returns Elo Reset
- */
 export const getLegendEloReset = (rating: number): number =>
     rating < 2000
         ? Math.floor((rating + 375) / 1.5)

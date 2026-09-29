@@ -6,16 +6,6 @@ import type {
     Rankings3v3Envelope,
 } from "@crh/api-contract/schemas"
 
-/**
- * The ladder envelopes, flattened into table rows.
- *
- * The API sends product rows — a slug per player and, for 2v2, the pair as a
- * tuple — so this is a shape change and nothing else. Two properties are worth
- * pinning: the row links to the slug rather than the id, and a solo-queue 2v2
- * row (a zero-id phantom partner) renders as one member rather than as a
- * nameless second one.
- */
-
 const meta = { updated_at: 1_700_000_000_000 }
 
 const ref = (id: number, name: string) => ({
@@ -43,7 +33,6 @@ const oneVsOne: Rankings1v1Envelope = {
             rank: 2,
             rating: 2400,
             peak_rating: 2400,
-            // v1 reports the top tier as null; the table needs a label.
             tier: null,
             games: 10,
             wins: 5,
@@ -83,7 +72,6 @@ const twoVsTwo: Rankings2v2Envelope = {
             games: 5,
             wins: 2,
             region: "eu",
-            // A solo queue: the server marks the phantom partner with id 0.
             team: [ref(3, "Solo"), { id: 0, name: "", slug: "0-" }],
         },
     ],

@@ -21,35 +21,12 @@ import type { RankedRegion } from "@crh/bhapi/constants"
 const BH_API_BASE = "https://api.brawlhalla.com"
 const DAIR_GG_API_BASE = "https://api.dair.gg/proxy/brawlhalla-api"
 
-/**
- * Serve the bundled fixtures instead of calling Brawlhalla.
- *
- * The Start app read `import.meta.env.DEV`, which only exists under Vite; the
- * API worker is bundled by rolldown, so this reads `NODE_ENV` instead. With
- * fixtures on, no `BRAWLHALLA_API_KEY` is needed for local work.
- */
+/** rolldown has no `import.meta.env.DEV` — use NODE_ENV. */
 const __DEV = globalThis.process?.env?.["NODE_ENV"] === "development"
 
-/**
- * The **legacy** (v0) Brawlhalla API.
- *
- * This is the richest source for the shapes Corehalla renders and the only one
- * for some of them — see the capability table in `./index.ts` for which
- * operations still go here and why. `null` means "the upstream does not know
- * this resource", which the handlers turn into a real 404.
- *
- * The dair.gg proxy is preferred and the official API is the fallback path.
- */
+/** Legacy v0 API; dair.gg first, official API fallback. `null` → handlers 404. */
 export const legacyOps = (client: HttpClient.HttpClient) => {
-    // `filterStatusOk` turns non-2xx responses into `HttpClientError`s:
-    // Brawlhalla answers a rejected request with its error envelope
-    // (`{"error":{"code":403,"message":"Forbidden"}}`), which would otherwise be
-    // cast to the requested type and surface downstream as a decode error. As an
-    // error it is retried (429/5xx) and falls back to the official API instead.
-    //
-    // `withUserAgent` is applied here too: this path reaches Brawlhalla through
-    // the dair.gg proxy and then the official API, and the official API is the
-    // one that has to be able to identify us.
+    // filterStatusOk: error envelope must not be cast as success and fail as decode.
     const http = withUserAgent(HttpClient.filterStatusOk(client))
 
     const getJson = <A>(
@@ -93,9 +70,6 @@ export const legacyOps = (client: HttpClient.HttpClient) => {
         ): Effect.Effect<readonly (Ranking1v1 | Ranking2v2)[]> =>
             __DEV
                 ? Effect.sync(() => {
-                      // The fixtures only describe the first page; later pages
-                      // are empty so infinite scroll terminates the same way it
-                      // does against the real API.
                       if (page > 1) return []
 
                       if (bracket === "1v1") {

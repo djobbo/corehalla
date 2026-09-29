@@ -23,38 +23,13 @@ import type {
     PlayerWeapon,
 } from "@crh/api-contract/schemas"
 
-/**
- * Assembles the whole player profile from the pieces the gateway hands back.
- *
- * This is corehalla's answer to kubi's `getPlayerById`: the four reads a
- * profile used to make from the browser — career stats, v0 ranked, v1 3v3 and
- * the alias index — plus every roll-up the tabs rendered are resolved here,
- * once, into one payload.
- *
- * The work is deliberately pure. Everything that needs a network or a database
- * is a parameter, so the assembly rules — which bracket counts toward glory,
- * what a missing legend stat becomes, how a solo-queue 2v2 row is marked — are
- * testable without either, and a wrong number can be traced to a decision
- * rather than to a response.
- */
-
-/** The number a v1 payload spells as a string, or `0` when it is absent. */
 const int = (value: string | number | undefined): number =>
     typeof value === "number" ? value : Number.parseInt(value ?? "0", 10)
 
-/** A region as our lowercase vocabulary, or `null` when the source has none. */
 const regionOf = (region: string | undefined | null): string | null =>
     region ? region.toLowerCase() : null
 
-/**
- * The player's former names, in the order the archive returned them.
- *
- * That order is `createdAt DESC` — most recently first seen — which is the order
- * the profile header has always shown them in. The current name is dropped
- * rather than repeated as its own alias, and duplicates are collapsed because
- * two spellings of the same name differing only in case are the same alias to a
- * reader.
- */
+// Archive order is `createdAt DESC`; drop the current name and case-insensitive dupes.
 const aliasList = (
     aliases: readonly string[],
     currentName: string,
@@ -74,7 +49,6 @@ const aliasList = (
     return result
 }
 
-/** One legend's record, with both weapon slots and its ranked standing. */
 const toLegend = (legend: FullLegend): PlayerLegend => {
     const stats = legend.stats
     const weaponOneHeld = stats?.timeheldweaponone ?? 0
@@ -90,8 +64,6 @@ const toLegend = (legend: FullLegend): PlayerLegend => {
         stats: {
             xp: stats?.xp ?? 0,
             level: stats?.level ?? 0,
-            // A capped legend reports `100` rather than whatever fraction the
-            // upstream left behind, the same normalisation the old client did.
             xp_percentage:
                 stats?.level === 100 ? 100 : (stats?.xp_percentage ?? 0),
             damage_dealt: int(stats?.damagedealt),
@@ -119,10 +91,7 @@ const toLegend = (legend: FullLegend): PlayerLegend => {
         unarmed: {
             damage_dealt: int(stats?.damageunarmed),
             kos: stats?.kounarmed ?? 0,
-            // Not reported directly: "match time not spent holding a weapon"
-            // is the definition, and the two weapon timers are the only other
-            // occupiers of it. Clamped because a payload whose timers exceed
-            // its match time would otherwise render a negative duration.
+            // Not reported: match time minus weapon holds; clamp so bad timers cannot go negative.
             time_held: Math.max(0, matchtime - weaponOneHeld - weaponTwoHeld),
         },
         gadgets: {
@@ -146,13 +115,6 @@ const toLegend = (legend: FullLegend): PlayerLegend => {
     }
 }
 
-/**
- * The weapons roll-up, with each legend's contribution to it.
- *
- * `getWeaponsAccumulativeData` is the shared helper the old client used, so
- * this endpoint and the browser agree on what "weapon games" means by
- * construction rather than by two implementations that could drift.
- */
 const toWeapons = (legends: readonly FullLegend[]): readonly PlayerWeapon[] =>
     getWeaponsAccumulativeData(getFullWeapons(legends)).map((weapon) => ({
         name: weapon.weapon,
@@ -165,12 +127,6 @@ const toWeapons = (legends: readonly FullLegend[]): readonly PlayerWeapon[] =>
             level: weapon.level,
             xp: weapon.xp,
         },
-        /*
-         * Each legend's own contribution, read from the slot that actually
-         * holds this weapon. The aggregated block above sums the same numbers,
-         * so the parts add up to the whole by construction rather than by two
-         * formulas that happen to agree today.
-         */
         legends: weapon.legends.map((legend) => {
             const isWeaponOne = legend.weapon_one === weapon.weapon
 
@@ -191,7 +147,6 @@ const toWeapons = (legends: readonly FullLegend[]): readonly PlayerWeapon[] =>
         }),
     }))
 
-/** One arrow function, so a 1v1 and a 3v3 record map through the same rules. */
 type PlayerRankedBracket = NonNullable<
     NonNullable<PlayerEnvelope["data"]["ranked"]>["1v1"]
 >
@@ -207,8 +162,7 @@ const toBracket = (input: {
     rating: input.rating,
     peak_rating: input.peak_rating || input.rating,
     is_placement_matches: input.peak_rating === 0,
-    // v1 reports the top of the ladder as a null tier; the renderer spells that
-    // "Valhallan", and defaulting here keeps the two brackets consistent.
+    // v1 reports top-of-ladder as a null tier; render as Valhallan.
     tier: input.tier ?? "Valhallan",
     wins: input.wins,
     games: input.games,
@@ -216,9 +170,7 @@ const toBracket = (input: {
     rating_reset: personalRatingReset(input.rating),
 })
 
-const to2v2Teams = (
-    ranked: PlayerRanked,
-): readonly PlayerRankedTeam[] => {
+const to2v2Teams = (ranked: PlayerRanked): readonly PlayerRankedTeam[] => {
     return ranked["2v2"].map((team) => {
         const [one, two] = getTeamPlayers(team)
 
@@ -235,8 +187,7 @@ const to2v2Teams = (
                     slug: getEntitySlug(two.id, two.name),
                 },
             ],
-            // A zero second id is v0 filing a solo queue in the team list. The
-            // server knows the difference so every client does not have to.
+            // Zero second id = v0 solo queue filed in the team list.
             paired: two.id > 0,
             rating: team.rating,
             peak_rating: team.peak_rating,
@@ -249,7 +200,6 @@ const to2v2Teams = (
     })
 }
 
-/** The ranked half of the profile, or `null` when there is no ranked data. */
 const toRanked = (
     ranked: PlayerRanked | null,
     ranked3v3: Player3v3Ranked | null,
@@ -259,10 +209,7 @@ const toRanked = (
     const teams = ranked?.["2v2"] ?? []
     const teamRows = ranked === null ? [] : to2v2Teams(ranked)
 
-    // Averages divide by the number of teams, not by total games. Kubi divides
-    // by games, which turns an elo into a per-game figure that reads as a
-    // fraction of a rating; "average team elo" has to be per team to mean
-    // anything.
+    // Average per team, not per game — per-game elo is a meaningless fraction of a rating.
     const average = (select: (row: PlayerRankedTeam) => number): number =>
         teamRows.length === 0
             ? 0
@@ -312,7 +259,6 @@ const toRanked = (
     }
 }
 
-/** The clan card, enriched with the roster facts the membership read lacks. */
 const toClan = (
     stats: PlayerStats,
     clan: Clan | null,
@@ -333,9 +279,6 @@ const toClan = (
         personal_xp: membership.personal_xp,
         rank: member?.rank ?? null,
         joined_at: member?.join_date ?? null,
-        // Both come from the guild read, which is the only source that knows
-        // them: `/player/guild` carries the membership and nothing about the
-        // guild itself.
         created_at: clan?.clan_create_date ?? null,
         members_count: clan?.clan.length ?? null,
     }
@@ -345,9 +288,7 @@ export type PlayerSources = {
     readonly stats: PlayerStats
     readonly ranked: PlayerRanked | null
     readonly ranked3v3: Player3v3Ranked | null
-    /** The archive's alias list for this player, oldest first. */
     readonly aliases: readonly string[]
-    /** The guild read, when the player has a clan we could look up. */
     readonly clan: Clan | null
 }
 
@@ -362,17 +303,7 @@ export const buildPlayer = (
     const weaponless = getWeaponlessData(legends)
     const weapons = toWeapons(legends)
 
-    /*
-     * v1 has no thrown-item KO counter at all, so the volume is derived from
-     * what is left of `kos` once the four sources it does report — either
-     * wielded weapon, unarmed, and gadgets — are subtracted. Team KOs are
-     * removed too: they are counted in `kos` but are not landed by this player,
-     * so leaving them in would attribute them to a throw.
-     *
-     * A Brawlhalla KO has exactly those five sources, which is what makes the
-     * remainder sound rather than a guess. The same derivation the profile
-     * client used is done once here.
-     */
+    // v1 has no thrown KO field: remainder of `kos` after weapons/unarmed/gadgets/team.
     const weaponKos = legends.reduce(
         (sum, legend) =>
             sum +
@@ -452,17 +383,11 @@ export const buildPlayer = (
                 kos: stats.kosnowball,
             },
         },
-        // Only weapons actually held, most-held first. The roll-up is built
-        // from the whole legend roster, which includes legends the player has
-        // never touched, so without this filter a fresh account would ship
-        // every weapon in the game at zero and the weapons tab would render
-        // fifteen empty rows instead of its "no weapon usage" state.
+        // Filter zeros: the roll-up includes untouched legends, so a fresh account would ship every weapon.
         weapons: weapons
             .filter((weapon) => weapon.stats.games > 0)
             .sort((a, b) => b.stats.time_held - a.stats.time_held),
-        legends: [...legends.map(toLegend)].sort(
-            (a, b) => b.stats.xp - a.stats.xp,
-        ),
+        legends: legends.map(toLegend).sort((a, b) => b.stats.xp - a.stats.xp),
         weapon_kos: weaponKos,
         thrown_kos: thrownKos,
         weapon_damage: weaponDamage,

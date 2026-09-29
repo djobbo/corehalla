@@ -14,38 +14,12 @@ import type { Stat } from "@/components/StatGrid"
 import type { BreakdownEntry } from "@/components/Breakdown"
 import type { Player, PlayerRankedTeam } from "@crh/api-contract/schemas"
 
-/**
- * The overview: what this account is, in card-grid form.
- *
- * The structure follows the newer `kubi` client rather than the legacy app's
- * stack of collapsible sections. Ranked records lead as a row of comparable
- * cards; volume (games, KOs, damage) follows; the long tail of derived averages
- * collapses into one wide stat grid; and the unarmed/throw/gadget breakdowns
- * close it out.
- *
- * Nothing is collapsed by default. The legacy page hid most of this behind
- * disclosures, which meant the answer to "how does this player actually play"
- * was always one click away on a page whose entire job is to answer it.
- */
-
-/** One bracket's ranked record, as the API sends it. */
 type RankedBracket = NonNullable<NonNullable<Player["ranked"]>["1v1"]>
 
-/** One row of the `2v2` list — a pairing, or a solo record. */
 type Team = PlayerRankedTeam
 
 const summed = (value: number): string => value.toLocaleString()
 
-// --- ranked -----------------------------------------------------------------
-
-/**
- * The player's 1v1 ranked record, or nothing.
- *
- * `ranked` being present says only that the player has *some* ranked data — a
- * 2v2 season, a legend rating — so the card is gated on games actually played in
- * this bracket rather than on the payload existing. A player who has never
- * queued 1v1 gets no card, not an empty one.
- */
 const Ranked1v1Panel = ({
     ranked,
 }: {
@@ -66,20 +40,7 @@ const Ranked1v1Panel = ({
     )
 }
 
-// --- solo queue ---------------------------------------------------------------
-
-/**
- * The player's solo-queue 2v2 record, or nothing.
- *
- * Queuing 2v2 alone lands in the same `2v2` list as a real team, minus the
- * partner. It is a record in its own right rather than a team, so it gets its
- * own card here instead of a team card on the 2v2 tab — and the card returns
- * `null` rather than an empty state, because a player who has never solo queued
- * should not be told about it.
- */
 const SoloQueuePanel = ({ solo }: { readonly solo: Team }) => {
-    // The region is already our vocabulary, not v1's numeric index — the
-    // server translated it once, so there is nothing to look up here.
     const region = solo.region
 
     return (
@@ -95,20 +56,6 @@ const SoloQueuePanel = ({ solo }: { readonly solo: Team }) => {
     )
 }
 
-// --- 3v3 ----------------------------------------------------------------------
-
-/**
- * The player's 3v3 ranked record, or nothing.
- *
- * 3v3 is a solo queue — v1's ladder carries one player per row because the
- * teams are assembled per match — so this is a record in its own right rather
- * than a team, exactly like the solo-queue 2v2 card beside it.
- *
- * The record arrives as `ranked["3v3"]` on the one profile aggregate, already
- * resolved from v1 — v0 has no 3v3 mode, so the server merges the two upstreams
- * and the client sees one `ranked` object. A null bracket means no record, so
- * this only has to guard the card, not the games.
- */
 const Ranked3v3Panel = ({
     ranked,
 }: {
@@ -128,8 +75,6 @@ const Ranked3v3Panel = ({
         />
     )
 }
-
-// --- clan -------------------------------------------------------------------
 
 const ClanPanel = ({ clan }: { readonly clan: Player["clan"] }) => {
     if (!clan) return null
@@ -173,8 +118,6 @@ const ClanPanel = ({ clan }: { readonly clan: Player["clan"] }) => {
         </Card>
     )
 }
-
-// --- volume -----------------------------------------------------------------
 
 const GamesPanel = ({
     games,
@@ -238,24 +181,8 @@ const KosFallsPanel = ({
     readonly unarmed: Player["unarmed"]
     readonly gadgets: Player["gadgets"]
 }) => {
-
-    /*
-     * A fall is only ever self-inflicted or caused by an opponent, so `falls`
-     * has exactly two parts — `teamKos` is absent here because a team KO counts
-     * toward the KO of whoever landed it, never toward the fall of whoever took
-     * it.
-     */
     const koed = Math.max(0, falls - suicides)
-
-    /*
-     * Both bars are drawn against the larger of the two totals, so their lengths
-     * are comparable at a glance — a KOs bar that filled its own width would say
-     * nothing about how it relates to falls.
-     *
-     * The KOs parts do add up to `kos`, because thrown-item KOs are derived as
-     * the remainder rather than read from a field v1 never sends; so on this bar
-     * the hollow slot appears only when `falls` is the larger total.
-     */
+    // Shared scale so KO and fall bars are comparable at a glance.
     const sharedMax = Math.max(kos, falls)
 
     return (
@@ -291,6 +218,7 @@ const KosFallsPanel = ({
                             {
                                 key: "throws",
                                 label: "using throws",
+                                // Thrown-item KOs are derived (v1 has no counter).
                                 value: thrownKos,
                                 intent: "yellow",
                             },
@@ -303,6 +231,7 @@ const KosFallsPanel = ({
                         ]}
                     />
 
+                    {/* Falls are only KOed or suicide; team KOs never count as falls. */}
                     <Breakdown
                         title="Falls"
                         total={falls}
@@ -345,20 +274,9 @@ const DamagePanel = ({
     readonly gadgets: Player["gadgets"]
     readonly throws: Player["weapon_throws"]
 }) => {
-
-    /*
-     * Both bars share one scale, so "dealt" and "taken" can be compared by eye
-     * rather than each filling its own width.
-     */
+    // Shared scale so dealt/taken compare by eye; hollow slot is self-damage (no counter).
     const sharedMax = Math.max(dealt, taken)
 
-    /*
-     * Unlike the KO breakdown, every one of these parts is read straight from a
-     * counter v1 actually sends — thrown-item *damage* exists even though
-     * thrown-item *KOs* do not. They still do not quite sum to `damage_dealt`,
-     * because self-inflicted damage has no counter of its own, and that
-     * shortfall is what the hollow slot shows.
-     */
     const dealtEntries: BreakdownEntry[] = [
         {
             key: "weapons",
@@ -400,11 +318,6 @@ const DamagePanel = ({
                         entries={dealtEntries}
                     />
 
-                    {/*
-                     * Damage taken has no source in either API version — the
-                     * payload carries a total and nothing else — so it is one piece
-                     * against the shared scale, and needs no key.
-                     */}
                     <Breakdown
                         title="Damage taken"
                         total={taken}
@@ -419,7 +332,6 @@ const DamagePanel = ({
                         ]}
                     />
                 </div>
-
                 <Card className="mt-4 bg-background">
                     <CardContent>
                         <StatGrid
@@ -441,8 +353,6 @@ const DamagePanel = ({
     )
 }
 
-// --- weaponless breakdown ----------------------------------------------------
-
 const BreakdownPanel = ({
     title,
     stats,
@@ -459,8 +369,6 @@ const BreakdownPanel = ({
         </CardContent>
     </Card>
 )
-
-// --- page -------------------------------------------------------------------
 
 export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
     const profile = useQuery(playerProfileAtom(playerId)).data
@@ -488,30 +396,20 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
         damage_taken: damageTaken,
     } = stats
 
-    /*
-     * A ranked record only earns a card if the bracket has games behind it. The
-     * server already nulls a bracket with none, so the presence of the bracket
-     * *is* the answer — `ranked` itself only says the player has some ranked
-     * data somewhere, which is not the same as having played this bracket.
-     */
     const ranked1v1 = ranked?.["1v1"] ?? null
     const ranked3v3 = ranked?.["3v3"] ?? null
     const soloRecord = ranked?.["2v2"]?.teams.find((team) => !team.paired)
     const has1v1 = ranked1v1 !== null
     const has3v3 = ranked3v3 !== null
 
-    /*
-     * One, two or three cards. The column count follows the count of cards
-     * actually rendered rather than the count of brackets that exist, so a
-     * lone card keeps its natural width instead of stretching across the row,
-     * and three cards do not leave an orphan alone on a second row once there
-     * is width for all three.
-     */
     const rankedCardCount = [has1v1, soloRecord !== undefined, has3v3].filter(
         Boolean,
     ).length
 
-    const koCounts = (weapon: { kos: number; damage_dealt: number }): Stat[] => [
+    const koCounts = (weapon: {
+        kos: number
+        damage_dealt: number
+    }): Stat[] => [
         { title: "KOs", value: summed(weapon.kos) },
         {
             title: "One KO every",
@@ -526,12 +424,6 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
 
     return (
         <div className="flex flex-col gap-4">
-            {/*
-             * The ranked records. Any of the three can be missing — plenty of
-             * players never queue 1v1, plenty never queue solo, and 3v3 is the
-             * least-played bracket of all — and a lone card spanning half a row
-             * with nothing beside it reads as something failed to load.
-             */}
             {rankedCardCount > 0 ? (
                 <div
                     className={cn(
@@ -547,13 +439,7 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
             ) : null}
 
             <ClanPanel clan={profile.clan} />
-
-            {/*
-             * Games runs full width on its own; the two stacked-bar breakdowns
-             * pair up once there is room for both.
-             */}
             <GamesPanel games={games} wins={wins} />
-
             <div className="grid gap-4 lg:grid-cols-2">
                 <KosFallsPanel
                     kos={kos}
@@ -576,14 +462,6 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                     throws={throws}
                 />
             </div>
-
-            {/*
-             * Transparent on purpose: these are derived averages, not a section
-             * of their own, so they sit straight on the page rather than in one
-             * more card. The container is kept for its padding and its
-             * container-query context — without the latter the grid would fall
-             * back to a single column.
-             */}
             <div className="@container p-4">
                 <StatGrid
                     className="mt-3"
@@ -635,7 +513,6 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                     ]}
                 />
             </div>
-
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <BreakdownPanel
                     title="Unarmed"
@@ -669,13 +546,10 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                         },
                     ]}
                 />
-                {/*
-                 * KOs come from the derived figure, not `weaponless.throws.kos`:
-                 * the v1 payload has no thrown-item KO counter, so reading it
-                 * here would print a hard 0 next to perfectly good damage.
-                 */}
+
                 <BreakdownPanel
                     title="Weapon throws"
+                    // Use derived thrownKos — throws.kos is always 0 (v1 has no counter).
                     stats={koCounts({
                         kos: thrownKos,
                         damage_dealt: throws.damage_dealt,

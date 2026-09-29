@@ -11,29 +11,10 @@ import {
 import { Heart } from "lucide-react"
 import { cn } from "@/lib/cn"
 
-/**
- * Save this player or clan, for the signed-in user.
- *
- * Three nested pieces, each with one job:
- *
- * - `FavoriteButton` is the `<ClientOnly>` seam. The session is an `HttpOnly`
- *   cookie, so the server render cannot read it; mounting the atoms only on the
- *   client is what keeps the server HTML from asserting a state the client then
- *   contradicts.
- * - `FavoriteToggle` decides whether the control exists at all. A signed-out
- *   visitor gets no button rather than a button that fails: favourites are not
- *   a feature they can use yet, and the sign-in path is already in the masthead.
- * - `FavoriteControl` is the actual switch, reading the shared favourites atom
- *   so every surface agrees about what is saved.
- */
 export type FavoriteButtonProps = {
     readonly type: "player" | "clan"
     readonly id: string
     readonly name: string
-    /**
-     * Presentation hints stored with the row. For a player, the main legend's
-     * key, so the favourites page can show the same art the profile does.
-     */
     readonly meta?: unknown
 }
 
@@ -67,8 +48,6 @@ const FavoriteControl = ({ type, id, name, meta }: FavoriteButtonProps) => {
     const toggle = () => {
         if (busy) return
 
-        // The write publishes `favorites`, which refreshes the list every
-        // surface reads. There is no local edit to keep in step.
         if (active) {
             remove({
                 query: { type, id },
@@ -83,13 +62,6 @@ const FavoriteControl = ({ type, id, name, meta }: FavoriteButtonProps) => {
     }
 
     return (
-        /*
-         * The chip, not a shadcn `Button`: the parallelogram cut and its
-         * `drop-shadow` cannot be expressed through `Button`'s variants, and
-         * layering the two makes their shadows fight — see `.ch-chip` in
-         * `styles/app.css`. `aria-pressed` is what a chip cannot say on its
-         * own, and it is why this is a real toggle rather than two buttons.
-         */
         <button
             type="button"
             onClick={toggle}

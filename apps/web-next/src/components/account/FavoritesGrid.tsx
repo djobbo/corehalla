@@ -15,17 +15,6 @@ import { cleanString } from "@crh/common/helpers/cleanString"
 import { getEntitySlug } from "@crh/common/helpers/entitySlug"
 import type { Favorite } from "@crh/api-contract/schemas"
 
-/**
- * One grid of saved entities.
- *
- * The row is the smallest thing that can be both a link and a removal: the
- * whole row navigates to the profile, and the remove control is a separate
- * button so a mis-click never destroys a favourite instead of opening it.
- *
- * A player favourite remembers its main legend, so the icon is the same art the
- * profile header shows; a clan ships none, so the fallback monogram stands in.
- * Either way the row never has a hole where an image could not be resolved.
- */
 export const FavoritesGrid = ({
     favorites,
 }: {
@@ -36,12 +25,6 @@ export const FavoritesGrid = ({
     if (favorites.length === 0) {
         return (
             <Empty className="p-8">
-                {/*
-                 * shadcn's `Empty`, so the "nothing here" note is the same
-                 * shape on every surface that has one rather than another
-                 * centred `<p>`. The heart is decorative: the title already
-                 * says what is missing.
-                 */}
                 <EmptyHeader>
                     <Heart
                         aria-hidden
@@ -70,13 +53,6 @@ export const FavoritesGrid = ({
                         key={`${favorite.type}/${favorite.id}`}
                         className="py-0"
                     >
-                        {/*
-                         * `ch-panel` is the old name for this surface; a shadcn
-                         * `Card` is the same `--card` fill with the same hard
-                         * shadow, and `py-0` keeps the row a single padded box
-                         * rather than the card's block padding plus the
-                         * content's.
-                         */}
                         <CardContent className="flex items-center gap-3 p-3">
                             {legendKey ? (
                                 <img
@@ -118,13 +94,6 @@ export const FavoritesGrid = ({
                                     {favorite.type} #{favorite.id}
                                 </p>
                             </Link>
-
-                            {/*
-                             * A chip, not a `Button`: the parallelogram cut is
-                             * the app's own shape and cannot come from a
-                             * variant. The `aria-label` names the row it
-                             * removes, which the visible "Remove" cannot.
-                             */}
                             <button
                                 type="button"
                                 aria-label={`Remove ${name}`}

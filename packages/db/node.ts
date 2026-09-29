@@ -5,18 +5,9 @@ import type { Effect } from "effect"
 import type { EffectSQLiteD1Database } from "drizzle-orm/effect-d1"
 
 /**
- * D1 access for the Node.js crawler.
- *
- * A Worker uses the `DB` binding directly (`db/client.ts`), but the crawler is a
- * long-running Node process, so it talks to the same database over Cloudflare's
- * D1 HTTP API. The REST calls are wrapped in a minimal `D1Database`-shaped
- * adapter, so the crawler runs through the *same* Effect SQL + Drizzle stack as
- * the Worker — no second driver and no changes to the query code.
- *
- * Credentials (see `worker/.env.example`):
- *   CLOUDFLARE_ACCOUNT_ID
- *   CLOUDFLARE_D1_DATABASE_ID
- *   CLOUDFLARE_API_TOKEN
+ * D1 over HTTP for the Node crawler (no Worker `DB` binding). Same Effect SQL +
+ * Drizzle stack as `db/client.ts`. Needs CLOUDFLARE_ACCOUNT_ID,
+ * CLOUDFLARE_D1_DATABASE_ID, CLOUDFLARE_API_TOKEN.
  */
 
 export type D1HttpConfig = {
@@ -132,10 +123,8 @@ const makeStatement = (
 })
 
 /**
- * A `D1Database`-shaped object backed by the REST API.
- *
- * `@effect/sql-d1` only needs `prepare(...).bind(...).all()/raw()` and
- * `batch(...)`; `dump` is not supported over HTTP and is never called here.
+ * `D1Database`-shaped REST adapter. `@effect/sql-d1` needs prepare/bind/all/raw
+ * and batch; `dump` is unsupported over HTTP.
  */
 const makeDatabase = (config: D1HttpConfig): D1Client.D1ClientConfig["db"] =>
     ({
@@ -151,17 +140,14 @@ const makeDatabase = (config: D1HttpConfig): D1Client.D1ClientConfig["db"] =>
         },
     }) as unknown as D1Client.D1ClientConfig["db"]
 
-/** The Drizzle database every Node-side consumer shares. */
 export type SqlDatabase = EffectSQLiteD1Database & {
     readonly $client: D1Client.D1Client
 }
 
-/** The running Drizzle database for the Node process. */
 export class Database extends Context.Service<Database, SqlDatabase>()(
     "db/NodeDatabase",
 ) {}
 
-/** A Drizzle database backed by one D1 HTTP connection. */
 export const layer = (config?: Partial<D1HttpConfig>) =>
     Layer.effect(Database, makeWithDefaults({})).pipe(
         Layer.provide(
@@ -173,12 +159,7 @@ export const layer = (config?: Partial<D1HttpConfig>) =>
 
 let runtime: ManagedRuntime.ManagedRuntime<Database, unknown> | undefined
 
-/**
- * Runs one database effect on a lazily-created process-wide database handle.
- *
- * `runDatabase` is only for long-lived Node processes; Serverless entry points
- * build their own layer from the binding.
- */
+/** Process-wide handle for long-lived Node; serverless builds its own layer. */
 export const runDatabase = <A, E>(
     effect: Effect.Effect<A, E, Database>,
     config?: Partial<D1HttpConfig>,
@@ -192,7 +173,6 @@ export const runDatabase = <A, E>(
     return runtime.runPromise(effect)
 }
 
-/** Releases the process-wide handle (tests, graceful shutdown). */
 export const disposeDatabase = async () => {
     if (runtime) {
         await runtime.dispose()

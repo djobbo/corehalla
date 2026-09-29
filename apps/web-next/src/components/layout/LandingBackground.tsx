@@ -8,12 +8,6 @@ type LandingBackgroundProps = {
 const VIEWBOX_WIDTH = 1930
 const VIEWBOX_HEIGHT = 1266
 
-/**
- * How far each layer is held back as the page scrolls, as a fraction of the
- * scroll distance: 0 would ride along with the content, 1 would stay put.
- * Depth is spread across the layers in paint order — the first path sits
- * farthest back and the last one (painted on top) reads as nearest.
- */
 const FARTHEST_DEPTH = 0.8
 const DEPTH_STEP = 0.05
 
@@ -29,7 +23,6 @@ export const LandingBackground = ({ className }: LandingBackgroundProps) => {
         const svg = svgRef.current
         if (!svg) return
 
-        // Respect users who asked for less motion.
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
             return
 
@@ -40,8 +33,6 @@ export const LandingBackground = ({ className }: LandingBackgroundProps) => {
             depth: FARTHEST_DEPTH - index * DEPTH_STEP,
         }))
 
-        // `preserveAspectRatio="slice"` scales the viewBox to cover the
-        // element, so scroll pixels have to be converted back to user units.
         let userUnitsPerPixel = 1
 
         const measure = () => {
@@ -60,8 +51,6 @@ export const LandingBackground = ({ className }: LandingBackgroundProps) => {
             frame = 0
             const scrolled = window.scrollY * userUnitsPerPixel
 
-            // The transform attribute keeps the offsets in user units, which
-            // every SVG renderer agrees on.
             for (const { path, depth } of layers)
                 path.setAttribute(
                     "transform",
@@ -69,7 +58,6 @@ export const LandingBackground = ({ className }: LandingBackgroundProps) => {
                 )
         }
 
-        // Coalesce scroll events into at most one write per frame.
         const handleScroll = () => {
             if (frame) return
             frame = requestAnimationFrame(update)

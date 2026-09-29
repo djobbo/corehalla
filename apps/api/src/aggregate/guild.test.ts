@@ -2,14 +2,6 @@ import { describe, expect, it } from "@effect/vitest"
 import { clanMock } from "@crh/bhapi/mocks/clan"
 import { buildGuild } from "./guild"
 
-/**
- * The guild aggregate.
- *
- * Two claims are worth pinning: the level is derived from the XP curve rather
- * than passed through, and the guild-points total is never fabricated from the
- * roster — a clan's own figure includes members who have left, so summing the
- * current roster is a different, smaller number.
- */
 describe("buildGuild", () => {
     it("derives the level and progress from the clan's XP", () => {
         const { data } = buildGuild(clanMock, 1_700_000_000_000)
@@ -33,8 +25,7 @@ describe("buildGuild", () => {
     })
 
     it("does not invent a guild-points total the source did not send", () => {
-        // The mock has per-member points on neither the clan nor the roster,
-        // so the total must be null rather than a roster sum of zero.
+        // Null, not a roster sum of zero, when the source omitted points.
         const { data } = buildGuild(clanMock, 1)
 
         if (clanMock.guild_points === undefined) {

@@ -1,21 +1,9 @@
 import { describe, expect, it } from "@effect/vitest"
 import { rankings1v1Mock } from "@crh/bhapi/mocks/rankings1v1"
 import { rankings2v2Mock } from "@crh/bhapi/mocks/rankings2v2"
-import {
-    bestLegendIndex,
-    buildRankings1v1,
-    buildRankings2v2,
-} from "./rankings"
+import { bestLegendIndex, buildRankings1v1, buildRankings2v2 } from "./rankings"
 import type { BestLegendRow } from "@crh/core/services/archive"
 
-/**
- * The live ladders' product shape.
- *
- * The reshuffle is small enough to read as "no logic", which is exactly why it
- * is worth pinning: the two things a reader would notice if they broke are that
- * a row links to the right player, and that a 2v2 row's two members are the two
- * on the wire rather than a joined string taken apart.
- */
 describe("ladder aggregation", () => {
     it("falls back to v1's own best legend when the archive has none", () => {
         const envelope = buildRankings1v1(
@@ -25,7 +13,6 @@ describe("ladder aggregation", () => {
         )
         const row = envelope.data[0]
 
-        // The mock's first row carries legend id 50 (Petra) from the payload.
         expect(row.best_legend?.id).toBe(50)
         expect(row.best_legend?.games).toBe(76)
     })

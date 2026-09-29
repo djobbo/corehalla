@@ -5,46 +5,10 @@ import { MIN_LOOKUP_LENGTH } from "@crh/api-contract/schemas"
 import type { LookupResultInput } from "@crh/api-contract/schemas"
 import type { Ranking1v1, Ranking2v2 } from "@crh/bhapi/types"
 
-/**
- * The federated player/clan lookup.
- *
- * ## Why it federates
- *
- * No single source can answer "find this player" completely:
- *
- * | Source | Knows | Cannot know |
- * | --- | --- | --- |
- * | v1 rankings `?search=` | every ranked player on that ladder, across every region in one request via `region=ALL` | former names; players who never placed |
- * | local alias index | former names, and players seen by the crawler | anyone never crawled |
- * | local clan index | clan names | — there is no upstream clan name search |
- *
- * The upstream ladder search is the broad one, and `region=ALL` is what makes it
- * a single request rather than one per region. It is also the source that
- * matters most, because it is the only one that can find a player we have never
- * seen.
- *
- * ## Both ranked modes, deliberately
- *
- * `1v1` and `2v2` are searched, not just `1v1`. A player who has only ever
- * placed in 2v2 is invisible to a 1v1 ladder search, which would make the lookup
- * silently miss a whole class of player. The cost is one extra request per
- * submit, which is affordable now that the budget is 2,000 per 5 minutes — and
- * unlike the crawler this runs per user search, not continuously.
- *
- * ## Degrading, never failing
- *
- * Each source fails soft. A lookup is a jump-to-result interaction: returning
- * the local matches is far better than returning an error because the upstream
- * call timed out.
- */
-
-/** Below this, a search is not worth a request. */
 export { MIN_LOOKUP_LENGTH }
 
-/** How many rows the merged list returns when no limit is given. */
 export const DEFAULT_LOOKUP_LIMIT = 20
 
-/** A player row from the rankings search. */
 export type PlayerHit = {
     readonly playerId: string
     readonly name: string
@@ -53,27 +17,19 @@ export type PlayerHit = {
     readonly region: string | null
 }
 
-/** A clan row from the local index. */
 export type ClanHit = {
     readonly id: string
     readonly name: string
     readonly xp: number
 }
 
-/** A local alias row: the only source of former names. */
 export type AliasHit = {
     readonly playerId: string
     readonly mainAlias: string
     readonly otherAliases: readonly string[]
 }
 
-/**
- * How well a name matches the query.
- *
- * `0` exact, `1` prefix, `2` anything else. The match is case- and
- * whitespace-folded through `searchKey`, the same folding the stored keys use,
- * so a query and a stored name can never disagree about case.
- */
+/** 0 exact, 1 prefix, 2 other — via searchKey so case/whitespace match storage. */
 export const matchTier = (query: string, name: string): number => {
     const needle = searchKey(query)
     const haystack = searchKey(name)
@@ -85,28 +41,14 @@ export const matchTier = (query: string, name: string): number => {
     return 2
 }
 
-/**
- * The best match tier across a result's display name and its aliases.
- *
- * Ranking on the display name alone would push a player whose *old* name
- * matched exactly down to "anything else", which is exactly backwards: the
- * alias hit is the more specific answer.
- */
+/** Best of display name and aliases — alias-only exact must not rank as "other". */
 const bestTier = (query: string, result: LookupResultInput): number =>
     result.aliases.reduce(
         (best, alias) => Math.min(best, matchTier(query, alias)),
         matchTier(query, result.name),
     )
 
-/**
- * Orders the merged list.
- *
- * Match quality first, then name length (a shorter name matching the prefix is
- * the closer answer), then prominence within a type. There is deliberately no
- * cross-type prominence comparison: a player's rating and a clan's XP are not
- * commensurable, so ordering a player against a clan by either number would be
- * arbitrary. Ties across types fall through to the name.
- */
+/** Match quality, then name length; no cross-type prominence (rating ≠ xp). */
 const compare =
     (query: string) =>
     (a: LookupResultInput, b: LookupResultInput): number => {
@@ -130,18 +72,8 @@ const compare =
     }
 
 /**
- * Merges the three sources into one ranked list.
- *
- * Pure, so the ranking rules can be read and tested without a network or a
- * database.
- *
- * Players are deduplicated by id with **first occurrence winning**, which is why
- * the caller passes `1v1` hits before `2v2` hits: a player on both ladders
- * should be described by their own 1v1 rating, not by a team rating.
- *
- * A player known only to the alias index has no rating — they have never been
- * seen on a ladder — and is emitted with `rating: null` and its aliases intact,
- * because the old name is the only reason it is in the result at all.
+ * First id wins — pass 1v1 before 2v2 so personal rating beats team rating.
+ * Alias-only players keep rating: null.
  */
 export const mergeLookup = (input: {
     readonly query: string
@@ -179,25 +111,25 @@ export const mergeLookup = (input: {
     }
 
     const results: LookupResultInput[] = [
-        ...[...playersById.values()].map(({ hit, aliases }): LookupResultInput => ({
-            type: "player",
-            id: hit.playerId,
-            name: hit.name,
-            // Dedupe: a player's current name can also appear in their
-            // alias list, and repeating it reads as a different person.
-            aliases: [
-                ...new Set(
-                    aliases.filter(
-                        (alias) => searchKey(alias) !== searchKey(hit.name),
+        ...[...playersById.values()].map(
+            ({ hit, aliases }): LookupResultInput => ({
+                type: "player",
+                id: hit.playerId,
+                name: hit.name,
+                aliases: [
+                    ...new Set(
+                        aliases.filter(
+                            (alias) => searchKey(alias) !== searchKey(hit.name),
+                        ),
                     ),
-                ),
-            ],
-            rating: hit.rating,
-            xp: null,
-            tier: hit.tier,
-            region: hit.region,
-            source: hit.rating === null ? "archive" : "rankings",
-        })),
+                ],
+                rating: hit.rating,
+                xp: null,
+                tier: hit.tier,
+                region: hit.region,
+                source: hit.rating === null ? "archive" : "rankings",
+            }),
+        ),
         ...input.clans.map((clan): LookupResultInput => ({
             type: "clan",
             id: clan.id,
@@ -217,7 +149,6 @@ export const mergeLookup = (input: {
 export class Lookup extends Context.Service<
     Lookup,
     {
-        /** Never fails: each source degrades to "no results". */
         readonly search: (
             query: string,
             limit?: number,
@@ -231,13 +162,6 @@ export const layer = Layer.effect(
         const upstream = yield* Upstream
         const database = yield* Database
 
-        /**
-         * A source that fails is a source with no results, not an error.
-         *
-         * Generic over the error type because the archive's queries carry
-         * `DatabaseError` while the upstream ones do not; both collapse to an
-         * empty list here.
-         */
         const soft = <A, E>(effect: Effect.Effect<A, E>) =>
             effect.pipe(Effect.catch(() => Effect.succeed([] as A)))
 
@@ -271,14 +195,11 @@ export const layer = Layer.effect(
                             { concurrency: 4 },
                         )
 
-                    // `getRankings` returns the union of both row shapes — the
-                    // bracket argument does not narrow it — so the two results
-                    // are asserted here, where the bracket is a literal.
+                    // Bracket does not narrow the union — assert at the literal.
                     const oneVsOneRows = oneVsOne as readonly Ranking1v1[]
                     const twoVsTwoRows = twoVsTwo as readonly Ranking2v2[]
 
-                    // 1v1 first so its rows win the dedupe: a player's own
-                    // rating describes them, a 2v2 team rating does not.
+                    // 1v1 first so personal rating wins dedupe over 2v2 team rating.
                     const players: PlayerHit[] = [
                         ...oneVsOneRows.map((row) => ({
                             playerId: String(row.brawlhalla_id),
@@ -288,8 +209,6 @@ export const layer = Layer.effect(
                             region: row.region,
                         })),
                         ...twoVsTwoRows.flatMap((row) => {
-                            // A 2v2 row is a team; both members are candidates
-                            // and neither has a usable personal rating here.
                             const members = [
                                 {
                                     playerId: String(row.brawlhalla_id_one),

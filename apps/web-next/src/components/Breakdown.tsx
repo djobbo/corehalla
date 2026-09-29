@@ -3,7 +3,6 @@ import { fillClass } from "@/lib/fill"
 import { cn } from "@/lib/cn"
 import type { FillIntent } from "@/lib/fill"
 
-/** One named cause within a total. */
 export type BreakdownEntry = {
     readonly key: string
     readonly label: string
@@ -11,20 +10,6 @@ export type BreakdownEntry = {
     readonly intent: FillIntent
 }
 
-/**
- * A total, the causes that make it up, and the two together.
- *
- * The shape is a total with a stacked bar and a legend rather than a list of
- * rows, because these numbers are only meaningful against each other: "4,312
- * unarmed KOs" says little until it sits next to 180,000 weapon KOs. Reading it
- * as one bar makes the proportion the headline and the counts the footnote.
- *
- * The bar is drawn against `total`, so a breakdown whose parts do not account
- * for the whole shows the shortfall as a hollow slot instead of silently
- * rescaling. Pass `max` when several breakdowns should be comparable: they then
- * share one scale, and each one's shortfall is the difference between its own
- * total and that shared maximum.
- */
 export const Breakdown = ({
     title,
     total,
@@ -34,17 +19,11 @@ export const Breakdown = ({
 }: {
     readonly title: string
     readonly total: number
-    /** A shared bar scale, when this breakdown is read against its siblings. */
     readonly max?: number
     readonly entries: readonly BreakdownEntry[]
     readonly className?: string
 }) => {
-    /*
-     * A part with no value is not a part. `SplitProgress` already drops empty
-     * pieces from the bar, so the legend has to drop them too — otherwise the
-     * key grows an entry for something that never happened and stops matching
-     * the chart beside it.
-     */
+    // Drop zero parts so the legend matches the bar (SplitProgress also drops them).
     const shown = entries.filter((entry) => entry.value > 0)
 
     return (
@@ -55,7 +34,6 @@ export const Breakdown = ({
                     {title}
                 </span>
             </p>
-
             <SplitProgress
                 label={`${title}, ${total.toLocaleString()} in total`}
                 total={max ?? total}
@@ -66,11 +44,6 @@ export const Breakdown = ({
                 }))}
             />
 
-            {/*
-             * A key is only worth drawing when a colour needs explaining. With a
-             * single part the heading already names the whole thing, so the
-             * legend would just repeat the total back.
-             */}
             {shown.length > 1 && (
                 <ul className="flex flex-wrap gap-x-6 gap-y-2">
                     {shown.map((entry) => (

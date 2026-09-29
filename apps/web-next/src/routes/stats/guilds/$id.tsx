@@ -3,21 +3,9 @@ import { parseEntityId } from "@crh/common/helpers/entitySlug"
 import { ClanBody } from "@/components/clan/ClanBody"
 import { ClanHeader } from "@/components/clan/ClanHeader"
 import { canonicalPath } from "@/lib/routeParams"
-import {
-    dehydrateRegistry,
-    guildAtom,
-    preloadAtom,
-} from "@/effect/atoms"
+import { dehydrateRegistry, guildAtom, preloadAtom } from "@/effect/atoms"
 import type { GuildEnvelope } from "@crh/api-contract/schemas"
 
-/**
- * A clan's page.
- *
- * A shared link lands here and so does a reload, which is the property that
- * matters: the URL is what describes the clan. As on a profile, the segment is a
- * slug (`9-the-guild`) and a request whose name half does not match what the API
- * reports is redirected to the canonical one.
- */
 export const Route = createFileRoute("/stats/guilds/$id")({
     async loader({ params, context, location }) {
         const guildId = parseEntityId(params.id)
@@ -34,8 +22,6 @@ export const Route = createFileRoute("/stats/guilds/$id")({
                 guildAtom(guildId),
             )) as GuildEnvelope
         } catch {
-            // Same contract as a profile: an unknown guild and an unreadable
-            // one both mean there is no page to render here.
             throw notFound()
         }
 

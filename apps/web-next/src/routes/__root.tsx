@@ -44,9 +44,7 @@ function RootComponent() {
     const { registry } = Route.useRouteContext()
     const matches = useMatches()
 
-    // Route loaders preload their atoms and return the dehydrated state. Merging
-    // every matched route's slice lets `HydrationBoundary` restore the
-    // server-computed values before the first client render.
+    // Merge every matched route's dehydrated slice before the first client render.
     const dehydrated = useMemo(
         () =>
             matches.flatMap(
@@ -63,47 +61,15 @@ function RootComponent() {
     return (
         <RegistryContext.Provider value={registry}>
             <HydrationBoundary state={dehydrated}>
-                {/*
-                 * The tooltip provider wraps everything the app renders, so a
-                 * tooltip never has to be paired with its own provider at the
-                 * call site — and one provider means one hover-intent delay
-                 * across the whole tree rather than one per surface.
-                 */}
                 <TooltipProvider>
-                    {/*
-                     * The loader is a sibling of the boundary below, not its
-                     * fallback, and it is mounted at the root for the same
-                     * reason: it has to outlive the commit that reveals the
-                     * page, so that its exit animation can play over the
-                     * finished route. See `PageLoader.tsx`.
-                     */}
                     <PageLoaderProvider>
-                        {/*
-                         * Mounted once, outside every surface: the pattern is page
-                         * chrome, not a page's content, so it lives at the root and
-                         * nothing else paints a page-wide background over it.
-                         */}
                         <LandingBackground className="ch-landing" />
-                        {/*
-                         * One header for every page, holding the things that must never
-                         * move: the way home, the way to search, and the way to each
-                         * rankings surface. Home has no hero of its own because this
-                         * *is* the compact hero — the ladder then starts immediately
-                         * under it.
-                         */}
                         <SearchProvider>
-                            {/*
-                             * The masthead is the poster's title bar: a skewed accent
-                             * badge, the wordmark in the display cut, and the search
-                             * field as the one wide control.
-                             *
-                             * It and the nav below are one pinned stack, and the ladder's
-                             * own sticky filter row docks under the pair of them — see
-                             * `--ch-header-h`. Their heights are shared variables rather
-                             * than two numbers that happen to agree.
-                             */}
                             <header className="ch-masthead">
-                                <Link to="/" className="flex items-center gap-2">
+                                <Link
+                                    to="/"
+                                    className="flex items-center gap-2"
+                                >
                                     <span aria-hidden className="ch-mark">
                                         <span>C</span>
                                     </span>
@@ -112,25 +78,12 @@ function RootComponent() {
                                     </span>
                                 </Link>
                                 <SearchTrigger className="flex-1" />
-                                {/*
-                                 * The account control is client-only: the session is an
-                                 * `HttpOnly` cookie the server render cannot read, so a
-                                 * server-rendered answer would only be replaced on
-                                 * hydration. The placeholder it shows until then is the
-                                 * one state that is true for both.
-                                 */}
+                                {/* Session is HttpOnly; server would always paint signed-out. */}
                                 <ClientOnly>
                                     <AccountControl />
                                 </ClientOnly>
                             </header>
                             <MainNav />
-                            {/*
-                             * The boundary every route's data suspends behind. Its
-                             * fallback is a probe rather than a loader: it renders
-                             * nothing and reports the wait to the overlay above, which
-                             * is what lets one animation cover both the wait and the
-                             * reveal.
-                             */}
                             <Suspense fallback={<PageLoaderProbe />}>
                                 <Outlet />
                             </Suspense>
@@ -143,7 +96,6 @@ function RootComponent() {
     )
 }
 
-/** The full HTML document shell — always server rendered. */
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
     return (
         <html lang="en">

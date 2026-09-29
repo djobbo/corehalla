@@ -15,26 +15,8 @@ import {
     type RetryOptions,
 } from "./retry"
 
-/**
- * The outbound retry policy.
- *
- * The two failure classes are asserted separately, because distinguishing them
- * is the whole point of the module: a transient failure is retried on an
- * exponential backoff, while a `429` is answered with a wait at least as long as
- * the server's own instruction. The bug this guards against is a rate limit
- * being retried at the transient backoff — "slow down" answered with "no".
- *
- * The errors are built the way production builds them, through
- * `HttpClientResponse.filterStatusOk`, rather than by calling an error
- * constructor. That matters: `HttpClientError` is a *wrapper* whose `reason`
- * holds the status, and an error constructed by hand does not have the shape
- * `isHttpClientError` looks for, so a hand-built error would make these tests
- * assert against a failure the client can never actually produce.
- */
-
 const REQUEST = HttpClientRequest.get("https://api.brawlhalla.com/v1/x")
 
-/** An `HttpClientError` exactly as `filterStatusOk` produces one. */
 const statusError = (
     status: number,
     headers: Record<string, string> = {},
@@ -51,12 +33,6 @@ const statusError = (
         ).pipe(Effect.flip),
     )
 
-/**
- * A transport failure, shaped the way the HTTP client wraps one.
- *
- * The `~effect/http/HttpClientError` key is the wrapper's runtime type id;
- * `isHttpClientError` tests for its presence.
- */
 const transportError = () =>
     ({
         _tag: "HttpClientError",
@@ -64,12 +40,6 @@ const transportError = () =>
         reason: { _tag: "TransportError", description: "socket closed" },
     }) as unknown as HttpClientError.HttpClientError
 
-/**
- * An effect that always fails with the given error, counting its evaluations.
- *
- * The counter is the only way to observe that a retry happened without waiting
- * the backoff out: each evaluation is free.
- */
 const countingFailure = (error: HttpClientError.HttpClientError) => {
     let attempts = 0
 
@@ -81,7 +51,6 @@ const countingFailure = (error: HttpClientError.HttpClientError) => {
     return { effect, attempts: () => attempts }
 }
 
-/** The wait the real schedule chooses for one failure, in milliseconds. */
 const waitFor = (error: HttpClientError.HttpClientError) =>
     Effect.runPromise(
         Effect.gen(function* () {
@@ -100,8 +69,6 @@ describe("rateLimitWaitMs", () => {
     })
 
     it("falls back to a floor when Retry-After is absent", async () => {
-        // 2s, not the 500ms the exponential step would have used: the response
-        // refused this request for a window, and 500ms is inside it.
         expect(rateLimitWaitMs(await statusError(429))).toBe(2_000)
     })
 
@@ -139,8 +106,6 @@ describe("retryAfterMs", () => {
     })
 
     it("honours a long instruction rather than clamping it", () => {
-        // A shorter wait than the server asked for is how the same limit gets
-        // hit twice, so the response wins even at this size.
         expect(retryAfterMs("600")).toBe(600_000)
     })
 })
@@ -164,15 +129,6 @@ describe("retrySchedule", () => {
 })
 
 describe("retryTransient", () => {
-    /**
-     * The retry count is asserted against the same wiring with a tiny backoff.
-     *
-     * Waiting the production delays out would make this file take half a minute
-     * — a `429` retried four times at the real floor is a 30-second sleep — and
-     * a slow test is a test that eventually gets deleted. The production delays
-     * themselves are asserted in `retrySchedule` above, against the real
-     * defaults.
-     */
     const fast: RetryOptions = {
         transientBaseMs: 1,
         rateLimitFloorMs: 1,
@@ -212,9 +168,6 @@ describe("retryTransient", () => {
     })
 
     it("does not retry a status that repetition cannot fix", async () => {
-        // A 403 is the shape Brawlhalla returns for a rejected key, and it is
-        // the same answer every time. Retrying it four times only makes the
-        // failure slower.
         const { effect, attempts } = countingFailure(await statusError(403))
 
         const exit = await Effect.runPromise(

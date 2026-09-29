@@ -2,15 +2,6 @@ import { describe, expect, it } from "@effect/vitest"
 import { matchTier, mergeLookup } from "./lookup"
 import type { AliasHit, ClanHit, PlayerHit } from "./lookup"
 
-/**
- * The merge and ranking rules of the federated lookup.
- *
- * These are pure functions, so the questions that actually decide whether the
- * lookup feels right are testable without a network, a database or a Worker:
- * which of two matching rows comes first, what happens to a player found by two
- * sources, and whether a renamed player is reachable by the old name.
- */
-
 const player = (
     over: Partial<PlayerHit> & { playerId: string; name: string },
 ): PlayerHit => ({
@@ -82,8 +73,6 @@ describe("mergeLookup ranking", () => {
             ],
         })
 
-        // A shorter name matching the same prefix is the closer answer, and
-        // that outranks prominence: the highest-rated row here comes last.
         expect(rows.map((row) => row.name)).toEqual([
             "boom",
             "boomab",
@@ -108,8 +97,6 @@ describe("mergeLookup ranking", () => {
             clans: [clan({ id: "9", name: "boom" })],
         })
 
-        // The clan matches exactly and the player only by prefix, so the clan
-        // leads regardless of type.
         expect(rows.map((row) => row.type)).toEqual(["clan", "player"])
     })
 
@@ -129,8 +116,6 @@ describe("mergeLookup ranking", () => {
 
 describe("mergeLookup sources", () => {
     it("keeps the 1v1 row when a player is found on both ladders", () => {
-        // The caller passes 1v1 hits first; a team rating must not replace a
-        // player's own rating.
         const rows = merge({
             players: [
                 player({ playerId: "7", name: "boom", rating: 2100 }),
@@ -171,9 +156,6 @@ describe("mergeLookup sources", () => {
     })
 
     it("ranks a renamed player by the old name that matched", () => {
-        // The current name does not match the query at all; only the alias
-        // does. Ranking on the display name alone would sink this row to the
-        // bottom even though the alias is an exact hit.
         const rows = merge({
             query: "boom",
             players: [player({ playerId: "1", name: "zzz" })],

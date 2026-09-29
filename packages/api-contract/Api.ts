@@ -43,40 +43,11 @@ import {
     WeeklyRotationSchema,
 } from "./schemas"
 
-/**
- * The typed HTTP contract for the Corehalla API.
- *
- * ## Layout
- *
- * | Group | Serves | Shape |
- * | --- | --- | --- |
- * | `players` | `/api/v1/players/:id` | one aggregate for the whole profile page |
- * | `guilds` | `/api/v1/guilds/:id` | one aggregate for the whole guild page |
- * | `rankings` | `/api/v1/rankings/*` | the live ladders, presentation-ready, plus our own career boards |
- * | `search` | `/api/v1/search*` | the federated lookup and the alias index |
- * | `content` | `/api/v1/content/*` | scraped site content |
- * | `me`, `auth` | `/api/v1/me/*`, `/api/v1/auth/*` | app-owned accounts |
- * | `upstream` | `/api/v1/upstream/brawlhalla/*` | Brawlhalla v1/v0, verbatim |
- *
- * The split that matters is the last row. Everything above it is a product
- * endpoint: it aggregates, derives, and answers a page in one request. The
- * `upstream` group is the old pass-through surface, kept because it is a real
- * debugging and parity tool — when an aggregate looks wrong, the way to tell
- * whether the bug is ours or Brawlhalla's is to ask for the raw payload beside
- * it.
- *
- * Group ids are part of the client's vocabulary (`CorehallaClient.query(group,
- * endpoint)`), so renaming one is a source-level break even when the URL is
- * unchanged.
- */
-
 const players = HttpApiGroup.make("players").add(
     HttpApiEndpoint.get("getPlayer", "/api/v1/players/:playerId", {
         params: { playerId: Schema.FiniteFromString },
         success: PlayerEnvelopeSchema,
-        // A player nobody has heard of is a 404 rather than an empty payload:
-        // the page cannot render without stats, and "no such player" is what
-        // that means.
+        // Unknown player is 404, not an empty payload — the page needs stats.
         error: HttpApiError.NotFound,
     }),
 )
@@ -91,13 +62,6 @@ const guilds = HttpApiGroup.make("guilds").add(
 
 const rankings = HttpApiGroup.make("rankings")
     .add(
-        /**
-         * The 1v1 ladder.
-         *
-         * `name` is an upstream filter rather than a local one: v1 accepts it,
-         * so a named search is one request against the whole ladder instead of
-         * a page scan.
-         */
         HttpApiEndpoint.get("getRanked1v1", "/api/v1/rankings/1v1", {
             query: {
                 region: RankedRegion,
@@ -117,10 +81,7 @@ const rankings = HttpApiGroup.make("rankings")
         }),
     )
     .add(
-        /**
-         * The 3v3 ladder. v1-only: the legacy API has no 3v3 mode, so there is
-         * no fallback source for it.
-         */
+        // v1-only: the legacy API has no 3v3 mode.
         HttpApiEndpoint.get("getRanked3v3", "/api/v1/rankings/3v3", {
             query: {
                 region: RankedRegion,
@@ -142,15 +103,6 @@ const rankings = HttpApiGroup.make("rankings")
             },
         ),
     )
-    /*
-     * The two boards that rank a player *within one legend or weapon*.
-     *
-     * They return the same row shape as the career board — a player and one
-     * number — because that is genuinely all they are; what differs is the
-     * filter and the column, both of which are query parameters rather than
-     * fields. A row carries no legend or weapon, because every row on a given
-     * board has the same one and the caller supplied it.
-     */
     .add(
         HttpApiEndpoint.get(
             "getGlobalLegendRankings",
@@ -180,14 +132,6 @@ const rankings = HttpApiGroup.make("rankings")
         ),
     )
     .add(
-        /**
-         * Who is playing right now.
-         *
-         * Not a ranking: the rows are the players whose game count rose since
-         * the last sample of that ladder, so membership expires on its own. It
-         * shares the rankings group because it is addressed the same way — one
-         * bracket crossed with one region.
-         */
         HttpApiEndpoint.get("getRankedQueue", "/api/v1/rankings/queue", {
             query: {
                 bracket: Ladder,
@@ -226,13 +170,6 @@ const search = HttpApiGroup.make("search")
         }),
     )
     .add(
-        /**
-         * The federated lookup: players and clans in one ranked list.
-         *
-         * Separate from `searchPlayerAlias`, which exposes the raw local alias
-         * index. This is the product surface — it merges the upstream ladder
-         * search with the local alias and clan indexes, then ranks the result.
-         */
         HttpApiEndpoint.get("lookup", "/api/v1/search", {
             query: {
                 q: Schema.String,
@@ -260,15 +197,6 @@ const content = HttpApiGroup.make("content")
         }),
     )
 
-/**
- * The signed-in user's own data.
- *
- * These are the first endpoints on this worker that are not public: they read
- * the app session cookie and scope every query to that session's user. They are
- * grouped apart from the ladders because their results must never be
- * shared-cached, and because a caller that is not signed in gets a 401 rather
- * than an empty board.
- */
 const me = HttpApiGroup.make("me")
     .add(
         HttpApiEndpoint.get("getSession", "/api/v1/me/session", {
@@ -287,14 +215,7 @@ const me = HttpApiGroup.make("me")
         }),
     )
     .add(
-        /**
-         * The removal key travels as a query rather than a body.
-         *
-         * `DELETE` with a payload is legal HTTP but sits awkwardly in the typed
-         * client — the method decides whether a body is part of the request —
-         * and a favourite is fully identified by its `(type, id)` pair, so a
-         * query is the natural shape.
-         */
+        // Query rather than body: favourite is identified by `(type, id)`.
         HttpApiEndpoint.delete("deleteFavorite", "/api/v1/me/favorites", {
             query: { type: Schema.String, id: Schema.String },
             success: HttpApiSchema.NoContent,
@@ -311,16 +232,6 @@ const me = HttpApiGroup.make("me")
         }),
     )
 
-/**
- * Sign-in and sign-out.
- *
- * These answer with redirects and `Set-Cookie` rather than JSON, which is why
- * the declared success is a placeholder: the handlers return an
- * `HttpServerResponse`, and the redirect *is* the payload. They live on the API
- * because the session cookie must be minted by the worker that owns the session
- * table, and the API is routed on the app's own hostname — so the cookie is
- * same-site with the page that started the flow.
- */
 const auth = HttpApiGroup.make("auth")
     .add(
         HttpApiEndpoint.get("discordLogin", "/api/v1/auth/discord", {
@@ -347,15 +258,6 @@ const auth = HttpApiGroup.make("auth")
         }),
     )
 
-/**
- * Brawlhalla's own answers, verbatim.
- *
- * The surface the product endpoints replaced, kept under one prefix so it is
- * obvious which half of the API is ours. Everything here is either a raw
- * upstream payload or a thin map of one; nothing aggregates and nothing is
- * shaped for a page. A client should prefer the product endpoint beside it, and
- * reach for this when it wants the payload itself.
- */
 const upstream = HttpApiGroup.make("upstream")
     .add(
         HttpApiEndpoint.get("getPlayerStats", "/player/:playerId/stats", {
@@ -366,7 +268,7 @@ const upstream = HttpApiGroup.make("upstream")
     .add(
         HttpApiEndpoint.get("getPlayerRanked", "/player/:playerId/ranked", {
             params: { playerId: Schema.FiniteFromString },
-            // A player without ranked games is a valid, empty result.
+            // No ranked games is a valid empty result, not a 404.
             success: Schema.NullOr(PlayerRankedSchema),
         }),
     )
@@ -376,8 +278,7 @@ const upstream = HttpApiGroup.make("upstream")
             "/player/:playerId/ranked-3v3",
             {
                 params: { playerId: Schema.FiniteFromString },
-                // Most players have never queued 3v3, so "no record" is an
-                // ordinary result rather than a 404.
+                // Most players never queued 3v3 — "no record" is ordinary, not 404.
                 success: Schema.NullOr(Player3v3RankedSchema),
             },
         ),
@@ -422,12 +323,7 @@ const upstream = HttpApiGroup.make("upstream")
             success: Ranking3v3Schema,
         }),
     )
-    /*
-     * The prefix is applied last on purpose: `HttpApiGroup.prefix` only
-     * rewrites the endpoints that exist at the moment it is called, so calling
-     * it before the routes would leave every one of them unprefixed — and the
-     * OpenAPI document is where that shows up first.
-     */
+    // Prefix last: `HttpApiGroup.prefix` only rewrites endpoints already added.
     .prefix("/api/v1/upstream/brawlhalla")
 
 export const CorehallaApi = HttpApi.make("CorehallaApi")

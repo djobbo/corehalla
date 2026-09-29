@@ -16,18 +16,6 @@ import type { SortOption } from "@/lib/useSortBy"
 import type { Stat } from "@/components/StatGrid"
 import type { Weapon } from "@crh/bhapi/constants"
 
-/**
- * Every legend on the account, as one sortable, filterable list.
- *
- * The list is the tab, so it is ordered by whatever the control says and each
- * collapsed row shows the figure being sorted on. That is the whole reason the
- * rows are collapsed: sixty legends is a table, not sixty cards.
- *
- * The roster, its per-legend figures and the account totals all arrive on the
- * profile aggregate, so this tab reads one atom and sorts it — the API already
- * did the summing.
- */
-
 type LegendSort =
     | "level"
     | "matchtime"
@@ -45,10 +33,7 @@ const losses = (legend: PlayerLegend): number => games(legend) - wins(legend)
 const winrate = (legend: PlayerLegend): number =>
     calculateWinrate(wins(legend), games(legend))
 
-/*
- * Module scope on purpose: `useSortBy` sorts on every render and reads the
- * comparator by key, so a fresh record per render would only churn.
- */
+// Module scope: `useSortBy` sorts every render and keys into this record.
 const sortOptions: Record<LegendSort, SortOption<PlayerLegend>> = {
     level: {
         label: "Level",
@@ -169,19 +154,12 @@ export const LegendsTab = ({ playerId }: { readonly playerId: number }) => {
                     onChange={setWeaponFilter}
                 />
             </div>
-
             <Card className="bg-background">
                 <CardContent>
                     <StatGrid stats={summary} />
                 </CardContent>
             </Card>
-
             {sort.sorted.length === 0 ? (
-                /*
-                 * shadcn's `Empty`, so a "no rows" note is the same shape here
-                 * as it is on every other list in the app. The well is the
-                 * muted fill an empty panel wears rather than a card surface.
-                 */
                 <Empty className="bg-bgVar2 py-10">
                     <EmptyHeader>
                         <EmptyDescription>

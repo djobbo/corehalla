@@ -1,40 +1,9 @@
 #!/usr/bin/env node
 /**
- * One-off Supabase/Postgres -> Cloudflare D1 export generator.
- *
- * It reads the **old** Postgres database over a read-only connection, converts
- * every supported table to chunked SQLite `INSERT OR IGNORE` statements and
- * writes them as a numbered series of `.sql` files ready for D1. Nothing is
- * uploaded here: the generated directory is gitignored and the import itself is
- * a deliberate, manual step (see the "Importing the old Supabase data" section
- * in the root README).
- *
- *   pnpm db:import:supabase -- --source="postgres://..."
- *   pnpm db:seed:verify     -- --dir=packages/db/seed/generated/supabase
- *
- * Copied, in foreign-key order: UserProfile, UserFavorite, UserConnection,
- * BHClan, BHPlayerData, BHPlayerLegend, BHPlayerWeapon, BHPlayerAlias,
- * CrawlProgress.
- *
- * Not copied: UserSession — sessions hold this app's opaque token hashes and do
- * not survive a database move; users simply sign in again.
- *
- * `UserProfile.id` is preserved (favourites and connections reference it) and
- * `discordId`, `email` and `createdAt` are backfilled from `auth.users` /
- * `auth.identities`, so the next Discord sign-in resolves to the existing
- * profile instead of creating a duplicate. Without that backfill every returning
- * user would get a fresh profile and lose their favourites.
- *
- * Flags: --source=URL (or SOURCE_DATABASE_URL), --out=DIR, --chunk=N (rows per
- * SELECT page — statements are byte-split afterwards, so this only trades
- * memory for network round trips), --max-bytes=N (per output file),
- * --max-statement-bytes=N, --only=Table,Table, --limit=N (rows per table,
- * 0 = all), --ssl=auto|require|verify|disable.
- *
- * The URL is parsed by hand, so passwords containing `#`, `@`, `?`, `/` or `:`
- * work as-is (no percent-encoding needed, though `%40`-style also decodes).
- * `--ssl=auto` (the default) follows the URL's `sslmode`, defaulting to TLS for
- * remote hosts and no TLS for localhost.
+ * One-off Postgres → D1 SQL export. Read-only; writes chunked `.sql` files.
+ * Preserves `UserProfile.id` and backfills Discord identity so returning users
+ * keep favourites. Does not copy `UserSession`. Parses URLs by hand so passwords
+ * with `#`/`@` work.
  */
 import { createWriteStream, statSync, type WriteStream } from "node:fs"
 import { mkdir } from "node:fs/promises"
@@ -47,13 +16,12 @@ import { insertStatements, type Sql } from "./sql.mts"
 const packageDir = resolve(dirname(fileURLToPath(import.meta.url)), "..")
 const repoDir = resolve(packageDir, "..", "..")
 
-/** Resolve CLI paths against the repo root, so cwd (pnpm sets it to packages/db) never matters. */
+/** Resolve paths against the repo root (pnpm cwd is packages/db). */
 const repoPath = (value: string) =>
     isAbsolute(value) ? value : resolve(repoDir, value)
 
 type SourceRow = Record<string, unknown>
 
-/** One target column: its D1 name and how to select it from Postgres. */
 type Column = {
     readonly name: string
     /** Overrides the default `"name"` select expression. */
@@ -62,13 +30,12 @@ type Column = {
 
 type TableSpec = {
     readonly table: string
-    /** `FROM` clause (may join, as `UserProfile` does). */
+    /** `FROM` clause (may join). */
     readonly source: string
     readonly columns: readonly Column[]
     /**
-     * Keyset-pagination keys, in `ORDER BY` order. `expr` is SQL, `key` reads
-     * the row, `cast` gives the parameter an explicit type (`LIMIT`/comparison
-     * inference is not reliable across proxies).
+     * Keyset pagination keys. `cast` is required — proxy/pooler type inference
+     * is unreliable.
      */
     readonly order: readonly {
         readonly expr: string
@@ -80,44 +47,34 @@ type TableSpec = {
 const col = (name: string): Column => ({ name })
 
 /**
- * Postgres `timestamp` (no time zone) -> epoch milliseconds.
- *
- * Prisma stored `DateTime` as a naive `timestamp(3)` holding **UTC** wall time,
- * and `pg` would parse that as server-local time — so convert explicitly and
- * never let a Date object cross the boundary.
+ * Naive `timestamp` holding UTC wall time → epoch ms. Never let `pg` parse as
+ * server-local.
  */
 const ts = (name: string): Column => ({
     name,
     expr: `(extract(epoch from "${name}" AT TIME ZONE 'UTC') * 1000)::double precision`,
 })
 
-/** `auth.users.created_at` is `timestamptz`, so no `AT TIME ZONE` here. */
+/** `auth.users.created_at` is `timestamptz` — no `AT TIME ZONE`. */
 const AUTH_CREATED_AT: Column = {
     name: "createdAt",
     expr: `(extract(epoch from u.created_at) * 1000)::double precision`,
 }
 
 /**
- * A mirrored lowercase search column for `source`.
- *
- * The app folds with JS `toLowerCase()` (see `searchKey` in
- * `apps/web/src/effect/Database.ts`); Postgres `lower()` is the closest equivalent
- * available inside the query. They agree on ASCII and on ordinary accented
- * text, and can differ for a handful of characters such as `İ` — if a search
- * ever misses an imported non-ASCII name, `pnpm db:seed:verify`'s prefix check
- * is where to look, and the fix is to re-derive the column in Node rather than
- * in the `SELECT` list.
+ * JS `toLowerCase()` mirror via Postgres `lower()`; can differ for a few
+ * characters (e.g. `İ`) — re-derive in Node if search misses.
  */
 const derivedLower = (name: string, expr: string): Column => ({
     name,
     expr: `lower(${expr})`,
 })
 
-/** `UserProfile` needs `auth`; a plain Postgres source gets this fallback. */
+/** `UserProfile` needs `auth`; plain Postgres gets the fallback. */
 const userProfileColumns = (hasAuth: boolean): readonly Column[] =>
     hasAuth
         ? [
-              // `id` must be qualified: `auth.users` and `auth.identities` have one too.
+              // Qualify `id`: both `auth.users` and `auth.identities` have one.
               { name: "id", expr: `p."id"` },
               {
                   name: "discordId",
@@ -294,19 +251,9 @@ const specs = (hasAuth: boolean): readonly TableSpec[] => [
     },
     {
         table: "BHPlayerAlias",
-        // Rows with no real owner (`playerId` of `0` or empty) or no name are
-        // dropped at the source rather than imported and filtered later: they
-        // cannot match a search, and they would occupy the alias indexes and
-        // inflate the crawl without ever being useful.
-        //
-        // The `NULLIF` also excludes NULL, which a plain `<> '0'` would not
-        // (NULL comparisons are never true); `btrim` catches whitespace-only
-        // aliases, which would otherwise survive as a searchable-but-empty row.
-        //
-        // Filtering here, in the `FROM` clause, keeps `order` as the bare
-        // `(playerId, alias)` keyset the pager walks — a `WHERE` bolted on
-        // beside the cursor comparison would risk paginating on a
-        // filtered-out column.
+        // Drop empty/zero owners and blank aliases in FROM (not WHERE) so keyset
+        // pagination stays on the bare (playerId, alias) order. NULLIF catches
+        // NULL that `<> '0'` would miss; btrim drops whitespace-only aliases.
         source: `(SELECT * FROM public."BHPlayerAlias"
                   WHERE NULLIF("playerId", '') IS NOT NULL
                     AND "playerId" <> '0'
@@ -316,10 +263,7 @@ const specs = (hasAuth: boolean): readonly TableSpec[] => [
             col("alias"),
             derivedLower("aliasLower", `"alias"`),
             ts("createdAt"),
-            // The old schema had no `lastSeen`; the import is the last time we
-            // know the alias was seen, so seed it from `createdAt` rather than
-            // letting the column default to "now" and claim every historical
-            // alias was just crawled.
+            // Old schema had no lastSeen — seed from createdAt, not "now".
             { ...ts("createdAt"), name: "lastSeen" },
             col("public"),
         ],
@@ -358,11 +302,7 @@ const selectList = (spec: TableSpec): string =>
         .join(", ")
 
 /**
- * `SELECT ... WHERE (keys) > ($1::text, $2::int4) ORDER BY keys LIMIT n`.
- *
- * `LIMIT` is inlined (a controlled integer) and cursor parameters are cast
- * explicitly: both remove type inference from the picture, which some Postgres
- * proxies and poolers do not perform.
+ * Inline LIMIT and explicit cursor casts — poolers often skip type inference.
  */
 const pageQuery = (
     spec: TableSpec,
@@ -386,17 +326,12 @@ const pageQuery = (
 
 type Progress = (table: string, rows: number) => void
 
-/** The only shape this script needs from a Postgres client. */
 type Query = (config: {
     readonly text: string
     readonly values: readonly unknown[]
 }) => Promise<{ readonly rows: SourceRow[] }>
 
-/**
- * Stream one table as SQL statements, page by page. Rows are read with keyset
- * pagination (never `OFFSET`), so a table can be arbitrarily large without the
- * server sorting a growing prefix on every page.
- */
+/** Keyset pagination (never OFFSET) so large tables do not grow a sort prefix. */
 async function* exportTable(
     query: Query,
     spec: TableSpec,
@@ -448,7 +383,7 @@ async function* exportTable(
     }
 }
 
-/** Writes statements to numbered, size-bounded files. */
+/** Numbered, size-bounded output files. */
 class SqlFileWriter {
     readonly files: string[] = []
     statements = 0
@@ -556,13 +491,8 @@ const parsePort = (value: string): number => {
 }
 
 /**
- * Parse a Postgres connection string **without** `new URL`.
- *
- * `pg` hands the string to `new URL`, which rejects two shapes that a Supabase
- * connection string hits constantly — a `#` in the generated password, or an
- * unreplaced `[region]` placeholder — with a bare `Invalid URL`. Splitting the
- * authority by hand accepts raw special characters, and user/password are
- * percent-decoded so both `p@ss#word` and `p%40ss%23word` work.
+ * Without `new URL` — `pg` rejects `#` in passwords and unreplaced `[region]`
+ * placeholders. Authority split accepts raw specials; user/password decode.
  */
 export const parseSource = (raw: string): SourceConnection => {
     const trimmed = raw
@@ -606,8 +536,7 @@ export const parseSource = (raw: string): SourceConnection => {
     }
 
     const rest = trimmed.slice(scheme[0].length)
-    // The last `@` separates credentials from the host, so a password may
-    // itself contain `@`.
+    // Last `@` separates credentials from host — password may contain `@`.
     const at = rest.lastIndexOf("@")
     const userinfo = at === -1 ? undefined : rest.slice(0, at)
     let hostPart = at === -1 ? rest : rest.slice(at + 1)
@@ -773,9 +702,7 @@ const parseArgs = (argv: readonly string[]): CliOptions => {
     return {
         source,
         out: repoPath(flag("out") ?? "packages/db/seed/generated/supabase"),
-        // Page size for the `SELECT`. Statements are split to fit D1's byte
-        // limit regardless, so this only trades memory for round trips — and a
-        // remote pooler makes round trips expensive.
+        // SELECT page size only — statements are byte-split separately.
         chunk: Math.max(1, number("chunk", 5_000)),
         maxBytes: Math.max(1024, number("max-bytes", 200_000_000)),
         maxStatementBytes: number("max-statement-bytes", 90_000),
@@ -829,15 +756,8 @@ const isConnectionError = (error: unknown): boolean => {
 const MAX_RECONNECTS = 10
 
 /**
- * A `pg.Client` that survives the session being dropped.
- *
- * A long export outlives a Supavisor/pooler session. `pg` signals that either by
- * rejecting the in-flight query, by emitting an `error` event (which, with no
- * listener, kills the process), or by emitting `end` while idle — after which
- * the next query fails with "Client has already been closed". All three are
- * caught here: the client is replaced and the **current page** is retried. The
- * keyset cursor only advances after a page has been written, so a retry cannot
- * duplicate rows.
+ * Survives pooler session drops: replace client and retry the current page.
+ * Keyset only advances after a write, so retries cannot duplicate rows.
  */
 class Source {
     readonly #config: ClientConfig
@@ -908,15 +828,14 @@ class Source {
     }
 
     async #reconnect(attempt: number): Promise<void> {
-        // Detach first: the dying client's `end` must not re-mark the
-        // replacement as broken.
+        // Detach first so dying client's `end` does not re-mark the replacement.
         this.#client.removeAllListeners("error")
         this.#client.removeAllListeners("end")
 
         try {
             await this.#client.end()
         } catch {
-            // The socket is already gone.
+            // Socket already gone.
         }
 
         await new Promise((done) =>
@@ -937,12 +856,12 @@ class Source {
         try {
             await this.#client.end()
         } catch {
-            // Nothing to close.
+            // Already closed.
         }
     }
 }
 
-/** Point out the two Supabase connection mistakes we can detect up front. */
+/** Warn on the two detectable Supabase connection mistakes. */
 const warnAboutConnection = (connection: SourceConnection): void => {
     if (
         connection.host.startsWith("db.") &&
@@ -979,10 +898,10 @@ const main = async () => {
         ssl,
         keepAlive: true,
         connectionTimeoutMillis: 30_000,
-        // Bound a hung read; a timed-out SELECT is retried above.
+        // Bound hung reads; timed-out SELECT is retried above.
         query_timeout: 600_000,
         application_name: "corehalla-d1-import",
-        // Belt and braces: this generator only ever reads.
+        // Read-only session — this generator never writes.
         options: "-c default_transaction_read_only=on",
     })
 

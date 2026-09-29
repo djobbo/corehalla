@@ -10,49 +10,13 @@ import {
 } from "drizzle-orm/sqlite-core"
 
 /**
- * Database schema — Cloudflare D1 (SQLite).
- *
- * The database is a single D1 SQLite database. Table and column names are kept
- * identical to the Postgres/Prisma era so the query layer and the seeded data
- * generator stay readable; only the column *types* changed:
- *
- * - `uuid`      -> `text` (SQLite has no uuid type); ids default to
- *                  `crypto.randomUUID()` in the application.
- * - `timestamp` -> `integer` in `timestamp_ms` mode (epoch milliseconds, so
- *                  `Date#getTime()` comparisons keep working).
- * - `jsonb`     -> `text` in `json` mode (JSON string).
- * - `boolean`   -> `integer` in `boolean` mode (0/1).
- *
- * `createdAt`/`lastUpdated`/`lastSeenAt` default to `(unixepoch() * 1000)`, so
- * rows inserted without them (for example by `Auth.upsertDiscordUser`) still
- * get a millisecond timestamp.
- *
- * The crawl tables carry indexes for the two hot read paths: the career player
- * rankings (one index per sortable column, because the `ORDER BY` column is
- * dynamic) and prefix search on clan names and player aliases.
- *
- * Prefix search reads a dedicated lowercase column (`aliasLower`/`nameLower`)
- * rather than a `COLLATE NOCASE` expression index. SQLite's LIKE optimization
- * does accept a `COLLATE NOCASE` index, but it only folds ASCII, and the two
- * search columns are compared with `LIKE` *and* ordered, so the index has to
- * serve both. A plain indexed column does that unambiguously.
- *
- * The ordering matters as much as the index. A prefix `WHERE` is a *range*, so
- * no B-tree can also satisfy an `ORDER BY` on a different column: SQLite falls
- * back to reading every matching row into a temp B-tree and sorting it before
- * the `LIMIT`. On a short prefix that is the whole table, so the search queries
- * order by the searched column itself (which the index already provides) and
- * never sort on a second column. See `web/src/effect/Database.ts`.
- *
- * Indexes add one written row per indexed column on every write, so keep the
- * crawler's write volume in mind when adding more.
+ * Prefix search uses dedicated lowercase columns (`aliasLower`/`nameLower`),
+ * not `COLLATE NOCASE` (ASCII-only). Search queries order by the searched
+ * column itself so SQLite does not fall back to a temp B-tree sort.
  */
 
-/** Matches the previous `Prisma.JsonValue`. */
 export type JsonObject = { [Key in string]?: JsonValue }
-/** Matches the previous `Prisma.JsonArray`. */
 export type JsonArray = JsonValue[]
-/** Matches the previous `Prisma.JsonValue`. */
 export type JsonValue =
     | string
     | number
@@ -63,7 +27,7 @@ export type JsonValue =
 
 const now = sql`(unixepoch() * 1000)`
 
-/** Columns exposed as global-ranking sort options (see `getGlobalPlayerRankings`). */
+/** Sort columns for `getGlobalPlayerRankings` (one index each). */
 const playerRankingColumns = [
     "xp",
     "games",
@@ -92,10 +56,7 @@ export const userProfile = sqliteTable(
         id: text("id")
             .primaryKey()
             .$defaultFn(() => crypto.randomUUID()),
-        /**
-         * Discord snowflake. Nullable because rows created before the
-         * app-owned auth have no local Discord id until they sign in again.
-         */
+        /** Nullable: pre-auth rows have none until the user signs in again. */
         discordId: text("discordId"),
         username: text("username").notNull().default(""),
         avatarUrl: text("avatarUrl").notNull().default(""),
@@ -107,12 +68,7 @@ export const userProfile = sqliteTable(
     (table) => [uniqueIndex("UserProfile_discordId_key").on(table.discordId)],
 )
 
-/**
- * Discord OAuth sessions.
- *
- * `id` is the SHA-256 hex digest of the opaque token stored in the browser
- * cookie, so a database leak cannot be replayed as a login.
- */
+/** `id` is SHA-256 of the cookie token — a DB leak cannot be replayed as a login. */
 export const userSession = sqliteTable(
     "UserSession",
     {
@@ -306,52 +262,22 @@ export const bhPlayerWeapon = sqliteTable(
 )
 
 /**
- * The top of every ladder, sampled often, so an entry that just queued is
- * visible within minutes rather than within a crawl cycle.
- *
- * One row per **(ladder entry, bracket)**, holding the last observed figures.
- * What an entry is depends on the bracket, because the ladders differ: a 1v1 or
- * 3v3 row is one player, and a 2v2 row is a *team* with a single shared game
- * count. Keying 2v2 by player was wrong and quietly so — a player can hold
- * several teams near the top, each with its own count, so their stored figure
- * depended on which team happened to be sampled last and a quieter one
- * reappearing read as them having played.
- *
- * Activity is a delta rather than an absolute: an entry has queued when the
- * `games` we now see is higher than the `games` we stored, which is why the
- * table has to exist at all — the signal is a comparison against the previous
- * pass, not anything a single payload can say on its own.
- *
- * `queuedAt` is therefore nullable, and null means "we have seen this entry on
- * a ladder but have not yet seen it play". A first observation is not activity:
- * inserting a row for an entry we simply had not sampled before would otherwise
- * announce it as having just queued.
+ * One row per (ladder entry, bracket). Key by entry (not player) — a 2v2 player
+ * can hold several teams. Activity is `games` rising vs the stored value;
+ * `queuedAt` null means seen on a ladder but not yet observed playing.
  */
 export const bhRankedQueue = sqliteTable(
     "BHRankedQueue",
     {
-        /**
-         * The player id for a solo ladder, or `<one>-<two>` for a team.
-         *
-         * A composite rather than the two member columns below because a
-         * primary key cannot be nullable, and those two are null for every
-         * bracket but 2v2.
-         */
+        /** Solo player id, or `<one>-<two>`; PK cannot use nullable member cols. */
         entry_id: text("entry_id").notNull(),
-        /** `1v1` | `2v2` | `3v3`. Part of the key: one entry, three ladders. */
+        /** Part of the key: one entry can sit on three ladders. */
         bracket: text("bracket").notNull(),
         region: text("region").notNull(),
-        /**
-         * The names the ladder gave, one field per player.
-         *
-         * Two fields rather than one joined string, for the same reason the
-         * domain rows have two: a joined pair has to be taken apart to be
-         * useful, and taking it apart is what gets usernames wrong. `name_two`
-         * is null on a solo ladder, where there is only one.
-         */
+        /** Separate names — never a joined string. `name_two` null on solo. */
         name_one: text("name_one").notNull(),
         name_two: text("name_two"),
-        /** The two players of a team entry. Null for a solo ladder. */
+        /** Null for a solo ladder. */
         member_one_id: text("member_one_id"),
         member_two_id: text("member_two_id"),
         lastUpdated: integer("lastUpdated", {
@@ -362,23 +288,14 @@ export const bhRankedQueue = sqliteTable(
         tier: text("tier").notNull(),
         games: integer("games").notNull(),
         wins: integer("wins").notNull(),
-        /** Position on this ladder, as the ladder numbered it. */
         rank: integer("rank").notNull().default(0),
         /**
-         * What the last queue event cost or earned.
-         *
-         * Both are computed inside the upsert from the row's *previous* values,
-         * and they are the one part of this row that is not simply "what the
-         * ladder said". They only exist because the row is written exactly when
-         * a player's game count rises: `rating` and `rank` therefore hold the
-         * figures from the last time they played, which is the comparison a
-         * reader wants — "you are up 14 since we last saw you".
-         *
-         * Zero on insert, where there is no previous value to subtract.
+         * Computed from previous row values on a `games` increase; zero on
+         * insert (no previous value).
          */
         ratingDelta: integer("ratingDelta").notNull().default(0),
         rankDelta: integer("rankDelta").notNull().default(0),
-        /** When a `games` increase was last observed. Null until one is. */
+        /** Null until a `games` increase is observed. */
         queuedAt: integer("queuedAt", { mode: "timestamp_ms" }),
     },
     (table) => [
@@ -386,7 +303,6 @@ export const bhRankedQueue = sqliteTable(
             name: "BHRankedQueue_pkey",
             columns: [table.entry_id, table.bracket],
         }),
-        /** The read is "this ladder, recently queued", so both are in the key. */
         index("BHRankedQueue_ladder_idx").on(
             table.bracket,
             table.region,
@@ -400,37 +316,16 @@ export const bhPlayerAlias = sqliteTable(
     {
         playerId: text("playerId").notNull(),
         alias: text("alias").notNull(),
-        /**
-         * `alias`, lowercased in JavaScript by the writer.
-         *
-         * Never written by SQL `lower()`, which does not fold non-ASCII, and
-         * never re-derived on read: the search needle is lowercased the same
-         * way, so the two always agree.
-         */
+        /** Lowercased in JS by the writer — never SQL `lower()` (non-ASCII). */
         aliasLower: text("aliasLower").notNull().default(""),
-        /**
-         * When this alias was first seen. Written once on insert and
-         * deliberately never updated, so it stays a real "created" timestamp.
-         */
+        /** Set once on insert; never updated. */
         createdAt: integer("createdAt", { mode: "timestamp_ms" })
             .notNull()
             .default(now),
         /**
-         * When the crawler last saw this alias. Refreshed on every crawler hit.
-         *
-         * The default is the constant `0`, not `now`: SQLite forbids a
-         * parenthesized expression as the default of an
-         * `ALTER TABLE ... ADD COLUMN`, which is how this column reaches an
-         * already-migrated database ("Cannot add a column with non-constant
-         * default"). Note the local `node:sqlite` build accepts it anyway, so
-         * `db:seed:verify` cannot catch a regression here — D1 is stricter than
-         * the SQLite this repo tests against.
-         *
-         * Every writer sets `lastSeen` explicitly (see `alias()` in
-         * `web/src/effect/Handlers.ts`), so the default only applies to rows
-         * inserted around the migration itself, and `0` reads honestly as
-         * "never seen" instead of claiming "now". The migration backfills
-         * existing rows from `createdAt`.
+         * Default `0`, not `now`: D1 rejects non-constant defaults on
+         * `ALTER TABLE ... ADD COLUMN` (local `node:sqlite` accepts them).
+         * Writers set this explicitly; migration backfills from `createdAt`.
          */
         lastSeen: integer("lastSeen", { mode: "timestamp_ms" })
             .notNull()
@@ -442,18 +337,9 @@ export const bhPlayerAlias = sqliteTable(
             name: "BHPlayerAlias_pkey",
             columns: [table.playerId, table.alias],
         }),
-        /**
-         * Serves the prefix search end to end: `aliasLower LIKE 'x%'` narrows
-         * the range and the same index provides the `ORDER BY aliasLower`.
-         *
-         * Not partial on `public`: a partial index would drop the non-public
-         * rows, but SQLite still has to read them from the table for the
-         * `public = 1` check, and this table is almost entirely public anyway.
-         */
+        /** Serves `aliasLower LIKE` and `ORDER BY aliasLower` (not partial on `public`). */
         index("BHPlayerAlias_aliasLower_idx").on(table.aliasLower),
-        /** `getPlayerAliases`, ordered by first-seen. */
         index("BHPlayerAlias_createdAt_idx").on(table.createdAt),
-        /** Recency reads and crawler bookkeeping. */
         index("BHPlayerAlias_lastSeen_idx").on(table.lastSeen),
     ],
 )
@@ -463,18 +349,14 @@ export const bhClan = sqliteTable(
     {
         id: text("id").primaryKey(),
         name: text("name").notNull(),
-        /** `name`, lowercased in JavaScript. See `bhPlayerAlias.aliasLower`. */
+        /** Lowercased in JS. See `bhPlayerAlias.aliasLower`. */
         nameLower: text("nameLower").notNull().default(""),
         created: integer("created").default(-1),
         xp: integer("xp").notNull(),
     },
     (table) => [
         index("BHClan_xp_idx").on(table.xp),
-        /**
-         * Prefix search on `nameLower`, which doubles as its sort order: the
-         * clan search filters by name and re-ranks a bounded window by `xp`
-         * instead of asking SQLite to sort every prefix match.
-         */
+        /** Prefix filter + sort order; xp re-rank is a bounded window after. */
         index("BHClan_nameLower_idx").on(table.nameLower),
     ],
 )
@@ -485,8 +367,6 @@ export const crawlProgress = sqliteTable("CrawlProgress", {
     lastUpdated: integer("lastUpdated", { mode: "timestamp_ms" }).notNull(),
     progress: integer("progress").notNull(),
 })
-
-// --- row types --------------------------------------------------------------
 
 export type UserProfile = typeof userProfile.$inferSelect
 export type UserSession = typeof userSession.$inferSelect
@@ -499,8 +379,6 @@ export type BHPlayerAlias = typeof bhPlayerAlias.$inferSelect
 export type BHRankedQueue = typeof bhRankedQueue.$inferSelect
 export type BHClan = typeof bhClan.$inferSelect
 export type CrawlProgress = typeof crawlProgress.$inferSelect
-
-// --- insert types -----------------------------------------------------------
 
 export type NewUserProfile = typeof userProfile.$inferInsert
 export type NewUserSession = typeof userSession.$inferInsert

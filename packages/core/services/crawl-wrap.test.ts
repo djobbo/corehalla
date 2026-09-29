@@ -11,29 +11,10 @@ import { Crawler, defaultCrawlerConfig, layer as crawlerLayer } from "./crawler"
 import { Upstream } from "./upstream"
 import type { CrawlerConfig } from "./crawler"
 
-/**
- * The cursor rule: where the next pass starts.
- *
- * Two wrap points, and they are not the same event:
- *
- * - **The end of the ladder**, detected by an empty page. Unchanged, and still
- *   the only wrap a short ladder ever takes.
- * - **`maxPage`**, which the walk now wraps at whether or not the ladder has
- *   more pages to give. Page 50 is the deepest page the product covers, so a
- *   long ladder must come back to the top instead of walking to its end once
- *   and never returning.
- *
- * The cursor is also clamped on the way in. The cap is newer than the rows are,
- * so a target can be holding a page above it; resuming from there would spend
- * every pass on exactly the pages the cap excludes.
- */
-
 const oneVOne = crawlTargets.find((target) => target.bracket === "1v1")!
 
-/** The crawl's inputs, stubbed, plus the pages it read and wrote. */
 const harness = (options: {
     readonly resume: number | null
-    /** `false` makes every page come back empty, i.e. the ladder ended. */
     readonly rows?: boolean
 }) => {
     const readPages: number[] = []
@@ -46,11 +27,7 @@ const harness = (options: {
 
                 return options.rows === false ? [] : rankings1v1Mock.slice(0, 1)
             }),
-        /*
-         * `null` is "the upstream could not answer", and it is enough here: the
-         * page still counts as fetched, and the per-player work — which is not
-         * what this suite is about — is skipped whole.
-         */
+
         getPlayerStats: () => Effect.succeed(null),
     } as unknown as Context.Service.Shape<typeof Upstream>)
 
@@ -84,12 +61,7 @@ const walk = (
         Effect.provide(layer),
     )
 
-/*
- * `it.live`, not `it.effect`. The crawl paces every player with a real
- * `Effect.delay`, and `it.effect` runs on the TestClock, which does not advance
- * by itself — the pass would suspend on the first player instead of finishing.
- */
-
+// it.live: crawl uses real Effect.delay; TestClock would hang.
 describe("the crawl cursor", () => {
     it.live("advances one page while it is below the cap", () =>
         Effect.gen(function* () {
@@ -132,8 +104,6 @@ describe("the crawl cursor", () => {
 
             yield* walk(layer, { ...defaultCrawlerConfig, pagesPerTarget: 3 })
 
-            // The loop's own counter would have asked for 51; reaching the cap
-            // ends the pass instead.
             expect(readPages).toEqual([49, 50])
             expect(writtenPages).toEqual([50, 1])
         }),

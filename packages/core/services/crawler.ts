@@ -12,115 +12,16 @@ import type { RankedSnapshot } from "./player-writes"
 import type { Ranking1v1, Ranking2v2, Ranking3v3 } from "@crh/bhapi/types"
 import type { RankedRegion } from "@crh/bhapi/constants"
 
-/**
- * Walks every upstream leaderboard and writes the players it finds.
- *
- * Effect-native rather than the previous `while (true)` + `await` loop. The
- * imperative original had three problems that this structure removes:
- *
- * 1. It hard-coded one call — `getRankings("1v1", "all", page)` — so 2v2 and
- *    all nine real regions were never crawled. Targets now come from
- *    `crawlTargets`, so a bracket cannot be missing here without being missing
- *    from the product's own list.
- * 2. Progress was a single `"Crawler"` row, which cannot describe more than one
- *    ladder's position. Each target resumes from its own key.
- * 3. Its resume branch called `return` from inside the run loop when a progress
- *    row existed, so the crawler terminated itself on the second process start
- *    — and re-crawled the same first pages forever otherwise. There is no such
- *    branch here: a target that runs off the end of its ladder wraps to page
- *    one, which is what a continuous crawler should do — and so does one that
- *    reaches `maxPage`, so the walk stays inside the depth the product covers
- *    rather than walking a long ladder to its end once and never returning to
- *    the top.
- *
- * Pacing is explicit, because the Brawlhalla key has a shared request budget.
- * The crawler reads through `Upstream` rather than the cached `Brawlhalla`
- * gateway: it is the authoritative refresh path, so a cached page would mean
- * never re-reading the ladder, and the request-path damper would throttle the
- * very work that keeps the tables current.
- */
 export type CrawlerConfig = {
-    /** Pages to walk per target per pass. */
     readonly pagesPerTarget: number
-    /**
-     * The deepest page the full walk visits, per target.
-     *
-     * At 50 rows a page this is the top 2,500 of a ladder. The walk wraps to
-     * page one once it has fetched this page rather than continuing until an
-     * empty page stops it, so a ladder longer than the cap is still re-walked
-     * from the top instead of being walked to its end once and never revisited.
-     *
-     * It is not the sampler's depth — see {@link queuePagesPerTarget}, which is
-     * an order of magnitude shallower and has its own queue.
-     */
+    /** Wrap to page 1 after this; product covers top 50 pages (top 2,500). */
     readonly maxPage: number
-    /** Spacing between upstream requests, in milliseconds. */
     readonly requestSpacingMs: number
-    /** How many of a page's players are in flight at once. */
     readonly playerConcurrency: number
-    /**
-     * How deep the activity sampler walks each ladder.
-     *
-     * Ten pages is the top 500. It costs one request per page per ladder —
-     * 270 for the 27 per-region ladders — and nothing per player, because the
-     * sampler reads only the ladder.
-     *
-     * That is a tenth of a full crawl's ~2,530 requests, on a cadence three
-     * times as frequent, so the sampler stays the cheap half. The depth is the
-     * only dial that matters: the sampler is O(pages) and O(1) per player, so
-     * doubling it doubles 270 requests, not 13,500.
-     */
+    /** Sampler depth — ladder reads only, no per-player stats. */
     readonly queuePagesPerTarget: number
 }
 
-/**
- * Defaults sized to the upstream request budget, not to wall-clock speed.
- *
- * The v1 API allows **2,000 requests per 5 minutes** (Brawlhalla's own developer
- * FAQ), which is 6.67 req/s. `requestSpacingMs` is the inverse of a *share* of
- * that and nothing more.
- *
- * What a pass costs depends on the ladder, because a **team row does not carry a
- * player's own rating**:
- *
- * - 1v1 — `1 + players` = 51 requests. The row already holds the player's 1v1
- *   rating, so nothing else is needed.
- * - 2v2 and 3v3 — `1 + 2 × players` = 101. A team rating is not the player's own
- *   1v1 rating, and `BHPlayerData.rating` is the column the 1v1 leaderboard sorts
- *   by, so each player's own ranked record has to be fetched separately. That
- *   doubles the cost of a team page.
- *
- * Those counts hold only because the crawl reads **career stats alone** — see
- * `Upstream.getPlayerStats`, which is now clan-free by construction rather than
- * by an option. A profile read also assembles the clan card, and that is a
- * separate read (`Upstream.getPlayerClan`) the crawl never makes; paying it here
- * is what silently made a pass 4,030 requests and put the crawl's consumer over
- * a single invocation's worth of work per interval.
- *
- * Over the 30 targets a pass is about 2,530 requests. At 225ms that is 4.44
- * req/s — two thirds of the allowance — and a pass takes about 9.5 minutes of
- * paced work on a 30-minute cron. Spread over the window that cadence spends
- * only ~422 requests per 5 minutes, about 21% of the budget, because the crawl
- * is idle for the other two thirds of the interval. 450ms was the same pass in
- * ~19 minutes; the budget was never what made that slow, so halving the spacing
- * halves the pass without moving the average spend much.
- *
- * Two caveats are worth holding on to:
- *
- * - The limit is **per IP**, and Workers egress from shared Cloudflare IPs. The
- *   budget is therefore not exclusively ours — another tenant on the same egress
- *   IP spends from it too. That is affordable at 4.44 req/s against 6.67, but it
- *   is the reason not to raise the rate further on the strength of our own usage
- *   alone.
- * - Raising `pagesPerTarget` spends the allowance linearly. It does not make the
- *   crawl faster; it makes the same window carry more of the matrix and less of
- *   the user traffic.
- *
- * The obvious saving, not taken yet: a team page only needs the per-player
- * ranked fetch for players we have never seen on a 1v1 ladder. Storing the
- * account stats for an already-known player without re-reading their ranked
- * record would roughly halve the cost of 2v2 and 3v3.
- */
 export const defaultCrawlerConfig: CrawlerConfig = {
     pagesPerTarget: 1,
     maxPage: 50,
@@ -129,7 +30,7 @@ export const defaultCrawlerConfig: CrawlerConfig = {
     queuePagesPerTarget: 10,
 }
 
-/** The ranked facts a 1v1 ladder row already carries for that player. */
+/** 1v1 ladder row only — team ratings must not write into player ranked columns. */
 const snapshotFromRow = (row: Ranking1v1): RankedSnapshot => ({
     rating: row.rating,
     peak: row.peak_rating,
@@ -139,28 +40,6 @@ const snapshotFromRow = (row: Ranking1v1): RankedSnapshot => ({
     region: row.region.toLowerCase() as RankedRegion,
 })
 
-/**
- * The 1v1 snapshot for a player discovered on a **2v2** or **3v3** ladder.
- *
- * A 2v2 row's `rating` is a *team* rating, while `BHPlayerData.rating` is the
- * player's own 1v1 rating — the column the 1v1 leaderboard sorts by and the
- * global rankings read. Writing a team rating into it would corrupt both, so a
- * team-ladder discovery never contributes the row's numbers: the player's own
- * ranked record is fetched instead.
- *
- * `snapshotFromRanked` itself now lives in `player-writes`, because the
- * profile's ranked endpoint reaches the same mapping directly and the two must
- * agree on what a stored rating means.
- */
-/**
- * The whole cause chain, as one line.
- *
- * `Effect.logWarning(message, error)` attaches the error as an annotation, and
- * the console formatter elides nested causes to `[Array]` — so a database
- * failure logs a 4,000-character SQL statement and the *reason* it failed is
- * the one thing missing. Every layer between here and SQLite wraps what it
- * caught, so the useful text is always at the bottom of the chain.
- */
 const describeError = (error: unknown): string => {
     const parts: string[] = []
     let current: unknown = error
@@ -178,35 +57,16 @@ const describeError = (error: unknown): string => {
 export class Crawler extends Context.Service<
     Crawler,
     {
-        /** Crawls one page; returns its row count so `0` means "end of ladder". */
         readonly crawlPage: (
             target: CrawlTarget,
             page: number,
             config: CrawlerConfig,
         ) => Effect.Effect<number>
-        /**
-         * Walks `pagesPerTarget` pages of one target from its cursor, wrapping
-         * to page one at `maxPage` or at the end of the ladder, whichever comes
-         * first.
-         */
         readonly crawlTarget: (
             target: CrawlTarget,
             config: CrawlerConfig,
         ) => Effect.Effect<void>
-        /** One pass over every target. */
         readonly crawlAll: (config: CrawlerConfig) => Effect.Effect<void>
-        /**
-         * Samples one ladder's top for activity, fetching no player at all.
-         *
-         * This is the cheap half of the crawler and the reason a ten-minute
-         * refresh is affordable. Everything the ranked queue needs — `games`,
-         * `rating`, `tier` — is already on the ladder row, so the pass costs one
-         * request per page and nothing per player. The expensive per-player
-         * stats crawl is a separate, slower schedule; this only answers "who
-         * played since we last looked".
-         *
-         * Returns the rows sampled, for logging.
-         */
         readonly sampleQueue: (
             target: CrawlTarget,
             config: CrawlerConfig,
@@ -221,15 +81,6 @@ export const layer = Layer.effect(
         const database = yield* Database
         const cache = yield* Cache
 
-        /**
-         * The player's own ranked record, fetched and warmed for the request
-         * path.
-         *
-         * v0-only, and read here rather than taken from the ladder row because a
-         * 2v2 or 3v3 row carries a *team* rating rather than the player's. The
-         * entry is warmed so the profile's ranked tab is served from work the
-         * crawl already paid for.
-         */
         const warmRanked = (playerId: number) =>
             Effect.gen(function* () {
                 const ranked = yield* upstream.getPlayerRanked(playerId)
@@ -245,13 +96,6 @@ export const layer = Layer.effect(
                 return ranked
             })
 
-        /**
-         * One player: fetch their stats, then write them.
-         *
-         * `row` is the ladder row that surfaced the player. Only a 1v1 row may
-         * supply the ranked snapshot; a 2v2 or 3v3 row's rating belongs to the
-         * team, so those ladders fetch the player's own ranked record instead.
-         */
         const crawlPlayer = (
             target: CrawlTarget,
             row: Ranking1v1 | Ranking2v2 | Ranking3v3,
@@ -259,39 +103,11 @@ export const layer = Layer.effect(
             config: CrawlerConfig,
         ) =>
             Effect.gen(function* () {
-                /*
-                 * Career stats only — and this is now the *whole* of the
-                 * player-stats read rather than an option on it.
-                 *
-                 * The clan card is `getPlayerClan`'s, a separate cache entry the
-                 * crawl never fetches because `upsertPlayerStats` discards it.
-                 * Splitting the two is what lets the payload fetched here be
-                 * warmed verbatim: a single merged entry could only be warmed by
-                 * paying for a request the crawler exists to avoid, or by
-                 * storing a clan-less value the profile gateway cannot tell from
-                 * "this player has no clan".
-                 */
                 const stats = yield* upstream.getPlayerStats(playerId)
 
                 if (!stats) return
 
-                /*
-                 * Warm the request path with exactly what was fetched.
-                 *
-                 * The crawler is the refresh path, so it reads through the
-                 * uncached `Upstream` — but it *writes* the cache, and warming
-                 * the two player entries it has already paid for is what makes a
-                 * profile opened in a fresh colo answer without an upstream
-                 * call. `playerStats` is the clan-less payload the gateway
-                 * serves; `playerRanked` is the v0 record it serves from its own
-                 * key.
-                 *
-                 * A `null` is deliberately not warmed: it means "the upstream
-                 * could not answer" rather than a finding, and the read path
-                 * stores those on `emptyTtl`, so warming one here on the profile
-                 * window would turn a transient failure into a fact that stands
-                 * for five minutes.
-                 */
+                // Warm via set only — crawler must not read through Cache.
                 yield* cache.set(
                     cacheKeys.playerStats(playerId),
                     stats,
@@ -301,17 +117,8 @@ export const layer = Layer.effect(
                 const ranked =
                     target.bracket === "1v1"
                         ? snapshotFromRow(row as Ranking1v1)
-                        : snapshotFromRanked(
-                              yield* warmRanked(playerId),
-                          )
-                /*
-                 * Written either way, and that is a change: a player with no
-                 * 1v1 record used to be skipped whole, which meant a 3v3-only
-                 * player appeared in no table at all despite having been
-                 * fetched. Their career stats, legends and weapons are real
-                 * whether or not a 1v1 record exists, so only the ranked
-                 * columns wait for a pass that can fill them.
-                 */
+                        : snapshotFromRanked(yield* warmRanked(playerId))
+
                 yield* database.upsertPlayerStats(stats, ranked)
             }).pipe(
                 // One bad player must not end the pass.
@@ -338,11 +145,6 @@ export const layer = Layer.effect(
 
                 if (rows.length === 0) return 0
 
-                // Non-empty pages only. An empty page is either the end of the
-                // ladder or a transient upstream failure, and caching the
-                // latter would hand the gateway an empty ladder for the whole
-                // freshness window — the one cache entry that would be worse
-                // than a miss.
                 yield* cache.set(
                     cacheKeys.leaderboard(target.bracket, target.region, page),
                     rows,
@@ -380,31 +182,10 @@ export const layer = Layer.effect(
                 ),
             )
 
-        /**
-         * Samples one ladder's top for activity.
-         *
-         * One request per page, then one write. No player is fetched, which is
-         * what separates this from `crawlTarget`: the ten-page sample of a
-         * single ladder costs ten requests here, and the one page `crawlTarget`
-         * walks costs 51 — one rankings read plus one stats read per player.
-         */
         const sampleQueue: Context.Service.Shape<
             typeof Crawler
         >["sampleQueue"] = (target, config) =>
             Effect.gen(function* () {
-                /*
-                 * Every page is read before anything is written, and that is
-                 * load-bearing rather than tidy.
-                 *
-                 * A player can hold several teams near the top of the 2v2
-                 * ladder, so their key can appear on more than one page with a
-                 * different game count. Writing page by page lets the later
-                 * page's larger figure look like a game played *since the
-                 * previous page* — thirty seconds earlier — and stamps
-                 * `queuedAt` on someone who never queued. Sampling the whole
-                 * ladder first means the dedupe spans it, so the only thing that
-                 * can raise a stored count is the next pass.
-                 */
                 const sampled: (Ranking1v1 | Ranking2v2 | Ranking3v3)[] = []
 
                 for (let page = 1; page <= config.queuePagesPerTarget; page++) {
@@ -414,8 +195,6 @@ export const layer = Layer.effect(
                         page,
                     )
 
-                    // Off the end of the ladder: nothing further to sample, and
-                    // the pass is not a failure.
                     if (rows.length === 0) break
 
                     sampled.push(
@@ -426,8 +205,6 @@ export const layer = Layer.effect(
                         )[]),
                     )
 
-                    // Paced here rather than per player, because there is no
-                    // per-player work to pace.
                     yield* Effect.sleep(config.requestSpacingMs)
                 }
 
@@ -442,11 +219,7 @@ export const layer = Layer.effect(
                     ),
                 )
 
-                /*
-                 * Prune after writing, never before: the rows just sampled are
-                 * the ones that must survive, and every one of them has this
-                 * pass's timestamp.
-                 */
+                // Prune after writing — just-sampled rows must survive.
                 yield* database
                     .pruneRankedQueue(
                         target.bracket,
@@ -454,8 +227,6 @@ export const layer = Layer.effect(
                         new Date(Date.now() - RANKED_QUEUE_RETENTION_MS),
                     )
                     .pipe(
-                        // Housekeeping. A failure leaves rows that are invisible
-                        // to the queue anyway, so it must not fail the sample.
                         Effect.catch((error) =>
                             Effect.logWarning(
                                 `queue prune failed for ${target.label}: ` +
@@ -479,13 +250,6 @@ export const layer = Layer.effect(
                 ),
             )
 
-        /**
-         * Records a target's cursor.
-         *
-         * A storage failure is a warning rather than a failed pass: the cursor
-         * only decides where the *next* pass starts, and every page is written
-         * on its own, so losing it costs a re-read and nothing else.
-         */
         const recordProgress = (target: CrawlTarget, page: number) =>
             database
                 .setCrawlProgress(target.id, target.label, page)
@@ -505,15 +269,6 @@ export const layer = Layer.effect(
                     .getCrawlProgress(target.id)
                     .pipe(Effect.catch(() => Effect.succeed(null)))
 
-                /*
-                 * A cursor outside `[1, maxPage]` starts over at the top.
-                 *
-                 * Out of range is not hypothetical: the cap is newer than the
-                 * cursor rows are, so a target can be holding a page above it
-                 * from before the cap existed, and a walk that resumed from
-                 * there would spend its passes on exactly the pages the cap
-                 * exists to exclude.
-                 */
                 const start =
                     resume === null || resume < 1 || resume > config.maxPage
                         ? 1
@@ -531,9 +286,6 @@ export const layer = Layer.effect(
                     const rowCount = yield* crawlPage(target, page, config)
 
                     if (rowCount === 0) {
-                        // Off the end of the ladder: wrap, so a continuous
-                        // crawler keeps the top of the table fresh instead
-                        // of stalling past the last page forever.
                         yield* recordProgress(target, 1)
 
                         yield* Effect.logInfo(
@@ -544,14 +296,6 @@ export const layer = Layer.effect(
                         return
                     }
 
-                    /*
-                     * The cap is the last page the walk visits, so the fetch
-                     * after it is the top of the ladder again — not page 51.
-                     * Returning rather than falling through matters when
-                     * `pagesPerTarget` is more than one: the loop's own counter
-                     * knows nothing about the cap and would walk straight past
-                     * it.
-                     */
                     const reachedCap = page >= config.maxPage
 
                     yield* recordProgress(target, reachedCap ? 1 : page + 1)
@@ -578,8 +322,6 @@ export const layer = Layer.effect(
                         `crawl pass over ${crawlTargets.length} targets`,
                     )
 
-                    // Sequential: the constraint is the shared upstream budget,
-                    // so overlapping targets would only contend for it.
                     for (const target of crawlTargets) {
                         yield* crawlTarget(target, config)
                     }

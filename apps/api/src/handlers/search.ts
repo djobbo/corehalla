@@ -5,13 +5,6 @@ import { CorehallaApi } from "@crh/api-contract/Api"
 import { Database } from "@crh/core/services/archive"
 import { Lookup } from "@crh/core/services/lookup"
 
-/**
- * The two search surfaces.
- *
- * Both add the one field the data layer deliberately leaves out — the URL
- * segment — because that is a transport concern and the archive and the
- * federated lookup have no business knowing what a profile URL looks like.
- */
 export const searchGroup = HttpApiBuilder.group(
     CorehallaApi,
     "search",
@@ -21,8 +14,6 @@ export const searchGroup = HttpApiBuilder.group(
 
         return (
             handlers
-                // The raw local alias index, kept for the existing search
-                // surface.
                 .handle("searchPlayerAlias", ({ query }) =>
                     db.searchAliases(query.alias, query.page).pipe(
                         Effect.orDie,
@@ -37,9 +28,7 @@ export const searchGroup = HttpApiBuilder.group(
                         ),
                     ),
                 )
-                // The federated lookup. Never fails: each source degrades to
-                // "no results", because a partial answer beats an error on a
-                // jump-to-result interaction.
+                // Federated: each source degrades to empty — partial beats error on jump-to.
                 .handle("lookup", ({ query }) =>
                     lookup.search(query.q, query.limit).pipe(
                         Effect.map((rows) =>

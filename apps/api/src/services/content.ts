@@ -16,13 +16,6 @@ import type {
     PowerRankingsRegion,
 } from "@crh/web-parser/power-rankings/parsePowerRankingsPage"
 
-/**
- * Server-side content scraping service.
- *
- * Wraps the `web-parser` scrapers in Effects so they compose with the HTTP API
- * handlers. Failures are defects (HTTP 500), matching the previous behaviour of
- * the tRPC procedures.
- */
 export class Content extends Context.Service<
     Content,
     {

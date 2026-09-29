@@ -7,18 +7,6 @@ import { Background } from "@crh/core/services/background"
 import { aliasRows } from "../helpers/aliases"
 import { buildGuild } from "../aggregate/guild"
 
-/**
- * The guild page, in one request.
- *
- * The gateway already joins the two upstream calls — `/guild/stats` for the
- * guild and `/guild/members` for the roster — so there is nothing left to fan
- * out here. What remains is the bookkeeping the old handler did: writing the
- * guild and its members into the local indexes behind the response.
- *
- * A guild nobody has heard of is a 404, matching the profile: the page cannot
- * be rendered without the name, and the raw endpoint's `null` said the same
- * thing in a shape the client had to interpret.
- */
 export const guildsGroup = HttpApiBuilder.group(
     CorehallaApi,
     "guilds",
@@ -57,7 +45,6 @@ export const guildsGroup = HttpApiBuilder.group(
                     ),
                 )
 
-                // One cached part, so the response is exactly as current as it.
                 return buildGuild(clan, cached.updatedAt)
             }),
         )

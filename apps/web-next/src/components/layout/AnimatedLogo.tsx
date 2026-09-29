@@ -1,17 +1,3 @@
-/**
- * The Corehalla mark, with its centre turning.
- *
- * A port of the legacy client's `ui/base/AnimatedLogo`, paths and accent fills
- * unchanged: it is the same logo, and the loading state is the one moment both
- * apps should be indistinguishable. Only the mechanism differs — the legacy
- * version is written with stitches (`keyframes` + `styled("g")`), and this app
- * has no stitches theme, so the rotation lives in `app.css` as `.ch-logo-center`
- * and the component stays a plain SVG.
- *
- * There is deliberately no `size` prop. How big the mark is belongs to whatever
- * is animating it, not to the mark: the page loader owns its size through
- * `.ch-pageloader-mark`, and a second caller should own its own.
- */
 export const AnimatedLogo = ({ className }: { className?: string }) => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -30,8 +16,6 @@ export const AnimatedLogo = ({ className }: { className?: string }) => (
             transform="translate(-32 -613.76)"
             fill="#ffffff"
         />
-
-        {/* The turning piece: only the centre rotates, the two arms hold still. */}
         <g className="ch-logo-center">
             <path
                 d="M267.37,959.5c-3.39.3-6.83.47-10.29.5-70.54.58-128.7-56.76-129.08-127.31A128,128,0,0,1,188.84,723,23.86,23.86,0,0,1,224,735.84l.08.25a24,24,0,0,1-10.28,28,80,80,0,0,0,38.64,147.86,82.64,82.64,0,0,0,10.93-.25A23.79,23.79,0,0,1,288,927.9l.08.25A23.91,23.91,0,0,1,267.37,959.5Z"

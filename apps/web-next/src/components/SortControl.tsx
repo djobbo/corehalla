@@ -4,19 +4,6 @@ import { ArrowDownIcon, ArrowUpIcon } from "lucide-react"
 import { cn } from "@/lib/cn"
 import type { SortChoice, SortDirection } from "@/lib/useSortBy"
 
-/**
- * A sort key picker plus a direction toggle.
- *
- * The toggle is a button rather than a second select, because flipping the
- * direction is the one sort action taken repeatedly and it deserves a single
- * always-visible target. It is shadcn's `Button` at `icon-sm`, which already
- * carries the app's chunky slab shape and hard shadow — the icon is passed
- * through `data-icon` so the component owns its sizing (see `button.tsx`).
- *
- * The accessible name states the *next* direction, not the current one: the
- * label describes what pressing it does, which is what a screen-reader user
- * needs to hear before deciding.
- */
 export const SortControl = <K extends string>({
     label,
     value,

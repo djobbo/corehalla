@@ -17,22 +17,6 @@ import type { Upstream as UpstreamService } from "./upstream"
 import type { CrawlerConfig } from "./crawler"
 import type { Ranking1v1, Ranking2v2 } from "@crh/bhapi/types"
 
-/**
- * What the crawler puts in the cache.
- *
- * The crawler reads through the uncached `Upstream` because it is the refresh
- * path — but it *writes* the cache, and the entries it can warm are exactly the
- * ones it fetched. That is the whole reason `getPlayerStats` and
- * `getPlayerClan` are separate reads: the crawl fetches the career half and
- * never the card, so a merged key could not be warmed without either paying for
- * a request the crawl exists to avoid or storing something the profile gateway
- * would mistake for a complete profile.
- *
- * The window matters as much as the key. A warm written on a shorter freshness
- * than the reader expects is a hit that arrives already stale, which is the
- * silent half of the same failure.
- */
-
 const config: CrawlerConfig = { ...defaultCrawlerConfig, requestSpacingMs: 0 }
 
 const target = (bracket: "1v1" | "2v2") =>
@@ -88,7 +72,6 @@ describe("crawler cache warming", () => {
 
             const keys = writes.map((write) => write.key)
 
-            // The page itself is still warmed, as before.
             expect(keys).toContain(
                 cacheKeys.leaderboard("1v1", target("1v1").region, 1),
             )
@@ -100,9 +83,6 @@ describe("crawler cache warming", () => {
             expect(stats).toBeDefined()
             expect(stats?.window).toEqual(cacheTtl.profile)
 
-            // A 1v1 row already carries the player's own rating, so the crawler
-            // never fetches the ranked record — and must not claim to have
-            // warmed one.
             expect(keys).not.toContain(cacheKeys.playerRanked(playerId))
         }),
     )
@@ -121,9 +101,6 @@ describe("crawler cache warming", () => {
 
             const keys = writes.map((write) => write.key)
 
-            // A team row carries the team's rating, not the player's, so the
-            // crawler fetches each member's own ranked record — and that read is
-            // warmable.
             for (const playerId of [
                 row.brawlhalla_id_one,
                 row.brawlhalla_id_two,

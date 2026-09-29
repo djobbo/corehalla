@@ -6,24 +6,9 @@ import { resolvePage } from "@/lib/routeParams"
 import { careerRankingsAtom, preloadAtoms, useQuery } from "@/effect/atoms"
 import type { SortablePlayerProp } from "@crh/api-contract/schemas"
 
-/**
- * The career-totals leaderboards.
- *
- * Every column the archive holds for a player, one select away. The sort is a
- * search param rather than component state because the server orders by it:
- * changing it changes the request, so it belongs in the URL and in the loader's
- * dependencies — and a "top KO players" page stays a link.
- *
- * `players` is the default board of the `career` section, but it still owns a
- * named path: the three boards are siblings under `/rankings/career`, and a
- * bare `/rankings/career` is only a redirect to this one.
- */
-
 type CareerSearch = { sortBy: SortablePlayerProp }
 
 export const Route = createFileRoute("/rankings/career/players/{-$page}")({
-    // An unrecognised sort falls back to the board's default rather than
-    // erroring, the same call `resolveRegion` makes for a mistyped region.
     validateSearch: (search: Record<string, unknown>): CareerSearch => ({
         sortBy: playerBoard.sort(search.sortBy),
     }),
@@ -43,8 +28,6 @@ function Page() {
     const page = resolvePage(pageParam)
     const rows = useQuery(careerRankingsAtom(sortBy, page))
 
-    // The sort survives paging; the page segment only appears past the first,
-    // which keeps `/rankings/career/players` the canonical address of page one.
     const pageHref = (next: number) =>
         next > 1
             ? `/rankings/career/players/${next}?sortBy=${sortBy}`
@@ -59,15 +42,11 @@ function Page() {
                     Career totals · page {page}
                 </p>
             </header>
-
             <CareerRankingsView
                 rows={rows}
                 sortBy={sortBy}
                 sorts={playerBoard.sorts}
                 onSortChange={(next) =>
-                    // Changing the column starts the board again: page four of
-                    // "most games" is not page four of "most KOs", and the two
-                    // do not even contain the same players.
                     void navigate({
                         to: "/rankings/career/players/{-$page}",
                         params: { page: undefined },

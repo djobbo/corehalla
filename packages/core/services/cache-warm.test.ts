@@ -5,23 +5,6 @@ import { cacheKeys, cacheTtl, emptyTtl } from "./cache-policy"
 import type { KVNamespaceLike } from "../env"
 import type { Ranking1v1 } from "@crh/bhapi/types"
 
-/**
- * The cache-warming contract between the crawler and the request gateway.
- *
- * The crawler does not read through the cache — it is the refresh path, so a
- * cached page would mean never re-reading the ladder — but it writes what it
- * fetched. That only works if both sides agree on the key and the window, and a
- * disagreement is silent: the crawler would warm keys nobody reads and the cache
- * would look cold however much crawling happened.
- *
- * A fake namespace rather than the real binding, so the KV tier is exercised
- * directly. Each `make` gets its own L1 map, so the second instance here is
- * genuinely cold and any hit it takes must have come from KV.
- *
- * Cases that exercise the cache run as effects via `it.effect`, so the Effect
- * runtime owns execution rather than each test calling `runPromise` itself.
- */
-
 const fakeKv = () => {
     const store = new Map<string, string>()
 
@@ -38,15 +21,6 @@ const fakeKv = () => {
     return { store, kv }
 }
 
-/**
- * A scheduler that runs a background refresh on the caller's own fiber.
- *
- * Production hands the refresh to `Background`, which detaches it and keeps the
- * isolate alive with `waitUntil`; running it inline here makes the ordering
- * deterministic — the stale value is returned, and whatever the refresh wrote
- * has landed by the time the assertion runs. The detachment itself is
- * `background.test.ts`'s subject.
- */
 const inlineSchedule = (effect: Effect.Effect<unknown, unknown>) =>
     effect.pipe(Effect.orDie, Effect.asVoid)
 
@@ -72,8 +46,6 @@ describe("crawler -> gateway cache warming", () => {
             Effect.gen(function* () {
                 const { store, kv } = fakeKv()
 
-                // The crawler's cache instance, and the gateway's — separate L1
-                // maps, so the gateway has to go to KV.
                 const crawlerCache = make(async () => kv, inlineSchedule)
                 const gatewayCache = make(async () => kv, inlineSchedule)
 
@@ -117,8 +89,6 @@ describe("crawler -> gateway cache warming", () => {
             }
 
             expect(envelope.value).toEqual(rows)
-            // Fresh, not merely present: a stale write would be re-fetched
-            // by the gateway and the crawler's work would buy nothing.
             expect(envelope.freshUntil).toBeGreaterThan(Date.now())
         }),
     )
@@ -133,8 +103,6 @@ describe("crawler -> gateway cache warming", () => {
                 const key = cacheKeys.playerStats(42)
                 const stale = { name: "stale", xp: 1 }
 
-                // Fresh for zero seconds, retained for an hour: stale on
-                // arrival.
                 yield* cache.set(key, stale, {
                     freshSeconds: 0,
                     staleSeconds: 3600,
@@ -159,8 +127,6 @@ describe("crawler -> gateway cache warming", () => {
     )
 
     it("an unfiltered page shares one key across both sides", () => {
-        // The crawler never passes a search term; the gateway omits it for the
-        // plain ladder. Those have to be the same key.
         expect(cacheKeys.leaderboard("1v1", "eu", 3)).toBe(
             cacheKeys.leaderboard("1v1", "eu", 3, undefined),
         )
@@ -186,21 +152,7 @@ describe("crawler -> gateway cache warming", () => {
     })
 })
 
-/**
- * The three outcomes the freshness/retention split produces.
- *
- * A fresh entry is answered and nothing else happens. A stale entry inside its
- * retention window is answered *now* and refreshed behind the response, so the
- * wait lands on nobody. An entry past retention — or no entry at all — has
- * nothing to answer with, so the caller waits for the fetch. The middle case is
- * the new one; the retention boundary is what keeps it from swallowing the
- * third.
- */
 describe("the freshness outcomes", () => {
-    /**
-     * Stale on arrival but retained for an hour: fresh for zero seconds is the
-     * shortest way to be past `freshUntil` without being past `staleUntil`.
-     */
     const staleButRetained = { freshSeconds: 0, staleSeconds: 3600 }
 
     const envelopeOf = (store: Map<string, string>, key: string) =>
@@ -243,11 +195,6 @@ describe("the freshness outcomes", () => {
                 const stale = { name: "stale", xp: 1 }
                 const current = { name: "current", xp: 2 }
 
-                /*
-                 * The scheduled effect is captured rather than run, so the test
-                 * can prove it had not run by the time the caller was answered.
-                 * Production's scheduler detaches for real — see `Background`.
-                 */
                 let scheduled: Effect.Effect<void> | null = null
 
                 const cache = make(
@@ -272,14 +219,11 @@ describe("the freshness outcomes", () => {
                     }),
                 )
 
-                // The response leaves with the stale value...
                 expect(served).toEqual(stale)
                 // ...before the refresh has run at all.
                 expect(fetched).toBe(false)
                 expect(scheduled).not.toBeNull()
 
-                // Once it does run, the next reader is served something current
-                // instead of the same stale entry.
                 yield* scheduled!
                 expect(fetched).toBe(true)
                 expect(envelopeOf(store, key).value).toEqual(current)
@@ -294,9 +238,6 @@ describe("the freshness outcomes", () => {
                 const cache = make(async () => kv, inlineSchedule)
                 const key = cacheKeys.playerStats(3)
 
-                // Retained for zero seconds: past `staleUntil` the moment it
-                // lands. A second instance reads it, so L1 cannot be the reason
-                // it is not served.
                 yield* cache.set(
                     key,
                     { name: "ancient" },
@@ -334,12 +275,8 @@ describe("the freshness outcomes", () => {
                     Effect.succeed(null),
                 )
 
-                // The reader keeps the stale value — a refresh that could not
-                // answer is not an answer that replaces one...
                 expect(served).toEqual({ name: "stale" })
 
-                // ...but what it wrote is the absence, on the short window, so the
-                // next reader does not treat it as a fact for five minutes.
                 const envelope = envelopeOf(store, key)
 
                 expect(envelope.value).toBeNull()
@@ -350,14 +287,6 @@ describe("the freshness outcomes", () => {
     )
 })
 
-/**
- * What a `null` is allowed to mean once it is stored.
- *
- * `null` is this codebase's "the upstream could not answer" sentinel — v1
- * answering 404 and v1 being unreachable collapse into it deliberately — so the
- * cache must not keep it with the confidence of a value. These cases pin the
- * two directions of that: an absence is short-lived, and a real value is not.
- */
 describe("caching an absent answer", () => {
     const envelopeOf = (store: Map<string, string>, key: string) =>
         JSON.parse(store.get(key) as string) as {
@@ -382,13 +311,7 @@ describe("caching an absent answer", () => {
                 const envelope = envelopeOf(store, key)
 
                 expect(envelope.value).toBeNull()
-                /*
-                 * Stored on `cacheTtl.profile` — as it was — the absence would
-                 * have stayed fresh for five minutes and been retained for an
-                 * hour, which is how a player the app had merely failed to read
-                 * ended up reported as not existing long after upstream would
-                 * have answered.
-                 */
+
                 expect(envelope.freshUntil - Date.now()).toBeLessThanOrEqual(
                     emptyTtl.freshSeconds * 1000,
                 )
@@ -407,8 +330,6 @@ describe("caching an absent answer", () => {
                 Effect.succeed({ name: "Lopes", xp: 10 }),
             )
 
-            // The fix is about `null` only. Shortening every entry would throw
-            // away the profile window the rest of the app is tuned around.
             expect(
                 envelopeOf(store, key).freshUntil - Date.now(),
             ).toBeGreaterThan(emptyTtl.freshSeconds * 1000)

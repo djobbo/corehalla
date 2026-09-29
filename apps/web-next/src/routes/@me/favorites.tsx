@@ -12,15 +12,8 @@ import {
     syncConnectionsAtom,
 } from "@/effect/account"
 
-/**
- * The signed-in user's saved players and clans.
- *
- * `ssr: false` because the session is an `HttpOnly` cookie only the browser
- * holds: the server has nothing to render this page from, and rendering a
- * signed-out shell that the client then replaces is the hydration mismatch the
- * flag exists to avoid.
- */
 export const Route = createFileRoute("/@me/favorites")({
+    // No SSR: session is HttpOnly and unavailable on the server render.
     ssr: false,
     head: () => ({
         meta: [
@@ -37,7 +30,6 @@ function Page() {
     if (session._tag === "Initial") {
         return (
             <main className="ch-page">
-                {/* `Spinner` names the wait; the text is the visible half. */}
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Spinner />
                     <span aria-hidden>Loading…</span>
@@ -85,7 +77,6 @@ const SignedIn = ({ username }: { readonly username: string }) => {
                     Saved by {username}.
                 </p>
             </header>
-
             {result._tag === "Initial" ? (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Spinner />
@@ -97,14 +88,6 @@ const SignedIn = ({ username }: { readonly username: string }) => {
                 </p>
             ) : (
                 <>
-                    {/*
-                     * Each list is a card, and the card owns the section: the
-                     * old `ch-card-title` heading is now the shadcn `CardTitle`
-                     * that belongs to the surface below it. The wrapping
-                     * `section` is what makes it a named landmark — `Card`
-                     * renders a `div`, and `aria-labelledby` alone would name
-                     * nothing a screen reader lists.
-                     */}
                     <section aria-labelledby="favorites-players">
                         <Card>
                             <CardHeader>
@@ -117,7 +100,6 @@ const SignedIn = ({ username }: { readonly username: string }) => {
                             </CardContent>
                         </Card>
                     </section>
-
                     <section aria-labelledby="favorites-clans">
                         <Card>
                             <CardHeader>
@@ -132,12 +114,6 @@ const SignedIn = ({ username }: { readonly username: string }) => {
                     </section>
                 </>
             )}
-
-            {/*
-             * Connections are fetched from Discord on demand rather than on
-             * every visit: it is a third-party call, and nothing here changes
-             * often enough to justify one on each page load.
-             */}
             <section aria-labelledby="favorites-connections">
                 <Card>
                     <CardHeader>

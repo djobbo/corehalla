@@ -13,25 +13,11 @@ import type { PlayerLegend, PlayerWeapon } from "@crh/api-contract/schemas"
 import type { Stat } from "@/components/StatGrid"
 import type { ReactNode } from "react"
 
-/** A legend that has a ranked record, paired with that record. */
 type RankedLegend = {
     readonly legend: PlayerLegend
     readonly ranked: NonNullable<PlayerLegend["ranked"]>
 }
 
-/**
- * The ranked record a weapon implies.
- *
- * A weapon has no ranked record of its own — it is played through legends — so
- * this rolls the legends that use it into one. The averages divide by the number
- * of legends that actually have a ranked record, not by every legend holding the
- * weapon, because a level-1 legend dragging the average toward zero is noise.
- *
- * The API sends each weapon's legends as references (id, name, their share of
- * the weapon); the ranked record lives on the legend itself, so the two are
- * joined here. That is a lookup, not a second aggregation: every number this
- * returns is read, not recomputed.
- */
 const rankedSummary = (
     weapon: PlayerWeapon,
     legends: ReadonlyMap<number, PlayerLegend>,
@@ -70,12 +56,6 @@ const rankedSummary = (
     )
 }
 
-/**
- * One weapon's record, collapsed to a single line.
- *
- * Same contract as `LegendRow`: the collapsed line shows the figure currently
- * being sorted on, so the list reads as a ranked table.
- */
 export const WeaponRow = ({
     weapon,
     legends,
@@ -85,7 +65,6 @@ export const WeaponRow = ({
     display,
 }: {
     readonly weapon: PlayerWeapon
-    /** The profile's legends by id, for resolving each weapon legend's ranking. */
     readonly legends: ReadonlyMap<number, PlayerLegend>
     readonly rank: number
     readonly matchtime: number
@@ -131,12 +110,6 @@ export const WeaponRow = ({
         : []
 
     return (
-        /*
-         * Same disclosure contract as `LegendRow`: Base UI's `Collapsible`
-         * mounts the panel only while it is open, which is what makes one
-         * instance per weapon cheap, and `Card` is the slab the collapsed row
-         * sits on.
-         */
         <Card size="sm">
             <Collapsible>
                 <CollapsibleTrigger className="flex w-full flex-1 items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-bgVar2 data-[panel-open]:shadow-[0_3px_0_0_var(--color-ink)]">
@@ -154,7 +127,6 @@ export const WeaponRow = ({
                         </span>
                     </span>
                 </CollapsibleTrigger>
-
                 <CollapsibleContent className="bg-bgVar2 p-3.5">
                     <div className="flex flex-col gap-4">
                         <StatGrid
@@ -218,7 +190,6 @@ export const WeaponRow = ({
                                 },
                             ]}
                         />
-
                         <Card>
                             <CardHeader>
                                 <CardTitle>Games</CardTitle>
@@ -274,7 +245,6 @@ export const WeaponRow = ({
                                 </div>
                             </CardContent>
                         </Card>
-
                         {rankedStats.length > 0 ? (
                             <Card>
                                 <CardHeader>

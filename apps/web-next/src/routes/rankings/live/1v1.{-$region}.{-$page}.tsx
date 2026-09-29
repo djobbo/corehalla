@@ -5,13 +5,6 @@ import { to1v1Rows } from "@/lib/ladderRows"
 import { resolvePage, resolveRegion } from "@/lib/routeParams"
 import { preloadAtoms, rankings1v1Atom, useQuery } from "@/effect/atoms"
 
-/**
- * The canonical 1v1 ladder URL.
- *
- * Home renders the same view without the region being in the path, so this route
- * is what a shared, indexable ladder link points at — the filter is part of the
- * address, not client state.
- */
 export const Route = createFileRoute("/rankings/live/1v1/{-$region}/{-$page}")({
     loader: ({ params, context }) =>
         preloadAtoms(context, [

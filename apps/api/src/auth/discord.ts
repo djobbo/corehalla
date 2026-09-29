@@ -1,27 +1,10 @@
-import { Effect } from "effect"
+import { Effect, Schema } from "effect"
+import { HttpBody, HttpClient, HttpClientResponse } from "effect/unstable/http"
 import { AuthError } from "./errors"
-
-/**
- * Discord OAuth2 + REST calls used by the app-owned sign-in flow.
- *
- * These replace what Supabase Auth's Discord provider did: build the authorize
- * URL, exchange the code, refresh expired tokens, and read the profile and
- * connections with the user's own access token. Everything is server-side; the
- * browser only ever sees the app's own session cookie.
- *
- * Discord's OAuth2 flow does not support PKCE, so the CSRF protection is the
- * single-use `state` value plus the confidential client secret.
- */
 
 const DISCORD_API = "https://discord.com/api"
 
-/**
- * The scopes the app signs in with.
- *
- * `connections` and `guilds` are requested because the profile page shows
- * verified linked accounts; `prompt: "consent"` in the authorize URL is what
- * makes Discord return a refresh token.
- */
+/** `prompt=consent` is what makes Discord issue a refresh token. */
 export const DISCORD_SCOPES = [
     "identify",
     "email",
@@ -29,28 +12,36 @@ export const DISCORD_SCOPES = [
     "guilds",
 ] as const
 
-export type DiscordToken = {
-    readonly access_token: string
-    readonly refresh_token?: string
-    readonly expires_in: number
-    readonly scope: string
-    readonly token_type: string
-}
+const DiscordTokenSchema = Schema.Struct({
+    access_token: Schema.String,
+    refresh_token: Schema.optional(Schema.NullOr(Schema.String)),
+    expires_in: Schema.Number,
+    scope: Schema.String,
+    token_type: Schema.String,
+})
 
-export type DiscordProfile = {
-    readonly id: string
-    readonly username: string
-    readonly global_name?: string | null
-    readonly avatar?: string | null
-    readonly email?: string | null
-}
+export type DiscordToken = typeof DiscordTokenSchema.Type
 
-export type DiscordConnection = {
-    readonly id: string
-    readonly name: string
-    readonly type: string
-    readonly verified: boolean
-}
+const DiscordProfileSchema = Schema.Struct({
+    id: Schema.String,
+    username: Schema.String,
+    global_name: Schema.optional(Schema.NullOr(Schema.String)),
+    avatar: Schema.optional(Schema.NullOr(Schema.String)),
+    email: Schema.optional(Schema.NullOr(Schema.String)),
+})
+
+export type DiscordProfile = typeof DiscordProfileSchema.Type
+
+const DiscordConnectionSchema = Schema.Struct({
+    id: Schema.String,
+    name: Schema.String,
+    type: Schema.String,
+    verified: Schema.Boolean,
+})
+
+export type DiscordConnection = typeof DiscordConnectionSchema.Type
+
+const DiscordConnectionsSchema = Schema.Array(DiscordConnectionSchema)
 
 export const discordAuthorizeUrl = (input: {
     clientId: string
@@ -77,74 +68,98 @@ export const discordAvatarUrl = (profile: {
         ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png?size=128`
         : ""
 
-const wrap = <A>(try_: () => Promise<A>): Effect.Effect<A, AuthError> =>
-    Effect.tryPromise({ try: try_, catch: (cause) => new AuthError({ cause }) })
+const decodeOk = <S extends Schema.Top>(schema: S) => {
+    const decode = HttpClientResponse.schemaBodyJson(schema)
 
-const postToken = async (body: Record<string, string>) => {
-    const response = await fetch(`${DISCORD_API}/oauth2/token`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(body).toString(),
-    })
+    return Effect.fnUntraced(function* (
+        response: HttpClientResponse.HttpClientResponse,
+    ) {
+        if (response.status < 200 || response.status >= 300) {
+            const body = yield* response.text.pipe(
+                Effect.orElseSucceed(() => ""),
+            )
 
-    if (!response.ok) {
-        throw new Error(
-            `Discord token request failed (${response.status}): ${await response.text()}`,
+            return yield* new AuthError({
+                cause: new Error(
+                    `Discord request failed (${response.status}): ${body}`,
+                ),
+            })
+        }
+
+        return yield* decode(response).pipe(
+            Effect.mapError((cause) => new AuthError({ cause })),
         )
-    }
-
-    return (await response.json()) as DiscordToken
+    })
 }
 
-export const exchangeDiscordCode = (input: {
-    code: string
-    clientId: string
-    clientSecret: string
-    redirectUri: string
-}) =>
-    wrap(() =>
-        postToken({
+const decodeToken = decodeOk(DiscordTokenSchema)
+
+const postToken = Effect.fn("discord.postToken")(function* (
+    body: Record<string, string>,
+) {
+    const client = yield* HttpClient.HttpClient
+    const response = yield* client
+        .post(`${DISCORD_API}/oauth2/token`, {
+            body: HttpBody.urlParams(body),
+        })
+        .pipe(Effect.mapError((cause) => new AuthError({ cause })))
+
+    return yield* decodeToken(response)
+})
+
+export const exchangeDiscordCode = Effect.fn("discord.exchangeCode")(
+    function* (input: {
+        code: string
+        clientId: string
+        clientSecret: string
+        redirectUri: string
+    }) {
+        return yield* postToken({
             client_id: input.clientId,
             client_secret: input.clientSecret,
             grant_type: "authorization_code",
             code: input.code,
             redirect_uri: input.redirectUri,
-        }),
-    )
+        })
+    },
+)
 
-export const refreshDiscordToken = (input: {
-    refreshToken: string
-    clientId: string
-    clientSecret: string
-}) =>
-    wrap(() =>
-        postToken({
+export const refreshDiscordToken = Effect.fn("discord.refreshToken")(
+    function* (input: {
+        refreshToken: string
+        clientId: string
+        clientSecret: string
+    }) {
+        return yield* postToken({
             client_id: input.clientId,
             client_secret: input.clientSecret,
             grant_type: "refresh_token",
             refresh_token: input.refreshToken,
-        }),
-    )
+        })
+    },
+)
 
-const getDiscord = async <A>(token: string, path: `/${string}`) => {
-    const response = await fetch(`${DISCORD_API}${path}`, {
-        headers: { Authorization: `Bearer ${token}` },
+const getDiscord = <S extends Schema.Top>(schema: S, path: `/${string}`) => {
+    const decode = decodeOk(schema)
+
+    return Effect.fnUntraced(function* (token: string) {
+        const client = yield* HttpClient.HttpClient
+        const response = yield* client
+            .get(`${DISCORD_API}${path}`, {
+                headers: { authorization: `Bearer ${token}` },
+            })
+            .pipe(Effect.mapError((cause) => new AuthError({ cause })))
+
+        return yield* decode(response)
     })
-
-    if (!response.ok) {
-        throw new Error(`Discord request ${path} failed (${response.status})`)
-    }
-
-    return (await response.json()) as A
 }
 
-export const fetchDiscordProfile = (accessToken: string) =>
-    wrap(() => getDiscord<DiscordProfile>(accessToken, "/users/@me"))
+export const fetchDiscordProfile = getDiscord(
+    DiscordProfileSchema,
+    "/users/@me",
+)
 
-export const fetchDiscordConnections = (accessToken: string) =>
-    wrap(() =>
-        getDiscord<readonly DiscordConnection[]>(
-            accessToken,
-            "/users/@me/connections",
-        ),
-    )
+export const fetchDiscordConnections = getDiscord(
+    DiscordConnectionsSchema,
+    "/users/@me/connections",
+)

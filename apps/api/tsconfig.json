@@ -5,9 +5,6 @@
         "allowJs": true,
         "lib": ["esnext", "dom", "dom.iterable"],
         "module": "esnext",
-        // `@crh/db` re-exports Effect and Drizzle, whose packages are ESM-only
-        // and expose their entry points only through `exports` (invisible to
-        // the legacy node10 resolution).
         "moduleResolution": "bundler",
         "target": "es2022",
         "skipLibCheck": true,
@@ -17,6 +14,6 @@
         "resolveJsonModule": true,
         "types": ["node"]
     },
-    "include": ["src"],
+    "include": ["src", "vite.config.ts"],
     "exclude": ["node_modules"]
 }

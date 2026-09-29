@@ -1,16 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
 import { resolveLegendId, resolvePage } from "@/lib/routeParams"
 
-/**
- * The old address of the per-legend board.
- *
- * Legends used to be a filter on a shared `/rankings/legends` page, selected by
- * `?legend=`. They live at `/rankings/career/legends/:legendId` now, so this
- * exists to keep the indexed URLs working: the legend is folded into the path
- * (and the old query value honoured) while a 308 marks the new address
- * canonical.
- */
-
 type LegacyLegendSearch = {
     legend?: string | undefined
     sortBy?: string | undefined

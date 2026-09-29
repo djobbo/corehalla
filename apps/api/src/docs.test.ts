@@ -9,16 +9,7 @@ import {
     HttpApiScalar,
 } from "effect/unstable/httpapi"
 
-/**
- * The docs route, mounted the way `server.ts` mounts it.
- *
- * The composition under test is the one thing about the reference page that can
- * fail silently: `toWebHandler` supplies the router, and the API and the Scalar
- * page are *merged* rather than nested, so a mistake there produces a server
- * that serves JSON and 404s `/api/v1/docs`. A tiny API stands in for the real
- * contract — the merge is the subject, not the routes — so this pins that both
- * halves survive the merge.
- */
+// API + Scalar must be merged (not nested) or `/api/v1/docs` 404s.
 const Ping = HttpApiGroup.make("ping").add(
     HttpApiEndpoint.get("ping", "/api/v1/ping", {
         success: Schema.String,
@@ -47,9 +38,7 @@ describe("Scalar docs mounting", () => {
         expect(ping.status).toBe(200)
         expect(await ping.text()).toBe('"pong"')
 
-        const docs = await handler(
-            new Request("http://api.local/api/v1/docs"),
-        )
+        const docs = await handler(new Request("http://api.local/api/v1/docs"))
         expect(docs.status).toBe(200)
 
         const html = await docs.text()

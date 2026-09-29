@@ -1,13 +1,8 @@
 import type { PlayerRanked, Ranking2v2 } from "../types"
 
 /**
- * The two players of a 2v2 team.
- *
- * The names come from the separate fields wherever a source provides them,
- * which every v1-derived row does. Only the legacy v0 payload does not — it
- * ships the pair pre-joined — so the split lives here and nowhere else: one
- * documented fallback instead of five callers each inventing one, and all of
- * them inheriting the same wrong answer for a username containing a `+`.
+ * Prefer separate name fields; only v0 lacks them and ships a joined
+ * `teamname`. Splitting lives here so callers do not each mishandle `+`.
  */
 export const getTeamPlayers = (
     team: PlayerRanked["2v2"][number] | Ranking2v2,

@@ -7,21 +7,6 @@ import { percent } from "@/lib/stats"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import type { PlayerRankedTeam } from "@crh/api-contract/schemas"
 
-/**
- * One 2v2 team, as a card.
- *
- * A team is two people, so both are links and both are named — the card is a
- * way through to either profile, not a summary of an abstract pairing.
- *
- * The pair arrives as the server's `team` tuple rather than a "teammate" field,
- * because which member is the teammate depends on whose profile is open and the
- * same row renders on both. The region arrives already lowered to our own
- * vocabulary, so there is no index to translate.
- *
- * Neither the region nor the tier is written out any more. The tier is what the
- * banner in the corner depicts, and the region is carried by its flag beside the
- * names; spelling either out as text next to its own picture only repeated it.
- */
 export const TeamCard = ({ team }: { readonly team: PlayerRankedTeam }) => {
     const [first, second] = team.team
     const region = team.region?.toUpperCase() ?? "ALL"
@@ -29,37 +14,14 @@ export const TeamCard = ({ team }: { readonly team: PlayerRankedTeam }) => {
     const losses = team.games - team.wins
 
     return (
-        /*
-         * `relative z-0` is what the banner needs — `relative` to be its
-         * containing block, `z-0` so its stacking context scopes the banner's
-         * own `z-index`. `overflow-visible` undoes the `Card`'s default clip:
-         * the banner is meant to overhang the corner, and the overhang is sized
-         * to stay inside the grid's gap.
-         */
         <Card className="relative z-0 overflow-visible">
-            {/*
-             * The banner loses its `aria-hidden` here, unlike the one on the
-             * ranked cards: that card still prints the tier in a chip, so its
-             * banner is decoration, whereas this one is now the only statement
-             * of the tier. Without a label the tier would be invisible to a
-             * screen reader.
-             */}
             <img
                 src={rankedBannerSrc(tier)}
                 alt={`${tier} ranked`}
                 title={tier}
                 className="ch-card-banner"
             />
-
             <CardContent>
-                {/*
-                 * The pair rides on a plate, with the region flag filling its
-                 * left end. The plate's own margins do the two jobs the row's
-                 * classes used to: `-1.65rem` pulls it over the card's left
-                 * padding so it overhangs, and `max-width: calc(100% - 3rem)`
-                 * keeps it out of the ranked banner's corner at any name
-                 * length.
-                 */}
                 <div className="ch-nameplate">
                     <img
                         src={regionFlagSrc(region)}
@@ -87,14 +49,12 @@ export const TeamCard = ({ team }: { readonly team: PlayerRankedTeam }) => {
                         </EntityLink>
                     </div>
                 </div>
-
                 <p className="ch-display mt-2 text-2xl">
                     {team.rating.toLocaleString()}
                     <span className="ml-2 text-xs font-normal tracking-normal text-muted-foreground">
                         / {team.peak_rating.toLocaleString()} peak
                     </span>
                 </p>
-
                 <SplitProgress
                     className="mt-2"
                     parts={[
@@ -102,7 +62,6 @@ export const TeamCard = ({ team }: { readonly team: PlayerRankedTeam }) => {
                         { key: "losses", value: losses, intent: "orange" },
                     ]}
                 />
-
                 <div className="mt-1.5 flex justify-between text-sm font-bold">
                     <span>
                         {team.wins.toLocaleString()}W{" "}

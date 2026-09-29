@@ -12,27 +12,11 @@ import {
 import { legendsMap } from "@crh/bhapi/legends"
 import type { SortableLegendProp } from "@crh/api-contract/schemas"
 
-/**
- * One legend's leaderboard: who has played them the most, and how well.
- *
- * The legend is a path segment, so a board is a real address that can be linked,
- * bookmarked and indexed on its own: `/rankings/career/legends/3`. A bare
- * `/rankings/career/legends` resolves to the first legend rather than erroring,
- * the same call the region and page resolvers make, and the picker below writes
- * the explicit id.
- *
- * The numbers are that legend's own, not the player's career figures filtered
- * down: `BHPlayerLegend` is keyed by (player, legend), and the query sorts its
- * columns. So "12,345 games" here means games *with this legend*.
- */
-
 type LegendRankingsSearch = { sortBy: SortableLegendProp }
 
 export const Route = createFileRoute(
     "/rankings/career/legends/{-$legendId}/{-$page}",
 )({
-    // An unrecognised sort falls back to the board's default rather than
-    // erroring, the same call `resolveRegion` makes for a mistyped region.
     validateSearch: (
         search: Record<string, unknown>,
     ): LegendRankingsSearch => ({
@@ -60,8 +44,6 @@ function Page() {
     const page = resolvePage(pageParam)
     const rows = useQuery(careerLegendRankingsAtom(legendId, sortBy, page))
 
-    // The legend and the sort survive paging; the page segment only appears
-    // past the first, which keeps `/rankings/career/legends/3` canonical.
     const pageHref = (next: number) =>
         (next > 1
             ? `/rankings/career/legends/${legend}/${next}`
@@ -86,7 +68,6 @@ function Page() {
                     Totals with this legend · page {page}
                 </p>
             </header>
-
             <CareerRankingsView
                 rows={rows}
                 sortBy={sortBy}
@@ -101,24 +82,8 @@ function Page() {
                         : undefined
                 }
             />
-
-            {/*
-             * The legend picker sits below the board rather than above it, so
-             * the page opens on data instead of on a control. It is the same
-             * `ch-chip` row the ladder uses for its axes — the app already had
-             * a way to say "choose one of a set", and seventy options in a
-             * `<select>` would be worse to use than a wrapping chip row.
-             */}
             <fieldset className="mt-6 min-w-0">
                 <legend className="ch-stat-label">Legend</legend>
-                {/*
-                 * A `fieldset`, not a bare flex row: the chips are the one
-                 * "choose a legend" control, and `legend` is the native way to
-                 * name it — so a screen reader announces the question when it
-                 * lands on the first of seventy buttons. `min-w-0` undoes the
-                 * fieldset's default minimum content width, which would
-                 * otherwise stop the row from wrapping.
-                 */}
                 <div className="mt-2 flex flex-wrap gap-1.5">
                     {legendOptions.map((option) => {
                         const current = option.value === legend

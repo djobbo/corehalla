@@ -32,33 +32,6 @@ import { getEntitySlug } from "@crh/common/helpers/entitySlug"
 import type { LookupResult } from "@crh/api-contract/schemas"
 import type { ReactNode } from "react"
 
-/**
- * Search, available from every page.
- *
- * One overlay mounted once rather than a page, because searching is a detour:
- * you arrive, find the thing, and land on its profile with the page you came from
- * still behind you. A search *route* would replace that page and make the back
- * button the way out.
- *
- * The overlay is shadcn's `Command` inside its `Dialog`, which is the part of
- * this file that used to be hand-written and is now the part that is not. cmdk
- * owns the listbox: `role="listbox"`/`role="option"` wiring, arrow-key movement,
- * Home/End, the typeahead buffer, `aria-activedescendant` tracking and scrolling
- * the active row into view. The previous implementation re-derived the highlight
- * index by hand, which is exactly the kind of state that drifts out of step with
- * the DOM — and it announced no roles at all, so a screen reader saw a stack of
- * anonymous buttons.
- *
- * Filtering is switched off (`shouldFilter={false}`) because the ranking happens
- * on the server, in `lookupAtom`. cmdk's own filter would fight it: it would
- * re-rank prefix matches by its own fuzzy score and drop rows the API returned
- * deliberately.
- *
- * Its state stays Effect-native: the query and its debounce are atoms
- * (`effect/search`), and recents are a `KeyValueStore`-backed atom
- * (`effect/recents`). What remains here is presentation.
- */
-
 type SearchContextValue = {
     readonly isOpen: boolean
     readonly open: () => void
@@ -77,13 +50,10 @@ export const useSearch = (): SearchContextValue => {
     return value
 }
 
-/** Read while the query is too short to send, so nothing is fetched. */
 const idleAtom = Atom.make(AsyncResult.success([] as readonly LookupResult[]))
 
-/** How many results the overlay asks for. */
 const LOOKUP_LIMIT = 10
 
-/** What the list needs, so both sources can feed it. */
 type Row = {
     readonly key: string
     readonly name: string
@@ -116,11 +86,6 @@ const rowFromResult = (result: LookupResult): Row => {
         key: `${result.type}:${result.id}`,
         name: result.name,
         meta: parts.join(" · "),
-        /*
-         * The canonical slug the API returned, not an id the client would have
-         * to turn back into one: the lookup already knows the current name, and
-         * a link built here should be the same URL the profile redirects to.
-         */
         href:
             result.type === "player"
                 ? playerHref(result.slug)
@@ -129,12 +94,6 @@ const rowFromResult = (result: LookupResult): Row => {
     }
 }
 
-/**
- * What the list is currently showing.
- *
- * Derived in one place so the render cannot disagree with itself about, say,
- * whether to show the "keep typing" hint or an empty result set.
- */
 type Status = "idle" | "recents" | "pending" | "miss" | "results"
 
 export const SearchProvider = ({
@@ -147,13 +106,6 @@ export const SearchProvider = ({
     const open = useCallback(() => setIsOpen(true), [])
     const close = useCallback(() => setIsOpen(false), [])
 
-    /**
-     * A global shortcut, because the field is not always where the eyes are.
-     *
-     * `/` is the convention for search on a content site, and it is ignored while
-     * the caret is already in a field so it can still be typed into one.
-     * ⌘K/Ctrl+K is here because it is what a keyboard user tries first.
-     */
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
             const target = event.target as HTMLElement | null
@@ -201,9 +153,6 @@ const SearchOverlay = () => {
     const recents = useAtomValue(recentsAtom)
     const setRecents = useAtomSet(recentsAtom)
 
-    // Cleared on close rather than on open: the settled query lags the raw one by
-    // the debounce, so clearing at open time would briefly show the previous
-    // query's results. Clearing on the way out means the next open starts clean.
     useEffect(() => {
         if (isOpen) return
 
@@ -243,12 +192,8 @@ const SearchOverlay = () => {
                       meta: entry.type === "player" ? "Player" : "Clan",
                       href:
                           entry.type === "player"
-                              ? playerHref(
-                                    getEntitySlug(entry.id, entry.name),
-                                )
-                              : clanHref(
-                                    getEntitySlug(entry.id, entry.name),
-                                ),
+                              ? playerHref(getEntitySlug(entry.id, entry.name))
+                              : clanHref(getEntitySlug(entry.id, entry.name)),
                       entry,
                   }))
                 : resultRows,
@@ -270,27 +215,17 @@ const SearchOverlay = () => {
             onOpenChange={(next) => !next && close()}
             title="Search players and clans"
             description="Type a player or clan name to open its profile."
-            // The overlay is anchored near the top rather than centred, so the
-            // list grows downward from where the eye already is and the results
-            // do not shift the field as they arrive.
+
             className="top-16 w-[95vw] max-w-xl translate-y-0"
         >
             <Command shouldFilter={false} loop>
                 <CommandInput
-                    /*
-                     * Focusing the field is the whole point of the shortcut: the
-                     * overlay only opens because the user asked for it (⌘K, `/`,
-                     * or the trigger), so this is not the page-load focus grab
-                     * the rule warns about.
-                     */
-                    /* oxlint-disable-next-line jsx-a11y/no-autofocus */
                     autoFocus
                     value={query}
                     onValueChange={setQuery}
                     placeholder="Search players and clans…"
                     aria-label="Search players and clans"
                 />
-
                 <CommandList className="max-h-[60vh]">
                     {status === "recents" && (
                         <CommandGroup heading="Recent">
@@ -307,14 +242,6 @@ const SearchOverlay = () => {
                             ))}
                         </CommandGroup>
                     )}
-
-                    {/*
-                     * `CommandEmpty` is cmdk's "nothing to show" slot, so every
-                     * non-list state renders through it and the list keeps one
-                     * shape. It is the honest miss, too: prefix-only search means
-                     * a typo finds nothing, so this says what was searched and
-                     * what to try instead of just "no results".
-                     */}
                     <CommandEmpty className="px-3 py-4 text-left text-sm text-muted-foreground">
                         {status === "pending" && "Searching…"}
 
@@ -339,7 +266,6 @@ const SearchOverlay = () => {
     )
 }
 
-/** One result row: a name, and the line of facts that identify it. */
 const Row = ({
     row,
     onSelect,
@@ -357,14 +283,6 @@ const Row = ({
     </CommandItem>
 )
 
-/**
- * The visible way in.
- *
- * A button that looks like a field rather than a real input: the overlay owns the
- * input, so typing here would mean two sources of truth for the query. It is
- * shadcn's `Button` so it inherits the focus ring and disabled handling, with the
- * uppercase button casing turned back off — a field reads as a field.
- */
 export const SearchTrigger = ({
     className,
 }: {

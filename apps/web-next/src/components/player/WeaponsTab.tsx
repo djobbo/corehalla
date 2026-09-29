@@ -9,19 +9,6 @@ import { formatTime } from "@crh/common/helpers/date"
 import type { PlayerLegend, PlayerWeapon } from "@crh/api-contract/schemas"
 import type { SortOption } from "@/lib/useSortBy"
 
-/**
- * Every weapon the account has held, as one sortable list.
- *
- * The mirror of the legends tab, and deliberately so: the two answer the same
- * question from opposite ends ("what does this player play" / "what do they play
- * it with"), so they share the collapsed-row contract and differ only in the
- * figures they show.
- *
- * The roll-up itself is the API's — `weapons` arrives summed across the legends
- * that held each one. What this tab owns is the join back to the legends, so a
- * row can show which of them earned a weapon's ranked record.
- */
-
 type WeaponSort =
     | "matchtime"
     | "level"
@@ -78,11 +65,6 @@ export const WeaponsTab = ({ playerId }: { readonly playerId: number }) => {
     const profile = useQuery(playerProfileAtom(playerId)).data
     const weapons = profile.weapons
 
-    /*
-     * Each weapon's legends arrive as references; their ranked records live on
-     * the legend itself. One map for the whole tab, so a row does not rebuild
-     * it while the list sorts.
-     */
     const legends = useMemo(
         () =>
             new Map<number, PlayerLegend>(
@@ -116,7 +98,6 @@ export const WeaponsTab = ({ playerId }: { readonly playerId: number }) => {
                 onToggleDirection={sort.toggleDirection}
                 className="sm:max-w-sm"
             />
-
             <div className="flex flex-col gap-3">
                 {sort.sorted.map((weapon, index) => (
                     <WeaponRow
