@@ -20,7 +20,7 @@ points `vp dev`/`vp build`/`vp preview` at this package, so the root-level
 commands work without a filter.
 
 ```sh
-vp -C web dev          # dev server on http://localhost:3000
+vp -C web dev          # Vite dev server; Alchemy assigns the port under `alchemy dev`
 vp -C web build        # production build (+ route tree generation)
 vp -C web preview      # preview the built output
 vp -C web ts:check     # effect-tsgo patch && tsc --noEmit
@@ -200,7 +200,7 @@ Effect's diagnostics need the patched compiler:
 
 ## Environment variables
 
-See `.env.example`. Server-only variables are read through `src/env.ts`, which
+See the repo-root `.env.example`. Server-only variables are read through `src/env.ts`, which
 prefers `process.env` on Node and the Worker bindings on Cloudflare; browser
 variables are read through `import.meta.env` (Vite `envPrefix` allows both
 `VITE_` and the legacy `NEXT_PUBLIC_` prefix). There is no database URL: the

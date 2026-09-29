@@ -30,13 +30,8 @@ import { defineConfig } from "vite-plus"
  * there. It is a deliberate cross-app reference, not an oversight: if `apps/web`
  * is ever retired, copy `public/` in beside this config and drop the override.
  */
-const PORT = 3001
-
 export default defineConfig({
     publicDir: fileURLToPath(new URL("../web/public", import.meta.url)),
-    server: {
-        port: PORT,
-    },
     resolve: {
         tsconfigPaths: true,
     },

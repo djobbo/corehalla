@@ -1,9 +1,10 @@
+import path from "node:path"
 import { config as loadEnv } from "dotenv"
 import { logInfo } from "@crh/logger"
 import { startBot as startDiscordManagerBot } from "./appa-bot"
 import { z } from "zod"
 
-loadEnv()
+loadEnv({ path: path.resolve(process.cwd(), "../../.env") })
 
 /**
  * This process hosts the Discord bot only.

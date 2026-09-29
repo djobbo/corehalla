@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url"
 import tailwindcss from "@tailwindcss/vite"
 import { tanstackStart } from "@tanstack/react-start/plugin/vite"
 import viteReact from "@vitejs/plugin-react"
@@ -13,9 +14,7 @@ import { defineConfig } from "vite-plus"
  * - Static assets live in `web/public/` (moved from the legacy Next.js app).
  */
 export default defineConfig({
-    server: {
-        port: 3000,
-    },
+    envDir: fileURLToPath(new URL("../..", import.meta.url)),
     resolve: {
         tsconfigPaths: true,
     },

@@ -172,9 +172,6 @@ importers:
 
   .:
     devDependencies:
-      '@effect/platform-node':
-        specifier: 4.0.0-rc.117
-        version: 4.0.0-rc.117(effect@4.0.0-rc.117)(redis@6.2.1)
       '@types/node':
         specifier: ^24.0.0
         version: 24.13.6
@@ -7162,6 +7159,7 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+    optional: true
 
   '@effect/platform-node@4.0.0-rc.117(effect@4.0.0-rc.117)(redis@6.2.1)':
     dependencies:
@@ -7172,6 +7170,7 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+    optional: true
 
   '@effect/sql-d1@4.0.0-rc.116(effect@4.0.0-rc.117)':
     dependencies:
@@ -8234,22 +8233,27 @@ snapshots:
   '@redis/bloom@6.2.1(@redis/client@6.2.1)':
     dependencies:
       '@redis/client': 6.2.1
+    optional: true
 
   '@redis/client@6.2.1':
     dependencies:
       cluster-key-slot: 1.1.2
+    optional: true
 
   '@redis/json@6.2.1(@redis/client@6.2.1)':
     dependencies:
       '@redis/client': 6.2.1
+    optional: true
 
   '@redis/search@6.2.1(@redis/client@6.2.1)':
     dependencies:
       '@redis/client': 6.2.1
+    optional: true
 
   '@redis/time-series@6.2.1(@redis/client@6.2.1)':
     dependencies:
       '@redis/client': 6.2.1
+    optional: true
 
   '@rolldown/binding-android-arm-eabi@1.2.5':
     optional: true
@@ -9437,7 +9441,8 @@ snapshots:
 
   clsx@2.1.1: {}
 
-  cluster-key-slot@1.1.2: {}
+  cluster-key-slot@1.1.2:
+    optional: true
 
   cmdk@1.1.1(@types/react-dom@19.0.6(@types/react@19.0.14))(@types/react@19.0.14)(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
     dependencies:
@@ -11084,6 +11089,7 @@ snapshots:
     transitivePeerDependencies:
       - '@node-rs/xxhash'
       - '@opentelemetry/api'
+    optional: true
 
   regexp-to-ast@0.5.0: {}
 
@@ -11667,7 +11673,8 @@ snapshots:
 
   undici@7.30.0: {}
 
-  undici@8.11.2: {}
+  undici@8.11.2:
+    optional: true
 
   unenv@2.0.0-rc.24:
     dependencies:

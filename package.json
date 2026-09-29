@@ -6,13 +6,13 @@
     "author": "Djobbo Maïga <hi@djobbo.com>",
     "scripts": {
         "build": "vp run -r build",
-        "dev": "alchemy dev",
+        "dev": "alchemy dev --env-file .env",
         "db:generate": "vp run --filter @crh/db db:generate",
         "db:seed": "vp run --filter @crh/db db:seed",
         "db:seed:verify": "vp run --filter @crh/db db:seed:verify",
         "db:import:supabase": "vp run --filter @crh/db db:import:supabase",
-        "deploy": "alchemy deploy",
-        "destroy": "alchemy destroy",
+        "deploy": "alchemy deploy --env-file .env",
+        "destroy": "alchemy destroy --env-file .env",
         "dl-roster": "vp run -r dl-roster",
         "ts:check": "tsc --noEmit -p tsconfig.json && vp run -r ts:check",
         "check": "vp check",
@@ -22,7 +22,6 @@
         "ci:install": "vp install --frozen-lockfile"
     },
     "devDependencies": {
-        "@effect/platform-node": "4.0.0-rc.117",
         "@types/node": "^24.0.0",
         "alchemy": "2.0.0-beta.79",
         "effect": "4.0.0-rc.117",

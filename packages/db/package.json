@@ -6,7 +6,7 @@
         "db:generate": "drizzle-kit generate",
         "db:seed": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/seed.mts",
         "db:seed:verify": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/seed-verify.mts",
-        "db:import:supabase": "node --env-file-if-exists=.env --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-postgres.mts",
+        "db:import:supabase": "node --env-file-if-exists=../../.env --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-postgres.mts",
         "ts:check": "tsc --noEmit"
     },
     "devDependencies": {

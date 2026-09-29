@@ -12,7 +12,7 @@ import type { CSSProperties } from "react"
  * app; there is deliberately no "auto" ad component. Site-wide Auto ads (the
  * in-feed/anchor/vignette formats that put ads on every page, including
  * full-screen interstitials) are an account-level setting and must be turned
- * off in AdSense — see `web/.env.example` for the dashboard path. Disabling
+ * off in AdSense — see the repo-root `.env.example` for the dashboard path. Disabling
  * them there leaves exactly these units.
  */
 

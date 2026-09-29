@@ -5,7 +5,6 @@ import * as Config from "effect/Config"
 import * as ConfigProvider from "effect/ConfigProvider"
 import * as Effect from "effect/Effect"
 import * as FileSystem from "effect/FileSystem"
-import * as Option from "effect/Option"
 import * as Path from "effect/Path"
 import * as Redacted from "effect/Redacted"
 
@@ -14,16 +13,11 @@ import * as Redacted from "effect/Redacted"
  * `Website.Vite` supplies the Cloudflare plugin, so the app configs must not
  * add `@cloudflare/vite-plugin` themselves.
  *
- * App settings come from Effect Config. The shell wins, then `apps/web/.env`,
- * then `.env`. A missing file is skipped. Required settings only warn, so
- * `dev` and `destroy` still evaluate.
- *
- * Keys the shell did not set are copied onto `process.env`. Vite's dev and
- * build children inherit that, and Alchemy only forwards `VITE_*` entries
- * that are also declared on the worker.
+ * Worker settings are `Config` values. Alchemy reads them from the repo-root
+ * `.env` (`dev` / `deploy` / `destroy` pass `--env-file .env`) and binds them
+ * onto the Worker.
  */
 
-const dotenvFiles = [".env", "apps/web/.env"] as const
 const supabaseSeedDir = "packages/db/seed/generated/supabase"
 
 const configError = (message: string, cause?: unknown) =>
@@ -34,71 +28,15 @@ const configError = (message: string, cause?: unknown) =>
         }),
     )
 
-const assembleConfig = Effect.fnUntraced(function* () {
-    const fs = yield* FileSystem.FileSystem
-    const preexisting = yield* Effect.sync(
-        () => new Set(Object.keys(process.env)),
-    )
-    const merged = new Map<string, string>()
-    let files = ConfigProvider.fromEnv({ env: {} })
+const setting = (key: string, fallback = "") =>
+    Config.String(key).pipe(Config.withDefault(fallback))
 
-    for (const path of dotenvFiles) {
-        if (!(yield* fs.exists(path))) continue
-        const parsed = yield* ConfigProvider.fromDotEnv({
-            path,
-            preserveEmptyStrings: true,
-        })
-        const text = yield* fs.readFileString(path)
-        for (const match of text.matchAll(
-            /^\s*(?:export\s+)?([\w.-]+)\s*=/gm,
-        )) {
-            const key = match[1]
-            if (key === undefined) continue
-            const value = yield* Config.String(key).pipe(
-                Config.withDefault(""),
-                Effect.provideService(ConfigProvider.ConfigProvider, parsed),
-            )
-            merged.set(key, value)
-        }
-        files = ConfigProvider.orElse(parsed, files)
-    }
-
-    yield* Effect.sync(() => {
-        for (const [key, value] of merged) {
-            if (!preexisting.has(key)) process.env[key] = value
-        }
-    })
-
-    return ConfigProvider.orElse(
-        ConfigProvider.fromEnv({ preserveEmptyStrings: true }),
-        files,
-    )
-})
-
-const readSetting = Effect.fnUntraced(function* (
-    provider: ConfigProvider.ConfigProvider,
-    key: string,
-    fallback: string,
-    required = false,
-) {
-    const value = yield* Config.String(key).pipe(
-        Config.option,
-        Effect.provideService(ConfigProvider.ConfigProvider, provider),
-    )
-    if (Option.isSome(value) && value.value !== "") return value.value
-    if (required) {
-        yield* Effect.logWarning(
-            `${key} is not set — deploying an empty value. Add it to .env or apps/web/.env, or export it.`,
-        )
-    }
-    return fallback
-})
+const secret = (key: string) =>
+    Config.Redacted(key).pipe(Config.withDefault(Redacted.make("")))
 
 /** Opt-in: the SQL is gitignored. Dropping `importFiles` later drops hashes, not rows. */
-const supabaseImportFiles = Effect.fnUntraced(function* (
-    provider: ConfigProvider.ConfigProvider,
-) {
-    const enabled = yield* readSetting(provider, "IMPORT_SUPABASE_SEED", "")
+const supabaseImportFiles = Effect.fnUntraced(function* () {
+    const enabled = yield* setting("IMPORT_SUPABASE_SEED")
     if (enabled !== "1") return undefined
 
     const fs = yield* FileSystem.FileSystem
@@ -155,56 +93,15 @@ export default Alchemy.Stack(
         state: Cloudflare.state(),
     },
     Effect.gen(function* () {
-        const provider = yield* assembleConfig().pipe(
-            Effect.mapError((cause) =>
-                configError("Could not read .env files", cause),
-            ),
-        )
-        const read = (key: string, fallback: string, required = false) =>
-            readSetting(provider, key, fallback, required)
-        const siteUrl = yield* read("SITE_URL", "https://corehalla.com")
-        const brawlhallaApiKey = yield* read("BRAWLHALLA_API_KEY", "", true)
-        const discordClientId = yield* read("DISCORD_CLIENT_ID", "", true)
-        const discordClientSecret = yield* read(
-            "DISCORD_CLIENT_SECRET",
-            "",
-            true,
-        )
-        const adsenseProfileHeader = yield* read(
-            "VITE_ADSENSE_SLOT_PROFILE_HEADER",
-            "",
-            true,
-        )
-        const adsenseProfileBottom = yield* read(
-            "VITE_ADSENSE_SLOT_PROFILE_BOTTOM",
-            "",
-            true,
-        )
-        const adsenseArticles = yield* read(
-            "VITE_ADSENSE_SLOT_ARTICLES",
-            "",
-            true,
-        )
-        const adsenseRankings = yield* read(
-            "VITE_ADSENSE_SLOT_RANKINGS",
-            "",
-            true,
-        )
-        const adsenseLanding = yield* read(
-            "VITE_ADSENSE_SLOT_LANDING",
-            "",
-            true,
-        )
-        const importFiles = yield* supabaseImportFiles(provider).pipe(
+        const siteUrl = yield* setting("SITE_URL", "https://corehalla.com")
+        const importFiles = yield* supabaseImportFiles().pipe(
             Effect.mapError((cause) =>
                 cause instanceof ConfigError
                     ? cause
                     : configError("Could not list Supabase seed files", cause),
             ),
         )
-        const isDev = yield* Alchemy.ALCHEMY_DEV.pipe(
-            Effect.provideService(ConfigProvider.ConfigProvider, provider),
-        )
+        const isDev = yield* Alchemy.ALCHEMY_DEV
         const internalOrigin = isDev ? `http://localhost:${DEV_PORT}` : siteUrl
         const hostname = siteUrl.replace(/^https?:\/\//, "").replace(/\/+$/, "")
         const nextHostname = `next.${hostname}`
@@ -234,10 +131,10 @@ export default Alchemy.Stack(
                     namespaceId: 1001,
                     simple: { limit: 30, period: 10 },
                 }),
-                SITE_URL: siteUrl,
-                BRAWLHALLA_API_KEY: Redacted.make(brawlhallaApiKey),
-                DISCORD_CLIENT_ID: discordClientId,
-                DISCORD_CLIENT_SECRET: Redacted.make(discordClientSecret),
+                SITE_URL: setting("SITE_URL", "https://corehalla.com"),
+                BRAWLHALLA_API_KEY: secret("BRAWLHALLA_API_KEY"),
+                DISCORD_CLIENT_ID: setting("DISCORD_CLIENT_ID"),
+                DISCORD_CLIENT_SECRET: secret("DISCORD_CLIENT_SECRET"),
             },
         })
         const crawlerResource = Cloudflare.Worker("CorehallaCrawler", {
@@ -253,8 +150,8 @@ export default Alchemy.Stack(
                 CACHE: CorehallaCache,
                 CRAWL_QUEUE: CorehallaCrawlQueue,
                 CRAWL_SAMPLE_QUEUE: CorehallaSampleQueue,
-                SITE_URL: siteUrl,
-                BRAWLHALLA_API_KEY: Redacted.make(brawlhallaApiKey),
+                SITE_URL: setting("SITE_URL", "https://corehalla.com"),
+                BRAWLHALLA_API_KEY: secret("BRAWLHALLA_API_KEY"),
             },
         })
         const websiteResource = Cloudflare.Website.Vite("CorehallaWeb", {
@@ -268,17 +165,25 @@ export default Alchemy.Stack(
             domain: hostname,
             env: {
                 DB: dbResource,
-                SITE_URL: siteUrl,
+                SITE_URL: setting("SITE_URL", "https://corehalla.com"),
                 VITE_SITE_URL: siteUrl,
                 INTERNAL_ORIGIN: internalOrigin,
-                DISCORD_CLIENT_ID: discordClientId,
-                DISCORD_CLIENT_SECRET: Redacted.make(discordClientSecret),
+                DISCORD_CLIENT_ID: setting("DISCORD_CLIENT_ID"),
+                DISCORD_CLIENT_SECRET: secret("DISCORD_CLIENT_SECRET"),
                 API: apiResource,
-                VITE_ADSENSE_SLOT_PROFILE_HEADER: adsenseProfileHeader,
-                VITE_ADSENSE_SLOT_PROFILE_BOTTOM: adsenseProfileBottom,
-                VITE_ADSENSE_SLOT_ARTICLES: adsenseArticles,
-                VITE_ADSENSE_SLOT_RANKINGS: adsenseRankings,
-                VITE_ADSENSE_SLOT_LANDING: adsenseLanding,
+                VITE_ADSENSE_SLOT_PROFILE_HEADER: setting(
+                    "VITE_ADSENSE_SLOT_PROFILE_HEADER",
+                ),
+                VITE_ADSENSE_SLOT_PROFILE_BOTTOM: setting(
+                    "VITE_ADSENSE_SLOT_PROFILE_BOTTOM",
+                ),
+                VITE_ADSENSE_SLOT_ARTICLES: setting(
+                    "VITE_ADSENSE_SLOT_ARTICLES",
+                ),
+                VITE_ADSENSE_SLOT_RANKINGS: setting(
+                    "VITE_ADSENSE_SLOT_RANKINGS",
+                ),
+                VITE_ADSENSE_SLOT_LANDING: setting("VITE_ADSENSE_SLOT_LANDING"),
             },
         })
 

@@ -185,7 +185,7 @@ loudly, with a specific message, is:
 - the Supabase **API** URL (`https://<ref>.supabase.co`) instead of the
   `postgres://` connection string;
 - passing an unquoted URL to a shell: `#` starts a comment and `[`/`]` glob, so
-  quote it (`--source="postgres://…"`) or put it in `packages/db/.env`.
+  quote it (`--source="postgres://…"`) or put `SOURCE_DATABASE_URL` in the repo-root `.env`.
 
 Also note the direct host `db.<ref>.supabase.co` is IPv6-only and the
 transaction pooler on port `6543` has no session state — the script warns about
@@ -252,10 +252,9 @@ How `alchemy dev` behaves:
   generated `.sql` files instead (Alchemy runs imports locally, skipping files
   whose hash it already applied), or use `Cloudflare.D1.QueryDatabase` inside an
   `Action`.
-- **Secrets.** The stack reads `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`,
-  `BRAWLHALLA_API_KEY` and `SITE_URL` from `process.env`, so export them (or
-  start the CLI through Node with `--env-file`, see below). It warns when a
-  required one is missing instead of binding an empty secret silently.
+- **Secrets.** The stack binds `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`,
+  `BRAWLHALLA_API_KEY` and `SITE_URL` from the repo-root `.env` (`dev` / `deploy`
+  / `destroy` pass `--env-file .env`).
 - **State.** The stack uses `Cloudflare.state()` — a state-store Worker in your
   account — so `alchemy dev` needs `CLOUDFLARE_API_TOKEN` / account credentials.
   Swap in `Alchemy.localState()` for a purely local, file-backed state.
@@ -268,7 +267,7 @@ pnpm destroy     # alchemy destroy
 
 The `worker` (crawler + Discord bot) is a Node process; it talks to the same D1
 database over the HTTP API, configured with `CLOUDFLARE_ACCOUNT_ID`,
-`CLOUDFLARE_D1_DATABASE_ID` and `CLOUDFLARE_API_TOKEN` in `worker/.env`.
+`CLOUDFLARE_D1_DATABASE_ID` and `CLOUDFLARE_API_TOKEN` in the repo-root `.env`.
 
 ## Authentication
 
@@ -286,8 +285,7 @@ database over the HTTP API, configured with `CLOUDFLARE_ACCOUNT_ID`,
 The browser holds one opaque HttpOnly, `SameSite=Lax` cookie. Only its SHA-256
 digest is stored (`UserSession.id`), and the Discord access/refresh tokens stay
 in that row — refreshed server-side shortly before they expire. Set
-`DISCORD_CLIENT_ID` / `DISCORD_CLIENT_SECRET` (in `web/.env` for `vp dev`,
-and exported or loaded with `--env-file` for a deploy) and register
+`DISCORD_CLIENT_ID` / `DISCORD_CLIENT_SECRET` (repo-root `.env`) and register
 `${SITE_URL}/api/auth/discord/callback` as the redirect URL.
 
 ## Deployment (Alchemy → Cloudflare)
@@ -302,15 +300,15 @@ The root `alchemy.run.ts` declares the whole deployment:
   with `DB: CorehallaDb` and the Discord/Brawlhalla secrets bound in `env`.
 
 ```sh
-pnpm deploy      # loads .env + web/.env, then applies migrations and deploys
+pnpm deploy      # alchemy deploy --env-file .env
 ```
 
-The secrets it binds are read from `web/.env` (see below); a bare
-`alchemy deploy` needs them exported instead.
+The secrets it binds are read from the repo-root `.env` (see below). The
+scripts pass `--env-file .env` so the website build children see that file too.
 
 ### Cloudflare credentials
 
-`pnpm dev:cloud` / `pnpm deploy` need Cloudflare credentials. Alchemy selects a
+`dev` / `deploy` need Cloudflare credentials. Alchemy selects a
 **profile** (`--profile` flag → `ALCHEMY_PROFILE` → `default`) and only falls
 back to environment variables when the required ones are present:
 
@@ -325,9 +323,8 @@ pnpm exec alchemy profile current      # which profile is selected
 ALCHEMY_PROFILE=corehalla
 ```
 
-so the credentials stored in that profile are used by `pnpm dev:cloud` /
-`pnpm deploy` (per command: `ALCHEMY_PROFILE=corehalla pnpm dev:cloud`, or
-`pnpm exec alchemy dev --profile corehalla`).
+so the credentials stored in that profile are used by `dev` / `deploy`
+(`ALCHEMY_PROFILE=corehalla pnpm dev`, or `pnpm exec alchemy dev --profile corehalla`).
 
 **Create or reconfigure a profile** (OAuth recommended — nothing secret in a
 file, token refreshes itself):
@@ -337,17 +334,12 @@ pnpm exec alchemy profile edit --profile corehalla --add Cloudflare
 ```
 
 **Environment (CI):** `CLOUDFLARE_ACCOUNT_ID` plus either `CLOUDFLARE_API_TOKEN`,
-or `CLOUDFLARE_API_KEY` with `CLOUDFLARE_EMAIL`, in a **repo-root `.env`**. The
-`pnpm dev:cloud` / `pnpm deploy` / `pnpm destroy` scripts load `.env` and
-`web/.env` into the process (`node --env-file-if-exists …`), so the app secrets
-live in `web/.env` — the same file `vp dev` reads:
+or `CLOUDFLARE_API_KEY` with `CLOUDFLARE_EMAIL`, in the **repo-root `.env`**.
+`dev` / `deploy` / `destroy` pass that file as `--env-file .env`, and Vite reads it too:
 
 ```sh
-# .env                    (gitignored)  — Alchemy itself
-CLOUDFLARE_ACCOUNT_ID=...
-CLOUDFLARE_API_TOKEN=...
-
-# web/.env                (gitignored)  — the app
+# .env  (gitignored)
+ALCHEMY_PROFILE=corehalla
 DISCORD_CLIENT_ID=...
 DISCORD_CLIENT_SECRET=...
 BRAWLHALLA_API_KEY=...
@@ -355,8 +347,9 @@ SITE_URL=https://corehalla.com
 ```
 
 Environment credentials take precedence over a profile, so a stale `.env` will
-mask an OAuth login. A bare `alchemy deploy` (bypassing the scripts) sees only
-the real process environment — export the values, or use the profile.
+mask an OAuth login. A bare `alchemy deploy` from the repo root still reads
+`.env` for the stack; pass `--env-file .env` (as the scripts do) so the website
+build children see it too.
 
 For an account-scoped API token, start from Cloudflare's **Edit Cloudflare
 Workers** template and add:
