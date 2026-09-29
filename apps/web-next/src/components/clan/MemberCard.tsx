@@ -6,7 +6,8 @@ import { playerHref } from "@/lib/rankings"
 import { percent } from "@/lib/stats"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatUnixTime } from "@crh/common/helpers/date"
-import type { Clan } from "@crh/bhapi/types"
+import type { GuildMember } from "@crh/api-contract/schemas"
+import type { ClanRank } from "@crh/bhapi/constants"
 
 /**
  * One clan member, on the 2v2 team card's template.
@@ -41,7 +42,7 @@ export const MemberCard = ({
     member,
     clanXp,
 }: {
-    readonly member: Clan["clan"][number]
+    readonly member: GuildMember
     readonly clanXp: number
 }) => {
     const share = percent(member.xp, clanXp)
@@ -49,7 +50,7 @@ export const MemberCard = ({
     /*
      * Dropped, not zeroed, when absent. Only the legacy upstream omits it, and
      * a clan with no points figure should show four facts rather than a
-     * fabricated fifth — see `Clan.clan[].guild_points`. A real zero *is*
+     * fabricated fifth — see `GuildMember.guild_points`. A real zero *is*
      * shown, because "nobody in this clan has earned points" is a fact about
      * the clan and not a missing number.
      */
@@ -72,12 +73,12 @@ export const MemberCard = ({
                  * would only wrap long names early.
                  */}
                 <div className="ch-nameplate ch-nameplate-wide">
-                    <ClanRankIcon rank={member.rank} />
+                    <ClanRankIcon rank={member.rank as ClanRank} />
                     <div className="ch-nameplate-names">
                         <EntityLink
                             type="player"
-                            id={member.brawlhalla_id}
-                            href={playerHref(member.brawlhalla_id)}
+                            id={member.id}
+                            href={playerHref(member.slug)}
                             className="transition-colors hover:text-ring"
                         >
                             {/*
@@ -87,15 +88,8 @@ export const MemberCard = ({
                              * but still clickable — link, so the id stands in. The
                              * profile it points at resolves, which is why the
                              * member is worth showing at all.
-                             *
-                             * `?? ""` because the key can be *absent* on the wire,
-                             * not just empty: a value cached before the mapper
-                             * started normalising — served until it goes stale —
-                             * omits it entirely, and `cleanString(undefined)`
-                             * returns the literal text "undefined".
                              */}
-                            {cleanString(member.name ?? "") ||
-                                `#${member.brawlhalla_id}`}
+                            {cleanString(member.name) || `#${member.id}`}
                         </EntityLink>
                     </div>
                 </div>
@@ -148,7 +142,7 @@ export const MemberCard = ({
                  * where a reader goes when the date is what they came for.
                  */}
                 <p className="mt-0.5 text-xs font-normal text-muted-foreground">
-                    joined {formatUnixTime(member.join_date)}
+                    joined {formatUnixTime(member.joined_at)}
                 </p>
             </CardContent>
         </Card>

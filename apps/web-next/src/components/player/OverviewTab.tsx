@@ -6,19 +6,14 @@ import { RankedCard } from "./RankedCard"
 import { usePlayerDerived } from "./usePlayerDerived"
 import { EntityLink } from "@/components/EntityLink"
 import { cn } from "@/lib/cn"
-import { clanHref, isPairedTeam } from "@/lib/rankings"
+import { clanHref } from "@/lib/rankings"
 import { percent, perGame, ratio } from "@/lib/stats"
-import { rankedRegions } from "@crh/bhapi/constants"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatTime } from "@crh/common/helpers/date"
 import type { Stat } from "@/components/StatGrid"
 import type { BreakdownEntry } from "@/components/Breakdown"
-import type { PlayerDerived } from "./usePlayerDerived"
-import type {
-    Player3v3Ranked,
-    PlayerRanked,
-    PlayerStats,
-} from "@crh/bhapi/types"
+import type { PlayerAccount, PlayerDerived } from "./usePlayerDerived"
+import type { Player, PlayerRankedTeam } from "@crh/api-contract/schemas"
 
 /**
  * The overview: what this account is, in card-grid form.
@@ -34,8 +29,11 @@ import type {
  * was always one click away on a page whose entire job is to answer it.
  */
 
+/** One bracket's ranked record, as the API sends it. */
+type RankedBracket = NonNullable<NonNullable<Player["ranked"]>["1v1"]>
+
 /** One row of the `2v2` list — a pairing, or a solo record. */
-type Team = PlayerRanked["2v2"][number]
+type Team = PlayerRankedTeam
 
 const summed = (value: number): string => value.toLocaleString()
 
@@ -52,7 +50,7 @@ const summed = (value: number): string => value.toLocaleString()
 const Ranked1v1Panel = ({
     ranked,
 }: {
-    readonly ranked: PlayerRanked | null
+    readonly ranked: RankedBracket | null
 }) => {
     if (!ranked || ranked.games <= 0) return null
 
@@ -81,7 +79,9 @@ const Ranked1v1Panel = ({
  * should not be told about it.
  */
 const SoloQueuePanel = ({ solo }: { readonly solo: Team }) => {
-    const region = rankedRegions[solo.region - 1] ?? null
+    // The region is already our vocabulary, not v1's numeric index — the
+    // server translated it once, so there is nothing to look up here.
+    const region = solo.region
 
     return (
         <RankedCard
@@ -105,16 +105,15 @@ const SoloQueuePanel = ({ solo }: { readonly solo: Team }) => {
  * teams are assembled per match — so this is a record in its own right rather
  * than a team, exactly like the solo-queue 2v2 card beside it.
  *
- * The record itself comes from its own endpoint rather than from `ranked`,
- * because v0 has no 3v3 mode; see `player3v3RankedAtom`. Gated on games played
- * for the same reason as the other two: a payload with no games behind it is
- * not a record, and a player who has never queued 3v3 should not be shown a
- * zero-rated card for it.
+ * The record arrives as `ranked["3v3"]` on the one profile aggregate, already
+ * resolved from v1 — v0 has no 3v3 mode, so the server merges the two upstreams
+ * and the client sees one `ranked` object. A null bracket means no record, so
+ * this only has to guard the card, not the games.
  */
 const Ranked3v3Panel = ({
     ranked,
 }: {
-    readonly ranked: Player3v3Ranked | null
+    readonly ranked: RankedBracket | null
 }) => {
     if (!ranked || ranked.games <= 0) return null
 
@@ -133,7 +132,7 @@ const Ranked3v3Panel = ({
 
 // --- clan -------------------------------------------------------------------
 
-const ClanPanel = ({ stats }: { readonly stats: PlayerStats }) => {
+const ClanPanel = ({ stats }: { readonly stats: PlayerAccount }) => {
     const clan = stats.clan
 
     if (!clan) return null
@@ -469,8 +468,7 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
 
     const {
         stats,
-        ranked,
-        ranked3v3,
+        profile,
         totals,
         weaponless,
         weaponKos,
@@ -491,15 +489,17 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
     } = totals
 
     /*
-     * A ranked record only earns a card if it has games behind it. `ranked`
-     * being present means the player has *some* ranked data, which is not the
-     * same as having played this bracket.
+     * A ranked record only earns a card if the bracket has games behind it. The
+     * server already nulls a bracket with none, so the presence of the bracket
+     * *is* the answer — `ranked` itself only says the player has some ranked
+     * data somewhere, which is not the same as having played this bracket.
      */
-    const has1v1 = ranked !== null && ranked.games > 0
-    const soloRecord = (ranked?.["2v2"] ?? []).find(
-        (team) => !isPairedTeam(team),
-    )
-    const has3v3 = ranked3v3 !== null && ranked3v3.games > 0
+    const ranked = profile.ranked
+    const ranked1v1 = ranked?.["1v1"] ?? null
+    const ranked3v3 = ranked?.["3v3"] ?? null
+    const soloRecord = ranked?.["2v2"]?.teams.find((team) => !team.paired)
+    const has1v1 = ranked1v1 !== null
+    const has3v3 = ranked3v3 !== null
 
     /*
      * One, two or three cards. The column count follows the count of cards
@@ -541,7 +541,7 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                         rankedCardCount > 2 && "lg:grid-cols-3",
                     )}
                 >
-                    <Ranked1v1Panel ranked={ranked} />
+                    <Ranked1v1Panel ranked={ranked1v1} />
                     {soloRecord ? <SoloQueuePanel solo={soloRecord} /> : null}
                     <Ranked3v3Panel ranked={ranked3v3} />
                 </div>

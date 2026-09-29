@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/empty"
 import { Heart } from "lucide-react"
 import { cleanString } from "@crh/common/helpers/cleanString"
+import { getEntitySlug } from "@crh/common/helpers/entitySlug"
 import type { Favorite } from "@crh/api-contract/schemas"
 
 /**
@@ -97,8 +98,18 @@ export const FavoritesGrid = ({
                             <Link
                                 to={
                                     favorite.type === "player"
-                                        ? playerHref(favorite.id)
-                                        : clanHref(favorite.id)
+                                        ? playerHref(
+                                              getEntitySlug(
+                                                  favorite.id,
+                                                  favorite.name,
+                                              ),
+                                          )
+                                        : clanHref(
+                                              getEntitySlug(
+                                                  favorite.id,
+                                                  favorite.name,
+                                              ),
+                                          )
                                 }
                                 className="min-w-0 flex-1 transition-colors hover:text-ring"
                             >

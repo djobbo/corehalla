@@ -876,7 +876,9 @@ export const getFullLegends = (
         : Object.values(fullLegends).filter((legend) => legend.stats?.games)
 }
 
-export const getLegendsAccumulativeData = (fullLegends: FullLegend[]) => {
+export const getLegendsAccumulativeData = (
+    fullLegends: readonly FullLegend[],
+) => {
     return fullLegends.reduce<{
         matchtime: number
         kos: number
@@ -918,7 +920,9 @@ export type FullWeapon = {
     legends: FullLegend[]
 }
 
-export const getFullWeapons = (legends: FullLegend[]): FullWeapon[] => {
+export const getFullWeapons = (
+    legends: readonly FullLegend[],
+): FullWeapon[] => {
     const weaponsMap = legends.reduce(
         (acc, legend) => {
             const legendData = legendsMap[legend.legend_id]
@@ -943,7 +947,7 @@ export const getFullWeapons = (legends: FullLegend[]): FullWeapon[] => {
     return weapons
 }
 
-export const getWeaponlessData = (legends: FullLegend[]) => {
+export const getWeaponlessData = (legends: readonly FullLegend[]) => {
     return legends.reduce(
         (acc, legend) => ({
             unarmed: {
@@ -1007,7 +1011,7 @@ export const getWeaponsAccumulativeData = (weapons: FullWeapon[]) => {
                         acc.damageDealt +
                         parseInt(
                             (isWeaponOne
-                                ? legend.stats?.damageweapontwo
+                                ? legend.stats?.damageweaponone
                                 : legend.stats?.damageweapontwo) ?? "0",
                         ),
                     matchtime:

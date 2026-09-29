@@ -1,4 +1,5 @@
 import { regions } from "./rankings"
+import { parseEntityId } from "@crh/common/helpers/entitySlug"
 import { legends, legendsMap } from "@crh/bhapi/legends"
 import { weapons } from "@crh/bhapi/constants"
 import type { RankedRegion } from "@crh/api-contract/schemas"
@@ -72,3 +73,15 @@ export const resolveBracket = (value?: string): Ladder =>
     (ladders as readonly string[]).includes(value ?? "")
         ? (value as Ladder)
         : "1v1"
+
+/**
+ * The numeric entity id at the head of a profile slug.
+ *
+ * Profile URLs are slugs (`1234-bomber`), not bare ids, so a page component
+ * cannot pass the segment straight to `Number`. The parent route's loader has
+ * already rejected a segment with no id in it, so the `0` here is a value the
+ * child can never actually receive — it exists so the child does not have to
+ * repeat the parse-and-throw the parent already did.
+ */
+export const resolveEntityId = (slug: string): number =>
+    parseEntityId(slug) ?? 0

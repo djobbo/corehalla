@@ -2,7 +2,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { FavoriteButton } from "@/components/account/FavoriteButton"
 import { StatGrid } from "@/components/StatGrid"
 import { usePlayerDerived } from "./usePlayerDerived"
-import { playerAliasesAtom, useQuery } from "@/effect/atoms"
 import { legendIconSrc, regionFlagSrc, weaponIconSrc } from "@/lib/assets"
 import { tierColor } from "@/lib/rankings"
 import { cleanString } from "@crh/common/helpers/cleanString"
@@ -57,7 +56,6 @@ const ThumbRow = ({ items }: { readonly items: readonly Thumb[] }) => (
 
 export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
     const player = usePlayerDerived(playerId)
-    const aliases = useQuery(playerAliasesAtom(playerId))
 
     if (!player) {
         return (
@@ -67,17 +65,23 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
         )
     }
 
-    const { stats, ranked, topLegends, topWeapons, totals } = player
+    const { stats, profile, topLegends, topWeapons, totals } = player
 
     /*
-     * The crawler emits single-character aliases and "•2" duplicates of a name
-     * it has already recorded. Both are artefacts of the source data rather than
-     * names, so neither is shown.
+     * The API has already filtered the current name out and collapsed
+     * duplicates; what remains is the crawler's habit of emitting
+     * single-character aliases and "•2" duplicates of a name it has already
+     * recorded. Both are artefacts of the source data rather than names, so
+     * neither is shown.
      */
-    const shownAliases = aliases
+    const shownAliases = profile.aliases
         .map(cleanString)
         .filter((alias) => alias.length >= 2 && !alias.endsWith("•2"))
         .slice(0, MAX_SHOWN_ALIASES)
+
+    // The region flag and tier chip describe the player's 1v1 standing, which
+    // is the only bracket that can speak for "where they play".
+    const ranked = profile.ranked?.["1v1"] ?? null
 
     const name = cleanString(stats.name)
 

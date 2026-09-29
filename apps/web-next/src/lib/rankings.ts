@@ -125,18 +125,3 @@ export const tierColor = (tier: string): string => {
     }
 }
 
-/**
- * Whether a 2v2 row is a real pairing.
- *
- * The API files a solo queue under the same `2v2` list as a team, but with no
- * second player: you queued alone and were handed a random partner, so the row
- * is the player's *own* solo record rather than a team they chose. The signal is
- * a second id of zero, which is the same one the ladder uses to drop the phantom
- * member from a row.
- *
- * The `?? 0` is not defensive noise — the field is typed as a number but a solo
- * row can arrive without it at all.
- */
-export const isPairedTeam = (team: {
-    readonly brawlhalla_id_two?: number
-}): boolean => (team.brawlhalla_id_two ?? 0) > 0

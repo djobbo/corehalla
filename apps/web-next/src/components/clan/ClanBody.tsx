@@ -1,9 +1,9 @@
 import { SortControl } from "@/components/SortControl"
 import { MemberCard } from "./MemberCard"
-import { clanStatsAtom, useQuery } from "@/effect/atoms"
+import { guildAtom, useQuery } from "@/effect/atoms"
 import { useSortBy } from "@/lib/useSortBy"
 import { formatUnixTime } from "@crh/common/helpers/date"
-import type { Clan } from "@crh/bhapi/types"
+import type { Guild, GuildMember } from "@crh/api-contract/schemas"
 import type { ClanRank } from "@crh/bhapi/constants"
 import type { SortOption } from "@/lib/useSortBy"
 
@@ -15,13 +15,13 @@ import type { SortOption } from "@/lib/useSortBy"
  * browse *through* rather than just a summary.
  *
  * The header above it lives in `./ClanHeader`, alongside this rather than in
- * it. The two answer to different atoms and different questions, and the player
- * page already splits the same way — `PlayerHeader` next to the tab bodies.
+ * it. Both read the one guild aggregate, so the two cannot describe different
+ * clans — they are two views of the same resolved request.
  */
 
 // --- roster -----------------------------------------------------------------
 
-type Member = Clan["clan"][number]
+type Member = GuildMember
 
 type MemberSort = "rank" | "xp" | "joined"
 
@@ -51,8 +51,8 @@ const sortOptions: Record<MemberSort, SortOption<Member>> = {
     rank: {
         label: "Rank",
         compare: (a, b) =>
-            rankWeight[a.rank] - rankWeight[b.rank] ||
-            a.join_date - b.join_date,
+            rankWeight[a.rank as ClanRank] -
+                rankWeight[b.rank as ClanRank] || a.joined_at - b.joined_at,
         display: (member) => member.rank,
     },
     xp: {
@@ -62,8 +62,8 @@ const sortOptions: Record<MemberSort, SortOption<Member>> = {
     },
     joined: {
         label: "Join date",
-        compare: (a, b) => a.join_date - b.join_date,
-        display: (member) => formatUnixTime(member.join_date),
+        compare: (a, b) => a.joined_at - b.joined_at,
+        display: (member) => formatUnixTime(member.joined_at),
     },
 }
 
@@ -75,15 +75,13 @@ const sortOptions: Record<MemberSort, SortOption<Member>> = {
  * clan does not exist. Handing the resolved clan to a component that only ever
  * sees a real one is what lets both be true.
  */
-const Roster = ({ clan }: { readonly clan: Clan }) => {
-    const clanXp = Number(clan.clan_xp)
-
+const Roster = ({ guild }: { readonly guild: Guild }) => {
     /*
      * Rank ascending by default: a clan's own order is the one its members
      * would expect to find it in, and XP descending is one toggle away for
      * anyone who came to see who earns the most.
      */
-    const sort = useSortBy(clan.clan, sortOptions, "rank", "asc")
+    const sort = useSortBy(guild.members, sortOptions, "rank", "asc")
 
     return (
         <div className="flex flex-col gap-4">
@@ -100,9 +98,9 @@ const Roster = ({ clan }: { readonly clan: Clan }) => {
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {sort.sorted.map((member) => (
                     <MemberCard
-                        key={member.brawlhalla_id}
+                        key={member.id}
                         member={member}
-                        clanXp={clanXp}
+                        clanXp={guild.xp}
                     />
                 ))}
             </div>
@@ -111,9 +109,7 @@ const Roster = ({ clan }: { readonly clan: Clan }) => {
 }
 
 export const ClanBody = ({ clanId }: { readonly clanId: number }) => {
-    const clan = useQuery(clanStatsAtom(clanId))
+    const guild = useQuery(guildAtom(clanId))
 
-    if (!clan) return null
-
-    return <Roster clan={clan} />
+    return <Roster guild={guild.data} />
 }

@@ -1,13 +1,8 @@
 import { useAtomValue } from "@effect/atom-react"
 import { Link } from "@tanstack/react-router"
 import { useMemo } from "react"
-import {
-    clanStatsAtom,
-    playerRankedAtom,
-    playerStatsAtom,
-} from "@/effect/atoms"
+import { guildAtom, playerProfileAtom } from "@/effect/atoms"
 import { clanHref, playerHref } from "@/lib/rankings"
-import { getFullLegends } from "@crh/bhapi/legends"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatUnixTime } from "@crh/common/helpers/date"
 
@@ -24,10 +19,11 @@ import { formatUnixTime } from "@crh/common/helpers/date"
  * ## Why it costs nothing
  *
  * The card reads the *same* atoms the destination page reads
- * (`playerStatsAtom`/`playerRankedAtom`/`clanStatsAtom`). Those are backed by
- * `Atom.family`, so the card is not a second data path: whatever it loads is the
- * entry the profile page then renders from, and the click is instant. A preview
- * that fetched its own summary shape would warm nothing and pay twice.
+ * (`playerProfileAtom`/`guildAtom`). Those are backed by `Atom.family`, so the
+ * card is not a second data path: whatever it loads is the aggregate the profile
+ * page then renders from, and the click is instant. A preview that fetched its
+ * own summary shape would warm nothing and pay twice — and now that each page is
+ * one request rather than four, hovering a name warms the whole page.
  *
  * ## Why it is one component and not a layer
  *
@@ -83,36 +79,27 @@ export const EntityPreview = ({
 // --- player ----------------------------------------------------------------
 
 const PlayerPreview = ({ playerId }: { readonly playerId: number }) => {
-    const statsResult = useAtomValue(
-        useMemo(() => playerStatsAtom(playerId), [playerId]),
-    )
-    const rankedResult = useAtomValue(
-        useMemo(() => playerRankedAtom(playerId), [playerId]),
+    const result = useAtomValue(
+        useMemo(() => playerProfileAtom(playerId), [playerId]),
     )
 
-    // Reading the atoms is what starts the requests, and it happens here even
-    // though the component renders nothing — so the data is already in the
-    // registry by the time the card is allowed to appear.
-    if (statsResult._tag !== "Success" || rankedResult._tag !== "Success") {
-        return null
-    }
+    /*
+     * Reading the atom is what starts the request, and it happens here even
+     * though the component renders nothing while it is in flight — so the data
+     * is already in the registry by the time the card is allowed to appear.
+     *
+     * A failure is also a `null`: the aggregate answers 404 for a player nobody
+     * knows, and a preview of nothing is nothing.
+     */
+    if (result._tag !== "Success") return null
 
-    const stats = statsResult.value
-    const ranked = rankedResult.value
+    const profile = result.value.data
+    const name = cleanString(profile.name)
+    const ranked = profile.ranked?.["1v1"] ?? null
 
-    // Both requests answered, and both say there is no such player. There is
-    // nothing to preview, so nothing is previewed.
-    if (stats === null && ranked === null) return null
-
-    const name = cleanString(stats?.name ?? ranked?.name ?? "")
-
+    // The server sorted the legends by XP, so the first played one is the main.
     const main =
-        stats === null
-            ? null
-            : (getFullLegends(stats.legends, ranked?.legends)
-                  .filter((legend) => (legend.stats?.games ?? 0) > 0)
-                  .sort((a, b) => (b.stats?.xp ?? 0) - (a.stats?.xp ?? 0))[0] ??
-              null)
+        profile.legends.find((legend) => legend.stats.games > 0) ?? null
 
     return (
         /*
@@ -120,7 +107,7 @@ const PlayerPreview = ({ playerId }: { readonly playerId: number }) => {
          * one click away rather than a thing you must leave and re-find. The
          * `HoverCard` keeps it open while the pointer crosses into it.
          */
-        <Link to={playerHref(playerId)} className="flex flex-col gap-1.5">
+        <Link to={playerHref(profile.slug)} className="flex flex-col gap-1.5">
             <div>
                 <p className="ch-kicker">Player</p>
                 <p className="ch-display mt-0.5 text-base">{name}</p>
@@ -131,11 +118,7 @@ const PlayerPreview = ({ playerId }: { readonly playerId: number }) => {
                     label="1v1"
                     value={`${ranked.rating} · ${
                         ranked.tier ?? "Unranked"
-                    } · ${String(ranked.region).toUpperCase()}${
-                        ranked.global_rank > 0
-                            ? ` · #${ranked.global_rank}`
-                            : ""
-                    }`}
+                    } · ${(ranked.region ?? "all").toUpperCase()}`}
                 />
             ) : (
                 <p className="text-xs text-muted-foreground">
@@ -143,19 +126,17 @@ const PlayerPreview = ({ playerId }: { readonly playerId: number }) => {
                 </p>
             )}
 
-            {stats ? (
-                <Row label="Account" value={`Level ${stats.level}`} />
-            ) : null}
+            <Row label="Account" value={`Level ${profile.stats.level}`} />
 
             {main ? (
                 <Row
                     label="Main"
-                    value={`${main.bio_name} · level ${main.stats?.level ?? 0}`}
+                    value={`${main.name} · level ${main.stats.level}`}
                 />
             ) : null}
 
-            {stats?.clan ? (
-                <Row label="Clan" value={cleanString(stats.clan.clan_name)} />
+            {profile.clan ? (
+                <Row label="Clan" value={cleanString(profile.clan.name)} />
             ) : null}
         </Link>
     )
@@ -164,30 +145,27 @@ const PlayerPreview = ({ playerId }: { readonly playerId: number }) => {
 // --- clan ------------------------------------------------------------------
 
 const ClanPreview = ({ clanId }: { readonly clanId: number }) => {
-    const result = useAtomValue(useMemo(() => clanStatsAtom(clanId), [clanId]))
+    const result = useAtomValue(useMemo(() => guildAtom(clanId), [clanId]))
 
-    if (result._tag !== "Success" || result.value === null) return null
+    if (result._tag !== "Success") return null
 
-    const clan = result.value
-    const members = [...clan.clan].sort((a, b) => b.xp - a.xp)
+    const guild = result.value.data
+    const members = [...guild.members].sort((a, b) => b.xp - a.xp)
 
     return (
-        <Link to={clanHref(clanId)} className="flex flex-col gap-1.5">
+        <Link to={clanHref(guild.slug)} className="flex flex-col gap-1.5">
             <div>
                 <p className="ch-kicker">Clan</p>
                 <p className="ch-display mt-0.5 text-base">
-                    {cleanString(clan.clan_name)}
+                    {cleanString(guild.name)}
                 </p>
             </div>
 
-            <Row
-                label="Clan XP"
-                value={Number(clan.clan_xp).toLocaleString()}
-            />
+            <Row label="Clan XP" value={guild.xp.toLocaleString()} />
             <Row
                 label="Members"
-                value={`${clan.clan.length} · created ${formatUnixTime(
-                    clan.clan_create_date,
+                value={`${guild.members.length} · created ${formatUnixTime(
+                    guild.created_at,
                 )}`}
             />
 
@@ -195,14 +173,11 @@ const ClanPreview = ({ clanId }: { readonly clanId: number }) => {
                 <div className="flex flex-col gap-0.5 border-t border-border pt-1.5">
                     <span className="ch-kicker">Top members</span>
                     {members.slice(0, 3).map((member) => (
-                        <span key={member.brawlhalla_id} className="text-xs">
-                            {/* `?? ""` for the same reason as the clan roster:
-                                the key can be absent on the wire, and
-                                `cleanString(undefined)` is the literal text
-                                "undefined". */}
-                            {cleanString(member.name ?? "") ||
-                                `#${member.brawlhalla_id}`}{" "}
-                            · {member.xp.toLocaleString()} XP
+                        <span key={member.id} className="text-xs">
+                            {/* A member v1 could not name is `""`, so the id
+                                stands in — the profile it points at resolves. */}
+                            {cleanString(member.name) || `#${member.id}`} ·{" "}
+                            {member.xp.toLocaleString()} XP
                         </span>
                     ))}
                 </div>

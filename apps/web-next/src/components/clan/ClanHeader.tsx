@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { FavoriteButton } from "@/components/account/FavoriteButton"
 import { StatGrid } from "@/components/StatGrid"
-import { clanStatsAtom, useQuery } from "@/effect/atoms"
+import { guildAtom, useQuery } from "@/effect/atoms"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatUnixTime } from "@crh/common/helpers/date"
 import type { Stat } from "@/components/StatGrid"
@@ -22,19 +22,10 @@ import type { Stat } from "@/components/StatGrid"
  * there it is never a hole.
  */
 export const ClanHeader = ({ clanId }: { readonly clanId: number }) => {
-    const clan = useQuery(clanStatsAtom(clanId))
+    const envelope = useQuery(guildAtom(clanId))
+    const guild = envelope.data
 
-    if (!clan) {
-        return (
-            <p className="text-sm text-muted-foreground">
-                No clan with id {clanId}.
-            </p>
-        )
-    }
-
-    const name = cleanString(clan.clan_name)
-    const clanXp = Number(clan.clan_xp)
-    const members = clan.clan.length
+    const name = cleanString(guild.name)
 
     /*
      * The clan's own total first, and only then the roster's sum.
@@ -47,28 +38,36 @@ export const ClanHeader = ({ clanId }: { readonly clanId: number }) => {
      * member actually reported points, so an absent field cannot masquerade as
      * a clan that has earned none.
      */
-    const memberPoints = clan.clan.reduce(
+    const memberPoints = guild.members.reduce(
         (sum, member) => sum + (member.guild_points ?? 0),
         0,
     )
-    const summedPoints = clan.clan.some(
+    const summedPoints = guild.members.some(
         (member) => member.guild_points !== undefined,
     )
         ? memberPoints
         : undefined
 
-    const guildPoints = clan.guild_points ?? summedPoints
+    const guildPoints = guild.guild_points ?? summedPoints
 
     const stats: Stat[] = [
-        { title: "Clan XP", value: clanXp.toLocaleString() },
+        {
+            title: "Level",
+            value: guild.level,
+            hint: `${guild.xp_percentage.toFixed(0)}% toward the next level`,
+        },
+        { title: "Clan XP", value: guild.xp.toLocaleString() },
         {
             title: "Guild points",
             value:
                 guildPoints === undefined ? "—" : guildPoints.toLocaleString(),
             hint: "Points earned in guild battles, across everyone who has contributed — not just the current roster",
         },
-        { title: "Members", value: members.toLocaleString() },
-        { title: "Created", value: formatUnixTime(clan.clan_create_date) },
+        { title: "Members", value: guild.members.length.toLocaleString() },
+        {
+            title: "Created",
+            value: formatUnixTime(guild.created_at),
+        },
     ]
 
     return (
@@ -85,7 +84,7 @@ export const ClanHeader = ({ clanId }: { readonly clanId: number }) => {
                 <span aria-hidden className="text-muted-foreground/40">
                     /
                 </span>
-                <span>#{clan.clan_id}</span>
+                <span>#{guild.id}</span>
             </nav>
 
             <div className="flex flex-wrap items-center gap-3">
@@ -95,7 +94,7 @@ export const ClanHeader = ({ clanId }: { readonly clanId: number }) => {
                 <h1 className="ch-display text-2xl sm:text-3xl">{name}</h1>
                 <FavoriteButton
                     type="clan"
-                    id={String(clan.clan_id)}
+                    id={String(guild.id)}
                     name={name}
                 />
             </div>
@@ -110,11 +109,10 @@ export const ClanHeader = ({ clanId }: { readonly clanId: number }) => {
             <Card className="@container bg-transparent p-4 shadow-none">
                 <CardContent className="p-0">
                     {/*
-                     * Four figures, so the ladder tops out at four. The ladder is a
-                     * ceiling, not a target: asking for more than there are items
-                     * lays them across tracks that stay empty on a wide display.
+                     * Five figures, so the ladder tops out at five: at the default
+                     * four they would sit four-then-one on a wide display.
                      */}
-                    <StatGrid maxColumns={4} stats={stats} />
+                    <StatGrid maxColumns={5} stats={stats} />
                 </CardContent>
             </Card>
         </header>

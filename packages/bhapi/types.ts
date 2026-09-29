@@ -139,6 +139,16 @@ export type Clan = {
     clan_create_date: number
     clan_xp: string
     /**
+     * XP the guild earned in earlier seasons.
+     *
+     * v1's `/guild/stats` reports it as `legacy_xp`; the legacy `/clan/:id`
+     * payload has no equivalent and is cast straight to this type, so its
+     * absence is the v0 path's. The guild page shows it as "lifetime XP", which
+     * is a different number from `clan_xp` — that one is the current season's
+     * total, and the two do not sum from the roster.
+     */
+    legacy_xp?: number
+    /**
      * The clan's own guild-point total.
      *
      * Read, never recomputed. It is **not** the sum of the roster's points: a

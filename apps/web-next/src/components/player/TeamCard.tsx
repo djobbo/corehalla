@@ -4,10 +4,8 @@ import { EntityLink } from "@/components/EntityLink"
 import { rankedBannerSrc, regionFlagSrc } from "@/lib/assets"
 import { playerHref } from "@/lib/rankings"
 import { percent } from "@/lib/stats"
-import { getTeamPlayers } from "@crh/bhapi/helpers/getTeamPlayers"
-import { rankedRegions } from "@crh/bhapi/constants"
 import { cleanString } from "@crh/common/helpers/cleanString"
-import type { PlayerRanked } from "@crh/bhapi/types"
+import type { PlayerRankedTeam } from "@crh/api-contract/schemas"
 
 /**
  * One 2v2 team, as a card.
@@ -15,17 +13,19 @@ import type { PlayerRanked } from "@crh/bhapi/types"
  * A team is two people, so both are links and both are named — the card is a
  * way through to either profile, not a summary of an abstract pairing.
  *
+ * The pair arrives as the server's `team` tuple rather than a "teammate" field,
+ * because which member is the teammate depends on whose profile is open and the
+ * same row renders on both. The region arrives already lowered to our own
+ * vocabulary, so there is no index to translate.
+ *
  * Neither the region nor the tier is written out any more. The tier is what the
  * banner in the corner depicts, and the region is carried by its flag beside the
  * names; spelling either out as text next to its own picture only repeated it.
  */
-export const TeamCard = ({
-    team,
-}: {
-    readonly team: PlayerRanked["2v2"][number]
-}) => {
-    const [first, second] = getTeamPlayers(team)
-    const region = rankedRegions[team.region - 1]?.toUpperCase() ?? "ALL"
+export const TeamCard = ({ team }: { readonly team: PlayerRankedTeam }) => {
+    const [first, second] = team.team
+    const region = team.region?.toUpperCase() ?? "ALL"
+    const tier = team.tier ?? "Valhallan"
     const losses = team.games - team.wins
 
     return (
@@ -45,9 +45,9 @@ export const TeamCard = ({
              * screen reader.
              */}
             <img
-                src={rankedBannerSrc(team.tier)}
-                alt={`${team.tier} ranked`}
-                title={team.tier}
+                src={rankedBannerSrc(tier)}
+                alt={`${tier} ranked`}
+                title={tier}
                 className="ch-card-banner"
             />
 
@@ -71,7 +71,7 @@ export const TeamCard = ({
                         <EntityLink
                             type="player"
                             id={first.id}
-                            href={playerHref(first.id)}
+                            href={playerHref(first.slug)}
                         >
                             {cleanString(first.name)}
                         </EntityLink>
@@ -81,7 +81,7 @@ export const TeamCard = ({
                         <EntityLink
                             type="player"
                             id={second.id}
-                            href={playerHref(second.id)}
+                            href={playerHref(second.slug)}
                         >
                             {cleanString(second.name)}
                         </EntityLink>

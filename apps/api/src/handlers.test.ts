@@ -1,8 +1,9 @@
 import { describe, expect, it } from "@effect/vitest"
-import { aliasRows } from "./handlers"
+import { aliasRows } from "./helpers/aliases"
 
 /**
- * The alias guard, which is where `GET /api/v1/stats/clan/9` died.
+ * The alias guard, which is where `GET /api/v1/stats/clan/9` (since moved
+ * under `/api/v1/upstream/brawlhalla`) died.
  *
  * v1 intermittently omits the `name` key on a guild member — the same request
  * returned all nineteen named and, on other calls, two of them with no `name`

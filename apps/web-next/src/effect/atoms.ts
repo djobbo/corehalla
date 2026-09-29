@@ -22,8 +22,16 @@ import type { Weapon as WeaponName } from "@crh/bhapi/constants"
  * work: a card and the panel it opens read the *same* atom, so hovering warms
  * exactly what the click would otherwise wait for.
  *
+ * ## One request per page
+ *
+ * The profile and guild pages read a single aggregate atom each. They used to
+ * read three or four — career stats, v0 ranked, v1 3v3, the alias index — and
+ * then roll the legends and weapons up in a `useMemo`. The server does that now;
+ * see `apps/api/src/aggregate`. The tabs on a profile therefore share one
+ * in-flight request, and opening a second tab costs nothing.
+ *
  * `serializationKey` is required for an atom to participate in SSR dehydration,
- * and `timeToLive` keeps it alive long enough for a route loader to dehydrate.
+ * and `timeToLive` keeps it alive long enough for a route loader to dehydrate it.
  */
 
 const ttl = "5 minutes"
@@ -36,15 +44,22 @@ type SortableProp = typeof SortablePlayerProp.Type
 type LegendProp = typeof SortableLegendProp.Type
 type WeaponProp = typeof SortableWeaponProp.Type
 
+/**
+ * The live ladders, in the product row shape.
+ *
+ * `getRanked*` rather than the raw `upstream.get*Rankings`: the row arrives with
+ * a slug and, for 2v2, both players as separate references. The raw surface
+ * still exists under `/api/v1/upstream/brawlhalla` for parity checks.
+ */
 export const rankings1v1Atom = (region: Region, page: number, name?: string) =>
-    CorehallaClient.query("rankings", "get1v1Rankings", {
+    CorehallaClient.query("rankings", "getRanked1v1", {
         query: name ? { region, page, name } : { region, page },
         serializationKey: `1v1:${region}:${page}:${name ?? ""}`,
         timeToLive: ttl,
     })
 
 export const rankings2v2Atom = (region: Region, page: number) =>
-    CorehallaClient.query("rankings", "get2v2Rankings", {
+    CorehallaClient.query("rankings", "getRanked2v2", {
         query: { region, page },
         serializationKey: `2v2:${region}:${page}`,
         timeToLive: ttl,
@@ -52,7 +67,7 @@ export const rankings2v2Atom = (region: Region, page: number) =>
 
 /** The 3v3 ladder. v1-only: the legacy API has no 3v3 mode. */
 export const rankings3v3Atom = (region: Region, page: number) =>
-    CorehallaClient.query("rankings", "get3v3Rankings", {
+    CorehallaClient.query("rankings", "getRanked3v3", {
         query: { region, page },
         serializationKey: `3v3:${region}:${page}`,
         timeToLive: ttl,
@@ -132,49 +147,25 @@ export const powerRankingsAtom = (bracket: BracketType, region: PowerRegion) =>
         timeToLive: ttl,
     })
 
-/** The player's account stats. Prefetched by a hover card. */
-export const playerStatsAtom = (playerId: number) =>
-    CorehallaClient.query("stats", "getPlayerStats", {
-        params: { playerId },
-        serializationKey: `player:${playerId}:stats`,
-        timeToLive: ttl,
-    })
-
-/** The player's ranked records. Prefetched alongside the stats. */
-export const playerRankedAtom = (playerId: number) =>
-    CorehallaClient.query("stats", "getPlayerRanked", {
-        params: { playerId },
-        serializationKey: `player:${playerId}:ranked`,
-        timeToLive: ttl,
-    })
-
 /**
- * The player's 3v3 ranked record, or `null` when they have never queued it.
+ * The whole player profile, in one request.
  *
- * Separate from `playerRankedAtom` because it is a separate endpoint — v0 has
- * no 3v3 mode, so unlike every other ranked record this one cannot ride along
- * with the 2v2 payload. Prefetched with the rest of the profile, so the
- * overview's ranked row never resolves in stages.
+ * The header, every tab and the hover card all read this one atom, which is
+ * what makes the hover cards and the profile agree by construction: there is no
+ * second payload that could describe the player differently.
  */
-export const player3v3RankedAtom = (playerId: number) =>
-    CorehallaClient.query("stats", "getPlayer3v3Ranked", {
+export const playerProfileAtom = (playerId: number) =>
+    CorehallaClient.query("players", "getPlayer", {
         params: { playerId },
-        serializationKey: `player:${playerId}:ranked-3v3`,
+        serializationKey: `player:${playerId}:profile`,
         timeToLive: ttl,
     })
 
-export const playerAliasesAtom = (playerId: number) =>
-    CorehallaClient.query("stats", "getPlayerAliases", {
-        params: { playerId },
-        serializationKey: `player:${playerId}:aliases`,
-        timeToLive: ttl,
-    })
-
-/** The clan. Prefetched by a hover card. */
-export const clanStatsAtom = (clanId: number) =>
-    CorehallaClient.query("stats", "getClanStats", {
-        params: { clanId },
-        serializationKey: `clan:${clanId}:stats`,
+/** The whole guild page, in one request. Prefetched by a hover card. */
+export const guildAtom = (guildId: number) =>
+    CorehallaClient.query("guilds", "getGuild", {
+        params: { guildId },
+        serializationKey: `guild:${guildId}:profile`,
         timeToLive: ttl,
     })
 

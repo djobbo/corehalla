@@ -78,7 +78,7 @@ export const LadderTable = ({
                                         key={member.id}
                                         type="player"
                                         id={member.id}
-                                        href={playerHref(member.id)}
+                                        href={playerHref(member.slug)}
                                         className="font-semibold"
                                     >
                                         {member.name}

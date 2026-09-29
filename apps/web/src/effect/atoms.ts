@@ -29,14 +29,14 @@ type ArticleCategoryType = typeof ArticleCategory.Type
 type SortableProp = typeof SortablePlayerProp.Type
 
 export const rankings1v1Atom = (region: Region, page: number, name?: string) =>
-    CorehallaClient.query("rankings", "get1v1Rankings", {
+    CorehallaClient.query("upstream", "get1v1Rankings", {
         query: name ? { region, page, name } : { region, page },
         serializationKey: `1v1:${region}:${page}:${name ?? ""}`,
         timeToLive: ttl,
     })
 
 export const rankings2v2Atom = (region: Region, page: number) =>
-    CorehallaClient.query("rankings", "get2v2Rankings", {
+    CorehallaClient.query("upstream", "get2v2Rankings", {
         query: { region, page },
         serializationKey: `2v2:${region}:${page}`,
         timeToLive: ttl,
@@ -64,28 +64,28 @@ export const powerRankingsAtom = (bracket: BracketType, region: PowerRegion) =>
     })
 
 export const playerStatsAtom = (playerId: number) =>
-    CorehallaClient.query("stats", "getPlayerStats", {
+    CorehallaClient.query("upstream", "getPlayerStats", {
         params: { playerId },
         serializationKey: `player:${playerId}:stats`,
         timeToLive: ttl,
     })
 
 export const playerRankedAtom = (playerId: number) =>
-    CorehallaClient.query("stats", "getPlayerRanked", {
+    CorehallaClient.query("upstream", "getPlayerRanked", {
         params: { playerId },
         serializationKey: `player:${playerId}:ranked`,
         timeToLive: ttl,
     })
 
 export const playerAliasesAtom = (playerId: number) =>
-    CorehallaClient.query("stats", "getPlayerAliases", {
+    CorehallaClient.query("upstream", "getPlayerAliases", {
         params: { playerId },
         serializationKey: `player:${playerId}:aliases`,
         timeToLive: ttl,
     })
 
 export const clanStatsAtom = (clanId: number) =>
-    CorehallaClient.query("stats", "getClanStats", {
+    CorehallaClient.query("upstream", "getClanStats", {
         params: { clanId },
         serializationKey: `clan:${clanId}:stats`,
         timeToLive: ttl,

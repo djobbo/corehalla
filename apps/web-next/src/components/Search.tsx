@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/command"
 import { Kbd } from "@/components/ui/kbd"
 import { MIN_LOOKUP_LENGTH } from "@crh/api-contract/schemas"
+import { getEntitySlug } from "@crh/common/helpers/entitySlug"
 import type { LookupResult } from "@crh/api-contract/schemas"
 import type { ReactNode } from "react"
 
@@ -115,10 +116,15 @@ const rowFromResult = (result: LookupResult): Row => {
         key: `${result.type}:${result.id}`,
         name: result.name,
         meta: parts.join(" · "),
+        /*
+         * The canonical slug the API returned, not an id the client would have
+         * to turn back into one: the lookup already knows the current name, and
+         * a link built here should be the same URL the profile redirects to.
+         */
         href:
             result.type === "player"
-                ? playerHref(result.id)
-                : clanHref(result.id),
+                ? playerHref(result.slug)
+                : clanHref(result.slug),
         entry: { type: result.type, id: result.id, name: result.name },
     }
 }
@@ -237,8 +243,12 @@ const SearchOverlay = () => {
                       meta: entry.type === "player" ? "Player" : "Clan",
                       href:
                           entry.type === "player"
-                              ? playerHref(entry.id)
-                              : clanHref(entry.id),
+                              ? playerHref(
+                                    getEntitySlug(entry.id, entry.name),
+                                )
+                              : clanHref(
+                                    getEntitySlug(entry.id, entry.name),
+                                ),
                       entry,
                   }))
                 : resultRows,

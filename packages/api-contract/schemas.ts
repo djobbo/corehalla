@@ -8,11 +8,28 @@ import type {
     Ranking2v2,
     Ranking3v3,
 } from "@crh/bhapi/types"
-import type { Legend } from "@crh/bhapi/types"
 import { weapons } from "@crh/bhapi/constants"
 import type { BHArticle } from "@crh/web-parser/common"
 import type { PR } from "@crh/web-parser/power-rankings/parsePowerRankingsPage"
-import type { BHClan } from "@crh/db/schema"
+
+/**
+ * The HTTP contract's schemas.
+ *
+ * Two kinds live here, and the split is deliberate:
+ *
+ * - **Request schemas** are real `Schema` values with runtime validation,
+ *   because they describe what a caller sends us and a bad query must be
+ *   rejected rather than coerced.
+ * - **Raw upstream schemas** use {@link json} — a `Schema.declare` passthrough —
+ *   because they describe payloads we did not design and have no intention of
+ *   re-validating on the way out. They back the `/upstream/brawlhalla` surface,
+ *   which exists for clients that want Brawlhalla's own answer verbatim.
+ *
+ * The product endpoints' schemas are real, and live in `./aggregate/*`, so the
+ * generated OpenAPI document describes them properly. That is the difference
+ * that makes `/api/v1/docs` worth reading: a passthrough declares `unknown`.
+ */
+
 /**
  * Declares an existing TypeScript domain type as an Effect `Schema` without
  * adding runtime validation.
@@ -149,7 +166,7 @@ export type SortableWeaponProp = typeof SortableWeaponProp.Type
  */
 export const Weapon = Schema.Literals(weapons)
 
-// --- response schemas ------------------------------------------------------
+// --- raw upstream response schemas -----------------------------------------
 
 export const Ranking1v1Schema = json<readonly Ranking1v1[]>()
 export const Ranking2v2Schema = json<readonly Ranking2v2[]>()
@@ -159,103 +176,19 @@ export const PlayerRankedSchema = json<PlayerRanked>()
 export const Player3v3RankedSchema = json<Player3v3Ranked>()
 export const PlayerAliasesSchema = json<readonly string[]>()
 export const ClanSchema = json<Clan>()
-export const ClansSchema = json<readonly BHClan[]>()
-export const WeeklyRotationSchema = json<readonly Legend[]>()
 export const ArticlesSchema = json<readonly BHArticle[]>()
 export const PowerRankingsSchema = json<readonly PR[]>()
 
-export type CareerRanking = {
-    id: string
-    name: string
-    tier: string
-    rating: number
-    peakRating: number
-    region: string
-    prop: number
-}
+// --- aggregated product schemas --------------------------------------------
+//
+// Re-exported rather than declared here so the contract keeps one module per
+// page while `@crh/api-contract/schemas` stays the single import a client uses.
 
-export const CareerRankingsSchema = json<readonly CareerRanking[]>()
-
-export type AliasSearchResult = {
-    playerId: string
-    mainAlias: string
-    otherAliases: string[]
-}
-
-export const AliasSearchResultsSchema = json<readonly AliasSearchResult[]>()
-
-/**
- * One row of the federated lookup.
- *
- * Players and clans share one list, so every row carries the discriminants the
- * UI needs to render a badge and a link (`type`, `id`) plus whichever prominence
- * number applies to that type. Fields that do not apply are `null` rather than
- * absent, so a row's shape does not depend on its type.
- */
-export type LookupResult = {
-    readonly type: "player" | "clan"
-    readonly id: string
-    /** The name to display: current name for a player, name for a clan. */
-    readonly name: string
-    /**
-     * Other names this player has played under.
-     *
-     * The rankings search only knows current names, so this is the only way a
-     * renamed player is findable by an old name — it comes from the local alias
-     * index.
-     */
-    readonly aliases: readonly string[]
-    /** Current 1v1 rating. `null` for a clan, or for a player found only locally. */
-    readonly rating: number | null
-    /** Clan XP. `null` for a player. */
-    readonly xp: number | null
-    readonly tier: string | null
-    readonly region: string | null
-    /**
-     * Which source produced the row.
-     *
-     * Kept on the wire so the rankings quality is observable: a lookup that
-     * silently stopped reaching the upstream ladder would otherwise look like a
-     * complete result set.
-     */
-    readonly source: "rankings" | "archive"
-}
-
-export const LookupResultsSchema = json<readonly LookupResult[]>()
-
-/**
- * One ladder entry the activity sampler saw queue.
- *
- * An entry rather than a player, because the ladders differ: a 1v1 or 3v3 entry
- * is one player and a 2v2 entry is a team. `members` is where that shows, and
- * it is always a list so the renderer does not branch — one name for a solo
- * ladder, two for a team.
- *
- * `queuedAt` is an epoch millisecond rather than a date because it is only ever
- * compared against "now" on the client — how long ago they played is the whole
- * of what it means.
- */
-export type QueuedEntry = {
-    readonly id: string
-    readonly members: readonly {
-        readonly id: string
-        readonly name: string
-    }[]
-    readonly rating: number
-    readonly peakRating: number
-    readonly tier: string
-    readonly games: number
-    readonly wins: number
-    readonly queuedAt: number
-    /** Position on this ladder when they last queued. */
-    readonly rank: number
-    /** Rating change since their previous game. Signed. */
-    readonly ratingDelta: number
-    /** Places gained (positive) or lost (negative). Signed. */
-    readonly rankDelta: number
-}
-
-export const RankedQueueSchema = json<readonly QueuedEntry[]>()
+export * from "./aggregate/common"
+export * from "./aggregate/player"
+export * from "./aggregate/guild"
+export * from "./aggregate/rankings"
+export * from "./aggregate/search"
 
 /**
  * How many characters a lookup needs before it is worth a request.

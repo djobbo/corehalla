@@ -1,6 +1,7 @@
 import {
     HttpApi,
     HttpApiEndpoint,
+    HttpApiError,
     HttpApiGroup,
     HttpApiSchema,
 } from "effect/unstable/httpapi"
@@ -16,18 +17,23 @@ import {
     ConnectionSchema,
     FavoriteInputSchema,
     FavoriteSchema,
+    GuildEnvelopeSchema,
     Ladder,
     LookupResultsSchema,
     Player3v3RankedSchema,
     PlayerAliasesSchema,
+    PlayerEnvelopeSchema,
     PlayerRankedSchema,
     PlayerStatsSchema,
     PowerRankingsRegion,
     PowerRankingsSchema,
+    RankedQueueSchema,
     RankedRegion,
     Ranking1v1Schema,
     Ranking2v2Schema,
-    RankedQueueSchema,
+    Rankings1v1EnvelopeSchema,
+    Rankings2v2EnvelopeSchema,
+    Rankings3v3EnvelopeSchema,
     Ranking3v3Schema,
     SessionSchema,
     SortablePlayerProp,
@@ -38,43 +44,89 @@ import {
 } from "./schemas"
 
 /**
- * The typed HTTP contract that replaces the tRPC router for the Start app.
+ * The typed HTTP contract for the Corehalla API.
  *
- * Endpoints mirror the previous tRPC procedures. They are grouped so both the
- * Effect server handlers and the `AtomHttpApi` client can address them by
- * `(group, endpoint)`.
+ * ## Layout
+ *
+ * | Group | Serves | Shape |
+ * | --- | --- | --- |
+ * | `players` | `/api/v1/players/:id` | one aggregate for the whole profile page |
+ * | `guilds` | `/api/v1/guilds/:id` | one aggregate for the whole guild page |
+ * | `rankings` | `/api/v1/rankings/*` | the live ladders, presentation-ready, plus our own career boards |
+ * | `search` | `/api/v1/search*` | the federated lookup and the alias index |
+ * | `content` | `/api/v1/content/*` | scraped site content |
+ * | `me`, `auth` | `/api/v1/me/*`, `/api/v1/auth/*` | app-owned accounts |
+ * | `upstream` | `/api/v1/upstream/brawlhalla/*` | Brawlhalla v1/v0, verbatim |
+ *
+ * The split that matters is the last row. Everything above it is a product
+ * endpoint: it aggregates, derives, and answers a page in one request. The
+ * `upstream` group is the old pass-through surface, kept because it is a real
+ * debugging and parity tool — when an aggregate looks wrong, the way to tell
+ * whether the bug is ours or Brawlhalla's is to ask for the raw payload beside
+ * it.
+ *
+ * Group ids are part of the client's vocabulary (`CorehallaClient.query(group,
+ * endpoint)`), so renaming one is a source-level break even when the URL is
+ * unchanged.
  */
+
+const players = HttpApiGroup.make("players").add(
+    HttpApiEndpoint.get("getPlayer", "/api/v1/players/:playerId", {
+        params: { playerId: Schema.FiniteFromString },
+        success: PlayerEnvelopeSchema,
+        // A player nobody has heard of is a 404 rather than an empty payload:
+        // the page cannot render without stats, and "no such player" is what
+        // that means.
+        error: HttpApiError.NotFound,
+    }),
+)
+
+const guilds = HttpApiGroup.make("guilds").add(
+    HttpApiEndpoint.get("getGuild", "/api/v1/guilds/:guildId", {
+        params: { guildId: Schema.FiniteFromString },
+        success: GuildEnvelopeSchema,
+        error: HttpApiError.NotFound,
+    }),
+)
 
 const rankings = HttpApiGroup.make("rankings")
     .add(
-        HttpApiEndpoint.get("get1v1Rankings", "/api/v1/rankings/1v1", {
+        /**
+         * The 1v1 ladder.
+         *
+         * `name` is an upstream filter rather than a local one: v1 accepts it,
+         * so a named search is one request against the whole ladder instead of
+         * a page scan.
+         */
+        HttpApiEndpoint.get("getRanked1v1", "/api/v1/rankings/1v1", {
             query: {
                 region: RankedRegion,
                 page: Schema.FiniteFromString,
                 name: Schema.optionalKey(Schema.String),
             },
-            success: Ranking1v1Schema,
+            success: Rankings1v1EnvelopeSchema,
         }),
     )
     .add(
-        HttpApiEndpoint.get("get2v2Rankings", "/api/v1/rankings/2v2", {
+        HttpApiEndpoint.get("getRanked2v2", "/api/v1/rankings/2v2", {
             query: {
                 region: RankedRegion,
                 page: Schema.FiniteFromString,
             },
-            success: Ranking2v2Schema,
+            success: Rankings2v2EnvelopeSchema,
         }),
-
+    )
+    .add(
         /**
          * The 3v3 ladder. v1-only: the legacy API has no 3v3 mode, so there is
          * no fallback source for it.
          */
-        HttpApiEndpoint.get("get3v3Rankings", "/api/v1/rankings/3v3", {
+        HttpApiEndpoint.get("getRanked3v3", "/api/v1/rankings/3v3", {
             query: {
                 region: RankedRegion,
                 page: Schema.FiniteFromString,
             },
-            success: Ranking3v3Schema,
+            success: Rankings3v3EnvelopeSchema,
         }),
     )
     .add(
@@ -160,66 +212,6 @@ const rankings = HttpApiGroup.make("rankings")
                 region: PowerRankingsRegion,
             },
             success: PowerRankingsSchema,
-        }),
-    )
-
-const stats = HttpApiGroup.make("stats")
-    .add(
-        HttpApiEndpoint.get(
-            "getPlayerStats",
-            "/api/v1/stats/player/:playerId/stats",
-            {
-                params: { playerId: Schema.FiniteFromString },
-                success: Schema.NullOr(PlayerStatsSchema),
-            },
-        ),
-    )
-    .add(
-        HttpApiEndpoint.get(
-            "getPlayerRanked",
-            "/api/v1/stats/player/:playerId/ranked",
-            {
-                params: { playerId: Schema.FiniteFromString },
-                // A player without ranked games is a valid, empty result.
-                success: Schema.NullOr(PlayerRankedSchema),
-            },
-        ),
-    )
-    .add(
-        /**
-         * The player's 3v3 ranked record.
-         *
-         * Its own endpoint rather than a field on `getPlayerRanked`, because
-         * the two come from different upstreams: `getPlayerRanked` is v0-only
-         * (which has no 3v3 mode) and this is v1-only (which has no 2v2 mode).
-         * Neither can answer for the other, so a client that wants both makes
-         * both calls, and a client that wants only 1v1 pays for neither.
-         */
-        HttpApiEndpoint.get(
-            "getPlayer3v3Ranked",
-            "/api/v1/stats/player/:playerId/ranked-3v3",
-            {
-                params: { playerId: Schema.FiniteFromString },
-                // Most players have never queued 3v3, so "no record" is an
-                // ordinary result rather than a 404.
-                success: Schema.NullOr(Player3v3RankedSchema),
-            },
-        ),
-    )
-    .add(
-        HttpApiEndpoint.get(
-            "getPlayerAliases",
-            "/api/v1/stats/player/:playerId/aliases",
-            {
-                params: { playerId: Schema.FiniteFromString },
-                success: PlayerAliasesSchema,
-            },
-        ),
-    )
-    .add(
-        HttpApiEndpoint.get("getClanStats", "/api/v1/stats/clan/:clanId", {
-            params: { clanId: Schema.FiniteFromString },
-            success: Schema.NullOr(ClanSchema),
         }),
     )
 
@@ -355,12 +347,97 @@ const auth = HttpApiGroup.make("auth")
         }),
     )
 
+/**
+ * Brawlhalla's own answers, verbatim.
+ *
+ * The surface the product endpoints replaced, kept under one prefix so it is
+ * obvious which half of the API is ours. Everything here is either a raw
+ * upstream payload or a thin map of one; nothing aggregates and nothing is
+ * shaped for a page. A client should prefer the product endpoint beside it, and
+ * reach for this when it wants the payload itself.
+ */
+const upstream = HttpApiGroup.make("upstream")
+    .add(
+        HttpApiEndpoint.get("getPlayerStats", "/player/:playerId/stats", {
+            params: { playerId: Schema.FiniteFromString },
+            success: Schema.NullOr(PlayerStatsSchema),
+        }),
+    )
+    .add(
+        HttpApiEndpoint.get("getPlayerRanked", "/player/:playerId/ranked", {
+            params: { playerId: Schema.FiniteFromString },
+            // A player without ranked games is a valid, empty result.
+            success: Schema.NullOr(PlayerRankedSchema),
+        }),
+    )
+    .add(
+        HttpApiEndpoint.get(
+            "getPlayer3v3Ranked",
+            "/player/:playerId/ranked-3v3",
+            {
+                params: { playerId: Schema.FiniteFromString },
+                // Most players have never queued 3v3, so "no record" is an
+                // ordinary result rather than a 404.
+                success: Schema.NullOr(Player3v3RankedSchema),
+            },
+        ),
+    )
+    .add(
+        HttpApiEndpoint.get("getPlayerAliases", "/player/:playerId/aliases", {
+            params: { playerId: Schema.FiniteFromString },
+            success: PlayerAliasesSchema,
+        }),
+    )
+    .add(
+        HttpApiEndpoint.get("getClanStats", "/clan/:clanId", {
+            params: { clanId: Schema.FiniteFromString },
+            success: Schema.NullOr(ClanSchema),
+        }),
+    )
+    .add(
+        HttpApiEndpoint.get("get1v1Rankings", "/rankings/1v1", {
+            query: {
+                region: RankedRegion,
+                page: Schema.FiniteFromString,
+                name: Schema.optionalKey(Schema.String),
+            },
+            success: Ranking1v1Schema,
+        }),
+    )
+    .add(
+        HttpApiEndpoint.get("get2v2Rankings", "/rankings/2v2", {
+            query: {
+                region: RankedRegion,
+                page: Schema.FiniteFromString,
+            },
+            success: Ranking2v2Schema,
+        }),
+    )
+    .add(
+        HttpApiEndpoint.get("get3v3Rankings", "/rankings/3v3", {
+            query: {
+                region: RankedRegion,
+                page: Schema.FiniteFromString,
+            },
+            success: Ranking3v3Schema,
+        }),
+    )
+    /*
+     * The prefix is applied last on purpose: `HttpApiGroup.prefix` only
+     * rewrites the endpoints that exist at the moment it is called, so calling
+     * it before the routes would leave every one of them unprefixed — and the
+     * OpenAPI document is where that shows up first.
+     */
+    .prefix("/api/v1/upstream/brawlhalla")
+
 export const CorehallaApi = HttpApi.make("CorehallaApi")
+    .add(players)
+    .add(guilds)
     .add(rankings)
-    .add(stats)
     .add(search)
     .add(content)
     .add(me)
     .add(auth)
+    .add(upstream)
 
 export type CorehallaApi = typeof CorehallaApi

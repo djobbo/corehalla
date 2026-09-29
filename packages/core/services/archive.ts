@@ -51,8 +51,8 @@ import type {
 import type { PlayerStats } from "@crh/bhapi/types"
 import type { RankedSnapshot } from "./player-writes"
 import type {
-    AliasSearchResult,
-    CareerRanking,
+    AliasSearchResultInput,
+    CareerRankingInput,
 } from "@crh/api-contract/schemas"
 
 /**
@@ -133,7 +133,7 @@ export class Database extends Context.Service<
         readonly getGlobalPlayerRankings: (
             sortBy: string,
             page: number,
-        ) => Effect.Effect<readonly CareerRanking[], DatabaseError>
+        ) => Effect.Effect<readonly CareerRankingInput[], DatabaseError>
         /**
          * The same board, restricted to players who have played one legend.
          *
@@ -145,7 +145,7 @@ export class Database extends Context.Service<
             legendId: number,
             sortBy: string,
             page: number,
-        ) => Effect.Effect<readonly CareerRanking[], DatabaseError>
+        ) => Effect.Effect<readonly CareerRankingInput[], DatabaseError>
         /**
          * The same board again, restricted to one weapon.
          *
@@ -157,11 +157,24 @@ export class Database extends Context.Service<
             weapon: string,
             sortBy: string,
             page: number,
-        ) => Effect.Effect<readonly CareerRanking[], DatabaseError>
+        ) => Effect.Effect<readonly CareerRankingInput[], DatabaseError>
+        /**
+         * The legend each of these players has the most games on.
+         *
+         * v1 stopped sending the 1v1 ladder's `best_legend`, so the row's only
+         * reader — the legend icon — had been dropped. The crawl already stores
+         * every crawled player's legend table, and the ladder tops are exactly
+         * what it crawls, so one batched read restores it for the rows we have
+         * seen. A player absent from the result is one we have never crawled;
+         * the caller renders a null best legend rather than guessing.
+         */
+        readonly getBestLegends: (
+            playerIds: readonly string[],
+        ) => Effect.Effect<readonly BestLegendRow[], DatabaseError>
         readonly searchAliases: (
             alias: string,
             page: number,
-        ) => Effect.Effect<readonly AliasSearchResult[], DatabaseError>
+        ) => Effect.Effect<readonly AliasSearchResultInput[], DatabaseError>
         /**
          * Writes a player's stats, top legends and top weapons in one call.
          *
@@ -247,6 +260,14 @@ export class Database extends Context.Service<
  * match.
  */
 export const searchKey = (value: string): string => value.trim().toLowerCase()
+
+/** A player's legend row, as `getBestLegends` reads it back. */
+export type BestLegendRow = {
+    readonly playerId: string
+    readonly legendId: number
+    readonly games: number
+    readonly wins: number
+}
 
 /**
  * The half-open range `[prefix, upper)` covering every string starting with
@@ -954,6 +975,36 @@ export const layer = Layer.effect(
                     }),
                 ),
 
+            /*
+             * One read for the whole page, and no ordering here: the caller
+             * wants the max-games row per player, and doing that in SQL would
+             * mean a correlated subquery per player for a result set of at most
+             * a page's worth of legend rows. Picking the max in JavaScript is
+             * one pass and keeps the query a plain indexed `IN`.
+             */
+            getBestLegends: (playerIds) =>
+                run(
+                    Effect.gen(function* () {
+                        if (playerIds.length === 0) return []
+
+                        const rows = yield* db
+                            .select({
+                                playerId: bhPlayerLegend.player_id,
+                                legendId: bhPlayerLegend.legend_id,
+                                games: bhPlayerLegend.games,
+                                wins: bhPlayerLegend.wins,
+                            })
+                            .from(bhPlayerLegend)
+                            .where(
+                                inArray(bhPlayerLegend.player_id, [
+                                    ...playerIds,
+                                ]),
+                            )
+
+                        return rows
+                    }),
+                ),
+
             searchAliases: (alias, page) =>
                 run(
                     Effect.gen(function* () {
@@ -1045,7 +1096,7 @@ export const layer = Layer.effect(
                          * pages. Walking `matches` also dedupes the players
                          * whose every alias matched the same needle.
                          */
-                        const results: AliasSearchResult[] = []
+                        const results: AliasSearchResultInput[] = []
                         const seen = new Set<string>()
 
                         for (const match of matches) {

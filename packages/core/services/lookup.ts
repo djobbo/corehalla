@@ -2,7 +2,7 @@ import { Context, Effect, Layer } from "effect"
 import { Database, searchKey } from "./archive"
 import { Upstream } from "./upstream"
 import { MIN_LOOKUP_LENGTH } from "@crh/api-contract/schemas"
-import type { LookupResult } from "@crh/api-contract/schemas"
+import type { LookupResultInput } from "@crh/api-contract/schemas"
 import type { Ranking1v1, Ranking2v2 } from "@crh/bhapi/types"
 
 /**
@@ -92,7 +92,7 @@ export const matchTier = (query: string, name: string): number => {
  * matched exactly down to "anything else", which is exactly backwards: the
  * alias hit is the more specific answer.
  */
-const bestTier = (query: string, result: LookupResult): number =>
+const bestTier = (query: string, result: LookupResultInput): number =>
     result.aliases.reduce(
         (best, alias) => Math.min(best, matchTier(query, alias)),
         matchTier(query, result.name),
@@ -109,7 +109,7 @@ const bestTier = (query: string, result: LookupResult): number =>
  */
 const compare =
     (query: string) =>
-    (a: LookupResult, b: LookupResult): number => {
+    (a: LookupResultInput, b: LookupResultInput): number => {
         const tier = bestTier(query, a) - bestTier(query, b)
         if (tier !== 0) return tier
 
@@ -149,7 +149,7 @@ export const mergeLookup = (input: {
     readonly aliases: readonly AliasHit[]
     readonly clans: readonly ClanHit[]
     readonly limit: number
-}): readonly LookupResult[] => {
+}): readonly LookupResultInput[] => {
     const playersById = new Map<string, { hit: PlayerHit; aliases: string[] }>()
 
     for (const hit of input.players) {
@@ -178,8 +178,8 @@ export const mergeLookup = (input: {
         })
     }
 
-    const results: LookupResult[] = [
-        ...[...playersById.values()].map(({ hit, aliases }): LookupResult => ({
+    const results: LookupResultInput[] = [
+        ...[...playersById.values()].map(({ hit, aliases }): LookupResultInput => ({
             type: "player",
             id: hit.playerId,
             name: hit.name,
@@ -198,7 +198,7 @@ export const mergeLookup = (input: {
             region: hit.region,
             source: hit.rating === null ? "archive" : "rankings",
         })),
-        ...input.clans.map((clan): LookupResult => ({
+        ...input.clans.map((clan): LookupResultInput => ({
             type: "clan",
             id: clan.id,
             name: clan.name,
@@ -221,7 +221,7 @@ export class Lookup extends Context.Service<
         readonly search: (
             query: string,
             limit?: number,
-        ) => Effect.Effect<readonly LookupResult[]>
+        ) => Effect.Effect<readonly LookupResultInput[]>
     }
 >()("app/Lookup") {}
 

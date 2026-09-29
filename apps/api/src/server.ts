@@ -1,14 +1,16 @@
 import { Layer } from "effect"
 import { FetchHttpClient, HttpRouter, HttpServer } from "effect/unstable/http"
-import { HttpApiBuilder } from "effect/unstable/httpapi"
+import { HttpApiBuilder, HttpApiScalar } from "effect/unstable/httpapi"
 import { layer as sqlLayer } from "@crh/db/client"
 import { d1Database } from "@crh/core/env"
 import { CorehallaApi } from "@crh/api-contract/Api"
 import {
     contentGroup,
+    guildsGroup,
+    playersGroup,
     rankingsGroup,
     searchGroup,
-    statsGroup,
+    upstreamGroup,
 } from "./handlers"
 import { authGroup, meGroup } from "./auth/handlers"
 import { layer as AuthLayer } from "./auth/Auth"
@@ -39,6 +41,21 @@ import type { D1Database } from "@crh/db/client"
  * not readable at module scope under the TanStack Start dev server. It is then
  * cached for the isolate's lifetime.
  */
+
+/**
+ * Where the Scalar API reference is mounted.
+ *
+ * Must live under the API's own route pattern (`/api/v1/*`) because that is the
+ * only path Cloudflare routes to this worker — a page at `/docs` would fall
+ * through to whichever app owns the apex domain.
+ *
+ * The CDN build of Scalar is used rather than the bundled one on purpose: the
+ * bundled script is a few megabytes of JavaScript, and inlining it would put
+ * that into every cold start of a worker that otherwise serves JSON. The page
+ * is a developer tool, so one network fetch when someone opens it is the right
+ * trade.
+ */
+const DocsPath = "/api/v1/docs" as const
 
 const createHandler = (db: D1Database) => {
     // One D1 client for the whole server; `Database.layer` consumes it.
@@ -106,10 +123,12 @@ const createHandler = (db: D1Database) => {
     )
 
     const ApiLayer = HttpApiBuilder.layer(CorehallaApi).pipe(
+        Layer.provide(playersGroup),
+        Layer.provide(guildsGroup),
         Layer.provide(rankingsGroup),
-        Layer.provide(statsGroup),
         Layer.provide(searchGroup),
         Layer.provide(contentGroup),
+        Layer.provide(upstreamGroup),
         Layer.provide(meGroup),
         Layer.provide(authGroup),
         Layer.provide(ServicesLayer),
@@ -117,12 +136,32 @@ const createHandler = (db: D1Database) => {
         Layer.provide(HttpServer.layerServices),
     )
 
+    /*
+     * The API and its reference are two routers on one server, so they are
+     * merged rather than nested: `toWebHandler` supplies the router both need,
+     * and a request to `/api/v1/docs` is matched by the second before the
+     * first's 404 handler can see it.
+     */
+    const AppLayer = Layer.mergeAll(
+        ApiLayer,
+        HttpApiScalar.layerCdn(CorehallaApi, {
+            path: DocsPath,
+            scalar: {
+                // Matches the app's own dark surface rather than Scalar's
+                // default white, so the reference does not flash when opened
+                // from a dark-themed page.
+                theme: "moon",
+                defaultOpenAllTags: false,
+            },
+        }),
+    )
+
     // The default logger is kept on. It was disabled here, which meant a defect
     // produced a bare 500 with nothing written anywhere — the handler's cause
     // was discarded by the same switch that silenced the request log, so a
     // failing endpoint could only be diagnosed by guessing. An error nobody can
     // read is not worth the log volume it saves.
-    return HttpRouter.toWebHandler(ApiLayer)
+    return HttpRouter.toWebHandler(AppLayer)
 }
 
 let webHandler: ReturnType<typeof createHandler> | null = null

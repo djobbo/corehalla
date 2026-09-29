@@ -442,6 +442,7 @@ export const toClan = (
     clan_name: guild.name,
     clan_create_date: guild.create_date,
     clan_xp: String(guild.xp),
+    ...(guild.legacy_xp === undefined ? {} : { legacy_xp: guild.legacy_xp }),
     /*
      * Passed through, never summed from the members below: the clan's total
      * includes everyone who has ever contributed, so the roster's sum is a
