@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { FavoriteButton } from "@/components/account/FavoriteButton"
 import { StatGrid } from "@/components/StatGrid"
+import { UpdatedAt } from "@/components/UpdatedAt"
 import { guildAtom, useQuery } from "@/effect/atoms"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatUnixTime } from "@crh/common/helpers/date"
@@ -85,6 +86,13 @@ export const ClanHeader = ({ clanId }: { readonly clanId: number }) => {
                     /
                 </span>
                 <span>#{guild.id}</span>
+                <span aria-hidden className="text-muted-foreground/40">
+                    ·
+                </span>
+                <UpdatedAt
+                    at={envelope.meta.updated_at}
+                    className="normal-case tracking-normal"
+                />
             </nav>
 
             <div className="flex flex-wrap items-center gap-3">

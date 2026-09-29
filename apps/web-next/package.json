@@ -8,6 +8,7 @@
         "dev": "vp dev --port 3001",
         "build": "vp build",
         "preview": "vp preview",
+        "test": "vp test",
         "ts:check": "tsc --noEmit"
     },
     "dependencies": {

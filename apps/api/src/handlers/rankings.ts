@@ -88,12 +88,13 @@ export const rankingsGroup = HttpApiBuilder.group(
             handlers
                 .handle("getRanked1v1", ({ query }) =>
                     Effect.gen(function* () {
-                        const rankings = (yield* brawlhalla.getRankings(
+                        const board = yield* brawlhalla.getRankings(
                             "1v1",
                             query.region,
                             query.page,
                             query.name,
-                        )) as readonly Ranking1v1[]
+                        )
+                        const rankings = board.value as readonly Ranking1v1[]
 
                         yield* background.run(
                             db.upsertPlayerAliases(
@@ -129,20 +130,23 @@ export const rankingsGroup = HttpApiBuilder.group(
                                 ),
                             )
 
+                        // One cached part, so the page is exactly as current
+                        // as the ladder it was built from.
                         return buildRankings1v1(
                             rankings,
                             bestLegendIndex(best),
-                            Date.now(),
+                            board.updatedAt,
                         )
                     }),
                 )
                 .handle("getRanked2v2", ({ query }) =>
                     Effect.gen(function* () {
-                        const rankings = (yield* brawlhalla.getRankings(
+                        const board = yield* brawlhalla.getRankings(
                             "2v2",
                             query.region,
                             query.page,
-                        )) as readonly Ranking2v2[]
+                        )
+                        const rankings = board.value as readonly Ranking2v2[]
 
                         // A 2v2 row names two players and both are worth
                         // indexing: neither is "the" player of the row.
@@ -161,7 +165,7 @@ export const rankingsGroup = HttpApiBuilder.group(
                             ),
                         )
 
-                        return buildRankings2v2(rankings, Date.now())
+                        return buildRankings2v2(rankings, board.updatedAt)
                     }),
                 )
                 // v1-only: the legacy API has no 3v3 mode, so there is no
@@ -169,11 +173,12 @@ export const rankingsGroup = HttpApiBuilder.group(
                 // empty ladder.
                 .handle("getRanked3v3", ({ query }) =>
                     Effect.gen(function* () {
-                        const rankings = (yield* brawlhalla.getRankings(
+                        const board = yield* brawlhalla.getRankings(
                             "3v3",
                             query.region,
                             query.page,
-                        )) as readonly Ranking3v3[]
+                        )
+                        const rankings = board.value as readonly Ranking3v3[]
 
                         yield* background.run(
                             db.upsertPlayerAliases(
@@ -186,7 +191,7 @@ export const rankingsGroup = HttpApiBuilder.group(
                             ),
                         )
 
-                        return buildRankings3v3(rankings, Date.now())
+                        return buildRankings3v3(rankings, board.updatedAt)
                     }),
                 )
                 .handle("getGlobalPlayerRankings", ({ query }) =>

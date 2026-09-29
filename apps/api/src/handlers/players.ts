@@ -7,6 +7,7 @@ import { Database, searchKey } from "@crh/core/services/archive"
 import { Background } from "@crh/core/services/background"
 import { aliasRows } from "../helpers/aliases"
 import { buildPlayer } from "../aggregate/player"
+import type { Clan } from "@crh/bhapi/types"
 
 /**
  * The player profile, in one request.
@@ -15,15 +16,16 @@ import { buildPlayer } from "../aggregate/player"
  * index — and then the browser rolled the legends and weapons up itself. All of
  * that happens here, so the client renders a settled payload.
  *
- * The reads are genuinely independent, so they run concurrently. The alias
- * index is the exception to "fail loudly": it is decorative, and a database
- * problem must not take a profile down, so it degrades to "no aliases".
+ * Every upstream read comes back with the time it was fetched, and the response
+ * reports the **oldest** of them. A profile is assembled from four cache entries
+ * with independent freshness, so stamping it with the moment of assembly would
+ * claim the clan card is as current as the stats beside it; `meta.updated_at`
+ * is the age of the least-current part.
  *
- * The clan card needs a second upstream read (`/guild/stats` + `/guild/members`)
- * because `/player/guild` carries the membership but nothing about the guild —
- * no creation date, no roster size. It is fetched only when the player is in a
- * clan, and it degrades to `null` rather than failing the profile: the card is
- * enrichment, the profile is the page.
+ * The alias index is the exception to "fail loudly": it is decorative, and a
+ * database problem must not take a profile down, so it degrades to "no aliases".
+ * The clan card is enrichment too — its absence is a shorter page, not a failed
+ * one.
  */
 export const playersGroup = HttpApiBuilder.group(
     CorehallaApi,
@@ -35,35 +37,44 @@ export const playersGroup = HttpApiBuilder.group(
 
         return handlers.handle("getPlayer", ({ params }) =>
             Effect.gen(function* () {
-                const stats = yield* brawlhalla.getPlayerStats(params.playerId)
+                const [stats, ranked, ranked3v3] = yield* Effect.all(
+                    [
+                        brawlhalla.getPlayerStats(params.playerId),
+                        brawlhalla.getPlayerRanked(params.playerId),
+                        brawlhalla.getPlayer3v3Ranked(params.playerId),
+                    ],
+                    { concurrency: 3 },
+                )
 
-                if (stats === null) {
+                if (stats.value === null) {
                     return yield* new HttpApiError.NotFound()
                 }
 
-                const [ranked, ranked3v3, aliases, clan] = yield* Effect.all(
-                    [
-                        brawlhalla.getPlayerRanked(params.playerId),
-                        brawlhalla.getPlayer3v3Ranked(params.playerId),
-                        db
-                            .getPlayerAliases(String(params.playerId))
-                            .pipe(
-                                Effect.catch(() =>
-                                    Effect.succeed([] as readonly string[]),
-                                ),
-                            ),
-                        stats.clan
-                            ? brawlhalla
-                                  .getClan(stats.clan.clan_id)
-                                  .pipe(
-                                      Effect.catch(() =>
-                                          Effect.succeed(null),
-                                      ),
-                                  )
-                            : Effect.succeed(null),
-                    ],
-                    { concurrency: 4 },
-                )
+                /*
+                 * The roster read needs the player's guild id, which only the
+                 * stats payload carries — `/player/guild` gives the membership,
+                 * `/guild/stats` + `/guild/members` give the guild. So it runs
+                 * after rather than beside the other three. It is cached under
+                 * its own key and is enrichment, so a failure is an absent card.
+                 */
+                const clan: { readonly value: Clan | null; readonly updatedAt: number } | null =
+                    stats.value.clan
+                        ? yield* brawlhalla
+                              .getClan(stats.value.clan.clan_id)
+                              .pipe(
+                                  Effect.catch(() =>
+                                      Effect.succeed(null),
+                                  ),
+                              )
+                        : null
+
+                const aliases = yield* db
+                    .getPlayerAliases(String(params.playerId))
+                    .pipe(
+                        Effect.catch(() =>
+                            Effect.succeed([] as readonly string[]),
+                        ),
+                    )
 
                 /*
                  * The player's own name, plus every 2v2 partner's.
@@ -81,10 +92,10 @@ export const playersGroup = HttpApiBuilder.group(
                  */
                 const rankedAliases = [
                     ...aliasRows({
-                        id: stats.brawlhalla_id,
-                        name: stats.name,
+                        id: stats.value.brawlhalla_id,
+                        name: stats.value.name,
                     }),
-                    ...(ranked?.["2v2"] ?? [])
+                    ...(ranked.value?.["2v2"] ?? [])
                         .map(getTeamPlayers)
                         .flat()
                         .flatMap((player) => aliasRows(player)),
@@ -92,20 +103,40 @@ export const playersGroup = HttpApiBuilder.group(
 
                 yield* background.run(db.upsertPlayerAliases(rankedAliases))
 
-                if (stats.clan) {
+                if (stats.value.clan) {
+                    const membership = stats.value.clan
+
                     yield* background.run(
                         db.upsertClan({
-                            id: stats.clan.clan_id.toString(),
-                            name: stats.clan.clan_name,
-                            nameLower: searchKey(stats.clan.clan_name),
-                            xp: parseInt(stats.clan.clan_xp),
+                            id: membership.clan_id.toString(),
+                            name: membership.clan_name,
+                            nameLower: searchKey(membership.clan_name),
+                            xp: parseInt(membership.clan_xp),
                         }),
                     )
                 }
 
+                /*
+                 * The oldest part, not now. `getPlayerStats` has already folded
+                 * its own clan *card* into that timestamp; this folds in the
+                 * roster read.
+                 */
+                const updatedAt = Math.min(
+                    stats.updatedAt,
+                    ranked.updatedAt,
+                    ranked3v3.updatedAt,
+                    ...(clan === null ? [] : [clan.updatedAt]),
+                )
+
                 return buildPlayer(
-                    { stats, ranked, ranked3v3, aliases, clan },
-                    Date.now(),
+                    {
+                        stats: stats.value,
+                        ranked: ranked.value,
+                        ranked3v3: ranked3v3.value,
+                        aliases,
+                        clan: clan?.value ?? null,
+                    },
+                    updatedAt,
                 )
             }),
         )

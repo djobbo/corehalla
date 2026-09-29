@@ -108,7 +108,7 @@ export const CareerRankingsView = <K extends string>({
                                     <EntityLink
                                         type="player"
                                         id={row.id}
-                                        href={playerHref(row.id)}
+                                        href={playerHref(row.slug)}
                                         className="font-semibold"
                                     >
                                         {cleanString(row.name)}

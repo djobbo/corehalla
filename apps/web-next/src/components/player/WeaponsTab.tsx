@@ -1,12 +1,13 @@
+import { useMemo } from "react"
 import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
 import { SortControl } from "@/components/SortControl"
 import { WeaponRow } from "./WeaponRow"
-import { usePlayerDerived } from "./usePlayerDerived"
+import { playerProfileAtom, useQuery } from "@/effect/atoms"
 import { useSortBy } from "@/lib/useSortBy"
 import { calculateWinrate } from "@crh/bhapi/helpers/calculateWinrate"
 import { formatTime } from "@crh/common/helpers/date"
+import type { PlayerLegend, PlayerWeapon } from "@crh/api-contract/schemas"
 import type { SortOption } from "@/lib/useSortBy"
-import type { WeaponStats } from "./WeaponRow"
 
 /**
  * Every weapon the account has held, as one sortable list.
@@ -15,6 +16,10 @@ import type { WeaponStats } from "./WeaponRow"
  * question from opposite ends ("what does this player play" / "what do they play
  * it with"), so they share the collapsed-row contract and differ only in the
  * figures they show.
+ *
+ * The roll-up itself is the API's — `weapons` arrives summed across the legends
+ * that held each one. What this tab owns is the join back to the legends, so a
+ * row can show which of them earned a weapon's ranked record.
  */
 
 type WeaponSort =
@@ -26,31 +31,32 @@ type WeaponSort =
     | "winrate"
     | "name"
 
-const losses = (weapon: WeaponStats): number => weapon.games - weapon.wins
-const winrate = (weapon: WeaponStats): number =>
-    calculateWinrate(weapon.wins, weapon.games)
+const losses = (weapon: PlayerWeapon): number =>
+    weapon.stats.games - weapon.stats.wins
+const winrate = (weapon: PlayerWeapon): number =>
+    calculateWinrate(weapon.stats.wins, weapon.stats.games)
 
-const sortOptions: Record<WeaponSort, SortOption<WeaponStats>> = {
+const sortOptions: Record<WeaponSort, SortOption<PlayerWeapon>> = {
     matchtime: {
         label: "Time held",
-        compare: (a, b) => a.matchtime - b.matchtime,
-        display: (weapon) => formatTime(weapon.matchtime),
+        compare: (a, b) => a.stats.time_held - b.stats.time_held,
+        display: (weapon) => formatTime(weapon.stats.time_held),
     },
     level: {
         label: "Weapon level",
-        compare: (a, b) => a.level - b.level,
+        compare: (a, b) => a.stats.level - b.stats.level,
         display: (weapon) =>
-            `Level ${weapon.level} · ${weapon.xp.toLocaleString()} xp`,
+            `Level ${weapon.stats.level} · ${weapon.stats.xp.toLocaleString()} xp`,
     },
     games: {
         label: "Games",
-        compare: (a, b) => a.games - b.games,
-        display: (weapon) => `${weapon.games.toLocaleString()} games`,
+        compare: (a, b) => a.stats.games - b.stats.games,
+        display: (weapon) => `${weapon.stats.games.toLocaleString()} games`,
     },
     wins: {
         label: "Wins",
-        compare: (a, b) => a.wins - b.wins,
-        display: (weapon) => `${weapon.wins.toLocaleString()} wins`,
+        compare: (a, b) => a.stats.wins - b.stats.wins,
+        display: (weapon) => `${weapon.stats.wins.toLocaleString()} wins`,
     },
     losses: {
         label: "Losses",
@@ -64,21 +70,28 @@ const sortOptions: Record<WeaponSort, SortOption<WeaponStats>> = {
     },
     name: {
         label: "Name",
-        compare: (a, b) => a.weapon.localeCompare(b.weapon),
+        compare: (a, b) => a.name.localeCompare(b.name),
     },
 }
 
 export const WeaponsTab = ({ playerId }: { readonly playerId: number }) => {
-    const player = usePlayerDerived(playerId)
+    const profile = useQuery(playerProfileAtom(playerId)).data
+    const weapons = profile.weapons
 
-    const weapons = player?.weapons ?? []
+    /*
+     * Each weapon's legends arrive as references; their ranked records live on
+     * the legend itself. One map for the whole tab, so a row does not rebuild
+     * it while the list sorts.
+     */
+    const legends = useMemo(
+        () =>
+            new Map<number, PlayerLegend>(
+                profile.legends.map((legend) => [legend.id, legend]),
+            ),
+        [profile.legends],
+    )
 
     const sort = useSortBy(weapons, sortOptions, "matchtime", "desc")
-
-    if (!player) return null
-
-    const { stats, totals } = player
-    const matchtime = totals.matchtime
 
     if (weapons.length === 0) {
         return (
@@ -107,15 +120,16 @@ export const WeaponsTab = ({ playerId }: { readonly playerId: number }) => {
             <div className="flex flex-col gap-3">
                 {sort.sorted.map((weapon, index) => (
                     <WeaponRow
-                        key={weapon.weapon}
+                        key={weapon.name}
                         weapon={weapon}
+                        legends={legends}
                         rank={
                             sort.direction === "asc"
                                 ? sort.sorted.length - index
                                 : index + 1
                         }
-                        matchtime={matchtime}
-                        games={stats.games}
+                        matchtime={profile.stats.matchtime}
+                        games={profile.stats.games}
                         display={sort.display?.(weapon)}
                     />
                 ))}

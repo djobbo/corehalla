@@ -7,7 +7,6 @@ import { Database, searchKey } from "@crh/core/services/archive"
 import { Background } from "@crh/core/services/background"
 import { aliasRows } from "../helpers/aliases"
 import type {
-    Clan,
     Ranking1v1,
     Ranking2v2,
     Ranking3v3,
@@ -39,7 +38,7 @@ export const upstreamGroup = HttpApiBuilder.group(
             handlers
                 .handle("getPlayerStats", ({ params }) =>
                     Effect.gen(function* () {
-                        const stats = yield* brawlhalla.getPlayerStats(
+                        const { value: stats } = yield* brawlhalla.getPlayerStats(
                             params.playerId,
                         )
 
@@ -71,7 +70,7 @@ export const upstreamGroup = HttpApiBuilder.group(
                 )
                 .handle("getPlayerRanked", ({ params }) =>
                     Effect.gen(function* () {
-                        const ranked = yield* brawlhalla.getPlayerRanked(
+                        const { value: ranked } = yield* brawlhalla.getPlayerRanked(
                             params.playerId,
                         )
 
@@ -103,7 +102,7 @@ export const upstreamGroup = HttpApiBuilder.group(
                  */
                 .handle("getPlayer3v3Ranked", ({ params }) =>
                     Effect.gen(function* () {
-                        const ranked = yield* brawlhalla.getPlayer3v3Ranked(
+                        const { value: ranked } = yield* brawlhalla.getPlayer3v3Ranked(
                             params.playerId,
                         )
 
@@ -132,7 +131,7 @@ export const upstreamGroup = HttpApiBuilder.group(
                 )
                 .handle("getClanStats", ({ params }) =>
                     Effect.gen(function* () {
-                        const clan: Clan | null = yield* brawlhalla.getClan(
+                        const { value: clan } = yield* brawlhalla.getClan(
                             params.clanId,
                         )
 
@@ -164,12 +163,13 @@ export const upstreamGroup = HttpApiBuilder.group(
                 )
                 .handle("get1v1Rankings", ({ query }) =>
                     Effect.gen(function* () {
-                        const rankings = (yield* brawlhalla.getRankings(
+                        const board = yield* brawlhalla.getRankings(
                             "1v1",
                             query.region,
                             query.page,
                             query.name,
-                        )) as readonly Ranking1v1[]
+                        )
+                        const rankings = board.value as readonly Ranking1v1[]
 
                         yield* background.run(
                             db.upsertPlayerAliases(
@@ -187,22 +187,26 @@ export const upstreamGroup = HttpApiBuilder.group(
                 )
                 .handle("get2v2Rankings", ({ query }) =>
                     Effect.gen(function* () {
-                        return (yield* brawlhalla.getRankings(
+                        const board = yield* brawlhalla.getRankings(
                             "2v2",
                             query.region,
                             query.page,
-                        )) as readonly Ranking2v2[]
+                        )
+
+                        return board.value as readonly Ranking2v2[]
                     }),
                 )
                 // v1-only: the legacy API has no 3v3 mode, so there is no fallback
                 // source and an incomplete v1 page surfaces as an empty ladder.
                 .handle("get3v3Rankings", ({ query }) =>
                     Effect.gen(function* () {
-                        return (yield* brawlhalla.getRankings(
+                        const board = yield* brawlhalla.getRankings(
                             "3v3",
                             query.region,
                             query.page,
-                        )) as readonly Ranking3v3[]
+                        )
+
+                        return board.value as readonly Ranking3v3[]
                     }),
                 )
         )

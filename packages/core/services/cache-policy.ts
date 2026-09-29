@@ -94,7 +94,28 @@ export const cacheKeys = {
         name?: string,
     ): string => `lb:${bracket}:${region}:${page}:${name ?? ""}`,
 
-    player: (playerId: number | string): string => `player:${playerId}`,
+    /**
+     * A player's career stats: `PlayerStats` without the clan card.
+     *
+     * Deliberately *not* the whole profile. The crawl path reads career stats
+     * with `withClan: false` — the clan card is a second request the archive
+     * discards — so a single merged key could only be warmed by paying for a
+     * request the crawler exists to avoid, or by storing a clan-less entry the
+     * profile gateway cannot distinguish from "this player has no clan". Two
+     * keys solve both: the crawler warms the half it actually fetched, and the
+     * gateway merges the clan in from its own key.
+     */
+    playerStats: (playerId: number | string): string =>
+        `player-stats:${playerId}`,
+
+    /**
+     * The clan card: `/player/guild` plus our own clan XP.
+     *
+     * Separate from {@link playerStats} because only the profile reads it, so
+     * its freshness is independent of a crawler-warmed stats entry.
+     */
+    playerClan: (playerId: number | string): string =>
+        `player-clan:${playerId}`,
 
     playerRanked: (playerId: number | string): string =>
         `player-ranked:${playerId}`,

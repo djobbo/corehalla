@@ -12,7 +12,7 @@ import { calculateWinrate } from "@crh/bhapi/helpers/calculateWinrate"
 import { getTierFromRating } from "@crh/bhapi/helpers/getTierFromRating"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatTime } from "@crh/common/helpers/date"
-import type { FullLegend } from "@crh/bhapi/legends"
+import type { PlayerLegend } from "@crh/api-contract/schemas"
 import type { ReactNode } from "react"
 
 /**
@@ -29,7 +29,7 @@ export const LegendRow = ({
     games,
     display,
 }: {
-    readonly legend: FullLegend
+    readonly legend: PlayerLegend
     readonly rank: number
     readonly matchtime: number
     readonly games: number
@@ -55,7 +55,7 @@ export const LegendRow = ({
                                 {rank}
                             </span>
                             <span className="truncate font-semibold">
-                                {legend.bio_name}
+                                {legend.name}
                             </span>
                         </span>
                         <span className="shrink-0 text-xs text-muted-foreground">
@@ -71,27 +71,23 @@ export const LegendRow = ({
                                 stats={[
                                     {
                                         title: "Level",
-                                        value: stats?.level ?? 0,
+                                        value: stats.level,
                                     },
                                     {
                                         title: "XP",
-                                        value: (
-                                            stats?.xp ?? 0
-                                        ).toLocaleString(),
+                                        value: stats.xp.toLocaleString(),
                                     },
                                     {
                                         title: "Time played",
-                                        value: formatTime(
-                                            stats?.matchtime ?? 0,
-                                        ),
+                                        value: formatTime(stats.matchtime),
                                     },
                                     {
                                         title: "Time played (%)",
-                                        value: `${percent(stats?.matchtime ?? 0, matchtime).toFixed(2)}%`,
+                                        value: `${percent(stats.matchtime, matchtime).toFixed(2)}%`,
                                     },
                                     {
                                         title: "Usage rate",
-                                        value: `${percent(stats?.games ?? 0, games).toFixed(2)}%`,
+                                        value: `${percent(stats.games, games).toFixed(2)}%`,
                                     },
                                 ]}
                             />
@@ -99,49 +95,37 @@ export const LegendRow = ({
                                 stats={[
                                     {
                                         title: "KOs",
-                                        value: (
-                                            stats?.kos ?? 0
-                                        ).toLocaleString(),
+                                        value: stats.kos.toLocaleString(),
                                     },
                                     {
                                         title: "Falls",
-                                        value: (
-                                            stats?.falls ?? 0
-                                        ).toLocaleString(),
+                                        value: stats.falls.toLocaleString(),
                                     },
                                     {
                                         title: "Suicides",
-                                        value: (
-                                            stats?.suicides ?? 0
-                                        ).toLocaleString(),
+                                        value: stats.suicides.toLocaleString(),
                                     },
                                     {
                                         title: "Team KOs",
-                                        value: (
-                                            stats?.teamkos ?? 0
-                                        ).toLocaleString(),
+                                        value: stats.team_kos.toLocaleString(),
                                     },
                                     {
                                         title: "Damage dealt",
-                                        value: Number(
-                                            stats?.damagedealt ?? 0,
-                                        ).toLocaleString(),
+                                        value: stats.damage_dealt.toLocaleString(),
                                     },
                                     {
                                         title: "Damage taken",
-                                        value: Number(
-                                            stats?.damagetaken ?? 0,
-                                        ).toLocaleString(),
+                                        value: stats.damage_taken.toLocaleString(),
                                     },
                                     {
                                         title: "DPS",
-                                        value: `${ratio(Number(stats?.damagedealt ?? 0), stats?.matchtime ?? 0).toFixed(2)} dmg/s`,
+                                        value: `${ratio(stats.damage_dealt, stats.matchtime).toFixed(2)} dmg/s`,
                                     },
                                     {
                                         title: "KOs per game",
                                         value: perGame(
-                                            stats?.kos ?? 0,
-                                            stats?.games ?? 0,
+                                            stats.kos,
+                                            stats.games,
                                         ).toFixed(2),
                                     },
                                 ]}
@@ -188,7 +172,7 @@ export const LegendRow = ({
                             </CardHeader>
                             <CardContent>
                                 <ul className="flex flex-wrap gap-1.5">
-                                    {[legend.weapon_one, legend.weapon_two].map(
+                                    {[legend.weapon_one.name, legend.weapon_two.name].map(
                                         (weapon) => (
                                             <li
                                                 key={weapon}

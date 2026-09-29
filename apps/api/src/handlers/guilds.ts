@@ -29,7 +29,8 @@ export const guildsGroup = HttpApiBuilder.group(
 
         return handlers.handle("getGuild", ({ params }) =>
             Effect.gen(function* () {
-                const clan = yield* brawlhalla.getClan(params.guildId)
+                const cached = yield* brawlhalla.getClan(params.guildId)
+                const clan = cached.value
 
                 if (clan === null) {
                     return yield* new HttpApiError.NotFound()
@@ -56,7 +57,8 @@ export const guildsGroup = HttpApiBuilder.group(
                     ),
                 )
 
-                return buildGuild(clan, Date.now())
+                // One cached part, so the response is exactly as current as it.
+                return buildGuild(clan, cached.updatedAt)
             }),
         )
     }),

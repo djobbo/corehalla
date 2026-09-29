@@ -27,6 +27,13 @@ const build = () =>
     )
 
 describe("buildPlayer", () => {
+    it("stamps the envelope with the age it was handed, not its own clock", () => {
+        // The handler passes the *oldest* upstream read behind the payload;
+        // taking `Date.now()` here instead would report the moment of assembly
+        // and overstate how current the profile is.
+        expect(build().meta.updated_at).toBe(1_700_000_000_000)
+    })
+
     it("identifies the player with both an id and a canonical slug", () => {
         const { data } = build()
 

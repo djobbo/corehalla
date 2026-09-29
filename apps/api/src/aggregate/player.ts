@@ -353,7 +353,7 @@ export type PlayerSources = {
 
 export const buildPlayer = (
     sources: PlayerSources,
-    now: number,
+    updatedAt: number,
 ): PlayerEnvelope => {
     const { stats, ranked, ranked3v3, clan } = sources
 
@@ -468,5 +468,5 @@ export const buildPlayer = (
         weapon_damage: weaponDamage,
     }
 
-    return { data: player, meta: { updated_at: now } }
+    return { data: player, meta: { updated_at: updatedAt } }
 }

@@ -51,6 +51,9 @@ const fakeUpstream = (calls: { count: number }) =>
 
                 return playerStatsMock
             }),
+        // The clan card is a separate read now; this player has none, which
+        // keeps the test about the stats write it is named for.
+        getPlayerClan: () => Effect.succeed(null),
     } as unknown as Context.Service.Shape<typeof Upstream>)
 
 const fakeDatabase = (writes: { count: number }) =>
@@ -135,6 +138,7 @@ describe("the archive write on a player refresh", () => {
                         // player". Storing it would erase whatever the crawler
                         // had recorded.
                         getPlayerStats: () => Effect.succeed(null),
+                        getPlayerClan: () => Effect.succeed(null),
                     } as unknown as Context.Service.Shape<typeof Upstream>),
                 ),
                 Layer.provide(fakeDatabase(writes)),
@@ -146,7 +150,7 @@ describe("the archive write on a player refresh", () => {
                 Effect.provide(gateway),
             )
 
-            expect(stats).toBeNull()
+            expect(stats.value).toBeNull()
             expect(writes.count).toBe(0)
             expect(upstreamCalls.count).toBe(0)
         }),

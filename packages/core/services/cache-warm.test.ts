@@ -130,7 +130,7 @@ describe("crawler -> gateway cache warming", () => {
                 const { kv } = fakeKv()
                 const cache = make(async () => kv, inlineSchedule)
 
-                const key = cacheKeys.player(42)
+                const key = cacheKeys.playerStats(42)
                 const stale = { name: "stale", xp: 1 }
 
                 // Fresh for zero seconds, retained for an hour: stale on
@@ -213,7 +213,7 @@ describe("the freshness outcomes", () => {
         Effect.gen(function* () {
             const { kv } = fakeKv()
             const cache = make(async () => kv, inlineSchedule)
-            const key = cacheKeys.player(1)
+            const key = cacheKeys.playerStats(1)
 
             yield* cache.set(key, { name: "current" }, cacheTtl.profile)
 
@@ -239,7 +239,7 @@ describe("the freshness outcomes", () => {
         () =>
             Effect.gen(function* () {
                 const { store, kv } = fakeKv()
-                const key = cacheKeys.player(2)
+                const key = cacheKeys.playerStats(2)
                 const stale = { name: "stale", xp: 1 }
                 const current = { name: "current", xp: 2 }
 
@@ -292,7 +292,7 @@ describe("the freshness outcomes", () => {
             Effect.gen(function* () {
                 const { kv } = fakeKv()
                 const cache = make(async () => kv, inlineSchedule)
-                const key = cacheKeys.player(3)
+                const key = cacheKeys.playerStats(3)
 
                 // Retained for zero seconds: past `staleUntil` the moment it
                 // lands. A second instance reads it, so L1 cannot be the reason
@@ -324,7 +324,7 @@ describe("the freshness outcomes", () => {
             Effect.gen(function* () {
                 const { store, kv } = fakeKv()
                 const cache = make(async () => kv, inlineSchedule)
-                const key = cacheKeys.player(4)
+                const key = cacheKeys.playerStats(4)
 
                 yield* cache.set(key, { name: "stale" }, staleButRetained)
 
@@ -371,7 +371,7 @@ describe("caching an absent answer", () => {
             Effect.gen(function* () {
                 const { store, kv } = fakeKv()
                 const cache = make(async () => kv, inlineSchedule)
-                const key = cacheKeys.player(999)
+                const key = cacheKeys.playerStats(999)
 
                 yield* cache.getOrSet(
                     key,
@@ -399,7 +399,7 @@ describe("caching an absent answer", () => {
         Effect.gen(function* () {
             const { store, kv } = fakeKv()
             const cache = make(async () => kv, inlineSchedule)
-            const key = cacheKeys.player(1)
+            const key = cacheKeys.playerStats(1)
 
             yield* cache.getOrSet(
                 key,

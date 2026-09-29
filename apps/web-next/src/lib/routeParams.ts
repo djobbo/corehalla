@@ -85,3 +85,26 @@ export const resolveBracket = (value?: string): Ladder =>
  */
 export const resolveEntityId = (slug: string): number =>
     parseEntityId(slug) ?? 0
+
+/**
+ * The canonical URL for a slug-bearing route, keeping whatever follows the
+ * entity segment.
+ *
+ * A profile is a *layout* with tabs, so its loader also runs for
+ * `/stats/players/<id>/legends`. Rewriting only the entity segment is what
+ * keeps a canonical redirect from dropping the tab — and that failure is quiet:
+ * the redirect still succeeds and simply lands on the overview, so the tab
+ * looks broken rather than mis-addressed.
+ */
+export const canonicalPath = (
+    pathname: string,
+    base: "/stats/players" | "/stats/guilds",
+    current: string,
+    slug: string,
+): string => {
+    const prefix = `${base}/${current}`
+
+    return pathname.startsWith(prefix)
+        ? `${base}/${slug}${pathname.slice(prefix.length)}`
+        : `${base}/${slug}`
+}

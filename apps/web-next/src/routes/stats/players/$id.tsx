@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, notFound, redirect } from "@tanstack/react-rou
 import { parseEntityId } from "@crh/common/helpers/entitySlug"
 import { PlayerHeader } from "@/components/player/PlayerHeader"
 import { PlayerTabs } from "@/components/player/PlayerTabs"
+import { canonicalPath } from "@/lib/routeParams"
 import {
     dehydrateRegistry,
     playerProfileAtom,
@@ -27,7 +28,7 @@ import type { PlayerEnvelope } from "@crh/api-contract/schemas"
  * survive a rename instead of quietly resolving to the old page.
  */
 export const Route = createFileRoute("/stats/players/$id")({
-    async loader({ params, context }) {
+    async loader({ params, context, location }) {
         const playerId = parseEntityId(params.id)
 
         if (playerId === null) {
@@ -51,9 +52,26 @@ export const Route = createFileRoute("/stats/players/$id")({
             throw notFound()
         }
 
-        if (params.id !== envelope.data.slug) {
+        const slug = envelope.data.slug
+
+        if (params.id !== slug) {
+            /*
+             * Redirect to the canonical slug, keeping whatever follows the
+             * entity segment.
+             *
+             * This route is the layout for the tabs, so it runs on
+             * `/stats/players/<id>/legends` too — and a redirect that dropped
+             * the tail would send every tab to the overview. It only fires for
+             * a non-canonical segment (an old id-only link, or a name half that
+             * has since changed); the strip itself links with the slug.
+             */
             throw redirect({
-                href: `/stats/players/${envelope.data.slug}`,
+                href: `${canonicalPath(
+                    location.pathname,
+                    "/stats/players",
+                    params.id,
+                    slug,
+                )}${location.searchStr}${location.hash ? `#${location.hash}` : ""}`,
                 statusCode: 301,
             })
         }
@@ -67,8 +85,8 @@ export const Route = createFileRoute("/stats/players/$id")({
 
 function Layout() {
     const { id } = Route.useParams()
-    const playerId = parseEntityId(id) ?? 0
-    const profile = useQuery(playerProfileAtom(playerId))
+    const profile = useQuery(playerProfileAtom(parseEntityId(id) ?? 0))
+    const slug = profile.data.slug
 
     // The legacy client hides the 2v2 tab entirely when the player has no team
     // record, because an empty tab is a dead end rather than a destination.
@@ -77,8 +95,8 @@ function Layout() {
 
     return (
         <main className="ch-page">
-            <PlayerHeader playerId={playerId} />
-            <PlayerTabs playerId={playerId} show2v2={show2v2} />
+            <PlayerHeader playerId={profile.data.id} />
+            <PlayerTabs slug={slug} show2v2={show2v2} />
 
             <div className="mt-4">
                 <Outlet />

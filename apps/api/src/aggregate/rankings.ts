@@ -53,7 +53,7 @@ const playerRef = (id: number, name: string) => ({
 export const buildRankings1v1 = (
     rows: readonly Ranking1v1[],
     bestLegends: ReadonlyMap<string, BestLegendRow>,
-    now: number,
+    updatedAt: number,
 ): Rankings1v1Envelope => ({
     data: rows.map((row) => {
         const archived = bestLegends.get(String(row.brawlhalla_id))
@@ -86,12 +86,12 @@ export const buildRankings1v1 = (
                 : null,
         }
     }),
-    meta: { updated_at: now },
+    meta: { updated_at: updatedAt },
 })
 
 export const buildRankings2v2 = (
     rows: readonly Ranking2v2[],
-    now: number,
+    updatedAt: number,
 ): Rankings2v2Envelope => ({
     data: rows.map((row) => {
         const [one, two] = getTeamPlayers(row)
@@ -107,12 +107,12 @@ export const buildRankings2v2 = (
             team: [playerRef(one.id, one.name), playerRef(two.id, two.name)],
         }
     }),
-    meta: { updated_at: now },
+    meta: { updated_at: updatedAt },
 })
 
 export const buildRankings3v3 = (
     rows: readonly Ranking3v3[],
-    now: number,
+    updatedAt: number,
 ): Rankings3v3Envelope => ({
     data: rows.map((row) => ({
         rank: row.rank,
@@ -126,5 +126,5 @@ export const buildRankings3v3 = (
         name: row.name,
         slug: getEntitySlug(row.brawlhalla_id, row.name),
     })),
-    meta: { updated_at: now },
+    meta: { updated_at: updatedAt },
 })

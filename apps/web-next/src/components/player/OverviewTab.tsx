@@ -3,7 +3,7 @@ import { Breakdown } from "@/components/Breakdown"
 import { SplitProgress } from "@/components/SplitProgress"
 import { StatGrid } from "@/components/StatGrid"
 import { RankedCard } from "./RankedCard"
-import { usePlayerDerived } from "./usePlayerDerived"
+import { playerProfileAtom, useQuery } from "@/effect/atoms"
 import { EntityLink } from "@/components/EntityLink"
 import { cn } from "@/lib/cn"
 import { clanHref } from "@/lib/rankings"
@@ -12,7 +12,6 @@ import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatTime } from "@crh/common/helpers/date"
 import type { Stat } from "@/components/StatGrid"
 import type { BreakdownEntry } from "@/components/Breakdown"
-import type { PlayerAccount, PlayerDerived } from "./usePlayerDerived"
 import type { Player, PlayerRankedTeam } from "@crh/api-contract/schemas"
 
 /**
@@ -132,12 +131,10 @@ const Ranked3v3Panel = ({
 
 // --- clan -------------------------------------------------------------------
 
-const ClanPanel = ({ stats }: { readonly stats: PlayerAccount }) => {
-    const clan = stats.clan
-
+const ClanPanel = ({ clan }: { readonly clan: Player["clan"] }) => {
     if (!clan) return null
 
-    const clanXp = Number(clan.clan_xp)
+    const clanXp = clan.xp
 
     return (
         <Card>
@@ -148,14 +145,14 @@ const ClanPanel = ({ stats }: { readonly stats: PlayerAccount }) => {
                 <div className="flex flex-wrap items-baseline gap-2">
                     <EntityLink
                         type="clan"
-                        id={clan.clan_id}
-                        href={clanHref(clan.clan_id)}
+                        id={clan.id}
+                        href={clanHref(clan.slug)}
                         className="ch-display text-xl transition-colors hover:text-ring"
                     >
-                        {cleanString(clan.clan_name)}
+                        {cleanString(clan.name)}
                     </EntityLink>
                     <span className="text-xs text-muted-foreground">
-                        #{clan.clan_id}
+                        #{clan.id}
                     </span>
                 </div>
                 <Card className="mt-3 bg-background">
@@ -226,24 +223,25 @@ const KosFallsPanel = ({
     kos,
     falls,
     suicides,
-    teamkos,
+    teamKos,
     weaponKos,
     thrownKos,
-    weaponless,
+    unarmed,
+    gadgets,
 }: {
     readonly kos: number
     readonly falls: number
     readonly suicides: number
-    readonly teamkos: number
+    readonly teamKos: number
     readonly weaponKos: number
     readonly thrownKos: number
-    readonly weaponless: PlayerDerived["weaponless"]
+    readonly unarmed: Player["unarmed"]
+    readonly gadgets: Player["gadgets"]
 }) => {
-    const { unarmed, gadgets } = weaponless
 
     /*
      * A fall is only ever self-inflicted or caused by an opponent, so `falls`
-     * has exactly two parts — `teamkos` is absent here because a team KO counts
+     * has exactly two parts — `teamKos` is absent here because a team KO counts
      * toward the KO of whoever landed it, never toward the fall of whoever took
      * it.
      */
@@ -297,9 +295,9 @@ const KosFallsPanel = ({
                                 intent: "yellow",
                             },
                             {
-                                key: "teamkos",
+                                key: "teamKos",
                                 label: "team KOs",
-                                value: teamkos,
+                                value: teamKos,
                                 intent: "pink",
                             },
                         ]}
@@ -335,15 +333,18 @@ const DamagePanel = ({
     taken,
     matchtime,
     weaponDamage,
-    weaponless,
+    unarmed,
+    gadgets,
+    throws,
 }: {
     readonly dealt: number
     readonly taken: number
     readonly matchtime: number
     readonly weaponDamage: number
-    readonly weaponless: PlayerDerived["weaponless"]
+    readonly unarmed: Player["unarmed"]
+    readonly gadgets: Player["gadgets"]
+    readonly throws: Player["weapon_throws"]
 }) => {
-    const { unarmed, gadgets, throws } = weaponless
 
     /*
      * Both bars share one scale, so "dealt" and "taken" can be compared by eye
@@ -368,19 +369,19 @@ const DamagePanel = ({
         {
             key: "unarmed",
             label: "unarmed",
-            value: unarmed.damageDealt,
+            value: unarmed.damage_dealt,
             intent: "cyan",
         },
         {
             key: "gadgets",
             label: "using gadgets",
-            value: gadgets.damageDealt,
+            value: gadgets.damage_dealt,
             intent: "green",
         },
         {
             key: "throws",
             label: "using throws",
-            value: throws.damageDealt,
+            value: throws.damage_dealt,
             intent: "yellow",
         },
     ]
@@ -462,31 +463,30 @@ const BreakdownPanel = ({
 // --- page -------------------------------------------------------------------
 
 export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
-    const player = usePlayerDerived(playerId)
-
-    if (!player) return null
+    const profile = useQuery(playerProfileAtom(playerId)).data
 
     const {
         stats,
-        profile,
-        totals,
-        weaponless,
-        weaponKos,
-        thrownKos,
-        weaponDamage,
-    } = player
-    const { unarmed, gadgets, throws } = weaponless
+        ranked,
+        unarmed,
+        gadgets,
+        weapon_throws: throws,
+        weapon_kos: weaponKos,
+        thrown_kos: thrownKos,
+        weapon_damage: weaponDamage,
+    } = profile
 
-    const { games } = stats
     const {
+        games,
+        wins,
         matchtime,
         kos,
         falls,
         suicides,
-        teamkos,
-        damagedealt,
-        damagetaken,
-    } = totals
+        team_kos: teamKos,
+        damage_dealt: damageDealt,
+        damage_taken: damageTaken,
+    } = stats
 
     /*
      * A ranked record only earns a card if the bracket has games behind it. The
@@ -494,7 +494,6 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
      * *is* the answer — `ranked` itself only says the player has some ranked
      * data somewhere, which is not the same as having played this bracket.
      */
-    const ranked = profile.ranked
     const ranked1v1 = ranked?.["1v1"] ?? null
     const ranked3v3 = ranked?.["3v3"] ?? null
     const soloRecord = ranked?.["2v2"]?.teams.find((team) => !team.paired)
@@ -512,16 +511,16 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
         Boolean,
     ).length
 
-    const koCounts = (weapon: { kos: number; damageDealt: number }): Stat[] => [
+    const koCounts = (weapon: { kos: number; damage_dealt: number }): Stat[] => [
         { title: "KOs", value: summed(weapon.kos) },
         {
             title: "One KO every",
             value: `${ratio(games, weapon.kos).toFixed(1)} games`,
         },
-        { title: "Damage dealt", value: summed(weapon.damageDealt) },
+        { title: "Damage dealt", value: summed(weapon.damage_dealt) },
         {
             title: "Avg. damage per game",
-            value: perGame(weapon.damageDealt, games).toFixed(2),
+            value: perGame(weapon.damage_dealt, games).toFixed(2),
         },
     ]
 
@@ -547,31 +546,34 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                 </div>
             ) : null}
 
-            <ClanPanel stats={stats} />
+            <ClanPanel clan={profile.clan} />
 
             {/*
              * Games runs full width on its own; the two stacked-bar breakdowns
              * pair up once there is room for both.
              */}
-            <GamesPanel games={games} wins={stats.wins} />
+            <GamesPanel games={games} wins={wins} />
 
             <div className="grid gap-4 lg:grid-cols-2">
                 <KosFallsPanel
                     kos={kos}
                     falls={falls}
                     suicides={suicides}
-                    teamkos={teamkos}
+                    teamKos={teamKos}
                     weaponKos={weaponKos}
                     thrownKos={thrownKos}
-                    weaponless={weaponless}
+                    unarmed={unarmed}
+                    gadgets={gadgets}
                 />
 
                 <DamagePanel
-                    dealt={damagedealt}
-                    taken={damagetaken}
+                    dealt={damageDealt}
+                    taken={damageTaken}
                     matchtime={matchtime}
                     weaponDamage={weaponDamage}
-                    weaponless={weaponless}
+                    unarmed={unarmed}
+                    gadgets={gadgets}
+                    throws={throws}
                 />
             </div>
 
@@ -588,11 +590,11 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                     stats={[
                         {
                             title: "DPS dealt",
-                            value: `${ratio(damagedealt, matchtime).toFixed(1)} dmg/s`,
+                            value: `${ratio(damageDealt, matchtime).toFixed(1)} dmg/s`,
                         },
                         {
                             title: "DPS taken",
-                            value: `${ratio(damagetaken, matchtime).toFixed(1)} dmg/s`,
+                            value: `${ratio(damageTaken, matchtime).toFixed(1)} dmg/s`,
                         },
                         {
                             title: "Time to KO",
@@ -616,15 +618,15 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                         },
                         {
                             title: "One team KO every",
-                            value: `${ratio(games, teamkos).toFixed(1)} games`,
+                            value: `${ratio(games, teamKos).toFixed(1)} games`,
                         },
                         {
                             title: "Damage dealt per game",
-                            value: perGame(damagedealt, games).toFixed(1),
+                            value: perGame(damageDealt, games).toFixed(1),
                         },
                         {
                             title: "Damage taken per game",
-                            value: perGame(damagetaken, games).toFixed(1),
+                            value: perGame(damageTaken, games).toFixed(1),
                         },
                         {
                             title: "Average game length",
@@ -640,11 +642,11 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                     stats={[
                         {
                             title: "Time unarmed",
-                            value: formatTime(unarmed.matchtime),
+                            value: formatTime(unarmed.time_held),
                         },
                         {
                             title: "Time unarmed (%)",
-                            value: `${percent(unarmed.matchtime, matchtime).toFixed(2)}%`,
+                            value: `${percent(unarmed.time_held, matchtime).toFixed(2)}%`,
                         },
                         { title: "KOs", value: summed(unarmed.kos) },
                         {
@@ -653,15 +655,15 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                         },
                         {
                             title: "Damage dealt",
-                            value: summed(unarmed.damageDealt),
+                            value: summed(unarmed.damage_dealt),
                         },
                         {
                             title: "DPS",
-                            value: `${ratio(unarmed.damageDealt, unarmed.matchtime).toFixed(2)} dmg/s`,
+                            value: `${ratio(unarmed.damage_dealt, unarmed.time_held).toFixed(2)} dmg/s`,
                         },
                         {
                             title: "Damage per game",
-                            value: perGame(unarmed.damageDealt, games).toFixed(
+                            value: perGame(unarmed.damage_dealt, games).toFixed(
                                 2,
                             ),
                         },
@@ -676,7 +678,7 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                     title="Weapon throws"
                     stats={koCounts({
                         kos: thrownKos,
-                        damageDealt: throws.damageDealt,
+                        damage_dealt: throws.damage_dealt,
                     })}
                 />
                 <BreakdownPanel title="Gadgets" stats={koCounts(gadgets)} />

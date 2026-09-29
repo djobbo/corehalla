@@ -9,12 +9,15 @@ import { StatGrid } from "@/components/StatGrid"
 import { percent, perGame, ratio } from "@/lib/stats"
 import { calculateWinrate } from "@crh/bhapi/helpers/calculateWinrate"
 import { formatTime } from "@crh/common/helpers/date"
-import type { getWeaponsAccumulativeData } from "@crh/bhapi/legends"
+import type { PlayerLegend, PlayerWeapon } from "@crh/api-contract/schemas"
 import type { Stat } from "@/components/StatGrid"
 import type { ReactNode } from "react"
 
-/** One row of `getWeaponsAccumulativeData` — a weapon plus its totals. */
-export type WeaponStats = ReturnType<typeof getWeaponsAccumulativeData>[number]
+/** A legend that has a ranked record, paired with that record. */
+type RankedLegend = {
+    readonly legend: PlayerLegend
+    readonly ranked: NonNullable<PlayerLegend["ranked"]>
+}
 
 /**
  * The ranked record a weapon implies.
@@ -23,37 +26,48 @@ export type WeaponStats = ReturnType<typeof getWeaponsAccumulativeData>[number]
  * this rolls the legends that use it into one. The averages divide by the number
  * of legends that actually have a ranked record, not by every legend holding the
  * weapon, because a level-1 legend dragging the average toward zero is noise.
+ *
+ * The API sends each weapon's legends as references (id, name, their share of
+ * the weapon); the ranked record lives on the legend itself, so the two are
+ * joined here. That is a lookup, not a second aggregation: every number this
+ * returns is read, not recomputed.
  */
-const rankedSummary = (weapon: WeaponStats) => {
-    const empty = {
-        games: 0,
-        wins: 0,
-        totalRating: 0,
-        totalPeakRating: 0,
-        count: 0,
-        mostPlayed: undefined as WeaponStats["legends"][number] | undefined,
-        highestRated: undefined as WeaponStats["legends"][number] | undefined,
-    }
+const rankedSummary = (
+    weapon: PlayerWeapon,
+    legends: ReadonlyMap<number, PlayerLegend>,
+) => {
+    const rankedLegends: RankedLegend[] = weapon.legends.flatMap((entry) => {
+        const legend = legends.get(entry.id)
 
-    return weapon.legends.reduce((acc, legend) => {
-        if (!legend.ranked) return acc
+        return legend?.ranked ? [{ legend, ranked: legend.ranked }] : []
+    })
 
-        return {
-            games: acc.games + legend.ranked.games,
-            wins: acc.wins + legend.ranked.wins,
-            totalRating: acc.totalRating + legend.ranked.rating,
-            totalPeakRating: acc.totalPeakRating + legend.ranked.peak_rating,
+    return rankedLegends.reduce(
+        (acc, entry) => ({
+            games: acc.games + entry.ranked.games,
+            wins: acc.wins + entry.ranked.wins,
+            totalRating: acc.totalRating + entry.ranked.rating,
+            totalPeakRating: acc.totalPeakRating + entry.ranked.peak_rating,
             count: acc.count + 1,
             mostPlayed:
-                (acc.mostPlayed?.ranked?.games ?? 0) < legend.ranked.games
-                    ? legend
+                (acc.mostPlayed?.ranked.games ?? 0) < entry.ranked.games
+                    ? entry
                     : acc.mostPlayed,
             highestRated:
-                (acc.highestRated?.ranked?.rating ?? 0) < legend.ranked.rating
-                    ? legend
+                (acc.highestRated?.ranked.rating ?? 0) < entry.ranked.rating
+                    ? entry
                     : acc.highestRated,
-        }
-    }, empty)
+        }),
+        {
+            games: 0,
+            wins: 0,
+            totalRating: 0,
+            totalPeakRating: 0,
+            count: 0,
+            mostPlayed: undefined as RankedLegend | undefined,
+            highestRated: undefined as RankedLegend | undefined,
+        },
+    )
 }
 
 /**
@@ -64,18 +78,22 @@ const rankedSummary = (weapon: WeaponStats) => {
  */
 export const WeaponRow = ({
     weapon,
+    legends,
     rank,
     matchtime,
     games,
     display,
 }: {
-    readonly weapon: WeaponStats
+    readonly weapon: PlayerWeapon
+    /** The profile's legends by id, for resolving each weapon legend's ranking. */
+    readonly legends: ReadonlyMap<number, PlayerLegend>
     readonly rank: number
     readonly matchtime: number
     readonly games: number
     readonly display?: ReactNode
 }) => {
-    const ranked = rankedSummary(weapon)
+    const stats = weapon.stats
+    const ranked = rankedSummary(weapon, legends)
 
     const rankedStats: Stat[] = ranked.count
         ? [
@@ -100,13 +118,13 @@ export const WeaponRow = ({
               {
                   title: "Most played",
                   value: ranked.mostPlayed
-                      ? `${ranked.mostPlayed.bio_name} · ${ranked.mostPlayed.ranked?.games ?? 0}`
+                      ? `${ranked.mostPlayed.legend.name} · ${ranked.mostPlayed.ranked.games}`
                       : "—",
               },
               {
                   title: "Highest elo",
                   value: ranked.highestRated
-                      ? `${ranked.highestRated.bio_name} · ${ranked.highestRated.ranked?.rating ?? 0}`
+                      ? `${ranked.highestRated.legend.name} · ${ranked.highestRated.ranked.rating}`
                       : "—",
               },
           ]
@@ -128,7 +146,7 @@ export const WeaponRow = ({
                                 {rank}
                             </span>
                             <span className="truncate font-semibold">
-                                {weapon.weapon}
+                                {weapon.name}
                             </span>
                         </span>
                         <span className="shrink-0 text-xs text-muted-foreground">
@@ -141,61 +159,61 @@ export const WeaponRow = ({
                     <div className="flex flex-col gap-4">
                         <StatGrid
                             stats={[
-                                { title: "Weapon level", value: weapon.level },
+                                { title: "Weapon level", value: stats.level },
                                 {
                                     title: "Avg. legend level",
                                     value: ratio(
-                                        weapon.level,
+                                        stats.level,
                                         weapon.legends.length,
                                     ).toFixed(0),
                                 },
                                 {
                                     title: "Weapon XP",
-                                    value: weapon.xp.toLocaleString(),
+                                    value: stats.xp.toLocaleString(),
                                 },
                                 {
                                     title: "Avg. legend XP",
                                     value: ratio(
-                                        weapon.xp,
+                                        stats.xp,
                                         weapon.legends.length,
                                     ).toFixed(0),
                                 },
                                 {
                                     title: "Time held",
-                                    value: formatTime(weapon.matchtime),
+                                    value: formatTime(stats.time_held),
                                 },
                                 {
                                     title: "Time held (%)",
-                                    value: `${percent(weapon.matchtime, matchtime).toFixed(2)}%`,
+                                    value: `${percent(stats.time_held, matchtime).toFixed(2)}%`,
                                 },
                                 {
                                     title: "Usage rate",
-                                    value: `${percent(weapon.games, games).toFixed(2)}%`,
+                                    value: `${percent(stats.games, games).toFixed(2)}%`,
                                 },
                                 {
                                     title: "KOs",
-                                    value: weapon.kos.toLocaleString(),
+                                    value: stats.kos.toLocaleString(),
                                 },
                                 {
                                     title: "KOs per game",
                                     value: perGame(
-                                        weapon.kos,
-                                        weapon.games,
+                                        stats.kos,
+                                        stats.games,
                                     ).toFixed(2),
                                 },
                                 {
                                     title: "Damage dealt",
-                                    value: weapon.damageDealt.toLocaleString(),
+                                    value: stats.damage_dealt.toLocaleString(),
                                 },
                                 {
                                     title: "DPS",
-                                    value: `${ratio(weapon.damageDealt, weapon.matchtime).toFixed(2)} dmg/s`,
+                                    value: `${ratio(stats.damage_dealt, stats.time_held).toFixed(2)} dmg/s`,
                                 },
                                 {
                                     title: "Damage per game",
                                     value: perGame(
-                                        weapon.damageDealt,
-                                        weapon.games,
+                                        stats.damage_dealt,
+                                        stats.games,
                                     ).toFixed(2),
                                 },
                             ]}
@@ -207,7 +225,7 @@ export const WeaponRow = ({
                             </CardHeader>
                             <CardContent>
                                 <p className="ch-display text-3xl">
-                                    {weapon.games.toLocaleString()}
+                                    {stats.games.toLocaleString()}
                                     <span className="ml-2 text-xs font-normal tracking-normal text-muted-foreground">
                                         games
                                     </span>
@@ -217,38 +235,38 @@ export const WeaponRow = ({
                                     parts={[
                                         {
                                             key: "wins",
-                                            value: weapon.wins,
+                                            value: stats.wins,
                                             intent: "green",
                                         },
                                         {
                                             key: "losses",
-                                            value: weapon.games - weapon.wins,
+                                            value: stats.games - stats.wins,
                                             intent: "orange",
                                         },
                                     ]}
                                 />
                                 <div className="mt-2 flex justify-between text-sm font-bold">
                                     <span>
-                                        {weapon.wins.toLocaleString()}W{" "}
+                                        {stats.wins.toLocaleString()}W{" "}
                                         <span className="text-xs font-normal text-muted-foreground">
                                             (
                                             {percent(
-                                                weapon.wins,
-                                                weapon.games,
+                                                stats.wins,
+                                                stats.games,
                                             ).toFixed(2)}
                                             %)
                                         </span>
                                     </span>
                                     <span>
                                         {(
-                                            weapon.games - weapon.wins
+                                            stats.games - stats.wins
                                         ).toLocaleString()}
                                         L{" "}
                                         <span className="text-xs font-normal text-muted-foreground">
                                             (
                                             {percent(
-                                                weapon.games - weapon.wins,
-                                                weapon.games,
+                                                stats.games - stats.wins,
+                                                stats.games,
                                             ).toFixed(2)}
                                             %)
                                         </span>

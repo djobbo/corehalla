@@ -4,6 +4,7 @@ import { Database } from "../archive"
 import { Background } from "../background"
 import { Cache } from "../cache"
 import { cacheKeys, cacheTtl } from "../cache-policy"
+import type { Cached } from "../cache"
 import { legacyOps } from "./legacy"
 import { snapshotFromRanked } from "../player-writes"
 import {
@@ -39,25 +40,35 @@ type UpstreamShape = {
         name?: string,
     ) => Effect.Effect<readonly (Ranking1v1 | Ranking2v2 | Ranking3v3)[]>
     /**
-     * The player's career stats, and the clan card that goes with them.
+     * The player's career stats — `PlayerStats` **without** the clan card.
      *
-     * `withClan: false` is the **crawl** path's read and only its. Assembling
-     * the card costs a second upstream request (`/v1/player/guild`) plus a look
-     * up of our own clan XP, and the archive never stores it —
-     * `upsertPlayerStats` writes the career half, the legends and the weapons
-     * and drops `clan` on the floor. Paying a request per crawled player for a
-     * value that is discarded made a full ladder pass ~4,030 requests instead
-     * of the ~2,530 the crawl's budget is sized for, which is what ran the
-     * crawl queue at more than one consumer-invocation's worth of work.
+     * The clan card is not part of this read, and that is not just a
+     * convenience: assembling it costs a second upstream request
+     * (`/v1/player/guild`) plus a look up of our own clan XP, and the archive
+     * never stores it — `upsertPlayerStats` writes the career half, the legends
+     * and the weapons and drops `clan` on the floor. So the two are separate
+     * reads, and {@link getPlayerClan} is the other half.
      *
-     * The request path must leave the option unset: a profile renders the clan
-     * card, and a crawl-warmed entry without it would be served as though the
-     * player had no clan at all.
+     * Keeping them apart is also what makes the cache warmable: this is exactly
+     * the payload the crawler fetches, so it can store it verbatim, and the
+     * profile gateway merges the card in from its own cache entry rather than
+     * being unable to tell a clan-less entry from a player with no clan.
      */
     readonly getPlayerStats: (
         playerId: number,
-        options?: { readonly withClan?: boolean },
     ) => Effect.Effect<PlayerStats | null>
+    /**
+     * The profile's clan card, or `null` when the player is in no clan.
+     *
+     * `clan_xp` comes from our own `BHClan` row rather than upstream, because
+     * `/v1/player/guild` carries the membership but not the clan's own XP — and
+     * the profile both renders that number and divides by it, so a fabricated
+     * one would surface as `Infinity%`. No row means no card, which is why a
+     * storage failure degrades to `null` rather than failing the read.
+     */
+    readonly getPlayerClan: (
+        playerId: number,
+    ) => Effect.Effect<PlayerStats["clan"] | null>
     readonly getPlayerRanked: (
         playerId: number,
     ) => Effect.Effect<PlayerRanked | null>
@@ -65,6 +76,22 @@ type UpstreamShape = {
         playerId: number,
     ) => Effect.Effect<Player3v3Ranked | null>
     readonly getClan: (clanId: number) => Effect.Effect<Clan | null>
+}
+
+/**
+ * A `PlayerStats` with any clan card removed.
+ *
+ * The v0 fallback payload carries a clan inline; the v1 side is built without
+ * one by `toPlayerStats`. The stats read has to be clan-free either way, or the
+ * cache split does not hold: a clan smuggled into a stats entry would make a
+ * crawler-warmed entry look like a complete profile.
+ */
+const withoutClan = (stats: PlayerStats | null): PlayerStats | null => {
+    if (stats === null) return null
+
+    const { clan: _ignored, ...rest } = stats
+
+    return rest
 }
 
 /**
@@ -152,7 +179,7 @@ export const rawLayer = Layer.effect(
                     )
                 }),
 
-            getPlayerStats: (playerId, options) =>
+            getPlayerStats: (playerId) =>
                 Effect.gen(function* () {
                     const stats = yield* v1.getPlayerStats(playerId, "all")
 
@@ -165,47 +192,44 @@ export const rawLayer = Layer.effect(
                                 `falling back to v0`,
                         )
 
-                        return yield* legacy.getPlayerStats(playerId)
+                        // The legacy payload carries its own clan inline, and
+                        // this read must not: the card is `getPlayerClan`'s, and
+                        // a clan smuggled in here would be cached as part of a
+                        // stats entry the crawler warms without one.
+                        return withoutClan(
+                            yield* legacy.getPlayerStats(playerId),
+                        )
                     }
 
-                    /*
-                     * The crawl stops here, one request in.
-                     *
-                     * Its caller writes the career stats, the legends and the
-                     * weapons into the archive, and none of those are the clan
-                     * card — so the guild read below would be spent on a value
-                     * that is thrown away. The card is the profile's, and the
-                     * profile asks for it on its own path.
-                     */
-                    if (options?.withClan === false) {
-                        return toPlayerStats(stats, undefined)
-                    }
+                    return toPlayerStats(stats, undefined)
+                }),
 
+            getPlayerClan: (playerId) =>
+                Effect.gen(function* () {
                     const membership = yield* v1.getPlayerGuild(playerId)
                     const guild = membership?.guild
 
-                    // Without a real `clan_xp` there is no clan card to render:
-                    // the contribution stat divides by it, so a placeholder
-                    // would surface as `Infinity%`. A storage failure is treated
-                    // like a missing row — the card is decorative and the
-                    // profile must not fail for it.
-                    const clanXp = guild
-                        ? yield* database
-                              .getClanXp(String(guild.guild_id))
-                              .pipe(Effect.catch(() => Effect.succeed(null)))
-                        : null
+                    // No membership is an ordinary answer: most players are in
+                    // no clan, and the profile renders no card for them.
+                    if (!guild) return null
 
-                    return toPlayerStats(
-                        stats,
-                        guild && clanXp
-                            ? {
-                                  clan_name: guild.guild_name,
-                                  clan_id: guild.guild_id,
-                                  clan_xp: clanXp,
-                                  personal_xp: guild.personal_xp,
-                              }
-                            : undefined,
-                    )
+                    // Without a real `clan_xp` there is no card to render: the
+                    // contribution stat divides by it, so a placeholder would
+                    // surface as `Infinity%`. A storage failure is treated like
+                    // a missing row — the card is decorative and the profile
+                    // must not fail for it.
+                    const clanXp = yield* database
+                        .getClanXp(String(guild.guild_id))
+                        .pipe(Effect.catch(() => Effect.succeed(null)))
+
+                    if (!clanXp) return null
+
+                    return {
+                        clan_name: guild.guild_name,
+                        clan_id: guild.guild_id,
+                        clan_xp: clanXp,
+                        personal_xp: guild.personal_xp,
+                    }
                 }),
 
             // No v1 equivalent: v1 exposes no 2v2 ranked mode.
@@ -261,15 +285,42 @@ export const rawLayer = Layer.effect(
  * The upstream gateway for request traffic: `Upstream` behind the read-through
  * cache and the refresh damper.
  *
+ * Every method returns a {@link Cached} value — the payload plus when it was
+ * actually fetched — because a page assembled from several of these has to be
+ * able to report the age of its *oldest* part. A response that stamped itself
+ * with the moment of assembly would claim to be newer than the data in it.
+ *
  * | Operation         | Source           | Gap |
  * | ----------------- | ---------------- | --- |
  * | `getRankings`     | v1 (v0 fallback) | v1 rows have no `best_legend`, so the 1v1 legend icon is dropped. Accepted: the row still renders (`{legend && …}`) and that is the field's only reader. |
- * | `getPlayerStats`  | v1 (v0 fallback) | v1 moved the clan to `/player/guild`, which has no `clan_xp`; filled from our own `BHClan` row. |
+ * | `getPlayerStats`  | v1 (v0 fallback) | Career stats only. v1 moved the clan to `/player/guild`; the card is `getPlayerClan`, cached separately so the crawl path can warm this half. |
+ * | `getPlayerClan`   | v1 only          | `/player/guild` has no `clan_xp`; filled from our own `BHClan` row. A player in no clan — or one we have never indexed — answers `null`. |
  * | `getPlayerRanked` | v0 only          | v1 has no 2v2 mode, so the profile's "2v2 Ranked" tab has no v1 source. An absent endpoint, not a missing field. |
  * | `getPlayer3v3Ranked` | v1 only       | The mirror of `getPlayerRanked`: the legacy API has no 3v3 mode, so there is no fallback. v1 also reports the top tier as `null` and ranks only via a per-region `region_ranks` list, which is dropped. |
  * | `getClan`         | v1 (v0 fallback) | None: `/guild/stats` + `/guild/members` covers every field `Clan` has. |
  */
-export class Brawlhalla extends Context.Service<Brawlhalla, UpstreamShape>()(
+export type BrawlhallaShape = {
+    readonly getRankings: (
+        bracket: Ladder,
+        region: RankedRegion,
+        page: number,
+        name?: string,
+    ) => Effect.Effect<
+        Cached<readonly (Ranking1v1 | Ranking2v2 | Ranking3v3)[]>
+    >
+    readonly getPlayerStats: (
+        playerId: number,
+    ) => Effect.Effect<Cached<PlayerStats | null>>
+    readonly getPlayerRanked: (
+        playerId: number,
+    ) => Effect.Effect<Cached<PlayerRanked | null>>
+    readonly getPlayer3v3Ranked: (
+        playerId: number,
+    ) => Effect.Effect<Cached<Player3v3Ranked | null>>
+    readonly getClan: (clanId: number) => Effect.Effect<Cached<Clan | null>>
+}
+
+export class Brawlhalla extends Context.Service<Brawlhalla, BrawlhallaShape>()(
     "app/Brawlhalla",
 ) {}
 
@@ -306,41 +357,72 @@ export const layer = Layer.effect(
          */
         return {
             getRankings: (bracket, region, page, name) =>
-                cache.getOrSet(
+                cache.getOrSetCached(
                     cacheKeys.leaderboard(bracket, region, page, name),
                     cacheTtl.leaderboard,
                     upstream.getRankings(bracket, region, page, name),
                 ),
 
             /*
-             * Both halves of the player row are written here rather than by the
-             * handler, because only the refresh knows whether there is anything
-             * new to write. `getPlayerStats` carries the career stats — the
-             * row's stats half, plus the legend and weapon tables — and
-             * `getPlayerRanked` carries the standing the other half is made of.
+             * Two cache entries, composed.
+             *
+             * The stats half is exactly what the crawler fetches, so the crawler
+             * can warm it verbatim — which is the whole reason the clan card is
+             * not folded in. The card is fetched only when there is a player to
+             * attach it to, so an unknown id costs one request rather than two,
+             * and the entry the crawler writes is never mistaken for a complete
+             * profile.
+             *
+             * The write belongs on the *refresh* path, not the read path: it is
+             * the difference between one upsert per five minutes and one per
+             * view. A request served from cache has learned nothing new, so
+             * re-issuing the same rows would have a popular profile run a full
+             * upsert (a player row, three legends and three weapons) every time
+             * anybody opened it. `null` means "the upstream could not answer"
+             * rather than "no such player", so there is nothing to store.
              */
             getPlayerStats: (playerId) =>
-                cache.getOrSet(
-                    cacheKeys.player(playerId),
-                    cacheTtl.profile,
-                    upstream
-                        .getPlayerStats(playerId)
-                        .pipe(
-                            Effect.tap((stats) =>
-                                stats === null
+                Effect.gen(function* () {
+                    const stats = yield* cache.getOrSetCached(
+                        cacheKeys.playerStats(playerId),
+                        cacheTtl.profile,
+                        upstream.getPlayerStats(playerId).pipe(
+                            Effect.tap((value) =>
+                                value === null
                                     ? Effect.void
                                     : background.run(
                                           database.upsertPlayerStats(
-                                              stats,
+                                              value,
                                               null,
                                           ),
                                       ),
                             ),
                         ),
-                ),
+                    )
+
+                    // No player, no card to look up: skip the second read
+                    // rather than spending `/player/guild` on an id that does
+                    // not resolve.
+                    if (stats.value === null) return stats
+
+                    const clan = yield* cache.getOrSetCached(
+                        cacheKeys.playerClan(playerId),
+                        cacheTtl.profile,
+                        upstream.getPlayerClan(playerId),
+                    )
+
+                    return {
+                        value:
+                            clan.value === null
+                                ? stats.value
+                                : { ...stats.value, clan: clan.value },
+                        // The response is only as current as its oldest part.
+                        updatedAt: Math.min(stats.updatedAt, clan.updatedAt),
+                    }
+                }),
 
             getPlayerRanked: (playerId) =>
-                cache.getOrSet(
+                cache.getOrSetCached(
                     cacheKeys.playerRanked(playerId),
                     cacheTtl.profile,
                     upstream.getPlayerRanked(playerId).pipe(
@@ -367,14 +449,14 @@ export const layer = Layer.effect(
                 ),
 
             getPlayer3v3Ranked: (playerId) =>
-                cache.getOrSet(
+                cache.getOrSetCached(
                     cacheKeys.player3v3Ranked(playerId),
                     cacheTtl.profile,
                     upstream.getPlayer3v3Ranked(playerId),
                 ),
 
             getClan: (clanId) =>
-                cache.getOrSet(
+                cache.getOrSetCached(
                     cacheKeys.clan(clanId),
                     cacheTtl.profile,
                     upstream.getClan(clanId),

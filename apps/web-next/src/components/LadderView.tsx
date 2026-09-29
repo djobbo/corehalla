@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { LadderTable } from "./LadderTable"
 import { PageNav } from "@/components/PageNav"
+import { UpdatedAt } from "@/components/UpdatedAt"
 import { brackets, ladderHref, regionLabel, regions } from "@/lib/rankings"
 import { cn } from "@/lib/cn"
 import type { LadderRow } from "@/lib/ladderRows"
@@ -32,6 +33,8 @@ export type LadderViewProps = {
     readonly rows: readonly LadderRow[]
     /** Whether a next page exists, from the row count of this one. */
     readonly hasNextPage: boolean
+    /** When the ladder page behind these rows was fetched, epoch ms. */
+    readonly updatedAt: number
 }
 
 export const LadderView = ({
@@ -40,6 +43,7 @@ export const LadderView = ({
     page,
     rows,
     hasNextPage,
+    updatedAt,
 }: LadderViewProps) => {
     return (
         <div>
@@ -54,6 +58,7 @@ export const LadderView = ({
                 <p className="mt-1 text-xs text-muted-foreground">
                     {regionLabel(region)} · page {page}
                 </p>
+                <UpdatedAt at={updatedAt} className="block" />
             </header>
 
             <div className="sticky top-[var(--ch-header-h)] z-20 -mx-4 bg-background/95 px-4 py-2 shadow-[0_3px_0_0_var(--color-ink)] backdrop-blur">

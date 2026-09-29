@@ -2,6 +2,7 @@ import { createFileRoute, notFound, redirect } from "@tanstack/react-router"
 import { parseEntityId } from "@crh/common/helpers/entitySlug"
 import { ClanBody } from "@/components/clan/ClanBody"
 import { ClanHeader } from "@/components/clan/ClanHeader"
+import { canonicalPath } from "@/lib/routeParams"
 import {
     dehydrateRegistry,
     guildAtom,
@@ -18,7 +19,7 @@ import type { GuildEnvelope } from "@crh/api-contract/schemas"
  * reports is redirected to the canonical one.
  */
 export const Route = createFileRoute("/stats/guilds/$id")({
-    async loader({ params, context }) {
+    async loader({ params, context, location }) {
         const guildId = parseEntityId(params.id)
 
         if (guildId === null) {
@@ -40,7 +41,12 @@ export const Route = createFileRoute("/stats/guilds/$id")({
 
         if (params.id !== envelope.data.slug) {
             throw redirect({
-                href: `/stats/guilds/${envelope.data.slug}`,
+                href: `${canonicalPath(
+                    location.pathname,
+                    "/stats/guilds",
+                    params.id,
+                    envelope.data.slug,
+                )}${location.searchStr}${location.hash ? `#${location.hash}` : ""}`,
                 statusCode: 301,
             })
         }

@@ -74,6 +74,20 @@ export class Cache extends Context.Service<
             effect: Effect.Effect<A>,
             refresh?: Effect.Effect<boolean>,
         ) => Effect.Effect<A>
+        /**
+         * {@link getOrSet}, plus when the answer was actually fetched.
+         *
+         * The timestamp is what lets an aggregate report the age of its oldest
+         * part rather than the moment it was assembled — see `Cached`. It is the
+         * entry's own write time, so a value served from a stale entry reports
+         * when that entry was fetched, not now.
+         */
+        readonly getOrSetCached: <A>(
+            key: string,
+            options: CacheWindow,
+            effect: Effect.Effect<A>,
+            refresh?: Effect.Effect<boolean>,
+        ) => Effect.Effect<Cached<A>>
         /** Stores a value without reading. Used by the crawler. */
         readonly set: <A>(
             key: string,
@@ -84,6 +98,21 @@ export class Cache extends Context.Service<
         readonly invalidate: (key: string) => Effect.Effect<void>
     }
 >()("app/Cache") {}
+
+/**
+ * A cached value and the age of the upstream answer behind it.
+ *
+ * `updatedAt` is epoch milliseconds of the **fetch**, not of the read: a fresh
+ * entry keeps the time it was written, and a stale entry that is served while a
+ * refresh runs reports the stale fetch. That is the whole point — a page built
+ * from several cached reads can report the oldest of them instead of the moment
+ * it happened to be assembled, which is what stops a response from claiming to
+ * be newer than the data in it.
+ */
+export type Cached<A> = {
+    readonly value: A
+    readonly updatedAt: number
+}
 
 /**
  * How many entries one isolate keeps in L1.
@@ -97,6 +126,8 @@ const L1_LIMIT = 256
 
 type L1Entry = {
     readonly value: unknown
+    /** When the value was fetched, which is what its age is measured from. */
+    readonly storedAt: number
     readonly freshUntil: number
     readonly staleUntil: number
 }
@@ -109,9 +140,13 @@ type L1Entry = {
  * carry one. Such an entry is still trusted while it is fresh, but once stale
  * its retention is unknown, so it is refetched rather than served on a window
  * nobody recorded.
+ *
+ * `storedAt` is optional for the same reason, and is reconstructed from
+ * `freshUntil` when it is missing — see `storedAtOf`.
  */
 type Envelope = {
     readonly value: unknown
+    readonly storedAt?: number
     readonly freshUntil: number
     readonly staleUntil?: number
 }
@@ -169,16 +204,16 @@ export const make = (
         key: string,
         value: unknown,
         options: CacheWindow,
+        at: number,
     ) =>
         Effect.tryPromise(() => {
-            const now = Date.now()
-
             return kv.put(
                 key,
                 JSON.stringify({
                     value,
-                    freshUntil: now + options.freshSeconds * 1000,
-                    staleUntil: now + options.staleSeconds * 1000,
+                    storedAt: at,
+                    freshUntil: at + options.freshSeconds * 1000,
+                    staleUntil: at + options.staleSeconds * 1000,
                 }),
                 // Retention, not freshness: freshness lives inside the envelope
                 // so the stale window is ours to choose. `staleUntil` is stored
@@ -190,6 +225,52 @@ export const make = (
         }).pipe(Effect.catch(() => Effect.void))
 
     /**
+     * When an envelope was fetched, for envelopes written before `storedAt`.
+     *
+     * `freshUntil` is always `storedAt + freshSeconds`, so the write time is
+     * recoverable exactly as long as we know which window was used — and we do,
+     * because a `null` is stored on `emptyTtl` and everything else on the
+     * resource's own window.
+     */
+    const storedAtOf = (
+        envelope: Envelope,
+        value: unknown,
+        options: CacheWindow,
+    ): number => {
+        if (typeof envelope.storedAt === "number") return envelope.storedAt
+
+        const window = value === null ? emptyTtl : options
+
+        return envelope.freshUntil - window.freshSeconds * 1000
+    }
+
+    /**
+     * Stores a value at a known instant.
+     *
+     * The instant is a parameter rather than `Date.now()` taken here so the
+     * timestamp a read *reports* is the timestamp the entry was *stored* with.
+     * Deriving both from separate clock reads makes them disagree by the
+     * duration of the fetch, which would make `updatedAt` drift on every read.
+     */
+    const setAt = <A>(
+        key: string,
+        value: A,
+        options: CacheWindow,
+        at: number,
+        kv: KVNamespaceLike | undefined,
+    ) =>
+        Effect.gen(function* () {
+            if (kv) yield* write(kv, key, value, options, at)
+
+            l1Set(key, {
+                value,
+                storedAt: at,
+                freshUntil: at + options.freshSeconds * 1000,
+                staleUntil: at + options.staleSeconds * 1000,
+            })
+        })
+
+    /**
      * Stores a fetched value, downgrading a `null` to `emptyTtl`.
      *
      * A `null` is this codebase's "the upstream could not answer" sentinel
@@ -197,11 +278,27 @@ export const make = (
      * window its resource asked for. Without this an absence is cached with all
      * the confidence of a value — see that constant for the failure it caused.
      */
-    const store = <A>(key: string, value: A, options: CacheWindow) =>
-        cache.set(key, value, value === null ? emptyTtl : options)
+    const store = <A>(
+        key: string,
+        value: A,
+        options: CacheWindow,
+        at: number,
+        kv: KVNamespaceLike | undefined,
+    ) =>
+        setAt(key, value, value === null ? emptyTtl : options, at, kv)
 
     const cache = {
         getOrSet: <A>(
+            key: string,
+            options: CacheWindow,
+            effect: Effect.Effect<A>,
+            refresh?: Effect.Effect<boolean>,
+        ) =>
+            cache
+                .getOrSetCached(key, options, effect, refresh)
+                .pipe(Effect.map((cached) => cached.value)),
+
+        getOrSetCached: <A>(
             key: string,
             options: CacheWindow,
             effect: Effect.Effect<A>,
@@ -213,13 +310,28 @@ export const make = (
                 // L1 first: no I/O at all on the hot path.
                 const local = l1Get(key, now)
                 if (local && local.freshUntil > now) {
-                    return local.value as A
+                    return {
+                        value: local.value as A,
+                        updatedAt: local.storedAt,
+                    }
                 }
 
                 const kv = yield* Effect.promise(() => resolveNamespace())
 
-                let found: { value: unknown; fresh: boolean } | null = local
-                    ? { value: local.value, fresh: false }
+                let found: {
+                    value: unknown
+                    fresh: boolean
+                    storedAt: number
+                    freshUntil: number
+                    staleUntil: number
+                } | null = local
+                    ? {
+                          value: local.value,
+                          fresh: false,
+                          storedAt: local.storedAt,
+                          freshUntil: local.freshUntil,
+                          staleUntil: local.staleUntil,
+                      }
                     : null
 
                 // L2: only consulted when L1 missed or went stale.
@@ -247,13 +359,44 @@ export const make = (
                             const retained = (envelope.staleUntil ?? 0) > now
 
                             if (fresh || retained) {
-                                found = { value: envelope.value, fresh }
+                                const storedAt = storedAtOf(
+                                    envelope,
+                                    envelope.value,
+                                    options,
+                                )
+                                const staleUntil =
+                                    envelope.staleUntil ?? envelope.freshUntil
+
+                                /*
+                                 * A KV hit is promoted into L1. Without this the
+                                 * isolate pays a KV read for the same entry on
+                                 * every request: L1 was only ever filled by a
+                                 * fetch this isolate made, so a colo serving a
+                                 * crawler-warmed key read through to KV
+                                 * forever.
+                                 */
+                                l1Set(key, {
+                                    value: envelope.value,
+                                    storedAt,
+                                    freshUntil: envelope.freshUntil,
+                                    staleUntil,
+                                })
+
+                                found = {
+                                    value: envelope.value,
+                                    fresh,
+                                    storedAt,
+                                    freshUntil: envelope.freshUntil,
+                                    staleUntil,
+                                }
                             }
                         }
                     }
                 }
 
-                if (found?.fresh) return found.value as A
+                if (found?.fresh) {
+                    return { value: found.value as A, updatedAt: found.storedAt }
+                }
 
                 /*
                  * Stale but retained: answer now and refresh behind the
@@ -276,7 +419,13 @@ export const make = (
                         yield* schedule(
                             effect.pipe(
                                 Effect.flatMap((value) =>
-                                    store(key, value, options),
+                                    store(
+                                        key,
+                                        value,
+                                        options,
+                                        Date.now(),
+                                        kv,
+                                    ),
                                 ),
                             ),
                         )
@@ -288,7 +437,9 @@ export const make = (
 
                     // Deliberately not re-stored: freshness must not be pushed
                     // forward by a stale read, or the entry would never expire.
-                    return found.value as A
+                    // The reported age is the stale entry's, not now — that is
+                    // the whole point of reporting it.
+                    return { value: found.value as A, updatedAt: found.storedAt }
                 }
 
                 /*
@@ -298,25 +449,19 @@ export const make = (
                  * choose. The alternatives here are a fetch or an outage, and
                  * an outage is not a cache policy.
                  */
+                const fetchedAt = Date.now()
                 const value = yield* effect
 
-                yield* store(key, value, options)
+                yield* store(key, value, options, fetchedAt, kv)
 
-                return value
+                return { value, updatedAt: fetchedAt }
             }),
 
         set: <A>(key: string, value: A, options: CacheWindow) =>
             Effect.gen(function* () {
-                const now = Date.now()
                 const kv = yield* Effect.promise(() => resolveNamespace())
 
-                if (kv) yield* write(kv, key, value, options)
-
-                l1Set(key, {
-                    value,
-                    freshUntil: now + options.freshSeconds * 1000,
-                    staleUntil: now + options.staleSeconds * 1000,
-                })
+                yield* setAt(key, value, options, Date.now(), kv)
             }),
 
         invalidate: (key: string) =>

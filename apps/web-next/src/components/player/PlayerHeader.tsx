@@ -1,7 +1,9 @@
+import { useMemo } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { FavoriteButton } from "@/components/account/FavoriteButton"
 import { StatGrid } from "@/components/StatGrid"
-import { usePlayerDerived } from "./usePlayerDerived"
+import { UpdatedAt } from "@/components/UpdatedAt"
+import { playerProfileAtom, useQuery } from "@/effect/atoms"
 import { legendIconSrc, regionFlagSrc, weaponIconSrc } from "@/lib/assets"
 import { tierColor } from "@/lib/rankings"
 import { cleanString } from "@crh/common/helpers/cleanString"
@@ -21,10 +23,17 @@ import { cn } from "@/lib/cn"
  * The figures are the union of both: kubi's three (level, XP, time) plus the
  * legacy header's two art rows, which are the only place on the page where the
  * game's own artwork appears.
+ *
+ * Everything numeric here comes from the one profile aggregate. What is left in
+ * this file is picking the two art rows: a slice of lists the API already
+ * ordered, not a second aggregation.
  */
 
 /** Aliases past this many are noise; the search overlay holds the full list. */
 const MAX_SHOWN_ALIASES = 8
+
+/** How many art tiles each header row shows. */
+const TOP_ART_COUNT = 3
 
 /** One art tile in a header row. */
 type Thumb = {
@@ -55,17 +64,26 @@ const ThumbRow = ({ items }: { readonly items: readonly Thumb[] }) => (
 )
 
 export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
-    const player = usePlayerDerived(playerId)
+    const envelope = useQuery(playerProfileAtom(playerId))
+    const profile = envelope.data
 
-    if (!player) {
-        return (
-            <p className="text-sm text-muted-foreground">
-                No player with id {playerId}.
-            </p>
-        )
-    }
+    /*
+     * "Main" means where the hours went, so this row is ordered by time played
+     * rather than by level: a legend can reach a high level off a handful of
+     * long games. The API sorts `legends` by XP for the tab, so the ordering
+     * this row wants is picked here — a slice of an already-computed list.
+     */
+    const topLegends = useMemo(
+        () =>
+            [...profile.legends]
+                .filter((legend) => legend.stats.games > 0)
+                .sort((a, b) => b.stats.matchtime - a.stats.matchtime)
+                .slice(0, TOP_ART_COUNT),
+        [profile.legends],
+    )
 
-    const { stats, profile, topLegends, topWeapons, totals } = player
+    // The API orders weapons by time held, so its head is exactly this row.
+    const topWeapons = profile.weapons.slice(0, TOP_ART_COUNT)
 
     /*
      * The API has already filtered the current name out and collapsed
@@ -83,7 +101,7 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
     // is the only bracket that can speak for "where they play".
     const ranked = profile.ranked?.["1v1"] ?? null
 
-    const name = cleanString(stats.name)
+    const name = cleanString(profile.name)
 
     return (
         <header className="flex flex-col gap-3">
@@ -99,7 +117,14 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
                 <span aria-hidden className="text-muted-foreground/40">
                     /
                 </span>
-                <span>#{stats.brawlhalla_id}</span>
+                <span>#{profile.id}</span>
+                <span aria-hidden className="text-muted-foreground/40">
+                    ·
+                </span>
+                <UpdatedAt
+                    at={envelope.meta.updated_at}
+                    className="normal-case tracking-normal"
+                />
             </nav>
 
             <div className="flex flex-wrap items-center gap-3">
@@ -141,13 +166,13 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
                  */}
                 <FavoriteButton
                     type="player"
-                    id={String(stats.brawlhalla_id)}
+                    id={String(profile.id)}
                     name={name}
                     meta={
                         topLegends[0]
                             ? {
                                   icon: {
-                                      legend_key: topLegends[0].legend_name_key,
+                                      legend_key: topLegends[0].name_key,
                                   },
                               }
                             : {}
@@ -177,14 +202,17 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
                     <StatGrid
                         maxColumns={5}
                         stats={[
-                            { title: "Account level", value: stats.level },
+                            {
+                                title: "Account level",
+                                value: profile.stats.level,
+                            },
                             {
                                 title: "Account XP",
-                                value: stats.xp.toLocaleString(),
+                                value: profile.stats.xp.toLocaleString(),
                             },
                             {
                                 title: "In-game time",
-                                value: formatTime(totals.matchtime),
+                                value: formatTime(profile.stats.matchtime),
                             },
                             {
                                 title: "Main legends",
@@ -192,11 +220,11 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
                                     topLegends.length > 0 ? (
                                         <ThumbRow
                                             items={topLegends.map((legend) => ({
-                                                key: String(legend.legend_id),
+                                                key: String(legend.id),
                                                 src: legendIconSrc(
-                                                    legend.legend_name_key,
+                                                    legend.name_key,
                                                 ),
-                                                alt: legend.bio_name,
+                                                alt: legend.name,
                                             }))}
                                         />
                                     ) : (
@@ -209,11 +237,11 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
                                     topWeapons.length > 0 ? (
                                         <ThumbRow
                                             items={topWeapons.map((weapon) => ({
-                                                key: weapon.weapon,
+                                                key: weapon.name,
                                                 src: weaponIconSrc(
-                                                    weapon.weapon,
+                                                    weapon.name,
                                                 ),
-                                                alt: weapon.weapon,
+                                                alt: weapon.name,
                                             }))}
                                         />
                                     ) : (

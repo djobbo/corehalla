@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router"
+import { playerHref } from "@/lib/rankings"
 
 /**
  * The profile's tab strip.
@@ -10,12 +11,23 @@ import { Link } from "@tanstack/react-router"
  * Every tab is a real route, so the strip is a row of links rather than a
  * controlled tab widget: each tab is shareable, reloadable and preloadable, and
  * `activeOptions` decides the highlight from the URL alone.
+ *
+ * ## Why the links take the slug, not the id
+ *
+ * The route segment is a canonical slug (`1234-boomie`), and a link that spells
+ * the bare id is a *different* `$id` as far as the router is concerned. Two
+ * things then go wrong at once, and neither looks like a link bug: the parent
+ * loader sees a non-canonical segment and redirects — dropping the tab segment
+ * with it, so every tab lands on the overview — and `activeOptions` never
+ * matches, so no underline is drawn. Passing the slug through is what keeps the
+ * link and the location describing the same route.
  */
 export const PlayerTabs = ({
-    playerId,
+    slug,
     show2v2,
 }: {
-    readonly playerId: number
+    /** The canonical URL segment, from the profile itself. */
+    readonly slug: string
     /** The legacy client hides the tab entirely when there is no team record. */
     readonly show2v2: boolean
 }) => {
@@ -27,26 +39,26 @@ export const PlayerTabs = ({
         {
             tab: "overview",
             label: "Overview",
-            href: `/stats/players/${playerId}`,
+            href: playerHref(slug),
         },
         ...(show2v2
             ? [
                   {
                       tab: "2v2",
                       label: "2v2 Ranked",
-                      href: `/stats/players/${playerId}/2v2`,
+                      href: playerHref(slug, "2v2"),
                   },
               ]
             : []),
         {
             tab: "legends",
             label: "Legends",
-            href: `/stats/players/${playerId}/legends`,
+            href: playerHref(slug, "legends"),
         },
         {
             tab: "weapons",
             label: "Weapons",
-            href: `/stats/players/${playerId}/weapons`,
+            href: playerHref(slug, "weapons"),
         },
     ]
 

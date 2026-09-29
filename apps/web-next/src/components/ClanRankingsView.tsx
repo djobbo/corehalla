@@ -140,7 +140,7 @@ export const ClanRankingsView = ({
                                         <EntityLink
                                             type="clan"
                                             id={clan.id}
-                                            href={clanHref(clan.id)}
+                                            href={clanHref(clan.slug)}
                                             className="font-semibold"
                                         >
                                             {cleanString(clan.name)}

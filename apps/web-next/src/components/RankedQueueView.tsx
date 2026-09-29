@@ -202,7 +202,7 @@ export const RankedQueueView = ({
                                                 <EntityLink
                                                     type="player"
                                                     id={member.id}
-                                                    href={playerHref(member.id)}
+                                                    href={playerHref(member.slug)}
                                                     className="font-semibold"
                                                 >
                                                     {cleanString(member.name)}

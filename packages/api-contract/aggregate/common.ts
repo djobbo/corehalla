@@ -5,15 +5,20 @@ import { Schema } from "effect"
  *
  * `kubi` wraps each page payload in `{ data, meta }`, and the envelope is the
  * part worth copying exactly: it gives a response one place to say "when was
- * this assembled" without every entity having to carry its own timestamp, and
- * it leaves room to add pagination or a cache verdict later without moving the
- * payload.
+ * this" without every entity having to carry its own timestamp, and it leaves
+ * room to add pagination or a cache verdict later without moving the payload.
  *
- * `updated_at` is epoch milliseconds rather than a `Date`. The aggregated
- * endpoints mix sources that do not share a clock — an upstream payload, our
- * own archive, and the moment of assembly — and milliseconds is the unit the
- * archive already speaks (`QueuedEntry.queuedAt`), so nothing has to guess how
- * a date was serialized.
+ * `updated_at` is the fetch time of the **oldest** upstream read behind the
+ * payload, not the moment the response was assembled. An aggregate is composed
+ * from several independently-cached reads — career stats, ranked, 3v3, the clan
+ * — and stamping it with `now` would claim the whole page is as fresh as its
+ * newest part. Reporting the minimum is the honest answer and the one a caller
+ * can act on: it is how long ago the least-current fact on the page was true.
+ *
+ * Epoch milliseconds rather than a `Date`. The aggregated endpoints mix sources
+ * that do not share a clock — an upstream payload, our own archive, and the
+ * moment of assembly — and milliseconds is the unit the archive already speaks
+ * (`QueuedEntry.queuedAt`), so nothing has to guess how a date was serialized.
  */
 export const MetaSchema = Schema.Struct({
     updated_at: Schema.Number,

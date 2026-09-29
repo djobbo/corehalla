@@ -12,7 +12,10 @@ import type { GuildEnvelope } from "@crh/api-contract/schemas"
  * Nothing here needs a network, which is why it is a pure function of the clan
  * and the clock.
  */
-export const buildGuild = (clan: Clan, now: number): GuildEnvelope => {
+export const buildGuild = (
+    clan: Clan,
+    updatedAt: number,
+): GuildEnvelope => {
     const xp = Number.parseInt(clan.clan_xp, 10)
     const { level, xpPercentage } = guildLevel(xp)
 
@@ -47,6 +50,6 @@ export const buildGuild = (clan: Clan, now: number): GuildEnvelope => {
                     : { guild_points: member.guild_points }),
             })),
         },
-        meta: { updated_at: now },
+        meta: { updated_at: updatedAt },
     }
 }

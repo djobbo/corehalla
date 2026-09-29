@@ -28,7 +28,8 @@ function Page() {
 
     const region = resolveRegion(regionParam)
     const page = resolvePage(pageParam)
-    const rows = to1v1Rows(useQuery(rankings1v1Atom(region, page)))
+    const board = useQuery(rankings1v1Atom(region, page))
+    const rows = to1v1Rows(board)
 
     return (
         <main className="ch-page">
@@ -38,6 +39,7 @@ function Page() {
                 page={page}
                 rows={rows}
                 hasNextPage={rows.length >= LADDER_PAGE_SIZE}
+                updatedAt={board.meta.updated_at}
             />
         </main>
     )

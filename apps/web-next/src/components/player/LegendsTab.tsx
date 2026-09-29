@@ -5,13 +5,13 @@ import { SelectField } from "@/components/SelectField"
 import { SortControl } from "@/components/SortControl"
 import { StatGrid } from "@/components/StatGrid"
 import { LegendRow } from "./LegendRow"
-import { usePlayerDerived } from "./usePlayerDerived"
+import { playerProfileAtom, useQuery } from "@/effect/atoms"
 import { ratio } from "@/lib/stats"
 import { useSortBy } from "@/lib/useSortBy"
 import { calculateWinrate } from "@crh/bhapi/helpers/calculateWinrate"
 import { weapons as allWeapons } from "@crh/bhapi/constants"
 import { formatTime } from "@crh/common/helpers/date"
-import type { FullLegend } from "@crh/bhapi/legends"
+import type { PlayerLegend } from "@crh/api-contract/schemas"
 import type { SortOption } from "@/lib/useSortBy"
 import type { Stat } from "@/components/StatGrid"
 import type { Weapon } from "@crh/bhapi/constants"
@@ -22,6 +22,10 @@ import type { Weapon } from "@crh/bhapi/constants"
  * The list is the tab, so it is ordered by whatever the control says and each
  * collapsed row shows the figure being sorted on. That is the whole reason the
  * rows are collapsed: sixty legends is a table, not sixty cards.
+ *
+ * The roster, its per-legend figures and the account totals all arrive on the
+ * profile aggregate, so this tab reads one atom and sorts it — the API already
+ * did the summing.
  */
 
 type LegendSort =
@@ -35,28 +39,27 @@ type LegendSort =
     | "peak"
     | "name"
 
-const games = (legend: FullLegend): number => legend.stats?.games ?? 0
-const wins = (legend: FullLegend): number => legend.stats?.wins ?? 0
-const losses = (legend: FullLegend): number => games(legend) - wins(legend)
-const winrate = (legend: FullLegend): number =>
+const games = (legend: PlayerLegend): number => legend.stats.games
+const wins = (legend: PlayerLegend): number => legend.stats.wins
+const losses = (legend: PlayerLegend): number => games(legend) - wins(legend)
+const winrate = (legend: PlayerLegend): number =>
     calculateWinrate(wins(legend), games(legend))
 
 /*
  * Module scope on purpose: `useSortBy` sorts on every render and reads the
  * comparator by key, so a fresh record per render would only churn.
  */
-const sortOptions: Record<LegendSort, SortOption<FullLegend>> = {
+const sortOptions: Record<LegendSort, SortOption<PlayerLegend>> = {
     level: {
         label: "Level",
-        compare: (a, b) => (a.stats?.level ?? 0) - (b.stats?.level ?? 0),
+        compare: (a, b) => a.stats.level - b.stats.level,
         display: (legend) =>
-            `Level ${legend.stats?.level ?? 0} · ${(legend.stats?.xp ?? 0).toLocaleString()} xp`,
+            `Level ${legend.stats.level} · ${legend.stats.xp.toLocaleString()} xp`,
     },
     matchtime: {
         label: "Time played",
-        compare: (a, b) =>
-            (a.stats?.matchtime ?? 0) - (b.stats?.matchtime ?? 0),
-        display: (legend) => formatTime(legend.stats?.matchtime ?? 0),
+        compare: (a, b) => a.stats.matchtime - b.stats.matchtime,
+        display: (legend) => formatTime(legend.stats.matchtime),
     },
     games: {
         label: "Games",
@@ -91,7 +94,7 @@ const sortOptions: Record<LegendSort, SortOption<FullLegend>> = {
     },
     name: {
         label: "Name",
-        compare: (a, b) => a.bio_name.localeCompare(b.bio_name),
+        compare: (a, b) => a.name.localeCompare(b.name),
     },
 }
 
@@ -101,37 +104,32 @@ const weaponChoices: readonly { value: Weapon | ""; label: string }[] = [
 ]
 
 export const LegendsTab = ({ playerId }: { readonly playerId: number }) => {
-    const player = usePlayerDerived(playerId)
+    const profile = useQuery(playerProfileAtom(playerId)).data
     const [weaponFilter, setWeaponFilter] = useState<Weapon | "">("")
 
-    const legends = useMemo(() => player?.legends ?? [], [player])
+    const legends = profile.legends
 
     const filtered = useMemo(
         () =>
             legends.filter(
                 (legend) =>
                     weaponFilter === "" ||
-                    legend.weapon_one === weaponFilter ||
-                    legend.weapon_two === weaponFilter,
+                    legend.weapon_one.name === weaponFilter ||
+                    legend.weapon_two.name === weaponFilter,
             ),
         [legends, weaponFilter],
     )
 
     const sort = useSortBy(filtered, sortOptions, "level", "desc")
 
-    if (!player) return null
-
-    const { stats, totals } = player
-    const matchtime = totals.matchtime
-
     const played = filtered.filter(
-        (legend) => (legend.stats?.matchtime ?? 0) > 0,
+        (legend) => legend.stats.matchtime > 0,
     ).length
     const rankedPlayed = filtered.filter(
         (legend) => (legend.ranked?.games ?? 0) > 0,
     ).length
     const totalLevel = filtered.reduce(
-        (sum, legend) => sum + (legend.stats?.level ?? 0),
+        (sum, legend) => sum + legend.stats.level,
         0,
     )
 
@@ -195,15 +193,15 @@ export const LegendsTab = ({ playerId }: { readonly playerId: number }) => {
                 <div className="flex flex-col gap-3">
                     {sort.sorted.map((legend, index) => (
                         <LegendRow
-                            key={legend.legend_id}
+                            key={legend.id}
                             legend={legend}
                             rank={
                                 sort.direction === "asc"
                                     ? sort.sorted.length - index
                                     : index + 1
                             }
-                            matchtime={matchtime}
-                            games={stats.games}
+                            matchtime={profile.stats.matchtime}
+                            games={profile.stats.games}
                             display={sort.display?.(legend)}
                         />
                     ))}

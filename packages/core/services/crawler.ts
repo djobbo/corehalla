@@ -91,11 +91,11 @@ export type CrawlerConfig = {
  *   doubles the cost of a team page.
  *
  * Those counts hold only because the crawl reads **career stats alone** — see
- * `Upstream.getPlayerStats` and the `withClan` option `crawlPlayer` passes. A
- * profile read also assembles the clan card, which is a second request per
- * player that the archive discards; paying it here is what silently made a pass
- * 4,030 requests and put the crawl's consumer over a single invocation's worth
- * of work per interval.
+ * `Upstream.getPlayerStats`, which is now clan-free by construction rather than
+ * by an option. A profile read also assembles the clan card, and that is a
+ * separate read (`Upstream.getPlayerClan`) the crawl never makes; paying it here
+ * is what silently made a pass 4,030 requests and put the crawl's consumer over
+ * a single invocation's worth of work per interval.
  *
  * Over the 30 targets a pass is about 2,530 requests. At 225ms that is 4.44
  * req/s — two thirds of the allowance — and a pass takes about 9.5 minutes of
@@ -222,6 +222,30 @@ export const layer = Layer.effect(
         const cache = yield* Cache
 
         /**
+         * The player's own ranked record, fetched and warmed for the request
+         * path.
+         *
+         * v0-only, and read here rather than taken from the ladder row because a
+         * 2v2 or 3v3 row carries a *team* rating rather than the player's. The
+         * entry is warmed so the profile's ranked tab is served from work the
+         * crawl already paid for.
+         */
+        const warmRanked = (playerId: number) =>
+            Effect.gen(function* () {
+                const ranked = yield* upstream.getPlayerRanked(playerId)
+
+                if (ranked !== null) {
+                    yield* cache.set(
+                        cacheKeys.playerRanked(playerId),
+                        ranked,
+                        cacheTtl.profile,
+                    )
+                }
+
+                return ranked
+            })
+
+        /**
          * One player: fetch their stats, then write them.
          *
          * `row` is the ladder row that surfaced the player. Only a 1v1 row may
@@ -236,37 +260,49 @@ export const layer = Layer.effect(
         ) =>
             Effect.gen(function* () {
                 /*
-                 * Career stats only. The clan card is the profile's, and asking
-                 * for it here spends a second upstream request per player on a
-                 * value the archive write below discards — see
-                 * `Upstream.getPlayerStats`. That one option is what puts a
-                 * ladder pass back at the ~2,530 requests the budget assumes.
+                 * Career stats only — and this is now the *whole* of the
+                 * player-stats read rather than an option on it.
+                 *
+                 * The clan card is `getPlayerClan`'s, a separate cache entry the
+                 * crawl never fetches because `upsertPlayerStats` discards it.
+                 * Splitting the two is what lets the payload fetched here be
+                 * warmed verbatim: a single merged entry could only be warmed by
+                 * paying for a request the crawler exists to avoid, or by
+                 * storing a clan-less value the profile gateway cannot tell from
+                 * "this player has no clan".
                  */
-                const stats = yield* upstream.getPlayerStats(playerId, {
-                    withClan: false,
-                })
+                const stats = yield* upstream.getPlayerStats(playerId)
 
                 if (!stats) return
 
                 /*
-                 * Deliberately *not* warming `cacheKeys.player` from here.
+                 * Warm the request path with exactly what was fetched.
                  *
-                 * A crawl-only read carries no clan card, and the profile
-                 * gateway cannot tell a clan-less entry from a player who has no
-                 * clan: it would serve the card's absence for the entry's whole
-                 * freshness window. Warming it properly needs the very request
-                 * this path just stopped paying, and the trade is a bad one —
-                 * the crawl touches 250 players a page, deep down the ladder,
-                 * almost none of whom are viewed before the five-minute window
-                 * lapses. The request path warms its own entries on a miss, and
-                 * the crawler still warms every ladder page it reads.
+                 * The crawler is the refresh path, so it reads through the
+                 * uncached `Upstream` — but it *writes* the cache, and warming
+                 * the two player entries it has already paid for is what makes a
+                 * profile opened in a fresh colo answer without an upstream
+                 * call. `playerStats` is the clan-less payload the gateway
+                 * serves; `playerRanked` is the v0 record it serves from its own
+                 * key.
+                 *
+                 * A `null` is deliberately not warmed: it means "the upstream
+                 * could not answer" rather than a finding, and the read path
+                 * stores those on `emptyTtl`, so warming one here on the profile
+                 * window would turn a transient failure into a fact that stands
+                 * for five minutes.
                  */
+                yield* cache.set(
+                    cacheKeys.playerStats(playerId),
+                    stats,
+                    cacheTtl.profile,
+                )
 
                 const ranked =
                     target.bracket === "1v1"
                         ? snapshotFromRow(row as Ranking1v1)
                         : snapshotFromRanked(
-                              yield* upstream.getPlayerRanked(playerId),
+                              yield* warmRanked(playerId),
                           )
                 /*
                  * Written either way, and that is a change: a player with no
