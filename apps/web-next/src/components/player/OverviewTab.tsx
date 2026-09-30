@@ -3,6 +3,8 @@ import { Breakdown } from "@/components/Breakdown"
 import { SplitProgress } from "@/components/SplitProgress"
 import { StatGrid } from "@/components/StatGrid"
 import { RankedCard } from "./RankedCard"
+import { LegendBubbleChart } from "./LegendBubbleChart"
+import { WeaponBubbleChart } from "./WeaponBubbleChart"
 import { playerProfileAtom, useQuery } from "@/effect/atoms"
 import { EntityLink } from "@/components/EntityLink"
 import { cn } from "@/lib/cn"
@@ -13,6 +15,7 @@ import { formatTime } from "@crh/common/helpers/date"
 import type { Stat } from "@/components/StatGrid"
 import type { BreakdownEntry } from "@/components/Breakdown"
 import type { Player, PlayerRankedTeam } from "@crh/api-contract/schemas"
+import type { ReactNode } from "react"
 
 type RankedBracket = NonNullable<NonNullable<Player["ranked"]>["1v1"]>
 
@@ -402,6 +405,16 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
     const has1v1 = ranked1v1 !== null
     const has3v3 = ranked3v3 !== null
 
+    const hasLegendPlay = profile.legends.some(
+        (legend) => legend.stats.games > 0,
+    )
+    const hasWeaponPlay =
+        profile.weapons.some((weapon) => weapon.stats.games > 0) ||
+        profile.unarmed.time_held > 0
+
+    // Games is always drawn, so the widest row is games + both distributions.
+    const distributionCount = 1 + Number(hasLegendPlay) + Number(hasWeaponPlay)
+
     const rankedCardCount = [has1v1, soloRecord !== undefined, has3v3].filter(
         Boolean,
     ).length
@@ -437,9 +450,35 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                     <Ranked3v3Panel ranked={ranked3v3} />
                 </div>
             ) : null}
-
-            <ClanPanel clan={profile.clan} />
-            <GamesPanel games={games} wins={wins} />
+            <div
+                className={cn(
+                    "grid gap-4",
+                    distributionCount === 2 && "md:grid-cols-2",
+                    distributionCount > 2 && "md:grid-cols-2 lg:grid-cols-3",
+                )}
+            >
+                <div className="flex flex-col gap-4">
+                    <GamesPanel games={games} wins={wins} />
+                    <ClanPanel clan={profile.clan} />
+                </div>
+                {hasLegendPlay ? (
+                    <Card>
+                        <CardContent>
+                            <LegendBubbleChart legends={profile.legends} />
+                        </CardContent>
+                    </Card>
+                ) : null}
+                {hasWeaponPlay ? (
+                    <Card>
+                        <CardContent>
+                            <WeaponBubbleChart
+                                weapons={profile.weapons}
+                                unarmed={profile.unarmed}
+                            />
+                        </CardContent>
+                    </Card>
+                ) : null}
+            </div>
             <div className="grid gap-4 lg:grid-cols-2">
                 <KosFallsPanel
                     kos={kos}

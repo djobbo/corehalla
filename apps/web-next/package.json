@@ -23,6 +23,7 @@
         "class-variance-authority": "^0.7.1",
         "cmdk": "^1.1.1",
         "cn": "^0.4.0",
+        "d3-hierarchy": "^3.1.2",
         "effect": "4.0.0-rc.117",
         "lucide-react": "^1.48.0",
         "react": "^19.3.0",
@@ -32,6 +33,7 @@
     "devDependencies": {
         "@crh/tsconfig": "workspace:*",
         "@tailwindcss/vite": "^4.3.3",
+        "@types/d3-hierarchy": "^3.1.7",
         "@types/node": "^24.0.0",
         "@types/react": "^19.0.8",
         "@types/react-dom": "^19.0.3",

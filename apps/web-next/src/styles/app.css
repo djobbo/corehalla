@@ -140,8 +140,7 @@
     --chart-4: #ed7853;
     --chart-5: #f3da57;
 
-    /* No rounding anywhere: every corner in this design is square. */
-    --radius: 0;
+    --radius: 0.25rem;
 }
 
 @theme inline {
