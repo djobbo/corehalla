@@ -29,7 +29,7 @@ function Page() {
     // it out of SSR.
     const articlesResult = useAtomValue(articlesAtom("", 3))
     const articles =
-        articlesResult._tag === "Success" ? articlesResult.value : []
+        articlesResult._tag === "Success" ? articlesResult.value.articles : []
 
     return (
         <>

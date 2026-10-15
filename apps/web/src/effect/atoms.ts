@@ -5,7 +5,7 @@ import { useAtomSuspense } from "@effect/atom-react"
 import { CorehallaClient } from "./Client"
 import type * as AsyncResult from "effect/unstable/reactivity/AsyncResult"
 import type {
-    ArticleCategory,
+    NewsCategory,
     RankedRegion,
     SortablePlayerProp,
 } from "@crh/api-contract/schemas"
@@ -21,7 +21,7 @@ import type {
 const ttl = "5 minutes"
 
 type Region = typeof RankedRegion.Type
-type ArticleCategoryType = typeof ArticleCategory.Type
+type ArticleCategoryType = typeof NewsCategory.Type
 type SortableProp = typeof SortablePlayerProp.Type
 
 export const rankings1v1Atom = (region: Region, page: number, name?: string) =>
@@ -93,10 +93,10 @@ export const weeklyRotationAtom = () =>
         timeToLive: ttl,
     })
 
-export const articlesAtom = (category: ArticleCategoryType, first: number) =>
+export const articlesAtom = (category: ArticleCategoryType, pageSize: number) =>
     CorehallaClient.query("content", "getBHArticles", {
-        query: { category, first },
-        serializationKey: `content:articles:${category}:${first}`,
+        query: { category, page: 1, pageSize },
+        serializationKey: `content:articles:${category}:1:${pageSize}`,
         timeToLive: ttl,
     })
 

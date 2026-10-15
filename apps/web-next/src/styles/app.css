@@ -1215,6 +1215,119 @@
         transform: scaleX(1);
         transition: transform 160ms ease-out;
     }
+
+    /* --- article body ---------------------------------------------------- */
+
+    /*
+     * Renders the sanitized WordPress HTML from a news article. Scoped to a
+     * single class so it cannot leak into the app's own components.
+     */
+    .ch-article {
+        color: var(--color-textVar1);
+        font-size: 0.95rem;
+        line-height: 1.75;
+    }
+
+    .ch-article > * + * {
+        margin-top: 1rem;
+    }
+
+    .ch-article h2,
+    .ch-article h3,
+    .ch-article h4 {
+        font-family: var(--font-display);
+        color: var(--foreground);
+        font-weight: 800;
+        line-height: 1.15;
+        text-transform: uppercase;
+        letter-spacing: 0.01em;
+    }
+
+    .ch-article h2 {
+        margin-top: 2rem;
+        font-size: 1.4rem;
+    }
+
+    .ch-article h3 {
+        margin-top: 1.5rem;
+        font-size: 1.1rem;
+    }
+
+    .ch-article h4 {
+        margin-top: 1.25rem;
+        font-size: 0.95rem;
+    }
+
+    .ch-article strong,
+    .ch-article b {
+        color: var(--foreground);
+        font-weight: 800;
+    }
+
+    .ch-article a {
+        color: var(--ring);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+
+    .ch-article a:hover {
+        color: var(--foreground);
+    }
+
+    .ch-article ul,
+    .ch-article ol {
+        padding-left: 1.25rem;
+    }
+
+    .ch-article ul {
+        list-style: disc;
+    }
+
+    .ch-article ol {
+        list-style: decimal;
+    }
+
+    .ch-article li + li {
+        margin-top: 0.35rem;
+    }
+
+    .ch-article img,
+    .ch-article video,
+    .ch-article iframe {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        border-radius: 0.75rem;
+    }
+
+    .ch-article iframe {
+        aspect-ratio: 16 / 9;
+    }
+
+    .ch-article blockquote {
+        border-left: 3px solid var(--ring);
+        padding-left: 1rem;
+        color: var(--muted-foreground);
+        font-style: italic;
+    }
+
+    .ch-article figcaption {
+        margin-top: 0.5rem;
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+    }
+
+    .ch-article table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .ch-article th,
+    .ch-article td {
+        border: 1px solid var(--color-panelDeep);
+        padding: 0.5rem;
+        text-align: left;
+    }
 }
 
 /*

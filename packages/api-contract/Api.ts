@@ -8,8 +8,8 @@ import {
 import { Schema } from "effect"
 import {
     AliasSearchResultsSchema,
-    ArticleCategory,
-    ArticlesSchema,
+    ArticlesPageSchema,
+    ArticleSchema,
     CareerRankingsSchema,
     ClanSchema,
     ClansSchema,
@@ -19,6 +19,7 @@ import {
     GuildEnvelopeSchema,
     Ladder,
     LookupResultsSchema,
+    NewsCategory,
     Player3v3RankedSchema,
     PlayerAliasesSchema,
     PlayerEnvelopeSchema,
@@ -209,10 +210,19 @@ const content = HttpApiGroup.make("content")
     .add(
         HttpApiEndpoint.get("getBHArticles", "/api/v1/content/articles", {
             query: {
-                category: Schema.optionalKey(ArticleCategory),
-                first: Schema.optionalKey(Schema.FiniteFromString),
+                category: Schema.optionalKey(NewsCategory),
+                page: Schema.optionalKey(Schema.FiniteFromString),
+                pageSize: Schema.optionalKey(Schema.FiniteFromString),
             },
-            success: ArticlesSchema,
+            success: ArticlesPageSchema,
+        }),
+    )
+    .add(
+        // Article slugs are page-sized; category listings live under `/news/category`.
+        HttpApiEndpoint.get("getBHArticle", "/api/v1/content/articles/:slug", {
+            params: { slug: Schema.String },
+            success: ArticleSchema,
+            error: HttpApiError.NotFound,
         }),
     )
 

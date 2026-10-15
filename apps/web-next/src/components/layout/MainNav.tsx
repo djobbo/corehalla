@@ -9,6 +9,7 @@ import {
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import { cn } from "@/lib/cn"
+import { newsCategories, newsHref } from "@/lib/news"
 
 type NavLink = {
     readonly label: string
@@ -82,6 +83,20 @@ const sections: readonly NavSection[] = [
         label: "Guilds",
         href: "/rankings/guilds",
         match: ["/rankings/guilds"],
+    },
+    {
+        label: "News",
+        href: "/news",
+        match: ["/news"],
+        columns: [
+            {
+                heading: "Categories",
+                links: newsCategories.map((category) => ({
+                    label: category.label,
+                    href: newsHref(category.slug),
+                })),
+            },
+        ],
     },
 ]
 

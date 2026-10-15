@@ -143,6 +143,24 @@ export const aliasSearchAtom = (q: string) =>
         timeToLive: searchTtl,
     })
 
+export const newsArticlesAtom = (
+    category: string,
+    page: number,
+    pageSize: number,
+) =>
+    CorehallaClient.query("content", "getBHArticles", {
+        query: { category, page, pageSize },
+        serializationKey: `news:${category}:${page}:${pageSize}`,
+        timeToLive: ttl,
+    })
+
+export const newsArticleAtom = (slug: string) =>
+    CorehallaClient.query("content", "getBHArticle", {
+        params: { slug },
+        serializationKey: `news:article:${slug}`,
+        timeToLive: ttl,
+    })
+
 export type Registry = AtomRegistry.AtomRegistry
 
 export type RouterContext = {

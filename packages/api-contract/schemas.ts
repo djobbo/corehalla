@@ -9,7 +9,7 @@ import type {
     Ranking3v3,
 } from "@crh/bhapi/types"
 import { weapons } from "@crh/bhapi/constants"
-import type { BHArticle } from "@crh/web-parser/common"
+import type { BHArticle, BHArticleDetail } from "@crh/web-parser/common"
 
 /**
  * Passthrough `Schema.declare` for upstream types we do not re-validate.
@@ -120,11 +120,24 @@ export const PowerRankingsEnvelopeSchema = Schema.Struct({
 
 export type PowerRankingsEnvelope = typeof PowerRankingsEnvelopeSchema.Type
 
-export const ArticleCategory = Schema.Literals([
-    "",
-    "weekly-rotation",
-    "patch-notes",
-])
+/** Free-form WordPress category slug (`patch-notes`, `esports`, …); `""` is "all". */
+export const NewsCategory = Schema.String
+
+export type NewsCategory = typeof NewsCategory.Type
+
+export type ArticlesPage = {
+    readonly articles: readonly BHArticle[]
+    readonly hasNextPage: boolean
+}
+
+/** Kept here so the API's page maths and the client's page links cannot drift. */
+export const NEWS_PAGE_SIZE = 12
+
+export type {
+    BHArticle,
+    BHArticleCategory,
+    BHArticleDetail,
+} from "@crh/web-parser/common"
 
 export const sortablePlayerProps = [
     "xp",
@@ -198,7 +211,8 @@ export const PlayerRankedSchema = json<PlayerRanked>()
 export const Player3v3RankedSchema = json<Player3v3Ranked>()
 export const PlayerAliasesSchema = json<readonly string[]>()
 export const ClanSchema = json<Clan>()
-export const ArticlesSchema = json<readonly BHArticle[]>()
+export const ArticlesPageSchema = json<ArticlesPage>()
+export const ArticleSchema = json<BHArticleDetail>()
 
 export * from "./aggregate/common"
 export * from "./aggregate/player"

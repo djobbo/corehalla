@@ -1,11 +1,12 @@
 import { legends } from "@crh/bhapi/legends"
 import { load as loadHtml } from "cheerio"
 import { logError, logInfo } from "@crh/logger"
-import { z } from "zod"
 import axios from "axios"
+import { sanitizeArticleHtml } from "./sanitizeArticleHtml"
+
+export { sanitizeArticleHtml } from "./sanitizeArticleHtml"
 
 const BRAWLHALLA_GRAPHQL_API_URL = "https://cms.brawlhalla.com/graphql"
-const BRAWLHALLA_WP_API_URL = "https://cms.brawlhalla.com/wp-json/wp/v2"
 
 const BRAWLHALLA_GRAPHQL_API_HEADERS = {
     "Content-Type": "application/json",
@@ -29,74 +30,138 @@ const getBrawlhallaGraphQLAPI = async <T>(
     return data
 }
 
-export const brawlhallaArticleCategorySchema = z.union([
-    z.literal(""),
-    z.literal("weekly-rotation"),
-    z.literal("patch-notes"),
-])
+/** WP excerpts arrive as HTML with entities; previews and meta tags want text. */
+const plainText = (html: string): string =>
+    loadHtml(html).text().replace(/\s+/g, " ").trim()
 
-export type BrawlhallaArticleCategory = z.infer<
-    typeof brawlhallaArticleCategorySchema
->
-
+/**
+ * Cursor-paginated WordPress GraphQL reader for Brawlhalla's news.
+ *
+ * The connection has no `offset`, so a numbered page is expressed as
+ * `first: page * pageSize` and sliced by the caller.
+ */
 export type BrawlhallaArticleVariables = {
     first: number | null
-    category: BrawlhallaArticleCategory | null
-    after: number | null
+    category: string | null
+    /** `pageInfo.endCursor` of the previous page; opaque. */
+    after: string | null
 }
 
-const defaultBrawlhallaArticleVariables: BrawlhallaArticleVariables = {
-    first: 6,
-    category: null,
-    after: null,
+export type BHArticleImage = {
+    sourceUrl: string
+    mediaDetails: {
+        height: number
+        width: number
+        sizes: {
+            name: string
+            mimeType: string
+            sourceUrl: string
+            width: number
+            height: number
+        }[]
+    }
 }
 
-export type BHArticle = Awaited<
-    ReturnType<typeof getBrawlhallaArticles>
->[number]
+export type BHArticleCategory = {
+    name: string
+    slug: string
+}
+
+export type BHArticle = {
+    title: string
+    slug: string
+    dateGmt: string
+    excerpt: string
+    categories: BHArticleCategory[]
+    featuredImage: BHArticleImage
+}
+
+export type BHArticleDetail = BHArticle & {
+    content: string
+}
+
+export type BHArticlesPage = {
+    articles: BHArticle[]
+    endCursor: string | null
+    hasNextPage: boolean
+}
+
+type RawArticleNode = {
+    title: string
+    slug: string
+    dateGmt: string
+    excerpt: string
+    content?: string | null
+    categories: {
+        nodes: BHArticleCategory[]
+    }
+    featuredImage: {
+        node: BHArticleImage
+    }
+}
+
+const mapArticleNode = (node: RawArticleNode): BHArticle => ({
+    title: node.title,
+    slug: node.slug,
+    dateGmt: node.dateGmt,
+    excerpt: plainText(node.excerpt),
+    categories: node.categories.nodes.map(({ name, slug }) => ({ name, slug })),
+    featuredImage: {
+        sourceUrl: node.featuredImage.node.sourceUrl,
+        mediaDetails: {
+            height: node.featuredImage.node.mediaDetails.height,
+            width: node.featuredImage.node.mediaDetails.width,
+            // WP serialises the size dimensions as strings.
+            sizes: node.featuredImage.node.mediaDetails.sizes.map((size) => ({
+                ...size,
+                width: Number(size.width),
+                height: Number(size.height),
+            })),
+        },
+    },
+})
+
+const ARTICLE_FIELDS = `
+    title
+    slug
+    dateGmt
+    excerpt
+    categories {
+        nodes {
+            name
+            slug
+        }
+    }
+    featuredImage {
+        node {
+            sourceUrl
+            mediaDetails {
+                height
+                width
+                sizes {
+                    name
+                    mimeType
+                    sourceUrl
+                    width
+                    height
+                }
+            }
+        }
+    }
+`
 
 export const getBrawlhallaArticles = async (
     variables?: Partial<BrawlhallaArticleVariables>,
-) => {
+): Promise<BHArticlesPage> => {
     const query = `
         query ($category: String, $after: String, $first: Int = 6) {
             posts(first: $first, after: $after, where: {categoryName: $category}) {
                 pageInfo {
+                    hasNextPage
                     endCursor
                 }
                 nodes {
-                    title
-                    slug
-                    dateGmt
-                    excerpt
-                    author {
-                        node {
-                            databaseId
-                            name
-                        }
-                    }
-                    categories {
-                        nodes {
-                            name
-                            slug
-                        }
-                    }
-                    featuredImage {
-                        node {
-                            sourceUrl
-                            mediaDetails {
-                                height
-                                width
-                                sizes {
-                                    name
-                                    mimeType
-                                    sourceUrl
-                                    width
-                                    height
-                                }
-                            }
-                        }
-                    }
+                    ${ARTICLE_FIELDS}
                 }
             }
         }`
@@ -104,74 +169,68 @@ export const getBrawlhallaArticles = async (
     const { data } = await getBrawlhallaGraphQLAPI<{
         data: {
             posts: {
-                nodes: {
-                    title: string
-                    slug: string
-                    dateGmt: string
-                    excerpt: string
-                    categories: {
-                        nodes: {
-                            name: string
-                            slug: string
-                        }[]
-                    }
-                    featuredImage: {
-                        node: {
-                            sourceUrl: string
-                            mediaDetails: {
-                                height: number
-                                width: number
-                                sizes: {
-                                    name: string
-                                    mimeType: string
-                                    sourceUrl: string
-                                    width: number
-                                    height: number
-                                }[]
-                            }
-                        }
-                    }
-                }[]
+                nodes: RawArticleNode[]
                 pageInfo: {
-                    endCursor: string
+                    hasNextPage: boolean
+                    endCursor: string | null
                 }
             }
         }
     }>(query, {
-        ...defaultBrawlhallaArticleVariables,
-        ...variables,
+        first: variables?.first ?? 6,
+        category: variables?.category ?? null,
+        after: variables?.after ?? null,
     })
 
-    return data.posts.nodes.map((node) => ({
-        title: node.title,
-        slug: node.slug,
-        dateGmt: node.dateGmt,
-        excerpt: node.excerpt,
-        categories: node.categories.nodes.map(({ name, slug }) => ({
-            name,
-            slug,
-        })),
-        featuredImage: node.featuredImage.node,
-    }))
+    return {
+        articles: data.posts.nodes.map(mapArticleNode),
+        endCursor: data.posts.pageInfo.endCursor,
+        hasNextPage: data.posts.pageInfo.hasNextPage,
+    }
+}
+
+export const getBrawlhallaArticle = async (
+    slug: string,
+): Promise<BHArticleDetail | null> => {
+    const query = `
+        query ($slug: ID!) {
+            post(id: $slug, idType: SLUG) {
+                ${ARTICLE_FIELDS}
+                content
+            }
+        }`
+
+    const { data } = await getBrawlhallaGraphQLAPI<{
+        data: {
+            post: (RawArticleNode & { content: string | null }) | null
+        }
+    }>(query, { slug })
+
+    if (!data.post) return null
+
+    return {
+        ...mapArticleNode(data.post),
+        content: sanitizeArticleHtml(data.post.content ?? ""),
+    }
 }
 
 export const getWeeklyRotation = async () => {
-    const latestWeeklyRotationArticle = await getBrawlhallaArticles({
+    const page = await getBrawlhallaArticles({
         category: "weekly-rotation",
         first: 1,
     })
 
-    if (latestWeeklyRotationArticle.length < 1) {
+    const [latestWeeklyRotationArticle] = page.articles
+
+    if (!latestWeeklyRotationArticle) {
         return []
     }
 
-    const { slug } = latestWeeklyRotationArticle[0]
+    const article = await getBrawlhallaArticle(latestWeeklyRotationArticle.slug)
 
-    const { content } = await getBrawlhallaArticle(slug)
+    if (!article?.content) return []
 
-    if (!content) return []
-
-    const $ = loadHtml(content)
+    const $ = loadHtml(article.content)
 
     // Find list directly following the paragraph containing the required "free-to-play" phrase
     const legendsList = $("p + ul")
@@ -206,71 +265,4 @@ export const getWeeklyRotation = async () => {
         .get()
 
     return weeklyRotation
-}
-
-const getBrawlhallaArticle = async (slug: string) => {
-    const url = `${BRAWLHALLA_WP_API_URL}/posts?_embed&slug=${slug}`
-
-    const { data } = await axios.get<
-        {
-            id: number
-            date: string
-            date_gmt: string
-            guid: {
-                rendered: string
-            }
-            modified: string
-            modified_gmt: string
-            slug: string
-            status: string
-            type: string
-            link: string
-            title: {
-                rendered: string
-            }
-            content: {
-                rendered: string
-                protected: boolean
-            }
-            yoast_head_json: {
-                title: string
-                canonical: string
-                og_title: string
-                og_description: string
-                og_url: string
-                og_site_name: string
-                article_published_time: string
-                article_modified_time: string
-                og_image: {
-                    width: number
-                    height: number
-                    url: string
-                    type: string
-                }[]
-            }
-            _embedded: {
-                "wp:term": [
-                    {
-                        id: number
-                        name: string
-                        slug: string
-                    }[],
-                ]
-            }
-        }[]
-    >(url)
-
-    const [post] = data
-
-    return {
-        title: post.yoast_head_json.title,
-        slug: post.slug,
-        dateGmt: post.date_gmt,
-        description: post.yoast_head_json.og_description,
-        content: post.content.rendered,
-        tags: post._embedded["wp:term"][0].map(({ name, slug }) => ({
-            name,
-            slug,
-        })),
-    }
 }

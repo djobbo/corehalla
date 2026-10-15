@@ -12,7 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as AtmeFavoritesRouteImport } from './routes/@me/favorites'
+import { Route as NewsIndexRouteImport } from './routes/news/index'
+import { Route as NewsSlugRouteImport } from './routes/news/$slug'
 import { Route as RankingsIndexRouteImport } from './routes/rankings/index'
+import { Route as NewsCategoryIndexRouteImport } from './routes/news/category/index'
+import { Route as NewsPageChar123PageChar125RouteImport } from './routes/news/page.{-$page}'
 import { Route as QueueChar123BracketChar125Char123RegionChar125RouteImport } from './routes/queue.{-$bracket}.{-$region}'
 import { Route as RankingsCareerIndexRouteImport } from './routes/rankings/career/index'
 import { Route as RankingsClansChar123PageChar125RouteImport } from './routes/rankings/clans.{-$page}'
@@ -24,6 +28,7 @@ import { Route as StatsClanSplatRouteImport } from './routes/stats/clan.$'
 import { Route as StatsGuildsIdRouteImport } from './routes/stats/guilds/$id'
 import { Route as StatsPlayerSplatRouteImport } from './routes/stats/player.$'
 import { Route as StatsPlayersIdRouteImport } from './routes/stats/players/$id'
+import { Route as NewsCategoryCategoryChar123PageChar125RouteImport } from './routes/news/category/$category.{-$page}'
 import { Route as Rankings1v1Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/1v1.{-$region}.{-$page}'
 import { Route as Rankings2v2Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/2v2.{-$region}.{-$page}'
 import { Route as Rankings3v3Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/3v3.{-$region}.{-$page}'
@@ -56,11 +61,32 @@ const AtmeFavoritesRoute = AtmeFavoritesRouteImport.update({
   path: '/@me/favorites',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewsIndexRoute = NewsIndexRouteImport.update({
+  id: '/news/',
+  path: '/news/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsSlugRoute = NewsSlugRouteImport.update({
+  id: '/news/$slug',
+  path: '/news/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RankingsIndexRoute = RankingsIndexRouteImport.update({
   id: '/rankings/',
   path: '/rankings/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewsCategoryIndexRoute = NewsCategoryIndexRouteImport.update({
+  id: '/news/category/',
+  path: '/news/category/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsPageChar123PageChar125Route =
+  NewsPageChar123PageChar125RouteImport.update({
+    id: '/news/page/{-$page}',
+    path: '/news/page/{-$page}',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const QueueChar123BracketChar125Char123RegionChar125Route =
   QueueChar123BracketChar125Char123RegionChar125RouteImport.update({
     id: '/queue/{-$bracket}/{-$region}',
@@ -122,6 +148,12 @@ const StatsPlayersIdRoute = StatsPlayersIdRouteImport.update({
   path: '/stats/players/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewsCategoryCategoryChar123PageChar125Route =
+  NewsCategoryCategoryChar123PageChar125RouteImport.update({
+    id: '/news/category/$category/{-$page}',
+    path: '/news/category/$category/{-$page}',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const Rankings1v1Char123RegionChar125Char123PageChar125Route =
   Rankings1v1Char123RegionChar125Char123PageChar125RouteImport.update({
     id: '/rankings/1v1/{-$region}/{-$page}',
@@ -224,7 +256,10 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/leaderboard': typeof LeaderboardRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
+  '/news/$slug': typeof NewsSlugRoute
+  '/news/': typeof NewsIndexRoute
   '/rankings/': typeof RankingsIndexRoute
+  '/news/page/{-$page}': typeof NewsPageChar123PageChar125Route
   '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
@@ -235,7 +270,9 @@ export interface FileRoutesByFullPath {
   '/stats/guilds/$id': typeof StatsGuildsIdRoute
   '/stats/player/$': typeof StatsPlayerSplatRoute
   '/stats/players/$id': typeof StatsPlayersIdRouteWithChildren
+  '/news/category/': typeof NewsCategoryIndexRoute
   '/rankings/career/': typeof RankingsCareerIndexRoute
+  '/news/category/$category/{-$page}': typeof NewsCategoryCategoryChar123PageChar125Route
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/3v3/{-$region}/{-$page}': typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
@@ -257,7 +294,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/leaderboard': typeof LeaderboardRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
+  '/news/$slug': typeof NewsSlugRoute
+  '/news': typeof NewsIndexRoute
   '/rankings': typeof RankingsIndexRoute
+  '/news/page/{-$page}': typeof NewsPageChar123PageChar125Route
   '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
@@ -267,7 +307,9 @@ export interface FileRoutesByTo {
   '/stats/clan/$': typeof StatsClanSplatRoute
   '/stats/guilds/$id': typeof StatsGuildsIdRoute
   '/stats/player/$': typeof StatsPlayerSplatRoute
+  '/news/category': typeof NewsCategoryIndexRoute
   '/rankings/career': typeof RankingsCareerIndexRoute
+  '/news/category/$category/{-$page}': typeof NewsCategoryCategoryChar123PageChar125Route
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/3v3/{-$region}/{-$page}': typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
@@ -290,7 +332,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/leaderboard': typeof LeaderboardRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
+  '/news/$slug': typeof NewsSlugRoute
+  '/news/': typeof NewsIndexRoute
   '/rankings/': typeof RankingsIndexRoute
+  '/news/page/{-$page}': typeof NewsPageChar123PageChar125Route
   '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
@@ -301,7 +346,9 @@ export interface FileRoutesById {
   '/stats/guilds/$id': typeof StatsGuildsIdRoute
   '/stats/player/$': typeof StatsPlayerSplatRoute
   '/stats/players/$id': typeof StatsPlayersIdRouteWithChildren
+  '/news/category/': typeof NewsCategoryIndexRoute
   '/rankings/career/': typeof RankingsCareerIndexRoute
+  '/news/category/$category/{-$page}': typeof NewsCategoryCategoryChar123PageChar125Route
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/3v3/{-$region}/{-$page}': typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
@@ -325,7 +372,10 @@ export interface FileRouteTypes {
     | '/'
     | '/leaderboard'
     | '/@me/favorites'
+    | '/news/$slug'
+    | '/news/'
     | '/rankings/'
+    | '/news/page/{-$page}'
     | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
     | '/rankings/global/{-$page}'
@@ -336,7 +386,9 @@ export interface FileRouteTypes {
     | '/stats/guilds/$id'
     | '/stats/player/$'
     | '/stats/players/$id'
+    | '/news/category/'
     | '/rankings/career/'
+    | '/news/category/$category/{-$page}'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
     | '/rankings/3v3/{-$region}/{-$page}'
@@ -358,7 +410,10 @@ export interface FileRouteTypes {
     | '/'
     | '/leaderboard'
     | '/@me/favorites'
+    | '/news/$slug'
+    | '/news'
     | '/rankings'
+    | '/news/page/{-$page}'
     | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
     | '/rankings/global/{-$page}'
@@ -368,7 +423,9 @@ export interface FileRouteTypes {
     | '/stats/clan/$'
     | '/stats/guilds/$id'
     | '/stats/player/$'
+    | '/news/category'
     | '/rankings/career'
+    | '/news/category/$category/{-$page}'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
     | '/rankings/3v3/{-$region}/{-$page}'
@@ -390,7 +447,10 @@ export interface FileRouteTypes {
     | '/'
     | '/leaderboard'
     | '/@me/favorites'
+    | '/news/$slug'
+    | '/news/'
     | '/rankings/'
+    | '/news/page/{-$page}'
     | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
     | '/rankings/global/{-$page}'
@@ -401,7 +461,9 @@ export interface FileRouteTypes {
     | '/stats/guilds/$id'
     | '/stats/player/$'
     | '/stats/players/$id'
+    | '/news/category/'
     | '/rankings/career/'
+    | '/news/category/$category/{-$page}'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
     | '/rankings/3v3/{-$region}/{-$page}'
@@ -424,7 +486,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LeaderboardRoute: typeof LeaderboardRoute
   AtmeFavoritesRoute: typeof AtmeFavoritesRoute
+  NewsSlugRoute: typeof NewsSlugRoute
+  NewsIndexRoute: typeof NewsIndexRoute
   RankingsIndexRoute: typeof RankingsIndexRoute
+  NewsPageChar123PageChar125Route: typeof NewsPageChar123PageChar125Route
   QueueChar123BracketChar125Char123RegionChar125Route: typeof QueueChar123BracketChar125Char123RegionChar125Route
   RankingsClansChar123PageChar125Route: typeof RankingsClansChar123PageChar125Route
   RankingsGlobalChar123PageChar125Route: typeof RankingsGlobalChar123PageChar125Route
@@ -435,7 +500,9 @@ export interface RootRouteChildren {
   StatsGuildsIdRoute: typeof StatsGuildsIdRoute
   StatsPlayerSplatRoute: typeof StatsPlayerSplatRoute
   StatsPlayersIdRoute: typeof StatsPlayersIdRouteWithChildren
+  NewsCategoryIndexRoute: typeof NewsCategoryIndexRoute
   RankingsCareerIndexRoute: typeof RankingsCareerIndexRoute
+  NewsCategoryCategoryChar123PageChar125Route: typeof NewsCategoryCategoryChar123PageChar125Route
   Rankings1v1Char123RegionChar125Char123PageChar125Route: typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   Rankings2v2Char123RegionChar125Char123PageChar125Route: typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
   Rankings3v3Char123RegionChar125Char123PageChar125Route: typeof Rankings3v3Char123RegionChar125Char123PageChar125Route
@@ -472,11 +539,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AtmeFavoritesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/news/': {
+      id: '/news/'
+      path: '/news'
+      fullPath: '/news/'
+      preLoaderRoute: typeof NewsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news/$slug': {
+      id: '/news/$slug'
+      path: '/news/$slug'
+      fullPath: '/news/$slug'
+      preLoaderRoute: typeof NewsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rankings/': {
       id: '/rankings/'
       path: '/rankings'
       fullPath: '/rankings/'
       preLoaderRoute: typeof RankingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news/category/': {
+      id: '/news/category/'
+      path: '/news/category'
+      fullPath: '/news/category/'
+      preLoaderRoute: typeof NewsCategoryIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news/page/{-$page}': {
+      id: '/news/page/{-$page}'
+      path: '/news/page/{-$page}'
+      fullPath: '/news/page/{-$page}'
+      preLoaderRoute: typeof NewsPageChar123PageChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/queue/{-$bracket}/{-$region}': {
@@ -554,6 +649,13 @@ declare module '@tanstack/react-router' {
       path: '/stats/players/$id'
       fullPath: '/stats/players/$id'
       preLoaderRoute: typeof StatsPlayersIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news/category/$category/{-$page}': {
+      id: '/news/category/$category/{-$page}'
+      path: '/news/category/$category/{-$page}'
+      fullPath: '/news/category/$category/{-$page}'
+      preLoaderRoute: typeof NewsCategoryCategoryChar123PageChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rankings/1v1/{-$region}/{-$page}': {
@@ -695,7 +797,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LeaderboardRoute: LeaderboardRoute,
   AtmeFavoritesRoute: AtmeFavoritesRoute,
+  NewsSlugRoute: NewsSlugRoute,
+  NewsIndexRoute: NewsIndexRoute,
   RankingsIndexRoute: RankingsIndexRoute,
+  NewsPageChar123PageChar125Route: NewsPageChar123PageChar125Route,
   QueueChar123BracketChar125Char123RegionChar125Route:
     QueueChar123BracketChar125Char123RegionChar125Route,
   RankingsClansChar123PageChar125Route: RankingsClansChar123PageChar125Route,
@@ -709,7 +814,10 @@ const rootRouteChildren: RootRouteChildren = {
   StatsGuildsIdRoute: StatsGuildsIdRoute,
   StatsPlayerSplatRoute: StatsPlayerSplatRoute,
   StatsPlayersIdRoute: StatsPlayersIdRouteWithChildren,
+  NewsCategoryIndexRoute: NewsCategoryIndexRoute,
   RankingsCareerIndexRoute: RankingsCareerIndexRoute,
+  NewsCategoryCategoryChar123PageChar125Route:
+    NewsCategoryCategoryChar123PageChar125Route,
   Rankings1v1Char123RegionChar125Char123PageChar125Route:
     Rankings1v1Char123RegionChar125Char123PageChar125Route,
   Rankings2v2Char123RegionChar125Char123PageChar125Route:
