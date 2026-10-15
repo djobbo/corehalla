@@ -340,6 +340,28 @@ describe("caching an absent answer", () => {
         }),
     )
 
+    it.effect("a written null or empty board uses the empty window too", () =>
+        Effect.gen(function* () {
+            const { store, kv } = fakeKv()
+            const cache = make(async () => kv, inlineSchedule)
+            const stats = cacheKeys.playerStats(7)
+            const board = cacheKeys.leaderboard("1v1", "eu", 2)
+
+            yield* cache.set(stats, null, cacheTtl.profile)
+            yield* cache.set(
+                board,
+                [] as readonly Ranking1v1[],
+                cacheTtl.leaderboard,
+            )
+
+            for (const key of [stats, board]) {
+                expect(
+                    envelopeOf(store, key).freshUntil - Date.now(),
+                ).toBeLessThanOrEqual(emptyTtl.freshSeconds * 1000)
+            }
+        }),
+    )
+
     it.effect("a real value still gets the window its resource asked for", () =>
         Effect.gen(function* () {
             const { store, kv } = fakeKv()

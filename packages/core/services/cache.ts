@@ -162,23 +162,21 @@ export const make = (
         kv: KVNamespaceLike | undefined,
     ) =>
         Effect.gen(function* () {
-            if (kv) yield* write(kv, key, value, options, at)
+            // A `null` or an empty list is "upstream could not answer" — a v1
+            // 404, say — and always takes the short empty window, never the
+            // resource's own. Every write (read-through and `set`) is governed
+            // here so no path can pin a 404 for the full TTL.
+            const window = isEmptyResult(value) ? emptyTtl : options
+
+            if (kv) yield* write(kv, key, value, window, at)
 
             l1Set(key, {
                 value,
                 storedAt: at,
-                freshUntil: at + options.freshSeconds * 1000,
-                staleUntil: at + options.staleSeconds * 1000,
+                freshUntil: at + window.freshSeconds * 1000,
+                staleUntil: at + window.staleSeconds * 1000,
             })
         })
-
-    const store = <A>(
-        key: string,
-        value: A,
-        options: CacheWindow,
-        at: number,
-        kv: KVNamespaceLike | undefined,
-    ) => setAt(key, value, isEmptyResult(value) ? emptyTtl : options, at, kv)
 
     const cache = {
         getOrSet: <A>(
@@ -311,7 +309,7 @@ export const make = (
                         yield* schedule(
                             effect.pipe(
                                 Effect.flatMap((value) =>
-                                    store(key, value, options, Date.now(), kv),
+                                    setAt(key, value, options, Date.now(), kv),
                                 ),
                             ),
                         )
@@ -332,7 +330,7 @@ export const make = (
                 const fetchedAt = Date.now()
                 const value = yield* effect
 
-                yield* store(key, value, options, fetchedAt, kv)
+                yield* setAt(key, value, options, fetchedAt, kv)
 
                 return { value, updatedAt: fetchedAt }
             }),
