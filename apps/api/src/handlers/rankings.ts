@@ -6,7 +6,7 @@ import { Brawlhalla } from "@crh/core/services/upstream"
 import { Database } from "@crh/core/services/archive"
 import { Background } from "@crh/core/services/background"
 import { RANKED_QUEUE_WINDOW_MS } from "@crh/core/constants"
-import { Content } from "../services/content"
+import { PowerRankings } from "../services/power-rankings"
 import { aliasRows } from "../helpers/aliases"
 import {
     bestLegendIndex,
@@ -62,8 +62,8 @@ export const rankingsGroup = HttpApiBuilder.group(
     Effect.fnUntraced(function* (handlers) {
         const brawlhalla = yield* Brawlhalla
         const db = yield* Database
-        const content = yield* Content
         const background = yield* Background
+        const powerRankings = yield* PowerRankings
 
         return (
             handlers
@@ -250,7 +250,23 @@ export const rankingsGroup = HttpApiBuilder.group(
                     ),
                 )
                 .handle("getPowerRankings", ({ query }) =>
-                    content.getPowerRankings(query.bracket, query.region),
+                    powerRankings
+                        .getPowerRankings({
+                            gameMode: query.gameMode,
+                            region: query.region,
+                            page: query.page,
+                            orderBy: query.orderBy,
+                        })
+                        .pipe(
+                            Effect.map((page) => ({
+                                data: page.value.players,
+                                meta: {
+                                    updated_at: page.updatedAt,
+                                    total_pages: page.value.totalPages,
+                                },
+                            })),
+                            Effect.orDie,
+                        ),
                 )
         )
     }),

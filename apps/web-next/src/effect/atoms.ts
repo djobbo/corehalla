@@ -5,8 +5,9 @@ import { useAtomSuspense } from "@effect/atom-react"
 import { CorehallaClient } from "./client"
 import type * as AsyncResult from "effect/unstable/reactivity/AsyncResult"
 import type {
-    Bracket,
     Ladder,
+    PowerRankingsGameMode,
+    PowerRankingsOrderBy,
     PowerRankingsRegion,
     RankedRegion,
     SortableLegendProp,
@@ -18,9 +19,10 @@ import type { Weapon as WeaponName } from "@crh/bhapi/constants"
 const ttl = "5 minutes"
 
 type Region = typeof RankedRegion.Type
-type BracketType = typeof Bracket.Type
 type LadderType = typeof Ladder.Type
+type PowerMode = typeof PowerRankingsGameMode.Type
 type PowerRegion = typeof PowerRankingsRegion.Type
+type PowerOrder = typeof PowerRankingsOrderBy.Type
 type SortableProp = typeof SortablePlayerProp.Type
 type LegendProp = typeof SortableLegendProp.Type
 type WeaponProp = typeof SortableWeaponProp.Type
@@ -90,10 +92,15 @@ export const clansRankingsAtom = (name: string, page: number) =>
         timeToLive: ttl,
     })
 
-export const powerRankingsAtom = (bracket: BracketType, region: PowerRegion) =>
+export const powerRankingsAtom = (
+    gameMode: PowerMode,
+    region: PowerRegion,
+    page: number,
+    orderBy: PowerOrder,
+) =>
     CorehallaClient.query("rankings", "getPowerRankings", {
-        query: { bracket, region },
-        serializationKey: `power:${bracket}:${region}`,
+        query: { gameMode, region, page, orderBy },
+        serializationKey: `power:${gameMode}:${region}:${page}:${orderBy}`,
         timeToLive: ttl,
     })
 
@@ -101,6 +108,13 @@ export const playerProfileAtom = (playerId: number) =>
     CorehallaClient.query("players", "getPlayer", {
         params: { playerId },
         serializationKey: `player:${playerId}:profile`,
+        timeToLive: ttl,
+    })
+
+export const playerEsportsAtom = (playerId: number) =>
+    CorehallaClient.query("players", "getPlayerEsports", {
+        params: { playerId },
+        serializationKey: `player:${playerId}:esports`,
         timeToLive: ttl,
     })
 

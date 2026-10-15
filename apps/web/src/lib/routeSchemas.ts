@@ -9,19 +9,6 @@ import { z } from "zod"
  * axios) into the browser bundle.
  */
 
-export const powerRankingsBracketSchema = z.union([
-    z.literal("1v1"),
-    z.literal("2v2"),
-])
-
-export const powerRankingsRegionSchema = z.union([
-    z.literal("us-e"),
-    z.literal("eu"),
-    z.literal("sea"),
-    z.literal("brz"),
-    z.literal("aus"),
-])
-
 export const brawlhallaArticleCategorySchema = z.union([
     z.literal(""),
     z.literal("weekly-rotation"),

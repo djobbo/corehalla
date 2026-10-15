@@ -1,7 +1,4 @@
-import {
-    powerRankingsRegions,
-    rankingsRegions,
-} from "@components/stats/rankings/options"
+import { rankingsRegions } from "@components/stats/rankings/options"
 import { rankedRegionSchema } from "./routeSchemas"
 import type { PaginatorPage } from "ui/base/Paginator"
 import type { RankedRegion } from "./routeSchemas"
@@ -9,8 +6,8 @@ import type { RankedRegion } from "./routeSchemas"
 /**
  * Brackets whose rankings endpoint accepts a server-side name filter.
  *
- * `2v2`, `global` and `power` have no name filter yet, so they render without
- * a search bar rather than pretending to filter what is already loaded.
+ * `2v2` and `global` have no name filter yet, so they render without a search
+ * bar rather than pretending to filter what is already loaded.
  */
 export const SEARCHABLE_BRACKETS = ["1v1", "clans"] as const
 
@@ -140,7 +137,6 @@ export const consumeSearchEntry = (): string | null => {
 /** Where a bracket/region pair lives, keeping `?q=` off the caller's hands. */
 export const bracketHref = (bracket: string, region: string): string => {
     if (bracket === "clans") return "/rankings/clans"
-    if (bracket.startsWith("power/")) return `/rankings/${bracket}/${region}`
 
     return region === "all"
         ? `/rankings/${bracket}`
@@ -148,11 +144,8 @@ export const bracketHref = (bracket: string, region: string): string => {
 }
 
 /** Regions a bracket accepts; `null` when it has none (clans). */
-export const regionsForBracket = (bracket: string): PaginatorPage[] | null => {
-    if (bracket === "clans") return null
-
-    return bracket.startsWith("power/") ? powerRankingsRegions : rankingsRegions
-}
+export const regionsForBracket = (bracket: string): PaginatorPage[] | null =>
+    bracket === "clans" ? null : rankingsRegions
 
 /** `PaginatorPage[]` -> dropdown options, flattening ReactNode labels. */
 export const toPillOptions = (pages: PaginatorPage[] | null) =>

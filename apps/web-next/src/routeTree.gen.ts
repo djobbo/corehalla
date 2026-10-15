@@ -31,6 +31,7 @@ import { Route as RankingsCareerPlayersChar123PageChar125RouteImport } from './r
 import { Route as RankingsQueuesChar123BracketChar125Char123RegionChar125RouteImport } from './routes/rankings/queues/{-$bracket}.{-$region}'
 import { Route as StatsPlayersIdIndexRouteImport } from './routes/stats/players/$id.index'
 import { Route as StatsPlayersId2v2RouteImport } from './routes/stats/players/$id.2v2'
+import { Route as StatsPlayersIdEsportsRouteImport } from './routes/stats/players/$id.esports'
 import { Route as StatsPlayersIdLegendsRouteImport } from './routes/stats/players/$id.legends'
 import { Route as StatsPlayersIdWeaponsRouteImport } from './routes/stats/players/$id.weapons'
 import { Route as RankingsCareerLegendsChar123LegendIdChar125Char123PageChar125RouteImport } from './routes/rankings/career/legends.{-$legendId}.{-$page}'
@@ -38,6 +39,7 @@ import { Route as RankingsCareerWeaponsChar123WeaponChar125Char123PageChar125Rou
 import { Route as RankingsLive1v1Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/live/1v1.{-$region}.{-$page}'
 import { Route as RankingsLive2v2Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/live/2v2.{-$region}.{-$page}'
 import { Route as RankingsLive3v3Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/live/3v3.{-$region}.{-$page}'
+import { Route as RankingsPowerChar123GameModeChar125Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/power.{-$gameMode}.{-$region}.{-$page}'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -160,6 +162,11 @@ const StatsPlayersId2v2Route = StatsPlayersId2v2RouteImport.update({
   path: '/2v2',
   getParentRoute: () => StatsPlayersIdRoute,
 } as any)
+const StatsPlayersIdEsportsRoute = StatsPlayersIdEsportsRouteImport.update({
+  id: '/esports',
+  path: '/esports',
+  getParentRoute: () => StatsPlayersIdRoute,
+} as any)
 const StatsPlayersIdLegendsRoute = StatsPlayersIdLegendsRouteImport.update({
   id: '/legends',
   path: '/legends',
@@ -204,6 +211,14 @@ const RankingsLive3v3Char123RegionChar125Char123PageChar125Route =
     path: '/rankings/live/3v3/{-$region}/{-$page}',
     getParentRoute: () => rootRouteImport,
   } as any)
+const RankingsPowerChar123GameModeChar125Char123RegionChar125Char123PageChar125Route =
+  RankingsPowerChar123GameModeChar125Char123RegionChar125Char123PageChar125RouteImport.update(
+    {
+      id: '/rankings/power/{-$gameMode}/{-$region}/{-$page}',
+      path: '/rankings/power/{-$gameMode}/{-$region}/{-$page}',
+      getParentRoute: () => rootRouteImport,
+    } as any,
+  )
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -227,6 +242,7 @@ export interface FileRoutesByFullPath {
   '/rankings/career/players/{-$page}': typeof RankingsCareerPlayersChar123PageChar125Route
   '/rankings/queues/{-$bracket}/{-$region}': typeof RankingsQueuesChar123BracketChar125Char123RegionChar125Route
   '/stats/players/$id/2v2': typeof StatsPlayersId2v2Route
+  '/stats/players/$id/esports': typeof StatsPlayersIdEsportsRoute
   '/stats/players/$id/legends': typeof StatsPlayersIdLegendsRoute
   '/stats/players/$id/weapons': typeof StatsPlayersIdWeaponsRoute
   '/stats/players/$id/': typeof StatsPlayersIdIndexRoute
@@ -235,6 +251,7 @@ export interface FileRoutesByFullPath {
   '/rankings/live/1v1/{-$region}/{-$page}': typeof RankingsLive1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/live/2v2/{-$region}/{-$page}': typeof RankingsLive2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/live/3v3/{-$region}/{-$page}': typeof RankingsLive3v3Char123RegionChar125Char123PageChar125Route
+  '/rankings/power/{-$gameMode}/{-$region}/{-$page}': typeof RankingsPowerChar123GameModeChar125Char123RegionChar125Char123PageChar125Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -257,6 +274,7 @@ export interface FileRoutesByTo {
   '/rankings/career/players/{-$page}': typeof RankingsCareerPlayersChar123PageChar125Route
   '/rankings/queues/{-$bracket}/{-$region}': typeof RankingsQueuesChar123BracketChar125Char123RegionChar125Route
   '/stats/players/$id/2v2': typeof StatsPlayersId2v2Route
+  '/stats/players/$id/esports': typeof StatsPlayersIdEsportsRoute
   '/stats/players/$id/legends': typeof StatsPlayersIdLegendsRoute
   '/stats/players/$id/weapons': typeof StatsPlayersIdWeaponsRoute
   '/stats/players/$id': typeof StatsPlayersIdIndexRoute
@@ -265,6 +283,7 @@ export interface FileRoutesByTo {
   '/rankings/live/1v1/{-$region}/{-$page}': typeof RankingsLive1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/live/2v2/{-$region}/{-$page}': typeof RankingsLive2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/live/3v3/{-$region}/{-$page}': typeof RankingsLive3v3Char123RegionChar125Char123PageChar125Route
+  '/rankings/power/{-$gameMode}/{-$region}/{-$page}': typeof RankingsPowerChar123GameModeChar125Char123RegionChar125Char123PageChar125Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -289,6 +308,7 @@ export interface FileRoutesById {
   '/rankings/career/players/{-$page}': typeof RankingsCareerPlayersChar123PageChar125Route
   '/rankings/queues/{-$bracket}/{-$region}': typeof RankingsQueuesChar123BracketChar125Char123RegionChar125Route
   '/stats/players/$id/2v2': typeof StatsPlayersId2v2Route
+  '/stats/players/$id/esports': typeof StatsPlayersIdEsportsRoute
   '/stats/players/$id/legends': typeof StatsPlayersIdLegendsRoute
   '/stats/players/$id/weapons': typeof StatsPlayersIdWeaponsRoute
   '/stats/players/$id/': typeof StatsPlayersIdIndexRoute
@@ -297,6 +317,7 @@ export interface FileRoutesById {
   '/rankings/live/1v1/{-$region}/{-$page}': typeof RankingsLive1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/live/2v2/{-$region}/{-$page}': typeof RankingsLive2v2Char123RegionChar125Char123PageChar125Route
   '/rankings/live/3v3/{-$region}/{-$page}': typeof RankingsLive3v3Char123RegionChar125Char123PageChar125Route
+  '/rankings/power/{-$gameMode}/{-$region}/{-$page}': typeof RankingsPowerChar123GameModeChar125Char123RegionChar125Char123PageChar125Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -322,6 +343,7 @@ export interface FileRouteTypes {
     | '/rankings/career/players/{-$page}'
     | '/rankings/queues/{-$bracket}/{-$region}'
     | '/stats/players/$id/2v2'
+    | '/stats/players/$id/esports'
     | '/stats/players/$id/legends'
     | '/stats/players/$id/weapons'
     | '/stats/players/$id/'
@@ -330,6 +352,7 @@ export interface FileRouteTypes {
     | '/rankings/live/1v1/{-$region}/{-$page}'
     | '/rankings/live/2v2/{-$region}/{-$page}'
     | '/rankings/live/3v3/{-$region}/{-$page}'
+    | '/rankings/power/{-$gameMode}/{-$region}/{-$page}'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -352,6 +375,7 @@ export interface FileRouteTypes {
     | '/rankings/career/players/{-$page}'
     | '/rankings/queues/{-$bracket}/{-$region}'
     | '/stats/players/$id/2v2'
+    | '/stats/players/$id/esports'
     | '/stats/players/$id/legends'
     | '/stats/players/$id/weapons'
     | '/stats/players/$id'
@@ -360,6 +384,7 @@ export interface FileRouteTypes {
     | '/rankings/live/1v1/{-$region}/{-$page}'
     | '/rankings/live/2v2/{-$region}/{-$page}'
     | '/rankings/live/3v3/{-$region}/{-$page}'
+    | '/rankings/power/{-$gameMode}/{-$region}/{-$page}'
   id:
     | '__root__'
     | '/'
@@ -383,6 +408,7 @@ export interface FileRouteTypes {
     | '/rankings/career/players/{-$page}'
     | '/rankings/queues/{-$bracket}/{-$region}'
     | '/stats/players/$id/2v2'
+    | '/stats/players/$id/esports'
     | '/stats/players/$id/legends'
     | '/stats/players/$id/weapons'
     | '/stats/players/$id/'
@@ -391,6 +417,7 @@ export interface FileRouteTypes {
     | '/rankings/live/1v1/{-$region}/{-$page}'
     | '/rankings/live/2v2/{-$region}/{-$page}'
     | '/rankings/live/3v3/{-$region}/{-$page}'
+    | '/rankings/power/{-$gameMode}/{-$region}/{-$page}'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -419,6 +446,7 @@ export interface RootRouteChildren {
   RankingsLive1v1Char123RegionChar125Char123PageChar125Route: typeof RankingsLive1v1Char123RegionChar125Char123PageChar125Route
   RankingsLive2v2Char123RegionChar125Char123PageChar125Route: typeof RankingsLive2v2Char123RegionChar125Char123PageChar125Route
   RankingsLive3v3Char123RegionChar125Char123PageChar125Route: typeof RankingsLive3v3Char123RegionChar125Char123PageChar125Route
+  RankingsPowerChar123GameModeChar125Char123RegionChar125Char123PageChar125Route: typeof RankingsPowerChar123GameModeChar125Char123RegionChar125Char123PageChar125Route
 }
 
 declare module '@tanstack/react-router' {
@@ -577,6 +605,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StatsPlayersId2v2RouteImport
       parentRoute: typeof StatsPlayersIdRoute
     }
+    '/stats/players/$id/esports': {
+      id: '/stats/players/$id/esports'
+      path: '/esports'
+      fullPath: '/stats/players/$id/esports'
+      preLoaderRoute: typeof StatsPlayersIdEsportsRouteImport
+      parentRoute: typeof StatsPlayersIdRoute
+    }
     '/stats/players/$id/legends': {
       id: '/stats/players/$id/legends'
       path: '/legends'
@@ -626,11 +661,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RankingsLive3v3Char123RegionChar125Char123PageChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rankings/power/{-$gameMode}/{-$region}/{-$page}': {
+      id: '/rankings/power/{-$gameMode}/{-$region}/{-$page}'
+      path: '/rankings/power/{-$gameMode}/{-$region}/{-$page}'
+      fullPath: '/rankings/power/{-$gameMode}/{-$region}/{-$page}'
+      preLoaderRoute: typeof RankingsPowerChar123GameModeChar125Char123RegionChar125Char123PageChar125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface StatsPlayersIdRouteChildren {
   StatsPlayersId2v2Route: typeof StatsPlayersId2v2Route
+  StatsPlayersIdEsportsRoute: typeof StatsPlayersIdEsportsRoute
   StatsPlayersIdLegendsRoute: typeof StatsPlayersIdLegendsRoute
   StatsPlayersIdWeaponsRoute: typeof StatsPlayersIdWeaponsRoute
   StatsPlayersIdIndexRoute: typeof StatsPlayersIdIndexRoute
@@ -638,6 +681,7 @@ interface StatsPlayersIdRouteChildren {
 
 const StatsPlayersIdRouteChildren: StatsPlayersIdRouteChildren = {
   StatsPlayersId2v2Route: StatsPlayersId2v2Route,
+  StatsPlayersIdEsportsRoute: StatsPlayersIdEsportsRoute,
   StatsPlayersIdLegendsRoute: StatsPlayersIdLegendsRoute,
   StatsPlayersIdWeaponsRoute: StatsPlayersIdWeaponsRoute,
   StatsPlayersIdIndexRoute: StatsPlayersIdIndexRoute,
@@ -686,6 +730,8 @@ const rootRouteChildren: RootRouteChildren = {
     RankingsLive2v2Char123RegionChar125Char123PageChar125Route,
   RankingsLive3v3Char123RegionChar125Char123PageChar125Route:
     RankingsLive3v3Char123RegionChar125Char123PageChar125Route,
+  RankingsPowerChar123GameModeChar125Char123RegionChar125Char123PageChar125Route:
+    RankingsPowerChar123GameModeChar125Char123RegionChar125Char123PageChar125Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

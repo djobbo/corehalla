@@ -10,7 +10,6 @@ import type {
 } from "@crh/bhapi/types"
 import { weapons } from "@crh/bhapi/constants"
 import type { BHArticle } from "@crh/web-parser/common"
-import type { PR } from "@crh/web-parser/power-rankings/parsePowerRankingsPage"
 
 /**
  * Passthrough `Schema.declare` for upstream types we do not re-validate.
@@ -19,7 +18,7 @@ import type { PR } from "@crh/web-parser/power-rankings/parsePowerRankingsPage"
  */
 const json = <A>() => Schema.declare<A>((_u): _u is A => true)
 
-/** Ranked ladders; distinct from `Bracket` (power rankings — no 3v3). */
+/** Ranked ladders; distinct from `PowerRankingsGameMode` (power rankings — no 3v3). */
 export const Ladder = Schema.Literals(["1v1", "2v2", "3v3"])
 
 export type Ladder = typeof Ladder.Type
@@ -37,15 +36,89 @@ export const RankedRegion = Schema.Literals([
     "me",
 ])
 
-export const Bracket = Schema.Literals(["1v1", "2v2"])
+/** Power rankings game modes; brawltools (the source) has no 3v3. */
+export const PowerRankingsGameMode = Schema.Literals(["1v1", "2v2"])
 
+export type PowerRankingsGameMode = typeof PowerRankingsGameMode.Type
+
+/** brawltools region codes — its own vocabulary, not the ranked-ladder slugs. */
 export const PowerRankingsRegion = Schema.Literals([
-    "us-e",
-    "eu",
-    "sea",
-    "brz",
-    "aus",
+    "NA",
+    "EU",
+    "SA",
+    "SEA",
+    "MENA",
+    "LAN",
 ])
+
+export type PowerRankingsRegion = typeof PowerRankingsRegion.Type
+
+/**
+ * Sortable columns. Direction is derived server-side: the rank and name ascend,
+ * every count/currency metric descends. `playerId` is sortable upstream but not
+ * exposed — it is only a pagination aid.
+ */
+export const PowerRankingsOrderBy = Schema.Literals([
+    "playerName",
+    "top8",
+    "top32",
+    "gold",
+    "silver",
+    "bronze",
+    "powerRanking",
+    "points",
+    "earnings",
+])
+
+export type PowerRankingsOrderBy = typeof PowerRankingsOrderBy.Type
+
+export const PowerRankingsPlayerSchema = Schema.Struct({
+    /** brawltools' "esports" ID — not a Brawlhalla ID. */
+    esportsId: Schema.Number,
+    playerName: Schema.String,
+    /** brawltools' full display name (its `name`); null when unavailable. */
+    fullName: Schema.NullOr(Schema.String),
+    /** Preferred pronouns; null when not set. */
+    pronoun: Schema.NullOr(Schema.String),
+    /**
+     * brawltools identities. All nullable: `brawlhallaId` is unknown for some
+     * players, and upstream omits socials/country when empty.
+     */
+    brawlhallaId: Schema.NullOr(Schema.Number),
+    sggPlayerId: Schema.NullOr(Schema.Number),
+    cmPlayerId: Schema.NullOr(Schema.String),
+    twitter: Schema.NullOr(Schema.String),
+    twitch: Schema.NullOr(Schema.String),
+    country: Schema.NullOr(Schema.String),
+    /** Player-stats slug; null when `brawlhallaId` is unknown (render unlinked). */
+    slug: Schema.NullOr(Schema.String),
+    top8: Schema.Number,
+    top32: Schema.Number,
+    gold: Schema.Number,
+    silver: Schema.Number,
+    bronze: Schema.Number,
+    powerRanking: Schema.Number,
+    points: Schema.Number,
+    earnings: Schema.Number,
+})
+
+export type PowerRankingsPlayer = typeof PowerRankingsPlayerSchema.Type
+
+/**
+ * `updated_at` is the fetch time (epoch ms); `total_pages` is brawltools' own
+ * count and already accounts for the requested `max_results`.
+ */
+export const PowerRankingsMetaSchema = Schema.Struct({
+    updated_at: Schema.Number,
+    total_pages: Schema.Number,
+})
+
+export const PowerRankingsEnvelopeSchema = Schema.Struct({
+    data: Schema.Array(PowerRankingsPlayerSchema),
+    meta: PowerRankingsMetaSchema,
+})
+
+export type PowerRankingsEnvelope = typeof PowerRankingsEnvelopeSchema.Type
 
 export const ArticleCategory = Schema.Literals([
     "",
@@ -126,10 +199,10 @@ export const Player3v3RankedSchema = json<Player3v3Ranked>()
 export const PlayerAliasesSchema = json<readonly string[]>()
 export const ClanSchema = json<Clan>()
 export const ArticlesSchema = json<readonly BHArticle[]>()
-export const PowerRankingsSchema = json<readonly PR[]>()
 
 export * from "./aggregate/common"
 export * from "./aggregate/player"
+export * from "./aggregate/esports"
 export * from "./aggregate/guild"
 export * from "./aggregate/rankings"
 export * from "./aggregate/search"

@@ -1,13 +1,5 @@
-import {
-    powerRankingsBracketSchema,
-    powerRankingsRegionSchema,
-    rankedRegionSchema,
-} from "./routeSchemas"
+import { rankedRegionSchema } from "./routeSchemas"
 import type { RankedRegion } from "./routeSchemas"
-import type {
-    PowerRankingsBracket,
-    PowerRankingsRegion,
-} from "@crh/web-parser/power-rankings/parsePowerRankingsPage"
 
 /**
  * Path-parameter resolvers.
@@ -26,17 +18,3 @@ export const resolveRankedRegion = (region?: string): RankedRegion =>
 
 export const resolvePage = (page?: string): string =>
     page && /^[0-9]+$/.test(page) ? page : "1"
-
-export const resolvePowerRankingsBracket = (
-    bracket?: string,
-): PowerRankingsBracket =>
-    bracket && powerRankingsBracketSchema.safeParse(bracket).success
-        ? (bracket as PowerRankingsBracket)
-        : "1v1"
-
-export const resolvePowerRankingsRegion = (
-    region?: string,
-): PowerRankingsRegion =>
-    region && powerRankingsRegionSchema.safeParse(region).success
-        ? (region as PowerRankingsRegion)
-        : "us-e"

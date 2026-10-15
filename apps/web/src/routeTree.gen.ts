@@ -34,13 +34,11 @@ import { Route as ApiMeFavoritesRouteImport } from './routes/api/me/favorites'
 import { Route as ApiMeSessionRouteImport } from './routes/api/me/session'
 import { Route as RankingsClansChar123PageChar125RouteImport } from './routes/rankings/clans.{-$page}'
 import { Route as RankingsGlobalChar123PageChar125RouteImport } from './routes/rankings/global.{-$page}'
-import { Route as RankingsPowerIndexRouteImport } from './routes/rankings/power/index'
 import { Route as StatsClanClanIdRouteImport } from './routes/stats/clan/$clanId'
 import { Route as StatsPlayerPlayerIdRouteImport } from './routes/stats/player/$playerId'
 import { Route as ApiAuthDiscordCallbackRouteImport } from './routes/api/auth/discord/callback'
 import { Route as Rankings1v1Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/1v1.{-$region}.{-$page}'
 import { Route as Rankings2v2Char123RegionChar125Char123PageChar125RouteImport } from './routes/rankings/2v2.{-$region}.{-$page}'
-import { Route as RankingsPowerChar123BracketChar125Char123RegionChar125RouteImport } from './routes/rankings/power.{-$bracket}.{-$region}'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -169,11 +167,6 @@ const RankingsGlobalChar123PageChar125Route =
     path: '/rankings/global/{-$page}',
     getParentRoute: () => rootRouteImport,
   } as any)
-const RankingsPowerIndexRoute = RankingsPowerIndexRouteImport.update({
-  id: '/rankings/power/',
-  path: '/rankings/power/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const StatsClanClanIdRoute = StatsClanClanIdRouteImport.update({
   id: '/stats/clan/$clanId',
   path: '/stats/clan/$clanId',
@@ -199,12 +192,6 @@ const Rankings2v2Char123RegionChar125Char123PageChar125Route =
   Rankings2v2Char123RegionChar125Char123PageChar125RouteImport.update({
     id: '/rankings/2v2/{-$region}/{-$page}',
     path: '/rankings/2v2/{-$region}/{-$page}',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const RankingsPowerChar123BracketChar125Char123RegionChar125Route =
-  RankingsPowerChar123BracketChar125Char123RegionChar125RouteImport.update({
-    id: '/rankings/power/{-$bracket}/{-$region}',
-    path: '/rankings/power/{-$bracket}/{-$region}',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -236,11 +223,9 @@ export interface FileRoutesByFullPath {
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
   '/stats/clan/$clanId': typeof StatsClanClanIdRoute
   '/stats/player/$playerId': typeof StatsPlayerPlayerIdRoute
-  '/rankings/power/': typeof RankingsPowerIndexRoute
   '/api/auth/discord/callback': typeof ApiAuthDiscordCallbackRoute
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
-  '/rankings/power/{-$bracket}/{-$region}': typeof RankingsPowerChar123BracketChar125Char123RegionChar125Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -270,11 +255,9 @@ export interface FileRoutesByTo {
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
   '/stats/clan/$clanId': typeof StatsClanClanIdRoute
   '/stats/player/$playerId': typeof StatsPlayerPlayerIdRoute
-  '/rankings/power': typeof RankingsPowerIndexRoute
   '/api/auth/discord/callback': typeof ApiAuthDiscordCallbackRoute
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
-  '/rankings/power/{-$bracket}/{-$region}': typeof RankingsPowerChar123BracketChar125Char123RegionChar125Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -305,11 +288,9 @@ export interface FileRoutesById {
   '/rankings/global/{-$page}': typeof RankingsGlobalChar123PageChar125Route
   '/stats/clan/$clanId': typeof StatsClanClanIdRoute
   '/stats/player/$playerId': typeof StatsPlayerPlayerIdRoute
-  '/rankings/power/': typeof RankingsPowerIndexRoute
   '/api/auth/discord/callback': typeof ApiAuthDiscordCallbackRoute
   '/rankings/1v1/{-$region}/{-$page}': typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   '/rankings/2v2/{-$region}/{-$page}': typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
-  '/rankings/power/{-$bracket}/{-$region}': typeof RankingsPowerChar123BracketChar125Char123RegionChar125Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -341,11 +322,9 @@ export interface FileRouteTypes {
     | '/rankings/global/{-$page}'
     | '/stats/clan/$clanId'
     | '/stats/player/$playerId'
-    | '/rankings/power/'
     | '/api/auth/discord/callback'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
-    | '/rankings/power/{-$bracket}/{-$region}'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -375,11 +354,9 @@ export interface FileRouteTypes {
     | '/rankings/global/{-$page}'
     | '/stats/clan/$clanId'
     | '/stats/player/$playerId'
-    | '/rankings/power'
     | '/api/auth/discord/callback'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
-    | '/rankings/power/{-$bracket}/{-$region}'
   id:
     | '__root__'
     | '/'
@@ -409,11 +386,9 @@ export interface FileRouteTypes {
     | '/rankings/global/{-$page}'
     | '/stats/clan/$clanId'
     | '/stats/player/$playerId'
-    | '/rankings/power/'
     | '/api/auth/discord/callback'
     | '/rankings/1v1/{-$region}/{-$page}'
     | '/rankings/2v2/{-$region}/{-$page}'
-    | '/rankings/power/{-$bracket}/{-$region}'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -444,10 +419,8 @@ export interface RootRouteChildren {
   RankingsGlobalChar123PageChar125Route: typeof RankingsGlobalChar123PageChar125Route
   StatsClanClanIdRoute: typeof StatsClanClanIdRoute
   StatsPlayerPlayerIdRoute: typeof StatsPlayerPlayerIdRoute
-  RankingsPowerIndexRoute: typeof RankingsPowerIndexRoute
   Rankings1v1Char123RegionChar125Char123PageChar125Route: typeof Rankings1v1Char123RegionChar125Char123PageChar125Route
   Rankings2v2Char123RegionChar125Char123PageChar125Route: typeof Rankings2v2Char123RegionChar125Char123PageChar125Route
-  RankingsPowerChar123BracketChar125Char123RegionChar125Route: typeof RankingsPowerChar123BracketChar125Char123RegionChar125Route
 }
 
 declare module '@tanstack/react-router' {
@@ -627,13 +600,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RankingsGlobalChar123PageChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/rankings/power/': {
-      id: '/rankings/power/'
-      path: '/rankings/power'
-      fullPath: '/rankings/power/'
-      preLoaderRoute: typeof RankingsPowerIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/stats/clan/$clanId': {
       id: '/stats/clan/$clanId'
       path: '/stats/clan/$clanId'
@@ -667,13 +633,6 @@ declare module '@tanstack/react-router' {
       path: '/rankings/2v2/{-$region}/{-$page}'
       fullPath: '/rankings/2v2/{-$region}/{-$page}'
       preLoaderRoute: typeof Rankings2v2Char123RegionChar125Char123PageChar125RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/rankings/power/{-$bracket}/{-$region}': {
-      id: '/rankings/power/{-$bracket}/{-$region}'
-      path: '/rankings/power/{-$bracket}/{-$region}'
-      fullPath: '/rankings/power/{-$bracket}/{-$region}'
-      preLoaderRoute: typeof RankingsPowerChar123BracketChar125Char123RegionChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -719,13 +678,10 @@ const rootRouteChildren: RootRouteChildren = {
   RankingsGlobalChar123PageChar125Route: RankingsGlobalChar123PageChar125Route,
   StatsClanClanIdRoute: StatsClanClanIdRoute,
   StatsPlayerPlayerIdRoute: StatsPlayerPlayerIdRoute,
-  RankingsPowerIndexRoute: RankingsPowerIndexRoute,
   Rankings1v1Char123RegionChar125Char123PageChar125Route:
     Rankings1v1Char123RegionChar125Char123PageChar125Route,
   Rankings2v2Char123RegionChar125Char123PageChar125Route:
     Rankings2v2Char123RegionChar125Char123PageChar125Route,
-  RankingsPowerChar123BracketChar125Char123RegionChar125Route:
-    RankingsPowerChar123BracketChar125Char123RegionChar125Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -37,6 +37,11 @@ export const PlayerTabs = ({
             label: "Weapons",
             href: playerHref(slug, "weapons"),
         },
+        {
+            tab: "esports",
+            label: "Esports",
+            href: playerHref(slug, "esports"),
+        },
     ]
 
     return (

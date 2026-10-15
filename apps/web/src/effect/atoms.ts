@@ -6,8 +6,6 @@ import { CorehallaClient } from "./Client"
 import type * as AsyncResult from "effect/unstable/reactivity/AsyncResult"
 import type {
     ArticleCategory,
-    Bracket,
-    PowerRankingsRegion,
     RankedRegion,
     SortablePlayerProp,
 } from "@crh/api-contract/schemas"
@@ -23,8 +21,6 @@ import type {
 const ttl = "5 minutes"
 
 type Region = typeof RankedRegion.Type
-type BracketType = typeof Bracket.Type
-type PowerRegion = typeof PowerRankingsRegion.Type
 type ArticleCategoryType = typeof ArticleCategory.Type
 type SortableProp = typeof SortablePlayerProp.Type
 
@@ -53,13 +49,6 @@ export const clansRankingsAtom = (name: string, page: number) =>
     CorehallaClient.query("rankings", "getClansRankings", {
         query: { name, page },
         serializationKey: `clans:${name}:${page}`,
-        timeToLive: ttl,
-    })
-
-export const powerRankingsAtom = (bracket: BracketType, region: PowerRegion) =>
-    CorehallaClient.query("rankings", "getPowerRankings", {
-        query: { bracket, region },
-        serializationKey: `power:${bracket}:${region}`,
         timeToLive: ttl,
     })
 

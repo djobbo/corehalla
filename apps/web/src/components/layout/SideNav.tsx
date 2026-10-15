@@ -4,7 +4,6 @@ import { HiBookOpen } from "@react-icons/all-files/hi/HiBookOpen"
 import { HiChevronDoubleUp } from "@react-icons/all-files/hi/HiChevronDoubleUp"
 import { HiHeart } from "@react-icons/all-files/hi/HiHeart"
 import { HiHome } from "@react-icons/all-files/hi/HiHome"
-import { HiLightningBolt } from "@react-icons/all-files/hi/HiLightningBolt"
 import { HiUserGroup } from "@react-icons/all-files/hi/HiUserGroup"
 import { HiUsers } from "@react-icons/all-files/hi/HiUsers"
 import { HiX } from "@react-icons/all-files/hi/HiX"
@@ -128,11 +127,6 @@ const defaultNav: {
         icon: <HiUsers className="w-6 h-6" />,
         href: "/rankings/2v2",
         exact: false,
-    },
-    {
-        name: "Power Rankings",
-        href: "/rankings/power",
-        icon: <HiLightningBolt className="w-6 h-6" />,
     },
     {
         name: "Clans",

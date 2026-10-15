@@ -2,7 +2,6 @@ import { HiArrowSmRight } from "@react-icons/all-files/hi/HiArrowSmRight"
 import { HiChevronDoubleUp } from "@react-icons/all-files/hi/HiChevronDoubleUp"
 import { HiChevronDown } from "@react-icons/all-files/hi/HiChevronDown"
 import { HiChevronUp } from "@react-icons/all-files/hi/HiChevronUp"
-import { HiLightningBolt } from "@react-icons/all-files/hi/HiLightningBolt"
 import { HiMenu } from "@react-icons/all-files/hi/HiMenu"
 import { HiOutlineInformationCircle } from "@react-icons/all-files/hi/HiOutlineInformationCircle"
 import { HiOutlineQuestionMarkCircle } from "@react-icons/all-files/hi/HiOutlineQuestionMarkCircle"
@@ -38,7 +37,6 @@ export const UserIcon = HiUser
 // Stats
 export const Rankings1v1Icon = HiChevronDoubleUp
 export const Rankings2v2Icon = HiUsers
-export const RankingsPowerIcon = HiLightningBolt
 // export const FavoritesIcon =
 export const ClanIcon = HiUserGroup
 

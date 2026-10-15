@@ -36,6 +36,7 @@ const sections: readonly NavSection[] = [
             "/rankings/live/2v2",
             "/rankings/live/3v3",
             "/rankings/queues",
+            "/rankings/power",
         ],
         columns: [
             {
@@ -44,6 +45,13 @@ const sections: readonly NavSection[] = [
                     { label: "1v1", href: "/rankings/live/1v1" },
                     { label: "2v2", href: "/rankings/live/2v2" },
                     { label: "3v3", href: "/rankings/live/3v3" },
+                ],
+            },
+            {
+                heading: "Power rankings",
+                links: [
+                    { label: "1v1", href: "/rankings/power/1v1" },
+                    { label: "2v2", href: "/rankings/power/2v2" },
                 ],
             },
             {

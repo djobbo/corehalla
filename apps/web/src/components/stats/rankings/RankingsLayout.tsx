@@ -10,7 +10,7 @@ import type { PaginatorPage } from "ui/base/Paginator"
 
 type RankingsLayoutProps = {
     children: ReactNode
-    /** The bracket currently shown, e.g. `1v1`, `power/2v2` or `clans`. */
+    /** The bracket currently shown, e.g. `1v1` or `clans`. */
     currentBracket: string
     /** Every selectable bracket, in menu order. */
     brackets: PaginatorPage[]

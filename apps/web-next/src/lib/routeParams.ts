@@ -1,13 +1,16 @@
-import { regions } from "./rankings"
+import { powerOrderBys, powerRegions, regions } from "./rankings"
 import { parseEntityId } from "@crh/common/helpers/entitySlug"
 import { legends, legendsMap } from "@crh/bhapi/legends"
 import { weapons } from "@crh/bhapi/constants"
+import type { PowerRankingsOrderBy } from "@crh/api-contract/schemas"
 import type { RankedRegion } from "@crh/api-contract/schemas"
 import type { Ladder } from "@crh/api-contract/schemas"
 import type { Weapon } from "@crh/bhapi/constants"
+import type { PowerGameMode } from "./rankings"
 
 /** Schema is a value; its decoded type is `.Type`. */
 type Region = typeof RankedRegion.Type
+type PowerRegion = (typeof powerRegions)[number]["value"]
 
 const validRegions = new Set<string>(regions.map((entry) => entry.value))
 
@@ -20,6 +23,19 @@ export const resolvePage = (value?: string): number => {
 
     return Number.isFinite(page) && page > 0 ? page : 1
 }
+
+export const resolvePowerGameMode = (value?: string): PowerGameMode =>
+    value === "2v2" ? "2v2" : "1v1"
+
+export const resolvePowerRegion = (value?: string): PowerRegion =>
+    value !== undefined && powerRegions.some((entry) => entry.value === value)
+        ? (value as PowerRegion)
+        : "NA"
+
+export const resolvePowerOrderBy = (value: unknown): PowerRankingsOrderBy =>
+    powerOrderBys.some((entry) => entry.value === value)
+        ? (value as PowerRankingsOrderBy)
+        : "powerRanking"
 
 export const legendOptions: readonly { value: string; label: string }[] =
     legends.map((legend) => ({

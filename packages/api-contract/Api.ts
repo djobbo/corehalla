@@ -10,7 +10,6 @@ import {
     AliasSearchResultsSchema,
     ArticleCategory,
     ArticlesSchema,
-    Bracket,
     CareerRankingsSchema,
     ClanSchema,
     ClansSchema,
@@ -23,10 +22,13 @@ import {
     Player3v3RankedSchema,
     PlayerAliasesSchema,
     PlayerEnvelopeSchema,
+    PlayerEsportsEnvelopeSchema,
     PlayerRankedSchema,
     PlayerStatsSchema,
+    PowerRankingsEnvelopeSchema,
+    PowerRankingsGameMode,
+    PowerRankingsOrderBy,
     PowerRankingsRegion,
-    PowerRankingsSchema,
     RankedQueueSchema,
     RankedRegion,
     Ranking1v1Schema,
@@ -43,14 +45,26 @@ import {
     WeeklyRotationSchema,
 } from "./schemas"
 
-const players = HttpApiGroup.make("players").add(
-    HttpApiEndpoint.get("getPlayer", "/api/v1/players/:playerId", {
-        params: { playerId: Schema.FiniteFromString },
-        success: PlayerEnvelopeSchema,
-        // Unknown player is 404, not an empty payload — the page needs stats.
-        error: HttpApiError.NotFound,
-    }),
-)
+const players = HttpApiGroup.make("players")
+    .add(
+        HttpApiEndpoint.get("getPlayer", "/api/v1/players/:playerId", {
+            params: { playerId: Schema.FiniteFromString },
+            success: PlayerEnvelopeSchema,
+            // Unknown player is 404, not an empty payload — the page needs stats.
+            error: HttpApiError.NotFound,
+        }),
+    )
+    .add(
+        // Esports data is keyed by Brawlhalla id; identity resolves from there.
+        HttpApiEndpoint.get(
+            "getPlayerEsports",
+            "/api/v1/players/:playerId/esports",
+            {
+                params: { playerId: Schema.FiniteFromString },
+                success: PlayerEsportsEnvelopeSchema,
+            },
+        ),
+    )
 
 const guilds = HttpApiGroup.make("guilds").add(
     HttpApiEndpoint.get("getGuild", "/api/v1/guilds/:guildId", {
@@ -150,12 +164,16 @@ const rankings = HttpApiGroup.make("rankings")
         }),
     )
     .add(
+        // brawltools v2: game modes and regions are its own vocabulary, and the
+        // sort column is a field (direction is derived server-side).
         HttpApiEndpoint.get("getPowerRankings", "/api/v1/rankings/power", {
             query: {
-                bracket: Bracket,
+                gameMode: PowerRankingsGameMode,
                 region: PowerRankingsRegion,
+                page: Schema.FiniteFromString,
+                orderBy: PowerRankingsOrderBy,
             },
-            success: PowerRankingsSchema,
+            success: PowerRankingsEnvelopeSchema,
         }),
     )
 

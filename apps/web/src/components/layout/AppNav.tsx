@@ -1,9 +1,4 @@
-import {
-    ClanIcon,
-    Rankings1v1Icon,
-    Rankings2v2Icon,
-    RankingsPowerIcon,
-} from "ui/icons"
+import { ClanIcon, Rankings1v1Icon, Rankings2v2Icon } from "ui/icons"
 import { cn } from "@crh/common/helpers/classnames"
 
 const subHeaderNavigation = [
@@ -16,11 +11,6 @@ const subHeaderNavigation = [
         title: "2v2 Rankings",
         href: "/rankings/2v2",
         icon: <Rankings2v2Icon className="w-6 h-6" strokeWidth={1} />,
-    },
-    {
-        title: "Power Rankings",
-        href: "/rankings/power",
-        icon: <RankingsPowerIcon className="w-6 h-6" strokeWidth={1} />,
     },
     {
         title: "Clans",

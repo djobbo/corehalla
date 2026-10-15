@@ -21,6 +21,9 @@ import {
 import { layer as CacheLayer } from "@crh/core/services/cache"
 import { layer as BackgroundLayer } from "@crh/core/services/background"
 import { layer as ContentLayer } from "./services/content"
+import { layer as BrawltoolsLayer } from "./services/brawltools"
+import { layer as PowerRankingsLayer } from "./services/power-rankings"
+import { layer as PlayerEsportsLayer } from "./services/player-esports"
 import { layer as DatabaseLayer } from "@crh/core/services/archive"
 import { layer as LookupLayer } from "@crh/core/services/lookup"
 import type { D1Database } from "@crh/db/client"
@@ -47,6 +50,17 @@ const createHandler = (db: D1Database) => {
         BackgroundLayer,
         UpstreamWithDeps,
         ContentLayer.pipe(Layer.provide(SqlLayer)),
+        BrawltoolsLayer,
+        PowerRankingsLayer.pipe(
+            Layer.provide(BrawltoolsLayer),
+            Layer.provide(CacheLayer),
+            Layer.provide(BackgroundLayer),
+        ),
+        PlayerEsportsLayer.pipe(
+            Layer.provide(BrawltoolsLayer),
+            Layer.provide(CacheLayer),
+            Layer.provide(BackgroundLayer),
+        ),
         // Auth shares D1 but is not merged into `DatabaseWithSql` (ranking archive).
         AuthLayer.pipe(Layer.provide(SqlLayer)),
         BrawlhallaLayer.pipe(

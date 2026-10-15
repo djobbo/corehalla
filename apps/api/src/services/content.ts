@@ -3,18 +3,12 @@ import {
     getBrawlhallaArticles,
     getWeeklyRotation as getWeeklyRotationFn,
 } from "@crh/web-parser/common"
-import { parsePowerRankingsPage } from "@crh/web-parser/power-rankings/parsePowerRankingsPage"
 import { ContentError } from "@crh/core/errors"
 import type {
     BHArticle,
     BrawlhallaArticleCategory,
 } from "@crh/web-parser/common"
 import type { Legend } from "@crh/bhapi/types"
-import type {
-    PR,
-    PowerRankingsBracket,
-    PowerRankingsRegion,
-} from "@crh/web-parser/power-rankings/parsePowerRankingsPage"
 
 export class Content extends Context.Service<
     Content,
@@ -24,10 +18,6 @@ export class Content extends Context.Service<
             category: BrawlhallaArticleCategory,
             first: number,
         ) => Effect.Effect<readonly BHArticle[]>
-        readonly getPowerRankings: (
-            bracket: PowerRankingsBracket,
-            region: PowerRankingsRegion,
-        ) => Effect.Effect<readonly PR[]>
     }
 >()("app/Content") {}
 
@@ -42,7 +32,4 @@ export const layer = Layer.succeed(Content, {
 
     getArticles: (category, first) =>
         run(() => getBrawlhallaArticles({ category, first })),
-
-    getPowerRankings: (bracket, region) =>
-        run(() => parsePowerRankingsPage(bracket, region)),
 })

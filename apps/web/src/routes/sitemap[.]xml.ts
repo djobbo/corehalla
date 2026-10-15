@@ -15,8 +15,6 @@ const PUBLIC_PATHS = [
     "/rankings/2v2",
     "/rankings/clans",
     "/rankings/global",
-    "/rankings/power/1v1",
-    "/rankings/power/2v2",
 ] as const
 
 async function getSiteUrl() {

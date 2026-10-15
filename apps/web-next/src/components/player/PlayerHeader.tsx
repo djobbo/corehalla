@@ -11,6 +11,7 @@ import { EntityLink } from "@/components/EntityLink"
 import { clanHref } from "@/lib/rankings"
 import { cn } from "@/lib/cn"
 import { percent } from "../../lib/stats"
+import type { Player } from "@crh/api-contract/schemas"
 
 const MAX_SHOWN_ALIASES = 8
 
