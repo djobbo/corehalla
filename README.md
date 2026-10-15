@@ -252,9 +252,9 @@ How `alchemy dev` behaves:
   generated `.sql` files instead (Alchemy runs imports locally, skipping files
   whose hash it already applied), or use `Cloudflare.D1.QueryDatabase` inside an
   `Action`.
-- **Secrets.** The stack binds `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`,
-  `BRAWLHALLA_API_KEY` and `SITE_URL` from the repo-root `.env` (`dev` / `deploy`
-  / `destroy` pass `--env-file .env`).
+- **Secrets.** The stack binds `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET` and
+  `SITE_URL` from the repo-root `.env` (`dev` / `deploy` / `destroy` pass
+  `--env-file .env`).
 - **State.** The stack uses `Cloudflare.state()` — a state-store Worker in your
   account — so `alchemy dev` needs `CLOUDFLARE_API_TOKEN` / account credentials.
   Swap in `Alchemy.localState()` for a purely local, file-backed state.
@@ -342,7 +342,6 @@ or `CLOUDFLARE_API_KEY` with `CLOUDFLARE_EMAIL`, in the **repo-root `.env`**.
 ALCHEMY_PROFILE=corehalla
 DISCORD_CLIENT_ID=...
 DISCORD_CLIENT_SECRET=...
-BRAWLHALLA_API_KEY=...
 SITE_URL=https://corehalla.com
 ```
 

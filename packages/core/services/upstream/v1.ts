@@ -1,12 +1,14 @@
-import { Effect } from "effect"
-import { HttpClient } from "effect/unstable/http"
+import { Duration, Effect, Predicate, Schedule } from "effect"
+import { HttpClient, HttpClientError } from "effect/unstable/http"
 import { retryTransient } from "../retry"
 import { withUserAgent } from "./user-agent"
 import { legendsMap } from "@crh/bhapi/legends"
+import { rankedRegions } from "@crh/bhapi/constants"
 import type { ClanRank, RankedTier } from "@crh/bhapi/constants"
 import type {
     Clan,
     Player3v3Ranked,
+    PlayerRanked,
     PlayerStats,
     Ranking1v1,
     Ranking2v2,
@@ -156,6 +158,16 @@ export type V1PlayerStats = {
     legends: readonly V1PlayerStatsLegend[]
 }
 
+/** Ranked mode swaps the damage legend shape for per-legend rating. */
+export type V1RankedLegend = {
+    legend_id: number
+    games: number
+    wins: number
+    rating?: number | null
+    peak_rating?: number | null
+    tier?: string | null
+}
+
 export type V1PlayerRankedStats = {
     brawlhalla_id: number
     name: string
@@ -168,10 +180,41 @@ export type V1PlayerRankedStats = {
 
     region_ranks?: readonly { region: string; rank: number }[]
     global_rank?: number | null
-    legends: readonly V1PlayerStatsLegend[]
+    legends: readonly V1RankedLegend[]
+}
+
+/** `/player/teams` team row — the v1 source for a player's ranked 2v2 record. */
+export type V1Team = {
+    brawlhalla_id_one: number
+    brawlhalla_id_two: number
+    username_one: string
+    username_two: string
+    rating: number
+    peak_rating: number
+    tier?: string | null
+    wins: number
+    games: number
+    region: string
+    region_ranks?: readonly { region: string; rank: number }[]
+    global_rank?: number | null
+}
+
+export type V1PlayerTeams = {
+    brawlhalla_id: number
+    teams: { ranked_2v2: readonly V1Team[] }
 }
 
 // --- client ----------------------------------------------------------------
+
+/** v1 answers `404 "Player not found"` both for real misses and transient origin errors. */
+const isNotFound = (error: HttpClientError.HttpClientError): boolean =>
+    HttpClientError.isHttpClientError(error) &&
+    Predicate.isTagged(error.reason, "StatusCodeError") &&
+    error.reason.response.status === 404
+
+const notFoundRetry = Schedule.exponential(Duration.millis(500)).pipe(
+    Schedule.upTo({ times: 3 }),
+)
 
 export const v1Ops = (client: HttpClient.HttpClient) => {
     const http = withUserAgent(HttpClient.filterStatusOk(client))
@@ -198,6 +241,22 @@ export const v1Ops = (client: HttpClient.HttpClient) => {
         params: Record<string, string | number>,
     ) => getJson<A>(path, params).pipe(Effect.catch(() => Effect.succeed(null)))
 
+    /**
+     * For a read that should always exist (career stats). v1 answers
+     * `404 "Player not found"` both for real misses and for transient origin
+     * errors, so a 404 here is retried before it is believed; a persistent one
+     * resolves to `null`, and anything else is a defect — never a cached miss.
+     */
+    const getRequiredJson = <A>(
+        path: string,
+        params: Record<string, string | number>,
+    ) =>
+        getJson<A>(path, params).pipe(
+            Effect.retry({ schedule: notFoundRetry, while: isNotFound }),
+            Effect.catchIf(isNotFound, () => Effect.succeed(null)),
+            Effect.orDie,
+        )
+
     return {
         getLeaderboard: (
             mode: "1v1" | "2v2" | "3v3",
@@ -214,15 +273,26 @@ export const v1Ops = (client: HttpClient.HttpClient) => {
             }),
 
         getPlayerStats: (playerId: number, mode: V1PlayerMode = "all") =>
-            getOptionalJson<V1PlayerStats>("/player/stats", {
+            getRequiredJson<V1PlayerStats>("/player/stats", {
                 brawlhalla_id: playerId,
                 mode,
+            }),
+
+        getPlayer1v1Stats: (playerId: number) =>
+            getOptionalJson<V1PlayerRankedStats>("/player/stats", {
+                brawlhalla_id: playerId,
+                mode: "ranked_1v1" satisfies V1PlayerMode,
             }),
 
         getPlayer3v3Stats: (playerId: number) =>
             getOptionalJson<V1PlayerRankedStats>("/player/stats", {
                 brawlhalla_id: playerId,
                 mode: "ranked_3v3" satisfies V1PlayerMode,
+            }),
+
+        getPlayerTeams: (playerId: number) =>
+            getOptionalJson<V1PlayerTeams>("/player/teams", {
+                brawlhalla_id: playerId,
             }),
 
         getPlayerGuild: (playerId: number) =>
@@ -260,7 +330,7 @@ export const toRankings1v1 = (
         peak_rating: entry.best_rating ?? 0,
         games: gamesOf(entry),
         wins: entry.wins ?? 0,
-        tier: entry.tier as RankedTier,
+        tier: (entry.tier ?? "Valhallan") as RankedTier,
         region: fromV1Region(entry.region ?? "ALL") as Ranking1v1["region"],
         name: entry.players[0]?.username ?? "",
         brawlhalla_id: entry.players[0]?.id ?? 0,
@@ -278,7 +348,7 @@ export const toRankings2v2 = (
         peak_rating: entry.best_rating ?? 0,
         games: gamesOf(entry),
         wins: entry.wins ?? 0,
-        tier: entry.tier as RankedTier,
+        tier: (entry.tier ?? "Valhallan") as RankedTier,
         region: fromV1Region(entry.region ?? "ALL") as Ranking2v2["region"],
         name_one: entry.players[0]?.username ?? "",
         name_two: entry.players[1]?.username ?? "",
@@ -297,12 +367,16 @@ export const toRankings3v3 = (
         peak_rating: entry.best_rating ?? 0,
         games: gamesOf(entry),
         wins: entry.wins ?? 0,
-        tier: entry.tier as RankedTier,
+        tier: (entry.tier ?? "Valhallan") as RankedTier,
         region: fromV1Region(entry.region ?? "ALL") as Ranking3v3["region"],
         name: entry.players[0]?.username ?? "",
         brawlhalla_id: entry.players[0]?.id ?? 0,
     }))
 
+/**
+ * A `null` tier is Valhallan, not a missing field, so it does not make a page
+ * incomplete; a null rating does.
+ */
 export const isCompleteLeaderboard = (
     board: V1Leaderboard | null,
     playersPerRow: number,
@@ -311,7 +385,6 @@ export const isCompleteLeaderboard = (
     board.rankings.every(
         (entry) =>
             entry.rating !== null &&
-            entry.tier !== null &&
             entry.rank > 0 &&
             entry.players.length === playersPerRow,
     )
@@ -417,8 +490,77 @@ export const toPlayer3v3Ranked = (
     region: fromV1Region(stats.region ?? "ALL") as Player3v3Ranked["region"],
 })
 
-/** No v0 fallback — accept null tier; require name + rating. */
+/** Accept a null tier (Valhallan); require a name and a rating. */
 export const isCompletePlayer3v3Ranked = (
     stats: V1PlayerRankedStats | null,
 ): boolean =>
     stats !== null && stats.name.trim().length > 0 && stats.rating != null
+
+/** 1-based index into `rankedRegions`, the numeric region v0 carried on a team row. */
+const regionIndex = (region: string): number => {
+    const index = rankedRegions.indexOf(fromV1Region(region))
+
+    return index < 0 ? 0 : index + 1
+}
+
+/**
+ * The profile's ranked record, assembled from v1 alone: account and legend
+ * ratings from `/player/stats?mode=ranked_1v1`, the 2v2 teams from
+ * `/player/teams`. Keeps the `PlayerRanked` shape so aggregates and schemas are
+ * untouched — including the numeric `2v2[].region`, which v1 reports as a code.
+ *
+ * A 2v2-only player has teams but no placed 1v1 account record, so a missing or
+ * unranked account must not drop the teams.
+ */
+export const toPlayerRanked = (
+    stats: V1PlayerRankedStats | null,
+    teams: V1PlayerTeams | null,
+): PlayerRanked | null => {
+    const teamRows = teams?.teams.ranked_2v2 ?? []
+    const account =
+        stats !== null && stats.name.trim().length > 0 ? stats : null
+
+    if (account === null && teamRows.length === 0) return null
+
+    return {
+        name: account?.name ?? teamRows[0]?.username_one ?? "",
+        brawlhalla_id:
+            account?.brawlhalla_id ?? teamRows[0]?.brawlhalla_id_one ?? 0,
+        global_rank: account?.global_rank ?? 0,
+        // v1 sends a rank list, not the scalar v0 sent; nothing reads this field.
+        region_rank: 0,
+        legends: (account?.legends ?? []).map((legend) => ({
+            legend_id: legend.legend_id,
+            legend_name_key:
+                legendsMap[legend.legend_id]?.legend_name_key ??
+                String(legend.legend_id),
+            rating: legend.rating ?? 0,
+            peak_rating: legend.peak_rating ?? 0,
+            tier: (legend.tier ?? null) as RankedTier | null,
+            wins: legend.wins,
+            games: legend.games,
+        })),
+        "2v2": teamRows.map((team) => ({
+            brawlhalla_id_one: team.brawlhalla_id_one,
+            brawlhalla_id_two: team.brawlhalla_id_two,
+            name_one: team.username_one,
+            name_two: team.username_two,
+            rating: team.rating,
+            peak_rating: team.peak_rating,
+            tier: (team.tier ?? "Valhallan") as RankedTier,
+            wins: team.wins,
+            games: team.games,
+            teamname: `${team.username_one}+${team.username_two}`,
+            region: regionIndex(team.region),
+            global_rank: team.global_rank ?? 0,
+        })),
+        rating: account?.rating ?? 0,
+        peak_rating: account?.peak_rating ?? 0,
+        tier: (account?.tier ?? null) as RankedTier | null,
+        wins: account?.wins ?? 0,
+        games: account?.games ?? 0,
+        region: fromV1Region(
+            account?.region ?? teamRows[0]?.region ?? "ALL",
+        ) as PlayerRanked["region"],
+    }
+}

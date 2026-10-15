@@ -14,6 +14,7 @@ import { HydrationBoundary, RegistryContext } from "@effect/atom-react"
 import { AccountControl } from "@/components/account/AccountControl"
 import { LandingBackground } from "@/components/layout/LandingBackground"
 import { MainNav } from "@/components/layout/MainNav"
+import { NavigationProgress } from "@/components/layout/NavigationProgress"
 import {
     PageLoader,
     PageLoaderProbe,
@@ -88,6 +89,7 @@ function RootComponent() {
                                 <Outlet />
                             </Suspense>
                         </SearchProvider>
+                        <NavigationProgress />
                         <PageLoader />
                     </PageLoaderProvider>
                 </TooltipProvider>

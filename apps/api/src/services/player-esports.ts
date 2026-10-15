@@ -3,6 +3,7 @@ import { getEntitySlug } from "@crh/common/helpers/entitySlug"
 import { Cache } from "@crh/core/services/cache"
 import { Brawltools } from "./brawltools"
 import type * as B from "./brawltools/schemas"
+import { PlayerEsportsSchema } from "@crh/api-contract/schemas"
 import type { CacheWindow } from "@crh/core/services/cache-policy"
 import type { Cached } from "@crh/core/services/cache"
 import type {
@@ -14,8 +15,8 @@ import type {
 } from "@crh/api-contract/schemas"
 
 const esportsTtl: CacheWindow = {
-    freshSeconds: 60 * 60,
-    staleSeconds: 24 * 60 * 60,
+    freshSeconds: 6 * 60 * 60,
+    staleSeconds: 48 * 60 * 60,
 }
 
 const TEAMMATE_LIMIT = 12
@@ -115,12 +116,9 @@ export const layer = Layer.effect(
         const cache = yield* Cache
 
         return {
-            get: (brawlhallaId) =>
-                cache.getOrSetCached(
-                    // `v2`: see `PowerRankings` — shape changes must bump the key.
-                    `esports:player:v2:${brawlhallaId}`,
-                    esportsTtl,
-                    Effect.gen(function* () {
+            get(brawlhallaId) {
+                const program: Effect.Effect<PlayerEsportsData> = Effect.gen(
+                    function* () {
                         const found =
                             yield* brawltools.getPlayerByBrawlhallaId(
                                 brawlhallaId,
@@ -186,8 +184,15 @@ export const layer = Layer.effect(
                                 ),
                             },
                         }
-                    }).pipe(Effect.orDie),
-                ),
+                    },
+                ).pipe(Effect.orDie)
+
+                return cache.getOrSetCached(
+                    `esports:player:${brawlhallaId}`,
+                    { ...esportsTtl, schema: PlayerEsportsSchema },
+                    program,
+                )
+            },
         }
     }),
 )

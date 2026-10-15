@@ -132,7 +132,6 @@ export default Alchemy.Stack(
                     simple: { limit: 30, period: 10 },
                 }),
                 SITE_URL: setting("SITE_URL", "https://corehalla.com"),
-                BRAWLHALLA_API_KEY: secret("BRAWLHALLA_API_KEY"),
                 DISCORD_CLIENT_ID: setting("DISCORD_CLIENT_ID"),
                 DISCORD_CLIENT_SECRET: secret("DISCORD_CLIENT_SECRET"),
             },
@@ -151,7 +150,6 @@ export default Alchemy.Stack(
                 CRAWL_QUEUE: CorehallaCrawlQueue,
                 CRAWL_SAMPLE_QUEUE: CorehallaSampleQueue,
                 SITE_URL: setting("SITE_URL", "https://corehalla.com"),
-                BRAWLHALLA_API_KEY: secret("BRAWLHALLA_API_KEY"),
             },
         })
         const websiteResource = Cloudflare.Website.Vite("CorehallaWeb", {

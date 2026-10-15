@@ -1172,6 +1172,49 @@
         transform-origin: center;
         animation: ch-logo-spin 2s linear infinite;
     }
+
+    /*
+     * The in-flight indicator for ordinary navigations. It reports progress over
+     * the masthead without covering the page, so the previous route stays
+     * readable while the next one loads and the full-screen poster can be
+     * reserved for genuinely slow loads.
+     */
+    .ch-navprogress {
+        position: fixed;
+        inset: 0 0 auto 0;
+        z-index: 70;
+        height: 0.2rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 180ms ease;
+    }
+
+    .ch-navprogress[data-on],
+    .ch-navprogress[data-done] {
+        opacity: 1;
+    }
+
+    .ch-navprogress > span {
+        display: block;
+        height: 100%;
+        background: var(--color-brand);
+        transform: scaleX(0);
+        transform-origin: left center;
+    }
+
+    /*
+     * Like the poster's bar, the fill trickles and never lies: it creeps toward
+     * 90% while the load runs, and only claims the rest once the load finishes.
+     */
+    .ch-navprogress[data-on] > span {
+        transform: scaleX(0.9);
+        transition: transform 12s cubic-bezier(0.16, 0.5, 0.3, 1);
+    }
+
+    .ch-navprogress[data-done] > span {
+        transform: scaleX(1);
+        transition: transform 160ms ease-out;
+    }
 }
 
 /*

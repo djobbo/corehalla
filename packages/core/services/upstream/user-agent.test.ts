@@ -5,7 +5,6 @@ import {
     HttpClientRequest,
     HttpClientResponse,
 } from "effect/unstable/http"
-import { legacyOps } from "./legacy"
 import { v1Ops } from "./v1"
 import { USER_AGENT, withUserAgent } from "./user-agent"
 
@@ -82,23 +81,13 @@ describe("v1 client", () => {
         expect(requests).toHaveLength(1)
         expect(userAgentOf(requests[0]!)).toBe(USER_AGENT)
     })
-})
 
-describe("legacy v0 client", () => {
-    it("sends the identifying User-Agent on a rankings read", async () => {
-        process.env["BRAWLHALLA_API_KEY"] = "test-key"
+    it("sends it on a player teams read", async () => {
+        const { client, requests } = capturingClient()
 
-        try {
-            const { client, requests } = capturingClient()
+        await Effect.runPromise(v1Ops(client).getPlayerTeams(1234))
 
-            await Effect.runPromise(
-                legacyOps(client).getRankings("1v1", "eu", 1),
-            )
-
-            expect(requests.length).toBeGreaterThan(0)
-            expect(userAgentOf(requests[0]!)).toBe(USER_AGENT)
-        } finally {
-            delete process.env["BRAWLHALLA_API_KEY"]
-        }
+        expect(requests).toHaveLength(1)
+        expect(userAgentOf(requests[0]!)).toBe(USER_AGENT)
     })
 })

@@ -80,25 +80,26 @@ describe("snapshotFromRanked", () => {
         expect(snapshotFromRanked(null)).toBeNull()
     })
 
-    it("yields null for v0's zeroed placeholder, not just for a JSON null", () => {
+    it("yields null for a zeroed placeholder, not just for a JSON null", () => {
         expect(snapshotFromRanked(noRankedRecord)).toBeNull()
     })
 
-    it("treats either sentinel as no record", () => {
-        // Whichever field v0 blanks first, the payload is still a placeholder.
+    it("treats a zero rating as no record regardless of the other fields", () => {
         expect(
             snapshotFromRanked({
                 ...noRankedRecord,
                 region: "us-e",
             } as PlayerRanked),
         ).toBeNull()
+    })
 
+    it("keeps a record once the rating is positive", () => {
         expect(
             snapshotFromRanked({
                 ...noRankedRecord,
                 rating: 1500,
             } as PlayerRanked),
-        ).toBeNull()
+        ).not.toBeNull()
     })
 })
 

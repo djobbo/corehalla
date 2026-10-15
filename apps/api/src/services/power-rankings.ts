@@ -1,8 +1,9 @@
-import { Context, Effect, Layer } from "effect"
+import { Context, Effect, Layer, Schema } from "effect"
 import { getEntitySlug } from "@crh/common/helpers/entitySlug"
 import { Cache } from "@crh/core/services/cache"
 import { Brawltools } from "./brawltools"
 import type * as S from "./brawltools/schemas"
+import { PowerRankingsPlayerSchema } from "@crh/api-contract/schemas"
 import type { CacheWindow } from "@crh/core/services/cache-policy"
 import type { Cached } from "@crh/core/services/cache"
 import type {
@@ -15,10 +16,10 @@ import type {
 /** brawltools caps at 100; 50 is its own default and our page size. */
 const MAX_RESULTS = 50
 
-/** Republished rarely — an hour fresh, a day of serve-stale is plenty. */
+/** Republished rarely — six hours fresh, two days of serve-stale is plenty. */
 const powerTtl: CacheWindow = {
-    freshSeconds: 60 * 60,
-    staleSeconds: 24 * 60 * 60,
+    freshSeconds: 6 * 60 * 60,
+    staleSeconds: 48 * 60 * 60,
 }
 
 const gameModeValue = {
@@ -67,10 +68,13 @@ const toPlayer = (
     }
 }
 
-export type PowerRankingsPage = {
-    readonly players: readonly PowerRankingsPlayer[]
-    readonly totalPages: number
-}
+/** Cached payload; the schema re-validates KV/L1 hits (see `CacheRead`). */
+const PowerRankingsPageSchema = Schema.Struct({
+    players: Schema.Array(PowerRankingsPlayerSchema),
+    totalPages: Schema.Number,
+})
+
+export type PowerRankingsPage = typeof PowerRankingsPageSchema.Type
 
 export type PowerRankingsShape = {
     readonly getPowerRankings: (input: {
@@ -93,13 +97,9 @@ export const layer = Layer.effect(
         const cache = yield* Cache
 
         return {
-            getPowerRankings: (input) =>
-                cache.getOrSetCached(
-                    // `v2`: Cache serves stored JSON without re-decoding, so a
-                    // payload-shape change must bump the key to evict old entries.
-                    `pr:v2:${input.gameMode}:${input.region}:${input.page}:${input.orderBy}`,
-                    powerTtl,
-                    Effect.gen(function* () {
+            getPowerRankings(input) {
+                const program: Effect.Effect<PowerRankingsPage> = Effect.gen(
+                    function* () {
                         const page = yield* brawltools.listPr({
                             gameMode: gameModeValue[input.gameMode],
                             region: input.region,
@@ -145,8 +145,15 @@ export const layer = Layer.effect(
                             ),
                             totalPages: page.totalPages,
                         }
-                    }).pipe(Effect.orDie),
-                ),
+                    },
+                ).pipe(Effect.orDie)
+
+                return cache.getOrSetCached(
+                    `pr:${input.gameMode}:${input.region}:${input.page}:${input.orderBy}`,
+                    { ...powerTtl, schema: PowerRankingsPageSchema },
+                    program,
+                )
+            },
         }
     }),
 )

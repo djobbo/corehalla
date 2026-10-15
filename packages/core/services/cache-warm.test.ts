@@ -318,6 +318,28 @@ describe("caching an absent answer", () => {
             }),
     )
 
+    it.effect("an empty board is stored on the empty window too", () =>
+        Effect.gen(function* () {
+            const { store, kv } = fakeKv()
+            const cache = make(async () => kv, inlineSchedule)
+            const key = cacheKeys.leaderboard("1v1", "eu", 1)
+
+            yield* cache.getOrSet(
+                key,
+                cacheTtl.leaderboard,
+                Effect.succeed([] as readonly Ranking1v1[]),
+            )
+
+            const envelope = envelopeOf(store, key)
+
+            expect(envelope.value).toEqual([])
+
+            expect(envelope.freshUntil - Date.now()).toBeLessThanOrEqual(
+                emptyTtl.freshSeconds * 1000,
+            )
+        }),
+    )
+
     it.effect("a real value still gets the window its resource asked for", () =>
         Effect.gen(function* () {
             const { store, kv } = fakeKv()

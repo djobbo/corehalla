@@ -76,12 +76,8 @@ export const STATS_PLAYER_COLUMNS = [
     "koGadgets",
 ] as const
 
-const NO_RANKED_RECORD = "none"
-
-/** v0 200 placeholder for never-placed: rating 0 or region/tier literal "none". */
-const isNoRankedRecord = (ranked: PlayerRanked): boolean =>
-    ranked.rating <= 0 ||
-    String(ranked.region).trim().toLowerCase() === NO_RANKED_RECORD
+/** Never-placed: v1 reports no positive rating for a player with no 1v1 record. */
+const isNoRankedRecord = (ranked: PlayerRanked): boolean => ranked.rating <= 0
 
 export const snapshotFromRanked = (
     ranked: PlayerRanked | null,
@@ -93,7 +89,7 @@ export const snapshotFromRanked = (
               peak: ranked.peak_rating,
               games: ranked.games,
               wins: ranked.wins,
-              // null is top tier (Valhallan), not missing — v0 has no Valhallan literal.
+              // v1 reports Valhallan as a null tier; render its literal name.
               tier: ranked.tier ?? "Valhallan",
               region: ranked.region.toLowerCase() as RankedRegion,
           }

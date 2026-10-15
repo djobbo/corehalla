@@ -16,7 +16,7 @@ import type {
 } from "@crh/api-contract/schemas"
 import type { Weapon as WeaponName } from "@crh/bhapi/constants"
 
-const ttl = "5 minutes"
+const ttl = "15 minutes"
 
 type Region = typeof RankedRegion.Type
 type LadderType = typeof Ladder.Type

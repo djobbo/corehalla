@@ -9,13 +9,14 @@ export type CacheWindow = {
 }
 
 export const cacheTtl = {
-    leaderboard: { freshSeconds: 120, staleSeconds: 2 * 60 * 60 },
-    profile: { freshSeconds: 300, staleSeconds: 24 * 60 * 60 },
+    leaderboard: { freshSeconds: 5 * 60, staleSeconds: 6 * 60 * 60 },
+    profile: { freshSeconds: 10 * 60, staleSeconds: 24 * 60 * 60 },
 } as const satisfies Record<string, CacheWindow>
 
 /**
- * Short shared window for `null` ("upstream could not answer"). Must not use
- * resource TTLs — that turns a transient miss into a long "does not exist".
+ * Short shared window for `null` or an empty list ("upstream could not
+ * answer"). Must not use resource TTLs — that turns a transient miss, or a
+ * failed board, into a long "does not exist" or a blank ladder.
  * No serve-stale: staleUntil equals freshUntil.
  */
 export const emptyTtl: CacheWindow = {
@@ -42,7 +43,7 @@ export const cacheKeys = {
     playerRanked: (playerId: number | string): string =>
         `player-ranked:${playerId}`,
 
-    /** Separate from playerRanked — v0/v1 serve different modes; shared key would evict. */
+    /** Separate from playerRanked — 1v1 and 3v3 are different reads; a shared key would evict. */
     player3v3Ranked: (playerId: number | string): string =>
         `player-3v3-ranked:${playerId}`,
 

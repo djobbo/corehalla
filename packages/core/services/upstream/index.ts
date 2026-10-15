@@ -5,7 +5,6 @@ import { Background } from "../background"
 import { Cache } from "../cache"
 import { cacheKeys, cacheTtl } from "../cache-policy"
 import type { Cached } from "../cache"
-import { legacyOps } from "./legacy"
 import { snapshotFromRanked } from "../player-writes"
 import {
     isCompleteClan,
@@ -14,6 +13,7 @@ import {
     isCompletePlayerStats,
     toClan,
     toPlayer3v3Ranked,
+    toPlayerRanked,
     toPlayerStats,
     toRankings1v1,
     toRankings2v2,
@@ -60,18 +60,9 @@ type UpstreamShape = {
     readonly getClan: (clanId: number) => Effect.Effect<Clan | null>
 }
 
-/** Strip inline clan from v0 so cache split with getPlayerClan holds. */
-const withoutClan = (stats: PlayerStats | null): PlayerStats | null => {
-    if (stats === null) return null
-
-    const { clan: _ignored, ...rest } = stats
-
-    return rest
-}
-
 /**
- * v1-first, v0 fallback, no cache. Crawler uses this — caching/damping here
- * would throttle the refresh path that exists to protect the budget.
+ * v1-only, no cache. Crawler uses this — caching/damping here would throttle
+ * the refresh path that exists to protect the budget.
  */
 export class Upstream extends Context.Service<Upstream, UpstreamShape>()(
     "app/Upstream",
@@ -83,7 +74,6 @@ export const rawLayer = Layer.effect(
         const client = yield* HttpClient.HttpClient
         const database = yield* Database
 
-        const legacy = legacyOps(client)
         const v1 = v1Ops(client)
 
         return {
@@ -96,59 +86,38 @@ export const rawLayer = Layer.effect(
                         name,
                     )
 
-                    // 3v3 is one player/row (solo queue), not a trio — that assumption emptied the ladder.
+                    // 3v3 is one player/row (solo queue), not a trio; 2v2 is two.
                     const playersPerRow = bracket === "2v2" ? 2 : 1
 
                     if (
-                        board !== null &&
-                        isCompleteLeaderboard(board, playersPerRow)
+                        board === null ||
+                        !isCompleteLeaderboard(board, playersPerRow)
                     ) {
-                        if (bracket === "1v1") {
-                            return toRankings1v1(board.rankings)
-                        }
-
-                        return bracket === "2v2"
-                            ? toRankings2v2(board.rankings)
-                            : toRankings3v3(board.rankings)
-                    }
-
-                    // No v0 3v3 — incomplete → [] rather than 500.
-                    if (bracket === "3v3") {
                         yield* Effect.logDebug(
-                            `v1 could not serve 3v3 rankings ` +
-                                `(${region} page ${page}); no v0 source exists`,
+                            `v1 could not serve ${bracket} rankings ` +
+                                `(${region} page ${page})`,
                         )
 
                         return []
                     }
 
-                    yield* Effect.logDebug(
-                        `v1 could not serve ${bracket} rankings ` +
-                            `(${region} page ${page}); falling back to v0`,
-                    )
+                    if (bracket === "1v1") return toRankings1v1(board.rankings)
 
-                    return yield* legacy.getRankings(
-                        bracket,
-                        region,
-                        page,
-                        name,
-                    )
+                    return bracket === "2v2"
+                        ? toRankings2v2(board.rankings)
+                        : toRankings3v3(board.rankings)
                 }),
 
             getPlayerStats: (playerId) =>
                 Effect.gen(function* () {
                     const stats = yield* v1.getPlayerStats(playerId, "all")
 
-                    // null = missing or v1 failed; v0 answers both — do not 404 guess.
                     if (stats === null || !isCompletePlayerStats(stats)) {
                         yield* Effect.logDebug(
-                            `v1 could not serve player ${playerId}; ` +
-                                `falling back to v0`,
+                            `v1 could not serve player ${playerId} stats`,
                         )
 
-                        return withoutClan(
-                            yield* legacy.getPlayerStats(playerId),
-                        )
+                        return null
                     }
 
                     return toPlayerStats(stats, undefined)
@@ -176,8 +145,19 @@ export const rawLayer = Layer.effect(
                     }
                 }),
 
-            // No v1 equivalent: v1 exposes no 2v2 ranked mode.
-            getPlayerRanked: (playerId) => legacy.getPlayerRanked(playerId),
+            // Account + legend ratings from ranked_1v1; 2v2 teams from /player/teams.
+            getPlayerRanked: (playerId) =>
+                Effect.gen(function* () {
+                    const [stats, teams] = yield* Effect.all(
+                        [
+                            v1.getPlayer1v1Stats(playerId),
+                            v1.getPlayerTeams(playerId),
+                        ],
+                        { concurrency: 2 },
+                    )
+
+                    return toPlayerRanked(stats, teams)
+                }),
 
             // 3v3 is v1-only; null means no record, not a failed page.
             getPlayer3v3Ranked: (playerId) =>
@@ -187,7 +167,7 @@ export const rawLayer = Layer.effect(
                     if (stats === null || !isCompletePlayer3v3Ranked(stats)) {
                         yield* Effect.logDebug(
                             `v1 could not serve 3v3 ranked for player ` +
-                                `${playerId}; no v0 source exists`,
+                                `${playerId}`,
                         )
 
                         return null
@@ -209,11 +189,9 @@ export const rawLayer = Layer.effect(
 
                     if (isCompleteClan(clan)) return clan
 
-                    yield* Effect.logDebug(
-                        `v1 could not serve guild ${clanId}; falling back to v0`,
-                    )
+                    yield* Effect.logDebug(`v1 could not serve guild ${clanId}`)
 
-                    return yield* legacy.getClan(clanId)
+                    return null
                 }),
         }
     }),

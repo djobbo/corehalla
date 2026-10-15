@@ -187,7 +187,7 @@ const to2v2Teams = (ranked: PlayerRanked): readonly PlayerRankedTeam[] => {
                     slug: getEntitySlug(two.id, two.name),
                 },
             ],
-            // Zero second id = v0 solo queue filed in the team list.
+            // Zero second id = an unpaired solo-queue entry filed in the team list.
             paired: two.id > 0,
             rating: team.rating,
             peak_rating: team.peak_rating,

@@ -3,9 +3,16 @@ import { routeTree } from "./routeTree.gen"
 import { makeRegistry } from "@/effect/atoms"
 import { PageLoaderProbe } from "@/components/layout/PageLoader"
 
-const PENDING_MS = 140
+/**
+ * The full-screen poster is a "this is taking a while" screen, not a transition
+ * flourish: ordinary navigations resolve under this and keep the previous page
+ * on screen with the top progress bar as the only feedback. A navigation that
+ * crosses the threshold is slow enough to justify covering the page.
+ */
+const PENDING_MS = 1000
 
-const PENDING_MIN_MS = 480
+// The overlay's own floor (PageLoader `MIN_VISIBLE_MS`) owns the flash guard.
+const PENDING_MIN_MS = 0
 
 export function getRouter() {
     // Fresh registry per server request; one shared registry in the browser.

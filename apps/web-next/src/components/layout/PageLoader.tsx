@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button"
 import { AnimatedLogo } from "./AnimatedLogo"
 
 /** Shortest visible time so a fast response still reads as a transition. */
-const MIN_VISIBLE_MS = 420
+const MIN_VISIBLE_MS = 240
 
 const EXIT_MS = 560
 

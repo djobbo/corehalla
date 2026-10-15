@@ -84,8 +84,7 @@ The typed API is declared once as an `HttpApi` contract
   _outer_ group builder, so the handler layer only requires plain services and
   `Layer.provide` can discharge them.
 - **Outbound HTTP** — the Brawlhalla service calls upstream through Effect's
-  `HttpClient`, preferring the dair.gg proxy and falling back to the official
-  API.
+  `HttpClient` against the official API.
 - **Client** — `AtomHttpApi.Service()` generates typed query atoms from the same
   contract. Components read them with `useAtomValue` / `useQuery`
   (`useAtomSuspense`), so there is no hand-written fetch layer on the client.
@@ -211,7 +210,6 @@ database is the `DB` D1 binding.
 | `DISCORD_CLIENT_ID`     | Discord OAuth application id                         |
 | `DISCORD_CLIENT_SECRET` | Discord OAuth application secret                     |
 | `SITE_URL`              | Public origin; also the OAuth redirect base          |
-| `BRAWLHALLA_API_KEY`    | Brawlhalla API key (server only)                     |
 | `INTERNAL_ORIGIN`       | Optional override for the SSR atom self-fetch origin |
 
 Alchemy reads its own credentials from the repo-root `.env` (or from an
@@ -232,8 +230,8 @@ The root `alchemy.run.ts` declares the deployment:
   static assets, binding the database as `DB` (`src/env.ts` reads `env.DB`).
   Alchemy supplies the Cloudflare plugin, so `vite.config.ts` must not add
   `@cloudflare/vite-plugin` or Nitro.
-- Secrets (`DISCORD_CLIENT_SECRET`, `BRAWLHALLA_API_KEY`) are bound as
-  `secret_text`; `SITE_URL`/`VITE_SITE_URL`/`INTERNAL_ORIGIN` are plain values.
+- Secrets (`DISCORD_CLIENT_SECRET`) are bound as `secret_text`;
+  `SITE_URL`/`VITE_SITE_URL`/`INTERNAL_ORIGIN` are plain values.
 
 Seeding is a one-off manual step; see the root README. `pnpm db:seed` generates
 the synthetic data, `pnpm db:import:supabase` converts the old Supabase database

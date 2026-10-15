@@ -17,7 +17,6 @@ type WorkerEnvironment = {
     CRAWL_QUEUE?: QueueProducerLike
     /** Separate from `CRAWL_QUEUE` so samples are not starved by ladder walks. */
     CRAWL_SAMPLE_QUEUE?: QueueProducerLike
-    BRAWLHALLA_API_KEY?: string
     SITE_URL?: string
     [key: string]: unknown
 }

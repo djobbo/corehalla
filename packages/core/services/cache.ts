@@ -1,4 +1,4 @@
-import { Context, Effect, Layer } from "effect"
+import { Context, Effect, Layer, Option, Schema } from "effect"
 import { cacheNamespace } from "../env"
 import { Background } from "./background"
 import { allowRefresh, UPSTREAM_LIMIT_KEY } from "./rate-limit"
@@ -6,6 +6,15 @@ import { emptyTtl } from "./cache-policy"
 import type { BackgroundShape } from "./background"
 import type { KVNamespaceLike } from "../env"
 import type { CacheWindow } from "./cache-policy"
+
+/**
+ * Read options. When `schema` is given, cached values (L1 and KV) are decoded
+ * against it before serving; a value that no longer matches is treated as a
+ * miss so a payload-shape change cannot poison responses until TTL expiry.
+ */
+export type CacheRead<A> = CacheWindow & {
+    readonly schema?: Schema.ConstraintDecoder<A>
+}
 
 /**
  * L1 isolate Map + L2 KV (eventually consistent). Fresh vs stale retention are
@@ -19,14 +28,14 @@ export class Cache extends Context.Service<
         /** `refresh` only for stale-serve; false = serve stale without refresh. */
         readonly getOrSet: <A>(
             key: string,
-            options: CacheWindow,
+            options: CacheRead<A>,
             effect: Effect.Effect<A>,
             refresh?: Effect.Effect<boolean>,
         ) => Effect.Effect<A>
         /** Like getOrSet; `updatedAt` is fetch time, not read time. */
         readonly getOrSetCached: <A>(
             key: string,
-            options: CacheWindow,
+            options: CacheRead<A>,
             effect: Effect.Effect<A>,
             refresh?: Effect.Effect<boolean>,
         ) => Effect.Effect<Cached<A>>
@@ -68,6 +77,22 @@ type Envelope = {
 }
 
 type Schedule = BackgroundShape["run"]
+
+/** `schema` given → decode; decode failure is a miss, not an error. */
+const decodeCached = <A>(
+    schema: Schema.ConstraintDecoder<A> | undefined,
+    value: unknown,
+): Option.Option<A> =>
+    schema === undefined
+        ? Option.some(value as A)
+        : Schema.decodeUnknownOption(schema)(value)
+
+/**
+ * `null` ("upstream could not answer") and an empty list both use the short
+ * `emptyTtl`: a blank result must not be pinned for the resource's window.
+ */
+const isEmptyResult = (value: unknown): boolean =>
+    value === null || (Array.isArray(value) && value.length === 0)
 
 /** L1 is per-instance (not module scope) so tests can isolate KV. */
 export const make = (
@@ -116,7 +141,7 @@ export const make = (
             )
         }).pipe(Effect.catch(() => Effect.void))
 
-    /** Reconstruct pre-`storedAt` envelopes: freshUntil − window (null → emptyTtl). */
+    /** Reconstruct pre-`storedAt` envelopes: freshUntil − window (empty → emptyTtl). */
     const storedAtOf = (
         envelope: Envelope,
         value: unknown,
@@ -124,7 +149,7 @@ export const make = (
     ): number => {
         if (typeof envelope.storedAt === "number") return envelope.storedAt
 
-        const window = value === null ? emptyTtl : options
+        const window = isEmptyResult(value) ? emptyTtl : options
 
         return envelope.freshUntil - window.freshSeconds * 1000
     }
@@ -147,19 +172,18 @@ export const make = (
             })
         })
 
-    /** `null` ("upstream could not answer") always uses emptyTtl. */
     const store = <A>(
         key: string,
         value: A,
         options: CacheWindow,
         at: number,
         kv: KVNamespaceLike | undefined,
-    ) => setAt(key, value, value === null ? emptyTtl : options, at, kv)
+    ) => setAt(key, value, isEmptyResult(value) ? emptyTtl : options, at, kv)
 
     const cache = {
         getOrSet: <A>(
             key: string,
-            options: CacheWindow,
+            options: CacheRead<A>,
             effect: Effect.Effect<A>,
             refresh?: Effect.Effect<boolean>,
         ) =>
@@ -169,14 +193,27 @@ export const make = (
 
         getOrSetCached: <A>(
             key: string,
-            options: CacheWindow,
+            options: CacheRead<A>,
             effect: Effect.Effect<A>,
             refresh?: Effect.Effect<boolean>,
         ) =>
             Effect.gen(function* () {
                 const now = Date.now()
 
-                const local = l1Get(key, now)
+                let local = l1Get(key, now)
+
+                // A shape change since write invalidates L1 too, not just KV.
+                if (
+                    local &&
+                    Option.isNone(decodeCached(options.schema, local.value))
+                ) {
+                    yield* Effect.logDebug(
+                        `Dropping stale-schema L1 entry ${key}`,
+                    )
+                    l1.delete(key)
+                    local = undefined
+                }
+
                 if (local && local.freshUntil > now) {
                     return {
                         value: local.value as A,
@@ -214,12 +251,16 @@ export const make = (
                         }).pipe(Effect.catch(() => Effect.succeed(null)))
 
                         if (envelope) {
+                            const decoded = decodeCached(
+                                options.schema,
+                                envelope.value,
+                            )
                             const fresh = envelope.freshUntil > now
 
                             // Missing staleUntil: serve if fresh, else refetch.
                             const retained = (envelope.staleUntil ?? 0) > now
 
-                            if (fresh || retained) {
+                            if (Option.isSome(decoded) && (fresh || retained)) {
                                 const storedAt = storedAtOf(
                                     envelope,
                                     envelope.value,

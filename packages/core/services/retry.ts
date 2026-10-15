@@ -1,9 +1,13 @@
 import { Duration, Effect, Predicate, Schedule } from "effect"
 import { HttpClientError } from "effect/unstable/http"
 
-const MAX_ATTEMPTS = 5
+const MAX_ATTEMPTS = 3
 
-/** Transient backoff base (500ms → 1s → 2s → 4s); caller paces at 225ms. */
+/**
+ * Transient backoff base (500ms → 1s). Two retries, not four: this policy
+ * serves interactive requests, and the cache plus the crawler are the
+ * resilience layer, not a long backoff inside a request.
+ */
 const TRANSIENT_BASE_MS = 500
 
 /** Floor after a 429 with no usable Retry-After — longer than the first transient step. */
