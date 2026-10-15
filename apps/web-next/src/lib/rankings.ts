@@ -107,7 +107,13 @@ export const CAREER_RANKINGS_PAGE_SIZE = 50
 export const CLAN_RANKINGS_PAGE_SIZE = 50
 
 export const tierColor = (tier: string): string => {
-    switch (tier.trim().toLowerCase()) {
+    // Numbered tiers (`Platinum 3`) share their family's colour.
+    switch (
+        tier
+            .trim()
+            .toLowerCase()
+            .replace(/\s+\d+$/, "")
+    ) {
         case "valhallan":
             return "var(--color-accentAlt)"
         case "diamond":

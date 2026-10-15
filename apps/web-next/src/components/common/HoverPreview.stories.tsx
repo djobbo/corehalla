@@ -1,22 +1,28 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { EntityPreview } from "./HoverPreview"
 import { withMockApi } from "@/storybook/decorators"
+import { guildEnvelope, playerEnvelope } from "@/storybook/fixtures"
+
+// The preview is fetched by the id the caller links to; the fixtures carry
+// different ids internally, which the component does not read.
+const mockApi = {
+    "/api/v1/players/1": playerEnvelope,
+    "/api/v1/guilds/42": guildEnvelope,
+}
 
 const meta = {
     title: "Patterns/Hover preview",
     component: EntityPreview,
     decorators: [withMockApi],
-    parameters: { layout: "padded" },
+    parameters: { layout: "padded", mockApi },
 } satisfies Meta<typeof EntityPreview>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-// The mock API only serves `/api/v1/me/*`, so the player/guild fetch behind
-// `EntityPreview` fails and it renders null — the shell mirrors where the
-// preview appears, and null is the loading/empty state it shows in that case.
+// Mirrors the 300px surface `HoverCardContent` gives the preview in the app.
 const Shell = ({ args }: { args: { type: "player" | "clan"; id: string } }) => (
-    <div className="min-h-20 w-[300px] rounded-lg border border-border bg-card p-3">
+    <div className="w-[300px] bg-popover p-3 text-popover-foreground shadow-md">
         <EntityPreview {...args} />
     </div>
 )

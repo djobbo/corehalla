@@ -72,25 +72,25 @@ Story them with the `withMockApi` decorator (see `src/storybook/decorators.tsx`)
 It provides a fresh registry, a Suspense boundary, and canned responses for the
 account reads, and **falls through** for anything else — so stories compose.
 
-A component that needs a profile, guild or esports payload registers the route
-once at module scope; `registerMockRoute` from the same module writes into the
-mock's route table:
+A component that needs a profile, guild or esports payload declares it on the
+story's own `parameters.mockApi`, so the routes travel with the story and no
+import order can leave them unregistered:
 
 ```tsx
-import { registerMockRoute, withMockApi } from "@/storybook/decorators"
-
-registerMockRoute("/api/v1/players/4242", playerEnvelope)
+import { withMockApi } from "@/storybook/decorators"
+import { playerMock } from "@/storybook/fixtures"
 
 const meta = {
     title: "Features/Player/Player header",
     component: PlayerHeader,
     decorators: [withMockApi],
+    parameters: { mockApi: playerMock },
 } satisfies Meta<typeof PlayerHeader>
 ```
 
-The envelopes are the player/clan fixture source of truth and live in
-`src/components/player/PlayerHeader.stories.tsx` (exported and excluded from the
-sidebar via `excludeStories`).
+`src/storybook/fixtures.ts` is the fixture source of truth; failures that drive
+an asset lookup (legend `name_key`, weapon `name`) must match the real filename
+casing.
 
 ## Global setup
 

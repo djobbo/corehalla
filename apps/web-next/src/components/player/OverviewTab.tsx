@@ -286,22 +286,19 @@ const DamagePanel = ({
                         ]}
                     />
                 </div>
-                <Card className="mt-4 bg-background">
-                    <CardContent>
-                        <StatGrid
-                            stats={[
-                                {
-                                    title: "Dealt per second",
-                                    value: `${ratio(dealt, matchtime).toFixed(1)} dmg/s`,
-                                },
-                                {
-                                    title: "Taken per second",
-                                    value: `${ratio(taken, matchtime).toFixed(1)} dmg/s`,
-                                },
-                            ]}
-                        />
-                    </CardContent>
-                </Card>
+                <StatGrid
+                    className="mt-4"
+                    stats={[
+                        {
+                            title: "Dealt per second",
+                            value: `${ratio(dealt, matchtime).toFixed(1)} dmg/s`,
+                        },
+                        {
+                            title: "Taken per second",
+                            value: `${ratio(taken, matchtime).toFixed(1)} dmg/s`,
+                        },
+                    ]}
+                />
             </CardContent>
         </Card>
     )
@@ -412,6 +409,9 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                 <GamesPanel games={games} wins={wins} />
                 {hasLegendPlay ? (
                     <Card>
+                        <CardHeader>
+                            <CardTitle>Legends</CardTitle>
+                        </CardHeader>
                         <CardContent>
                             <LegendBubbleChart legends={profile.legends} />
                         </CardContent>
@@ -419,6 +419,9 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                 ) : null}
                 {hasWeaponPlay ? (
                     <Card>
+                        <CardHeader>
+                            <CardTitle>Weapons</CardTitle>
+                        </CardHeader>
                         <CardContent>
                             <WeaponBubbleChart
                                 weapons={profile.weapons}
@@ -450,57 +453,61 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                     throws={throws}
                 />
             </div>
-            <div className="@container p-4">
-                <StatGrid
-                    className="mt-3"
-                    stats={[
-                        {
-                            title: "DPS dealt",
-                            value: `${ratio(damageDealt, matchtime).toFixed(1)} dmg/s`,
-                        },
-                        {
-                            title: "DPS taken",
-                            value: `${ratio(damageTaken, matchtime).toFixed(1)} dmg/s`,
-                        },
-                        {
-                            title: "Time to KO",
-                            value: `${ratio(matchtime, kos).toFixed(1)}s`,
-                        },
-                        {
-                            title: "Time to fall",
-                            value: `${ratio(matchtime, falls).toFixed(1)}s`,
-                        },
-                        {
-                            title: "KOs per game",
-                            value: perGame(kos, games).toFixed(1),
-                        },
-                        {
-                            title: "Falls per game",
-                            value: perGame(falls, games).toFixed(1),
-                        },
-                        {
-                            title: "One suicide every",
-                            value: `${ratio(games, suicides).toFixed(1)} games`,
-                        },
-                        {
-                            title: "One team KO every",
-                            value: `${ratio(games, teamKos).toFixed(1)} games`,
-                        },
-                        {
-                            title: "Damage dealt per game",
-                            value: perGame(damageDealt, games).toFixed(1),
-                        },
-                        {
-                            title: "Damage taken per game",
-                            value: perGame(damageTaken, games).toFixed(1),
-                        },
-                        {
-                            title: "Average game length",
-                            value: `${perGame(matchtime, games).toFixed(1)}s`,
-                        },
-                    ]}
-                />
-            </div>
+            <Card>
+                <CardHeader>
+                    <CardTitle>Rates &amp; averages</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <StatGrid
+                        stats={[
+                            {
+                                title: "DPS dealt",
+                                value: `${ratio(damageDealt, matchtime).toFixed(1)} dmg/s`,
+                            },
+                            {
+                                title: "DPS taken",
+                                value: `${ratio(damageTaken, matchtime).toFixed(1)} dmg/s`,
+                            },
+                            {
+                                title: "Time to KO",
+                                value: `${ratio(matchtime, kos).toFixed(1)}s`,
+                            },
+                            {
+                                title: "Time to fall",
+                                value: `${ratio(matchtime, falls).toFixed(1)}s`,
+                            },
+                            {
+                                title: "KOs per game",
+                                value: perGame(kos, games).toFixed(1),
+                            },
+                            {
+                                title: "Falls per game",
+                                value: perGame(falls, games).toFixed(1),
+                            },
+                            {
+                                title: "One suicide every",
+                                value: `${ratio(games, suicides).toFixed(1)} games`,
+                            },
+                            {
+                                title: "One team KO every",
+                                value: `${ratio(games, teamKos).toFixed(1)} games`,
+                            },
+                            {
+                                title: "Damage dealt per game",
+                                value: perGame(damageDealt, games).toFixed(1),
+                            },
+                            {
+                                title: "Damage taken per game",
+                                value: perGame(damageTaken, games).toFixed(1),
+                            },
+                            {
+                                title: "Average game length",
+                                value: `${perGame(matchtime, games).toFixed(1)}s`,
+                            },
+                        ]}
+                    />
+                </CardContent>
+            </Card>
             <div className="grid gap-4 @2xl:grid-cols-2 @4xl:grid-cols-3">
                 <BreakdownPanel
                     title="Unarmed"

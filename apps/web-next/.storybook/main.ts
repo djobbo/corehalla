@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url"
 import type { StorybookConfig } from "@storybook/react-vite"
 
 const here = dirname(fileURLToPath(import.meta.url))
+const publicDir = fileURLToPath(new URL("../../web/public/", import.meta.url))
 
 /**
  * Storybook configuration for `web-next`.
@@ -17,6 +18,10 @@ const here = dirname(fileURLToPath(import.meta.url))
  */
 const config: StorybookConfig = {
     stories: ["../src/**/*.stories.@(ts|tsx)"],
+    // The roster/weapon/region art the app ships. Storybook ignores the Vite
+    // config's `publicDir`, so the same directory is registered here. Absolute,
+    // because `staticDirs` resolves relative to the process cwd, not `.storybook`.
+    staticDirs: [publicDir],
     addons: ["@storybook/addon-a11y", "@storybook/addon-docs"],
     framework: {
         name: "@storybook/react-vite",

@@ -113,23 +113,18 @@ const requestPath = (input: RequestInfo | URL): string => {
 }
 
 /**
- * Extra `/api/v1/*` responses a story needs, keyed by pathname. Registered at
- * module load; the mock reads the map on every request, so ordering between
- * stories never matters.
+ * Routes for the story being rendered, taken from `parameters.mockApi`. Held in
+ * a module variable rather than a per-story closure because the fetch wrapper is
+ * installed once; the decorator re-points it on every render.
  */
-const mockRoutes = new Map<string, unknown>()
-
-/** Serve `body` (JSON) for `path` inside `withMockApi`. */
-export const registerMockRoute = (path: string, body: unknown): void => {
-    mockRoutes.set(path, body)
-}
+let activeRoutes: Record<string, unknown> = {}
 
 let fetchMockInstalled = false
 
 /**
- * Answers the account reads and any `registerMockRoute` entry, on top of the
- * real `fetch`. A path it does not know **falls through** rather than 404ing, so
- * stories stay composable — an unregistered profile fetch surfaces the
+ * Answers the account reads and the story's `parameters.mockApi` routes, on top
+ * of the real `fetch`. A path it does not know **falls through** rather than
+ * 404ing, so stories stay composable — an unregistered fetch surfaces the
  * component's own error state instead of a mock's silent empty.
  */
 const installFetchMock = () => {
@@ -148,8 +143,8 @@ const installFetchMock = () => {
 
         if (!path.startsWith("/api/v1/")) return original(input, init)
 
-        if (mockRoutes.has(path)) {
-            return Promise.resolve(json(mockRoutes.get(path)))
+        if (path in activeRoutes) {
+            return Promise.resolve(json(activeRoutes[path]))
         }
 
         if (path === "/api/v1/me/session") {
@@ -177,9 +172,20 @@ const installFetchMock = () => {
  * Router + a fresh atom registry + the mocked API, inside the Suspense boundary
  * the data-reading atoms need. A fresh registry per story is what makes the
  * atoms refetch instead of replaying a neighbouring story's cache.
+ *
+ * A story supplies read fixtures through its own metadata, so the routes travel
+ * with the story and no import order can leave them unregistered:
+ *
+ * ```ts
+ * parameters: { mockApi: { "/api/v1/players/1": playerEnvelope } }
+ * ```
  */
-export const withMockApi: Decorator = (Story) => {
+export const withMockApi: Decorator = (Story, context) => {
+    activeRoutes =
+        (context.parameters?.mockApi as Record<string, unknown> | undefined) ??
+        {}
     installFetchMock()
+
     const router = useMemo(buildRouter, [])
     const registry = useMemo(makeRegistry, [])
 

@@ -13,9 +13,7 @@ const src = fileURLToPath(new URL("../src/", import.meta.url))
  * `src/styles/app.css` the app ships, so components render with the real
  * Corehalla skin rather than a Storybook-defined approximation.
  *
- * `publicDir` points next door for the same reason the app's does: the roster,
- * weapon and region art is real content, and a component that shows a legend
- * portrait should show one here too, not a broken image.
+ * Static art is served via `staticDirs` in `main.ts`, not `publicDir` here.
  *
  * The `@/` alias is declared here rather than left to `resolve.tsconfigPaths`:
  * Storybook loads this config through `loadConfigFromFile` directly, a path on
@@ -23,7 +21,6 @@ const src = fileURLToPath(new URL("../src/", import.meta.url))
  * it off scoped packages such as `@base-ui/react`.
  */
 export default defineConfig({
-    publicDir: fileURLToPath(new URL("../../web/public", import.meta.url)),
     resolve: {
         tsconfigPaths: true,
         alias: [{ find: /^@\//, replacement: src }],

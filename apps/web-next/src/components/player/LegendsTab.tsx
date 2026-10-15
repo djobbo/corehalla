@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
 import { SelectField } from "@/components/common/SelectField"
 import { SortControl } from "@/components/common/SortControl"
@@ -154,7 +154,10 @@ export const LegendsTab = ({ playerId }: { readonly playerId: number }) => {
                     onChange={setWeaponFilter}
                 />
             </div>
-            <Card className="bg-background">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Summary</CardTitle>
+                </CardHeader>
                 <CardContent>
                     <StatGrid stats={summary} />
                 </CardContent>

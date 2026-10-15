@@ -97,13 +97,7 @@ export const RankedCard = ({
                         </span>
                     </span>
                 </div>
-                {stats && (
-                    <Card className="mt-3 bg-background">
-                        <CardContent>
-                            <StatGrid stats={stats} />
-                        </CardContent>
-                    </Card>
-                )}
+                {stats && <StatGrid className="mt-3" stats={stats} />}
             </CardContent>
         </Card>
     )

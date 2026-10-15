@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
 import { SortControl } from "@/components/common/SortControl"
 import { StatGrid } from "@/components/common/StatGrid"
@@ -112,7 +112,10 @@ export const TeamsTab = ({ playerId }: { readonly playerId: number }) => {
 
     return (
         <div className="flex flex-col gap-4">
-            <Card className="bg-background">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Summary</CardTitle>
+                </CardHeader>
                 <CardContent>
                     <StatGrid stats={summary} />
                 </CardContent>
