@@ -10,8 +10,8 @@ import type { ReactNode } from "react"
 
 /**
  * The real player page: the composition the route renders. Stories here check
- * the header, the tab strip and a tab body together, at the widths the
- * `ProfileLayout` two-column grid actually produces.
+ * the header, the tab strip and a tab body together, at the width the
+ * `ProfileLayout` page column actually produces.
  */
 const meta = {
     title: "Views/Player profile",

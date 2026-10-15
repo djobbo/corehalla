@@ -1,13 +1,12 @@
 import type { ReactNode } from "react"
 
 /*
- * The profile pages (player and guild) are the only routes with a second
- * column: identity on the left, everything else on the right.
+ * The profile pages (player and guild) stack their identity header above the
+ * content in a single column, at every width.
  *
- * `.ch-page`'s 72rem is what the content column gets on its own, so the wider
- * cap is what keeps that column from shrinking once the aside takes 20rem of
- * it. Below `lg` the grid collapses to source order, which is the stacked
- * mobile layout both headers were designed against.
+ * The content is its own query container: the card grids and panels inside size
+ * against the page column rather than the window. `.ch-page`'s 72rem is the
+ * width every other route already runs at.
  */
 export const ProfileLayout = ({
     aside,
@@ -16,17 +15,9 @@ export const ProfileLayout = ({
     readonly aside: ReactNode
     readonly children: ReactNode
 }) => (
-    <main className="ch-page max-w-[84rem]">
-        <div className="grid gap-4 lg:grid-cols-[20rem_minmax(0,1fr)] lg:gap-8">
-            {/* `self-start` gives the pinned column somewhere to travel. */}
-            <div className="min-w-0 lg:sticky lg:top-[calc(var(--ch-header-h)_+_1rem)] lg:self-start">
-                {aside}
-            </div>
-            {/*
-             * The query container for everything on the right: at `lg` this
-             * column is far narrower than the viewport, so content inside it has
-             * to size against the column rather than the window.
-             */}
+    <main className="ch-page">
+        <div className="flex flex-col gap-4">
+            <div className="min-w-0">{aside}</div>
             <div className="@container flex min-w-0 flex-col">{children}</div>
         </div>
     </main>
