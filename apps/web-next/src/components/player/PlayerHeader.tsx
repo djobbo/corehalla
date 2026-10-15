@@ -1,15 +1,16 @@
 import { useMemo } from "react"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FavoriteButton } from "@/components/account/FavoriteButton"
 import { StatGrid } from "@/components/StatGrid"
 import { UpdatedAt } from "@/components/UpdatedAt"
 import { playerProfileAtom, useQuery } from "@/effect/atoms"
 import { legendIconSrc, regionFlagSrc, weaponIconSrc } from "@/lib/assets"
-import { tierColor } from "@/lib/rankings"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatTime } from "@crh/common/helpers/date"
-import type { CSSProperties } from "react"
+import { EntityLink } from "@/components/EntityLink"
+import { clanHref } from "@/lib/rankings"
 import { cn } from "@/lib/cn"
+import { percent } from "../../lib/stats"
 
 const MAX_SHOWN_ALIASES = 8
 
@@ -34,6 +35,52 @@ const ThumbRow = ({ items }: { readonly items: readonly Thumb[] }) => (
         ))}
     </span>
 )
+
+const ClanPanel = ({ clan }: { readonly clan: Player["clan"] }) => {
+    if (!clan) return null
+
+    const clanXp = clan.xp
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Clan</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="flex flex-wrap items-baseline gap-2">
+                    <EntityLink
+                        type="clan"
+                        id={clan.id}
+                        href={clanHref(clan.slug)}
+                        className="ch-display text-xl transition-colors hover:text-ring"
+                    >
+                        {cleanString(clan.name)}
+                    </EntityLink>
+                    <span className="text-xs text-muted-foreground">
+                        #{clan.id}
+                    </span>
+                </div>
+                <Card className="mt-3 bg-background">
+                    <CardContent>
+                        <StatGrid
+                            stats={[
+                                {
+                                    title: "Clan XP",
+                                    value: clanXp.toLocaleString(),
+                                },
+                                {
+                                    title: "Contribution",
+                                    value: `${percent(clan.personal_xp, clanXp).toFixed(2)}%`,
+                                    hint: `Share of the clan's XP earned by this player`,
+                                },
+                            ]}
+                        />
+                    </CardContent>
+                </Card>
+            </CardContent>
+        </Card>
+    )
+}
 
 export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
     const envelope = useQuery(playerProfileAtom(playerId))
@@ -74,14 +121,11 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
                     /
                 </span>
                 <span>#{profile.id}</span>
-                <span aria-hidden className="text-muted-foreground/40">
-                    ·
-                </span>
-                <UpdatedAt
-                    at={envelope.meta.updated_at}
-                    className="normal-case tracking-normal"
-                />
             </nav>
+            <UpdatedAt
+                at={envelope.meta.updated_at}
+                className="normal-case tracking-normal"
+            />
             <div className="flex flex-wrap items-center gap-3">
                 {ranked?.region ? (
                     <img
@@ -96,19 +140,6 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
                     </span>
                 )}
                 <h1 className="ch-display text-2xl sm:text-3xl">{name}</h1>
-                {ranked?.tier ? (
-                    <span
-                        className="ch-tier"
-                        style={
-                            {
-                                "--ch-tier": tierColor(ranked.tier),
-                            } as CSSProperties
-                        }
-                    >
-                        {ranked.tier}
-                    </span>
-                ) : null}
-
                 <FavoriteButton
                     type="player"
                     id={String(profile.id)}
@@ -138,58 +169,55 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
             ) : null}
 
             <Card className="bg-transparent shadow-none">
-                <CardContent>
-                    <StatGrid
-                        maxColumns={5}
-                        stats={[
-                            {
-                                title: "Account level",
-                                value: profile.stats.level,
-                            },
-                            {
-                                title: "Account XP",
-                                value: profile.stats.xp.toLocaleString(),
-                            },
-                            {
-                                title: "In-game time",
-                                value: formatTime(profile.stats.matchtime),
-                            },
-                            {
-                                title: "Main legends",
-                                value:
-                                    topLegends.length > 0 ? (
-                                        <ThumbRow
-                                            items={topLegends.map((legend) => ({
-                                                key: String(legend.id),
-                                                src: legendIconSrc(
-                                                    legend.name_key,
-                                                ),
-                                                alt: legend.name,
-                                            }))}
-                                        />
-                                    ) : (
-                                        "—"
-                                    ),
-                            },
-                            {
-                                title: "Main weapons",
-                                value:
-                                    topWeapons.length > 0 ? (
-                                        <ThumbRow
-                                            items={topWeapons.map((weapon) => ({
-                                                key: weapon.name,
-                                                src: weaponIconSrc(weapon.name),
-                                                alt: weapon.name,
-                                            }))}
-                                        />
-                                    ) : (
-                                        "—"
-                                    ),
-                            },
-                        ]}
-                    />
-                </CardContent>
+                <StatGrid
+                    maxColumns={5}
+                    stats={[
+                        {
+                            title: "Account level",
+                            value: profile.stats.level,
+                        },
+                        {
+                            title: "Account XP",
+                            value: profile.stats.xp.toLocaleString(),
+                        },
+                        {
+                            title: "In-game time",
+                            value: formatTime(profile.stats.matchtime),
+                        },
+                        {
+                            title: "Main legends",
+                            value:
+                                topLegends.length > 0 ? (
+                                    <ThumbRow
+                                        items={topLegends.map((legend) => ({
+                                            key: String(legend.id),
+                                            src: legendIconSrc(legend.name_key),
+                                            alt: legend.name,
+                                        }))}
+                                    />
+                                ) : (
+                                    "—"
+                                ),
+                        },
+                        {
+                            title: "Main weapons",
+                            value:
+                                topWeapons.length > 0 ? (
+                                    <ThumbRow
+                                        items={topWeapons.map((weapon) => ({
+                                            key: weapon.name,
+                                            src: weaponIconSrc(weapon.name),
+                                            alt: weapon.name,
+                                        }))}
+                                    />
+                                ) : (
+                                    "—"
+                                ),
+                        },
+                    ]}
+                />
             </Card>
+            <ClanPanel clan={profile.clan} />
         </header>
     )
 }

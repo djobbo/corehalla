@@ -560,7 +560,7 @@
     .ch-progress-split {
         --ch-skew: 15deg;
         display: flex;
-        gap: 5px;
+        gap: 0.25rem;
         width: 100%;
         height: 0.5rem;
         transform: skewX(calc(-1 * var(--ch-skew)));

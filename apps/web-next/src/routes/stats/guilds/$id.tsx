@@ -2,6 +2,7 @@ import { createFileRoute, notFound, redirect } from "@tanstack/react-router"
 import { parseEntityId } from "@crh/common/helpers/entitySlug"
 import { ClanBody } from "@/components/clan/ClanBody"
 import { ClanHeader } from "@/components/clan/ClanHeader"
+import { ProfileLayout } from "@/components/layout/ProfileLayout"
 import { canonicalPath } from "@/lib/routeParams"
 import { dehydrateRegistry, guildAtom, preloadAtom } from "@/effect/atoms"
 import type { GuildEnvelope } from "@crh/api-contract/schemas"
@@ -49,11 +50,8 @@ function Page() {
     const guildId = parseEntityId(id) ?? 0
 
     return (
-        <main className="ch-page">
-            <ClanHeader clanId={guildId} />
-            <div className="mt-4">
-                <ClanBody clanId={guildId} />
-            </div>
-        </main>
+        <ProfileLayout aside={<ClanHeader clanId={guildId} />}>
+            <ClanBody clanId={guildId} />
+        </ProfileLayout>
     )
 }

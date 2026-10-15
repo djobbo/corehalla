@@ -126,7 +126,7 @@ export const TeamsTab = ({ playerId }: { readonly playerId: number }) => {
                 onToggleDirection={sort.toggleDirection}
                 className="sm:max-w-sm"
             />
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-4 @2xl:grid-cols-2 @4xl:grid-cols-3">
                 {sort.sorted.map((team) => (
                     <TeamCard
                         key={`${team.team[0].id}-${team.team[1].id}`}

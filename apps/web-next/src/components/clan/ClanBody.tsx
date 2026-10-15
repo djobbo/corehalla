@@ -42,7 +42,9 @@ const Roster = ({ guild }: { readonly guild: Guild }) => {
     const sort = useSortBy(guild.members, sortOptions, "rank", "asc")
 
     return (
-        <div className="flex flex-col gap-4">
+        // Own `@container`: the roster's column count has to track the content
+        // column, which is narrower than the viewport once the aside is beside it.
+        <div className="@container flex flex-col gap-4">
             <SortControl
                 label="Sort members by"
                 value={sort.key}
@@ -52,7 +54,7 @@ const Roster = ({ guild }: { readonly guild: Guild }) => {
                 onToggleDirection={sort.toggleDirection}
                 className="sm:max-w-sm"
             />
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-4 @2xl:grid-cols-2 @4xl:grid-cols-3">
                 {sort.sorted.map((member) => (
                     <MemberCard
                         key={member.id}

@@ -40,7 +40,10 @@ export const PlayerTabs = ({
     ]
 
     return (
-        <nav aria-label="Profile sections" className="ch-tabline mt-4">
+        <nav
+            aria-label="Profile sections"
+            className="ch-tabline sticky top-[var(--ch-header-h)] z-20 bg-background/95 backdrop-blur"
+        >
             {tabs.map(({ tab, label, href }) => (
                 <Link
                     key={tab}

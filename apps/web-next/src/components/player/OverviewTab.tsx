@@ -6,22 +6,16 @@ import { RankedCard } from "./RankedCard"
 import { LegendBubbleChart } from "./LegendBubbleChart"
 import { WeaponBubbleChart } from "./WeaponBubbleChart"
 import { playerProfileAtom, useQuery } from "@/effect/atoms"
-import { EntityLink } from "@/components/EntityLink"
 import { cn } from "@/lib/cn"
-import { clanHref } from "@/lib/rankings"
 import { percent, perGame, ratio } from "@/lib/stats"
-import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatTime } from "@crh/common/helpers/date"
 import type { Stat } from "@/components/StatGrid"
 import type { BreakdownEntry } from "@/components/Breakdown"
 import type { Player, PlayerRankedTeam } from "@crh/api-contract/schemas"
-import type { ReactNode } from "react"
 
 type RankedBracket = NonNullable<NonNullable<Player["ranked"]>["1v1"]>
 
 type Team = PlayerRankedTeam
-
-const summed = (value: number): string => value.toLocaleString()
 
 const Ranked1v1Panel = ({
     ranked,
@@ -79,49 +73,6 @@ const Ranked3v3Panel = ({
     )
 }
 
-const ClanPanel = ({ clan }: { readonly clan: Player["clan"] }) => {
-    if (!clan) return null
-
-    const clanXp = clan.xp
-
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Clan</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="flex flex-wrap items-baseline gap-2">
-                    <EntityLink
-                        type="clan"
-                        id={clan.id}
-                        href={clanHref(clan.slug)}
-                        className="ch-display text-xl transition-colors hover:text-ring"
-                    >
-                        {cleanString(clan.name)}
-                    </EntityLink>
-                    <span className="text-xs text-muted-foreground">
-                        #{clan.id}
-                    </span>
-                </div>
-                <Card className="mt-3 bg-background">
-                    <CardContent>
-                        <StatGrid
-                            stats={[
-                                { title: "Clan XP", value: summed(clanXp) },
-                                {
-                                    title: "Contribution",
-                                    value: `${percent(clan.personal_xp, clanXp).toFixed(2)}%`,
-                                    hint: `Share of the clan's XP earned by this player`,
-                                },
-                            ]}
-                        />
-                    </CardContent>
-                </Card>
-            </CardContent>
-        </Card>
-    )
-}
-
 const GamesPanel = ({
     games,
     wins,
@@ -135,7 +86,7 @@ const GamesPanel = ({
         </CardHeader>
         <CardContent>
             <p className="ch-display text-4xl">
-                {summed(games)}
+                {games.toLocaleString()}
                 <span className="ml-2 text-xs font-normal tracking-normal text-muted-foreground">
                     games
                 </span>
@@ -149,13 +100,13 @@ const GamesPanel = ({
             />
             <div className="mt-2 flex justify-between text-sm font-bold">
                 <span>
-                    {summed(wins)}W{" "}
+                    {wins.toLocaleString()}W{" "}
                     <span className="text-xs font-normal text-muted-foreground">
                         ({percent(wins, games).toFixed(2)}%)
                     </span>
                 </span>
                 <span>
-                    {summed(games - wins)}L{" "}
+                    {(games - wins).toLocaleString()}L{" "}
                     <span className="text-xs font-normal text-muted-foreground">
                         ({percent(games - wins, games).toFixed(2)}%)
                     </span>
@@ -423,12 +374,12 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
         kos: number
         damage_dealt: number
     }): Stat[] => [
-        { title: "KOs", value: summed(weapon.kos) },
+        { title: "KOs", value: weapon.kos.toLocaleString() },
         {
             title: "One KO every",
             value: `${ratio(games, weapon.kos).toFixed(1)} games`,
         },
-        { title: "Damage dealt", value: summed(weapon.damage_dealt) },
+        { title: "Damage dealt", value: weapon.damage_dealt.toLocaleString() },
         {
             title: "Avg. damage per game",
             value: perGame(weapon.damage_dealt, games).toFixed(2),
@@ -441,8 +392,8 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                 <div
                     className={cn(
                         "grid gap-4",
-                        rankedCardCount > 1 && "md:grid-cols-2",
-                        rankedCardCount > 2 && "lg:grid-cols-3",
+                        rankedCardCount > 1 && "@2xl:grid-cols-2",
+                        rankedCardCount > 2 && "@4xl:grid-cols-3",
                     )}
                 >
                     <Ranked1v1Panel ranked={ranked1v1} />
@@ -453,14 +404,12 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
             <div
                 className={cn(
                     "grid gap-4",
-                    distributionCount === 2 && "md:grid-cols-2",
-                    distributionCount > 2 && "md:grid-cols-2 lg:grid-cols-3",
+                    distributionCount === 2 && "@2xl:grid-cols-2",
+                    distributionCount > 2 &&
+                        "@2xl:grid-cols-2 @4xl:grid-cols-3",
                 )}
             >
-                <div className="flex flex-col gap-4">
-                    <GamesPanel games={games} wins={wins} />
-                    <ClanPanel clan={profile.clan} />
-                </div>
+                <GamesPanel games={games} wins={wins} />
                 {hasLegendPlay ? (
                     <Card>
                         <CardContent>
@@ -479,7 +428,7 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                     </Card>
                 ) : null}
             </div>
-            <div className="grid gap-4 lg:grid-cols-2">
+            <div className="grid gap-4 @2xl:grid-cols-2">
                 <KosFallsPanel
                     kos={kos}
                     falls={falls}
@@ -552,7 +501,7 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                     ]}
                 />
             </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 @2xl:grid-cols-2 @4xl:grid-cols-3">
                 <BreakdownPanel
                     title="Unarmed"
                     stats={[
@@ -564,14 +513,14 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                             title: "Time unarmed (%)",
                             value: `${percent(unarmed.time_held, matchtime).toFixed(2)}%`,
                         },
-                        { title: "KOs", value: summed(unarmed.kos) },
+                        { title: "KOs", value: unarmed.kos.toLocaleString() },
                         {
                             title: "KOs per game",
                             value: perGame(unarmed.kos, games).toFixed(2),
                         },
                         {
                             title: "Damage dealt",
-                            value: summed(unarmed.damage_dealt),
+                            value: unarmed.damage_dealt.toLocaleString(),
                         },
                         {
                             title: "DPS",

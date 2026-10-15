@@ -5,6 +5,7 @@ import {
     redirect,
 } from "@tanstack/react-router"
 import { parseEntityId } from "@crh/common/helpers/entitySlug"
+import { ProfileLayout } from "@/components/layout/ProfileLayout"
 import { PlayerHeader } from "@/components/player/PlayerHeader"
 import { PlayerTabs } from "@/components/player/PlayerTabs"
 import { canonicalPath } from "@/lib/routeParams"
@@ -65,12 +66,11 @@ function Layout() {
         profile.data.ranked?.["2v2"]?.teams.some((team) => team.paired) ?? false
 
     return (
-        <main className="ch-page">
-            <PlayerHeader playerId={profile.data.id} />
+        <ProfileLayout aside={<PlayerHeader playerId={profile.data.id} />}>
             <PlayerTabs slug={slug} show2v2={show2v2} />
             <div className="mt-4">
                 <Outlet />
             </div>
-        </main>
+        </ProfileLayout>
     )
 }
