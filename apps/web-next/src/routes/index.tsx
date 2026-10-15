@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { LandingHero } from "@/components/layout/LandingHero"
-import { LandingLadder } from "@/components/LandingLadder"
+import { LandingLadder } from "@/components/views/LandingLadder"
 import { LatestNews } from "@/components/news/LatestNews"
 import { to1v1Rows, to2v2Rows } from "@/lib/ladderRows"
 import {

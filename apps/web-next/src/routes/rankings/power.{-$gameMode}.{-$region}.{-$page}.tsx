@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { PowerRankingsView } from "@/components/PowerRankingsView"
+import { PowerRankingsView } from "@/components/views/PowerRankingsView"
 import {
     resolvePage,
     resolvePowerGameMode,

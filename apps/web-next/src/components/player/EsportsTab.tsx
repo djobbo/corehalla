@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { EntityLink } from "@/components/EntityLink"
+import { EntityLink } from "@/components/common/EntityLink"
 import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
 import { playerEsportsAtom, useQuery } from "@/effect/atoms"
 import { playerHref } from "@/lib/rankings"

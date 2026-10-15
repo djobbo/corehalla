@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react"
-import { ClanRankingsView } from "@/components/ClanRankingsView"
+import { ClanRankingsView } from "@/components/views/ClanRankingsView"
 import { CLAN_RANKINGS_PAGE_SIZE } from "@/lib/rankings"
 import { resolvePage } from "@/lib/routeParams"
 import { clansRankingsAtom, preloadAtoms, useQuery } from "@/effect/atoms"

@@ -20,7 +20,7 @@ import {
     PageLoaderProbe,
     PageLoaderProvider,
 } from "@/components/layout/PageLoader"
-import { SearchProvider, SearchTrigger } from "@/components/Search"
+import { SearchProvider, SearchTrigger } from "@/components/layout/Search"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Suspense, useMemo } from "react"
 import type { ReactNode } from "react"

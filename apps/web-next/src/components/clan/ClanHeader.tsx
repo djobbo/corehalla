@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { FavoriteButton } from "@/components/account/FavoriteButton"
-import { StatGrid } from "@/components/StatGrid"
-import { UpdatedAt } from "@/components/UpdatedAt"
+import { StatGrid } from "@/components/common/StatGrid"
+import { UpdatedAt } from "@/components/common/UpdatedAt"
 import { guildAtom, useQuery } from "@/effect/atoms"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatUnixTime } from "@crh/common/helpers/date"
-import type { Stat } from "@/components/StatGrid"
+import type { Stat } from "@/components/common/StatGrid"
 
 export const ClanHeader = ({ clanId }: { readonly clanId: number }) => {
     const envelope = useQuery(guildAtom(clanId))

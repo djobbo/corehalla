@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
-import { SortControl } from "@/components/SortControl"
-import { StatGrid } from "@/components/StatGrid"
+import { SortControl } from "@/components/common/SortControl"
+import { StatGrid } from "@/components/common/StatGrid"
 import { TeamCard } from "./TeamCard"
 import { playerProfileAtom, useQuery } from "@/effect/atoms"
 import { ratio } from "@/lib/stats"
@@ -9,7 +9,7 @@ import { useSortBy } from "@/lib/useSortBy"
 import { calculateWinrate } from "@crh/bhapi/helpers/calculateWinrate"
 import type { PlayerRankedTeam } from "@crh/api-contract/schemas"
 import type { SortOption } from "@/lib/useSortBy"
-import type { Stat } from "@/components/StatGrid"
+import type { Stat } from "@/components/common/StatGrid"
 
 type Team = PlayerRankedTeam
 

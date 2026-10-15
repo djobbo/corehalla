@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card"
-import { SplitProgress } from "@/components/SplitProgress"
-import { EntityLink } from "@/components/EntityLink"
+import { SplitProgress } from "@/components/common/SplitProgress"
+import { EntityLink } from "@/components/common/EntityLink"
 import { rankedBannerSrc, regionFlagSrc } from "@/lib/assets"
 import { playerHref } from "@/lib/rankings"
 import { percent } from "@/lib/stats"

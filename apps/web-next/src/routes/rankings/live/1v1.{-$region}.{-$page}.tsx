@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { LadderView } from "@/components/LadderView"
+import { LadderView } from "@/components/views/LadderView"
 import { LADDER_PAGE_SIZE } from "@/lib/rankings"
 import { to1v1Rows } from "@/lib/ladderRows"
 import { resolvePage, resolveRegion } from "@/lib/routeParams"

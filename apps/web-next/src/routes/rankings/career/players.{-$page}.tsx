@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { CareerRankingsView } from "@/components/CareerRankingsView"
+import { CareerRankingsView } from "@/components/views/CareerRankingsView"
 import { CAREER_RANKINGS_PAGE_SIZE } from "@/lib/rankings"
 import { playerBoard } from "@/lib/careerRankings"
 import { resolvePage } from "@/lib/routeParams"

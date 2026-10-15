@@ -1,10 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { SplitProgress } from "@/components/SplitProgress"
-import { StatGrid } from "@/components/StatGrid"
+import { SplitProgress } from "@/components/common/SplitProgress"
+import { StatGrid } from "@/components/common/StatGrid"
 import { rankedBannerSrc, regionFlagSrc } from "@/lib/assets"
 import { tierColor } from "@/lib/rankings"
 import { percent } from "@/lib/stats"
-import type { Stat } from "@/components/StatGrid"
+import type { Stat } from "@/components/common/StatGrid"
 import type { CSSProperties, ReactNode } from "react"
 
 export const RankedCard = ({

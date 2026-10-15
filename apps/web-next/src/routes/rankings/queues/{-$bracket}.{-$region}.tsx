@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
-import { RankedQueueView } from "@/components/RankedQueueView"
+import { RankedQueueView } from "@/components/views/RankedQueueView"
 import { resolveBracket, resolveRegion } from "@/lib/routeParams"
 import { preloadAtoms, rankedQueueAtom, useQuery } from "@/effect/atoms"
 

@@ -4,7 +4,7 @@ import {
     CollapsibleContent,
     CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { StatGrid } from "@/components/StatGrid"
+import { StatGrid } from "@/components/common/StatGrid"
 import { EmptyRankedCard, RankedCard } from "./RankedCard"
 import { percent, perGame, ratio } from "@/lib/stats"
 import { getLegendEloReset } from "@crh/bhapi/calculator"

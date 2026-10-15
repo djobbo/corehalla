@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { NewsCard, NewsHero } from "./NewsCard"
-import { PageNav } from "@/components/PageNav"
+import { PageNav } from "@/components/common/PageNav"
 import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
 import { cn } from "@/lib/cn"
 import { newsCategories, newsCategoryLabel, newsHref } from "@/lib/news"

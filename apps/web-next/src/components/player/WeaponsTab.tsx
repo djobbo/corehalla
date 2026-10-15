@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
-import { SortControl } from "@/components/SortControl"
+import { SortControl } from "@/components/common/SortControl"
 import { WeaponRow } from "./WeaponRow"
 import { playerProfileAtom, useQuery } from "@/effect/atoms"
 import { useSortBy } from "@/lib/useSortBy"

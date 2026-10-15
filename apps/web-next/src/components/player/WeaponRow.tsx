@@ -4,13 +4,13 @@ import {
     CollapsibleContent,
     CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { SplitProgress } from "@/components/SplitProgress"
-import { StatGrid } from "@/components/StatGrid"
+import { SplitProgress } from "@/components/common/SplitProgress"
+import { StatGrid } from "@/components/common/StatGrid"
 import { percent, perGame, ratio } from "@/lib/stats"
 import { calculateWinrate } from "@crh/bhapi/helpers/calculateWinrate"
 import { formatTime } from "@crh/common/helpers/date"
 import type { PlayerLegend, PlayerWeapon } from "@crh/api-contract/schemas"
-import type { Stat } from "@/components/StatGrid"
+import type { Stat } from "@/components/common/StatGrid"
 import type { ReactNode } from "react"
 
 type RankedLegend = {

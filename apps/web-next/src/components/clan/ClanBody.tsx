@@ -1,4 +1,4 @@
-import { SortControl } from "@/components/SortControl"
+import { SortControl } from "@/components/common/SortControl"
 import { MemberCard } from "./MemberCard"
 import { guildAtom, useQuery } from "@/effect/atoms"
 import { useSortBy } from "@/lib/useSortBy"

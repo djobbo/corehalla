@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router"
-import { SearchTrigger } from "@/components/Search"
+import { SearchTrigger } from "@/components/layout/Search"
 import { Button } from "@/components/ui/button"
 import { ladderHref } from "@/lib/rankings"
 

@@ -105,6 +105,7 @@ export default Alchemy.Stack(
         const internalOrigin = isDev ? `http://localhost:${DEV_PORT}` : siteUrl
         const hostname = siteUrl.replace(/^https?:\/\//, "").replace(/\/+$/, "")
         const nextHostname = `next.${hostname}`
+        const uiHostname = `ui.${hostname}`
 
         // Read replication stays off so session reads are not served stale.
         const dbResource = Cloudflare.D1.Database("CorehallaDb", {
@@ -202,6 +203,25 @@ export default Alchemy.Stack(
             },
         })
 
+        // The component catalogue, built by `storybook build` and served as
+        // static assets on its own subdomain. Under `alchemy dev` it runs the
+        // Storybook dev server instead, so the workshop and the app share one
+        // command. It reads only the public roster art, so it binds nothing.
+        const storybook = yield* Cloudflare.Website.StaticSite(
+            "CorehallaWebNextStorybook",
+            {
+                cwd: "./apps/web-next",
+                command: "vp run build-storybook",
+                outdir: "storybook-static",
+                name: "corehalla-web-next-storybook",
+                domain: uiHostname,
+                dev: {
+                    command: "vp run storybook",
+                    url: "http://localhost:6006",
+                },
+            },
+        )
+
         // Registered after both resources resolve, because a consumer needs the
         // queue id and the worker script name. One invocation per lane: extra
         // concurrency multiplies the shared per-IP upstream rate.
@@ -230,6 +250,7 @@ export default Alchemy.Stack(
         return {
             url: website.url,
             nextUrl: websiteNext.url,
+            storybookUrl: storybook.url,
             apiUrl: api.url,
             crawlerUrl: crawler.url,
             databaseId: db.databaseId,
