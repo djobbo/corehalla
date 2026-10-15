@@ -191,6 +191,7 @@ const search = HttpApiGroup.make("search")
         HttpApiEndpoint.get("lookup", "/api/v1/search", {
             query: {
                 q: Schema.String,
+                region: Schema.optionalKey(RankedRegion),
                 limit: Schema.optionalKey(Schema.FiniteFromString),
             },
             success: LookupResultsSchema,

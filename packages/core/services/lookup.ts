@@ -3,6 +3,7 @@ import { Database, searchKey } from "./archive"
 import { Upstream } from "./upstream"
 import { MIN_LOOKUP_LENGTH } from "@crh/api-contract/schemas"
 import type { LookupResultInput } from "@crh/api-contract/schemas"
+import type { RankedRegion } from "@crh/bhapi/constants"
 import type { Ranking1v1, Ranking2v2 } from "@crh/bhapi/types"
 
 export { MIN_LOOKUP_LENGTH }
@@ -23,12 +24,6 @@ export type ClanHit = {
     readonly xp: number
 }
 
-export type AliasHit = {
-    readonly playerId: string
-    readonly mainAlias: string
-    readonly otherAliases: readonly string[]
-}
-
 /** 0 exact, 1 prefix, 2 other — via searchKey so case/whitespace match storage. */
 export const matchTier = (query: string, name: string): number => {
     const needle = searchKey(query)
@@ -41,18 +36,11 @@ export const matchTier = (query: string, name: string): number => {
     return 2
 }
 
-/** Best of display name and aliases — alias-only exact must not rank as "other". */
-const bestTier = (query: string, result: LookupResultInput): number =>
-    result.aliases.reduce(
-        (best, alias) => Math.min(best, matchTier(query, alias)),
-        matchTier(query, result.name),
-    )
-
 /** Match quality, then name length; no cross-type prominence (rating ≠ xp). */
 const compare =
     (query: string) =>
     (a: LookupResultInput, b: LookupResultInput): number => {
-        const tier = bestTier(query, a) - bestTier(query, b)
+        const tier = matchTier(query, a.name) - matchTier(query, b.name)
         if (tier !== 0) return tier
 
         if (a.name.length !== b.name.length) {
@@ -72,64 +60,36 @@ const compare =
     }
 
 /**
- * First id wins — pass 1v1 before 2v2 so personal rating beats team rating.
- * Alias-only players keep rating: null.
+ * The leaderboard lookup: players from the ranked ladders plus clans from the
+ * guild table. Archived/alias-only players come from a second, separate
+ * lookup (`searchPlayerAlias`), so a slow alias scan never delays these — and
+ * nothing here is marked archival.
  */
 export const mergeLookup = (input: {
     readonly query: string
     readonly players: readonly PlayerHit[]
-    readonly aliases: readonly AliasHit[]
     readonly clans: readonly ClanHit[]
     readonly limit: number
 }): readonly LookupResultInput[] => {
-    const playersById = new Map<string, { hit: PlayerHit; aliases: string[] }>()
+    // First id wins — pass 1v1 before 2v2 so personal rating beats team rating.
+    const playersById = new Map<string, PlayerHit>()
 
     for (const hit of input.players) {
-        if (playersById.has(hit.playerId)) continue
-
-        playersById.set(hit.playerId, { hit, aliases: [] })
-    }
-
-    for (const alias of input.aliases) {
-        const known = playersById.get(alias.playerId)
-
-        if (known) {
-            known.aliases.push(alias.mainAlias, ...alias.otherAliases)
-            continue
-        }
-
-        playersById.set(alias.playerId, {
-            hit: {
-                playerId: alias.playerId,
-                name: alias.mainAlias,
-                rating: null,
-                tier: null,
-                region: null,
-            },
-            aliases: [...alias.otherAliases],
-        })
+        if (!playersById.has(hit.playerId)) playersById.set(hit.playerId, hit)
     }
 
     const results: LookupResultInput[] = [
-        ...[...playersById.values()].map(
-            ({ hit, aliases }): LookupResultInput => ({
-                type: "player",
-                id: hit.playerId,
-                name: hit.name,
-                aliases: [
-                    ...new Set(
-                        aliases.filter(
-                            (alias) => searchKey(alias) !== searchKey(hit.name),
-                        ),
-                    ),
-                ],
-                rating: hit.rating,
-                xp: null,
-                tier: hit.tier,
-                region: hit.region,
-                source: hit.rating === null ? "archive" : "rankings",
-            }),
-        ),
+        ...[...playersById.values()].map((hit): LookupResultInput => ({
+            type: "player",
+            id: hit.playerId,
+            name: hit.name,
+            aliases: [],
+            rating: hit.rating,
+            xp: null,
+            tier: hit.tier,
+            region: hit.region,
+            source: "rankings",
+        })),
         ...input.clans.map((clan): LookupResultInput => ({
             type: "clan",
             id: clan.id,
@@ -152,6 +112,7 @@ export class Lookup extends Context.Service<
         readonly search: (
             query: string,
             limit?: number,
+            region?: RankedRegion,
         ) => Effect.Effect<readonly LookupResultInput[]>
     }
 >()("app/Lookup") {}
@@ -166,34 +127,18 @@ export const layer = Layer.effect(
             effect.pipe(Effect.catch(() => Effect.succeed([] as A)))
 
         return {
-            search: (query, limit = DEFAULT_LOOKUP_LIMIT) =>
+            search: (query, limit = DEFAULT_LOOKUP_LIMIT, region = "all") =>
                 Effect.gen(function* () {
                     if (searchKey(query).length < MIN_LOOKUP_LENGTH) return []
 
-                    const [oneVsOne, twoVsTwo, aliases, clans] =
-                        yield* Effect.all(
-                            [
-                                soft(
-                                    upstream.getRankings(
-                                        "1v1",
-                                        "all",
-                                        1,
-                                        query,
-                                    ),
-                                ),
-                                soft(
-                                    upstream.getRankings(
-                                        "2v2",
-                                        "all",
-                                        1,
-                                        query,
-                                    ),
-                                ),
-                                soft(database.searchAliases(query, 1)),
-                                soft(database.getClansRankings(query, 1)),
-                            ],
-                            { concurrency: 4 },
-                        )
+                    const [oneVsOne, twoVsTwo, clans] = yield* Effect.all(
+                        [
+                            soft(upstream.getRankings("1v1", region, 1, query)),
+                            soft(upstream.getRankings("2v2", region, 1, query)),
+                            soft(database.getClansRankings(query, 1)),
+                        ],
+                        { concurrency: 3 },
+                    )
 
                     // Bracket does not narrow the union — assert at the literal.
                     const oneVsOneRows = oneVsOne as readonly Ranking1v1[]
@@ -239,7 +184,6 @@ export const layer = Layer.effect(
                     return mergeLookup({
                         query,
                         players,
-                        aliases,
                         clans: clans.map((clan) => ({
                             id: clan.id,
                             name: clan.name,

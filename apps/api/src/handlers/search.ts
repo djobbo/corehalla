@@ -30,7 +30,7 @@ export const searchGroup = HttpApiBuilder.group(
                 )
                 // Federated: each source degrades to empty — partial beats error on jump-to.
                 .handle("lookup", ({ query }) =>
-                    lookup.search(query.q, query.limit).pipe(
+                    lookup.search(query.q, query.limit, query.region).pipe(
                         Effect.map((rows) =>
                             rows.map((row) => ({
                                 ...row,

@@ -18,6 +18,9 @@ import type { Weapon as WeaponName } from "@crh/bhapi/constants"
 
 const ttl = "15 minutes"
 
+/** Search results are ephemeral — a short TTL so a transient empty does not stick. */
+const searchTtl = "1 minute"
+
 type Region = typeof RankedRegion.Type
 type LadderType = typeof Ladder.Type
 type PowerMode = typeof PowerRankingsGameMode.Type
@@ -125,11 +128,19 @@ export const guildAtom = (guildId: number) =>
         timeToLive: ttl,
     })
 
-export const lookupAtom = (q: string, limit?: number) =>
+export const lookupAtom = (q: string, region: Region, limit?: number) =>
     CorehallaClient.query("search", "lookup", {
-        query: limit === undefined ? { q } : { q, limit },
-        serializationKey: `lookup:${q}:${limit ?? ""}`,
-        timeToLive: ttl,
+        query: { q, region, ...(limit === undefined ? {} : { limit }) },
+        serializationKey: `lookup:${q}:${region}:${limit ?? ""}`,
+        timeToLive: searchTtl,
+    })
+
+/** The secondary scan: archived/alias-only players, ranked separately. */
+export const aliasSearchAtom = (q: string) =>
+    CorehallaClient.query("search", "searchPlayerAlias", {
+        query: { alias: q, page: 1 },
+        serializationKey: `alias:${q}`,
+        timeToLive: searchTtl,
     })
 
 export type Registry = AtomRegistry.AtomRegistry

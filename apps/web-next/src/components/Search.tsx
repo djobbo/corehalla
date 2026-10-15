@@ -11,10 +11,14 @@ import {
     useState,
 } from "react"
 import { SearchIcon } from "lucide-react"
-import { lookupAtom } from "@/effect/atoms"
+import { aliasSearchAtom, lookupAtom } from "@/effect/atoms"
 import { recentsAtom, withRecent } from "@/effect/recents"
-import { activeQueryAtom, searchQueryAtom } from "@/effect/search"
-import { clanHref, playerHref } from "@/lib/rankings"
+import {
+    activeQueryAtom,
+    searchQueryAtom,
+    searchRegionAtom,
+} from "@/effect/search"
+import { clanHref, playerHref, regions } from "@/lib/rankings"
 import { cn } from "@/lib/cn"
 import { Button } from "@/components/ui/button"
 import {
@@ -29,7 +33,7 @@ import {
 import { Kbd } from "@/components/ui/kbd"
 import { MIN_LOOKUP_LENGTH } from "@crh/api-contract/schemas"
 import { getEntitySlug } from "@crh/common/helpers/entitySlug"
-import type { LookupResult } from "@crh/api-contract/schemas"
+import type { AliasSearchResult, LookupResult } from "@crh/api-contract/schemas"
 import type { ReactNode } from "react"
 
 type SearchContextValue = {
@@ -50,7 +54,13 @@ export const useSearch = (): SearchContextValue => {
     return value
 }
 
-const idleAtom = Atom.make(AsyncResult.success([] as readonly LookupResult[]))
+const idleLookupAtom = Atom.make(
+    AsyncResult.success([] as readonly LookupResult[]),
+)
+
+const idleAliasAtom = Atom.make(
+    AsyncResult.success([] as readonly AliasSearchResult[]),
+)
 
 const LOOKUP_LIMIT = 10
 
@@ -94,7 +104,22 @@ const rowFromResult = (result: LookupResult): Row => {
     }
 }
 
-type Status = "idle" | "recents" | "pending" | "miss" | "results"
+/** Archived (alias-only) player from the secondary scan, without ladder data. */
+const rowFromAlias = (result: AliasSearchResult): Row => {
+    const parts = ["Archived"]
+
+    if (result.otherAliases.length > 0) {
+        parts.push(`also ${result.otherAliases.join(", ")}`)
+    }
+
+    return {
+        key: `alias:${result.playerId}`,
+        name: result.mainAlias,
+        meta: parts.join(" · "),
+        href: playerHref(result.slug),
+        entry: { type: "player", id: result.playerId, name: result.mainAlias },
+    }
+}
 
 export const SearchProvider = ({
     children,
@@ -159,45 +184,61 @@ const SearchOverlay = () => {
         setQuery("")
     }, [isOpen, setQuery])
 
+    const region = useAtomValue(searchRegionAtom)
+    const setRegion = useAtomSet(searchRegionAtom)
+
+    const searching = active !== ""
+
     const lookup = useMemo(
-        () => (active === "" ? idleAtom : lookupAtom(active, LOOKUP_LIMIT)),
-        [active],
+        () =>
+            searching
+                ? lookupAtom(active, region, LOOKUP_LIMIT)
+                : idleLookupAtom,
+        [searching, active, region],
     )
 
     const result = useAtomValue(lookup)
 
-    const resultRows = useMemo(
+    const leaderboardRows = useMemo(
         () =>
             result._tag === "Success" ? result.value.map(rowFromResult) : [],
         [result],
     )
 
-    const status: Status =
-        active === ""
-            ? recents.length > 0
-                ? "recents"
-                : "idle"
-            : result._tag === "Initial"
-              ? "pending"
-              : resultRows.length === 0
-                ? "miss"
-                : "results"
+    // Secondary scan in its own request: a slow or flaky alias lookup never
+    // delays or breaks the leaderboard results above.
+    const archive = useMemo(
+        () => (searching ? aliasSearchAtom(active) : idleAliasAtom),
+        [searching, active],
+    )
 
-    const rows = useMemo<readonly Row[]>(
+    const archiveResult = useAtomValue(archive)
+
+    const archivedRows = useMemo(() => {
+        if (archiveResult._tag !== "Success") return []
+
+        const found = new Set(
+            result._tag === "Success" ? result.value.map((row) => row.id) : [],
+        )
+
+        return archiveResult.value
+            .map(rowFromAlias)
+            .filter((row) => !found.has(row.entry.id))
+    }, [archiveResult, result])
+
+    const recentRows = useMemo<readonly Row[]>(
         () =>
-            active === ""
-                ? recents.map((entry) => ({
-                      key: `${entry.type}:${entry.id}`,
-                      name: entry.name,
-                      meta: entry.type === "player" ? "Player" : "Clan",
-                      href:
-                          entry.type === "player"
-                              ? playerHref(getEntitySlug(entry.id, entry.name))
-                              : clanHref(getEntitySlug(entry.id, entry.name)),
-                      entry,
-                  }))
-                : resultRows,
-        [active, recents, resultRows],
+            recents.map((entry) => ({
+                key: `${entry.type}:${entry.id}`,
+                name: entry.name,
+                meta: entry.type === "player" ? "Player" : "Clan",
+                href:
+                    entry.type === "player"
+                        ? playerHref(getEntitySlug(entry.id, entry.name))
+                        : clanHref(getEntitySlug(entry.id, entry.name)),
+                entry,
+            })),
+        [recents],
     )
 
     const go = useCallback(
@@ -226,39 +267,76 @@ const SearchOverlay = () => {
                     placeholder="Search players and clans…"
                     aria-label="Search players and clans"
                 />
+                <div className="flex flex-wrap gap-1.5 px-3 pb-2">
+                    {regions.map((option) => (
+                        <button
+                            key={option.value}
+                            type="button"
+                            onClick={() => setRegion(option.value)}
+                            className={cn(
+                                "ch-chip",
+                                option.value === region
+                                    ? "ch-chip-on"
+                                    : "ch-chip-off",
+                            )}
+                        >
+                            {option.label}
+                        </button>
+                    ))}
+                </div>
                 <CommandList className="max-h-[60vh]">
-                    {status === "recents" && (
+                    {!searching && recentRows.length > 0 && (
                         <CommandGroup heading="Recent">
-                            {rows.map((row) => (
+                            {recentRows.map((row) => (
                                 <Row key={row.key} row={row} onSelect={go} />
                             ))}
                         </CommandGroup>
                     )}
 
-                    {status === "results" && (
-                        <CommandGroup heading="Results">
-                            {rows.map((row) => (
+                    {searching && leaderboardRows.length > 0 && (
+                        <CommandGroup heading="Rankings">
+                            {leaderboardRows.map((row) => (
                                 <Row key={row.key} row={row} onSelect={go} />
                             ))}
                         </CommandGroup>
                     )}
+
+                    {searching && archivedRows.length > 0 && (
+                        <CommandGroup heading="Archived players">
+                            {archivedRows.map((row) => (
+                                <Row key={row.key} row={row} onSelect={go} />
+                            ))}
+                        </CommandGroup>
+                    )}
+
                     <CommandEmpty className="px-3 py-4 text-left text-sm text-muted-foreground">
-                        {status === "pending" && "Searching…"}
-
-                        {status === "idle" && (
+                        {!searching && (
                             <>
                                 Type at least {MIN_LOOKUP_LENGTH} characters to
                                 search players and clans.
                             </>
                         )}
 
-                        {status === "miss" && (
-                            <>
-                                No players or clans match “{active}”. Try a
-                                shorter spelling, or the start of the name
-                                rather than the middle.
-                            </>
-                        )}
+                        {searching &&
+                            result._tag === "Initial" &&
+                            "Searching players…"}
+
+                        {searching &&
+                            result._tag !== "Initial" &&
+                            leaderboardRows.length === 0 &&
+                            archivedRows.length === 0 &&
+                            (archiveResult._tag === "Initial" ? (
+                                <>
+                                    No leaderboard matches for “{active}”.
+                                    Searching the archive…
+                                </>
+                            ) : (
+                                <>
+                                    No players or clans match “{active}”. Try a
+                                    shorter spelling, or the start of the name
+                                    rather than the middle.
+                                </>
+                            ))}
                     </CommandEmpty>
                 </CommandList>
             </Command>

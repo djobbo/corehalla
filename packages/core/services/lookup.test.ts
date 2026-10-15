@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@effect/vitest"
 import { matchTier, mergeLookup } from "./lookup"
-import type { AliasHit, ClanHit, PlayerHit } from "./lookup"
+import type { ClanHit, PlayerHit } from "./lookup"
 
 const player = (
     over: Partial<PlayerHit> & { playerId: string; name: string },
@@ -18,18 +18,10 @@ const clan = (
     ...over,
 })
 
-const alias = (
-    over: Partial<AliasHit> & { playerId: string; mainAlias: string },
-): AliasHit => ({
-    otherAliases: [],
-    ...over,
-})
-
 const merge = (over: Partial<Parameters<typeof mergeLookup>[0]> = {}) =>
     mergeLookup({
         query: "boom",
         players: [],
-        aliases: [],
         clans: [],
         limit: 20,
         ...over,
@@ -133,68 +125,18 @@ describe("mergeLookup sources", () => {
         expect(rows[0]?.source).toBe("rankings")
     })
 
-    it("emits an alias-only player with no rating, marked as archival", () => {
+    it("marks every ladder player a rankings hit with no aliases", () => {
         const rows = merge({
-            aliases: [
-                alias({
-                    playerId: "42",
-                    mainAlias: "boomold",
-                    otherAliases: ["boomolder"],
-                }),
-            ],
+            players: [player({ playerId: "5", name: "boom" })],
         })
 
         expect(rows[0]).toMatchObject({
             type: "player",
-            id: "42",
-            name: "boomold",
-            rating: null,
-            tier: null,
-            source: "archive",
+            id: "5",
+            rating: 2000,
+            tier: "Diamond",
+            source: "rankings",
+            aliases: [],
         })
-        expect(rows[0]?.aliases).toEqual(["boomolder"])
-    })
-
-    it("ranks a renamed player by the old name that matched", () => {
-        const rows = merge({
-            query: "boom",
-            players: [player({ playerId: "1", name: "zzz" })],
-            aliases: [
-                alias({
-                    playerId: "2",
-                    mainAlias: "someone",
-                    otherAliases: ["boom"],
-                }),
-            ],
-        })
-
-        expect(rows[0]?.id).toBe("2")
-    })
-
-    it("attaches aliases to a player the rankings already found", () => {
-        const rows = merge({
-            players: [player({ playerId: "5", name: "boomnew" })],
-            aliases: [
-                alias({
-                    playerId: "5",
-                    mainAlias: "boomnew",
-                    otherAliases: ["boomold"],
-                }),
-            ],
-        })
-
-        expect(rows).toHaveLength(1)
-        // The current name is dropped from the alias list rather than repeated.
-        expect(rows[0]?.aliases).toEqual(["boomold"])
-        expect(rows[0]?.source).toBe("rankings")
-    })
-
-    it("does not duplicate a player who appears in both the ladder and the alias index", () => {
-        const rows = merge({
-            players: [player({ playerId: "5", name: "boomnew" })],
-            aliases: [alias({ playerId: "5", mainAlias: "boomnew" })],
-        })
-
-        expect(rows).toHaveLength(1)
     })
 })
