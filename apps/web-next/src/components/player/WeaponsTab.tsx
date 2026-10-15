@@ -1,11 +1,14 @@
 import { useMemo } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
 import { SortControl } from "@/components/common/SortControl"
+import { StatGrid } from "@/components/common/StatGrid"
 import { WeaponRow } from "./WeaponRow"
 import { playerProfileAtom, useQuery } from "@/effect/atoms"
 import { useSortBy } from "@/lib/useSortBy"
 import { calculateWinrate } from "@crh/bhapi/helpers/calculateWinrate"
 import { formatTime } from "@crh/common/helpers/date"
+import type { Stat } from "@/components/common/StatGrid"
 import type { PlayerLegend, PlayerWeapon } from "@crh/api-contract/schemas"
 import type { SortOption } from "@/lib/useSortBy"
 
@@ -75,9 +78,34 @@ export const WeaponsTab = ({ playerId }: { readonly playerId: number }) => {
 
     const sort = useSortBy(weapons, sortOptions, "matchtime", "desc")
 
+    const played = weapons.filter((weapon) => weapon.stats.games > 0).length
+
+    const totals = weapons.reduce(
+        (sum, weapon) => ({
+            games: sum.games + weapon.stats.games,
+            wins: sum.wins + weapon.stats.wins,
+            timeHeld: sum.timeHeld + weapon.stats.time_held,
+        }),
+        { games: 0, wins: 0, timeHeld: 0 },
+    )
+
+    const summary: Stat[] = [
+        {
+            title: "Weapons played",
+            value: `${played} / ${weapons.length}`,
+            hint: "Weapons used at least once",
+        },
+        { title: "Total time held", value: formatTime(totals.timeHeld) },
+        { title: "Total games", value: totals.games.toLocaleString() },
+        {
+            title: "Winrate",
+            value: `${calculateWinrate(totals.wins, totals.games).toFixed(2)}%`,
+        },
+    ]
+
     if (weapons.length === 0) {
         return (
-            <Empty className="bg-bgVar2 py-10">
+            <Empty className="rounded-2xl bg-card py-10">
                 <EmptyHeader>
                     <EmptyDescription>
                         No weapon usage recorded.
@@ -89,6 +117,14 @@ export const WeaponsTab = ({ playerId }: { readonly playerId: number }) => {
 
     return (
         <div className="flex flex-col gap-4">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Summary</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <StatGrid stats={summary} />
+                </CardContent>
+            </Card>
             <SortControl
                 label="Sort by"
                 value={sort.key}

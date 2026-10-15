@@ -24,7 +24,7 @@ export const LandingLadder = ({
                 <h2 className="ch-display text-lg">{bracket}</h2>
             </div>
             {preview.length === 0 ? (
-                <Empty className="flex-none bg-card py-6">
+                <Empty className="flex-none rounded-2xl bg-card py-6">
                     <EmptyHeader>
                         <EmptyDescription className="text-xs">
                             The {bracket} ladder could not be read right now.

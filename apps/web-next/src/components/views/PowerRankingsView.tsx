@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router"
+import { Card } from "@/components/ui/card"
 import { EntityLink } from "@/components/common/EntityLink"
 import { PageNav } from "@/components/common/PageNav"
 import { SelectField } from "@/components/common/SelectField"
@@ -151,7 +152,7 @@ export const PowerRankingsView = ({
         />
 
         {players.length === 0 ? (
-            <Empty className="mt-4 bg-card py-8">
+            <Empty className="mt-4 rounded-2xl bg-card py-10">
                 <EmptyHeader>
                     <EmptyDescription>
                         No power-ranked players in {region} {gameMode}.
@@ -159,7 +160,7 @@ export const PowerRankingsView = ({
                 </EmptyHeader>
             </Empty>
         ) : (
-            <div className="mt-4 overflow-hidden bg-card">
+            <Card className="mt-4 overflow-hidden py-0">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -241,7 +242,7 @@ export const PowerRankingsView = ({
                         ))}
                     </TableBody>
                 </Table>
-            </div>
+            </Card>
         )}
 
         <PageNav

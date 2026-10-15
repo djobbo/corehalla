@@ -54,7 +54,7 @@ export const NewsFeed = ({
             </div>
 
             {articles.length === 0 ? (
-                <Empty className="mt-6 bg-card py-10">
+                <Empty className="mt-6 rounded-2xl bg-card py-10">
                     <EmptyHeader>
                         <EmptyDescription>
                             No articles here yet.

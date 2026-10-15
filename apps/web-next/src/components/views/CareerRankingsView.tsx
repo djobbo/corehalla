@@ -1,3 +1,4 @@
+import { Card } from "@/components/ui/card"
 import { EntityLink } from "@/components/common/EntityLink"
 import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
 import {
@@ -47,7 +48,7 @@ export const CareerRankingsView = <K extends string>({
         />
 
         {rows.length === 0 ? (
-            <Empty className="mt-4 bg-card py-8">
+            <Empty className="mt-4 rounded-2xl bg-card py-10">
                 <EmptyHeader>
                     <EmptyDescription>
                         No players on this board yet.
@@ -55,7 +56,7 @@ export const CareerRankingsView = <K extends string>({
                 </EmptyHeader>
             </Empty>
         ) : (
-            <div className="mt-4 overflow-hidden bg-card">
+            <Card className="mt-4 overflow-hidden py-0">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -110,7 +111,7 @@ export const CareerRankingsView = <K extends string>({
                         ))}
                     </TableBody>
                 </Table>
-            </div>
+            </Card>
         )}
         <PageNav prevHref={prevHref} nextHref={nextHref} />
     </div>

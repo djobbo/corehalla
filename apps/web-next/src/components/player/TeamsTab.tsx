@@ -62,7 +62,7 @@ export const TeamsTab = ({ playerId }: { readonly playerId: number }) => {
 
     if (teams.length === 0) {
         return (
-            <Empty className="bg-bgVar2 py-10">
+            <Empty className="rounded-2xl bg-card py-10">
                 <EmptyHeader>
                     <EmptyDescription>
                         No 2v2 ranked record for this player.

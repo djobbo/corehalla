@@ -138,6 +138,14 @@ export const LegendsTab = ({ playerId }: { readonly playerId: number }) => {
 
     return (
         <div className="flex flex-col gap-4">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Summary</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <StatGrid stats={summary} />
+                </CardContent>
+            </Card>
             <div className="grid gap-3 sm:grid-cols-2">
                 <SortControl
                     label="Sort by"
@@ -154,16 +162,8 @@ export const LegendsTab = ({ playerId }: { readonly playerId: number }) => {
                     onChange={setWeaponFilter}
                 />
             </div>
-            <Card>
-                <CardHeader>
-                    <CardTitle>Summary</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <StatGrid stats={summary} />
-                </CardContent>
-            </Card>
             {sort.sorted.length === 0 ? (
-                <Empty className="bg-bgVar2 py-10">
+                <Empty className="rounded-2xl bg-card py-10">
                     <EmptyHeader>
                         <EmptyDescription>
                             No legends use {weaponFilter}.

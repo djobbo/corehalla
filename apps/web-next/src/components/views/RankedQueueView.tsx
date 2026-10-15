@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router"
+import { Card } from "@/components/ui/card"
 import { EntityLink } from "@/components/common/EntityLink"
 import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
 import {
@@ -61,36 +62,40 @@ export const RankedQueueView = ({
                 last 30 minutes
             </p>
         </header>
-        <nav aria-label="Bracket" className="flex flex-wrap gap-1.5">
-            {brackets.map((option) => (
-                <Link
-                    key={option}
-                    to={queueHref(option, region)}
-                    className={cn(
-                        "ch-chip",
-                        option === bracket ? "ch-chip-on" : "ch-chip-off",
-                    )}
-                >
-                    {option}
-                </Link>
-            ))}
-        </nav>
-        <nav aria-label="Region" className="mt-1.5 flex flex-wrap gap-1.5">
-            {regions.map((option) => (
-                <Link
-                    key={option.value}
-                    to={queueHref(bracket, option.value)}
-                    className={cn(
-                        "ch-chip px-2.5 text-[0.62rem] tracking-[0.12em]",
-                        option.value === region ? "ch-chip-on" : "ch-chip-off",
-                    )}
-                >
-                    {option.label}
-                </Link>
-            ))}
-        </nav>
+        <div className="sticky top-[var(--ch-header-h)] z-20 -mx-4 bg-background/95 px-4 py-2 shadow-[0_3px_0_0_var(--color-ink)] backdrop-blur">
+            <nav aria-label="Bracket" className="flex flex-wrap gap-1.5">
+                {brackets.map((option) => (
+                    <Link
+                        key={option}
+                        to={queueHref(option, region)}
+                        className={cn(
+                            "ch-chip",
+                            option === bracket ? "ch-chip-on" : "ch-chip-off",
+                        )}
+                    >
+                        {option}
+                    </Link>
+                ))}
+            </nav>
+            <nav aria-label="Region" className="mt-1.5 flex flex-wrap gap-1.5">
+                {regions.map((option) => (
+                    <Link
+                        key={option.value}
+                        to={queueHref(bracket, option.value)}
+                        className={cn(
+                            "ch-chip px-2.5 text-[0.62rem] tracking-[0.12em]",
+                            option.value === region
+                                ? "ch-chip-on"
+                                : "ch-chip-off",
+                        )}
+                    >
+                        {option.label}
+                    </Link>
+                ))}
+            </nav>
+        </div>
         {rows.length === 0 ? (
-            <Empty className="mt-4 bg-card py-10">
+            <Empty className="mt-4 rounded-2xl bg-card py-10">
                 <EmptyHeader>
                     <EmptyDescription>
                         Nobody has queued on this ladder in the last 30 minutes.
@@ -98,7 +103,7 @@ export const RankedQueueView = ({
                 </EmptyHeader>
             </Empty>
         ) : (
-            <div className="mt-4 overflow-hidden bg-card">
+            <Card className="mt-4 overflow-hidden py-0">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -182,7 +187,7 @@ export const RankedQueueView = ({
                         ))}
                     </TableBody>
                 </Table>
-            </div>
+            </Card>
         )}
         <PageNav />
     </div>

@@ -1,3 +1,4 @@
+import { Card } from "@/components/ui/card"
 import { EntityLink } from "@/components/common/EntityLink"
 import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
 import { Input } from "@/components/ui/input"
@@ -53,7 +54,7 @@ export const ClanRankingsView = ({
                 />
             </div>
             {rows.length === 0 ? (
-                <Empty className="mt-4 bg-card py-8">
+                <Empty className="mt-4 rounded-2xl bg-card py-10">
                     <EmptyHeader>
                         <EmptyDescription>
                             {resultQuery
@@ -63,7 +64,7 @@ export const ClanRankingsView = ({
                     </EmptyHeader>
                 </Empty>
             ) : (
-                <div className="mt-4 overflow-hidden bg-card">
+                <Card className="mt-4 overflow-hidden py-0">
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -120,7 +121,7 @@ export const ClanRankingsView = ({
                             ))}
                         </TableBody>
                     </Table>
-                </div>
+                </Card>
             )}
             <PageNav prevHref={prevHref} nextHref={nextHref} />
         </div>

@@ -1,3 +1,4 @@
+import { Card } from "@/components/ui/card"
 import { EntityLink } from "@/components/common/EntityLink"
 import {
     Table,
@@ -19,7 +20,8 @@ export const LadderTable = ({
     readonly rows: readonly LadderRow[]
     readonly className?: string
 }) => (
-    <div className={cn("overflow-hidden bg-card", className)}>
+    // A `Card`, so a table panel is the same rounded surface as every other.
+    <Card className={cn("overflow-hidden py-0", className)}>
         <Table>
             <TableHeader>
                 <TableRow>
@@ -76,5 +78,5 @@ export const LadderTable = ({
                 ))}
             </TableBody>
         </Table>
-    </div>
+    </Card>
 )
