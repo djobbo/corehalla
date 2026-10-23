@@ -1,0 +1,18 @@
+{
+    // Type-checks `alchemy.run.ts` only. Each package checks its own sources.
+    "include": ["alchemy.run.ts"],
+    "exclude": ["node_modules"],
+    "compilerOptions": {
+        "strict": true,
+        "target": "es2022",
+        "lib": ["esnext"],
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
+        "noEmit": true,
+        "types": ["node"]
+    }
+}

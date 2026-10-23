@@ -1,16 +1,21 @@
 import type { PlayerRanked, Ranking2v2 } from "../types"
 
+/**
+ * Prefer separate name fields; only v0 lacks them and ships a joined
+ * `teamname`. Splitting lives here so callers do not each mishandle `+`.
+ */
 export const getTeamPlayers = (
     team: PlayerRanked["2v2"][number] | Ranking2v2,
 ) => {
-    const [player1, player2] = team.teamname.split("+")
+    const [joinedOne = "", joinedTwo = ""] = team.teamname.split("+")
+
     return [
         {
-            name: player1,
+            name: team.name_one ?? joinedOne,
             id: team.brawlhalla_id_one,
         },
         {
-            name: player2,
+            name: team.name_two ?? joinedTwo,
             id: team.brawlhalla_id_two,
         },
     ]

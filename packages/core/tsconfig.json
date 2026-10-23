@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "esModuleInterop": true,
+        "allowJs": true,
+        "lib": ["esnext", "dom", "dom.iterable"],
+        "module": "esnext",
+        // `@crh/db` re-exports Effect and Drizzle, whose packages are ESM-only
+        // and expose their entry points only through `exports` (invisible to
+        // the legacy node10 resolution).
+        "moduleResolution": "bundler",
+        "target": "es2022",
+        "skipLibCheck": true,
+        "noEmit": true,
+        "isolatedModules": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        "types": ["node"]
+    },
+    "include": ["."],
+    "exclude": ["node_modules"]
+}

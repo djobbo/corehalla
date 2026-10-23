@@ -1,0 +1,8 @@
+.tanstack/
+node_modules/
+dist/
+.output/
+storybook-static/
+.env
+.env.local
+debug-storybook.log

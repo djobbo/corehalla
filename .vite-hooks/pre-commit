@@ -1,0 +1,10 @@
+#!/bin/sh
+# Project-owned Vite+ commit hook.
+#
+# The generated dispatcher under `.vite-hooks/_` (gitignored) calls this file.
+# Install it with `vp hooks enable` (or `vp config`, which also runs from the
+# root `prepare` script); `vp hooks disable` removes it from this clone.
+#
+# Staged-file checks are configured in the `staged` block of `vite.config.ts`.
+
+vp staged

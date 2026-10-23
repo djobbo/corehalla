@@ -1,0 +1,142 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
+import { SortControl } from "@/components/common/SortControl"
+import { StatGrid } from "@/components/common/StatGrid"
+import { TeamCard } from "./TeamCard"
+import { playerProfileAtom, useQuery } from "@/effect/atoms"
+import { ratio } from "@/lib/stats"
+import { useSortBy } from "@/lib/useSortBy"
+import { calculateWinrate } from "@crh/bhapi/helpers/calculateWinrate"
+import type { PlayerRankedTeam } from "@crh/api-contract/schemas"
+import type { SortOption } from "@/lib/useSortBy"
+import type { Stat } from "@/components/common/StatGrid"
+
+type Team = PlayerRankedTeam
+
+type TeamSort = "rating" | "peak" | "games" | "wins" | "losses" | "winrate"
+
+const losses = (team: Team): number => team.games - team.wins
+const winrate = (team: Team): number => calculateWinrate(team.wins, team.games)
+
+const sortOptions: Record<TeamSort, SortOption<Team>> = {
+    rating: {
+        label: "Elo",
+        compare: (a, b) => a.rating - b.rating,
+        display: (team) => `${team.rating} elo`,
+    },
+    peak: {
+        label: "Peak elo",
+        compare: (a, b) => a.peak_rating - b.peak_rating,
+        display: (team) => `${team.peak_rating} peak elo`,
+    },
+    games: {
+        label: "Games",
+        compare: (a, b) => a.games - b.games,
+        display: (team) => `${team.games.toLocaleString()} games`,
+    },
+    wins: {
+        label: "Wins",
+        compare: (a, b) => a.wins - b.wins,
+        display: (team) => `${team.wins.toLocaleString()} wins`,
+    },
+    losses: {
+        label: "Losses",
+        compare: (a, b) => losses(a) - losses(b),
+        display: (team) => `${losses(team).toLocaleString()} losses`,
+    },
+    winrate: {
+        label: "Winrate",
+        compare: (a, b) => winrate(a) - winrate(b),
+        display: (team) => `${winrate(team).toFixed(2)}% winrate`,
+    },
+}
+
+export const TeamsTab = ({ playerId }: { readonly playerId: number }) => {
+    const envelope = useQuery(playerProfileAtom(playerId))
+
+    const teams = (envelope.data.ranked?.["2v2"]?.teams ?? []).filter(
+        (team: Team) => team.paired,
+    )
+
+    const sort = useSortBy(teams, sortOptions, "rating", "desc")
+
+    if (teams.length === 0) {
+        return (
+            <Empty className="rounded-2xl bg-card py-10">
+                <EmptyHeader>
+                    <EmptyDescription>
+                        No 2v2 ranked record for this player.
+                    </EmptyDescription>
+                </EmptyHeader>
+            </Empty>
+        )
+    }
+
+    const totalGames = teams.reduce((sum, team) => sum + team.games, 0)
+    const totalWins = teams.reduce((sum, team) => sum + team.wins, 0)
+    const totalRating = teams.reduce((sum, team) => sum + team.rating, 0)
+    const totalPeak = teams.reduce((sum, team) => sum + team.peak_rating, 0)
+    const count = teams.length
+    const totalLosses = totalGames - totalWins
+
+    const summary: Stat[] = [
+        { title: "Total games", value: totalGames.toLocaleString() },
+        { title: "Total wins", value: totalWins.toLocaleString() },
+        { title: "Total losses", value: totalLosses.toLocaleString() },
+        {
+            title: "Winrate",
+            value: `${calculateWinrate(totalWins, totalGames).toFixed(2)}%`,
+        },
+        { title: "Teammates", value: count.toLocaleString() },
+        {
+            title: "Games per teammate",
+            value: ratio(totalGames, count).toFixed(2),
+        },
+        {
+            title: "Wins per teammate",
+            value: ratio(totalWins, count).toFixed(2),
+        },
+        {
+            title: "Losses per teammate",
+            value: ratio(totalLosses, count).toFixed(2),
+        },
+        {
+            title: "Average team elo",
+            value: ratio(totalRating, count).toFixed(0),
+        },
+        {
+            title: "Average peak elo",
+            value: ratio(totalPeak, count).toFixed(0),
+        },
+    ]
+
+    return (
+        <div className="flex flex-col gap-4">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Summary</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <StatGrid stats={summary} />
+                </CardContent>
+            </Card>
+            <SortControl
+                label="Sort by"
+                value={sort.key}
+                choices={sort.choices}
+                onChange={sort.setKey}
+                direction={sort.direction}
+                onToggleDirection={sort.toggleDirection}
+                className="sm:max-w-sm"
+            />
+            <div className="grid gap-4 @2xl:grid-cols-2 @4xl:grid-cols-3">
+                {sort.sorted.map((team) => (
+                    <TeamCard
+                        key={`${team.team[0].id}-${team.team[1].id}`}
+                        team={team}
+                    />
+                ))}
+            </div>
+        </div>
+    )
+}

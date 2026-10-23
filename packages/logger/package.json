@@ -1,11 +1,11 @@
 {
-    "name": "logger",
+    "name": "@crh/logger",
     "version": "0.0.0",
     "main": "index.ts",
     "devDependencies": {
         "@types/node": "^20.11.5",
-        "tsconfig": "workspace:*",
-        "typescript": "^5.3.3"
+        "@crh/tsconfig": "workspace:*",
+        "typescript": "^7.0.2"
     },
     "scripts": {
         "ts:check": "tsc --noEmit"

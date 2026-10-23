@@ -1,0 +1,20 @@
+{
+    "name": "@crh/crawler",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "ts:check": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "@types/node": "^24.0.0",
+        "@crh/tsconfig": "workspace:*",
+        "typescript": "^7.0.2"
+    },
+    "dependencies": {
+        "@crh/bhapi": "workspace:*",
+        "@crh/core": "workspace:*",
+        "effect": "4.0.0-rc.117",
+        "@crh/db": "workspace:*"
+    }
+}

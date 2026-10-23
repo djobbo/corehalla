@@ -2,6 +2,9 @@ import type { ClanRank, RankedRegion, RankedTier, Weapon } from "./constants"
 
 export type Bracket = "1v1" | "2v2"
 
+/** Wider than `Bracket`: `3v3` is v1-only and only ladder paths accept it. */
+export type Ladder = "1v1" | "2v2" | "3v3"
+
 export type PlayerStats = {
     brawlhalla_id: number
     name: string
@@ -73,6 +76,9 @@ export type PlayerRanked = {
     "2v2": {
         brawlhalla_id_one: number
         brawlhalla_id_two: number
+        /** Optional: v0 sends only joined `teamname`; `getTeamPlayers` falls back. */
+        name_one?: string
+        name_two?: string
         rating: number
         peak_rating: number
         tier: RankedTier
@@ -90,17 +96,48 @@ export type PlayerRanked = {
     region: RankedRegion | Uppercase<RankedRegion>
 }
 
+/**
+ * Separate from `PlayerRanked`: v0 has no 3v3, and v1's 3v3 mode lacks the
+ * account/clan/2v2 fields `PlayerRanked` carries — folding them would force
+ * fabricating data.
+ */
+export type Player3v3Ranked = {
+    brawlhalla_id: number
+    name: string
+    rating: number
+    peak_rating: number
+    tier: RankedTier | null // TOFIX: 'Valhallan' tier is null
+    wins: number
+    games: number
+    region: RankedRegion | Uppercase<RankedRegion>
+}
+
 export type Clan = {
     clan_id: number
     clan_name: string
     clan_create_date: number
     clan_xp: string
+    /**
+     * Optional: only v1 `/guild/stats` sends `legacy_xp`. Distinct from
+     * `clan_xp` (current season); the two do not sum from the roster.
+     */
+    legacy_xp?: number
+    /**
+     * Optional: only v1 sends it. Not the roster sum — a clan keeps points of
+     * everyone who ever contributed; summing members is a fallback when absent.
+     */
+    guild_points?: number
     clan: {
         brawlhalla_id: number
         name: string
         rank: ClanRank
         join_date: number
         xp: number
+        /**
+         * Optional: only v1 `/guild/members` sends it. `undefined` means this
+         * source omits points — not the same as a real `0`.
+         */
+        guild_points?: number
     }[]
 }
 
@@ -124,11 +161,21 @@ export type Ranking1v1 = Ranking & {
 }
 
 export type Ranking2v2 = Ranking & {
+    /** Separate names from v1 `players[]` — do not recover from `teamname`. */
+    name_one: string
+    name_two: string
+    /** Display only — never parse it (usernames can contain `+`). */
     teamname: string
     brawlhalla_id_one: number
     brawlhalla_id_two: number
     twitch_name_one?: string
     twitch_name_two?: string
+}
+
+/** v1-only; one player per row (3v3 teams are assembled per match). */
+export type Ranking3v3 = Ranking & {
+    name: string
+    brawlhalla_id: number
 }
 
 export type Legend = {
