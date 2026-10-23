@@ -19,12 +19,6 @@ const config = {
     images: {
         remotePatterns: [new URL("https://cdn.discordapp.com/**"), new URL("https://www.brawlhalla.com/**")],
     },
-    experimental: {
-        logging: {
-            level: "verbose",
-            fullUrl: true,
-        },
-    },
     async redirects() {
         return [
             {
