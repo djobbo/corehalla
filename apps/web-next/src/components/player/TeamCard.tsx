@@ -1,7 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { SplitProgress } from "@/components/common/SplitProgress"
 import { EntityLink } from "@/components/common/EntityLink"
-import { rankedBannerSrc, regionFlagSrc } from "@/lib/assets"
+import { regionFlagSrc } from "@/lib/assets"
+import { useRankedBanner } from "@/lib/media"
 import { playerHref } from "@/lib/rankings"
 import { percent } from "@/lib/stats"
 import { cleanString } from "@crh/common/helpers/cleanString"
@@ -11,12 +12,13 @@ export const TeamCard = ({ team }: { readonly team: PlayerRankedTeam }) => {
     const [first, second] = team.team
     const region = team.region?.toUpperCase() ?? "ALL"
     const tier = team.tier ?? "Valhallan"
+    const banner = useRankedBanner(tier)
     const losses = team.games - team.wins
 
     return (
         <Card className="relative z-0 overflow-visible">
             <img
-                src={rankedBannerSrc(tier)}
+                src={banner}
                 alt={`${tier} ranked`}
                 title={tier}
                 className="ch-card-banner"

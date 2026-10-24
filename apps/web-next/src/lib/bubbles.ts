@@ -9,6 +9,7 @@ export type BubbleNode = {
     readonly key: string
     readonly name: string
     readonly icon: string
+    readonly slotKey?: string
     readonly href?: string
     /** Absent for unarmed, which has no weapon level. */
     readonly level?: number

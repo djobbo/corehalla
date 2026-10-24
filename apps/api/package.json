@@ -10,9 +10,9 @@
         "@types/node": "^24.0.0",
         "@crh/tsconfig": "workspace:*",
         "typescript": "^7.0.2",
-        "vite-plus": "1.0.0",
-        "vitest": "5.0.1",
-        "@effect/vitest": "4.0.0-rc.117"
+        "vite-plus": "1.4.0",
+        "vitest": "5.0.5",
+        "@effect/vitest": "4.0.6"
     },
     "dependencies": {
         "@crh/api-contract": "workspace:*",
@@ -21,7 +21,7 @@
         "@crh/db": "workspace:*",
         "@crh/logger": "workspace:*",
         "@crh/web-parser": "workspace:*",
-        "effect": "4.0.0-rc.117",
+        "effect": "4.0.6",
         "@crh/core": "workspace:*"
     }
 }

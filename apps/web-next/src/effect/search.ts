@@ -1,4 +1,4 @@
-import { Atom } from "effect/unstable/reactivity"
+import { Atom } from "effect/reactivity"
 import type { RankedRegion } from "@crh/api-contract/schemas"
 import { MIN_LOOKUP_LENGTH } from "@crh/api-contract/schemas"
 

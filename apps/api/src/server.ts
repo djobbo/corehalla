@@ -1,10 +1,11 @@
 import { Layer } from "effect"
-import { FetchHttpClient, HttpRouter, HttpServer } from "effect/unstable/http"
-import { HttpApiBuilder, HttpApiScalar } from "effect/unstable/httpapi"
+import { FetchHttpClient, HttpRouter, HttpServer } from "effect/http"
+import { HttpApiBuilder, HttpApiScalar } from "effect/http-api"
 import { layer as sqlLayer } from "@crh/db/client"
 import { d1Database } from "@crh/core/env"
 import { CorehallaApi } from "@crh/api-contract/Api"
 import {
+    cmsGroup,
     contentGroup,
     guildsGroup,
     playersGroup,
@@ -20,6 +21,7 @@ import {
 } from "@crh/core/services/upstream"
 import { layer as CacheLayer } from "@crh/core/services/cache"
 import { layer as BackgroundLayer } from "@crh/core/services/background"
+import { layer as CmsLayer } from "./services/cms"
 import { layer as ContentLayer } from "./services/content"
 import { layer as BrawltoolsLayer } from "./services/brawltools"
 import { layer as PowerRankingsLayer } from "./services/power-rankings"
@@ -50,6 +52,7 @@ const createHandler = (db: D1Database) => {
         BackgroundLayer,
         UpstreamWithDeps,
         ContentLayer.pipe(Layer.provide(SqlLayer)),
+        CmsLayer,
         BrawltoolsLayer,
         PowerRankingsLayer.pipe(
             Layer.provide(BrawltoolsLayer),
@@ -81,6 +84,7 @@ const createHandler = (db: D1Database) => {
         Layer.provide(rankingsGroup),
         Layer.provide(searchGroup),
         Layer.provide(contentGroup),
+        Layer.provide(cmsGroup),
         Layer.provide(upstreamGroup),
         Layer.provide(meGroup),
         Layer.provide(authGroup),

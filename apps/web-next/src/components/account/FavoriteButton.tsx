@@ -1,6 +1,6 @@
 import { ClientOnly } from "@tanstack/react-router"
 import { useAtomSet, useAtomValue } from "@effect/atom-react"
-import * as AsyncResult from "effect/unstable/reactivity/AsyncResult"
+import * as AsyncResult from "effect/reactivity/AsyncResult"
 import {
     addFavoriteAtom,
     favoritesAtom,

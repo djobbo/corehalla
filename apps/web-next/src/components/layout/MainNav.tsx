@@ -85,6 +85,11 @@ const sections: readonly NavSection[] = [
         match: ["/rankings/guilds"],
     },
     {
+        label: "Updates",
+        href: "/updates",
+        match: ["/updates"],
+    },
+    {
         label: "News",
         href: "/news",
         match: ["/news"],

@@ -1,0 +1,7 @@
+data/
+emdash.db*
+.astro/
+dist/
+node_modules/
+.emdash/
+.wrangler/

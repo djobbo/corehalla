@@ -15,6 +15,8 @@ import { Route as AtmeFavoritesRouteImport } from './routes/@me/favorites'
 import { Route as NewsIndexRouteImport } from './routes/news/index'
 import { Route as NewsSlugRouteImport } from './routes/news/$slug'
 import { Route as RankingsIndexRouteImport } from './routes/rankings/index'
+import { Route as UpdatesIndexRouteImport } from './routes/updates/index'
+import { Route as UpdatesSlugRouteImport } from './routes/updates/$slug'
 import { Route as NewsCategoryIndexRouteImport } from './routes/news/category/index'
 import { Route as NewsPageChar123PageChar125RouteImport } from './routes/news/page.{-$page}'
 import { Route as QueueChar123BracketChar125Char123RegionChar125RouteImport } from './routes/queue.{-$bracket}.{-$region}'
@@ -74,6 +76,16 @@ const NewsSlugRoute = NewsSlugRouteImport.update({
 const RankingsIndexRoute = RankingsIndexRouteImport.update({
   id: '/rankings/',
   path: '/rankings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UpdatesIndexRoute = UpdatesIndexRouteImport.update({
+  id: '/updates/',
+  path: '/updates/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UpdatesSlugRoute = UpdatesSlugRouteImport.update({
+  id: '/updates/$slug',
+  path: '/updates/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NewsCategoryIndexRoute = NewsCategoryIndexRouteImport.update({
@@ -257,8 +269,10 @@ export interface FileRoutesByFullPath {
   '/leaderboard': typeof LeaderboardRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/news/$slug': typeof NewsSlugRoute
+  '/updates/$slug': typeof UpdatesSlugRoute
   '/news/': typeof NewsIndexRoute
   '/rankings/': typeof RankingsIndexRoute
+  '/updates/': typeof UpdatesIndexRoute
   '/news/page/{-$page}': typeof NewsPageChar123PageChar125Route
   '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
@@ -295,8 +309,10 @@ export interface FileRoutesByTo {
   '/leaderboard': typeof LeaderboardRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/news/$slug': typeof NewsSlugRoute
+  '/updates/$slug': typeof UpdatesSlugRoute
   '/news': typeof NewsIndexRoute
   '/rankings': typeof RankingsIndexRoute
+  '/updates': typeof UpdatesIndexRoute
   '/news/page/{-$page}': typeof NewsPageChar123PageChar125Route
   '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
@@ -333,8 +349,10 @@ export interface FileRoutesById {
   '/leaderboard': typeof LeaderboardRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/news/$slug': typeof NewsSlugRoute
+  '/updates/$slug': typeof UpdatesSlugRoute
   '/news/': typeof NewsIndexRoute
   '/rankings/': typeof RankingsIndexRoute
+  '/updates/': typeof UpdatesIndexRoute
   '/news/page/{-$page}': typeof NewsPageChar123PageChar125Route
   '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
@@ -373,8 +391,10 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/@me/favorites'
     | '/news/$slug'
+    | '/updates/$slug'
     | '/news/'
     | '/rankings/'
+    | '/updates/'
     | '/news/page/{-$page}'
     | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
@@ -411,8 +431,10 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/@me/favorites'
     | '/news/$slug'
+    | '/updates/$slug'
     | '/news'
     | '/rankings'
+    | '/updates'
     | '/news/page/{-$page}'
     | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
@@ -448,8 +470,10 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/@me/favorites'
     | '/news/$slug'
+    | '/updates/$slug'
     | '/news/'
     | '/rankings/'
+    | '/updates/'
     | '/news/page/{-$page}'
     | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
@@ -487,8 +511,10 @@ export interface RootRouteChildren {
   LeaderboardRoute: typeof LeaderboardRoute
   AtmeFavoritesRoute: typeof AtmeFavoritesRoute
   NewsSlugRoute: typeof NewsSlugRoute
+  UpdatesSlugRoute: typeof UpdatesSlugRoute
   NewsIndexRoute: typeof NewsIndexRoute
   RankingsIndexRoute: typeof RankingsIndexRoute
+  UpdatesIndexRoute: typeof UpdatesIndexRoute
   NewsPageChar123PageChar125Route: typeof NewsPageChar123PageChar125Route
   QueueChar123BracketChar125Char123RegionChar125Route: typeof QueueChar123BracketChar125Char123RegionChar125Route
   RankingsClansChar123PageChar125Route: typeof RankingsClansChar123PageChar125Route
@@ -558,6 +584,20 @@ declare module '@tanstack/react-router' {
       path: '/rankings'
       fullPath: '/rankings/'
       preLoaderRoute: typeof RankingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/updates/': {
+      id: '/updates/'
+      path: '/updates'
+      fullPath: '/updates/'
+      preLoaderRoute: typeof UpdatesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/updates/$slug': {
+      id: '/updates/$slug'
+      path: '/updates/$slug'
+      fullPath: '/updates/$slug'
+      preLoaderRoute: typeof UpdatesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/news/category/': {
@@ -798,8 +838,10 @@ const rootRouteChildren: RootRouteChildren = {
   LeaderboardRoute: LeaderboardRoute,
   AtmeFavoritesRoute: AtmeFavoritesRoute,
   NewsSlugRoute: NewsSlugRoute,
+  UpdatesSlugRoute: UpdatesSlugRoute,
   NewsIndexRoute: NewsIndexRoute,
   RankingsIndexRoute: RankingsIndexRoute,
+  UpdatesIndexRoute: UpdatesIndexRoute,
   NewsPageChar123PageChar125Route: NewsPageChar123PageChar125Route,
   QueueChar123BracketChar125Char123RegionChar125Route:
     QueueChar123BracketChar125Char123RegionChar125Route,

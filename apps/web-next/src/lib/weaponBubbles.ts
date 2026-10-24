@@ -1,4 +1,5 @@
 import { weaponIconSrc } from "./assets"
+import { mediaSlotKey } from "./mediaSlot"
 import type { BubbleNode } from "./bubbles"
 import type { Player, PlayerWeapon } from "@crh/api-contract/schemas"
 
@@ -20,6 +21,7 @@ export const toWeaponBubbles = (
             key: weapon.name,
             name: weapon.name,
             icon: weaponIconSrc(weapon.name),
+            slotKey: mediaSlotKey("weapon.icon", weapon.name),
             level: weapon.stats.level,
             matchtime: weapon.stats.time_held,
             kos: weapon.stats.kos,
@@ -33,6 +35,7 @@ export const toWeaponBubbles = (
             key: "Unarmed",
             name: "Unarmed",
             icon: weaponIconSrc("Unarmed"),
+            slotKey: mediaSlotKey("weapon.icon", "Unarmed"),
             matchtime: unarmed.time_held,
             kos: unarmed.kos,
             damage_dealt: unarmed.damage_dealt,

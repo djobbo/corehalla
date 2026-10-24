@@ -1,4 +1,5 @@
 import { legendIconSrc } from "./assets"
+import { mediaSlotKey } from "./mediaSlot"
 import { playerHref } from "./rankings"
 import type { BubbleNode } from "./bubbles"
 import type { PlayerLegend } from "@crh/api-contract/schemas"
@@ -14,6 +15,7 @@ export const toLegendBubbles = (
             key: String(legend.id),
             name: legend.name,
             icon: legendIconSrc(legend.name_key),
+            slotKey: mediaSlotKey("legend.icon", legend.name_key),
             href: playerHref(legend.slug),
             level: legend.stats.level,
             matchtime: legend.stats.matchtime,

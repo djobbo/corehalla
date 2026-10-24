@@ -1,7 +1,7 @@
 import { describe, expect, it } from "@effect/vitest"
 import { Effect, Fiber } from "effect"
 import { TestClock } from "effect/testing"
-import { HttpClient, HttpClientResponse } from "effect/unstable/http"
+import { HttpClient, HttpClientResponse } from "effect/http"
 import { v1Ops } from "./v1"
 
 const stats = {

@@ -17,6 +17,8 @@ type WorkerEnvironment = {
     CRAWL_QUEUE?: QueueProducerLike
     /** Separate from `CRAWL_QUEUE` so samples are not starved by ladder walks. */
     CRAWL_SAMPLE_QUEUE?: QueueProducerLike
+    /** Service binding to the EmDash CMS Worker. */
+    CMS?: { fetch: (request: Request) => Promise<Response> }
     SITE_URL?: string
     [key: string]: unknown
 }
@@ -108,4 +110,13 @@ export const crawlSampleQueue = async (): Promise<
     const env = await workerEnv()
 
     return env.CRAWL_SAMPLE_QUEUE
+}
+
+/** Content is read through a service binding; the CMS never needs a public API. */
+export const cmsBinding = async (): Promise<
+    { fetch: (request: Request) => Promise<Response> } | undefined
+> => {
+    const env = await workerEnv()
+
+    return env.CMS
 }

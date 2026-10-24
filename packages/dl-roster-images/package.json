@@ -1,24 +1,24 @@
 {
     "name": "@crh/dl-roster-images",
     "version": "0.0.0",
-    "main": "./index.ts",
-    "types": "./index.ts",
+    "private": true,
+    "type": "module",
     "scripts": {
-        "dl-roster-dev": "tsnd --respawn ./index.ts",
-        "dl-roster": "ts-node ./index.ts",
+        "dl-roster": "vpx ./index.ts",
         "ts:check": "tsc --noEmit"
     },
     "dependencies": {
-        "axios": "1.1.3",
         "@crh/bhapi": "workspace:*",
+        "@effect/platform-node": "4.0.6",
         "cheerio": "1.0.0-rc.12",
-        "@crh/logger": "workspace:*"
+        "effect": "4.0.6"
     },
     "devDependencies": {
-        "@types/node": "^20.11.5",
-        "ts-node": "^10.9.1",
-        "ts-node-dev": "^2.0.0",
+        "@effect/vitest": "4.0.6",
+        "@types/node": "^24.0.0",
         "@crh/tsconfig": "workspace:*",
-        "typescript": "^7.0.2"
+        "typescript": "^7.0.2",
+        "vite-plus": "1.4.0",
+        "vitest": "5.0.5"
     }
 }

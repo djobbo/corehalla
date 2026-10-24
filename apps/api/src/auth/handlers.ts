@@ -1,6 +1,6 @@
 import { Duration, Effect, Exit } from "effect"
-import { HttpApiBuilder } from "effect/unstable/httpapi"
-import { HttpServerRequest, HttpServerResponse } from "effect/unstable/http"
+import { HttpApiBuilder } from "effect/http-api"
+import { HttpServerRequest, HttpServerResponse } from "effect/http"
 import { CorehallaApi } from "@crh/api-contract/Api"
 import { Auth } from "./Auth"
 import { discordConfig, discordRedirectUri, isSecureRequest } from "./config"

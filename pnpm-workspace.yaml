@@ -5,11 +5,36 @@ packages:
 overrides:
     "@types/react": ~19.0.8
     "@types/react-dom": ~19.0.3
-    "vite@*": npm:@voidzero-dev/vite-plus-core@1.0.0
-    "vitest": "5.0.1"
+    "vite@*": npm:@voidzero-dev/vite-plus-core@1.4.0
+    "vitest": "5.0.5"
 
 # Dependency build scripts that are approved to run on install.
 allowBuilds:
     core-js-pure: true
     esbuild: true
     workerd: true
+
+minimumReleaseAgeExclude:
+    - "@cloudflare/workers-types@5.20261023.1"
+    - "@alchemy.run/cloudflare-runtime@2.0.0-beta.84"
+    - "@alchemy.run/frontend-frameworks@2.0.0-beta.84"
+    - "@alchemy.run/node-utils@2.0.0-beta.84"
+    - "@distilled.cloud/aws4signer@1.0.0-rc.17"
+    - "@distilled.cloud/aws@1.0.0-rc.17"
+    - "@distilled.cloud/cloudflare@1.0.0-rc.17"
+    - "@distilled.cloud/core@1.0.0-rc.17"
+    - "@effect/tsgo-darwin-arm64@0.56.1"
+    - "@effect/tsgo-darwin-x64@0.56.1"
+    - "@effect/tsgo-linux-arm64@0.56.1"
+    - "@effect/tsgo-linux-arm@0.56.1"
+    - "@effect/tsgo-linux-x64@0.56.1"
+    - "@effect/tsgo-win32-arm64@0.56.1"
+    - "@effect/tsgo-win32-x64@0.56.1"
+    - "@effect/tsgo@0.56.1"
+    - alchemy@2.0.0-beta.84
+    - "@alchemy.run/acme@2.0.0-beta.84"
+    - "@alchemy.run/cloudflare@2.0.0-beta.84"
+    - "@alchemy.run/docker@2.0.0-beta.84"
+    - "@alchemy.run/sql@2.0.0-beta.84"
+    - "@distilled.cloud/acme@1.0.0-rc.17"
+    - "@distilled.cloud/iceberg@1.0.0-rc.17"

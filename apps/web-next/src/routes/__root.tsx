@@ -11,6 +11,7 @@ import {
     useMatches,
 } from "@tanstack/react-router"
 import { HydrationBoundary, RegistryContext } from "@effect/atom-react"
+import { cmsMediaManifestAtom, preloadAtoms } from "@/effect/atoms"
 import { AccountControl } from "@/components/account/AccountControl"
 import { LandingBackground } from "@/components/layout/LandingBackground"
 import { MainNav } from "@/components/layout/MainNav"
@@ -37,6 +38,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
             { title: "Corehalla" },
         ],
     }),
+    loader: ({ context }) => preloadAtoms(context, [cmsMediaManifestAtom()]),
     component: RootComponent,
     shellComponent: RootDocument,
 })

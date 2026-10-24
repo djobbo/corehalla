@@ -1,5 +1,5 @@
 import { Duration, Effect, Predicate, Schedule } from "effect"
-import { HttpClientError } from "effect/unstable/http"
+import { HttpClientError } from "effect/http"
 
 const MAX_ATTEMPTS = 3
 

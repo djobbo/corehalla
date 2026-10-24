@@ -14,7 +14,7 @@ import {
     HttpClientError,
     HttpClientRequest,
     HttpClientResponse,
-} from "effect/unstable/http"
+} from "effect/http"
 import { getCssText } from "@/ui/theme"
 import { useInProcessHttpClient } from "@/effect/Client"
 import { apiBinding } from "@/env"

@@ -1,5 +1,5 @@
 import { Effect, Schedule } from "effect"
-import { HttpClient, HttpClientError } from "effect/unstable/http"
+import { HttpClient, HttpClientError } from "effect/http"
 
 /**
  * Retry policy for requests this app makes to the Corehalla API.

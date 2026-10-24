@@ -1,5 +1,5 @@
 import { Duration, Effect, Predicate, Schedule } from "effect"
-import { HttpClient, HttpClientError } from "effect/unstable/http"
+import { HttpClient, HttpClientError } from "effect/http"
 import { retryTransient } from "../retry"
 import { withUserAgent } from "./user-agent"
 import { legendsMap } from "@crh/bhapi/legends"
@@ -498,7 +498,9 @@ export const isCompletePlayer3v3Ranked = (
 
 /** 1-based index into `rankedRegions`, the numeric region v0 carried on a team row. */
 const regionIndex = (region: string): number => {
-    const index = rankedRegions.indexOf(fromV1Region(region))
+    const index = rankedRegions.indexOf(
+        fromV1Region(region) as (typeof rankedRegions)[number],
+    )
 
     return index < 0 ? 0 : index + 1
 }

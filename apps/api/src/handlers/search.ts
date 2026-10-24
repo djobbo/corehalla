@@ -1,5 +1,5 @@
 import { Effect } from "effect"
-import { HttpApiBuilder } from "effect/unstable/httpapi"
+import { HttpApiBuilder } from "effect/http-api"
 import { getEntitySlug } from "@crh/common/helpers/entitySlug"
 import { CorehallaApi } from "@crh/api-contract/Api"
 import { Database } from "@crh/core/services/archive"

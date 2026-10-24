@@ -1,0 +1,123 @@
+{
+    "$schema": "https://emdashcms.com/seed.schema.json",
+    "version": "1",
+    "meta": {
+        "name": "Corehalla CMS",
+        "description": "Corehalla updates, wiki pages and named image slots.",
+        "author": "Corehalla"
+    },
+    "settings": {
+        "title": "Corehalla",
+        "tagline": "Brawlhalla stats, rankings and community"
+    },
+    "collections": [
+        {
+            "slug": "posts",
+            "label": "Updates",
+            "labelSingular": "Update",
+            "description": "Product updates, newsletter issues and editorial articles.",
+            "urlPattern": "/posts/{slug}",
+            "supports": [
+                "drafts",
+                "revisions",
+                "preview",
+                "scheduling",
+                "search",
+                "seo"
+            ],
+            "titleField": "title",
+            "fields": [
+                {
+                    "slug": "title",
+                    "label": "Title",
+                    "type": "string",
+                    "required": true,
+                    "searchable": true
+                },
+                {
+                    "slug": "excerpt",
+                    "label": "Excerpt",
+                    "type": "text"
+                },
+                {
+                    "slug": "content",
+                    "label": "Content",
+                    "type": "portableText",
+                    "searchable": true
+                },
+                {
+                    "slug": "featured_image",
+                    "label": "Featured image",
+                    "type": "image"
+                }
+            ]
+        },
+        {
+            "slug": "pages",
+            "label": "Wiki pages",
+            "labelSingular": "Wiki page",
+            "description": "Long-lived reference pages.",
+            "urlPattern": "/pages/{slug}",
+            "supports": ["drafts", "revisions", "preview", "search", "seo"],
+            "titleField": "title",
+            "fields": [
+                {
+                    "slug": "title",
+                    "label": "Title",
+                    "type": "string",
+                    "required": true,
+                    "searchable": true
+                },
+                {
+                    "slug": "summary",
+                    "label": "Summary",
+                    "type": "text"
+                },
+                {
+                    "slug": "content",
+                    "label": "Content",
+                    "type": "portableText",
+                    "searchable": true
+                }
+            ]
+        },
+        {
+            "slug": "media_slots",
+            "label": "Media slots",
+            "labelSingular": "Media slot",
+            "description": "Named image slots consumed by the website.",
+            "routable": false,
+            "titleField": "key",
+            "fields": [
+                {
+                    "slug": "key",
+                    "label": "Key",
+                    "type": "string",
+                    "required": true,
+                    "unique": true,
+                    "indexed": true
+                },
+                {
+                    "slug": "label",
+                    "label": "Label",
+                    "type": "string"
+                },
+                {
+                    "slug": "alt",
+                    "label": "Alt text",
+                    "type": "string"
+                },
+                {
+                    "slug": "kind",
+                    "label": "Kind",
+                    "type": "string"
+                },
+                {
+                    "slug": "image",
+                    "label": "Image",
+                    "type": "image"
+                }
+            ]
+        }
+    ]
+}

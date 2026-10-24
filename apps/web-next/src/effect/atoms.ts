@@ -1,9 +1,8 @@
-import { Effect } from "effect"
-import type { Atom } from "effect/unstable/reactivity"
-import { AtomRegistry, Hydration } from "effect/unstable/reactivity"
+import { Effect, Option } from "effect"
+import { Atom, AtomRegistry, Hydration } from "effect/reactivity"
+import * as AsyncResult from "effect/reactivity/AsyncResult"
 import { useAtomSuspense } from "@effect/atom-react"
 import { CorehallaClient } from "./client"
-import type * as AsyncResult from "effect/unstable/reactivity/AsyncResult"
 import type {
     Ladder,
     PowerRankingsGameMode,
@@ -13,6 +12,7 @@ import type {
     SortableLegendProp,
     SortablePlayerProp,
     SortableWeaponProp,
+    CmsMediaSlot,
 } from "@crh/api-contract/schemas"
 import type { Weapon as WeaponName } from "@crh/bhapi/constants"
 
@@ -159,6 +159,38 @@ export const newsArticleAtom = (slug: string) =>
         params: { slug },
         serializationKey: `news:article:${slug}`,
         timeToLive: ttl,
+    })
+
+/** CMS slots change rarely; a long TTL keeps them off the API hot path. */
+const cmsTtl = "1 hour"
+
+export const cmsMediaManifestAtom = () =>
+    CorehallaClient.query("cms", "getMediaManifest", {
+        serializationKey: "cms:media",
+        timeToLive: cmsTtl,
+    })
+
+export const mediaSlotsAtom: Atom.Atom<ReadonlyMap<string, CmsMediaSlot>> =
+    Atom.make((get) => {
+        const manifest = Option.getOrUndefined(
+            AsyncResult.value(get(cmsMediaManifestAtom())),
+        )
+
+        return new Map((manifest?.slots ?? []).map((slot) => [slot.key, slot]))
+    })
+
+export const cmsArticlesAtom = (page: number, pageSize: number) =>
+    CorehallaClient.query("cms", "getCmsArticles", {
+        query: { page, pageSize },
+        serializationKey: `cms:articles:${page}:${pageSize}`,
+        timeToLive: cmsTtl,
+    })
+
+export const cmsArticleAtom = (slug: string) =>
+    CorehallaClient.query("cms", "getCmsArticle", {
+        params: { slug },
+        serializationKey: `cms:article:${slug}`,
+        timeToLive: cmsTtl,
     })
 
 export type Registry = AtomRegistry.AtomRegistry

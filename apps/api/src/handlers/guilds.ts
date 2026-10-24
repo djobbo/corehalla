@@ -1,5 +1,5 @@
 import { Effect } from "effect"
-import { HttpApiBuilder, HttpApiError } from "effect/unstable/httpapi"
+import { HttpApiBuilder, HttpApiError } from "effect/http-api"
 import { CorehallaApi } from "@crh/api-contract/Api"
 import { Brawlhalla } from "@crh/core/services/upstream"
 import { Database, searchKey } from "@crh/core/services/archive"

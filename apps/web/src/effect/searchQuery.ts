@@ -1,4 +1,4 @@
-import { Atom } from "effect/unstable/reactivity"
+import { Atom } from "effect/reactivity"
 
 /** Queries shorter than this are not worth a request. */
 export const MIN_SEARCH_LENGTH = 3

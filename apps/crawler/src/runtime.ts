@@ -1,5 +1,5 @@
 import { Effect, Layer } from "effect"
-import { FetchHttpClient } from "effect/unstable/http"
+import { FetchHttpClient } from "effect/http"
 import { layer as sqlLayer } from "@crh/db/client"
 import { d1Database } from "@crh/core/env"
 import { layer as DatabaseLayer } from "@crh/core/services/archive"

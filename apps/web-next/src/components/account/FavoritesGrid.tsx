@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router"
 import { useAtomSet } from "@effect/atom-react"
 import { favoriteLegendKey, removeFavoriteAtom } from "@/effect/account"
 import { legendIconSrc } from "@/lib/assets"
+import { useLegendIcon } from "@/lib/media"
 import { clanHref, playerHref } from "@/lib/rankings"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -14,6 +15,14 @@ import { Heart } from "lucide-react"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { getEntitySlug } from "@crh/common/helpers/entitySlug"
 import type { Favorite } from "@crh/api-contract/schemas"
+
+const LegendAvatar = ({ nameKey }: { readonly nameKey: string }) => (
+    <img
+        src={useLegendIcon(nameKey, legendIconSrc(nameKey))}
+        alt=""
+        className="size-8 shrink-0 object-contain"
+    />
+)
 
 export const FavoritesGrid = ({
     favorites,
@@ -55,11 +64,7 @@ export const FavoritesGrid = ({
                     >
                         <CardContent className="flex items-center gap-3 p-3">
                             {legendKey ? (
-                                <img
-                                    src={legendIconSrc(legendKey)}
-                                    alt=""
-                                    className="size-8 shrink-0 object-contain"
-                                />
+                                <LegendAvatar nameKey={legendKey} />
                             ) : (
                                 <span
                                     aria-hidden

@@ -1,10 +1,6 @@
 import { Context, Data, Effect, Layer, Predicate } from "effect"
 import type { Schema } from "effect"
-import {
-    HttpClient,
-    HttpClientError,
-    HttpClientResponse,
-} from "effect/unstable/http"
+import { HttpClient, HttpClientError, HttpClientResponse } from "effect/http"
 import { retryTransient } from "@crh/core/services/retry"
 import { withUserAgent } from "@crh/core/services/upstream/user-agent"
 import * as S from "./schemas"

@@ -1,6 +1,6 @@
 import { and, eq, sql } from "@crh/db/query"
 import { Context, Effect, Layer, Option } from "effect"
-import { HttpClient } from "effect/unstable/http"
+import { HttpClient } from "effect/http"
 import { Database as SqlDatabase } from "@crh/db/client"
 import {
     userConnection,

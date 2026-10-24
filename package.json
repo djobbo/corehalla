@@ -6,7 +6,7 @@
     "author": "Djobbo Maïga <hi@djobbo.com>",
     "scripts": {
         "build": "vp run -r build",
-        "dev": "alchemy dev --env-file .env",
+        "dev": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/dev.mts",
         "db:generate": "vp run --filter @crh/db db:generate",
         "db:seed": "vp run --filter @crh/db db:seed",
         "db:seed:verify": "vp run --filter @crh/db db:seed:verify",
@@ -19,24 +19,28 @@
         "lint": "vp lint --fix",
         "ci:lint": "vp lint",
         "format": "vp fmt && vp run -r format",
-        "ci:install": "vp install --frozen-lockfile"
+        "ci:install": "vp install --frozen-lockfile",
+        "cms:seed": "vp run --filter @crh/cms seed",
+        "cms:seed:media": "vp run --filter @crh/cms seed:media"
     },
     "devDependencies": {
         "@types/node": "^24.0.0",
-        "alchemy": "2.0.0-beta.79",
-        "effect": "4.0.0-rc.117",
+        "@alchemy.run/cloudflare": "2.0.0-beta.84",
+        "alchemy": "2.0.0-beta.84",
+        "effect": "4.0.6",
         "typescript": "^7.0.2",
         "vite": "^8.0.14",
-        "vite-plus": "1.0.0"
+        "vite-plus": "1.4.0",
+        "@effect/platform-node": "4.0.6"
     },
     "devEngines": {
         "packageManager": {
             "name": "pnpm",
-            "version": "12.5.1"
+            "version": "12.15.0"
         },
         "runtime": {
             "name": "node",
-            "version": "24.21.0"
+            "version": "24.22.1"
         }
     }
 }

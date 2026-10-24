@@ -1,5 +1,7 @@
 import * as Alchemy from "alchemy"
-import * as Cloudflare from "alchemy/Cloudflare"
+import { adopt } from "alchemy/AdoptPolicy"
+import * as Output from "alchemy/Output"
+import * as Cloudflare from "@alchemy.run/cloudflare"
 import { ConfigError } from "effect/Config"
 import * as Config from "effect/Config"
 import * as ConfigProvider from "effect/ConfigProvider"
@@ -104,8 +106,47 @@ export default Alchemy.Stack(
         const isDev = yield* Alchemy.ALCHEMY_DEV
         const internalOrigin = isDev ? `http://localhost:${DEV_PORT}` : siteUrl
         const hostname = siteUrl.replace(/^https?:\/\//, "").replace(/\/+$/, "")
-        const nextHostname = `next.${hostname}`
         const uiHostname = `ui.${hostname}`
+
+        if (!isDev) {
+            // WAF is zone-scoped while the CMS is a subdomain. Adopt the
+            // existing zone instead of trying to create it.
+            const zone = yield* Cloudflare.Zone.Zone("CorehallaZone", {
+                name: yield* setting("CLOUDFLARE_ZONE", "corehalla.com"),
+            }).pipe(adopt(true))
+
+            // This owns the entire custom-firewall phase entrypoint. Any
+            // existing custom rules must be represented in `rules` here.
+            yield* Cloudflare.Ruleset.Ruleset("CmsApiSkipChallenge", {
+                zone,
+                phase: "http_request_firewall_custom",
+                name: "cms-api-skip-challenge",
+                description: "Skip edge challenges for CMS automation",
+                rules: [
+                    {
+                        description: "Skip WAF and bot checks for CMS APIs",
+                        expression: `http.host eq "cms.${hostname}" and (starts_with(lower(http.request.uri.path), "/_emdash/api/") or starts_with(lower(http.request.uri.path), "/api/public/"))`,
+                        action: "skip",
+                        actionParameters: {
+                            ruleset: "current",
+                            phases: [
+                                "http_request_firewall_managed",
+                                "http_request_sbfm",
+                            ],
+                            products: [
+                                "waf",
+                                "securityLevel",
+                                "bic",
+                                "hot",
+                                "uaBlock",
+                                "rateLimit",
+                                "zoneLockdown",
+                            ],
+                        },
+                    },
+                ],
+            })
+        }
 
         // Read replication stays off so session reads are not served stale.
         const dbResource = Cloudflare.D1.Database("CorehallaDb", {
@@ -113,13 +154,33 @@ export default Alchemy.Stack(
             migrations: "packages/db/drizzle",
             importFiles,
         })
+        // EmDash owns its core schema; it migrates D1 on first request.
+        const cmsDbResource = Cloudflare.D1.Database("CorehallaEmDashDb", {
+            name: "corehalla-emdash",
+        })
+        const cmsMediaResource = Cloudflare.R2.Bucket("CorehallaMedia", {
+            name: "corehalla-media",
+        })
+        const cmsResource = Cloudflare.Website.Astro("CorehallaCms", {
+            rootDir: `${import.meta.dirname}/apps/cms`,
+            name: "corehalla-cms",
+            domain: `cms.${hostname}`,
+            env: {
+                DB: cmsDbResource,
+                MEDIA: cmsMediaResource,
+                IMAGES: Cloudflare.Images.Images("IMAGES"),
+                // Explicit canonical origin: behind a proxy the request
+                // origin can be the internal http:// Worker URL.
+                EMDASH_SITE_URL: `https://cms.${hostname}`,
+            },
+        })
+        const cms = isDev ? undefined : yield* cmsResource
+        const cmsDevUrl = "http://localhost:3002"
+
         const apiResource = Cloudflare.Worker("CorehallaApi", {
             name: "corehalla-api",
             main: "apps/api/src/index.ts",
-            routes: [
-                { pattern: `${hostname}/api/v1/*` },
-                { pattern: `${nextHostname}/api/v1/*` },
-            ],
+            routes: [{ pattern: `${hostname}/api/v1/*` }],
             compatibility: {
                 flags: ["enable_request_signal"],
             },
@@ -133,6 +194,18 @@ export default Alchemy.Stack(
                     simple: { limit: 30, period: 10 },
                 }),
                 SITE_URL: setting("SITE_URL", "https://corehalla.com"),
+                ...(cms === undefined
+                    ? {
+                          CMS_DEV_URL: cmsDevUrl,
+                          CMS_PUBLIC_URL: cmsDevUrl,
+                      }
+                    : {
+                          CMS: cmsResource,
+                          CMS_PUBLIC_URL: Output.map(
+                              cms.url,
+                              (url) => url ?? `https://cms.${hostname}`,
+                          ),
+                      }),
                 DISCORD_CLIENT_ID: setting("DISCORD_CLIENT_ID"),
                 DISCORD_CLIENT_SECRET: secret("DISCORD_CLIENT_SECRET"),
             },
@@ -153,23 +226,30 @@ export default Alchemy.Stack(
                 SITE_URL: setting("SITE_URL", "https://corehalla.com"),
             },
         })
-        const websiteResource = Cloudflare.Website.Vite("CorehallaWeb", {
-            rootDir: "./apps/web",
+        const db = yield* dbResource
+        const api = yield* apiResource
+        const crawler = yield* crawlerResource
+        const crawlQueue = yield* CorehallaCrawlQueue
+        const sampleQueue = yield* CorehallaSampleQueue
+
+        // web-next is now the main web app. It keeps its own worker name so
+        // the old `corehalla-web` worker is removed in the same apply.
+        const website = yield* Cloudflare.Website.Vite("CorehallaWebNext", {
+            rootDir: "./apps/web-next",
             dev: { port: DEV_PORT },
             compatibility: {
-                // `nodejs_compat` is Alchemy's default; this only adds the request signal.
                 flags: ["enable_request_signal"],
             },
-            name: "corehalla-web",
+            name: "corehalla-web-next",
             domain: hostname,
             env: {
+                API: apiResource,
                 DB: dbResource,
                 SITE_URL: setting("SITE_URL", "https://corehalla.com"),
                 VITE_SITE_URL: siteUrl,
                 INTERNAL_ORIGIN: internalOrigin,
                 DISCORD_CLIENT_ID: setting("DISCORD_CLIENT_ID"),
                 DISCORD_CLIENT_SECRET: secret("DISCORD_CLIENT_SECRET"),
-                API: apiResource,
                 VITE_ADSENSE_SLOT_PROFILE_HEADER: setting(
                     "VITE_ADSENSE_SLOT_PROFILE_HEADER",
                 ),
@@ -183,23 +263,6 @@ export default Alchemy.Stack(
                     "VITE_ADSENSE_SLOT_RANKINGS",
                 ),
                 VITE_ADSENSE_SLOT_LANDING: setting("VITE_ADSENSE_SLOT_LANDING"),
-            },
-        })
-
-        const website = yield* websiteResource
-        const db = yield* dbResource
-        const api = yield* apiResource
-        const crawler = yield* crawlerResource
-        const crawlQueue = yield* CorehallaCrawlQueue
-        const sampleQueue = yield* CorehallaSampleQueue
-
-        // Service binding, not a baked origin: `alchemy dev` reassigns the API port.
-        const websiteNext = yield* Cloudflare.Website.Vite("CorehallaWebNext", {
-            rootDir: "./apps/web-next",
-            name: "corehalla-web-next",
-            domain: nextHostname,
-            env: {
-                API: apiResource,
             },
         })
 
@@ -249,7 +312,7 @@ export default Alchemy.Stack(
 
         return {
             url: website.url,
-            nextUrl: websiteNext.url,
+            cmsUrl: cms === undefined ? cmsDevUrl : cms.url,
             storybookUrl: storybook.url,
             apiUrl: api.url,
             crawlerUrl: crawler.url,

@@ -1,6 +1,6 @@
 import { Layer } from "effect"
-import { AtomHttpApi } from "effect/unstable/reactivity"
-import { FetchHttpClient, HttpClient } from "effect/unstable/http"
+import { AtomHttpApi } from "effect/reactivity"
+import { FetchHttpClient, HttpClient } from "effect/http"
 import { CorehallaApi } from "@crh/api-contract/Api"
 import { withRetry } from "./retry"
 

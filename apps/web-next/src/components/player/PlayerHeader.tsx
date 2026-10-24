@@ -5,6 +5,7 @@ import { StatGrid } from "@/components/common/StatGrid"
 import { UpdatedAt } from "@/components/common/UpdatedAt"
 import { playerProfileAtom, useQuery } from "@/effect/atoms"
 import { legendIconSrc, regionFlagSrc, weaponIconSrc } from "@/lib/assets"
+import { mediaSlotKey, useMediaSlot } from "@/lib/media"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatTime } from "@crh/common/helpers/date"
 import { EntityLink } from "@/components/common/EntityLink"
@@ -21,18 +22,22 @@ type Thumb = {
     readonly key: string
     readonly src: string
     readonly alt: string
+    readonly slotKey?: string
 }
+
+const ThumbImage = ({ item }: { readonly item: Thumb }) => (
+    <img
+        src={useMediaSlot(item.slotKey ?? "", item.src)}
+        alt={item.alt}
+        title={item.alt}
+        className={cn("ch-thumb", "bg-primary")}
+    />
+)
 
 const ThumbRow = ({ items }: { readonly items: readonly Thumb[] }) => (
     <span className="flex items-center gap-0.5">
         {items.map((item) => (
-            <img
-                key={item.key}
-                src={item.src}
-                alt={item.alt}
-                title={item.alt}
-                className={cn("ch-thumb", "bg-primary")}
-            />
+            <ThumbImage key={item.key} item={item} />
         ))}
     </span>
 )
@@ -193,6 +198,10 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
                                                 src: legendIconSrc(
                                                     legend.name_key,
                                                 ),
+                                                slotKey: mediaSlotKey(
+                                                    "legend.icon",
+                                                    legend.name_key,
+                                                ),
                                                 alt: legend.name,
                                             }))}
                                         />
@@ -208,6 +217,10 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
                                             items={topWeapons.map((weapon) => ({
                                                 key: weapon.name,
                                                 src: weaponIconSrc(weapon.name),
+                                                slotKey: mediaSlotKey(
+                                                    "weapon.icon",
+                                                    weapon.name,
+                                                ),
                                                 alt: weapon.name,
                                             }))}
                                         />

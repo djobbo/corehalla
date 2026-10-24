@@ -4,7 +4,7 @@ import {
     HttpApiError,
     HttpApiGroup,
     HttpApiSchema,
-} from "effect/unstable/httpapi"
+} from "effect/http-api"
 import { Schema } from "effect"
 import {
     AliasSearchResultsSchema,
@@ -13,6 +13,9 @@ import {
     CareerRankingsSchema,
     ClanSchema,
     ClansSchema,
+    CmsArticleSchema,
+    CmsArticlesPageSchema,
+    CmsMediaManifestSchema,
     ConnectionSchema,
     FavoriteInputSchema,
     FavoriteSchema,
@@ -226,6 +229,30 @@ const content = HttpApiGroup.make("content")
         }),
     )
 
+const cms = HttpApiGroup.make("cms")
+    .add(
+        HttpApiEndpoint.get("getMediaManifest", "/api/v1/cms/media", {
+            success: CmsMediaManifestSchema,
+        }),
+    )
+    .add(
+        HttpApiEndpoint.get("getCmsArticles", "/api/v1/cms/articles", {
+            query: {
+                page: Schema.optionalKey(Schema.FiniteFromString),
+                pageSize: Schema.optionalKey(Schema.FiniteFromString),
+                category: Schema.optionalKey(Schema.String),
+            },
+            success: CmsArticlesPageSchema,
+        }),
+    )
+    .add(
+        HttpApiEndpoint.get("getCmsArticle", "/api/v1/cms/articles/:slug", {
+            params: { slug: Schema.String },
+            success: CmsArticleSchema,
+            error: HttpApiError.NotFound,
+        }),
+    )
+
 const me = HttpApiGroup.make("me")
     .add(
         HttpApiEndpoint.get("getSession", "/api/v1/me/session", {
@@ -361,6 +388,7 @@ export const CorehallaApi = HttpApi.make("CorehallaApi")
     .add(rankings)
     .add(search)
     .add(content)
+    .add(cms)
     .add(me)
     .add(auth)
     .add(upstream)

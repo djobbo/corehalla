@@ -24,9 +24,9 @@ type FooterProps = {
     className?: string
 }
 
-export const Footer = ({ className }: FooterProps) => {
-    const currentYear = new Date().getFullYear()
+const currentYear = new Date().getFullYear()
 
+export const Footer = ({ className }: FooterProps) => {
     return (
         <footer className={className}>
             <p className="text-center text-xs border-t border-bg py-8">

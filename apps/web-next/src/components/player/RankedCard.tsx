@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { SplitProgress } from "@/components/common/SplitProgress"
 import { StatGrid } from "@/components/common/StatGrid"
-import { rankedBannerSrc, regionFlagSrc } from "@/lib/assets"
+import { regionFlagSrc } from "@/lib/assets"
+import { useRankedBanner } from "@/lib/media"
 import { tierColor } from "@/lib/rankings"
 import { percent } from "@/lib/stats"
 import type { Stat } from "@/components/common/StatGrid"
@@ -31,15 +32,11 @@ export const RankedCard = ({
     const losses = games - wins
 
     const tierLabel = tier ?? "Valhallan"
+    const banner = useRankedBanner(tierLabel)
 
     return (
         <Card className="relative z-0 overflow-visible">
-            <img
-                src={rankedBannerSrc(tierLabel)}
-                alt=""
-                aria-hidden
-                className="ch-card-banner"
-            />
+            <img src={banner} alt="" aria-hidden className="ch-card-banner" />
             <CardHeader>
                 <CardTitle className="sr-only">{title}</CardTitle>
                 <div className="flex flex-wrap items-center gap-2 pr-12">

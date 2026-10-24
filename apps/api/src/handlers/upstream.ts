@@ -1,5 +1,5 @@
 import { Effect } from "effect"
-import { HttpApiBuilder } from "effect/unstable/httpapi"
+import { HttpApiBuilder } from "effect/http-api"
 import { getTeamPlayers } from "@crh/bhapi/helpers/getTeamPlayers"
 import { CorehallaApi } from "@crh/api-contract/Api"
 import { Brawlhalla } from "@crh/core/services/upstream"

@@ -1,58 +1,14 @@
-import { downloadImage } from "./downloadImage"
-import { existsSync, mkdirSync, rmdirSync } from "fs"
-import { legends } from "@crh/bhapi/legends"
-import { load } from "cheerio"
-import { logInfo } from "@crh/logger"
-import axios from "axios"
+import * as NodeFileSystem from "@effect/platform-node/NodeFileSystem"
+import * as NodeRuntime from "@effect/platform-node/NodeRuntime"
+import { Effect } from "effect"
+import * as Path from "effect/Path"
+import { FetchHttpClient } from "effect/http"
+import { downloadImages } from "./roster"
 
-const APP_DIR = "../../web"
-const PUBLIC_DIR = `${APP_DIR}/public`
-const LEGENDS_URL = "https://www.brawlhalla.com/legends/"
-const OUT_DIR = `${PUBLIC_DIR}/images/icons/roster`
-
-export const downloadImages = async () => {
-    if (existsSync(OUT_DIR)) rmdirSync(OUT_DIR, { recursive: true })
-    mkdirSync(OUT_DIR)
-    mkdirSync(`${OUT_DIR}/legends`)
-    mkdirSync(`${OUT_DIR}/crossovers`)
-
-    const { data: text } = await axios.get(LEGENDS_URL)
-
-    const $ = load(text)
-
-    const imgs = $(".legend-icon")
-        .map((_, el) => {
-            const img = $(el).find("img")
-
-            return {
-                name: img?.attr("alt") ?? "",
-                src: img?.attr("src") ?? "",
-            }
-        })
-        .get()
-        .filter(({ name, src }) => (console.log({ name, src }), name && src))
-
-    imgs.forEach((img) => {
-        if (!img.src || !img.name) return
-
-        // TODO: readd crossovers
-        const isLegend = true
-        const prefix = isLegend ? "legend" : "crossover"
-
-        logInfo(`Downloading: ${prefix} => ${img.name}`)
-
-        downloadImage(
-            img.src,
-            `${OUT_DIR}/${prefix}s/${
-                isLegend
-                    ? (legends.find((l) => l.bio_name === img.name)
-                          ?.legend_name_key ?? img.name)
-                    : img.name
-            }.png`,
-        )
-    })
-
-    logInfo("Downloaded roster images!")
-}
-
-downloadImages()
+NodeRuntime.runMain(
+    downloadImages().pipe(
+        Effect.provide(FetchHttpClient.layer),
+        Effect.provide(NodeFileSystem.layer),
+        Effect.provide(Path.layer),
+    ),
+)

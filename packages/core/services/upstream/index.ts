@@ -1,5 +1,5 @@
 import { Context, Effect, Layer } from "effect"
-import { HttpClient } from "effect/unstable/http"
+import { HttpClient } from "effect/http"
 import { Database } from "../archive"
 import { Background } from "../background"
 import { Cache } from "../cache"

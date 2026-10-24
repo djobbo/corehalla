@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react"
+import { useMediaSlot } from "@/lib/media"
 import { bubbleWinrate } from "@/lib/bubbles"
 import { VIEW, packBubbles } from "@/lib/packBubbles"
 import type { BubbleNode } from "@/lib/bubbles"
@@ -22,6 +23,7 @@ const BubbleArt = ({
     readonly clip: string
 }) => {
     const [failed, setFailed] = useState(false)
+    const icon = useMediaSlot(bubble.slotKey ?? "", bubble.icon)
 
     if (failed || radius < IMAGE_RADIUS) {
         return (
@@ -43,7 +45,7 @@ const BubbleArt = ({
         // The roster art is square (250–267px), so an SVG image with `slice`
         // crops it to the circle on its own.
         <image
-            href={bubble.icon}
+            href={icon}
             x={x - radius}
             y={y - radius}
             width={radius * 2}

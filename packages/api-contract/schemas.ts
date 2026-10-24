@@ -271,3 +271,70 @@ export const ConnectionSchema = Schema.Struct({
 })
 
 export type Connection = typeof ConnectionSchema.Type
+
+// --- CMS (Payload) ---------------------------------------------------------
+
+export const CmsImageSchema = Schema.Struct({
+    url: Schema.String,
+    alt: Schema.String,
+    width: Schema.NullOr(Schema.Number),
+    height: Schema.NullOr(Schema.Number),
+    mimeType: Schema.NullOr(Schema.String),
+    srcSet: Schema.optionalKey(Schema.String),
+})
+
+export type CmsImage = typeof CmsImageSchema.Type
+
+export const CmsMediaSlotSchema = Schema.Struct({
+    key: Schema.String,
+    alt: Schema.String,
+    image: Schema.NullOr(CmsImageSchema),
+})
+
+export type CmsMediaSlot = typeof CmsMediaSlotSchema.Type
+
+export const CmsMediaManifestSchema = Schema.Struct({
+    slots: Schema.Array(CmsMediaSlotSchema),
+})
+
+export type CmsMediaManifest = typeof CmsMediaManifestSchema.Type
+
+export const CmsCategorySchema = Schema.Struct({
+    name: Schema.String,
+    slug: Schema.String,
+})
+
+export type CmsCategory = typeof CmsCategorySchema.Type
+
+export const CmsAuthorSchema = Schema.Struct({
+    name: Schema.String,
+    slug: Schema.String,
+    avatar: Schema.NullOr(CmsImageSchema),
+})
+
+export type CmsAuthor = typeof CmsAuthorSchema.Type
+
+export const CmsArticleSchema = Schema.Struct({
+    id: Schema.String,
+    slug: Schema.String,
+    title: Schema.String,
+    excerpt: Schema.String,
+    heroImage: Schema.NullOr(CmsImageSchema),
+    content: Schema.Array(Schema.Unknown),
+    publishedAt: Schema.String,
+    featured: Schema.Boolean,
+    category: Schema.NullOr(CmsCategorySchema),
+    author: Schema.NullOr(CmsAuthorSchema),
+    tags: Schema.Array(Schema.String),
+})
+
+export type CmsArticle = typeof CmsArticleSchema.Type
+
+export const CmsArticlesPageSchema = Schema.Struct({
+    articles: Schema.Array(CmsArticleSchema),
+    page: Schema.Number,
+    totalPages: Schema.Number,
+    hasNextPage: Schema.Boolean,
+})
+
+export type CmsArticlesPage = typeof CmsArticlesPageSchema.Type

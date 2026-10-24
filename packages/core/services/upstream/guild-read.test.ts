@@ -1,7 +1,7 @@
 import { describe, expect, it } from "@effect/vitest"
 import { Effect, Layer } from "effect"
 import type { Context } from "effect"
-import { HttpClient, HttpClientResponse } from "effect/unstable/http"
+import { HttpClient, HttpClientResponse } from "effect/http"
 import { Database } from "../archive"
 import { Upstream, rawLayer } from "./index"
 

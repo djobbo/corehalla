@@ -245,7 +245,7 @@ into D1-ready SQL, and `pnpm db:seed:verify` checks either result offline agains
   local URL, the local D1 simulator under `.alchemy/local/d1` at the repo root,
   and migrations applied — so it is the only mode where DB-backed routes work.
   Local imports come from the D1 resource's `importFiles`; `wrangler d1 execute
---local` cannot see this simulator because it has its own Miniflare store.
+  --local` cannot see this simulator because it has its own Miniflare store.
   State uses `Cloudflare.state()`, which needs Cloudflare credentials.
 - `pnpm --filter web dev` is plain Vite on `:3000` with no bindings: `env.DB` is
   undefined and DB-backed routes throw. Use it for UI-only work.

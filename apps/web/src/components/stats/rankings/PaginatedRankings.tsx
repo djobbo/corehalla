@@ -4,8 +4,8 @@ import { cn } from "@crh/common/helpers/classnames"
 import { useAtomValue } from "@effect/atom-react"
 import { HiChevronLeft } from "@react-icons/all-files/hi/HiChevronLeft"
 import { HiChevronRight } from "@react-icons/all-files/hi/HiChevronRight"
-import type { Atom } from "effect/unstable/reactivity"
-import * as AsyncResult from "effect/unstable/reactivity/AsyncResult"
+import type { Atom } from "effect/reactivity"
+import * as AsyncResult from "effect/reactivity/AsyncResult"
 import type { ReactNode } from "react"
 
 const EMPTY_ROWS: readonly never[] = []

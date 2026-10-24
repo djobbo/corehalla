@@ -1,6 +1,6 @@
 import { Effect, Layer, Schema } from "effect"
-import { Atom } from "effect/unstable/reactivity"
-import { KeyValueStore } from "effect/unstable/persistence"
+import { Atom } from "effect/reactivity"
+import { KeyValueStore } from "effect/persistence"
 
 const RecentEntry = Schema.Struct({
     type: Schema.Literals(["player", "clan"]),

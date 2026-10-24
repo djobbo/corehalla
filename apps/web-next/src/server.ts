@@ -9,7 +9,7 @@ import {
     HttpClientError,
     HttpClientRequest,
     HttpClientResponse,
-} from "effect/unstable/http"
+} from "effect/http"
 import { apiBinding } from "@/env"
 import { useServerHttpClient } from "@/effect/client"
 

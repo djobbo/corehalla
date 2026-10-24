@@ -1,5 +1,5 @@
-import { Atom } from "effect/unstable/reactivity"
-import * as AsyncResult from "effect/unstable/reactivity/AsyncResult"
+import { Atom } from "effect/reactivity"
+import * as AsyncResult from "effect/reactivity/AsyncResult"
 import { useAtomSet, useAtomValue } from "@effect/atom-react"
 import { useNavigate } from "@tanstack/react-router"
 import {
@@ -261,6 +261,8 @@ const SearchOverlay = () => {
         >
             <Command shouldFilter={false} loop>
                 <CommandInput
+                    // Opening the palette is an explicit user action.
+                    // eslint-disable-next-line jsx-a11y/no-autofocus
                     autoFocus
                     value={query}
                     onValueChange={setQuery}

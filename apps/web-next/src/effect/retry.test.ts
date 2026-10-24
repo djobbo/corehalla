@@ -1,5 +1,5 @@
 import { Duration, Effect, Exit, Fiber, Schedule } from "effect"
-import { HttpClient, HttpClientError } from "effect/unstable/http"
+import { HttpClient, HttpClientError } from "effect/http"
 import { TestClock } from "effect/testing"
 import { describe, expect, it } from "vite-plus/test"
 import { retrySchedule, withRetry } from "./retry"

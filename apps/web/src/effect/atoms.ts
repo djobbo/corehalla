@@ -1,9 +1,9 @@
 import { Effect } from "effect"
-import type { Atom } from "effect/unstable/reactivity"
-import { AtomRegistry, Hydration } from "effect/unstable/reactivity"
+import type { Atom } from "effect/reactivity"
+import { AtomRegistry, Hydration } from "effect/reactivity"
 import { useAtomSuspense } from "@effect/atom-react"
 import { CorehallaClient } from "./Client"
-import type * as AsyncResult from "effect/unstable/reactivity/AsyncResult"
+import type * as AsyncResult from "effect/reactivity/AsyncResult"
 import type {
     NewsCategory,
     RankedRegion,

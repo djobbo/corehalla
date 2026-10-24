@@ -1,13 +1,13 @@
 import { describe, expect, it } from "@effect/vitest"
 import { Effect, Layer, Schema } from "effect"
-import { HttpRouter, HttpServer } from "effect/unstable/http"
+import { HttpRouter, HttpServer } from "effect/http"
 import {
     HttpApi,
     HttpApiBuilder,
     HttpApiEndpoint,
     HttpApiGroup,
     HttpApiScalar,
-} from "effect/unstable/httpapi"
+} from "effect/http-api"
 
 // API + Scalar must be merged (not nested) or `/api/v1/docs` 404s.
 const Ping = HttpApiGroup.make("ping").add(

@@ -1,6 +1,6 @@
 {
     // Type-checks `alchemy.run.ts` only. Each package checks its own sources.
-    "include": ["alchemy.run.ts"],
+    "include": ["alchemy.run.ts", "scripts"],
     "exclude": ["node_modules"],
     "compilerOptions": {
         "strict": true,

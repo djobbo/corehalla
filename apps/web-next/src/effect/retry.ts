@@ -1,5 +1,5 @@
 import { Duration, Effect, Predicate, Schedule } from "effect"
-import { HttpClient, HttpClientError } from "effect/unstable/http"
+import { HttpClient, HttpClientError } from "effect/http"
 
 const BASE_MS = 200
 const RETRIES = 2
