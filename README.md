@@ -375,7 +375,11 @@ and a `CLOUDFLARE_API_TOKEN` with **D1: Edit** (wrangler also accepts
 The workspace is built and checked with [Vite+](https://viteplus.dev), which
 replaces the previous Turborepo + ESLint + Prettier setup with a single
 toolchain: Vite Task (`vp run`) for tasks, Oxlint for linting and Oxfmt for
-formatting. All configuration lives in the root `vite.config.ts`.
+formatting. All configuration lives in the root `vite.config.ts`. Type checking
+uses [tsrs](https://github.com/oxc-project/tsrs). Effect rules use
+[@yielded/effect-tsrs](https://github.com/yielded-dev/effect-tsrs) in every
+package. The editor language server is tsrs: `typescript.tsdk` points at
+`tools/tsrs-tsdk`, which launches `tsgo`.
 
 ```sh
 pnpm ci:install    # vp install --frozen-lockfile
@@ -383,17 +387,16 @@ pnpm dev           # vp run -r --parallel dev (all packages)
 pnpm build         # vp run -r build
 pnpm check         # vp check — format + lint the whole workspace
 pnpm lint          # vp lint --fix
-pnpm ts:check      # vp run -r ts:check (per-package, incl. @effect/tsgo)
+pnpm ts:check      # tsrs --noEmit && effect-tsrs diagnostics, per package
 pnpm ci:lint       # vp lint (no fixes; used in CI)
 ```
 
 ### Notes and follow-ups
 
 - **Type-aware linting is off.** Vite+ recommends `typeAware: true` +
-  `typeCheck: true`, but tsgolint (TypeScript 7) still rejects the legacy
-  `worker` tsconfig (`es5`, `downlevelIteration`, `baseUrl`-relative `paths`),
-  and `web` must be checked by the Effect-patched compiler. Types are checked per
-  package by `pnpm ts:check`.
+  `typeCheck: true`. Types and Effect rules are checked per package by
+  `pnpm ts:check` (`tsrs` plus `@yielded/effect-tsrs`), so Oxlint does not
+  type-check the same projects again.
 - **Lint warnings** are demoted so the migration lands green; fix them and the
   rules can become errors.
 - **`worker` is React 18** (`react-reconciler` / `reaccord`); its tsconfig pins

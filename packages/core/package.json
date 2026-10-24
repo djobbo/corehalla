@@ -4,7 +4,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "ts:check": "tsc --noEmit"
+        "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json"
     },
     "devDependencies": {
         "@effect/vitest": "4.0.6",

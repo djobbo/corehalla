@@ -1,5 +1,16 @@
 {
     "extends": "@crh/tsconfig/nextjs.json",
     "include": ["."],
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules"],
+    "compilerOptions": {
+        "plugins": [
+            {
+                "name": "@effect/language-service",
+                "diagnostics": true,
+                "allowedUnstableApis": ["effect/http-api"],
+                "includeSuggestionsInTsc": false,
+                "ignoreEffectWarningsInTscExitCode": true
+            }
+        ]
+    }
 }

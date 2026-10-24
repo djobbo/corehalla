@@ -1,7 +1,12 @@
 import type { APIRoute } from "astro"
 import { Effect } from "effect"
 import { getEmDashCollection } from "emdash"
-import { articleOf, json, pageParam } from "../../../lib/public-api"
+import {
+    articleOf,
+    CmsUnavailable,
+    json,
+    pageParam,
+} from "../../../lib/public-api"
 
 export const prerender = false
 
@@ -24,7 +29,7 @@ const load = Effect.fn("cms.articles.GET")(
                     offset: (page - 1) * pageSize,
                     orderBy: { published_at: "desc" },
                 }),
-            catch: (cause) => new Error(String(cause)),
+            catch: (cause) => new CmsUnavailable({ cause }),
         })
 
         if (error) {

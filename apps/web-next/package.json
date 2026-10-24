@@ -9,7 +9,7 @@
         "build": "vp build",
         "preview": "vp preview",
         "test": "vp test",
-        "ts:check": "tsc --noEmit",
+        "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json",
         "storybook": "storybook dev --port 6006",
         "build-storybook": "storybook build --output-dir storybook-static"
     },

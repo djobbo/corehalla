@@ -181,12 +181,18 @@ importers:
       '@types/node':
         specifier: ^24.0.0
         version: 24.13.6
+      '@yielded/effect-tsrs':
+        specifier: 0.2.0
+        version: 0.2.0
       alchemy:
         specifier: 2.0.0-beta.84
         version: 2.0.0-beta.84(@effect/platform-node@4.0.6(effect@4.0.6)(redis@6.2.1))(@effect/vitest@4.0.6(effect@4.0.6)(vitest@5.0.5))(@types/react@19.0.14)(@voidzero-dev/vite-plus-core@1.4.0(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.77.4)(terser@5.51.2)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.6)(ws@8.21.3)
       effect:
         specifier: 4.0.6
         version: 4.0.6
+      tsrs:
+        specifier: 0.18.0-ts7.1.0-dev.20260929
+        version: 0.18.0-ts7.1.0-dev.20260929
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
@@ -395,9 +401,6 @@ importers:
         specifier: ^3.25.76
         version: 3.25.76
     devDependencies:
-      '@effect/tsgo':
-        specifier: 0.56.1
-        version: 0.56.1
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(@voidzero-dev/vite-plus-core@1.4.0(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.77.4)(terser@5.51.2)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))
@@ -687,8 +690,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6(effect@4.0.6)
       drizzle-orm:
-        specifier: 1.0.0-rc.5-5935859
-        version: 1.0.0-rc.5-5935859(@cloudflare/workers-types@5.20261023.1)(@effect/sql-d1@4.0.6(effect@4.0.6))(@effect/sql-sqlite-do@4.0.0-rc.117(effect@4.0.6))(@electric-sql/pglite@0.3.15)(@libsql/client@0.17.4)(@types/pg@8.23.1)(effect@4.0.6)(pg@8.23.0)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.5)
+        specifier: 1.0.0-rc.5
+        version: 1.0.0-rc.5(@cloudflare/workers-types@5.20261023.1)(@effect/sql-d1@4.0.6(effect@4.0.6))(@electric-sql/pglite@0.3.15)(@libsql/client@0.17.4)(@types/pg@8.23.1)(effect@4.0.6)(pg@8.23.0)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.5)
       effect:
         specifier: 4.0.6
         version: 4.0.6
@@ -700,8 +703,8 @@ importers:
         specifier: ^8.23.1
         version: 8.23.1
       drizzle-kit:
-        specifier: 1.0.0-rc.5-5935859
-        version: 1.0.0-rc.5-5935859
+        specifier: 1.0.0-rc.5
+        version: 1.0.0-rc.5(drizzle-orm@1.0.0-rc.5(@cloudflare/workers-types@5.20261023.1)(@effect/sql-d1@4.0.6(effect@4.0.6))(@electric-sql/pglite@0.3.15)(@libsql/client@0.17.4)(@types/pg@8.23.1)(effect@4.0.6)(pg@8.23.0)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.5))
       pg:
         specifier: ^8.23.0
         version: 8.23.0
@@ -1602,9 +1605,6 @@ packages:
   '@dotenvx/primitives@0.8.0':
     resolution: {integrity: sha512-VYJy0uhFm9zTJ1TxBaW/pA8bjbOM/OttaNMwZ1RHG4JKyRG7DhSdiqD1ipQoAyoD22olUtxbP78W9xY3Wd11bg==}
 
-  '@drizzle-team/brocli@0.12.1':
-    resolution: {integrity: sha512-yHwomvolVafvUXhy5TdiJVkuNCxXn+bKOs2aWiWEQh/5YaV97Oa/abJz3dmx7lxgIUsUlS1Jl4mEfvJPo3YsVw==}
-
   '@effect/atom-react@4.0.6':
     resolution: {integrity: sha512-DpbuEdaJl+2/GW4KkrKtRD8YVPT+I29bh/TFE7JCGkB4YNiHWNE5q69EagDeK/QXi4RlSb+iR+rNGkORJ9qB/A==}
     peerDependencies:
@@ -1629,50 +1629,6 @@ packages:
     resolution: {integrity: sha512-W149Svo5pR+7eoKtTmMX3aFCJKQmvMdypKhMlFekKvy2UjY6h5Af8d+9YeBeOXkYtDQjxNs4l6iv7EqbF6XBbg==}
     peerDependencies:
       effect: ^4.0.6
-
-  '@effect/sql-sqlite-do@4.0.0-rc.117':
-    resolution: {integrity: sha512-24oeFQSnqUD77+lCmTEGGMtv2lF1sxaXkJ4/6iPW1JdIhx0ksc2G/w2DxYW+DReVSiSJjE9KUnWV9SJ3s6OmGA==}
-    peerDependencies:
-      effect: ^4.0.0-rc.117
-
-  '@effect/tsgo-darwin-arm64@0.56.1':
-    resolution: {integrity: sha512-u+bBq71VkQ7P6jpfvxXWE8Cc8/cx4d8uKGTqfjSMrHeZq1AvZiap1s9SB5DlfhEo7F+UkHe0bqgt1IGMS2mg5w==}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@effect/tsgo-darwin-x64@0.56.1':
-    resolution: {integrity: sha512-8SvtdT+GnoVoA35dl3tqNuherO1ONFHaOrHtjYSr8+A56Doc2OGNs8vmoZly/MqmLsv6LdSwn4Z2z8cRsOfoVw==}
-    cpu: [x64]
-    os: [darwin]
-
-  '@effect/tsgo-linux-arm64@0.56.1':
-    resolution: {integrity: sha512-8mZmBqArSJddSMWjfB7NMRQhn8wsVOlNKL6pHedYFqMIJpb0PQ+dvhtNraNpcRTEKW5qA8fTz/PVGNOB+I8ceg==}
-    cpu: [arm64]
-    os: [linux]
-
-  '@effect/tsgo-linux-arm@0.56.1':
-    resolution: {integrity: sha512-VZ7i6AjJ5WcchsJRn2e8XNp/7y8mqNgOLqsLEToce8yBXEtIdtWX+3czVtSXRc1njpQ7x3kiAQ8aNGl/vhu9OQ==}
-    cpu: [arm]
-    os: [linux]
-
-  '@effect/tsgo-linux-x64@0.56.1':
-    resolution: {integrity: sha512-ialBMBFPswE73wnbIDf+1JippkVp8iX3hJnaITm8hD+brAOUq2r+zZNN1DqWUT+sUEVKh4+eOquOfmt9ujGWmg==}
-    cpu: [x64]
-    os: [linux]
-
-  '@effect/tsgo-win32-arm64@0.56.1':
-    resolution: {integrity: sha512-MJRQf72vVutBccPMlukukWT6xGpWDWtyFQExwEzxZRwmWXtYOqWw1/ApbwMK+TO5+RedAkwIMXvBKF7BgpsA/A==}
-    cpu: [arm64]
-    os: [win32]
-
-  '@effect/tsgo-win32-x64@0.56.1':
-    resolution: {integrity: sha512-gZU0cnO08PMIYVZOhBZtuq1egCHem2lF6pUCqierqNf+niDxowtDpQevHDKOU1OTeeqk8h2VnwIKUNkRX45Nqw==}
-    cpu: [x64]
-    os: [win32]
-
-  '@effect/tsgo@0.56.1':
-    resolution: {integrity: sha512-T5dDXNbR3yMkqxopv4KIaEhkv1EQ5jlwJdpzjNBEfCKxH1WanVoBhwU2M0fq+u17ATYWdzMt3vXV896Rz348jA==}
-    hasBin: true
 
   '@effect/vitest@4.0.6':
     resolution: {integrity: sha512-oKNbtyUHK5+0o730CXwojULEu7f3+c235pYFD4U5T//o+hHrJbYbZU4bRkcv936tPr5IOnmujeyQiC/LuJJjHw==}
@@ -2380,10 +2336,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
-
-  '@js-temporal/polyfill@0.5.1':
-    resolution: {integrity: sha512-hloP58zRVCRSpgDxmqCWJNlizAlUgJFqG2ypq79DCvyv9tHjRYMDOcPFjzfl/A1/YxDvRCZz8wvZvmapQnKwFQ==}
-    engines: {node: '>=12'}
 
   '@lezer/common@1.5.4':
     resolution: {integrity: sha512-xt3Q4z64xM+xhg4M7NXqw1N//1O74bUFo5kz6fwMeC4qwxSuRdwkYSmjcqCEEKYkNw5e67f2hcNqBoNERAEU0w==}
@@ -4451,6 +4403,40 @@ packages:
   '@tsconfig/node16@1.0.4':
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
 
+  '@tsrs/darwin-arm64@0.18.0-ts7.1.0-dev.20260929':
+    resolution: {integrity: sha512-sAirMpaGA9uRQm2W+t4zC7PjnijNuFa4PCSIfLKKo0JyAUCRfnMeev0UGBQ9F3g+9Nz187tvikUs5Irh5+eajA==}
+    engines: {node: '>=16.20.0'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@tsrs/linux-arm64-gnu@0.18.0-ts7.1.0-dev.20260929':
+    resolution: {integrity: sha512-zm9/z9yylig68JiZF4Aq0Cm26n09KEU8YoQRlG7tdDWTBNAIViYw8knxnWYsjMWVZ2XiU4mYq1xdrOKuOgABHg==}
+    engines: {node: '>=16.20.0'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@tsrs/linux-arm64-musl@0.18.0-ts7.1.0-dev.20260929':
+    resolution: {integrity: sha512-Lw7VVU/YQ9JcarODICEiwzMLdFqZprqh5RGTgbS5Uc6I95P635/g5xA1pOC8RVs4efBvAR30J54iDG3l5JEYiw==}
+    engines: {node: '>=16.20.0'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
+  '@tsrs/linux-x64-gnu@0.18.0-ts7.1.0-dev.20260929':
+    resolution: {integrity: sha512-EdBwBgNICGu1r1h23ixdcKwsMo6E9ll7ZsY3mNERNYqE1Pwdtcat99d5E7zB1J+oy/Xk6YqiizaB6nolIjpDTw==}
+    engines: {node: '>=16.20.0'}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@tsrs/linux-x64-musl@0.18.0-ts7.1.0-dev.20260929':
+    resolution: {integrity: sha512-LHk+AOAtXuTlhJhOJ2+elriEIX17ycXljojeNxrrzckOipTG1LksoVWuCSas2nu00EnWAzrdKpt9oqPylUKZfQ==}
+    engines: {node: '>=16.20.0'}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
   '@tybys/wasm-util@0.10.4':
     resolution: {integrity: sha512-W3c4gRigFS0T/Ma4qIYF3GDAc5AQdHb1yL5znJT1Zv1YaD9Kitx656wBjvr19qbiosmZT8lWDM5BEMynUqX65A==}
 
@@ -5000,6 +4986,36 @@ packages:
 
   '@xtuc/long@4.2.2':
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
+
+  '@yielded/effect-tsrs-darwin-arm64@0.2.0':
+    resolution: {integrity: sha512-WxY+nUP25AxGWVB1EgTO2TS5yN9zZA/3orVMh0SuJ4CuIDZ/xXJu5k9iMSrYixuj6QBva+iQsCbrMKxxUo3zgg==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@yielded/effect-tsrs-darwin-x64@0.2.0':
+    resolution: {integrity: sha512-DAPPKFCxs1pPcF5hlQeuNOqIgFIxYTMbqzIiv5VmaaLMpBRvq/M68V9IWfhgOP1l0XucgAG33l8CiGCPIwTlaw==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@yielded/effect-tsrs-linux-arm64@0.2.0':
+    resolution: {integrity: sha512-+4Bql/5SXuEz6Nsq4fcttv82Nu7DnhrZI2fYYln7LUBFwQjS6Ul8DaXO7OZhkbT9BWLNvriwT31LXVEJwfmjkg==}
+    cpu: [arm64]
+    os: [linux]
+
+  '@yielded/effect-tsrs-linux-x64@0.2.0':
+    resolution: {integrity: sha512-MF3HC+ctlM7xYX/iggq8gBhjdQ8A5Ot5828LeWvVKLeFA9Ei3Gtxumm75qLjTIYrNXHYnv9GjDvvwCFe/mqbgg==}
+    cpu: [x64]
+    os: [linux]
+
+  '@yielded/effect-tsrs-win32-x64@0.2.0':
+    resolution: {integrity: sha512-yxSbAzG2K9z9EsxEb+NGAMWKIeZEAXTIIQuoIz53sYyJFSZvdK27J1Zo3kRAXNQjCbBfmrqcgNbnG16D+zx92w==}
+    cpu: [x64]
+    os: [win32]
+
+  '@yielded/effect-tsrs@0.2.0':
+    resolution: {integrity: sha512-OUk6AVK2z6VGPkMn7vE1axevNZmeoCkLGXF/rYa7d1kJ/Jl06su/FKwgoacABUmL4lyfNUvE8Y0twU21WXtXtg==}
+    engines: {node: '>=22.14'}
+    hasBin: true
 
   '@yuku-core/binding-android-arm64@0.19.0':
     resolution: {integrity: sha512-wdL2XmTiZixAOaHk9Z0JJZ8u9Qm8d333Zjpc6gaxXFX+UR5BlsfxZ7a2+2Rm71pamppsPYGUGFq2oVLbh6DISw==}
@@ -5820,25 +5836,32 @@ packages:
     resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
     engines: {node: '>=12'}
 
-  drizzle-kit@1.0.0-rc.5-5935859:
-    resolution: {integrity: sha512-p//MvJbSeDFxa3pODv0ebNVJmk/5aAHHaCyQTtDGFlCYX4e7eY9rrSX/liBJ7098Ei9WUi9VT65JQkSFDuG1ng==}
+  drizzle-kit@1.0.0-rc.5:
+    resolution: {integrity: sha512-8glQN7iFK3e1aOIoRit1NtslcsqE/rnlqNw/1jUC5Ph4RFVh/E5Jricxd6Nu2ugj2HlFZlZ6O4006AwqJ9e24g==}
     hasBin: true
+    peerDependencies:
+      drizzle-orm: '>=1.0.0-rc.5'
+    peerDependenciesMeta:
+      drizzle-orm:
+        optional: true
 
-  drizzle-orm@1.0.0-rc.5-5935859:
-    resolution: {integrity: sha512-PkVjyxhamD7IOVfpDMn3BmV9afyvj3eeLvIPind3NmPv+cfv6/jh6GN0fHP0zzgrprGx/jGE4mkE0ttRFlzHwA==}
+  drizzle-orm@1.0.0-rc.5:
+    resolution: {integrity: sha512-7BMYTsAZbQ9DcQCtLG4G202Hq6nc/e8o1EBKN6nBweRI8EGPFe/VdyvWQCsU9fuZSiRjNpELolUSi//JFBq+lw==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
+      '@aws/aurora-dsql-node-postgres-connector': '>=0.1.9'
+      '@aws/aurora-dsql-postgresjs-connector': '>=0.3.0'
       '@cloudflare/workers-types': '>=4'
-      '@drizzle-team/minipg': '>=0.3.2'
-      '@effect/sql-d1': '>=4.0.0-beta.105 || >=4.0.0'
-      '@effect/sql-libsql': '>=4.0.0-beta.105 || >=4.0.0'
-      '@effect/sql-mysql2': '>=4.0.0-beta.105 || >=4.0.0'
-      '@effect/sql-pg': '>=4.0.0-beta.105 || >=4.0.0'
-      '@effect/sql-pglite': '>=4.0.0-beta.105 || >=4.0.0'
-      '@effect/sql-sqlite-bun': '>=4.0.0-beta.105 || >=4.0.0'
-      '@effect/sql-sqlite-do': '>=4.0.0-beta.105 || >=4.0.0'
-      '@effect/sql-sqlite-node': '>=4.0.0-beta.105 || >=4.0.0'
-      '@effect/sql-sqlite-wasm': '>=4.0.0-beta.105 || >=4.0.0'
+      '@drizzle-team/minipg': '>=0.4.2'
+      '@effect/sql-d1': '>=4.0.0'
+      '@effect/sql-libsql': '>=4.0.0'
+      '@effect/sql-mysql2': '>=4.0.0'
+      '@effect/sql-pg': '>=4.0.0'
+      '@effect/sql-pglite': '>=4.0.0'
+      '@effect/sql-sqlite-bun': '>=4.0.0'
+      '@effect/sql-sqlite-do': '>=4.0.0'
+      '@effect/sql-sqlite-node': '>=4.0.0'
+      '@effect/sql-sqlite-wasm': '>=4.0.0'
       '@electric-sql/pglite': '>=0.2.0'
       '@libsql/client': '>=0.10.0'
       '@libsql/client-wasm': '>=0.10.0'
@@ -5864,7 +5887,7 @@ packages:
       arktype: '>=2.0.0'
       better-sqlite3: '>=9.3.0'
       bun-types: '*'
-      effect: '>=4.0.0-beta.105 || >=4.0.0'
+      effect: '>=4.0.0'
       expo-sqlite: '>=14.0.0'
       mssql: ^11.0.1
       mysql2: '>=2'
@@ -5877,6 +5900,10 @@ packages:
       zod: ^3.25.0 || ^4.0.0
     peerDependenciesMeta:
       '@aws-sdk/client-rds-data':
+        optional: true
+      '@aws/aurora-dsql-node-postgres-connector':
+        optional: true
+      '@aws/aurora-dsql-postgresjs-connector':
         optional: true
       '@cloudflare/workers-types':
         optional: true
@@ -6377,9 +6404,6 @@ packages:
     resolution: {integrity: sha512-kVCxPF3vQM/N0B1PmoqVUqgHP+EeVjmZSQn+1oCRPxd2P21P2F19lIgbR3HBosbB1PUhOAoctJnfEn2GbN2eZA==}
     engines: {node: '>=18'}
 
-  get-tsconfig@4.14.3:
-    resolution: {integrity: sha512-++QEw4DIY7WGoukz+/+A/8dGYPT9l9yIadnmSgZ8Rjr3YVSVDipQSO9CdnJo9ePqFqUUqh+wk9uIaoiAwsiPkA==}
-
   get-tsconfig@5.0.0-beta.4:
     resolution: {integrity: sha512-7nF7C9fIPFEMHgEMEfgIlO9wDdZ8CyHw27rWciFZfHvHDReIiPhsYuzPRXsfvBCqFy1l8RRyyWV7QLM+ZhUJsQ==}
     engines: {node: '>=20.20.0'}
@@ -6683,9 +6707,6 @@ packages:
   js-yaml@4.3.2:
     resolution: {integrity: sha512-SFNOvSJ+Dgf/9An904Yx+CgSlIPCkIpao4qo51lpee25TIRejdH3rhR4EZMGoNx3/TP3O+wzWuiTFl4sqbltzA==}
     hasBin: true
-
-  jsbi@4.3.2:
-    resolution: {integrity: sha512-9fqMSQbhJykSeii05nxKl4m6Eqn2P6rOlYiS+C5Dr/HPIU/7yZxu5qzbs40tgaFORiw2Amd0mirjxatXYMkIew==}
 
   jsesc@3.1.0:
     resolution: {integrity: sha512-/sM3dO2FOzXjKQhJuo0Q173wf2KOo8t4I8vHy6lF9poUp7bKT0/NHE8fPX23PwfhnykfqnC2xRxOnVw5XuGIaA==}
@@ -8429,6 +8450,11 @@ packages:
 
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+
+  tsrs@0.18.0-ts7.1.0-dev.20260929:
+    resolution: {integrity: sha512-9T0b4Uam/yMFIK16GUx0fUrJqYZnJ/gvSmV9JB8NTyDePvwCI45WFWxyEV/UMV3KfdNRJG/PBsm3fSIB9WmWsA==}
+    engines: {node: '>=16.20.0'}
+    hasBin: true
 
   tsx@4.23.15:
     resolution: {integrity: sha512-Yiex1Ovn8z2xPpOWckIiysV1SSyRMY9BkLF++q0yKiDxCqRhosKfMg3janKkiLBwZ5c/YryloKwGZcrEmtwxKw==}
@@ -10220,8 +10246,6 @@ snapshots:
 
   '@dotenvx/primitives@0.8.0': {}
 
-  '@drizzle-team/brocli@0.12.1': {}
-
   '@effect/atom-react@4.0.6(effect@4.0.6)(react@19.3.0)(scheduler@0.27.0)':
     dependencies:
       effect: 4.0.6
@@ -10257,42 +10281,6 @@ snapshots:
     dependencies:
       '@cloudflare/workers-types': 5.20261023.1
       effect: 4.0.6
-
-  '@effect/sql-sqlite-do@4.0.0-rc.117(effect@4.0.6)':
-    dependencies:
-      effect: 4.0.6
-    optional: true
-
-  '@effect/tsgo-darwin-arm64@0.56.1':
-    optional: true
-
-  '@effect/tsgo-darwin-x64@0.56.1':
-    optional: true
-
-  '@effect/tsgo-linux-arm64@0.56.1':
-    optional: true
-
-  '@effect/tsgo-linux-arm@0.56.1':
-    optional: true
-
-  '@effect/tsgo-linux-x64@0.56.1':
-    optional: true
-
-  '@effect/tsgo-win32-arm64@0.56.1':
-    optional: true
-
-  '@effect/tsgo-win32-x64@0.56.1':
-    optional: true
-
-  '@effect/tsgo@0.56.1':
-    optionalDependencies:
-      '@effect/tsgo-darwin-arm64': 0.56.1
-      '@effect/tsgo-darwin-x64': 0.56.1
-      '@effect/tsgo-linux-arm': 0.56.1
-      '@effect/tsgo-linux-arm64': 0.56.1
-      '@effect/tsgo-linux-x64': 0.56.1
-      '@effect/tsgo-win32-arm64': 0.56.1
-      '@effect/tsgo-win32-x64': 0.56.1
 
   '@effect/vitest@4.0.6(effect@4.0.6)(vitest@5.0.5)':
     dependencies:
@@ -10985,10 +10973,6 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
-
-  '@js-temporal/polyfill@0.5.1':
-    dependencies:
-      jsbi: 4.3.2
 
   '@lezer/common@1.5.4': {}
 
@@ -12892,6 +12876,21 @@ snapshots:
 
   '@tsconfig/node16@1.0.4': {}
 
+  '@tsrs/darwin-arm64@0.18.0-ts7.1.0-dev.20260929':
+    optional: true
+
+  '@tsrs/linux-arm64-gnu@0.18.0-ts7.1.0-dev.20260929':
+    optional: true
+
+  '@tsrs/linux-arm64-musl@0.18.0-ts7.1.0-dev.20260929':
+    optional: true
+
+  '@tsrs/linux-x64-gnu@0.18.0-ts7.1.0-dev.20260929':
+    optional: true
+
+  '@tsrs/linux-x64-musl@0.18.0-ts7.1.0-dev.20260929':
+    optional: true
+
   '@tybys/wasm-util@0.10.4':
     dependencies:
       tslib: 2.8.1
@@ -13372,6 +13371,29 @@ snapshots:
   '@xtuc/ieee754@1.2.0': {}
 
   '@xtuc/long@4.2.2': {}
+
+  '@yielded/effect-tsrs-darwin-arm64@0.2.0':
+    optional: true
+
+  '@yielded/effect-tsrs-darwin-x64@0.2.0':
+    optional: true
+
+  '@yielded/effect-tsrs-linux-arm64@0.2.0':
+    optional: true
+
+  '@yielded/effect-tsrs-linux-x64@0.2.0':
+    optional: true
+
+  '@yielded/effect-tsrs-win32-x64@0.2.0':
+    optional: true
+
+  '@yielded/effect-tsrs@0.2.0':
+    optionalDependencies:
+      '@yielded/effect-tsrs-darwin-arm64': 0.2.0
+      '@yielded/effect-tsrs-darwin-x64': 0.2.0
+      '@yielded/effect-tsrs-linux-arm64': 0.2.0
+      '@yielded/effect-tsrs-linux-x64': 0.2.0
+      '@yielded/effect-tsrs-win32-x64': 0.2.0
 
   '@yuku-core/binding-android-arm64@0.19.0':
     optional: true
@@ -14203,19 +14225,14 @@ snapshots:
 
   dotenv@17.4.2: {}
 
-  drizzle-kit@1.0.0-rc.5-5935859:
-    dependencies:
-      '@drizzle-team/brocli': 0.12.1
-      '@js-temporal/polyfill': 0.5.1
-      esbuild: 0.25.12
-      get-tsconfig: 4.14.3
-      jiti: 2.7.0
+  drizzle-kit@1.0.0-rc.5(drizzle-orm@1.0.0-rc.5(@cloudflare/workers-types@5.20261023.1)(@effect/sql-d1@4.0.6(effect@4.0.6))(@electric-sql/pglite@0.3.15)(@libsql/client@0.17.4)(@types/pg@8.23.1)(effect@4.0.6)(pg@8.23.0)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.5)):
+    optionalDependencies:
+      drizzle-orm: 1.0.0-rc.5(@cloudflare/workers-types@5.20261023.1)(@effect/sql-d1@4.0.6(effect@4.0.6))(@electric-sql/pglite@0.3.15)(@libsql/client@0.17.4)(@types/pg@8.23.1)(effect@4.0.6)(pg@8.23.0)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.5)
 
-  drizzle-orm@1.0.0-rc.5-5935859(@cloudflare/workers-types@5.20261023.1)(@effect/sql-d1@4.0.6(effect@4.0.6))(@effect/sql-sqlite-do@4.0.0-rc.117(effect@4.0.6))(@electric-sql/pglite@0.3.15)(@libsql/client@0.17.4)(@types/pg@8.23.1)(effect@4.0.6)(pg@8.23.0)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.5):
+  drizzle-orm@1.0.0-rc.5(@cloudflare/workers-types@5.20261023.1)(@effect/sql-d1@4.0.6(effect@4.0.6))(@electric-sql/pglite@0.3.15)(@libsql/client@0.17.4)(@types/pg@8.23.1)(effect@4.0.6)(pg@8.23.0)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.5):
     optionalDependencies:
       '@cloudflare/workers-types': 5.20261023.1
       '@effect/sql-d1': 4.0.6(effect@4.0.6)
-      '@effect/sql-sqlite-do': 4.0.0-rc.117(effect@4.0.6)
       '@electric-sql/pglite': 0.3.15
       '@libsql/client': 0.17.4
       '@types/pg': 8.23.1
@@ -14751,10 +14768,6 @@ snapshots:
       '@sec-ant/readable-stream': 0.4.1
       is-stream: 4.0.1
 
-  get-tsconfig@4.14.3:
-    dependencies:
-      resolve-pkg-maps: 1.0.0
-
   get-tsconfig@5.0.0-beta.4:
     dependencies:
       resolve-pkg-maps: 1.0.0
@@ -15022,8 +15035,6 @@ snapshots:
   js-yaml@4.3.2:
     dependencies:
       argparse: 2.0.1
-
-  jsbi@4.3.2: {}
 
   jsesc@3.1.0: {}
 
@@ -16980,6 +16991,14 @@ snapshots:
   tslib@2.3.0: {}
 
   tslib@2.8.1: {}
+
+  tsrs@0.18.0-ts7.1.0-dev.20260929:
+    optionalDependencies:
+      '@tsrs/darwin-arm64': 0.18.0-ts7.1.0-dev.20260929
+      '@tsrs/linux-arm64-gnu': 0.18.0-ts7.1.0-dev.20260929
+      '@tsrs/linux-arm64-musl': 0.18.0-ts7.1.0-dev.20260929
+      '@tsrs/linux-x64-gnu': 0.18.0-ts7.1.0-dev.20260929
+      '@tsrs/linux-x64-musl': 0.18.0-ts7.1.0-dev.20260929
 
   tsx@4.23.15:
     dependencies:

@@ -8,8 +8,7 @@
         "dev": "vp dev --port 3000",
         "build": "vp build",
         "preview": "vp preview",
-        "ts:check": "effect-tsgo patch && tsc --noEmit",
-        "prepare": "effect-tsgo patch"
+        "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json"
     },
     "dependencies": {
         "@effect/atom-react": "4.0.6",
@@ -40,7 +39,6 @@
         "zod": "^3.25.76"
     },
     "devDependencies": {
-        "@effect/tsgo": "0.56.1",
         "@tailwindcss/vite": "^4.3.3",
         "@types/node": "^24.0.0",
         "@types/nprogress": "^0.2.3",

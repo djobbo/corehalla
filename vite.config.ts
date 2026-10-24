@@ -46,18 +46,12 @@ export default defineConfig({
         options: {
             // Vite+ recommends `typeAware: true` + `typeCheck: true` so that
             // `vp check` is the single static-check command. Both stay off
-            // here for two reasons:
+            // here: type checking and Effect rules run through `tsrs` and
+            // `effect-tsrs` in each package's `ts:check` script. Oxlint's
+            // type-aware backend would check the same projects with a stock
+            // toolchain and would not apply the Effect rules.
             //
-            // 1. `web` must be checked by the Effect-patched compiler
-            //    (`@effect/tsgo`), which only its own `ts:check` script
-            //    installs; tsgolint would check it with a stock toolchain.
-            // 2. tsgolint (TypeScript 7) rejects the legacy `tsconfig/nextjs`
-            //    base, which the Node packages still extend (`es5`,
-            //    `moduleResolution: node10`, `downlevelIteration`).
-            //
-            // Type checking is composed per package instead, via
-            // `vp run -r ts:check` (see the root `ts:check` script and the
-            // `run.tasks.ci` task below).
+            // See the root `ts:check` script and the `run.tasks.ci` task.
             typeAware: false,
             typeCheck: false,
         },

@@ -10,7 +10,7 @@
         "dev": "astro dev --port 3002 --config astro.config.local.mjs",
         "build": "astro build --config astro.config.standalone.mjs",
         "preview": "astro preview",
-        "ts:check": "tsc --noEmit",
+        "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json",
         "dev:standalone": "astro dev --port 3002 --config astro.config.standalone.mjs",
         "seed": "emdash seed seed/seed.json --database ./emdash.db --uploads-dir ./data/uploads --on-conflict=update",
         "seed:media": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/seed-media.mts"

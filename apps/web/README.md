@@ -11,7 +11,7 @@ been removed.
   on the server, `Atom` + `@effect/atom-react` on the client
 - **Deployment:** Cloudflare Workers via [Alchemy](https://alchemy.run) (`Cloudflare.Website.Vite` + `Cloudflare.D1.Database`); the stack lives at the repo root (`../alchemy.run.ts`)
 - **UI:** React 19, Tailwind CSS v4 (CSS-first config), Stitches, Radix, kbar
-- **TypeScript:** 7.0.2 (native) with `@effect/tsgo`
+- **TypeScript:** [tsrs](https://github.com/oxc-project/tsrs) with [effect-tsrs](https://github.com/yielded-dev/effect-tsrs) diagnostics
 
 ## Commands
 
@@ -23,7 +23,7 @@ commands work without a filter.
 vp -C web dev          # Vite dev server; Alchemy assigns the port under `alchemy dev`
 vp -C web build        # production build (+ route tree generation)
 vp -C web preview      # preview the built output
-vp -C web ts:check     # effect-tsgo patch && tsc --noEmit
+vp -C web ts:check     # tsrs --noEmit && effect-tsrs diagnostics
 pnpm dev:cloud                # (root) alchemy dev: Workers runtime + local D1 simulator
 pnpm deploy                   # (root) alchemy deploy: Cloudflare Worker + assets
 ```
@@ -185,17 +185,16 @@ does not redirect `/rankings/1v1` to `/rankings/1v1?player=`.
 - The previous hand-written `/api/*` REST routes are retained unchanged;
   the Effect API lives under `/api/effect/*`.
 
-## TypeScript 7 + `@effect/tsgo`
+## Type checking
 
-Effect's diagnostics need the patched compiler:
+`ts:check` runs [tsrs](https://github.com/oxc-project/tsrs) and then
+[effect-tsrs](https://github.com/yielded-dev/effect-tsrs). Effect diagnostics
+read the `@effect/language-service` plugin entry in `tsconfig.json`.
 
-- `typescript` is pinned to exactly `7.0.2` (the native compiler) because
-  `@effect/tsgo` only supports specific upstream versions.
-- `web/package.json` runs `effect-tsgo patch` from `prepare` and from
-  `ts:check`.
 - `tsconfig.json` needs `"types": ["node", "vite/client"]` (TS 7 no longer
-  auto-includes `@types/*`), relative `paths` (TS 7 removed `baseUrl`), and the
-  `@effect/language-service` plugin entry.
+  auto-includes `@types/*`) and relative `paths` (TS 7 removed `baseUrl`).
+- `namespaceImportPackages` asks for namespace imports of `effect` and
+  `@effect/*` in this package.
 
 ## Environment variables
 

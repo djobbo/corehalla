@@ -38,11 +38,12 @@ This project is pre-release (no external consumers). **Delete** obsolete APIs an
 
 Use **`vp`** as the primary package manager and toolchain. It is pnpm under the hood. Do not use `pnpm`, `npm`, or `yarn` unless `vp` cannot do the job.
 
-| Command          | Purpose                                   |
-| ---------------- | ----------------------------------------- |
-| `vp i`           | Install dependencies                      |
-| `vp check`       | Format, type-check (tsgo), and lint (oxc) |
-| `vp check --fix` | Same as `vp check`, applying auto-fixes   |
-| `vp test`        | Run tests (Vitest)                        |
+| Command              | Purpose                                                                                                                                  |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `vp i`               | Install dependencies                                                                                                                     |
+| `vp check`           | Format and lint (oxc)                                                                                                                    |
+| `vp check --fix`     | Same as `vp check`, applying auto-fixes                                                                                                  |
+| `vp test`            | Run tests (Vitest)                                                                                                                       |
+| `vp run -r ts:check` | Type-check with [tsrs](https://github.com/oxc-project/tsrs) and Effect rules ([effect-tsrs](https://github.com/yielded-dev/effect-tsrs)) |
 
-After code changes, run `vp check --fix` and `vp test` in the affected package (or from the workspace root). Use `vp run <script>` only for `package.json` scripts / Vite+ tasks that are not built-in commands.
+After code changes, run `vp check --fix`, `vp run -r ts:check`, and `vp test` in the affected package (or from the workspace root). Use `vp run <script>` only for `package.json` scripts / Vite+ tasks that are not built-in commands.

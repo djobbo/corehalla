@@ -1,7 +1,21 @@
 {
     "extends": "astro/tsconfigs/base",
     "compilerOptions": {
-        "types": ["node", "@cloudflare/workers-types"]
+        "types": ["node", "@cloudflare/workers-types"],
+        "plugins": [
+            {
+                "name": "@effect/language-service",
+                "diagnostics": true,
+                "allowedUnstableApis": [
+                    "effect/http",
+                    "effect/FileSystem",
+                    "effect/Path",
+                    "@effect/platform-node"
+                ],
+                "includeSuggestionsInTsc": false,
+                "ignoreEffectWarningsInTscExitCode": true
+            }
+        ]
     },
     "include": [
         "src",

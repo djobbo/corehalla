@@ -6,7 +6,7 @@
     "scripts": {
         "parse-bh-articles:dev": "tsnd --respawn ./bh-articles/dev.ts",
         "parse-weekly-rot:dev": "tsnd --respawn ./weekly-rotation/dev.ts",
-        "ts:check": "tsc --noEmit"
+        "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json"
     },
     "dependencies": {
         "axios": "1.1.3",

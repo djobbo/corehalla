@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro"
 import { Effect } from "effect"
 import { getEmDashCollection } from "emdash"
-import { imageOf, json } from "../../../lib/public-api"
+import { CmsUnavailable, imageOf, json } from "../../../lib/public-api"
 
 export const prerender = false
 
@@ -13,7 +13,7 @@ const load = Effect.fn("cms.media.GET")(
                     limit: 200,
                     orderBy: { key: "asc" },
                 }),
-            catch: (cause) => new Error(String(cause)),
+            catch: (cause) => new CmsUnavailable({ cause }),
         })
 
         if (error) return json({ slots: [] }, 500)

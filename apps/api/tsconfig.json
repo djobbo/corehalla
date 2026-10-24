@@ -12,7 +12,20 @@
         "isolatedModules": true,
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
-        "types": ["node"]
+        "types": ["node"],
+        "plugins": [
+            {
+                "name": "@effect/language-service",
+                "diagnostics": true,
+                "allowedUnstableApis": [
+                    "effect/http",
+                    "effect/http-api",
+                    "@effect/vitest"
+                ],
+                "includeSuggestionsInTsc": false,
+                "ignoreEffectWarningsInTscExitCode": true
+            }
+        ]
     },
     "include": ["src", "vite.config.ts"],
     "exclude": ["node_modules"]

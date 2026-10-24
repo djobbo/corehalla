@@ -16,6 +16,15 @@
         // The scripts run as ESM under `node`'s type stripping, which requires
         // explicit extensions for relative imports (e.g. `../schema.ts`).
         "allowImportingTsExtensions": true,
-        "types": ["node"]
+        "types": ["node"],
+        "plugins": [
+            {
+                "name": "@effect/language-service",
+                "diagnostics": true,
+                "allowedUnstableApis": ["@effect/sql-d1"],
+                "includeSuggestionsInTsc": false,
+                "ignoreEffectWarningsInTscExitCode": true
+            }
+        ]
     }
 }

@@ -1,5 +1,10 @@
 import { Option, Schema } from "effect"
 
+export class CmsUnavailable extends Schema.TaggedError<CmsUnavailable>()(
+    "CmsUnavailable",
+    { cause: Schema.Defect() },
+) {}
+
 export const json = (data: unknown, status = 200): Response =>
     new Response(
         Schema.encodeSync(Schema.fromJsonString(Schema.Unknown))(data),

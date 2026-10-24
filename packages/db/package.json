@@ -7,18 +7,18 @@
         "db:seed": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/seed.mts",
         "db:seed:verify": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/seed-verify.mts",
         "db:import:supabase": "node --env-file-if-exists=../../.env --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-postgres.mts",
-        "ts:check": "tsc --noEmit"
+        "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json"
     },
     "devDependencies": {
         "@types/node": "^24.0.0",
         "@types/pg": "^8.23.1",
-        "drizzle-kit": "1.0.0-rc.5-5935859",
+        "drizzle-kit": "1.0.0-rc.5",
         "pg": "^8.23.0",
         "typescript": "^7.0.2"
     },
     "dependencies": {
         "@effect/sql-d1": "4.0.6",
-        "drizzle-orm": "1.0.0-rc.5-5935859",
+        "drizzle-orm": "1.0.0-rc.5",
         "effect": "4.0.6"
     }
 }

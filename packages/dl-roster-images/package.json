@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "dl-roster": "vpx ./index.ts",
-        "ts:check": "tsc --noEmit"
+        "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json"
     },
     "dependencies": {
         "@crh/bhapi": "workspace:*",

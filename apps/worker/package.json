@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "DISCORD_MANAGER_BOT_ENABLED=true CRAWLER_ENABLED=true tsnd --respawn src/index.ts",
         "bot:dev": "DISCORD_MANAGER_BOT_ENABLED=true CRAWLER_ENABLED=false tsnd --respawn src/index.ts",
-        "ts:check": "tsc --noEmit",
+        "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json",
         "start": "ts-node --transpile-only src/index.ts"
     },
     "keywords": [],

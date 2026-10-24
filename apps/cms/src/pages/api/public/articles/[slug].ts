@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro"
 import { Effect } from "effect"
 import { getEmDashEntry } from "emdash"
-import { articleOf, json } from "../../../../lib/public-api"
+import { articleOf, CmsUnavailable, json } from "../../../../lib/public-api"
 
 export const prerender = false
 
@@ -11,7 +11,7 @@ const load = Effect.fn("cms.article.GET")(
     function* (slug: string) {
         const { entry, error } = yield* Effect.tryPromise({
             try: () => getEmDashEntry("posts", slug),
-            catch: (cause) => new Error(String(cause)),
+            catch: (cause) => new CmsUnavailable({ cause }),
         })
 
         if (error) return json({ error: "Unable to load article" }, 500)

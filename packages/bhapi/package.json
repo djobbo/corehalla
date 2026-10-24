@@ -7,7 +7,7 @@
         "typescript": "^7.0.2"
     },
     "scripts": {
-        "ts:check": "tsc --noEmit"
+        "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json"
     },
     "dependencies": {
         "@crh/common": "workspace:*",

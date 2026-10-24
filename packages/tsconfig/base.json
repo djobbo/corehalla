@@ -21,7 +21,15 @@
         "strictNullChecks": true,
         "target": "es2022",
         "lib": ["dom", "dom.iterable", "esnext"],
-        "types": ["node"]
+        "types": ["node"],
+        "plugins": [
+            {
+                "name": "@effect/language-service",
+                "diagnostics": true,
+                "includeSuggestionsInTsc": false,
+                "ignoreEffectWarningsInTscExitCode": true
+            }
+        ]
     },
     "exclude": ["node_modules"]
 }

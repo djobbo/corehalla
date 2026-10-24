@@ -1,0 +1,4 @@
+#!/bin/sh
+# `typescript.tsdk` launches an executable named `tsgo`.
+# tsrs 0.18 ships the compiler as `tsrs`; forward the language-server flags.
+exec "$(CDPATH= cd -- "$(dirname "$0")/../.." && pwd)/node_modules/.bin/tsrs" "$@"
