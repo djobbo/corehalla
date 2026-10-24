@@ -13,6 +13,7 @@ const USER_AGENT = "Corehalla/1.0 (+https://corehalla.com)"
 const RosterIcon = Schema.Struct({
     name: Schema.NonEmptyString,
     src: Schema.String.check(Schema.isStartingWith("https://")),
+    page: Schema.String.check(Schema.isStartingWith("/legends/")),
 })
 
 export type RosterIcon = typeof RosterIcon.Type
@@ -29,18 +30,32 @@ export class UnmatchedLegendError extends Schema.TaggedError<UnmatchedLegendErro
     },
 ) {}
 
+export class MissingSplashError extends Schema.TaggedError<MissingSplashError>()(
+    "MissingSplashError",
+    {
+        name: Schema.String,
+        page: Schema.String,
+    },
+) {}
+
+const HttpsUrl = Schema.String.check(Schema.isStartingWith("https://"))
+
+export const legendPageUrl = (page: string) => new URL(page, LEGENDS_URL).href
+
 export type LegendFile = {
     readonly icon: RosterIcon
     readonly fileName: string
 }
 
-const legendsDirectory = Effect.fn("roster.legendsDirectory")(function* () {
+const ICONS_DIRECTORY = "../../apps/web/public/images/icons/roster/legends"
+const SPLASH_DIRECTORY = "../../apps/web/public/images/splash/legends"
+
+const imageDirectory = Effect.fn("roster.imageDirectory")(function* (
+    relative: string,
+) {
     const path = yield* Path.Path
     const here = yield* path.fromFileUrl(new URL(".", import.meta.url))
-    return path.resolve(
-        here,
-        "../../apps/web/public/images/icons/roster/legends",
-    )
+    return path.resolve(here, relative)
 })
 
 const http = Effect.fnUntraced(function* () {
@@ -64,11 +79,17 @@ export const parseIcons = (html: string) => {
             return {
                 name: img.attr("alt")?.trim() ?? "",
                 src: img.attr("src")?.trim() ?? "",
+                page: $(el).closest("a").attr("href")?.trim() ?? "",
             }
         })
         .get()
 
     return Schema.decodeUnknownEffect(Schema.Array(RosterIcon))(raw)
+}
+
+export const parseSplash = (html: string) => {
+    const src = load(html)("img.splash").first().attr("src")?.trim() ?? ""
+    return Schema.decodeUnknownEffect(HttpsUrl)(src)
 }
 
 export const legendFiles = Effect.fnUntraced(function* (
@@ -95,38 +116,88 @@ export const legendFiles = Effect.fnUntraced(function* (
     return targets
 })
 
+const downloadFile = Effect.fnUntraced(function* (
+    src: string,
+    destination: string,
+) {
+    const fs = yield* FileSystem.FileSystem
+    const client = yield* http()
+    const response = yield* client.get(src, {
+        headers: { "user-agent": USER_AGENT },
+    })
+    const bytes = yield* response.arrayBuffer
+    yield* fs.writeFile(destination, new Uint8Array(bytes))
+})
+
+const resetDirectory = Effect.fnUntraced(function* (directory: string) {
+    const fs = yield* FileSystem.FileSystem
+    yield* fs.remove(directory, { recursive: true, force: true })
+    yield* fs.makeDirectory(directory, { recursive: true })
+})
+
 const downloadIcon = Effect.fnUntraced(function* (
     icon: RosterIcon,
     directory: string,
     fileName: string,
 ) {
-    const fs = yield* FileSystem.FileSystem
     const path = yield* Path.Path
-    const client = yield* http()
-    const response = yield* client.get(icon.src, {
-        headers: { "user-agent": USER_AGENT },
-    })
-    const bytes = yield* response.arrayBuffer
-
     yield* Effect.logInfo(`Downloading ${icon.name}`)
-    yield* fs.writeFile(
-        path.join(directory, `${fileName}.png`),
-        new Uint8Array(bytes),
+    yield* downloadFile(icon.src, path.join(directory, `${fileName}.png`))
+})
+
+const readSplash = Effect.fn("roster.readSplash")(function* (
+    target: LegendFile,
+) {
+    const pageUrl = legendPageUrl(target.icon.page)
+    const src = yield* parseSplash(yield* fetchText(pageUrl)).pipe(
+        Effect.mapError(
+            () =>
+                new MissingSplashError({
+                    name: target.icon.name,
+                    page: pageUrl,
+                }),
+        ),
     )
+    return { ...target, src }
+})
+
+const downloadSplash = Effect.fnUntraced(function* (
+    name: string,
+    src: string,
+    destination: string,
+) {
+    yield* Effect.logInfo(`Downloading ${name} splash`)
+    yield* downloadFile(src, destination)
 })
 
 export const downloadImages = Effect.fn("roster.downloadImages")(function* () {
-    const fs = yield* FileSystem.FileSystem
-    const directory = yield* legendsDirectory()
+    const path = yield* Path.Path
+    const iconsDirectory = yield* imageDirectory(ICONS_DIRECTORY)
+    const splashDirectory = yield* imageDirectory(SPLASH_DIRECTORY)
     const icons = yield* parseIcons(yield* fetchText(LEGENDS_URL))
     const targets = yield* legendFiles(icons)
+    const splashes = yield* Effect.forEach(targets, readSplash, {
+        concurrency: 8,
+    })
 
-    yield* fs.remove(directory, { recursive: true, force: true })
-    yield* fs.makeDirectory(directory, { recursive: true })
+    yield* resetDirectory(iconsDirectory)
+    yield* resetDirectory(splashDirectory)
     yield* Effect.forEach(
         targets,
-        ({ icon, fileName }) => downloadIcon(icon, directory, fileName),
+        ({ icon, fileName }) => downloadIcon(icon, iconsDirectory, fileName),
         { concurrency: 8 },
     )
-    yield* Effect.logInfo(`Downloaded ${icons.length} roster legend images`)
+    yield* Effect.forEach(
+        splashes,
+        ({ icon, fileName, src }) =>
+            downloadSplash(
+                icon.name,
+                src,
+                path.join(splashDirectory, `${fileName}.png`),
+            ),
+        { concurrency: 8 },
+    )
+    yield* Effect.logInfo(
+        `Downloaded ${icons.length} roster legend images and splash art`,
+    )
 })

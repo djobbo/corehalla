@@ -25,7 +25,30 @@ class SeedError extends Schema.TaggedError<SeedError>()("SeedError", {
 const MediaUploadResponse = Schema.Struct({
     success: Schema.Literal(true),
     data: Schema.Struct({
-        item: Schema.Struct({ id: Schema.String }),
+        item: Schema.Struct({
+            id: Schema.String,
+            folderId: Schema.NullOr(Schema.String),
+        }),
+    }),
+})
+
+const MediaFolder = Schema.Struct({
+    id: Schema.String,
+    name: Schema.String,
+})
+
+const MediaFolderListResponse = Schema.Struct({
+    success: Schema.Literal(true),
+    data: Schema.Struct({
+        items: Schema.Array(MediaFolder),
+        nextCursor: Schema.optionalKey(Schema.String),
+    }),
+})
+
+const MediaFolderCreateResponse = Schema.Struct({
+    success: Schema.Literal(true),
+    data: Schema.Struct({
+        item: MediaFolder,
     }),
 })
 
@@ -56,7 +79,11 @@ type MediaSlot = {
     readonly slug: string
     readonly label: string
     readonly alt: string
-    readonly kind: "ranked-banner" | "legend-icon" | "weapon-icon"
+    readonly kind:
+        | "ranked-banner"
+        | "legend-icon"
+        | "legend-splash"
+        | "weapon-icon"
     readonly file: string
 }
 
@@ -93,6 +120,16 @@ const slotFor = (
     }
 
     const name = humanize(slug)
+    if (kind === "legend-splash") {
+        return {
+            key: `legend.splash.${slug}`,
+            slug: `legend-splash-${slug}`,
+            label: `${name} legend splash`,
+            alt: `${name} legend splash`,
+            kind,
+        }
+    }
+
     const noun = kind === "weapon-icon" ? "weapon" : "legend"
     return {
         key: `${noun}.icon.${slug}`,
@@ -113,7 +150,17 @@ const slotData = (slot: MediaSlot, mediaId: string) => ({
 
 const mediaPath = "images/ranked-banners"
 const legendPath = "images/icons/roster/legends"
+const legendSplashPath = "images/splash/legends"
 const weaponPath = "images/icons/weapons"
+
+const mediaFolders = {
+    "ranked-banner": "Ranked banners",
+    "legend-icon": "Legend icons",
+    "legend-splash": "Legend splash",
+    "weapon-icon": "Weapon icons",
+} as const satisfies Record<MediaSlot["kind"], string>
+
+const folderKey = (name: string) => name.trim().normalize("NFKC").toLowerCase()
 
 const decodeResponse = <S extends Schema.Constraint>(
     schema: S,
@@ -293,6 +340,10 @@ class MediaSeeder extends Context.Service<
                             kind: "legend-icon" as const,
                         },
                         {
+                            directory: path.join(webPublic, legendSplashPath),
+                            kind: "legend-splash" as const,
+                        },
+                        {
                             directory: path.join(webPublic, weaponPath),
                             kind: "weapon-icon" as const,
                         },
@@ -368,8 +419,91 @@ class MediaSeeder extends Context.Service<
                 },
             )
 
+            const listFolders = Effect.fn("MediaSeeder.listFolders")(
+                function* () {
+                    const folders = new Map<string, string>()
+                    let cursor: string | undefined
+
+                    while (true) {
+                        const query = new URLSearchParams({ limit: "100" })
+                        if (cursor) query.set("cursor", cursor)
+                        const body = yield* executeJson(
+                            MediaFolderListResponse,
+                            HttpClientRequest.get(
+                                url(`/_emdash/api/media/folders?${query}`),
+                            ),
+                        )
+                        for (const item of body.data.items) {
+                            folders.set(folderKey(item.name), item.id)
+                        }
+                        cursor = body.data.nextCursor
+                        if (!cursor) return folders
+                    }
+                },
+            )
+
+            const createFolder = Effect.fn("MediaSeeder.createFolder")(
+                function* (name: string) {
+                    const body = yield* HttpClientRequest.bodyJson({ name })(
+                        HttpClientRequest.post(
+                            url("/_emdash/api/media/folders"),
+                        ),
+                    ).pipe(
+                        Effect.mapError(
+                            (cause) =>
+                                new SeedError({
+                                    message: "Could not encode folder request",
+                                    cause,
+                                }),
+                        ),
+                    )
+                    const created = yield* executeJson(
+                        MediaFolderCreateResponse,
+                        body,
+                    )
+                    yield* Effect.logInfo(`Created media folder ${name}`)
+                    return created.data.item.id
+                },
+            )
+
+            const ensureFolders = Effect.fn("MediaSeeder.ensureFolders")(
+                function* () {
+                    const existing = yield* listFolders()
+                    const ids = {} as Record<MediaSlot["kind"], string>
+                    for (const kind of Object.keys(mediaFolders) as Array<
+                        MediaSlot["kind"]
+                    >) {
+                        const name = mediaFolders[kind]
+                        ids[kind] =
+                            existing.get(folderKey(name)) ??
+                            (yield* createFolder(name))
+                    }
+                    return ids
+                },
+            )
+
+            const assignFolder = Effect.fn("MediaSeeder.assignFolder")(
+                function* (id: string, folderId: string) {
+                    const body = yield* HttpClientRequest.bodyJson({
+                        folderId,
+                    })(
+                        HttpClientRequest.put(url(`/_emdash/api/media/${id}`)),
+                    ).pipe(
+                        Effect.mapError(
+                            (cause) =>
+                                new SeedError({
+                                    message: "Could not encode folder request",
+                                    cause,
+                                }),
+                        ),
+                    )
+                    yield* execute(body)
+                },
+            )
+
             const upload = Effect.fn("MediaSeeder.upload")(function* (
                 slot: MediaSlot,
+                folderId: string,
             ) {
                 const bytes = yield* fs.readFile(slot.file).pipe(
                     Effect.mapError(
@@ -391,6 +525,7 @@ class MediaSeeder extends Context.Service<
                     path.basename(slot.file),
                 )
                 form.append("alt", slot.alt)
+                form.append("folderId", folderId)
 
                 const body = yield* executeJson(
                     MediaUploadResponse,
@@ -398,6 +533,11 @@ class MediaSeeder extends Context.Service<
                         HttpClientRequest.bodyFormData(form),
                     ),
                 )
+
+                // A matching content hash returns the existing item and leaves its folder alone.
+                if (body.data.item.folderId !== folderId) {
+                    yield* assignFolder(body.data.item.id, folderId)
+                }
 
                 return body.data.item.id
             })
@@ -473,6 +613,7 @@ class MediaSeeder extends Context.Service<
             const run = Effect.fn("MediaSeeder.run")(function* () {
                 const slots = yield* collectSlots()
                 yield* authenticate()
+                const folders = yield* ensureFolders()
                 const existing = yield* existingSlots()
 
                 yield* Effect.logInfo(
@@ -480,7 +621,7 @@ class MediaSeeder extends Context.Service<
                 )
                 const mediaIds = yield* Effect.forEach(
                     slots,
-                    (slot) => upload(slot),
+                    (slot) => upload(slot, folders[slot.kind]),
                     { concurrency },
                 )
 

@@ -62,21 +62,25 @@ For production, use the EmDash admin media/content editors, or authenticate the 
 
 ### Bundled media
 
-The ranked banners, roster legend icons, and weapon icons under `apps/web/public/images` can be
-uploaded and turned into media slots in one pass. Start the local CMS (`vpr dev`) and run:
+The ranked banners, roster legend icons, legend splash art, and weapon icons under
+`apps/web/public/images` can be uploaded and turned into media slots in one pass. Start the local
+CMS (`vpr dev`) and run:
 
 ```sh
 vpr cms:seed:media
 ```
 
 The script uploads the files through the EmDash API, creates published `media_slots`, and is
-idempotent. Uploads run concurrently (default: 1 against local SQLite, 4 against a remote CMS).
+idempotent. Each kind goes in its own media folder — Ranked banners, Legend icons, Legend splash,
+and Weapon icons — so an icon and a splash can share a filename. Uploads run concurrently
+(default: 1 against local SQLite, 4 against a remote CMS).
 Override with `EMDASH_CONCURRENCY`. Rerunning it updates every existing slot in place. If an image
 file changes, the slot points at the new media item; the previous image is left in storage and is
 not deleted. Slot keys are:
 
 - `ranked.banner.<tier>` — e.g. `ranked.banner.gold-3`
 - `legend.icon.<name_key>` — e.g. `legend.icon.sir-roland`
+- `legend.splash.<name_key>` — e.g. `legend.splash.bodvar`
 - `weapon.icon.<weapon>` — e.g. `weapon.icon.rocket-lance`
 
 For a deployed CMS:
