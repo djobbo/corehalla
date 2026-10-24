@@ -4,7 +4,12 @@ import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
 import { SortControl } from "@/components/common/SortControl"
 import { StatGrid } from "@/components/common/StatGrid"
 import { WeaponRow } from "./WeaponRow"
-import { playerProfileAtom, useQuery } from "@/effect/atoms"
+import {
+    playerLegendsAtom,
+    playerProfileAtom,
+    playerWeaponsAtom,
+    useQuery,
+} from "@/effect/atoms"
 import { useSortBy } from "@/lib/useSortBy"
 import { calculateWinrate } from "@crh/bhapi/helpers/calculateWinrate"
 import { formatTime } from "@crh/common/helpers/date"
@@ -65,15 +70,16 @@ const sortOptions: Record<WeaponSort, SortOption<PlayerWeapon>> = {
 }
 
 export const WeaponsTab = ({ playerId }: { readonly playerId: number }) => {
+    const weapons = useQuery(playerWeaponsAtom(playerId)).data
+    const allLegends = useQuery(playerLegendsAtom(playerId)).data
     const profile = useQuery(playerProfileAtom(playerId)).data
-    const weapons = profile.weapons
 
     const legends = useMemo(
         () =>
             new Map<number, PlayerLegend>(
-                profile.legends.map((legend) => [legend.id, legend]),
+                allLegends.map((legend) => [legend.id, legend]),
             ),
-        [profile.legends],
+        [allLegends],
     )
 
     const sort = useSortBy(weapons, sortOptions, "matchtime", "desc")

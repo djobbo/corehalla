@@ -24,11 +24,45 @@
 
 ## Repository layout
 
-| Package      | Description                                                                                                                        |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `web`        | **TanStack Start app** (Vite, React 19, Tailwind v4). Deployed to Cloudflare with Alchemy. See [`web/README.md`](./web/README.md). |
-| `worker`     | Discord bot + crawler (long-running Node process).                                                                                 |
-| `packages/*` | Shared `db`, `bhapi`, `web-parser`, `common`, `logger` and `dl-roster-images` packages.                                            |
+| Package      | Description                                                                                                                                |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `web`        | **TanStack Start app** (Vite, React 19, Tailwind v4). Deployed to Cloudflare with Alchemy. See [`web/README.md`](./web/README.md).         |
+| `worker`     | Discord bot + crawler (long-running Node process).                                                                                         |
+| `packages/*` | Shared `db`, `bhapi`, `web-parser`, `common`, `logger` and `dl-roster-images` packages.                                                    |
+| `domain`     | **Pure Brawlhalla domain** — v1/brawltools clients, mappers, section builders and plans shared by the API worker and the browser fallback. |
+
+## Upstream fallback (browser)
+
+Player and guild pages are split into independently fetchable sections
+(`profile`, `legends`, `weapons`, `teams`, `clan`). Each response carries a
+`SectionMeta` with per-part status and `complete`. Live rankings, esports and
+power rankings use the same wrapper, with only a failure (not a partial) trigger.
+
+When the API cannot reach Brawlhalla after its retries — or returns a partial
+section — the client reruns the **same** `@crh/domain` plan directly against v1
+or brawltools (`makeUpstream` / `makeBrawltools` + `FetchHttpClient`) and
+replaces only that section. No API key is involved.
+
+| Situation                        | API status                | Client behaviour                             |
+| -------------------------------- | ------------------------- | -------------------------------------------- |
+| Every source resolved            | `200`                     | Use the section                              |
+| Optional source missing          | `200` + `complete: false` | Use it, patch the section direct             |
+| Required source failed           | `502`                     | Run the section plan direct                  |
+| Server deadline (5s)             | `504`                     | Run the section plan direct                  |
+| No binding / upstream budget     | `503`                     | Run the section plan direct, no server retry |
+| Player/guild definitively absent | `404`                     | Normal not-found page                        |
+
+Direct calls are capped at concurrency 3, one jittered retry, a 5s deadline
+and a per-source circuit breaker. Failures are reported to
+`POST /api/telemetry` (served by the web worker, not the API binding) and the
+console. Disable the fallback at build time with
+`VITE_ENABLE_UPSTREAM_FALLBACK=false`, or at runtime with
+`localStorage["corehalla:upstream-fallback"] = "off"`.
+
+Every API response also carries `x-corehalla-contract` and
+`x-corehalla-build`; a contract mismatch makes the client ignore the server
+payload and rebuild locally. The build id is the hook for the "a new version is
+available" prompt.
 
 ## Data layer: Cloudflare D1 (SQLite)
 

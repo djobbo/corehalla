@@ -1,0 +1,24 @@
+{
+    "name": "@crh/domain",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "test": "vp test",
+        "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json"
+    },
+    "devDependencies": {
+        "@effect/vitest": "catalog:",
+        "@types/node": "catalog:",
+        "@crh/tsconfig": "workspace:*",
+        "typescript": "catalog:",
+        "vite-plus": "catalog:",
+        "vitest": "catalog:"
+    },
+    "dependencies": {
+        "@crh/api-contract": "workspace:*",
+        "@crh/bhapi": "workspace:*",
+        "@crh/common": "workspace:*",
+        "effect": "catalog:"
+    }
+}

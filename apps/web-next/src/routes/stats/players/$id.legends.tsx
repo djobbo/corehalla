@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { ClientOnly, createFileRoute } from "@tanstack/react-router"
 import { LegendsTab } from "@/components/player/LegendsTab"
 import { resolveEntityId } from "@/lib/routeParams"
 
@@ -9,5 +9,9 @@ export const Route = createFileRoute("/stats/players/$id/legends")({
 function Page() {
     const { id } = Route.useParams()
 
-    return <LegendsTab playerId={resolveEntityId(id)} />
+    return (
+        <ClientOnly fallback={null}>
+            <LegendsTab playerId={resolveEntityId(id)} />
+        </ClientOnly>
+    )
 }

@@ -22,6 +22,10 @@ import { defineConfig } from "vite-plus"
  * There is deliberately no proxy either: a proxy target would have to name the
  * API's port, and Alchemy reassigns that port on every dev run.
  *
+ * CMS media follows the same rule. `/static/*` in `src/server.ts` forwards to
+ * the CMS Worker's media route over the `CMS` binding (or `CMS_DEV_URL`
+ * locally), so pages never link to the `cms.*` origin.
+ *
  * ## Why `publicDir` points next door
  *
  * The roster, weapon and region art is 13MB of third-party images that the

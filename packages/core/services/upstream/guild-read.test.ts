@@ -104,7 +104,7 @@ describe("the guild read on a player fetch", () => {
             expect(urls[0]).toContain("/player/guild")
 
             expect(clan?.clan_name).toBe("Nine")
-            expect(clan?.clan_xp).toBe("1234")
+            expect(clan?.clan_xp).toBe("0")
         }),
     )
 

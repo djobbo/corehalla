@@ -1,6 +1,5 @@
 import * as Alchemy from "alchemy"
 import { adopt } from "alchemy/AdoptPolicy"
-import * as Output from "alchemy/Output"
 import * as Cloudflare from "@alchemy.run/cloudflare"
 import { ConfigError } from "effect/Config"
 import * as Config from "effect/Config"
@@ -195,17 +194,8 @@ export default Alchemy.Stack(
                 }),
                 SITE_URL: setting("SITE_URL", "https://corehalla.com"),
                 ...(cms === undefined
-                    ? {
-                          CMS_DEV_URL: cmsDevUrl,
-                          CMS_PUBLIC_URL: cmsDevUrl,
-                      }
-                    : {
-                          CMS: cmsResource,
-                          CMS_PUBLIC_URL: Output.map(
-                              cms.url,
-                              (url) => url ?? `https://cms.${hostname}`,
-                          ),
-                      }),
+                    ? { CMS_DEV_URL: cmsDevUrl }
+                    : { CMS: cmsResource }),
                 DISCORD_CLIENT_ID: setting("DISCORD_CLIENT_ID"),
                 DISCORD_CLIENT_SECRET: secret("DISCORD_CLIENT_SECRET"),
             },
@@ -245,6 +235,10 @@ export default Alchemy.Stack(
             env: {
                 API: apiResource,
                 DB: dbResource,
+                // `/static/*` proxies CMS media. Same dev split as the API.
+                ...(cms === undefined
+                    ? { CMS_DEV_URL: cmsDevUrl }
+                    : { CMS: cmsResource }),
                 SITE_URL: setting("SITE_URL", "https://corehalla.com"),
                 VITE_SITE_URL: siteUrl,
                 INTERNAL_ORIGIN: internalOrigin,

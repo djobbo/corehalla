@@ -3,6 +3,7 @@ import { AtomHttpApi } from "effect/reactivity"
 import { FetchHttpClient, HttpClient } from "effect/http"
 import { CorehallaApi } from "@crh/api-contract/Api"
 import { withRetry } from "./retry"
+import { withContract } from "./contract"
 
 /** Identity type for the client service; `Self` has no inference site. */
 export interface CorehallaClientSelf {
@@ -32,7 +33,7 @@ export const CorehallaClient = AtomHttpApi.Service<CorehallaClientSelf>()(
         httpClient: import.meta.env.SSR
             ? serverHttpClient
             : FetchHttpClient.layer,
-        transformClient: withRetry,
+        transformClient: (client) => withContract(withRetry(client)),
         // Browser stays relative; only the render needs an absolute URL to parse.
         baseUrl: import.meta.env.SSR ? SERVER_BASE_URL : undefined,
     },

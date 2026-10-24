@@ -1,14 +1,20 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { ClientOnly, createFileRoute } from "@tanstack/react-router"
+import { PageLoaderProbe } from "@/components/layout/PageLoader"
 import { LadderView } from "@/components/views/LadderView"
 import { LADDER_PAGE_SIZE } from "@/lib/rankings"
 import { to2v2Rows } from "@/lib/ladderRows"
 import { resolvePage, resolveRegion } from "@/lib/routeParams"
-import { preloadAtoms, rankings2v2Atom, useQuery } from "@/effect/atoms"
+import {
+    preloadAtomsDegraded,
+    rankings2v2Atom,
+    rankings2v2QueryAtom,
+    useQuery,
+} from "@/effect/atoms"
 
 export const Route = createFileRoute("/rankings/live/2v2/{-$region}/{-$page}")({
     loader: ({ params, context }) =>
-        preloadAtoms(context, [
-            rankings2v2Atom(
+        preloadAtomsDegraded(context, [
+            rankings2v2QueryAtom(
                 resolveRegion(params.region),
                 resolvePage(params.page),
             ),
@@ -16,7 +22,7 @@ export const Route = createFileRoute("/rankings/live/2v2/{-$region}/{-$page}")({
     component: Page,
 })
 
-function Page() {
+function PageContent() {
     const { region: regionParam, page: pageParam } = Route.useParams()
 
     const region = resolveRegion(regionParam)
@@ -36,4 +42,24 @@ function Page() {
             />
         </main>
     )
+}
+
+const BoardShell = () => (
+    <main className="ch-page">
+        <PageLoaderProbe />
+    </main>
+)
+
+function Page() {
+    const { degraded } = Route.useLoaderData()
+
+    if (degraded) {
+        return (
+            <ClientOnly fallback={<BoardShell />}>
+                <PageContent />
+            </ClientOnly>
+        )
+    }
+
+    return <PageContent />
 }

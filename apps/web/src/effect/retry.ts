@@ -6,7 +6,7 @@ import { HttpClient, HttpClientError } from "effect/http"
  *
  * This is the *inbound* direction (browser → API worker). The API worker has its
  * own policy for the *outbound* direction (API worker → Brawlhalla) in
- * `apps/api/src/services/retry.ts`; the two are deliberately separate so either
+ * `packages/domain/retry.ts`; the two are deliberately separate so either
  * can be tuned without changing the other's failure semantics.
  *
  * Transport failures (network errors, timeouts, aborted requests) are retried

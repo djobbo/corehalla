@@ -40,6 +40,15 @@ export const cacheKeys = {
     playerClan: (playerId: number | string): string =>
         `player-clan:${playerId}`,
 
+    /** Account-level 1v1/legend ratings only. */
+    playerRanked1v1: (playerId: number | string): string =>
+        `player-ranked-1v1:${playerId}`,
+
+    /** 2v2 team rows, cached apart from the account record. */
+    playerTeams: (playerId: number | string): string =>
+        `player-teams:${playerId}`,
+
+    /** Crawler-composed record; kept for scripts that warm the whole view. */
     playerRanked: (playerId: number | string): string =>
         `player-ranked:${playerId}`,
 

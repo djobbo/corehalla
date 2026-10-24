@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { toClan } from "./v1"
-import type { V1Guild, V1GuildMember } from "./v1"
+import { toClan } from "@crh/domain/upstream/v1"
+import type { V1Guild, V1GuildMember } from "@crh/domain/upstream/v1"
 
 const guild: V1Guild = {
     guild_id: 9,

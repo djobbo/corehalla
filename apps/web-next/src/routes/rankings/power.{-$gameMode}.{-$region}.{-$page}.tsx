@@ -1,4 +1,9 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import {
+    ClientOnly,
+    createFileRoute,
+    useNavigate,
+} from "@tanstack/react-router"
+import { PageLoaderProbe } from "@/components/layout/PageLoader"
 import { PowerRankingsView } from "@/components/views/PowerRankingsView"
 import {
     resolvePage,
@@ -6,7 +11,12 @@ import {
     resolvePowerOrderBy,
     resolvePowerRegion,
 } from "@/lib/routeParams"
-import { powerRankingsAtom, preloadAtoms, useQuery } from "@/effect/atoms"
+import {
+    powerRankingsAtom,
+    powerRankingsQueryAtom,
+    preloadAtomsDegraded,
+    useQuery,
+} from "@/effect/atoms"
 import type { PowerRankingsOrderBy } from "@crh/api-contract/schemas"
 
 type PowerSearch = { orderBy: PowerRankingsOrderBy }
@@ -19,8 +29,8 @@ export const Route = createFileRoute(
     }),
     loaderDeps: ({ search }) => ({ orderBy: search.orderBy }),
     loader: ({ params, deps, context }) =>
-        preloadAtoms(context, [
-            powerRankingsAtom(
+        preloadAtomsDegraded(context, [
+            powerRankingsQueryAtom(
                 resolvePowerGameMode(params.gameMode),
                 resolvePowerRegion(params.region),
                 resolvePage(params.page),
@@ -30,7 +40,7 @@ export const Route = createFileRoute(
     component: Page,
 })
 
-function Page() {
+function PageContent() {
     const {
         gameMode: gameModeParam,
         region: regionParam,
@@ -66,4 +76,24 @@ function Page() {
             />
         </main>
     )
+}
+
+const BoardShell = () => (
+    <main className="ch-page">
+        <PageLoaderProbe />
+    </main>
+)
+
+function Page() {
+    const { degraded } = Route.useLoaderData()
+
+    if (degraded) {
+        return (
+            <ClientOnly fallback={<BoardShell />}>
+                <PageContent />
+            </ClientOnly>
+        )
+    }
+
+    return <PageContent />
 }

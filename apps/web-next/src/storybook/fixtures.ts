@@ -458,6 +458,111 @@ export const esportsEnvelope = {
     meta: { updated_at: UPDATED_AT },
 }
 
+import type {
+    PlayerEnvelope,
+    PlayerLegend,
+    PlayerProfile,
+    PlayerRanked2v2,
+    PlayerWeapon,
+} from "@crh/api-contract/schemas"
+
+/** Section envelope used by the split player endpoints. */
+const section = <A>(plan: string, data: A) => ({
+    data,
+    meta: {
+        plan,
+        contract: 1,
+        updated_at: UPDATED_AT,
+        complete: true,
+        parts: {},
+    },
+})
+
+const profileOf = (envelope: PlayerEnvelope): PlayerProfile => {
+    const data = envelope.data
+    const teams = data.ranked?.["2v2"]?.teams ?? []
+
+    return {
+        id: data.id,
+        name: data.name,
+        slug: data.slug,
+        aliases: data.aliases,
+        stats: data.stats,
+        ranked:
+            data.ranked === null
+                ? null
+                : {
+                      ...data.ranked,
+                      "2v2":
+                          data.ranked["2v2"] === null
+                              ? null
+                              : { ...data.ranked["2v2"], teams: [] },
+                  },
+        unarmed: data.unarmed,
+        weapon_throws: data.weapon_throws,
+        gadgets: data.gadgets,
+        legend_bubbles: data.legends
+            .filter((legend) => legend.stats.games > 0)
+            .map((legend) => ({
+                id: legend.id,
+                name: legend.name,
+                name_key: legend.name_key,
+                slug: legend.slug,
+                level: legend.stats.level,
+                matchtime: legend.stats.matchtime,
+                kos: legend.stats.kos,
+                damage_dealt: legend.stats.damage_dealt,
+                games: legend.stats.games,
+                wins: legend.stats.wins,
+            })),
+        weapon_bubbles: data.weapons
+            .filter((weapon) => weapon.stats.games > 0)
+            .map((weapon) => ({
+                name: weapon.name,
+                level: weapon.stats.level,
+                time_held: weapon.stats.time_held,
+                kos: weapon.stats.kos,
+                damage_dealt: weapon.stats.damage_dealt,
+                games: weapon.stats.games,
+                wins: weapon.stats.wins,
+            })),
+        has_2v2: teams.some((team) => team.paired),
+        solo_2v2: teams.find((team) => !team.paired) ?? null,
+        weapon_kos: data.weapon_kos,
+        thrown_kos: data.thrown_kos,
+        weapon_damage: data.weapon_damage,
+    }
+}
+
+const teamSection = (envelope: PlayerEnvelope): PlayerRanked2v2 =>
+    envelope.data.ranked?.["2v2"] ?? {
+        games: 0,
+        wins: 0,
+        average_rating: 0,
+        average_peak_rating: 0,
+        teams: [],
+    }
+
+const sectionsFor = (id: number, envelope: PlayerEnvelope) => ({
+    [`/api/v1/players/${id}`]: section("player/profile@1", profileOf(envelope)),
+    [`/api/v1/players/${id}/legends`]: section(
+        "player/legends@1",
+        envelope.data.legends satisfies readonly PlayerLegend[],
+    ),
+    [`/api/v1/players/${id}/weapons`]: section(
+        "player/weapons@1",
+        envelope.data.weapons satisfies readonly PlayerWeapon[],
+    ),
+    [`/api/v1/players/${id}/teams`]: section(
+        "player/teams@1",
+        teamSection(envelope),
+    ),
+    [`/api/v1/players/${id}/clan`]: section(
+        "player/clan@1",
+        envelope.data.clan,
+    ),
+})
+
 const emptyEsportsEnvelope = {
     data: {
         identity: null,
@@ -480,14 +585,35 @@ export const EMPTY_GUILD_ID = 4244
 
 /** `parameters.mockApi` maps, one per feature. */
 export const playerMock = {
-    [`/api/v1/players/${PLAYER_ID}`]: playerEnvelope,
-    [`/api/v1/players/${EMPTY_PLAYER_ID}`]: emptyPlayerEnvelope,
+    ...sectionsFor(PLAYER_ID, playerEnvelope as unknown as PlayerEnvelope),
+    ...sectionsFor(
+        EMPTY_PLAYER_ID,
+        emptyPlayerEnvelope as unknown as PlayerEnvelope,
+    ),
 }
 
+const guildSection = (envelope: {
+    data: unknown
+    meta: { updated_at: number }
+}) => ({
+    data: envelope.data,
+    meta: {
+        plan: "guild/profile@1",
+        contract: 1,
+        updated_at: envelope.meta.updated_at,
+        complete: true,
+        parts: { clan: "ok" },
+    },
+})
+
 export const guildMock = {
-    [`/api/v1/guilds/${GUILD_ID}`]: guildEnvelope,
-    [`/api/v1/guilds/${NO_POINTS_GUILD_ID}`]: noPointsGuildEnvelope,
-    [`/api/v1/guilds/${EMPTY_GUILD_ID}`]: emptyRosterGuildEnvelope,
+    [`/api/v1/guilds/${GUILD_ID}`]: guildSection(guildEnvelope),
+    [`/api/v1/guilds/${NO_POINTS_GUILD_ID}`]: guildSection(
+        noPointsGuildEnvelope,
+    ),
+    [`/api/v1/guilds/${EMPTY_GUILD_ID}`]: guildSection(
+        emptyRosterGuildEnvelope,
+    ),
 }
 
 export const esportsMock = {

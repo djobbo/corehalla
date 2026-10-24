@@ -2,25 +2,29 @@ import { legendIconSrc } from "./assets"
 import { mediaSlotKey } from "./mediaSlot"
 import { playerHref } from "./rankings"
 import type { BubbleNode } from "./bubbles"
-import type { PlayerLegend } from "@crh/api-contract/schemas"
+import type { LegendBubble, PlayerLegend } from "@crh/api-contract/schemas"
 
 /** One bubble per played legend, in id order so server and client pack alike. */
 export const toLegendBubbles = (
-    legends: readonly PlayerLegend[],
+    legends: readonly (LegendBubble | PlayerLegend)[],
 ): readonly BubbleNode[] =>
     legends
-        .filter((legend) => legend.stats.games > 0)
-        .sort((a, b) => a.id - b.id)
         .map((legend) => ({
+            legend,
+            stats: "stats" in legend ? legend.stats : legend,
+        }))
+        .filter(({ stats }) => stats.games > 0)
+        .sort((a, b) => a.legend.id - b.legend.id)
+        .map(({ legend, stats }) => ({
             key: String(legend.id),
             name: legend.name,
             icon: legendIconSrc(legend.name_key),
             slotKey: mediaSlotKey("legend.icon", legend.name_key),
             href: playerHref(legend.slug),
-            level: legend.stats.level,
-            matchtime: legend.stats.matchtime,
-            kos: legend.stats.kos,
-            damage_dealt: legend.stats.damage_dealt,
-            games: legend.stats.games,
-            wins: legend.stats.wins,
+            level: stats.level,
+            matchtime: stats.matchtime,
+            kos: stats.kos,
+            damage_dealt: stats.damage_dealt,
+            games: stats.games,
+            wins: stats.wins,
         }))

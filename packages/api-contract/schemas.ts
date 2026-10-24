@@ -215,6 +215,7 @@ export const ArticlesPageSchema = json<ArticlesPage>()
 export const ArticleSchema = json<BHArticleDetail>()
 
 export * from "./aggregate/common"
+export * from "./aggregate/section"
 export * from "./aggregate/player"
 export * from "./aggregate/esports"
 export * from "./aggregate/guild"

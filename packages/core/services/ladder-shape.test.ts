@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@effect/vitest"
-import { isCompleteLeaderboard, toRankings3v3 } from "./upstream/v1"
-import type { V1Leaderboard } from "./upstream/v1"
+import { isCompleteLeaderboard, toRankings3v3 } from "@crh/domain/upstream/v1"
+import type { V1Leaderboard } from "@crh/domain/upstream/v1"
 
 const threeVsThree: V1Leaderboard = {
     total_pages: 12,

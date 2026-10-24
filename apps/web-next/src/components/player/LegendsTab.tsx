@@ -5,7 +5,7 @@ import { SelectField } from "@/components/common/SelectField"
 import { SortControl } from "@/components/common/SortControl"
 import { StatGrid } from "@/components/common/StatGrid"
 import { LegendRow } from "./LegendRow"
-import { playerProfileAtom, useQuery } from "@/effect/atoms"
+import { playerLegendsAtom, playerProfileAtom, useQuery } from "@/effect/atoms"
 import { ratio } from "@/lib/stats"
 import { useSortBy } from "@/lib/useSortBy"
 import { calculateWinrate } from "@crh/bhapi/helpers/calculateWinrate"
@@ -89,10 +89,9 @@ const weaponChoices: readonly { value: Weapon | ""; label: string }[] = [
 ]
 
 export const LegendsTab = ({ playerId }: { readonly playerId: number }) => {
+    const legends = useQuery(playerLegendsAtom(playerId)).data
     const profile = useQuery(playerProfileAtom(playerId)).data
     const [weaponFilter, setWeaponFilter] = useState<Weapon | "">("")
-
-    const legends = profile.legends
 
     const filtered = useMemo(
         () =>

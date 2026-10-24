@@ -1,7 +1,11 @@
 import { weaponIconSrc } from "./assets"
 import { mediaSlotKey } from "./mediaSlot"
 import type { BubbleNode } from "./bubbles"
-import type { Player, PlayerWeapon } from "@crh/api-contract/schemas"
+import type {
+    PlayerProfile,
+    PlayerWeapon,
+    WeaponBubble,
+} from "@crh/api-contract/schemas"
 
 const byKey = (a: BubbleNode, b: BubbleNode): number =>
     a.key < b.key ? -1 : a.key > b.key ? 1 : 0
@@ -12,22 +16,26 @@ const byKey = (a: BubbleNode, b: BubbleNode): number =>
  * totals and carries no level or record.
  */
 export const toWeaponBubbles = (
-    weapons: readonly PlayerWeapon[],
-    unarmed: Player["unarmed"],
+    weapons: readonly (WeaponBubble | PlayerWeapon)[],
+    unarmed: PlayerProfile["unarmed"],
 ): readonly BubbleNode[] => {
     const bubbles: BubbleNode[] = weapons
-        .filter((weapon) => weapon.stats.games > 0)
         .map((weapon) => ({
+            weapon,
+            stats: "stats" in weapon ? weapon.stats : weapon,
+        }))
+        .filter(({ stats }) => stats.games > 0)
+        .map(({ weapon, stats }) => ({
             key: weapon.name,
             name: weapon.name,
             icon: weaponIconSrc(weapon.name),
             slotKey: mediaSlotKey("weapon.icon", weapon.name),
-            level: weapon.stats.level,
-            matchtime: weapon.stats.time_held,
-            kos: weapon.stats.kos,
-            damage_dealt: weapon.stats.damage_dealt,
-            games: weapon.stats.games,
-            wins: weapon.stats.wins,
+            level: stats.level,
+            matchtime: stats.time_held,
+            kos: stats.kos,
+            damage_dealt: stats.damage_dealt,
+            games: stats.games,
+            wins: stats.wins,
         }))
 
     if (unarmed.time_held > 0) {

@@ -87,8 +87,13 @@ export const layer = Layer.effect(
 
                 if (ranked !== null) {
                     yield* cache.set(
-                        cacheKeys.playerRanked(playerId),
-                        ranked,
+                        cacheKeys.playerRanked1v1(playerId),
+                        { ...ranked, "2v2": [] },
+                        cacheTtl.profile,
+                    )
+                    yield* cache.set(
+                        cacheKeys.playerTeams(playerId),
+                        ranked["2v2"],
                         cacheTtl.profile,
                     )
                 }

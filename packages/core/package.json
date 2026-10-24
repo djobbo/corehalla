@@ -18,6 +18,7 @@
         "@crh/api-contract": "workspace:*",
         "@crh/bhapi": "workspace:*",
         "@crh/db": "workspace:*",
-        "effect": "catalog:"
+        "effect": "catalog:",
+        "@crh/domain": "workspace:*"
     }
 }

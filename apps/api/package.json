@@ -22,6 +22,7 @@
         "@crh/logger": "workspace:*",
         "@crh/web-parser": "workspace:*",
         "effect": "catalog:",
-        "@crh/core": "workspace:*"
+        "@crh/core": "workspace:*",
+        "@crh/domain": "workspace:*"
     }
 }

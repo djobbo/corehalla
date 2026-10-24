@@ -3,7 +3,7 @@ import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
 import { SortControl } from "@/components/common/SortControl"
 import { StatGrid } from "@/components/common/StatGrid"
 import { TeamCard } from "./TeamCard"
-import { playerProfileAtom, useQuery } from "@/effect/atoms"
+import { playerTeamsAtom, useQuery } from "@/effect/atoms"
 import { ratio } from "@/lib/stats"
 import { useSortBy } from "@/lib/useSortBy"
 import { calculateWinrate } from "@crh/bhapi/helpers/calculateWinrate"
@@ -52,9 +52,7 @@ const sortOptions: Record<TeamSort, SortOption<Team>> = {
 }
 
 export const TeamsTab = ({ playerId }: { readonly playerId: number }) => {
-    const envelope = useQuery(playerProfileAtom(playerId))
-
-    const teams = (envelope.data.ranked?.["2v2"]?.teams ?? []).filter(
+    const teams = useQuery(playerTeamsAtom(playerId)).data.teams.filter(
         (team: Team) => team.paired,
     )
 

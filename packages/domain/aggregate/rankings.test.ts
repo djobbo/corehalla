@@ -2,7 +2,7 @@ import { describe, expect, it } from "@effect/vitest"
 import { rankings1v1Mock } from "@crh/bhapi/mocks/rankings1v1"
 import { rankings2v2Mock } from "@crh/bhapi/mocks/rankings2v2"
 import { bestLegendIndex, buildRankings1v1, buildRankings2v2 } from "./rankings"
-import type { BestLegendRow } from "@crh/core/services/archive"
+import type { BestLegendRow } from "./rankings"
 
 describe("ladder aggregation", () => {
     it("falls back to v1's own best legend when the archive has none", () => {

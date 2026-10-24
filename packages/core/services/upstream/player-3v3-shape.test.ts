@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest"
-import { isCompletePlayer3v3Ranked, toPlayer3v3Ranked } from "./v1"
-import type { V1PlayerRankedStats } from "./v1"
+import {
+    isCompletePlayer3v3Ranked,
+    toPlayer3v3Ranked,
+} from "@crh/domain/upstream/v1"
+import type { V1PlayerRankedStats } from "@crh/domain/upstream/v1"
 
 const diamond: V1PlayerRankedStats = {
     brawlhalla_id: 78717735,

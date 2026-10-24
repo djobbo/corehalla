@@ -1,7 +1,7 @@
 import { describe, expect, it } from "@effect/vitest"
 import { Effect } from "effect"
 import { HttpClient, HttpClientRequest, HttpClientResponse } from "effect/http"
-import { v1Ops } from "./v1"
+import { v1Ops } from "@crh/domain/upstream/v1"
 import { USER_AGENT, withUserAgent } from "./user-agent"
 
 export const capturingClient = () => {
@@ -63,7 +63,9 @@ describe("v1 client", () => {
     it("sends the identifying User-Agent on a leaderboard read", async () => {
         const { client, requests } = capturingClient()
 
-        await Effect.runPromise(v1Ops(client).getLeaderboard("1v1", "eu", 1))
+        await Effect.runPromise(
+            v1Ops(withUserAgent(client)).getLeaderboard("1v1", "eu", 1),
+        )
 
         expect(requests).toHaveLength(1)
         expect(userAgentOf(requests[0]!)).toBe(USER_AGENT)
@@ -72,7 +74,9 @@ describe("v1 client", () => {
     it("sends it on a player read as well", async () => {
         const { client, requests } = capturingClient()
 
-        await Effect.runPromise(v1Ops(client).getPlayerStats(1234, "all"))
+        await Effect.runPromise(
+            v1Ops(withUserAgent(client)).getPlayerStats(1234, "all"),
+        )
 
         expect(requests).toHaveLength(1)
         expect(userAgentOf(requests[0]!)).toBe(USER_AGENT)
@@ -81,7 +85,9 @@ describe("v1 client", () => {
     it("sends it on a player teams read", async () => {
         const { client, requests } = capturingClient()
 
-        await Effect.runPromise(v1Ops(client).getPlayerTeams(1234))
+        await Effect.runPromise(
+            v1Ops(withUserAgent(client)).getPlayerTeams(1234),
+        )
 
         expect(requests).toHaveLength(1)
         expect(userAgentOf(requests[0]!)).toBe(USER_AGENT)

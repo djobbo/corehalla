@@ -96,7 +96,7 @@ describe("buildPlayer", () => {
         const clan = build().data.clan
 
         expect(clan?.id).toBe(playerStatsMock.clan?.clan_id)
-        expect(clan?.xp).toBe(Number(playerStatsMock.clan?.clan_xp))
+        expect(clan?.xp).toBe(Number(clanMock.clan_xp))
         expect(clan?.joined_at).not.toBeUndefined()
     })
 })

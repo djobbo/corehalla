@@ -1,28 +1,19 @@
 import { Context, Effect, Layer } from "effect"
 import { HttpClient } from "effect/http"
 import { Database } from "../archive"
+import { withUserAgent } from "./user-agent"
 import { Background } from "../background"
 import { Cache } from "../cache"
 import { cacheKeys, cacheTtl } from "../cache-policy"
 import type { Cached } from "../cache"
 import { snapshotFromRanked } from "../player-writes"
-import {
-    isCompleteClan,
-    isCompleteLeaderboard,
-    isCompletePlayer3v3Ranked,
-    isCompletePlayerStats,
-    toClan,
-    toPlayer3v3Ranked,
-    toPlayerRanked,
-    toPlayerStats,
-    toRankings1v1,
-    toRankings2v2,
-    toRankings3v3,
-    v1Ops,
-} from "./v1"
+import { makeUpstream } from "@crh/domain/upstream/client"
+import { mergePlayerRanked } from "@crh/domain/upstream/v1"
+import type { V1Error } from "@crh/domain/upstream/v1"
+import type { V1UpstreamShape } from "@crh/domain/upstream/client"
 import type {
-    Ladder,
     Clan,
+    Ladder,
     Player3v3Ranked,
     PlayerRanked,
     PlayerStats,
@@ -32,33 +23,7 @@ import type {
 } from "@crh/bhapi/types"
 import type { RankedRegion } from "@crh/bhapi/constants"
 
-type UpstreamShape = {
-    readonly getRankings: (
-        bracket: Ladder,
-        region: RankedRegion,
-        page: number,
-        name?: string,
-    ) => Effect.Effect<readonly (Ranking1v1 | Ranking2v2 | Ranking3v3)[]>
-
-    /** Career stats without clan — separate from getPlayerClan so crawler can warm this half. */
-    readonly getPlayerStats: (
-        playerId: number,
-    ) => Effect.Effect<PlayerStats | null>
-    /**
-     * clan_xp from our BHClan row (v1 guild has none). Missing/storage fail → null
-     * so contribution % never divides by a placeholder.
-     */
-    readonly getPlayerClan: (
-        playerId: number,
-    ) => Effect.Effect<PlayerStats["clan"] | null>
-    readonly getPlayerRanked: (
-        playerId: number,
-    ) => Effect.Effect<PlayerRanked | null>
-    readonly getPlayer3v3Ranked: (
-        playerId: number,
-    ) => Effect.Effect<Player3v3Ranked | null>
-    readonly getClan: (clanId: number) => Effect.Effect<Clan | null>
-}
+export type UpstreamShape = V1UpstreamShape
 
 /**
  * v1-only, no cache. Crawler uses this — caching/damping here would throttle
@@ -72,128 +37,8 @@ export const rawLayer = Layer.effect(
     Upstream,
     Effect.gen(function* () {
         const client = yield* HttpClient.HttpClient
-        const database = yield* Database
 
-        const v1 = v1Ops(client)
-
-        return {
-            getRankings: (bracket, region, page, name) =>
-                Effect.gen(function* () {
-                    const board = yield* v1.getLeaderboard(
-                        bracket,
-                        region,
-                        page,
-                        name,
-                    )
-
-                    // 3v3 is one player/row (solo queue), not a trio; 2v2 is two.
-                    const playersPerRow = bracket === "2v2" ? 2 : 1
-
-                    if (
-                        board === null ||
-                        !isCompleteLeaderboard(board, playersPerRow)
-                    ) {
-                        yield* Effect.logDebug(
-                            `v1 could not serve ${bracket} rankings ` +
-                                `(${region} page ${page})`,
-                        )
-
-                        return []
-                    }
-
-                    if (bracket === "1v1") return toRankings1v1(board.rankings)
-
-                    return bracket === "2v2"
-                        ? toRankings2v2(board.rankings)
-                        : toRankings3v3(board.rankings)
-                }),
-
-            getPlayerStats: (playerId) =>
-                Effect.gen(function* () {
-                    const stats = yield* v1.getPlayerStats(playerId, "all")
-
-                    if (stats === null || !isCompletePlayerStats(stats)) {
-                        yield* Effect.logDebug(
-                            `v1 could not serve player ${playerId} stats`,
-                        )
-
-                        return null
-                    }
-
-                    return toPlayerStats(stats, undefined)
-                }),
-
-            getPlayerClan: (playerId) =>
-                Effect.gen(function* () {
-                    const membership = yield* v1.getPlayerGuild(playerId)
-                    const guild = membership?.guild
-
-                    if (!guild) return null
-
-                    // No real clan_xp → no card (avoids Infinity%). Storage fail = missing.
-                    const clanXp = yield* database
-                        .getClanXp(String(guild.guild_id))
-                        .pipe(Effect.catch(() => Effect.succeed(null)))
-
-                    if (!clanXp) return null
-
-                    return {
-                        clan_name: guild.guild_name,
-                        clan_id: guild.guild_id,
-                        clan_xp: clanXp,
-                        personal_xp: guild.personal_xp,
-                    }
-                }),
-
-            // Account + legend ratings from ranked_1v1; 2v2 teams from /player/teams.
-            getPlayerRanked: (playerId) =>
-                Effect.gen(function* () {
-                    const [stats, teams] = yield* Effect.all(
-                        [
-                            v1.getPlayer1v1Stats(playerId),
-                            v1.getPlayerTeams(playerId),
-                        ],
-                        { concurrency: 2 },
-                    )
-
-                    return toPlayerRanked(stats, teams)
-                }),
-
-            // 3v3 is v1-only; null means no record, not a failed page.
-            getPlayer3v3Ranked: (playerId) =>
-                Effect.gen(function* () {
-                    const stats = yield* v1.getPlayer3v3Stats(playerId)
-
-                    if (stats === null || !isCompletePlayer3v3Ranked(stats)) {
-                        yield* Effect.logDebug(
-                            `v1 could not serve 3v3 ranked for player ` +
-                                `${playerId}`,
-                        )
-
-                        return null
-                    }
-
-                    return toPlayer3v3Ranked(stats)
-                }),
-
-            getClan: (clanId) =>
-                Effect.gen(function* () {
-                    const [guild, members] = yield* Effect.all(
-                        [v1.getGuildStats(clanId), v1.getGuildMembers(clanId)],
-                        { concurrency: 2 },
-                    )
-
-                    const clan = guild
-                        ? toClan(guild, members?.guild_members ?? [])
-                        : null
-
-                    if (isCompleteClan(clan)) return clan
-
-                    yield* Effect.logDebug(`v1 could not serve guild ${clanId}`)
-
-                    return null
-                }),
-        }
+        return makeUpstream(withUserAgent(client))
     }),
 )
 
@@ -205,18 +50,35 @@ export type BrawlhallaShape = {
         page: number,
         name?: string,
     ) => Effect.Effect<
-        Cached<readonly (Ranking1v1 | Ranking2v2 | Ranking3v3)[]>
+        Cached<readonly (Ranking1v1 | Ranking2v2 | Ranking3v3)[]>,
+        V1Error
     >
+    /** Career stats only. Clan is a separate read so the crawler can warm this half. */
+    readonly getPlayerStatsCore: (
+        playerId: number,
+    ) => Effect.Effect<Cached<PlayerStats | null>, V1Error>
+    /** Career stats with the membership merged when it is available. */
     readonly getPlayerStats: (
         playerId: number,
-    ) => Effect.Effect<Cached<PlayerStats | null>>
+    ) => Effect.Effect<Cached<PlayerStats | null>, V1Error>
+    readonly getPlayerClan: (
+        playerId: number,
+    ) => Effect.Effect<Cached<PlayerStats["clan"] | null>, V1Error>
+    readonly getPlayerRanked1v1: (
+        playerId: number,
+    ) => Effect.Effect<Cached<PlayerRanked | null>, V1Error>
+    readonly getPlayerTeams: (
+        playerId: number,
+    ) => Effect.Effect<Cached<PlayerRanked["2v2"]>, V1Error>
     readonly getPlayerRanked: (
         playerId: number,
-    ) => Effect.Effect<Cached<PlayerRanked | null>>
+    ) => Effect.Effect<Cached<PlayerRanked | null>, V1Error>
     readonly getPlayer3v3Ranked: (
         playerId: number,
-    ) => Effect.Effect<Cached<Player3v3Ranked | null>>
-    readonly getClan: (clanId: number) => Effect.Effect<Cached<Clan | null>>
+    ) => Effect.Effect<Cached<Player3v3Ranked | null>, V1Error>
+    readonly getClan: (
+        clanId: number,
+    ) => Effect.Effect<Cached<Clan | null>, V1Error>
 }
 
 export class Brawlhalla extends Context.Service<Brawlhalla, BrawlhallaShape>()(
@@ -232,6 +94,30 @@ export const layer = Layer.effect(
         const database = yield* Database
         const background = yield* Background
 
+        const statsCore = (playerId: number) =>
+            cache.getOrSetCached(
+                cacheKeys.playerStats(playerId),
+                cacheTtl.profile,
+                upstream
+                    .getPlayerStats(playerId)
+                    .pipe(
+                        Effect.tap((value) =>
+                            value === null
+                                ? Effect.void
+                                : background.run(
+                                      database.upsertPlayerStats(value, null),
+                                  ),
+                        ),
+                    ),
+            )
+
+        const clan = (playerId: number) =>
+            cache.getOrSetCached(
+                cacheKeys.playerClan(playerId),
+                cacheTtl.profile,
+                upstream.getPlayerClan(playerId),
+            )
+
         // Archive writes run on cache miss/refresh only — not on every read.
         return {
             getRankings: (bracket, region, page, name) =>
@@ -241,69 +127,91 @@ export const layer = Layer.effect(
                     upstream.getRankings(bracket, region, page, name),
                 ),
 
-            // Stats + clan are separate keys so the crawler can warm stats alone.
+            getPlayerStatsCore: statsCore,
+
             getPlayerStats: (playerId) =>
                 Effect.gen(function* () {
-                    const stats = yield* cache.getOrSetCached(
-                        cacheKeys.playerStats(playerId),
-                        cacheTtl.profile,
-                        upstream
-                            .getPlayerStats(playerId)
-                            .pipe(
-                                Effect.tap((value) =>
-                                    value === null
-                                        ? Effect.void
-                                        : background.run(
-                                              database.upsertPlayerStats(
-                                                  value,
-                                                  null,
-                                              ),
-                                          ),
-                                ),
-                            ),
-                    )
+                    const stats = yield* statsCore(playerId)
 
                     if (stats.value === null) return stats
 
-                    const clan = yield* cache.getOrSetCached(
-                        cacheKeys.playerClan(playerId),
-                        cacheTtl.profile,
-                        upstream.getPlayerClan(playerId),
-                    )
+                    // Membership is enrichment: a failed read leaves the card out,
+                    // it does not take the profile down.
+                    const membership = yield* clan(playerId).pipe(Effect.result)
+
+                    if (membership._tag === "Failure") return stats
 
                     return {
                         value:
-                            clan.value === null
+                            membership.success.value === null
                                 ? stats.value
-                                : { ...stats.value, clan: clan.value },
-                        updatedAt: Math.min(stats.updatedAt, clan.updatedAt),
+                                : {
+                                      ...stats.value,
+                                      clan: membership.success.value,
+                                  },
+                        updatedAt: Math.min(
+                            stats.updatedAt,
+                            membership.success.updatedAt,
+                        ),
                     }
                 }),
 
-            getPlayerRanked: (playerId) =>
+            getPlayerClan: clan,
+
+            getPlayerRanked1v1: (playerId) =>
                 cache.getOrSetCached(
-                    cacheKeys.playerRanked(playerId),
+                    cacheKeys.playerRanked1v1(playerId),
                     cacheTtl.profile,
-                    upstream.getPlayerRanked(playerId).pipe(
-                        Effect.tap((ranked) => {
-                            if (ranked === null) return Effect.void
-
-                            const snapshot = snapshotFromRanked(ranked)
-
-                            return snapshot === null
-                                ? Effect.void
-                                : background.run(
-                                      database.upsertPlayerRanked(
-                                          {
-                                              id: ranked.brawlhalla_id.toString(),
-                                              name: ranked.name,
-                                          },
-                                          snapshot,
-                                      ),
-                                  )
-                        }),
-                    ),
+                    upstream.getPlayerRanked1v1(playerId),
                 ),
+
+            getPlayerTeams: (playerId) =>
+                cache.getOrSetCached(
+                    cacheKeys.playerTeams(playerId),
+                    cacheTtl.profile,
+                    upstream.getPlayerTeams(playerId),
+                ),
+
+            getPlayerRanked: (playerId) =>
+                Effect.gen(function* () {
+                    const [account, teams] = yield* Effect.all(
+                        [
+                            cache.getOrSetCached(
+                                cacheKeys.playerRanked1v1(playerId),
+                                cacheTtl.profile,
+                                upstream.getPlayerRanked1v1(playerId),
+                            ),
+                            cache.getOrSetCached(
+                                cacheKeys.playerTeams(playerId),
+                                cacheTtl.profile,
+                                upstream.getPlayerTeams(playerId),
+                            ),
+                        ],
+                        { concurrency: 2 },
+                    )
+
+                    const ranked = mergePlayerRanked(account.value, teams.value)
+
+                    const snapshot =
+                        ranked === null ? null : snapshotFromRanked(ranked)
+
+                    if (ranked !== null && snapshot !== null) {
+                        yield* background.run(
+                            database.upsertPlayerRanked(
+                                {
+                                    id: ranked.brawlhalla_id.toString(),
+                                    name: ranked.name,
+                                },
+                                snapshot,
+                            ),
+                        )
+                    }
+
+                    return {
+                        value: ranked,
+                        updatedAt: Math.min(account.updatedAt, teams.updatedAt),
+                    }
+                }),
 
             getPlayer3v3Ranked: (playerId) =>
                 cache.getOrSetCached(

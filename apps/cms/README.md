@@ -116,7 +116,7 @@ vpr deploy
 - R2: `corehalla-media`
 - The API reads the CMS through the `CMS` service binding.
 
-The first admin account is created with a passkey at the production admin URL. Media URLs are served through the CMS Worker and cached by Cloudflare.
+The first admin account is created with a passkey at the production admin URL. Media URLs are served through the CMS Worker and cached by Cloudflare. The web app also re-publishes them at `/static/<key>` over the `CMS` service binding, and the API returns that site-relative form so pages never link to `cms.*`.
 
 The CMS Worker sets `EMDASH_SITE_URL` to its canonical `https://cms.<host>` origin. EmDash uses that for passkey origin verification, so setup does not depend on `X-Forwarded-Proto` behind a proxy.
 

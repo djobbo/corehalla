@@ -9,3 +9,12 @@ export const regionFlagSrc = (region: string): string =>
 
 export const rankedBannerSrc = (tier: string | null | undefined): string =>
     `/images/ranked-banners/${tier ?? "Valhallan"}.png`
+
+/** CMS media is published site-relative; social scrapers need an origin. */
+export const absoluteUrl = (url: string): string => {
+    const siteUrl = import.meta.env.VITE_SITE_URL as string | undefined
+
+    return siteUrl === undefined || !url.startsWith("/")
+        ? url
+        : `${siteUrl.replace(/\/+$/, "")}${url}`
+}

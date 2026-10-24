@@ -1,8 +1,14 @@
 import { getEntitySlug } from "@crh/common/helpers/entitySlug"
 import { getTeamPlayers } from "@crh/bhapi/helpers/getTeamPlayers"
 import { legendsMap } from "@crh/bhapi/legends"
-import type { BestLegendRow } from "@crh/core/services/archive"
 import type { Ranking1v1, Ranking2v2, Ranking3v3 } from "@crh/bhapi/types"
+export type BestLegendRow = {
+    readonly playerId: string
+    readonly legendId: number
+    readonly games: number
+    readonly wins: number
+}
+
 import type {
     Rankings1v1Envelope,
     Rankings2v2Envelope,

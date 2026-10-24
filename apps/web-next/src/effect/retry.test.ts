@@ -22,13 +22,13 @@ const delays = Effect.gen(function* () {
 })
 
 describe("retrySchedule", () => {
-    it("backs off twice: 200ms then 400ms", async () => {
-        expect(await Effect.runPromise(delays)).toEqual([200, 400])
+    it("backs off three times: 200ms, 400ms, 800ms", async () => {
+        expect(await Effect.runPromise(delays)).toEqual([200, 400, 800])
     })
 })
 
 describe("withRetry", () => {
-    it("retries a transport error twice", async () => {
+    it("retries a transport error three times", async () => {
         let attempts = 0
 
         const client = withRetry(
@@ -50,11 +50,11 @@ describe("withRetry", () => {
                 const fiber = yield* client
                     .get("http://api.internal/api/v1/x")
                     .pipe(Effect.forkChild)
-                yield* TestClock.adjust("600 millis")
+                yield* TestClock.adjust("1400 millis")
                 yield* Fiber.join(fiber).pipe(Effect.ignore)
             }).pipe(Effect.provide(TestClock.layer())),
         )
 
-        expect(attempts).toBe(3)
+        expect(attempts).toBe(4)
     })
 })

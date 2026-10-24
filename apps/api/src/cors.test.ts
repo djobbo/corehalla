@@ -59,6 +59,8 @@ describe("CORS", () => {
 
         expect(response.headers.get("access-control-allow-origin")).toBe("*")
         expect(response.headers.get("content-type")).toBe("application/json")
+        expect(response.headers.get("x-corehalla-contract")).toBe("1")
+        expect(response.headers.get("x-corehalla-build")).toBeDefined()
         expect(response.status).toBe(200)
     })
 

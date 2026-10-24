@@ -349,15 +349,15 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
 
     const ranked1v1 = ranked?.["1v1"] ?? null
     const ranked3v3 = ranked?.["3v3"] ?? null
-    const soloRecord = ranked?.["2v2"]?.teams.find((team) => !team.paired)
+    const soloRecord = profile.solo_2v2
     const has1v1 = ranked1v1 !== null
     const has3v3 = ranked3v3 !== null
 
-    const hasLegendPlay = profile.legends.some(
-        (legend) => legend.stats.games > 0,
+    const hasLegendPlay = profile.legend_bubbles.some(
+        (legend) => legend.games > 0,
     )
     const hasWeaponPlay =
-        profile.weapons.some((weapon) => weapon.stats.games > 0) ||
+        profile.weapon_bubbles.some((weapon) => weapon.games > 0) ||
         profile.unarmed.time_held > 0
 
     // Games is always drawn, so the widest row is games + both distributions.
@@ -413,7 +413,9 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                             <CardTitle>Legends</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <LegendBubbleChart legends={profile.legends} />
+                            <LegendBubbleChart
+                                legends={profile.legend_bubbles}
+                            />
                         </CardContent>
                     </Card>
                 ) : null}
@@ -424,7 +426,7 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                         </CardHeader>
                         <CardContent>
                             <WeaponBubbleChart
-                                weapons={profile.weapons}
+                                weapons={profile.weapon_bubbles}
                                 unarmed={profile.unarmed}
                             />
                         </CardContent>

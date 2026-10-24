@@ -106,15 +106,23 @@ describe("crawler cache warming", () => {
                 row.brawlhalla_id_two,
             ]) {
                 expect(keys).toContain(cacheKeys.playerStats(playerId))
-                expect(keys).toContain(cacheKeys.playerRanked(playerId))
+                expect(keys).toContain(cacheKeys.playerRanked1v1(playerId))
+                expect(keys).toContain(cacheKeys.playerTeams(playerId))
             }
 
             const ranked = writes.find(
                 (write) =>
-                    write.key === cacheKeys.playerRanked(row.brawlhalla_id_one),
+                    write.key ===
+                    cacheKeys.playerRanked1v1(row.brawlhalla_id_one),
             )
-            expect(ranked?.value).toEqual(playerRankedMock)
+            expect(ranked?.value).toEqual({ ...playerRankedMock, "2v2": [] })
             expect(ranked?.window).toEqual(cacheTtl.profile)
+
+            const teams = writes.find(
+                (write) =>
+                    write.key === cacheKeys.playerTeams(row.brawlhalla_id_one),
+            )
+            expect(teams?.value).toEqual(playerRankedMock["2v2"])
         }),
     )
 })

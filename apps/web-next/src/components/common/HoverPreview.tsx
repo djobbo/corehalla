@@ -1,7 +1,7 @@
 import { useAtomValue } from "@effect/atom-react"
 import { Link } from "@tanstack/react-router"
 import { useMemo } from "react"
-import { guildAtom, playerProfileAtom } from "@/effect/atoms"
+import { guildAtom, playerClanAtom, playerProfileAtom } from "@/effect/atoms"
 import { clanHref, playerHref } from "@/lib/rankings"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatUnixTime } from "@crh/common/helpers/date"
@@ -23,6 +23,9 @@ const PlayerPreview = ({ playerId }: { readonly playerId: number }) => {
     const result = useAtomValue(
         useMemo(() => playerProfileAtom(playerId), [playerId]),
     )
+    const clan = useAtomValue(
+        useMemo(() => playerClanAtom(playerId), [playerId]),
+    )
 
     if (result._tag !== "Success") return null
 
@@ -31,7 +34,7 @@ const PlayerPreview = ({ playerId }: { readonly playerId: number }) => {
     const ranked = profile.ranked?.["1v1"] ?? null
 
     const main =
-        profile.legends.find((legend) => legend.stats.games > 0) ?? null
+        profile.legend_bubbles.find((legend) => legend.games > 0) ?? null
 
     return (
         <Link to={playerHref(profile.slug)} className="flex flex-col gap-1.5">
@@ -56,12 +59,12 @@ const PlayerPreview = ({ playerId }: { readonly playerId: number }) => {
             {main ? (
                 <Row
                     label="Main"
-                    value={`${main.name} · level ${main.stats.level}`}
+                    value={`${main.name} · level ${main.level}`}
                 />
             ) : null}
 
-            {profile.clan ? (
-                <Row label="Clan" value={cleanString(profile.clan.name)} />
+            {clan._tag === "Success" && clan.value.data ? (
+                <Row label="Clan" value={cleanString(clan.value.data.name)} />
             ) : null}
         </Link>
     )

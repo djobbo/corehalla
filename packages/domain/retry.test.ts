@@ -147,8 +147,8 @@ describe("retryTransient", () => {
         )
 
         expect(Exit.isFailure(exit)).toBe(true)
-        // One initial attempt plus the two permitted retries.
-        expect(attempts()).toBe(3)
+        // One initial attempt plus the three permitted retries.
+        expect(attempts()).toBe(4)
     })
 
     it("retries a 5xx and does not succeed", async () => {
@@ -156,7 +156,7 @@ describe("retryTransient", () => {
 
         await Effect.runPromise(Effect.exit(retryTransientWith(effect, fast)))
 
-        expect(attempts()).toBe(3)
+        expect(attempts()).toBe(4)
     })
 
     it("retries a transport failure", async () => {
@@ -164,7 +164,7 @@ describe("retryTransient", () => {
 
         await Effect.runPromise(Effect.exit(retryTransientWith(effect, fast)))
 
-        expect(attempts()).toBe(3)
+        expect(attempts()).toBe(4)
     })
 
     it("does not retry a status that repetition cannot fix", async () => {

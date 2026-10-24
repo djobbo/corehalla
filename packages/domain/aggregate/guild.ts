@@ -1,6 +1,8 @@
 import { getEntitySlug } from "@crh/common/helpers/entitySlug"
 import { guildLevel } from "./guild-levels"
 import type { Clan } from "@crh/bhapi/types"
+import { CONTRACT_VERSION } from "@crh/api-contract/schemas"
+import { PLAN } from "../sections/meta"
 import type { GuildEnvelope } from "@crh/api-contract/schemas"
 
 export const buildGuild = (clan: Clan, updatedAt: number): GuildEnvelope => {
@@ -33,6 +35,12 @@ export const buildGuild = (clan: Clan, updatedAt: number): GuildEnvelope => {
                     : { guild_points: member.guild_points }),
             })),
         },
-        meta: { updated_at: updatedAt },
+        meta: {
+            plan: PLAN.guildProfile,
+            contract: CONTRACT_VERSION,
+            updated_at: updatedAt,
+            complete: true,
+            parts: { clan: "ok" },
+        },
     }
 }

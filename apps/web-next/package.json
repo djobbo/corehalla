@@ -31,7 +31,8 @@
         "react": "catalog:",
         "react-dom": "catalog:",
         "zod": "catalog:",
-        "@portabletext/react": "catalog:"
+        "@portabletext/react": "catalog:",
+        "@crh/domain": "workspace:*"
     },
     "devDependencies": {
         "@crh/tsconfig": "workspace:*",

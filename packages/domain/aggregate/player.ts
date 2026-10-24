@@ -17,10 +17,15 @@ import type {
     PlayerStats,
 } from "@crh/bhapi/types"
 import type {
+    LegendBubble,
+    PlayerClan,
     PlayerEnvelope,
     PlayerLegend,
+    PlayerProfile,
+    PlayerRanked2v2,
     PlayerRankedTeam,
     PlayerWeapon,
+    WeaponBubble,
 } from "@crh/api-contract/schemas"
 
 const int = (value: string | number | undefined): number =>
@@ -259,23 +264,35 @@ const toRanked = (
     }
 }
 
-const toClan = (
-    stats: PlayerStats,
-    clan: Clan | null,
-): PlayerEnvelope["data"]["clan"] => {
-    const membership = stats.clan
+const EMPTY_2V2: PlayerRanked2v2 = {
+    games: 0,
+    wins: 0,
+    average_rating: 0,
+    average_peak_rating: 0,
+    teams: [],
+}
 
+/** The lazy 2v2 section: full teams, or an empty record. */
+export const buildPlayerTeams = (
+    ranked: PlayerRanked | null,
+): PlayerRanked2v2 => toRanked(ranked, null)?.["2v2"] ?? EMPTY_2V2
+
+export const buildPlayerClan = (
+    membership: PlayerStats["clan"] | null,
+    playerId: number,
+    clan: Clan | null,
+): PlayerClan | null => {
     if (!membership) return null
 
-    const member = clan?.clan.find(
-        (row) => row.brawlhalla_id === stats.brawlhalla_id,
-    )
+    const member = clan?.clan.find((row) => row.brawlhalla_id === playerId)
 
+    // `clan_xp` is the guild total from `/guild/stats` (the contribution
+    // denominator); the membership read only carries identity + personal XP.
     return {
         id: membership.clan_id,
         name: membership.clan_name,
         slug: getEntitySlug(membership.clan_id, membership.clan_name),
-        xp: int(membership.clan_xp),
+        xp: clan ? int(clan.clan_xp) : 0,
         personal_xp: membership.personal_xp,
         rank: member?.rank ?? null,
         joined_at: member?.join_date ?? null,
@@ -289,19 +306,70 @@ export type PlayerSources = {
     readonly ranked: PlayerRanked | null
     readonly ranked3v3: Player3v3Ranked | null
     readonly aliases: readonly string[]
+}
+
+export type PlayerClanSources = PlayerSources & {
     readonly clan: Clan | null
 }
 
-export const buildPlayer = (
-    sources: PlayerSources,
-    updatedAt: number,
-): PlayerEnvelope => {
-    const { stats, ranked, ranked3v3, clan } = sources
+const fullLegends = (sources: PlayerSources): readonly FullLegend[] =>
+    getFullLegends(sources.stats.legends, sources.ranked?.legends)
 
-    const legends = getFullLegends(stats.legends, ranked?.legends)
+const toLegendBubbles = (
+    legends: readonly PlayerLegend[],
+): readonly LegendBubble[] =>
+    legends
+        .filter((legend) => legend.stats.games > 0)
+        .map((legend) => ({
+            id: legend.id,
+            name: legend.name,
+            name_key: legend.name_key,
+            slug: legend.slug,
+            level: legend.stats.level,
+            matchtime: legend.stats.matchtime,
+            kos: legend.stats.kos,
+            damage_dealt: legend.stats.damage_dealt,
+            games: legend.stats.games,
+            wins: legend.stats.wins,
+        }))
+
+const toWeaponBubbles = (
+    weapons: readonly PlayerWeapon[],
+): readonly WeaponBubble[] =>
+    weapons
+        .filter((weapon) => weapon.stats.games > 0)
+        .map((weapon) => ({
+            name: weapon.name,
+            level: weapon.stats.level,
+            time_held: weapon.stats.time_held,
+            kos: weapon.stats.kos,
+            damage_dealt: weapon.stats.damage_dealt,
+            games: weapon.stats.games,
+            wins: weapon.stats.wins,
+        }))
+
+const buildLegends = (sources: PlayerSources): readonly PlayerLegend[] =>
+    fullLegends(sources)
+        .map(toLegend)
+        .sort((a, b) => b.stats.xp - a.stats.xp)
+
+const buildWeapons = (sources: PlayerSources): readonly PlayerWeapon[] =>
+    toWeapons(fullLegends(sources))
+        .filter((weapon) => weapon.stats.games > 0)
+        .sort((a, b) => b.stats.time_held - a.stats.time_held)
+
+export const buildPlayerLegends = (
+    sources: PlayerSources,
+): readonly PlayerLegend[] => buildLegends(sources)
+
+export const buildPlayerWeapons = (
+    sources: PlayerSources,
+): readonly PlayerWeapon[] => buildWeapons(sources)
+
+const scalarTotals = (sources: PlayerSources) => {
+    const legends = fullLegends(sources)
     const totals = getLegendsAccumulativeData(legends)
     const weaponless = getWeaponlessData(legends)
-    const weapons = toWeapons(legends)
 
     // v1 has no thrown KO field: remainder of `kos` after weapons/unarmed/gadgets/team.
     const weaponKos = legends.reduce(
@@ -329,11 +397,30 @@ export const buildPlayer = (
         0,
     )
 
-    const player: PlayerEnvelope["data"] = {
+    return {
+        legends,
+        totals,
+        weaponless,
+        weaponKos,
+        thrownKos,
+        weaponDamage,
+    }
+}
+
+export const buildPlayerProfile = (sources: PlayerSources): PlayerProfile => {
+    const { stats, ranked: rankedSource, ranked3v3, aliases } = sources
+    const { totals, weaponless, weaponKos, thrownKos, weaponDamage } =
+        scalarTotals(sources)
+    const legends = buildLegends(sources)
+    const weapons = buildWeapons(sources)
+    const ranked = toRanked(rankedSource, ranked3v3)
+    const teams = ranked?.["2v2"]?.teams ?? []
+
+    return {
         id: stats.brawlhalla_id,
         name: stats.name,
         slug: getEntitySlug(stats.brawlhalla_id, stats.name),
-        aliases: aliasList(sources.aliases, stats.name),
+        aliases: aliasList(aliases, stats.name),
         stats: {
             xp: stats.xp,
             level: stats.level,
@@ -348,8 +435,17 @@ export const buildPlayer = (
             damage_dealt: totals.damagedealt,
             damage_taken: totals.damagetaken,
         },
-        ranked: toRanked(ranked, ranked3v3),
-        clan: toClan(stats, clan),
+        ranked:
+            ranked === null
+                ? null
+                : {
+                      ...ranked,
+                      // Teams are a lazy section; the profile only carries the summary.
+                      "2v2":
+                          ranked["2v2"] === null
+                              ? null
+                              : { ...ranked["2v2"], teams: [] },
+                  },
         unarmed: {
             damage_dealt: weaponless.unarmed.damageDealt,
             kos: weaponless.unarmed.kos,
@@ -383,15 +479,47 @@ export const buildPlayer = (
                 kos: stats.kosnowball,
             },
         },
-        // Filter zeros: the roll-up includes untouched legends, so a fresh account would ship every weapon.
-        weapons: weapons
-            .filter((weapon) => weapon.stats.games > 0)
-            .sort((a, b) => b.stats.time_held - a.stats.time_held),
-        legends: legends.map(toLegend).sort((a, b) => b.stats.xp - a.stats.xp),
+        legend_bubbles: toLegendBubbles(legends),
+        weapon_bubbles: toWeaponBubbles(weapons),
+        has_2v2: teams.some((team) => team.paired),
+        solo_2v2: teams.find((team) => !team.paired) ?? null,
         weapon_kos: weaponKos,
         thrown_kos: thrownKos,
         weapon_damage: weaponDamage,
     }
+}
 
-    return { data: player, meta: { updated_at: updatedAt } }
+export const buildPlayer = (
+    sources: PlayerClanSources,
+    updatedAt: number,
+): PlayerEnvelope => {
+    const profile = buildPlayerProfile(sources)
+    const legends = buildPlayerLegends(sources)
+    const weapons = buildPlayerWeapons(sources)
+    const ranked = toRanked(sources.ranked, sources.ranked3v3)
+
+    return {
+        data: {
+            id: profile.id,
+            name: profile.name,
+            slug: profile.slug,
+            aliases: profile.aliases,
+            stats: profile.stats,
+            ranked,
+            clan: buildPlayerClan(
+                sources.stats.clan,
+                sources.stats.brawlhalla_id,
+                sources.clan,
+            ),
+            unarmed: profile.unarmed,
+            weapon_throws: profile.weapon_throws,
+            gadgets: profile.gadgets,
+            weapons,
+            legends,
+            weapon_kos: profile.weapon_kos,
+            thrown_kos: profile.thrown_kos,
+            weapon_damage: profile.weapon_damage,
+        },
+        meta: { updated_at: updatedAt },
+    }
 }

@@ -25,10 +25,17 @@ import {
     NewsCategory,
     Player3v3RankedSchema,
     PlayerAliasesSchema,
-    PlayerEnvelopeSchema,
+    PlayerClanEnvelopeSchema,
     PlayerEsportsEnvelopeSchema,
+    PlayerLegendsEnvelopeSchema,
+    PlayerProfileEnvelopeSchema,
     PlayerRankedSchema,
     PlayerStatsSchema,
+    PlayerTeamsEnvelopeSchema,
+    PlayerWeaponsEnvelopeSchema,
+    SectionFailed,
+    SectionRateLimited,
+    SectionTimedOut,
     PowerRankingsEnvelopeSchema,
     PowerRankingsGameMode,
     PowerRankingsOrderBy,
@@ -49,13 +56,60 @@ import {
     WeeklyRotationSchema,
 } from "./schemas"
 
+const sectionErrors = [
+    SectionFailed,
+    SectionRateLimited,
+    SectionTimedOut,
+] as const
+
 const players = HttpApiGroup.make("players")
     .add(
+        // Header + overview. Every other section is lazy.
         HttpApiEndpoint.get("getPlayer", "/api/v1/players/:playerId", {
             params: { playerId: Schema.FiniteFromString },
-            success: PlayerEnvelopeSchema,
+            success: PlayerProfileEnvelopeSchema,
             // Unknown player is 404, not an empty payload — the page needs stats.
-            error: HttpApiError.NotFound,
+            error: [HttpApiError.NotFound, ...sectionErrors],
+        }),
+    )
+    .add(
+        HttpApiEndpoint.get(
+            "getPlayerLegends",
+            "/api/v1/players/:playerId/legends",
+            {
+                params: { playerId: Schema.FiniteFromString },
+                success: PlayerLegendsEnvelopeSchema,
+                error: [HttpApiError.NotFound, ...sectionErrors],
+            },
+        ),
+    )
+    .add(
+        HttpApiEndpoint.get(
+            "getPlayerWeapons",
+            "/api/v1/players/:playerId/weapons",
+            {
+                params: { playerId: Schema.FiniteFromString },
+                success: PlayerWeaponsEnvelopeSchema,
+                error: [HttpApiError.NotFound, ...sectionErrors],
+            },
+        ),
+    )
+    .add(
+        HttpApiEndpoint.get(
+            "getPlayerTeams",
+            "/api/v1/players/:playerId/teams",
+            {
+                params: { playerId: Schema.FiniteFromString },
+                success: PlayerTeamsEnvelopeSchema,
+                error: [HttpApiError.NotFound, ...sectionErrors],
+            },
+        ),
+    )
+    .add(
+        HttpApiEndpoint.get("getPlayerClan", "/api/v1/players/:playerId/clan", {
+            params: { playerId: Schema.FiniteFromString },
+            success: PlayerClanEnvelopeSchema,
+            error: [HttpApiError.NotFound, ...sectionErrors],
         }),
     )
     .add(
@@ -66,6 +120,7 @@ const players = HttpApiGroup.make("players")
             {
                 params: { playerId: Schema.FiniteFromString },
                 success: PlayerEsportsEnvelopeSchema,
+                error: sectionErrors,
             },
         ),
     )
@@ -74,7 +129,7 @@ const guilds = HttpApiGroup.make("guilds").add(
     HttpApiEndpoint.get("getGuild", "/api/v1/guilds/:guildId", {
         params: { guildId: Schema.FiniteFromString },
         success: GuildEnvelopeSchema,
-        error: HttpApiError.NotFound,
+        error: [HttpApiError.NotFound, ...sectionErrors],
     }),
 )
 
@@ -87,6 +142,7 @@ const rankings = HttpApiGroup.make("rankings")
                 name: Schema.optionalKey(Schema.String),
             },
             success: Rankings1v1EnvelopeSchema,
+            error: sectionErrors,
         }),
     )
     .add(
@@ -96,6 +152,7 @@ const rankings = HttpApiGroup.make("rankings")
                 page: Schema.FiniteFromString,
             },
             success: Rankings2v2EnvelopeSchema,
+            error: sectionErrors,
         }),
     )
     .add(
@@ -106,6 +163,7 @@ const rankings = HttpApiGroup.make("rankings")
                 page: Schema.FiniteFromString,
             },
             success: Rankings3v3EnvelopeSchema,
+            error: sectionErrors,
         }),
     )
     .add(
@@ -178,6 +236,7 @@ const rankings = HttpApiGroup.make("rankings")
                 orderBy: PowerRankingsOrderBy,
             },
             success: PowerRankingsEnvelopeSchema,
+            error: sectionErrors,
         }),
     )
 

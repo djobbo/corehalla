@@ -1,4 +1,5 @@
 import { Context, Effect, Layer, Schema } from "effect"
+import { toStaticMediaUrl } from "@crh/common/helpers/media"
 import { ContentError } from "@crh/core/errors"
 import { cmsBinding, envValue } from "@crh/core/env"
 import { NEWS_PAGE_SIZE } from "@crh/api-contract/schemas"
@@ -119,40 +120,24 @@ const request = Effect.fn("Cms.request")(function* (path: string) {
     })
 })
 
-const cmsUrl = Effect.promise(() => envValue("CMS_PUBLIC_URL"))
-
-const absoluteImage = (
-    image: typeof CmsImageWire.Type,
-    baseUrl: string | undefined,
-): CmsImage => ({
+const imageOf = (image: typeof CmsImageWire.Type): CmsImage => ({
     ...image,
-    url:
-        image.url.startsWith("/") && baseUrl !== undefined
-            ? `${baseUrl.replace(/\/+$/, "")}${image.url}`
-            : image.url,
+    url: toStaticMediaUrl(image.url),
 })
 
-const articleOf = (
-    article: typeof CmsArticleWire.Type,
-    baseUrl: string | undefined,
-): CmsArticle => ({
+const articleOf = (article: typeof CmsArticleWire.Type): CmsArticle => ({
     ...article,
-    heroImage:
-        article.heroImage === null
-            ? null
-            : absoluteImage(article.heroImage, baseUrl),
+    heroImage: article.heroImage === null ? null : imageOf(article.heroImage),
 })
 
 const manifest = Effect.fn("Cms.getMediaManifest")(function* () {
-    const baseUrl = yield* cmsUrl
     const body = yield* request("/api/public/media")
     const decoded = yield* decodeBody(CmsMediaManifestWire, body)
 
     return {
         slots: decoded.slots.map((slot) => ({
             ...slot,
-            image:
-                slot.image === null ? null : absoluteImage(slot.image, baseUrl),
+            image: slot.image === null ? null : imageOf(slot.image),
         })),
     }
 })
@@ -162,7 +147,6 @@ const articles = Effect.fn("Cms.getArticles")(function* (options: {
     readonly pageSize?: number | undefined
     readonly category?: string | undefined
 }) {
-    const baseUrl = yield* cmsUrl
     const page = Math.max(1, options.page ?? 1)
     const pageSize = Math.max(1, options.pageSize ?? NEWS_PAGE_SIZE)
     const params = new URLSearchParams({
@@ -173,9 +157,7 @@ const articles = Effect.fn("Cms.getArticles")(function* (options: {
     const decoded = yield* decodeBody(CmsArticlesPageWire, body)
 
     return {
-        articles: decoded.articles.map((article) =>
-            articleOf(article, baseUrl),
-        ),
+        articles: decoded.articles.map((article) => articleOf(article)),
         page: decoded.page,
         totalPages: decoded.totalPages,
         hasNextPage: decoded.hasNextPage,
@@ -183,13 +165,12 @@ const articles = Effect.fn("Cms.getArticles")(function* (options: {
 })
 
 const article = Effect.fn("Cms.getArticle")(function* (slug: string) {
-    const baseUrl = yield* cmsUrl
     const body = yield* request(
         `/api/public/articles/${encodeURIComponent(slug)}`,
     )
     const decoded = yield* decodeBody(CmsArticleWire, body)
 
-    return articleOf(decoded, baseUrl)
+    return articleOf(decoded)
 })
 
 export const layer = Layer.succeed(Cms, {

@@ -1,6 +1,10 @@
+type ServiceBinding = { fetch: (request: Request) => Promise<Response> }
+
 type WorkerEnvironment = {
     // Only reach the API via this binding — a baked origin goes stale under alchemy dev.
-    API?: { fetch: (request: Request) => Promise<Response> }
+    API?: ServiceBinding
+    /** EmDash CMS, the origin behind `/static/*`. */
+    CMS?: ServiceBinding
     [key: string]: unknown
 }
 
@@ -23,8 +27,20 @@ export const workerEnv = async (): Promise<WorkerEnvironment> => {
     return cached
 }
 
+export const envValue = async (key: string): Promise<string | undefined> => {
+    const value = (await workerEnv())[key]
+
+    return typeof value === "string" && value.length > 0 ? value : undefined
+}
+
 export const apiBinding = async () => {
     const env = await workerEnv()
 
     return env.API
+}
+
+export const cmsBinding = async () => {
+    const env = await workerEnv()
+
+    return env.CMS
 }

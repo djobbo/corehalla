@@ -1,7 +1,7 @@
-import { Duration, Effect, Predicate, Schedule } from "effect"
-import { HttpClient, HttpClientError } from "effect/http"
+import { Data, Duration, Effect, Predicate, Schedule } from "effect"
+import type { HttpClientError } from "effect/http"
+import { HttpClient } from "effect/http"
 import { retryTransient } from "../retry"
-import { withUserAgent } from "./user-agent"
 import { legendsMap } from "@crh/bhapi/legends"
 import { rankedRegions } from "@crh/bhapi/constants"
 import type { ClanRank, RankedTier } from "@crh/bhapi/constants"
@@ -207,17 +207,75 @@ export type V1PlayerTeams = {
 // --- client ----------------------------------------------------------------
 
 /** v1 answers `404 "Player not found"` both for real misses and transient origin errors. */
+export class V1NotFound extends Data.TaggedError("V1NotFound")<{
+    readonly operation: string
+}> {}
+
+export class V1Unavailable extends Data.TaggedError("V1Unavailable")<{
+    readonly operation: string
+    readonly reason:
+        | "transport"
+        | "status"
+        | "rate_limited"
+        | "timeout"
+        | "decode"
+    readonly status?: number
+    readonly cause?: unknown
+}> {}
+
+export class V1Incomplete extends Data.TaggedError("V1Incomplete")<{
+    readonly operation: string
+    readonly cause: unknown
+}> {}
+
+export type V1Error = V1NotFound | V1Unavailable | V1Incomplete
+
+const statusOf = (error: HttpClientError.HttpClientError): number | null =>
+    Predicate.isTagged(error.reason, "StatusCodeError")
+        ? error.reason.response.status
+        : null
+
 const isNotFound = (error: HttpClientError.HttpClientError): boolean =>
-    HttpClientError.isHttpClientError(error) &&
-    Predicate.isTagged(error.reason, "StatusCodeError") &&
-    error.reason.response.status === 404
+    statusOf(error) === 404
+
+const classify =
+    (operation: string) =>
+    (error: HttpClientError.HttpClientError): V1Error => {
+        if (isNotFound(error)) return new V1NotFound({ operation })
+
+        const status = statusOf(error)
+
+        return new V1Unavailable({
+            operation,
+            reason:
+                status === 429
+                    ? "rate_limited"
+                    : Predicate.isTagged(error.reason, "TransportError")
+                      ? "transport"
+                      : "status",
+            ...(status === null ? {} : { status }),
+            cause: error,
+        })
+    }
 
 const notFoundRetry = Schedule.exponential(Duration.millis(500)).pipe(
     Schedule.upTo({ times: 3 }),
 )
 
-export const v1Ops = (client: HttpClient.HttpClient) => {
-    const http = withUserAgent(HttpClient.filterStatusOk(client))
+export type V1Options = {
+    /**
+     * v1 answers 404 both for real misses and transient origin errors. The
+     * server retries it before believing it; the browser fallback has a 2.5s
+     * budget and does not.
+     */
+    readonly retryNotFound?: boolean
+}
+
+export const v1Ops = (
+    client: HttpClient.HttpClient,
+    options: V1Options = {},
+) => {
+    const http = HttpClient.filterStatusOk(client)
 
     const getJson = <A>(
         path: string,
@@ -229,9 +287,20 @@ export const v1Ops = (client: HttpClient.HttpClient) => {
                     urlParams: params,
                     acceptJson: true,
                 })
-                .pipe(retryTransient)
+                .pipe(
+                    retryTransient,
+                    Effect.mapError(classify(`${V1_BASE}${path}`)),
+                )
 
-            const body = yield* response.json
+            const body = yield* response.json.pipe(
+                Effect.mapError(
+                    (cause) =>
+                        new V1Incomplete({
+                            operation: `${V1_BASE}${path}`,
+                            cause,
+                        }),
+                ),
+            )
 
             return body as unknown as A
         })
@@ -239,23 +308,39 @@ export const v1Ops = (client: HttpClient.HttpClient) => {
     const getOptionalJson = <A>(
         path: string,
         params: Record<string, string | number>,
-    ) => getJson<A>(path, params).pipe(Effect.catch(() => Effect.succeed(null)))
+    ) =>
+        getJson<A>(path, params).pipe(
+            Effect.catchTag("V1NotFound", () => Effect.succeed(null)),
+        )
 
     /**
      * For a read that should always exist (career stats). v1 answers
      * `404 "Player not found"` both for real misses and for transient origin
      * errors, so a 404 here is retried before it is believed; a persistent one
-     * resolves to `null`, and anything else is a defect — never a cached miss.
+     * resolves to `null`. Everything else is a typed failure — never a cached
+     * miss and never a defect.
      */
     const getRequiredJson = <A>(
         path: string,
         params: Record<string, string | number>,
-    ) =>
-        getJson<A>(path, params).pipe(
-            Effect.retry({ schedule: notFoundRetry, while: isNotFound }),
-            Effect.catchIf(isNotFound, () => Effect.succeed(null)),
-            Effect.orDie,
+    ) => {
+        const request = getJson<A>(path, params)
+
+        const retried =
+            options.retryNotFound === false
+                ? request
+                : request.pipe(
+                      Effect.retry({
+                          schedule: notFoundRetry,
+                          while: (error: V1Error) =>
+                              Predicate.isTagged(error, "V1NotFound"),
+                      }),
+                  )
+
+        return retried.pipe(
+            Effect.catchTag("V1NotFound", () => Effect.succeed(null)),
         )
+    }
 
     return {
         getLeaderboard: (
@@ -469,6 +554,53 @@ export const toPlayerStats = (
     })),
     ...(clan ? { clan } : {}),
 })
+
+/** Account-level ranked record with no 2v2 teams. */
+export const toPlayerRankedAccount = (
+    stats: V1PlayerRankedStats | null,
+): PlayerRanked | null => {
+    const account =
+        stats !== null && stats.name.trim().length > 0 ? stats : null
+
+    return account === null ? null : toPlayerRanked(account, null)
+}
+
+/** The mapped 2v2 rows, safe when the player has never queued teams. */
+export const toPlayerTeams = (
+    teams: V1PlayerTeams | null,
+): PlayerRanked["2v2"] => toPlayerRanked(null, teams)?.["2v2"] ?? []
+
+/**
+ * Joins the two halves kept in separate cache entries. A 2v2-only player has
+ * teams but no placed 1v1 account, so missing account data must not drop them.
+ */
+export const mergePlayerRanked = (
+    account: PlayerRanked | null,
+    teams: PlayerRanked["2v2"],
+): PlayerRanked | null => {
+    if (account === null && teams.length === 0) return null
+    if (account !== null) return { ...account, "2v2": teams }
+
+    const first = teams[0]
+
+    if (first === undefined) return null
+
+    return {
+        name: first.name_one ?? "",
+        brawlhalla_id: first.brawlhalla_id_one,
+        global_rank: 0,
+        region_rank: 0,
+        legends: [],
+        "2v2": teams,
+        rating: 0,
+        peak_rating: 0,
+        tier: null,
+        wins: 0,
+        games: 0,
+        region: (rankedRegions[first.region - 1] ??
+            "all") as PlayerRanked["region"],
+    }
+}
 
 export const isCompletePlayerStats = (stats: V1PlayerStats | null): boolean =>
     stats !== null &&

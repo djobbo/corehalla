@@ -1,12 +1,13 @@
 import { Schema } from "effect"
 import { PlayerRefSchema, TierSchema, envelope } from "./common"
+import { sectionEnvelope } from "./section"
 
-const PlayerGadgetSchema = Schema.Struct({
+export const PlayerGadgetSchema = Schema.Struct({
     damage_dealt: Schema.Number,
     kos: Schema.Number,
 })
 
-const PlayerWeaponLegendSchema = Schema.Struct({
+export const PlayerWeaponLegendSchema = Schema.Struct({
     id: Schema.Number,
     name: Schema.String,
     slug: Schema.String,
@@ -16,7 +17,7 @@ const PlayerWeaponLegendSchema = Schema.Struct({
 })
 
 /** Derived from legends that hold the weapon — not reported by the API. */
-const PlayerWeaponSchema = Schema.Struct({
+export const PlayerWeaponSchema = Schema.Struct({
     name: Schema.String,
     stats: Schema.Struct({
         games: Schema.Number,
@@ -30,14 +31,14 @@ const PlayerWeaponSchema = Schema.Struct({
     legends: Schema.Array(PlayerWeaponLegendSchema),
 })
 
-const PlayerLegendWeaponSchema = Schema.Struct({
+export const PlayerLegendWeaponSchema = Schema.Struct({
     name: Schema.String,
     damage_dealt: Schema.Number,
     kos: Schema.Number,
     time_held: Schema.Number,
 })
 
-const PlayerLegendStatsSchema = Schema.Struct({
+export const PlayerLegendStatsSchema = Schema.Struct({
     xp: Schema.Number,
     level: Schema.Number,
     xp_percentage: Schema.Number,
@@ -52,7 +53,7 @@ const PlayerLegendStatsSchema = Schema.Struct({
     wins: Schema.Number,
 })
 
-const PlayerLegendRankedSchema = Schema.Struct({
+export const PlayerLegendRankedSchema = Schema.Struct({
     rating: Schema.Number,
     peak_rating: Schema.Number,
     tier: TierSchema,
@@ -62,7 +63,7 @@ const PlayerLegendRankedSchema = Schema.Struct({
 })
 
 /** Every roster legend appears; unused ones get a zeroed `stats` block. */
-const PlayerLegendSchema = Schema.Struct({
+export const PlayerLegendSchema = Schema.Struct({
     id: Schema.Number,
     name: Schema.String,
     name_key: Schema.String,
@@ -80,7 +81,7 @@ const PlayerLegendSchema = Schema.Struct({
     ranked: Schema.NullOr(PlayerLegendRankedSchema),
 })
 
-const PlayerRankedBracketSchema = Schema.Struct({
+export const PlayerRankedBracketSchema = Schema.Struct({
     rating: Schema.Number,
     peak_rating: Schema.Number,
     /** True while placement matches hide the real rating. */
@@ -92,7 +93,7 @@ const PlayerRankedBracketSchema = Schema.Struct({
     rating_reset: Schema.Number,
 })
 
-const PlayerRankedTeamSchema = Schema.Struct({
+export const PlayerRankedTeamSchema = Schema.Struct({
     team: Schema.Tuple([PlayerRefSchema, PlayerRefSchema]),
     /**
      * False for a solo queue beside a zero-id phantom partner; the pair stays a
@@ -108,7 +109,7 @@ const PlayerRankedTeamSchema = Schema.Struct({
     rating_reset: Schema.Number,
 })
 
-const PlayerRanked2v2Schema = Schema.Struct({
+export const PlayerRanked2v2Schema = Schema.Struct({
     games: Schema.Number,
     wins: Schema.Number,
     average_rating: Schema.Number,
@@ -116,7 +117,7 @@ const PlayerRanked2v2Schema = Schema.Struct({
     teams: Schema.Array(PlayerRankedTeamSchema),
 })
 
-const PlayerRankedSeasonSchema = Schema.Struct({
+export const PlayerRankedSeasonSchema = Schema.Struct({
     games: Schema.Number,
     wins: Schema.Number,
     peak_rating: Schema.Number,
@@ -131,14 +132,14 @@ const PlayerRankedSeasonSchema = Schema.Struct({
  * Null when the player has no ranked data. Individual brackets are null when
  * that bracket has no games — do not infer from `games > 0`.
  */
-const PlayerRankedSchema = Schema.Struct({
+export const PlayerRankedSchema = Schema.Struct({
     stats: PlayerRankedSeasonSchema,
     "1v1": Schema.NullOr(PlayerRankedBracketSchema),
     "2v2": Schema.NullOr(PlayerRanked2v2Schema),
     "3v3": Schema.NullOr(PlayerRankedBracketSchema),
 })
 
-const PlayerClanSchema = Schema.Struct({
+export const PlayerClanSchema = Schema.Struct({
     id: Schema.Number,
     name: Schema.String,
     slug: Schema.String,
@@ -150,7 +151,7 @@ const PlayerClanSchema = Schema.Struct({
     members_count: Schema.NullOr(Schema.Number),
 })
 
-const PlayerStatsSchema = Schema.Struct({
+export const PlayerStatsSchema = Schema.Struct({
     xp: Schema.Number,
     level: Schema.Number,
     xp_percentage: Schema.Number,
@@ -165,7 +166,58 @@ const PlayerStatsSchema = Schema.Struct({
     damage_taken: Schema.Number,
 })
 
-export const PlayerSchema = Schema.Struct({
+export const PlayerUnarmedSchema = Schema.Struct({
+    damage_dealt: Schema.Number,
+    kos: Schema.Number,
+    time_held: Schema.Number,
+})
+
+export const PlayerGadgetsSchema = Schema.Struct({
+    kos: Schema.Number,
+    damage_dealt: Schema.Number,
+    bomb: Schema.NullOr(PlayerGadgetSchema),
+    mine: Schema.NullOr(PlayerGadgetSchema),
+    spikeball: Schema.NullOr(PlayerGadgetSchema),
+    sidekick: Schema.NullOr(PlayerGadgetSchema),
+    snowball: Schema.NullOr(
+        Schema.Struct({
+            hits: Schema.Number,
+            kos: Schema.Number,
+        }),
+    ),
+})
+
+/** Everything the overview bubble charts need, without the per-legend rows. */
+export const LegendBubbleSchema = Schema.Struct({
+    id: Schema.Number,
+    name: Schema.String,
+    name_key: Schema.String,
+    slug: Schema.String,
+    level: Schema.Number,
+    matchtime: Schema.Number,
+    kos: Schema.Number,
+    damage_dealt: Schema.Number,
+    games: Schema.Number,
+    wins: Schema.Number,
+})
+
+/** Everything the weapon bubble chart needs, without the legend lists. */
+export const WeaponBubbleSchema = Schema.Struct({
+    name: Schema.String,
+    level: Schema.Number,
+    time_held: Schema.Number,
+    kos: Schema.Number,
+    damage_dealt: Schema.Number,
+    games: Schema.Number,
+    wins: Schema.Number,
+})
+
+/**
+ * The header + overview payload. `ranked.2v2.teams` is always empty here; the
+ * lazy teams section owns the list. `has_2v2` / `solo_2v2` carry the two facts
+ * the overview needs.
+ */
+export const PlayerProfileSchema = Schema.Struct({
     id: Schema.Number,
     name: Schema.String,
     slug: Schema.String,
@@ -173,29 +225,13 @@ export const PlayerSchema = Schema.Struct({
     aliases: Schema.Array(Schema.String),
     stats: PlayerStatsSchema,
     ranked: Schema.NullOr(PlayerRankedSchema),
-    clan: Schema.NullOr(PlayerClanSchema),
-    unarmed: Schema.Struct({
-        damage_dealt: Schema.Number,
-        kos: Schema.Number,
-        time_held: Schema.Number,
-    }),
+    unarmed: PlayerUnarmedSchema,
     weapon_throws: PlayerGadgetSchema,
-    gadgets: Schema.Struct({
-        kos: Schema.Number,
-        damage_dealt: Schema.Number,
-        bomb: Schema.NullOr(PlayerGadgetSchema),
-        mine: Schema.NullOr(PlayerGadgetSchema),
-        spikeball: Schema.NullOr(PlayerGadgetSchema),
-        sidekick: Schema.NullOr(PlayerGadgetSchema),
-        snowball: Schema.NullOr(
-            Schema.Struct({
-                hits: Schema.Number,
-                kos: Schema.Number,
-            }),
-        ),
-    }),
-    weapons: Schema.Array(PlayerWeaponSchema),
-    legends: Schema.Array(PlayerLegendSchema),
+    gadgets: PlayerGadgetsSchema,
+    legend_bubbles: Schema.Array(LegendBubbleSchema),
+    weapon_bubbles: Schema.Array(WeaponBubbleSchema),
+    has_2v2: Schema.Boolean,
+    solo_2v2: Schema.NullOr(PlayerRankedTeamSchema),
     weapon_kos: Schema.Number,
     /**
      * Remainder of `stats.kos` after reported sources; v1 does not report
@@ -205,12 +241,57 @@ export const PlayerSchema = Schema.Struct({
     weapon_damage: Schema.Number,
 })
 
+/** The composed view used by stories and the client merge facade. */
+export const PlayerSchema = Schema.Struct({
+    id: Schema.Number,
+    name: Schema.String,
+    slug: Schema.String,
+    aliases: Schema.Array(Schema.String),
+    stats: PlayerStatsSchema,
+    ranked: Schema.NullOr(PlayerRankedSchema),
+    clan: Schema.NullOr(PlayerClanSchema),
+    unarmed: PlayerUnarmedSchema,
+    weapon_throws: PlayerGadgetSchema,
+    gadgets: PlayerGadgetsSchema,
+    weapons: Schema.Array(PlayerWeaponSchema),
+    legends: Schema.Array(PlayerLegendSchema),
+    weapon_kos: Schema.Number,
+    thrown_kos: Schema.Number,
+    weapon_damage: Schema.Number,
+})
+
 export type Player = typeof PlayerSchema.Type
+export type PlayerProfile = typeof PlayerProfileSchema.Type
 export type PlayerLegend = typeof PlayerLegendSchema.Type
 export type PlayerWeapon = typeof PlayerWeaponSchema.Type
 export type PlayerRanked = typeof PlayerRankedSchema.Type
 export type PlayerRankedTeam = typeof PlayerRankedTeamSchema.Type
+export type PlayerRanked2v2 = typeof PlayerRanked2v2Schema.Type
+export type PlayerClan = typeof PlayerClanSchema.Type
+export type LegendBubble = typeof LegendBubbleSchema.Type
+export type WeaponBubble = typeof WeaponBubbleSchema.Type
 
 export const PlayerEnvelopeSchema = envelope(PlayerSchema)
 
 export type PlayerEnvelope = typeof PlayerEnvelopeSchema.Type
+
+export const PlayerProfileEnvelopeSchema = sectionEnvelope(PlayerProfileSchema)
+export type PlayerProfileEnvelope = typeof PlayerProfileEnvelopeSchema.Type
+
+export const PlayerLegendsEnvelopeSchema = sectionEnvelope(
+    Schema.Array(PlayerLegendSchema),
+)
+export type PlayerLegendsEnvelope = typeof PlayerLegendsEnvelopeSchema.Type
+
+export const PlayerWeaponsEnvelopeSchema = sectionEnvelope(
+    Schema.Array(PlayerWeaponSchema),
+)
+export type PlayerWeaponsEnvelope = typeof PlayerWeaponsEnvelopeSchema.Type
+
+export const PlayerTeamsEnvelopeSchema = sectionEnvelope(PlayerRanked2v2Schema)
+export type PlayerTeamsEnvelope = typeof PlayerTeamsEnvelopeSchema.Type
+
+export const PlayerClanEnvelopeSchema = sectionEnvelope(
+    Schema.NullOr(PlayerClanSchema),
+)
+export type PlayerClanEnvelope = typeof PlayerClanEnvelopeSchema.Type

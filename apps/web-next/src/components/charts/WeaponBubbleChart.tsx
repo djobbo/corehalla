@@ -2,7 +2,11 @@ import { useMemo } from "react"
 import { BubbleChart } from "@/components/charts/BubbleChart"
 import { toWeaponBubbles } from "@/lib/weaponBubbles"
 import { formatTime } from "@crh/common/helpers/date"
-import type { Player, PlayerWeapon } from "@crh/api-contract/schemas"
+import type {
+    PlayerProfile,
+    PlayerWeapon,
+    WeaponBubble,
+} from "@crh/api-contract/schemas"
 
 /** Weapons are many and more evenly held, so flatten the playtime spread. */
 const SCALE_EXPONENT = 0.9
@@ -11,8 +15,8 @@ export const WeaponBubbleChart = ({
     weapons,
     unarmed,
 }: {
-    readonly weapons: readonly PlayerWeapon[]
-    readonly unarmed: Player["unarmed"]
+    readonly weapons: readonly (WeaponBubble | PlayerWeapon)[]
+    readonly unarmed: PlayerProfile["unarmed"]
 }) => {
     const bubbles = useMemo(
         () => toWeaponBubbles(weapons, unarmed),

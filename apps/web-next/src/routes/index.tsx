@@ -1,13 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { ClientOnly, createFileRoute } from "@tanstack/react-router"
+import { PageLoaderProbe } from "@/components/layout/PageLoader"
 import { LandingHero } from "@/components/layout/LandingHero"
 import { LandingLadder } from "@/components/views/LandingLadder"
 import { LatestNews } from "@/components/news/LatestNews"
 import { to1v1Rows, to2v2Rows } from "@/lib/ladderRows"
 import {
     newsArticlesAtom,
-    preloadAtoms,
+    preloadAtomsDegraded,
     rankings1v1Atom,
+    rankings1v1QueryAtom,
     rankings2v2Atom,
+    rankings2v2QueryAtom,
     useQuery,
 } from "@/effect/atoms"
 
@@ -27,15 +30,15 @@ export const Route = createFileRoute("/")({
         ],
     }),
     loader: ({ context }) =>
-        preloadAtoms(context, [
-            rankings1v1Atom("all", 1),
-            rankings2v2Atom("all", 1),
+        preloadAtomsDegraded(context, [
+            rankings1v1QueryAtom("all", 1),
+            rankings2v2QueryAtom("all", 1),
             newsArticlesAtom("", 1, LANDING_NEWS_COUNT),
         ]),
     component: Page,
 })
 
-function Page() {
+function PageContent() {
     const oneVone = to1v1Rows(useQuery(rankings1v1Atom("all", 1)))
     const twoVtwo = to2v2Rows(useQuery(rankings2v2Atom("all", 1)))
     const { articles } = useQuery(newsArticlesAtom("", 1, LANDING_NEWS_COUNT))
@@ -55,4 +58,24 @@ function Page() {
             <LatestNews articles={articles} />
         </main>
     )
+}
+
+const LandingShell = () => (
+    <main className="ch-page">
+        <PageLoaderProbe />
+    </main>
+)
+
+function Page() {
+    const { degraded } = Route.useLoaderData()
+
+    if (degraded) {
+        return (
+            <ClientOnly fallback={<LandingShell />}>
+                <PageContent />
+            </ClientOnly>
+        )
+    }
+
+    return <PageContent />
 }

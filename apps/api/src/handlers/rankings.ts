@@ -8,12 +8,14 @@ import { Background } from "@crh/core/services/background"
 import { RANKED_QUEUE_WINDOW_MS } from "@crh/core/constants"
 import { PowerRankings } from "../services/power-rankings"
 import { aliasRows } from "../helpers/aliases"
+import { PLAN, toSectionError } from "@crh/domain/sections/meta"
+import { CONTRACT_VERSION, SectionFailed } from "@crh/api-contract/schemas"
 import {
     bestLegendIndex,
     buildRankings1v1,
     buildRankings2v2,
     buildRankings3v3,
-} from "../aggregate/rankings"
+} from "@crh/domain/aggregate/rankings"
 import type { BestLegendRow } from "@crh/core/services/archive"
 import type { Ranking1v1, Ranking2v2, Ranking3v3 } from "@crh/bhapi/types"
 
@@ -65,15 +67,44 @@ export const rankingsGroup = HttpApiBuilder.group(
         const background = yield* Background
         const powerRankings = yield* PowerRankings
 
+        const BOARD_TIMEOUT = "5000 millis"
+
+        const section = <A, E>(effect: Effect.Effect<A, E>) =>
+            effect.pipe(
+                Effect.mapError(
+                    () =>
+                        new SectionFailed({
+                            plan: PLAN.rankingsBoard,
+                            contract: CONTRACT_VERSION,
+                            parts: { board: "status" },
+                        }),
+                ),
+            )
+
         return (
             handlers
                 .handle("getRanked1v1", ({ query }) =>
                     Effect.gen(function* () {
-                        const board = yield* brawlhalla.getRankings(
-                            "1v1",
-                            query.region,
-                            query.page,
-                            query.name,
+                        const board = yield* section(
+                            brawlhalla.getRankings(
+                                "1v1",
+                                query.region,
+                                query.page,
+                                query.name,
+                            ),
+                        ).pipe(
+                            Effect.timeoutOrElse({
+                                duration: BOARD_TIMEOUT,
+                                orElse: () =>
+                                    Effect.fail(
+                                        toSectionError(PLAN.rankings1v1, {
+                                            board: {
+                                                status: "timeout",
+                                                updated_at: Date.now(),
+                                            },
+                                        }),
+                                    ),
+                            }),
                         )
                         const rankings = board.value as readonly Ranking1v1[]
 
@@ -112,10 +143,25 @@ export const rankingsGroup = HttpApiBuilder.group(
                 )
                 .handle("getRanked2v2", ({ query }) =>
                     Effect.gen(function* () {
-                        const board = yield* brawlhalla.getRankings(
-                            "2v2",
-                            query.region,
-                            query.page,
+                        const board = yield* section(
+                            brawlhalla.getRankings(
+                                "2v2",
+                                query.region,
+                                query.page,
+                            ),
+                        ).pipe(
+                            Effect.timeoutOrElse({
+                                duration: BOARD_TIMEOUT,
+                                orElse: () =>
+                                    Effect.fail(
+                                        toSectionError(PLAN.rankings2v2, {
+                                            board: {
+                                                status: "timeout",
+                                                updated_at: Date.now(),
+                                            },
+                                        }),
+                                    ),
+                            }),
                         )
                         const rankings = board.value as readonly Ranking2v2[]
 
@@ -140,10 +186,25 @@ export const rankingsGroup = HttpApiBuilder.group(
                 // v1-only: no legacy fallback; incomplete page → empty ladder.
                 .handle("getRanked3v3", ({ query }) =>
                     Effect.gen(function* () {
-                        const board = yield* brawlhalla.getRankings(
-                            "3v3",
-                            query.region,
-                            query.page,
+                        const board = yield* section(
+                            brawlhalla.getRankings(
+                                "3v3",
+                                query.region,
+                                query.page,
+                            ),
+                        ).pipe(
+                            Effect.timeoutOrElse({
+                                duration: BOARD_TIMEOUT,
+                                orElse: () =>
+                                    Effect.fail(
+                                        toSectionError(PLAN.rankings3v3, {
+                                            board: {
+                                                status: "timeout",
+                                                updated_at: Date.now(),
+                                            },
+                                        }),
+                                    ),
+                            }),
                         )
                         const rankings = board.value as readonly Ranking3v3[]
 
@@ -265,7 +326,26 @@ export const rankingsGroup = HttpApiBuilder.group(
                                     total_pages: page.value.totalPages,
                                 },
                             })),
-                            Effect.orDie,
+                            Effect.mapError(() =>
+                                toSectionError(PLAN.powerRankings, {
+                                    brawltools: {
+                                        status: "status",
+                                        updated_at: Date.now(),
+                                    },
+                                }),
+                            ),
+                            Effect.timeoutOrElse({
+                                duration: "5000 millis",
+                                orElse: () =>
+                                    Effect.fail(
+                                        toSectionError(PLAN.powerRankings, {
+                                            brawltools: {
+                                                status: "timeout",
+                                                updated_at: Date.now(),
+                                            },
+                                        }),
+                                    ),
+                            }),
                         ),
                 )
         )

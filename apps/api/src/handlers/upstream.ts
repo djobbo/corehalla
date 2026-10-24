@@ -16,84 +16,87 @@ export const upstreamGroup = HttpApiBuilder.group(
         const db = yield* Database
         const background = yield* Background
 
+        // Internal/debug surface: upstream failures are defects here, not a
+        // contract the public endpoints expose.
+        const run = <A, E>(effect: Effect.Effect<A, E>) =>
+            effect.pipe(Effect.orDie)
+
         return (
             handlers
                 .handle("getPlayerStats", ({ params }) =>
-                    Effect.gen(function* () {
-                        const { value: stats } =
-                            yield* brawlhalla.getPlayerStats(params.playerId)
+                    run(
+                        Effect.gen(function* () {
+                            const { value: stats } =
+                                yield* brawlhalla.getPlayerStats(
+                                    params.playerId,
+                                )
 
-                        if (!stats) return null
+                            if (!stats) return null
 
-                        yield* background.run(
-                            db.upsertPlayerAliases(
-                                aliasRows({
-                                    id: stats.brawlhalla_id,
-                                    name: stats.name,
-                                }),
-                            ),
-                        )
-
-                        if (stats.clan) {
-                            const clan = stats.clan
                             yield* background.run(
-                                db.upsertClan({
-                                    id: clan.clan_id.toString(),
-                                    name: clan.clan_name,
-                                    nameLower: searchKey(clan.clan_name),
-                                    xp: parseInt(clan.clan_xp),
-                                }),
+                                db.upsertPlayerAliases(
+                                    aliasRows({
+                                        id: stats.brawlhalla_id,
+                                        name: stats.name,
+                                    }),
+                                ),
                             )
-                        }
 
-                        return stats
-                    }),
+                            return stats
+                        }),
+                    ),
                 )
                 .handle("getPlayerRanked", ({ params }) =>
-                    Effect.gen(function* () {
-                        const { value: ranked } =
-                            yield* brawlhalla.getPlayerRanked(params.playerId)
+                    run(
+                        Effect.gen(function* () {
+                            const { value: ranked } =
+                                yield* brawlhalla.getPlayerRanked(
+                                    params.playerId,
+                                )
 
-                        if (!ranked) return null
+                            if (!ranked) return null
 
-                        const rankedAliases = [
-                            ...aliasRows({
-                                id: ranked.brawlhalla_id,
-                                name: ranked.name,
-                            }),
-                            ...(ranked["2v2"] ?? [])
-                                .map(getTeamPlayers)
-                                .flat()
-                                .flatMap((player) => aliasRows(player)),
-                        ]
-
-                        yield* background.run(
-                            db.upsertPlayerAliases(rankedAliases),
-                        )
-
-                        return ranked
-                    }),
-                )
-                .handle("getPlayer3v3Ranked", ({ params }) =>
-                    Effect.gen(function* () {
-                        const { value: ranked } =
-                            yield* brawlhalla.getPlayer3v3Ranked(
-                                params.playerId,
-                            )
-
-                        if (!ranked) return null
-
-                        yield* background.run(
-                            db.upsertPlayerAliases(
-                                aliasRows({
+                            const rankedAliases = [
+                                ...aliasRows({
                                     id: ranked.brawlhalla_id,
                                     name: ranked.name,
                                 }),
-                            ),
-                        )
+                                ...(ranked["2v2"] ?? [])
+                                    .map(getTeamPlayers)
+                                    .flat()
+                                    .flatMap((player) => aliasRows(player)),
+                            ]
 
-                        return ranked
-                    }),
+                            yield* background.run(
+                                db.upsertPlayerAliases(rankedAliases),
+                            )
+
+                            return ranked
+                        }),
+                    ),
+                )
+                .handle("getPlayer3v3Ranked", ({ params }) =>
+                    run(
+                        Effect.gen(function* () {
+                            const { value: ranked } =
+                                yield* brawlhalla.getPlayer3v3Ranked(
+                                    params.playerId,
+                                )
+
+                            if (!ranked) return null
+
+                            yield* background.run(
+                                db.upsertPlayerAliases(
+                                    aliasRows({
+                                        id: ranked.brawlhalla_id,
+                                        name: ranked.name,
+                                    }),
+                                ),
+                            )
+
+                            return ranked
+                        }),
+                    ),
                 )
                 .handle("getPlayerAliases", ({ params }) =>
                     // Decorative: a DB failure must not take the page down.
@@ -106,83 +109,92 @@ export const upstreamGroup = HttpApiBuilder.group(
                         ),
                 )
                 .handle("getClanStats", ({ params }) =>
-                    Effect.gen(function* () {
-                        const { value: clan } = yield* brawlhalla.getClan(
-                            params.clanId,
-                        )
+                    run(
+                        Effect.gen(function* () {
+                            const { value: clan } = yield* brawlhalla.getClan(
+                                params.clanId,
+                            )
 
-                        if (!clan) return null
+                            if (!clan) return null
 
-                        yield* background.run(
-                            db.upsertClan({
-                                id: clan.clan_id.toString(),
-                                name: clan.clan_name,
-                                nameLower: searchKey(clan.clan_name),
-                                created: clan.clan_create_date,
-                                xp: parseInt(clan.clan_xp),
-                            }),
-                        )
+                            yield* background.run(
+                                db.upsertClan({
+                                    id: clan.clan_id.toString(),
+                                    name: clan.clan_name,
+                                    nameLower: searchKey(clan.clan_name),
+                                    created: clan.clan_create_date,
+                                    xp: parseInt(clan.clan_xp),
+                                }),
+                            )
 
-                        yield* background.run(
-                            db.upsertPlayerAliases(
-                                clan.clan.flatMap((member) =>
-                                    aliasRows({
-                                        id: member.brawlhalla_id,
-                                        name: member.name,
-                                    }),
+                            yield* background.run(
+                                db.upsertPlayerAliases(
+                                    clan.clan.flatMap((member) =>
+                                        aliasRows({
+                                            id: member.brawlhalla_id,
+                                            name: member.name,
+                                        }),
+                                    ),
                                 ),
-                            ),
-                        )
+                            )
 
-                        return clan
-                    }),
+                            return clan
+                        }),
+                    ),
                 )
                 .handle("get1v1Rankings", ({ query }) =>
-                    Effect.gen(function* () {
-                        const board = yield* brawlhalla.getRankings(
-                            "1v1",
-                            query.region,
-                            query.page,
-                            query.name,
-                        )
-                        const rankings = board.value as readonly Ranking1v1[]
+                    run(
+                        Effect.gen(function* () {
+                            const board = yield* brawlhalla.getRankings(
+                                "1v1",
+                                query.region,
+                                query.page,
+                                query.name,
+                            )
+                            const rankings =
+                                board.value as readonly Ranking1v1[]
 
-                        yield* background.run(
-                            db.upsertPlayerAliases(
-                                rankings.flatMap((player) =>
-                                    aliasRows({
-                                        id: player.brawlhalla_id,
-                                        name: player.name,
-                                    }),
+                            yield* background.run(
+                                db.upsertPlayerAliases(
+                                    rankings.flatMap((player) =>
+                                        aliasRows({
+                                            id: player.brawlhalla_id,
+                                            name: player.name,
+                                        }),
+                                    ),
                                 ),
-                            ),
-                        )
+                            )
 
-                        return rankings
-                    }),
+                            return rankings
+                        }),
+                    ),
                 )
                 .handle("get2v2Rankings", ({ query }) =>
-                    Effect.gen(function* () {
-                        const board = yield* brawlhalla.getRankings(
-                            "2v2",
-                            query.region,
-                            query.page,
-                        )
+                    run(
+                        Effect.gen(function* () {
+                            const board = yield* brawlhalla.getRankings(
+                                "2v2",
+                                query.region,
+                                query.page,
+                            )
 
-                        return board.value as readonly Ranking2v2[]
-                    }),
+                            return board.value as readonly Ranking2v2[]
+                        }),
+                    ),
                 )
                 // v1-only: no legacy fallback; incomplete page → empty ladder.
                 .handle("get3v3Rankings", ({ query }) =>
-                    Effect.gen(function* () {
-                        const board = yield* brawlhalla.getRankings(
-                            "3v3",
-                            query.region,
-                            query.page,
-                        )
+                    run(
+                        Effect.gen(function* () {
+                            const board = yield* brawlhalla.getRankings(
+                                "3v3",
+                                query.region,
+                                query.page,
+                            )
 
-                        return board.value as readonly Ranking3v3[]
-                    }),
+                            return board.value as readonly Ranking3v3[]
+                        }),
+                    ),
                 )
         )
     }),

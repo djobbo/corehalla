@@ -1,5 +1,5 @@
 import { Schema } from "effect"
-import { envelope } from "./common"
+import { sectionEnvelope } from "./section"
 
 const GuildMemberSchema = Schema.Struct({
     id: Schema.Number,
@@ -41,6 +41,6 @@ export const GuildSchema = Schema.Struct({
 export type Guild = typeof GuildSchema.Type
 export type GuildMember = typeof GuildMemberSchema.Type
 
-export const GuildEnvelopeSchema = envelope(GuildSchema)
+export const GuildEnvelopeSchema = sectionEnvelope(GuildSchema)
 
 export type GuildEnvelope = typeof GuildEnvelopeSchema.Type

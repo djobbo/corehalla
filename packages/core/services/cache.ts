@@ -26,19 +26,19 @@ export class Cache extends Context.Service<
     Cache,
     {
         /** `refresh` only for stale-serve; false = serve stale without refresh. */
-        readonly getOrSet: <A>(
+        readonly getOrSet: <A, E>(
             key: string,
             options: CacheRead<A>,
-            effect: Effect.Effect<A>,
+            effect: Effect.Effect<A, E>,
             refresh?: Effect.Effect<boolean>,
-        ) => Effect.Effect<A>
+        ) => Effect.Effect<A, E>
         /** Like getOrSet; `updatedAt` is fetch time, not read time. */
-        readonly getOrSetCached: <A>(
+        readonly getOrSetCached: <A, E>(
             key: string,
             options: CacheRead<A>,
-            effect: Effect.Effect<A>,
+            effect: Effect.Effect<A, E>,
             refresh?: Effect.Effect<boolean>,
-        ) => Effect.Effect<Cached<A>>
+        ) => Effect.Effect<Cached<A>, E>
         /** Write without read — crawler. */
         readonly set: <A>(
             key: string,
@@ -179,20 +179,20 @@ export const make = (
         })
 
     const cache = {
-        getOrSet: <A>(
+        getOrSet: <A, E>(
             key: string,
             options: CacheRead<A>,
-            effect: Effect.Effect<A>,
+            effect: Effect.Effect<A, E>,
             refresh?: Effect.Effect<boolean>,
         ) =>
             cache
                 .getOrSetCached(key, options, effect, refresh)
                 .pipe(Effect.map((cached) => cached.value)),
 
-        getOrSetCached: <A>(
+        getOrSetCached: <A, E>(
             key: string,
             options: CacheRead<A>,
-            effect: Effect.Effect<A>,
+            effect: Effect.Effect<A, E>,
             refresh?: Effect.Effect<boolean>,
         ) =>
             Effect.gen(function* () {

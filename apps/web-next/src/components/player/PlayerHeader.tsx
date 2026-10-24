@@ -1,9 +1,11 @@
+import { useAtomValue } from "@effect/atom-react"
+import { ClientOnly } from "@tanstack/react-router"
 import { useMemo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FavoriteButton } from "@/components/account/FavoriteButton"
 import { StatGrid } from "@/components/common/StatGrid"
 import { UpdatedAt } from "@/components/common/UpdatedAt"
-import { playerProfileAtom, useQuery } from "@/effect/atoms"
+import { playerClanAtom, playerProfileAtom, useQuery } from "@/effect/atoms"
 import { legendIconSrc, regionFlagSrc, weaponIconSrc } from "@/lib/assets"
 import { mediaSlotKey, useMediaSlot } from "@/lib/media"
 import { cleanString } from "@crh/common/helpers/cleanString"
@@ -12,7 +14,7 @@ import { EntityLink } from "@/components/common/EntityLink"
 import { clanHref } from "@/lib/rankings"
 import { cn } from "@/lib/cn"
 import { percent } from "../../lib/stats"
-import type { Player } from "@crh/api-contract/schemas"
+import type { PlayerClan } from "@crh/api-contract/schemas"
 
 const MAX_SHOWN_ALIASES = 8
 
@@ -42,7 +44,7 @@ const ThumbRow = ({ items }: { readonly items: readonly Thumb[] }) => (
     </span>
 )
 
-const ClanPanel = ({ clan }: { readonly clan: Player["clan"] }) => {
+const ClanPanel = ({ clan }: { readonly clan: PlayerClan }) => {
     if (!clan) return null
 
     const clanXp = clan.xp
@@ -82,20 +84,33 @@ const ClanPanel = ({ clan }: { readonly clan: Player["clan"] }) => {
     )
 }
 
+const ClanPanelLoader = ({ playerId }: { readonly playerId: number }) => {
+    const result = useAtomValue(playerClanAtom(playerId))
+    const clan = result._tag === "Success" ? result.value.data : null
+
+    return clan ? <ClanPanel clan={clan} /> : null
+}
+
 export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
     const envelope = useQuery(playerProfileAtom(playerId))
     const profile = envelope.data
 
     const topLegends = useMemo(
         () =>
-            [...profile.legends]
-                .filter((legend) => legend.stats.games > 0)
-                .sort((a, b) => b.stats.matchtime - a.stats.matchtime)
+            [...profile.legend_bubbles]
+                .filter((legend) => legend.games > 0)
+                .sort((a, b) => b.matchtime - a.matchtime)
                 .slice(0, TOP_ART_COUNT),
-        [profile.legends],
+        [profile.legend_bubbles],
     )
 
-    const topWeapons = profile.weapons.slice(0, TOP_ART_COUNT)
+    const topWeapons = useMemo(
+        () =>
+            [...profile.weapon_bubbles]
+                .sort((a, b) => b.time_held - a.time_held)
+                .slice(0, TOP_ART_COUNT),
+        [profile.weapon_bubbles],
+    )
 
     const shownAliases = profile.aliases
         .map(cleanString)
@@ -232,7 +247,9 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
                     />
                 </CardContent>
             </Card>
-            <ClanPanel clan={profile.clan} />
+            <ClientOnly>
+                <ClanPanelLoader playerId={playerId} />
+            </ClientOnly>
         </header>
     )
 }

@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router"
 import { PortableText } from "@portabletext/react"
 import { CmsImage } from "@/components/common/CmsImage"
+import { absoluteUrl } from "@/lib/assets"
 import { cmsArticleAtom, preloadAtom } from "@/effect/atoms"
 import type { CmsArticle } from "@crh/api-contract/schemas"
 
@@ -36,7 +37,7 @@ export const Route = createFileRoute("/updates/$slug")({
                     ? [
                           {
                               property: "og:image",
-                              content: article.heroImage.url,
+                              content: absoluteUrl(article.heroImage.url),
                           },
                       ]
                     : []),

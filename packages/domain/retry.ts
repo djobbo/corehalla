@@ -1,12 +1,12 @@
 import { Duration, Effect, Predicate, Schedule } from "effect"
 import { HttpClientError } from "effect/http"
 
-const MAX_ATTEMPTS = 3
+const MAX_ATTEMPTS = 4
 
 /**
- * Transient backoff base (500ms → 1s). Two retries, not four: this policy
- * serves interactive requests, and the cache plus the crawler are the
- * resilience layer, not a long backoff inside a request.
+ * Transient backoff base (500ms → 1s → 2s). Three retries: the section
+ * deadline is 5s, so the full sequence can finish before the browser takes
+ * over. The cache and crawler remain the broader resilience layer.
  */
 const TRANSIENT_BASE_MS = 500
 

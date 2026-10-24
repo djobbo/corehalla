@@ -10,10 +10,21 @@ import {
     HttpClientRequest,
     HttpClientResponse,
 } from "effect/http"
-import { apiBinding } from "@/env"
+import { cmsMediaPrefix, staticMediaPrefix } from "@crh/common/helpers/media"
+import { apiBinding, cmsBinding, envValue } from "@/env"
 import { useServerHttpClient } from "@/effect/client"
 
 const API_PREFIX = "/api/v1/"
+const TELEMETRY_PATH = "/api/telemetry"
+
+/**
+ * Lives on the web worker, not the API binding: fallback telemetry must still
+ * land while the API is the thing that failed. No request body is retained.
+ */
+const telemetry = async (request: Request): Promise<Response> =>
+    request.method === "POST"
+        ? new Response(null, { status: 204 })
+        : new Response(null, { status: 405 })
 
 const forwardToApi = async (request: Request): Promise<Response> => {
     const api = await apiBinding()
@@ -63,11 +74,65 @@ useServerHttpClient(
     ),
 )
 
+const forwardToCms = async (request: Request): Promise<Response> => {
+    if (request.method !== "GET" && request.method !== "HEAD") {
+        return new Response(null, {
+            status: 405,
+            headers: { allow: "GET, HEAD" },
+        })
+    }
+
+    const url = new URL(request.url)
+    const key = url.pathname.slice(staticMediaPrefix.length)
+    if (key.length === 0) return new Response(null, { status: 404 })
+
+    const mediaPath = `${cmsMediaPrefix}${key}${url.search}`
+    // Conditional requests and ranges pass through so the CMS keeps answering
+    // 304/206 instead of resending the body.
+    const headers = new Headers(request.headers)
+    headers.delete("host")
+    // The media route is public; do not hand the user's credentials to it.
+    headers.delete("cookie")
+    headers.delete("authorization")
+
+    const cms = await cmsBinding()
+    if (cms) {
+        return cms.fetch(
+            new Request(`https://cms.internal${mediaPath}`, {
+                method: request.method,
+                headers,
+            }),
+        )
+    }
+
+    const devUrl = await envValue("CMS_DEV_URL")
+    if (devUrl === undefined) {
+        return new Response(
+            "No `CMS` service binding. Run the app through the Alchemy stack " +
+                "(`pnpm dev`) so web-next can bind the CMS worker.",
+            { status: 503, headers: { "content-type": "text/plain" } },
+        )
+    }
+
+    return fetch(`${devUrl.replace(/\/+$/, "")}${mediaPath}`, {
+        method: request.method,
+        headers,
+    })
+}
+
 const startHandler = createStartHandler(defaultStreamHandler)
 
 export default createServerEntry({
-    fetch: (request: Request) =>
-        new URL(request.url).pathname.startsWith(API_PREFIX)
+    fetch(request: Request) {
+        const pathname = new URL(request.url).pathname
+
+        if (pathname === TELEMETRY_PATH) return telemetry(request)
+        if (pathname.startsWith(staticMediaPrefix)) {
+            return forwardToCms(request)
+        }
+
+        return pathname.startsWith(API_PREFIX)
             ? forwardToApi(request)
-            : startHandler(request),
+            : startHandler(request)
+    },
 })

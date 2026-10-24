@@ -5,7 +5,14 @@ import { Brawlhalla } from "@crh/core/services/upstream"
 import { Database, searchKey } from "@crh/core/services/archive"
 import { Background } from "@crh/core/services/background"
 import { aliasRows } from "../helpers/aliases"
-import { buildGuild } from "../aggregate/guild"
+import { buildGuild } from "@crh/domain/aggregate/guild"
+import {
+    PLAN,
+    partFromResult,
+    sectionMeta,
+    toSectionError,
+} from "@crh/domain/sections/meta"
+import type { PartEntries } from "@crh/domain/sections/meta"
 
 export const guildsGroup = HttpApiBuilder.group(
     CorehallaApi,
@@ -17,8 +24,27 @@ export const guildsGroup = HttpApiBuilder.group(
 
         return handlers.handle("getGuild", ({ params }) =>
             Effect.gen(function* () {
-                const cached = yield* brawlhalla.getClan(params.guildId)
-                const clan = cached.value
+                const now = Date.now()
+                const cached = yield* brawlhalla
+                    .getClan(params.guildId)
+                    .pipe(Effect.result)
+
+                const parts: PartEntries = {
+                    clan: partFromResult(
+                        cached,
+                        cached._tag === "Success"
+                            ? cached.success.updatedAt
+                            : now,
+                    ),
+                }
+
+                if (cached._tag === "Failure") {
+                    return yield* Effect.fail(
+                        toSectionError(PLAN.guildProfile, parts),
+                    )
+                }
+
+                const clan = cached.success.value
 
                 if (clan === null) {
                     return yield* new HttpApiError.NotFound()
@@ -45,8 +71,26 @@ export const guildsGroup = HttpApiBuilder.group(
                     ),
                 )
 
-                return buildGuild(clan, cached.updatedAt)
-            }),
+                const envelope = buildGuild(clan, cached.success.updatedAt)
+
+                return {
+                    data: envelope.data,
+                    meta: sectionMeta(PLAN.guildProfile, parts, now),
+                }
+            }).pipe(
+                Effect.timeoutOrElse({
+                    duration: "5000 millis",
+                    orElse: () =>
+                        Effect.fail(
+                            toSectionError(PLAN.guildProfile, {
+                                clan: {
+                                    status: "timeout",
+                                    updated_at: Date.now(),
+                                },
+                            }),
+                        ),
+                }),
+            ),
         )
     }),
 )

@@ -2,7 +2,7 @@ import { describe, expect, it } from "@effect/vitest"
 import { Effect, Fiber } from "effect"
 import { TestClock } from "effect/testing"
 import { HttpClient, HttpClientResponse } from "effect/http"
-import { v1Ops } from "./v1"
+import { v1Ops } from "@crh/domain/upstream/v1"
 
 const stats = {
     brawlhalla_id: 9219643,
