@@ -7,14 +7,14 @@
         "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json"
     },
     "devDependencies": {
-        "@types/node": "^24.0.0",
+        "@types/node": "catalog:",
         "@crh/tsconfig": "workspace:*",
-        "typescript": "^7.0.2"
+        "typescript": "catalog:"
     },
     "dependencies": {
         "@crh/bhapi": "workspace:*",
         "@crh/db": "workspace:*",
-        "effect": "4.0.6",
+        "effect": "catalog:",
         "@crh/web-parser": "workspace:*"
     }
 }

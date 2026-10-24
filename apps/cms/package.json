@@ -16,21 +16,21 @@
         "seed:media": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/seed-media.mts"
     },
     "dependencies": {
-        "@astrojs/cloudflare": "14.3.1",
-        "@astrojs/react": "7.0.0",
-        "@emdash-cms/cloudflare": "^1.3.0",
-        "astro": "7.3.2",
-        "emdash": "^1.3.1",
-        "react": "19.2.4",
-        "react-dom": "19.2.4",
-        "@astrojs/node": "^11.1.9"
+        "@astrojs/cloudflare": "catalog:",
+        "@astrojs/react": "catalog:",
+        "@emdash-cms/cloudflare": "catalog:",
+        "astro": "catalog:",
+        "emdash": "catalog:",
+        "react": "catalog:",
+        "react-dom": "catalog:",
+        "@astrojs/node": "catalog:"
     },
     "devDependencies": {
-        "@alchemy.run/frontend-frameworks": "2.0.0-beta.84",
-        "@astrojs/check": "^0.9.10",
-        "@cloudflare/workers-types": "^5.20261023.1",
-        "@types/node": "^24.0.0",
-        "typescript": "^7.0.2",
-        "@effect/platform-node": "4.0.6"
+        "@alchemy.run/frontend-frameworks": "catalog:",
+        "@astrojs/check": "catalog:",
+        "@cloudflare/workers-types": "catalog:",
+        "@types/node": "catalog:",
+        "typescript": "catalog:",
+        "@effect/platform-node": "catalog:"
     }
 }

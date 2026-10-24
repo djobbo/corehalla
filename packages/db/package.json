@@ -10,15 +10,15 @@
         "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json"
     },
     "devDependencies": {
-        "@types/node": "^24.0.0",
-        "@types/pg": "^8.23.1",
-        "drizzle-kit": "1.0.0-rc.5",
-        "pg": "^8.23.0",
-        "typescript": "^7.0.2"
+        "@types/node": "catalog:",
+        "@types/pg": "catalog:",
+        "drizzle-kit": "catalog:",
+        "pg": "catalog:",
+        "typescript": "catalog:"
     },
     "dependencies": {
-        "@effect/sql-d1": "4.0.6",
-        "drizzle-orm": "1.0.0-rc.5",
-        "effect": "4.0.6"
+        "@effect/sql-d1": "catalog:",
+        "drizzle-orm": "catalog:",
+        "effect": "catalog:"
     }
 }

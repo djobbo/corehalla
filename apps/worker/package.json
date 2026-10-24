@@ -13,21 +13,21 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "@types/node": "^20.11.5",
-        "@types/react": "^18.2.31",
-        "typescript": "^7.0.2"
+        "@types/node": "catalog:",
+        "@types/react": "catalog:",
+        "typescript": "catalog:"
     },
     "dependencies": {
         "@crh/bhapi": "workspace:*",
         "@crh/common": "workspace:*",
         "@crh/db": "workspace:*",
-        "discord.js": "^14.7.1",
-        "dotenv": "^16.3.1",
+        "discord.js": "catalog:",
+        "dotenv": "catalog:",
         "@crh/logger": "workspace:*",
-        "reaccord": "0.0.1-dev.1669742731656.1c2e96f",
-        "react": "^18.2.0",
-        "ts-node": "^10.9.1",
-        "ts-node-dev": "^2.0.0",
-        "zod": "^3.22.4"
+        "reaccord": "catalog:",
+        "react": "catalog:react18",
+        "ts-node": "catalog:",
+        "ts-node-dev": "catalog:",
+        "zod": "catalog:"
     }
 }

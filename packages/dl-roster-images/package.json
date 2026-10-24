@@ -9,16 +9,16 @@
     },
     "dependencies": {
         "@crh/bhapi": "workspace:*",
-        "@effect/platform-node": "4.0.6",
-        "cheerio": "1.0.0-rc.12",
-        "effect": "4.0.6"
+        "@effect/platform-node": "catalog:",
+        "cheerio": "catalog:",
+        "effect": "catalog:"
     },
     "devDependencies": {
-        "@effect/vitest": "4.0.6",
-        "@types/node": "^24.0.0",
+        "@effect/vitest": "catalog:",
+        "@types/node": "catalog:",
         "@crh/tsconfig": "workspace:*",
-        "typescript": "^7.0.2",
-        "vite-plus": "1.4.0",
-        "vitest": "5.0.5"
+        "typescript": "catalog:",
+        "vite-plus": "catalog:",
+        "vitest": "catalog:"
     }
 }

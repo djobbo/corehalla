@@ -24,16 +24,16 @@
         "cms:seed:media": "vp run --filter @crh/cms seed:media"
     },
     "devDependencies": {
-        "@types/node": "^24.0.0",
-        "@alchemy.run/cloudflare": "2.0.0-beta.84",
-        "alchemy": "2.0.0-beta.84",
-        "@yielded/effect-tsrs": "0.2.0",
-        "effect": "4.0.6",
-        "tsrs": "0.18.0-ts7.1.0-dev.20260929",
-        "typescript": "^7.0.2",
-        "vite": "^8.0.14",
-        "vite-plus": "1.4.0",
-        "@effect/platform-node": "4.0.6"
+        "@alchemy.run/cloudflare": "catalog:",
+        "@effect/platform-node": "catalog:",
+        "@types/node": "catalog:",
+        "@yielded/effect-tsrs": "catalog:",
+        "alchemy": "catalog:",
+        "effect": "catalog:",
+        "tsrs": "catalog:",
+        "typescript": "catalog:",
+        "vite": "catalog:",
+        "vite-plus": "catalog:"
     },
     "devEngines": {
         "packageManager": {

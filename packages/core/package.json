@@ -7,17 +7,17 @@
         "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json"
     },
     "devDependencies": {
-        "@effect/vitest": "4.0.6",
-        "@types/node": "^24.0.0",
+        "@effect/vitest": "catalog:",
+        "@types/node": "catalog:",
         "@crh/tsconfig": "workspace:*",
-        "typescript": "^7.0.2",
-        "vite-plus": "1.4.0",
-        "vitest": "5.0.5"
+        "typescript": "catalog:",
+        "vite-plus": "catalog:",
+        "vitest": "catalog:"
     },
     "dependencies": {
         "@crh/api-contract": "workspace:*",
         "@crh/bhapi": "workspace:*",
         "@crh/db": "workspace:*",
-        "effect": "4.0.6"
+        "effect": "catalog:"
     }
 }

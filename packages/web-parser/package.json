@@ -9,17 +9,17 @@
         "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json"
     },
     "dependencies": {
-        "axios": "1.1.3",
+        "axios": "catalog:",
         "@crh/bhapi": "workspace:*",
-        "cheerio": "1.0.0-rc.12",
+        "cheerio": "catalog:",
         "@crh/logger": "workspace:*",
-        "zod": "^3.22.4"
+        "zod": "catalog:"
     },
     "devDependencies": {
-        "@types/node": "^20.11.5",
-        "ts-node": "^10.9.1",
-        "ts-node-dev": "^2.0.0",
+        "@types/node": "catalog:",
+        "ts-node": "catalog:",
+        "ts-node-dev": "catalog:",
         "@crh/tsconfig": "workspace:*",
-        "typescript": "^7.0.2"
+        "typescript": "catalog:"
     }
 }
