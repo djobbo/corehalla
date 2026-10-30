@@ -410,10 +410,11 @@ The workspace is built and checked with [Vite+](https://viteplus.dev), which
 replaces the previous Turborepo + ESLint + Prettier setup with a single
 toolchain: Vite Task (`vp run`) for tasks, Oxlint for linting and Oxfmt for
 formatting. All configuration lives in the root `vite.config.ts`. Type checking
-uses [tsrs](https://github.com/oxc-project/tsrs). Effect rules use
-[@yielded/effect-tsrs](https://github.com/yielded-dev/effect-tsrs) in every
-package. The editor language server is tsrs: `typescript.tsdk` points at
-`tools/tsrs-tsdk`, which launches `tsgo`.
+uses [tsrs](https://github.com/oxc-project/tsrs) through
+[@effect/tsgo](https://github.com/Effect-TS/tsgo), whose patched build also runs
+the Effect language-service rules in the same pass. The editor language server
+is the same binary: `typescript.tsdk` points at `tools/tsrs-tsdk`, whose `tsgo`
+shim launches `effect-tsgo tsrs`.
 
 ```sh
 pnpm ci:install    # vp install --frozen-lockfile
@@ -421,7 +422,7 @@ pnpm dev           # vp run -r --parallel dev (all packages)
 pnpm build         # vp run -r build
 pnpm check         # vp check — format + lint the whole workspace
 pnpm lint          # vp lint --fix
-pnpm ts:check      # tsrs --noEmit && effect-tsrs diagnostics, per package
+pnpm ts:check      # effect-tsgo tsrs --noEmit, per package
 pnpm ci:lint       # vp lint (no fixes; used in CI)
 ```
 
@@ -429,8 +430,8 @@ pnpm ci:lint       # vp lint (no fixes; used in CI)
 
 - **Type-aware linting is off.** Vite+ recommends `typeAware: true` +
   `typeCheck: true`. Types and Effect rules are checked per package by
-  `pnpm ts:check` (`tsrs` plus `@yielded/effect-tsrs`), so Oxlint does not
-  type-check the same projects again.
+  `pnpm ts:check` (`effect-tsgo tsrs`, which runs the Effect rules in the same
+  pass), so Oxlint does not type-check the same projects again.
 - **Lint warnings** are demoted so the migration lands green; fix them and the
   rules can become errors.
 - **`worker` is React 18** (`react-reconciler` / `reaccord`); its tsconfig pins

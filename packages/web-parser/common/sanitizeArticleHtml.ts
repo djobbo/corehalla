@@ -1,5 +1,5 @@
 import { load } from "cheerio"
-import type { Element } from "cheerio"
+import type { Element } from "domhandler"
 
 /**
  * Allow-list sanitizer for Brawlhalla's WordPress article HTML.

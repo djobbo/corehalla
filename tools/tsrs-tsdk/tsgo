@@ -1,4 +1,6 @@
 #!/bin/sh
 # `typescript.tsdk` launches an executable named `tsgo`.
-# tsrs 0.18 ships the compiler as `tsrs`; forward the language-server flags.
-exec "$(CDPATH= cd -- "$(dirname "$0")/../.." && pwd)/node_modules/.bin/tsrs" "$@"
+# Run the Effect-patched tsrs from `@effect/tsgo` so the editor reports the same
+# Effect diagnostics as `effect-tsgo tsrs` on the command line.
+root="$(CDPATH= cd -- "$(dirname "$0")/../.." && pwd)"
+exec "$root/node_modules/.bin/effect-tsgo" tsrs "$@"

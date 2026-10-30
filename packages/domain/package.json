@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "test": "vp test",
-        "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json"
+        "ts:check": "effect-tsgo tsrs --noEmit"
     },
     "devDependencies": {
         "@effect/vitest": "catalog:",

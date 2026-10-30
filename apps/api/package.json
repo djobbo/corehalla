@@ -4,7 +4,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json"
+        "ts:check": "effect-tsgo tsrs --noEmit"
     },
     "devDependencies": {
         "@types/node": "catalog:",

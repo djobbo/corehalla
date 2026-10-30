@@ -7,7 +7,7 @@
         "typescript": "catalog:"
     },
     "scripts": {
-        "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json"
+        "ts:check": "effect-tsgo tsrs --noEmit"
     },
     "dependencies": {
         "@crh/common": "workspace:*",

@@ -14,7 +14,7 @@
         "deploy": "alchemy deploy --env-file .env",
         "destroy": "alchemy destroy --env-file .env",
         "dl-roster": "vp run -r dl-roster",
-        "ts:check": "tsrs --noEmit -p tsconfig.json && effect-tsrs diagnostics --project tsconfig.json && vp run -r ts:check",
+        "ts:check": "effect-tsgo tsrs --noEmit -p tsconfig.json && vp run -r ts:check",
         "check": "vp check",
         "lint": "vp lint --fix",
         "ci:lint": "vp lint",
@@ -26,8 +26,8 @@
     "devDependencies": {
         "@alchemy.run/cloudflare": "catalog:",
         "@effect/platform-node": "catalog:",
+        "@effect/tsgo": "catalog:",
         "@types/node": "catalog:",
-        "@yielded/effect-tsrs": "catalog:",
         "alchemy": "catalog:",
         "effect": "catalog:",
         "tsrs": "catalog:",

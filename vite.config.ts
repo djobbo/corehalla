@@ -46,8 +46,8 @@ export default defineConfig({
         options: {
             // Vite+ recommends `typeAware: true` + `typeCheck: true` so that
             // `vp check` is the single static-check command. Both stay off
-            // here: type checking and Effect rules run through `tsrs` and
-            // `effect-tsrs` in each package's `ts:check` script. Oxlint's
+            // here: type checking and Effect rules run through
+            // `effect-tsgo tsrs` in each package's `ts:check` script. Oxlint's
             // type-aware backend would check the same projects with a stock
             // toolchain and would not apply the Effect rules.
             //

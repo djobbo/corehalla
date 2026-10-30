@@ -6,7 +6,7 @@
     "scripts": {
         "parse-bh-articles:dev": "tsnd --respawn ./bh-articles/dev.ts",
         "parse-weekly-rot:dev": "tsnd --respawn ./weekly-rotation/dev.ts",
-        "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json"
+        "ts:check": "effect-tsgo tsrs --noEmit"
     },
     "dependencies": {
         "axios": "catalog:",
@@ -16,10 +16,11 @@
         "zod": "catalog:"
     },
     "devDependencies": {
+        "@crh/tsconfig": "workspace:*",
         "@types/node": "catalog:",
+        "domhandler": "catalog:",
         "ts-node": "catalog:",
         "ts-node-dev": "catalog:",
-        "@crh/tsconfig": "workspace:*",
         "typescript": "catalog:"
     }
 }

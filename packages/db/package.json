@@ -7,7 +7,7 @@
         "db:seed": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/seed.mts",
         "db:seed:verify": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/seed-verify.mts",
         "db:import:supabase": "node --env-file-if-exists=../../.env --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-postgres.mts",
-        "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json"
+        "ts:check": "effect-tsgo tsrs --noEmit"
     },
     "devDependencies": {
         "@types/node": "catalog:",

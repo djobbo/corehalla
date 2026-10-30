@@ -8,7 +8,7 @@
         "dev": "vp dev --port 3000",
         "build": "vp build",
         "preview": "vp preview",
-        "ts:check": "tsrs --noEmit && effect-tsrs diagnostics --project tsconfig.json"
+        "ts:check": "effect-tsgo tsrs --noEmit"
     },
     "dependencies": {
         "@effect/atom-react": "catalog:",

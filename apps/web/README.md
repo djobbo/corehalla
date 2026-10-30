@@ -11,7 +11,7 @@ been removed.
   on the server, `Atom` + `@effect/atom-react` on the client
 - **Deployment:** Cloudflare Workers via [Alchemy](https://alchemy.run) (`Cloudflare.Website.Vite` + `Cloudflare.D1.Database`); the stack lives at the repo root (`../alchemy.run.ts`)
 - **UI:** React 19, Tailwind CSS v4 (CSS-first config), Stitches, Radix, kbar
-- **TypeScript:** [tsrs](https://github.com/oxc-project/tsrs) with [effect-tsrs](https://github.com/yielded-dev/effect-tsrs) diagnostics
+- **TypeScript:** [tsrs](https://github.com/oxc-project/tsrs) with Effect diagnostics via [@effect/tsgo](https://github.com/Effect-TS/tsgo)
 
 ## Commands
 
@@ -23,7 +23,7 @@ commands work without a filter.
 vp -C web dev          # Vite dev server; Alchemy assigns the port under `alchemy dev`
 vp -C web build        # production build (+ route tree generation)
 vp -C web preview      # preview the built output
-vp -C web ts:check     # tsrs --noEmit && effect-tsrs diagnostics
+vp -C web ts:check     # effect-tsgo tsrs --noEmit
 pnpm dev:cloud                # (root) alchemy dev: Workers runtime + local D1 simulator
 pnpm deploy                   # (root) alchemy deploy: Cloudflare Worker + assets
 ```
@@ -187,9 +187,10 @@ does not redirect `/rankings/1v1` to `/rankings/1v1?player=`.
 
 ## Type checking
 
-`ts:check` runs [tsrs](https://github.com/oxc-project/tsrs) and then
-[effect-tsrs](https://github.com/yielded-dev/effect-tsrs). Effect diagnostics
-read the `@effect/language-service` plugin entry in `tsconfig.json`.
+`ts:check` runs [tsrs](https://github.com/oxc-project/tsrs) through
+[@effect/tsgo](https://github.com/Effect-TS/tsgo), whose patched build emits the
+Effect diagnostics in the same pass. They read the
+`@effect/language-service` plugin entry in `tsconfig.json`.
 
 - `tsconfig.json` needs `"types": ["node", "vite/client"]` (TS 7 no longer
   auto-includes `@types/*`) and relative `paths` (TS 7 removed `baseUrl`).
