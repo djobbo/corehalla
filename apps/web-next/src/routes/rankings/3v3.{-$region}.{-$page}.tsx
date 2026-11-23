@@ -1,12 +1,14 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
+import { ladderRedirectTarget } from "@/lib/legacyLadder"
 
 export const Route = createFileRoute("/rankings/3v3/{-$region}/{-$page}")({
     beforeLoad({ params }) {
-        const region = params.region ? `/${params.region}` : ""
-        const page = params.page ? `/${params.page}` : ""
-
         throw redirect({
-            href: `/rankings/live/3v3${region}${page}`,
+            href: ladderRedirectTarget({
+                bracket: "3v3",
+                region: params.region,
+                page: params.page,
+            }),
             statusCode: 308,
         })
     },

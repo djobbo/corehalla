@@ -4,8 +4,8 @@ import { LadderView } from "@/components/views/LadderView"
 import { LADDER_PAGE_SIZE } from "@/lib/rankings"
 import { to1v1Rows } from "@/lib/ladderRows"
 import {
+    parseLadderSearch,
     resolvePage,
-    resolvePlayerFilter,
     resolveRegion,
 } from "@/lib/routeParams"
 import {
@@ -15,14 +15,10 @@ import {
     useQuery,
 } from "@/effect/atoms"
 
-type LadderSearch = { player?: string }
-
 export const Route = createFileRoute("/rankings/live/1v1/{-$region}/{-$page}")({
     // The filter lives in the URL, so a filtered board is shareable and a cold
     // load of it can be server-rendered from the same key the client hydrates.
-    validateSearch: (search: Record<string, unknown>): LadderSearch => ({
-        player: resolvePlayerFilter(search.player),
-    }),
+    validateSearch: parseLadderSearch,
     loaderDeps: ({ search }) => ({ player: search.player }),
     loader: ({ params, deps, context }) =>
         preloadAtomsDegraded(context, [
