@@ -13,6 +13,7 @@ import {
 import { HydrationBoundary, RegistryContext } from "@effect/atom-react"
 import { cmsMediaManifestAtom, preloadAtoms } from "@/effect/atoms"
 import { AccountControl } from "@/components/account/AccountControl"
+import { NotFoundPage } from "@/components/layout/ErrorPage"
 import { Footer } from "@/components/layout/Footer"
 import { LandingBackground } from "@/components/layout/LandingBackground"
 import { MainNav } from "@/components/layout/MainNav"
@@ -24,21 +25,48 @@ import {
 } from "@/components/layout/PageLoader"
 import { SearchProvider, SearchTrigger } from "@/components/layout/Search"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { errorPageFor, notFoundPage } from "@/lib/errorPage"
 import { Suspense, useMemo } from "react"
 import type { ReactNode } from "react"
 import type { DehydratedState, RouterContext } from "@/effect/atoms"
 
+/**
+ * The slice of the route match this route's head reads. It is spelled out
+ * because the contextual `matches` type resolves through the registered router,
+ * which points back at this route and collapses the loader data otherwise.
+ */
+type RootHeadContext = {
+    readonly matches: ReadonlyArray<{
+        readonly _notFound?: boolean
+        readonly status: "pending" | "success" | "error" | "notFound"
+        readonly error?: unknown
+    }>
+}
+
 export const Route = createRootRouteWithContext<RouterContext>()({
-    head: () => ({
-        meta: [
-            { charSet: "utf-8" },
-            {
-                name: "viewport",
-                content: "width=device-width, initial-scale=1",
-            },
-            { title: "Corehalla" },
-        ],
-    }),
+    head({ matches }: RootHeadContext) {
+        const failure = matches.find(
+            (match) => match._notFound === true || match.status === "error",
+        )
+
+        const page =
+            failure === undefined
+                ? undefined
+                : failure.status === "error"
+                  ? errorPageFor(failure.error)
+                  : notFoundPage
+
+        return {
+            meta: [
+                { charSet: "utf-8" },
+                {
+                    name: "viewport",
+                    content: "width=device-width, initial-scale=1",
+                },
+                ...(page?.meta ?? [{ title: "Corehalla" }]),
+            ],
+        }
+    },
     loader: async ({ context }) => ({
         ...(await preloadAtoms(context, [cmsMediaManifestAtom()])),
         // Read once per load, so a render either side of New Year cannot move it.
@@ -46,6 +74,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     }),
     component: RootComponent,
     shellComponent: RootDocument,
+    notFoundComponent: NotFoundPage,
 })
 
 function RootComponent() {

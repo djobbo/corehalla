@@ -1,5 +1,6 @@
 import { createRouter } from "@tanstack/react-router"
 import { routeTree } from "./routeTree.gen"
+import { RouteErrorPage } from "@/components/layout/ErrorPage"
 import { makeRegistry } from "@/effect/atoms"
 import { PageLoaderProbe } from "@/components/layout/PageLoader"
 
@@ -25,6 +26,8 @@ export function getRouter() {
         scrollRestoration: true,
         // Probe, not the overlay: Suspense fallbacks tear down before exit anims.
         defaultPendingComponent: PageLoaderProbe,
+        // Rendered at the failing route's slot, so the shell survives the error.
+        defaultErrorComponent: RouteErrorPage,
         defaultPendingMs: PENDING_MS,
         defaultPendingMinMs: PENDING_MIN_MS,
     })
