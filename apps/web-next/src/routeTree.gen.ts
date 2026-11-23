@@ -15,6 +15,7 @@ import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TiersRouteImport } from './routes/tiers'
 import { Route as VsRouteImport } from './routes/vs'
 import { Route as AtmeFavoritesRouteImport } from './routes/@me/favorites'
 import { Route as LegendsIndexRouteImport } from './routes/legends/index'
@@ -84,6 +85,11 @@ const SearchRoute = SearchRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TiersRoute = TiersRouteImport.update({
+  id: '/tiers',
+  path: '/tiers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VsRoute = VsRouteImport.update({
@@ -319,6 +325,7 @@ export interface FileRoutesByFullPath {
   '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tiers': typeof TiersRoute
   '/vs': typeof VsRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/legends/$slug': typeof LegendsSlugRoute
@@ -367,6 +374,7 @@ export interface FileRoutesByTo {
   '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tiers': typeof TiersRoute
   '/vs': typeof VsRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/legends/$slug': typeof LegendsSlugRoute
@@ -415,6 +423,7 @@ export interface FileRoutesById {
   '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tiers': typeof TiersRoute
   '/vs': typeof VsRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/legends/$slug': typeof LegendsSlugRoute
@@ -465,6 +474,7 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/search'
     | '/sitemap.xml'
+    | '/tiers'
     | '/vs'
     | '/@me/favorites'
     | '/legends/$slug'
@@ -513,6 +523,7 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/search'
     | '/sitemap.xml'
+    | '/tiers'
     | '/vs'
     | '/@me/favorites'
     | '/legends/$slug'
@@ -560,6 +571,7 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/search'
     | '/sitemap.xml'
+    | '/tiers'
     | '/vs'
     | '/@me/favorites'
     | '/legends/$slug'
@@ -609,6 +621,7 @@ export interface RootRouteChildren {
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TiersRoute: typeof TiersRoute
   VsRoute: typeof VsRoute
   AtmeFavoritesRoute: typeof AtmeFavoritesRoute
   LegendsSlugRoute: typeof LegendsSlugRoute
@@ -688,6 +701,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tiers': {
+      id: '/tiers'
+      path: '/tiers'
+      fullPath: '/tiers'
+      preLoaderRoute: typeof TiersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/vs': {
@@ -1000,6 +1020,7 @@ const rootRouteChildren: RootRouteChildren = {
   RobotsDottxtRoute: RobotsDottxtRoute,
   SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TiersRoute: TiersRoute,
   VsRoute: VsRoute,
   AtmeFavoritesRoute: AtmeFavoritesRoute,
   LegendsSlugRoute: LegendsSlugRoute,

@@ -108,6 +108,11 @@ const sections: readonly NavSection[] = [
         href: "/calc",
         match: ["/calc"],
     },
+    {
+        label: "Tiers",
+        href: "/tiers",
+        match: ["/tiers"],
+    },
 ]
 
 const matches = (pathname: string, prefixes: readonly string[]): boolean =>

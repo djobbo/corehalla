@@ -83,6 +83,10 @@ describe("sitemapPaths", () => {
         expect(weaponPaths).toContain("/weapons/battle-boots")
     })
 
+    it("includes the tier list maker", () => {
+        expect(sitemapPaths()).toContain("/tiers")
+    })
+
     it("spells legend and weapon paths the way their routes render them", () => {
         const paths = sitemapPaths()
 
