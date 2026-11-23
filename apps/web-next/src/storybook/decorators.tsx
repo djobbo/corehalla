@@ -56,6 +56,7 @@ const ROUTE_PATHS = [
     "/stats/players/$id/esports",
     "/stats/players/$id/legends",
     "/stats/players/$id/weapons",
+    "/vs",
 ] as const
 
 const buildRouter = () => {
