@@ -11,9 +11,6 @@ export const legendHref = (legend: Legend): string =>
 export const legendBoardHref = (legend: Legend): string =>
     `/rankings/career/legends/${legend.legend_id}`
 
-export const weaponBoardHref = (weapon: string): string =>
-    `/rankings/career/weapons/${encodeURIComponent(weapon)}`
-
 export const resolveLegend = (slug: string): Legend | null => {
     const id = parseEntityId(slug)
 

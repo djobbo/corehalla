@@ -17,8 +17,8 @@ import {
     legendBoardHref,
     legendHref,
     relatedLegends,
-    weaponBoardHref,
 } from "@/lib/legends"
+import { weaponHref } from "@/lib/weapons"
 import { playerHref, tierColor } from "@/lib/rankings"
 import { LegendIcon } from "./LegendIcon"
 import { cleanString } from "@crh/common/helpers/cleanString"
@@ -47,7 +47,7 @@ const AttributeGrid = ({ legend }: { readonly legend: Legend }) => {
 
 const WeaponChip = ({ weapon }: { readonly weapon: Legend["weapon_one"] }) => (
     <Link
-        to={weaponBoardHref(weapon)}
+        to={weaponHref(weapon)}
         className="ch-chip ch-chip-off inline-flex items-center gap-1.5"
     >
         <img

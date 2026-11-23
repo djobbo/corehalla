@@ -72,6 +72,17 @@ describe("sitemapPaths", () => {
         expect(new Set(legendPaths).size).toBe(legendPaths.length)
     })
 
+    it("includes one page per weapon", () => {
+        const weaponPaths = sitemapPaths().filter((path) =>
+            path.startsWith("/weapons/"),
+        )
+
+        expect(weaponPaths).toHaveLength(weapons.length)
+        expect(new Set(weaponPaths).size).toBe(weaponPaths.length)
+        expect(weaponPaths).toContain("/weapons/grapple-hammer")
+        expect(weaponPaths).toContain("/weapons/battle-boots")
+    })
+
     it("spells legend and weapon paths the way their routes render them", () => {
         const paths = sitemapPaths()
 
