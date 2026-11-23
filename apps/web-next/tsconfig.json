@@ -27,7 +27,8 @@
                     "effect/http",
                     "effect/reactivity",
                     "effect/persistence",
-                    "@effect/atom-react"
+                    "@effect/atom-react",
+                    "@effect/vitest"
                 ],
                 "includeSuggestionsInTsc": false,
                 "ignoreEffectWarningsInTscExitCode": true
