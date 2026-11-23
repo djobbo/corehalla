@@ -303,6 +303,52 @@ export const shortSeasonPlayerEnvelope = {
     meta: { updated_at: UPDATED_AT },
 }
 
+/** A second player for the head-to-head stories: lower totals, one tier down. */
+export const rivalPlayerEnvelope = {
+    data: {
+        ...playerEnvelope.data,
+        id: 4245,
+        name: "Sandstorm",
+        slug: "sandstorm",
+        aliases: [],
+        stats: {
+            ...playerEnvelope.data.stats,
+            xp: 9_800_000,
+            level: 76,
+            games: 6_120,
+            wins: 3_400,
+            kos: 21_500,
+            falls: 19_800,
+            damage_dealt: 6_010_000,
+            damage_taken: 5_880_000,
+        },
+        ranked: {
+            ...playerEnvelope.data.ranked,
+            stats: {
+                games: 240,
+                wins: 128,
+                peak_rating: 1980,
+                glory: { from_wins: 800, from_peak_rating: 720, total: 1520 },
+            },
+            "1v1": {
+                rating: 1876,
+                peak_rating: 1980,
+                is_placement_matches: false,
+                tier: "Platinum 3",
+                wins: 128,
+                games: 240,
+                region: "us-e",
+                rating_reset: 1830,
+            },
+            "2v2": null,
+            "3v3": null,
+        },
+        has_2v2: false,
+        solo_2v2: null,
+    },
+    meta: { updated_at: UPDATED_AT },
+}
+
 const members = [
     {
         id: 4242,
@@ -610,6 +656,7 @@ const emptyEsportsEnvelope = {
 export const PLAYER_ID = 4242
 export const EMPTY_PLAYER_ID = 4243
 export const SHORT_SEASON_PLAYER_ID = 4244
+export const RIVAL_PLAYER_ID = 4245
 
 /** Guild ids used across the clan stories. */
 export const GUILD_ID = 4242
@@ -627,6 +674,61 @@ export const playerMock = {
         SHORT_SEASON_PLAYER_ID,
         shortSeasonPlayerEnvelope as unknown as PlayerEnvelope,
     ),
+}
+
+/** Head-to-head: both profile endpoints, plus the picker's search results. */
+export const versusMock = {
+    [`/api/v1/players/${PLAYER_ID}`]: section(
+        "player/profile@1",
+        profileOf(playerEnvelope as unknown as PlayerEnvelope),
+    ),
+    [`/api/v1/players/${EMPTY_PLAYER_ID}`]: section(
+        "player/profile@1",
+        profileOf(emptyPlayerEnvelope as unknown as PlayerEnvelope),
+    ),
+    [`/api/v1/players/${RIVAL_PLAYER_ID}`]: section(
+        "player/profile@1",
+        profileOf(rivalPlayerEnvelope as unknown as PlayerEnvelope),
+    ),
+    // A clan sits beside the players to prove the picker drops it.
+    "/api/v1/search": [
+        {
+            type: "player",
+            id: String(PLAYER_ID),
+            name: "Mordex",
+            slug: "4242-mordex",
+            aliases: [],
+            rating: 1988,
+            xp: null,
+            tier: "Diamond",
+            region: "eu",
+            source: "rankings",
+        },
+        {
+            type: "player",
+            id: String(RIVAL_PLAYER_ID),
+            name: "Sandstorm",
+            slug: "4245-sandstorm",
+            aliases: [],
+            rating: 1876,
+            xp: null,
+            tier: "Platinum 3",
+            region: "us-e",
+            source: "rankings",
+        },
+        {
+            type: "clan",
+            id: "42",
+            name: "Wolfpack",
+            slug: "42-wolfpack",
+            aliases: [],
+            rating: null,
+            xp: 4_200_000,
+            tier: null,
+            region: null,
+            source: "rankings",
+        },
+    ],
 }
 
 const guildSection = (envelope: {
