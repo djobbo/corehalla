@@ -17,6 +17,7 @@ import {
     directRankings2v2,
     directRankings3v3,
 } from "@crh/domain/direct/rankings"
+import type { RotationLegend } from "@/lib/rotation"
 import { CorehallaClient } from "./client"
 import { isContractCompatible } from "./contract"
 import { runFallback } from "./fallback"
@@ -413,6 +414,24 @@ export const newsArticleAtom = (slug: string) =>
         timeToLive: ttl,
     })
 
+export const weeklyRotationAtom = () =>
+    CorehallaClient.query("content", "getWeeklyRotation", {
+        serializationKey: "weekly-rotation",
+        timeToLive: ttl,
+    })
+
+/**
+ * The rotation band is decoration: a missing or failed fetch reads as an empty
+ * rotation so the landing renders placeholders instead of failing with it.
+ */
+export const weeklyRotationLegendsAtom: Atom.Atom<readonly RotationLegend[]> =
+    Atom.make((get) =>
+        Option.getOrElse(
+            AsyncResult.value(get(weeklyRotationAtom())),
+            () => [],
+        ),
+    )
+
 /** CMS slots change rarely; a long TTL keeps them off the API hot path. */
 const cmsTtl = "1 hour"
 
@@ -486,17 +505,33 @@ export const preloadAtoms = (
 /**
  * Preload that never fails the route. A failed section streams the shell and
  * lets hydration rerun the plan in the browser.
+ *
+ * `decoration` atoms are fetched alongside the required ones and their values
+ * dehydrate too, but they cannot degrade the route: a failure is ignored. Every
+ * atom is awaited before dehydrating, so a slow decoration still makes it into
+ * the first HTML.
  */
 export const preloadAtomsDegraded = async (
     context: RouterContext,
     atoms: ReadonlyArray<Atom.Atom<any>>,
+    decoration: ReadonlyArray<Atom.Atom<any>> = [],
 ): Promise<{ dehydrated: DehydratedState; degraded: boolean }> => {
-    try {
-        const result = await preloadAtoms(context, atoms)
-        return { ...result, degraded: false }
-    } catch {
-        return { dehydrated: [], degraded: true }
-    }
+    const settle = (list: ReadonlyArray<Atom.Atom<any>>) =>
+        Promise.all(
+            list.map((atom) =>
+                preloadAtom(context.registry, atom).then(
+                    () => true,
+                    () => false,
+                ),
+            ),
+        )
+
+    const [required] = await Promise.all([settle(atoms), settle(decoration)])
+    const degraded = required.includes(false)
+
+    return import.meta.env.SSR && !degraded
+        ? { dehydrated: dehydrateRegistry(context.registry), degraded }
+        : { dehydrated: [], degraded }
 }
 
 export const useQuery = <A, E>(

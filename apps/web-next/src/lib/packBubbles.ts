@@ -8,7 +8,7 @@ const PADDING = 10
  * Below this share of the largest value, a bubble packs to radius 0 and vanishes
  * from the chart entirely. Also keeps a metric the bubble has none of visible.
  */
-const MIN_SHARE = 0.0
+const MIN_SHARE = 0.0001
 
 /**
  * `d3.pack` gives a leaf radius proportional to the square root of its weight, so
