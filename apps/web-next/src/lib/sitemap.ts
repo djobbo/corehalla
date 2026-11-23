@@ -2,6 +2,7 @@ import { weapons } from "@crh/bhapi/constants"
 import { legends } from "@crh/bhapi/legends"
 import { legendHref } from "./legends"
 import { brackets, ladderHref, regions } from "./rankings"
+import { weaponHref } from "./weapons"
 
 const PLACEHOLDER_ORIGIN = "https://corehalla.com"
 const SITEMAP_NAMESPACE = "http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -34,6 +35,7 @@ export const sitemapPaths = (): readonly string[] => {
         ),
         "/legends",
         ...legends.map(legendHref),
+        ...weapons.map(weaponHref),
     ]
 
     return [...new Set(paths)]

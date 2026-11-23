@@ -7,7 +7,6 @@ import {
     legendSlug,
     relatedLegends,
     resolveLegend,
-    weaponBoardHref,
 } from "./legends"
 
 const bodvar = legendsMap[3]
@@ -42,18 +41,6 @@ describe("legendHref", () => {
     it("points at the legend page", () => {
         expect(legendHref(bodvar)).toBe("/legends/3-bdvar")
         expect(legendHref(cassidy)).toBe("/legends/4-cassidy")
-    })
-})
-
-describe("weaponBoardHref", () => {
-    it("URL-encodes the weapon name", () => {
-        expect(weaponBoardHref("Grapple Hammer")).toBe(
-            "/rankings/career/weapons/Grapple%20Hammer",
-        )
-    })
-
-    it("leaves a single-word weapon untouched", () => {
-        expect(weaponBoardHref("Sword")).toBe("/rankings/career/weapons/Sword")
     })
 })
 

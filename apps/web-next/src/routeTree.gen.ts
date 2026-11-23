@@ -24,6 +24,7 @@ import { Route as NewsSlugRouteImport } from './routes/news/$slug'
 import { Route as RankingsIndexRouteImport } from './routes/rankings/index'
 import { Route as UpdatesIndexRouteImport } from './routes/updates/index'
 import { Route as UpdatesSlugRouteImport } from './routes/updates/$slug'
+import { Route as WeaponsSlugRouteImport } from './routes/weapons/$slug'
 import { Route as NewsCategoryIndexRouteImport } from './routes/news/category/index'
 import { Route as NewsPageChar123PageChar125RouteImport } from './routes/news/page.{-$page}'
 import { Route as QueueChar123BracketChar125Char123RegionChar125RouteImport } from './routes/queue.{-$bracket}.{-$region}'
@@ -128,6 +129,11 @@ const UpdatesIndexRoute = UpdatesIndexRouteImport.update({
 const UpdatesSlugRoute = UpdatesSlugRouteImport.update({
   id: '/updates/$slug',
   path: '/updates/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WeaponsSlugRoute = WeaponsSlugRouteImport.update({
+  id: '/weapons/$slug',
+  path: '/weapons/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NewsCategoryIndexRoute = NewsCategoryIndexRouteImport.update({
@@ -318,6 +324,7 @@ export interface FileRoutesByFullPath {
   '/legends/$slug': typeof LegendsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/updates/$slug': typeof UpdatesSlugRoute
+  '/weapons/$slug': typeof WeaponsSlugRoute
   '/legends/': typeof LegendsIndexRoute
   '/news/': typeof NewsIndexRoute
   '/rankings/': typeof RankingsIndexRoute
@@ -365,6 +372,7 @@ export interface FileRoutesByTo {
   '/legends/$slug': typeof LegendsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/updates/$slug': typeof UpdatesSlugRoute
+  '/weapons/$slug': typeof WeaponsSlugRoute
   '/legends': typeof LegendsIndexRoute
   '/news': typeof NewsIndexRoute
   '/rankings': typeof RankingsIndexRoute
@@ -412,6 +420,7 @@ export interface FileRoutesById {
   '/legends/$slug': typeof LegendsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/updates/$slug': typeof UpdatesSlugRoute
+  '/weapons/$slug': typeof WeaponsSlugRoute
   '/legends/': typeof LegendsIndexRoute
   '/news/': typeof NewsIndexRoute
   '/rankings/': typeof RankingsIndexRoute
@@ -461,6 +470,7 @@ export interface FileRouteTypes {
     | '/legends/$slug'
     | '/news/$slug'
     | '/updates/$slug'
+    | '/weapons/$slug'
     | '/legends/'
     | '/news/'
     | '/rankings/'
@@ -508,6 +518,7 @@ export interface FileRouteTypes {
     | '/legends/$slug'
     | '/news/$slug'
     | '/updates/$slug'
+    | '/weapons/$slug'
     | '/legends'
     | '/news'
     | '/rankings'
@@ -554,6 +565,7 @@ export interface FileRouteTypes {
     | '/legends/$slug'
     | '/news/$slug'
     | '/updates/$slug'
+    | '/weapons/$slug'
     | '/legends/'
     | '/news/'
     | '/rankings/'
@@ -602,6 +614,7 @@ export interface RootRouteChildren {
   LegendsSlugRoute: typeof LegendsSlugRoute
   NewsSlugRoute: typeof NewsSlugRoute
   UpdatesSlugRoute: typeof UpdatesSlugRoute
+  WeaponsSlugRoute: typeof WeaponsSlugRoute
   LegendsIndexRoute: typeof LegendsIndexRoute
   NewsIndexRoute: typeof NewsIndexRoute
   RankingsIndexRoute: typeof RankingsIndexRoute
@@ -738,6 +751,13 @@ declare module '@tanstack/react-router' {
       path: '/updates/$slug'
       fullPath: '/updates/$slug'
       preLoaderRoute: typeof UpdatesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/weapons/$slug': {
+      id: '/weapons/$slug'
+      path: '/weapons/$slug'
+      fullPath: '/weapons/$slug'
+      preLoaderRoute: typeof WeaponsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/news/category/': {
@@ -985,6 +1005,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegendsSlugRoute: LegendsSlugRoute,
   NewsSlugRoute: NewsSlugRoute,
   UpdatesSlugRoute: UpdatesSlugRoute,
+  WeaponsSlugRoute: WeaponsSlugRoute,
   LegendsIndexRoute: LegendsIndexRoute,
   NewsIndexRoute: NewsIndexRoute,
   RankingsIndexRoute: RankingsIndexRoute,
