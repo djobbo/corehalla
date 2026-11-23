@@ -1,5 +1,5 @@
 import { useAtomValue } from "@effect/atom-react"
-import { ClientOnly } from "@tanstack/react-router"
+import { ClientOnly, Link } from "@tanstack/react-router"
 import { useMemo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FavoriteButton } from "@/components/account/FavoriteButton"
@@ -172,6 +172,13 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
                             : {}
                     }
                 />
+                <Link
+                    to="/vs"
+                    search={{ a: profile.slug }}
+                    className="ch-chip ch-chip-off"
+                >
+                    Compare
+                </Link>
             </div>
             {shownAliases.length > 0 ? (
                 <ul className="flex flex-wrap gap-1.5">
