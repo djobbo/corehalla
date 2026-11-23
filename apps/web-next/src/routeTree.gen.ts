@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CalcRouteImport } from './routes/calc'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as AtmeFavoritesRouteImport } from './routes/@me/favorites'
 import { Route as NewsIndexRouteImport } from './routes/news/index'
@@ -51,6 +52,11 @@ import { Route as RankingsPowerChar123GameModeChar125Char123RegionChar125Char123
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalcRoute = CalcRouteImport.update({
+  id: '/calc',
+  path: '/calc',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LeaderboardRoute = LeaderboardRouteImport.update({
@@ -266,6 +272,7 @@ const RankingsPowerChar123GameModeChar125Char123RegionChar125Char123PageChar125R
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/calc': typeof CalcRoute
   '/leaderboard': typeof LeaderboardRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -306,6 +313,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/calc': typeof CalcRoute
   '/leaderboard': typeof LeaderboardRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -346,6 +354,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/calc': typeof CalcRoute
   '/leaderboard': typeof LeaderboardRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -388,6 +397,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/calc'
     | '/leaderboard'
     | '/@me/favorites'
     | '/news/$slug'
@@ -428,6 +438,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/calc'
     | '/leaderboard'
     | '/@me/favorites'
     | '/news/$slug'
@@ -467,6 +478,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/calc'
     | '/leaderboard'
     | '/@me/favorites'
     | '/news/$slug'
@@ -508,6 +520,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CalcRoute: typeof CalcRoute
   LeaderboardRoute: typeof LeaderboardRoute
   AtmeFavoritesRoute: typeof AtmeFavoritesRoute
   NewsSlugRoute: typeof NewsSlugRoute
@@ -549,6 +562,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calc': {
+      id: '/calc'
+      path: '/calc'
+      fullPath: '/calc'
+      preLoaderRoute: typeof CalcRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/leaderboard': {
@@ -835,6 +855,7 @@ const StatsPlayersIdRouteWithChildren = StatsPlayersIdRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CalcRoute: CalcRoute,
   LeaderboardRoute: LeaderboardRoute,
   AtmeFavoritesRoute: AtmeFavoritesRoute,
   NewsSlugRoute: NewsSlugRoute,

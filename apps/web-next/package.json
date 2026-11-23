@@ -35,6 +35,7 @@
         "@crh/domain": "workspace:*"
     },
     "devDependencies": {
+        "@effect/vitest": "catalog:",
         "@crh/tsconfig": "workspace:*",
         "@storybook/addon-a11y": "catalog:",
         "@storybook/addon-docs": "catalog:",
@@ -50,6 +51,7 @@
         "tailwindcss": "catalog:",
         "tw-animate-css": "catalog:",
         "typescript": "catalog:",
-        "vite-plus": "catalog:"
+        "vite-plus": "catalog:",
+        "vitest": "catalog:"
     }
 }
