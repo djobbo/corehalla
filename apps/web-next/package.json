@@ -37,6 +37,7 @@
     "devDependencies": {
         "@effect/vitest": "catalog:",
         "@crh/tsconfig": "workspace:*",
+        "@effect/vitest": "catalog:",
         "@storybook/addon-a11y": "catalog:",
         "@storybook/addon-docs": "catalog:",
         "@storybook/react-vite": "catalog:",
