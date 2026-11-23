@@ -1,5 +1,6 @@
 import { ClientOnly, createFileRoute } from "@tanstack/react-router"
 import { useAtomValue } from "@effect/atom-react"
+import { LandingFavorites } from "@/components/account/LandingFavorites"
 import { PageLoaderProbe } from "@/components/layout/PageLoader"
 import { LandingHero } from "@/components/layout/LandingHero"
 import { LandingLadder } from "@/components/views/LandingLadder"
@@ -57,6 +58,7 @@ function PageContent() {
         <main className="ch-page">
             <LandingHero />
             <WeeklyRotation rotation={rotation} />
+            <LandingFavorites />
             <section aria-labelledby="live-rankings">
                 <p id="live-rankings" className="ch-kicker mt-8">
                     Live rankings
