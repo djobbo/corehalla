@@ -6,11 +6,10 @@ import type { PowerRankingsOrderBy } from "@crh/api-contract/schemas"
 import type { RankedRegion } from "@crh/api-contract/schemas"
 import type { Ladder } from "@crh/api-contract/schemas"
 import type { Weapon } from "@crh/bhapi/constants"
-import type { PowerGameMode } from "./rankings"
+import type { PowerGameMode, PowerRegion } from "./rankings"
 
 /** Schema is a value; its decoded type is `.Type`. */
 type Region = typeof RankedRegion.Type
-type PowerRegion = (typeof powerRegions)[number]["value"]
 
 const validRegions = new Set<string>(regions.map((entry) => entry.value))
 

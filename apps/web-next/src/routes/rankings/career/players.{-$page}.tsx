@@ -3,6 +3,7 @@ import { CareerRankingsView } from "@/components/views/CareerRankingsView"
 import { CAREER_RANKINGS_PAGE_SIZE } from "@/lib/rankings"
 import { playerBoard } from "@/lib/careerRankings"
 import { resolvePage } from "@/lib/routeParams"
+import { careerPlayersTitle, seoTags } from "@/lib/seo"
 import { careerRankingsAtom, preloadAtoms, useQuery } from "@/effect/atoms"
 import type { SortablePlayerProp } from "@crh/api-contract/schemas"
 
@@ -17,6 +18,15 @@ export const Route = createFileRoute("/rankings/career/players/{-$page}")({
         preloadAtoms(context, [
             careerRankingsAtom(deps.sortBy, resolvePage(params.page)),
         ]),
+    head({ params }) {
+        const page = resolvePage(params.page)
+
+        return seoTags({
+            title: careerPlayersTitle(page),
+            description: `Brawlhalla career totals, page ${page}: the players with the most games, wins, time played and KOs across every season.`,
+            path: `/rankings/career/players${page > 1 ? `/${page}` : ""}`,
+        })
+    },
     component: Page,
 })
 

@@ -1,7 +1,8 @@
 import { ClientOnly, createFileRoute } from "@tanstack/react-router"
 import { PageLoaderProbe } from "@/components/layout/PageLoader"
 import { LadderView } from "@/components/views/LadderView"
-import { LADDER_PAGE_SIZE } from "@/lib/rankings"
+import { LADDER_PAGE_SIZE, ladderHref, regionLabel } from "@/lib/rankings"
+import { ladderTitle, seoTags } from "@/lib/seo"
 import { to1v1Rows } from "@/lib/ladderRows"
 import {
     parseLadderSearch,
@@ -28,6 +29,16 @@ export const Route = createFileRoute("/rankings/live/1v1/{-$region}/{-$page}")({
                 deps.player,
             ),
         ]),
+    head({ params }) {
+        const region = resolveRegion(params.region)
+        const page = resolvePage(params.page)
+
+        return seoTags({
+            title: ladderTitle("1v1", region, page),
+            description: `Live 1v1 ranked ladder — ${regionLabel(region)}, page ${page}. Ratings, wins and the legends each player favours.`,
+            path: ladderHref("1v1", region, page),
+        })
+    },
     component: Page,
 })
 

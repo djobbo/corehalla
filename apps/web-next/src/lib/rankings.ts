@@ -6,7 +6,7 @@ import type {
 } from "@crh/api-contract/schemas"
 
 type Region = typeof RankedRegion.Type
-type PowerRegion = typeof PowerRankingsRegion.Type
+export type PowerRegion = typeof PowerRankingsRegion.Type
 type PowerOrder = typeof PowerRankingsOrderBy.Type
 export type PowerGameMode = typeof PowerRankingsGameMode.Type
 export type PowerOrderBy = PowerOrder
@@ -48,6 +48,11 @@ export const ladderHref = (
 
 export const playerHref = (playerId: number | string, tab?: string): string =>
     tab ? `/stats/players/${playerId}/${tab}` : `/stats/players/${playerId}`
+
+export const queueHref = (bracket: Bracket, region: Region): string =>
+    region === "all"
+        ? `/rankings/queues/${bracket}`
+        : `/rankings/queues/${bracket}/${region}`
 
 export const clanHref = (clanId: number | string): string =>
     `/stats/guilds/${clanId}`

@@ -10,8 +10,8 @@ import { defineConfig } from "vite-plus"
  * Vitest prefers `vitest.config.ts` when both exist, so the app build is
  * unaffected.
  *
- * The runner itself is the Vitest shipped inside the Vite+ CLI, which is why
- * this package declares no `vitest` dependency and the script is `vp test`.
+ * The runner is the Vitest shipped inside the Vite+ CLI, so the script is
+ * `vp test` and the declared `vitest` version stays the one that CLI uses.
  */
 export default defineConfig({
     test: {

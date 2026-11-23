@@ -1,6 +1,7 @@
 import { ClientOnly, createFileRoute } from "@tanstack/react-router"
 import { EsportsTab } from "@/components/player/EsportsTab"
 import { resolveEntityId } from "@/lib/routeParams"
+import { loadedName, playerName, playerTabTitle, titleTags } from "@/lib/seo"
 import { playerEsportsQueryAtom, preloadAtomsDegraded } from "@/effect/atoms"
 
 export const Route = createFileRoute("/stats/players/$id/esports")({
@@ -8,6 +9,13 @@ export const Route = createFileRoute("/stats/players/$id/esports")({
         preloadAtomsDegraded(context, [
             playerEsportsQueryAtom(resolveEntityId(params.id)),
         ]),
+    head: ({ matches, params }) =>
+        titleTags(
+            playerTabTitle(
+                playerName(loadedName(matches), params.id),
+                "Esports",
+            ),
+        ),
     component: Page,
 })
 

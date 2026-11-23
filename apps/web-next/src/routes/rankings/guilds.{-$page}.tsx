@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { ClanRankingsView } from "@/components/views/ClanRankingsView"
 import { CLAN_RANKINGS_PAGE_SIZE } from "@/lib/rankings"
 import { resolvePage } from "@/lib/routeParams"
+import { guildRankingsTitle, seoTags } from "@/lib/seo"
 import { clansRankingsAtom, preloadAtoms, useQuery } from "@/effect/atoms"
 
 const SEARCH_DEBOUNCE_MS = 300
@@ -18,6 +19,15 @@ export const Route = createFileRoute("/rankings/guilds/{-$page}")({
         preloadAtoms(context, [
             clansRankingsAtom(deps.q, resolvePage(params.page)),
         ]),
+    head({ params }) {
+        const page = resolvePage(params.page)
+
+        return seoTags({
+            title: guildRankingsTitle(page),
+            description: `Brawlhalla guild rankings, page ${page}: the clans with the most XP, guild points and members.`,
+            path: `/rankings/guilds${page > 1 ? `/${page}` : ""}`,
+        })
+    },
     component: Page,
 })
 

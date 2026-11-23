@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 import { RankedQueueView } from "@/components/views/RankedQueueView"
+import { queueHref, regionLabel } from "@/lib/rankings"
+import { queueTitle, seoTags } from "@/lib/seo"
 import { resolveBracket, resolveRegion } from "@/lib/routeParams"
 import { preloadAtoms, rankedQueueAtom, useQuery } from "@/effect/atoms"
 
@@ -13,6 +15,16 @@ export const Route = createFileRoute("/rankings/queues/{-$bracket}/{-$region}")(
                     resolveRegion(params.region),
                 ),
             ]),
+        head({ params }) {
+            const bracket = resolveBracket(params.bracket)
+            const region = resolveRegion(params.region)
+
+            return seoTags({
+                title: queueTitle(bracket, region),
+                description: `${bracket} ranked queue for ${regionLabel(region)}: everyone who queued in the last 30 minutes, with rating and tier.`,
+                path: queueHref(bracket, region),
+            })
+        },
         component: Page,
     },
 )

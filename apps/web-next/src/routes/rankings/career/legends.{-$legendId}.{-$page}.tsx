@@ -3,6 +3,7 @@ import { CareerRankingsView } from "@/components/views/CareerRankingsView"
 import { CAREER_RANKINGS_PAGE_SIZE } from "@/lib/rankings"
 import { legendBoard } from "@/lib/careerRankings"
 import { legendOptions, resolveLegendId, resolvePage } from "@/lib/routeParams"
+import { careerLegendTitle, seoTags } from "@/lib/seo"
 import { cn } from "@/lib/cn"
 import {
     careerLegendRankingsAtom,
@@ -31,6 +32,16 @@ export const Route = createFileRoute(
                 resolvePage(params.page),
             ),
         ]),
+    head({ params }) {
+        const legendId = resolveLegendId(params.legendId)
+        const page = resolvePage(params.page)
+
+        return seoTags({
+            title: careerLegendTitle(legendId, page),
+            description: `Brawlhalla career totals on this legend, page ${page}: the players with the most games, wins and KOs.`,
+            path: `/rankings/career/legends/${legendId}${page > 1 ? `/${page}` : ""}`,
+        })
+    },
     component: Page,
 })
 
