@@ -1,12 +1,14 @@
 import { defineConfig } from "vite-plus"
+import { fileURLToPath } from "node:url"
 
 /**
  * Test configuration for the study app.
  *
  * A **separate** file from `vite.config.ts` on purpose. That one registers the
- * TanStack Start, React and Tailwind plugins for the app build, and none of them
- * are needed to test the pure modules under `src/lib` — loading them would make
- * a unit test depend on a router and a bundler plugin to check a string helper.
+ * TanStack Start, React and Tailwind plugins for the app build, and the unit
+ * tests under `src/lib` do not need them. The `@` alias is restated here because
+ * `legacyRedirects.test.ts` imports the generated route tree — the route modules
+ * it pulls in resolve `@/` — and the app build's alias lives in the other file.
  * Vitest prefers `vitest.config.ts` when both exist, so the app build is
  * unaffected.
  *
@@ -14,6 +16,11 @@ import { defineConfig } from "vite-plus"
  * this package declares no `vitest` dependency and the script is `vp test`.
  */
 export default defineConfig({
+    resolve: {
+        alias: {
+            "@": fileURLToPath(new URL("./src", import.meta.url)),
+        },
+    },
     test: {
         environment: "node",
         include: ["src/**/*.test.ts"],
