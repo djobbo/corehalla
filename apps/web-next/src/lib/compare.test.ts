@@ -112,18 +112,19 @@ describe("comparePlayers", () => {
         })
     })
 
-    it("marks the better tier, not the alphabetically later one", () => {
+    it("places tiers by ladder order, not by label text", () => {
+        // "Gold 5" sorts before "Platinum 3" alphabetically but ranks below it.
         const rows = comparePlayers(
-            profile(),
+            profile({ ranked: ranked({ "1v1": bracket({ tier: "Gold 5" }) }) }),
             profile({
                 ranked: ranked({ "1v1": bracket({ tier: "Platinum 3" }) }),
             }),
         )
 
         expect(row(rows, "1v1 tier")).toMatchObject({
-            a: "Diamond",
+            a: "Gold 5",
             b: "Platinum 3",
-            winner: "a",
+            winner: "b",
         })
     })
 
@@ -155,6 +156,65 @@ describe("comparePlayers", () => {
         ]
 
         for (const label of rankedLabels) {
+            expect(row(rows, label)).toEqual({
+                label,
+                a: "—",
+                b: "—",
+                winner: null,
+            })
+        }
+    })
+
+    it("dashes the rates of a player with no career games instead of reading zero", () => {
+        const unplayed = profile({
+            stats: stats({
+                games: 0,
+                wins: 0,
+                kos: 0,
+                falls: 0,
+                damage_dealt: 0,
+            }),
+        })
+
+        const rows = comparePlayers(unplayed, profile())
+
+        for (const label of [
+            "Career win rate",
+            "KOs per game",
+            "Damage dealt per game",
+            "Falls per game",
+        ]) {
+            expect(row(rows, label)).toMatchObject({
+                a: "—",
+                winner: "b",
+            })
+        }
+
+        expect(row(rows, "Career games")).toMatchObject({
+            a: "0",
+            winner: "b",
+        })
+    })
+
+    it("leaves both unplayed sides without a winner on the rate rows", () => {
+        const unplayed = profile({
+            stats: stats({
+                games: 0,
+                wins: 0,
+                kos: 0,
+                falls: 0,
+                damage_dealt: 0,
+            }),
+        })
+
+        const rows = comparePlayers(unplayed, unplayed)
+
+        for (const label of [
+            "Career win rate",
+            "KOs per game",
+            "Damage dealt per game",
+            "Falls per game",
+        ]) {
             expect(row(rows, label)).toEqual({
                 label,
                 a: "—",

@@ -25,6 +25,13 @@ const decimal = (value: number): string => value.toFixed(1)
 
 const asPercent = (value: number): string => `${value.toFixed(2)}%`
 
+/** A rate over zero games is unknown, not zero: the row dashes and has no winner. */
+const perGameOf = (value: number, games: number): number | null =>
+    games === 0 ? null : perGame(value, games)
+
+const percentOf = (value: number, total: number): number | null =>
+    total === 0 ? null : percent(value, total)
+
 const betterOf = (
     a: number,
     b: number,
@@ -111,27 +118,27 @@ export const comparePlayers = (
         numberRow("Career games", a.stats.games, b.stats.games, count),
         numberRow(
             "Career win rate",
-            percent(a.stats.wins, a.stats.games),
-            percent(b.stats.wins, b.stats.games),
+            percentOf(a.stats.wins, a.stats.games),
+            percentOf(b.stats.wins, b.stats.games),
             asPercent,
         ),
         numberRow("KOs", a.stats.kos, b.stats.kos, count),
         numberRow(
             "KOs per game",
-            perGame(a.stats.kos, a.stats.games),
-            perGame(b.stats.kos, b.stats.games),
+            perGameOf(a.stats.kos, a.stats.games),
+            perGameOf(b.stats.kos, b.stats.games),
             decimal,
         ),
         numberRow(
             "Damage dealt per game",
-            perGame(a.stats.damage_dealt, a.stats.games),
-            perGame(b.stats.damage_dealt, b.stats.games),
+            perGameOf(a.stats.damage_dealt, a.stats.games),
+            perGameOf(b.stats.damage_dealt, b.stats.games),
             decimal,
         ),
         numberRow(
             "Falls per game",
-            perGame(a.stats.falls, a.stats.games),
-            perGame(b.stats.falls, b.stats.games),
+            perGameOf(a.stats.falls, a.stats.games),
+            perGameOf(b.stats.falls, b.stats.games),
             decimal,
             "lower",
         ),
@@ -156,8 +163,8 @@ export const comparePlayers = (
         ),
         numberRow(
             "Season win rate",
-            seasonA === null ? null : percent(seasonA.wins, seasonA.games),
-            seasonB === null ? null : percent(seasonB.wins, seasonB.games),
+            seasonA === null ? null : percentOf(seasonA.wins, seasonA.games),
+            seasonB === null ? null : percentOf(seasonB.wins, seasonB.games),
             asPercent,
         ),
         numberRow(
