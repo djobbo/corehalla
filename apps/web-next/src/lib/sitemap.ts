@@ -36,6 +36,7 @@ export const sitemapPaths = (): readonly string[] => {
         "/legends",
         ...legends.map(legendHref),
         ...weapons.map(weaponHref),
+        "/tiers",
     ]
 
     return [...new Set(paths)]
