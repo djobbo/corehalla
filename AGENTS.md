@@ -1,18 +1,16 @@
 # Agent guidelines
 
-## Library source of truth: `.repos`
+## Library source of truth: installed packages
 
-If `.repos/` exists, treat clones there as the **source of truth** for commonly used libraries in this repo (APIs, docs, best practices, and implementation details). Prefer them over training data and web search.
+The installed packages under `node_modules` are the **source of truth** for library APIs, docs and best practices — pinned to the versions in `pnpm-lock.yaml`. Read them before relying on training data or web search. Packages resolve from the workspace root **and** from the consuming package (`apps/<app>/node_modules`, `packages/<pkg>/node_modules`).
 
 When using a library:
 
-1. Look for `LLMS.md` or `AGENTS.md` in the clone — at the repo root **and** in relevant subpackages (e.g. `.repos/<library>/packages/<pkg>/`) — and read those first.
-2. Read the library’s source for the APIs you will call. Do not invent APIs or copy outdated patterns.
-3. If `.repos/` is missing or does not contain the library, fall back to the installed package under `node_modules` (workspace root or the consuming package). Read shipped `LLMS.md` / `AGENTS.md` and source there. This is especially important for **effect** and **alchemy**.
+1. Read the docs shipped with the package — at its root **and** in the relevant subpackage — in this order: `AGENTS.md`, `LLMS.md`, `ai-docs/`, `README.md`.
+2. Read the package source for the APIs you will call. Do not invent APIs or copy outdated patterns.
+3. If the package ships no docs, read its type declarations.
 
-`.repos/` is gitignored and may be missing.
-
-Typical clones: `effect`, `vite-plus`, `alchemy`, `anti-slop`, `tanstack-router` (for both tanstack router and tanstack start), `drizzle-orm`, `shadcn-ui`.
+Libraries that matter here: `effect` and `@effect/*` (including `@effect/vitest`, `@effect/platform-node`), `foldkit`, `alchemy` and `@alchemy.run/*`, `vite-plus`, `@tanstack/react-router` / `@tanstack/react-start`, `drizzle-orm`, `shadcn`.
 
 ## TypeScript and Effect
 
@@ -24,7 +22,7 @@ All JS code should be TypeScript. Use Effect as much as possible.
 - Prefer Context layers for well-defined modules, for better testability and implementation swappability.
 - Use `@effect/vitest` for tests.
 
-Follow Effect best practices from `.repos/effect` (`LLMS.md` / `AGENTS.md`) or the installed `effect` / `@effect/*` packages.
+Follow Effect best practices from the installed `effect` / `@effect/*` packages (`AGENTS.md`, `ai-docs/`).
 
 ## Comments
 
