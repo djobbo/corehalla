@@ -11,7 +11,7 @@ import { PageLoaderProbe } from "@/components/layout/PageLoader"
 import { PlayerHeader } from "@/components/player/PlayerHeader"
 import { PlayerTabs } from "@/components/player/PlayerTabs"
 import { canonicalPath } from "@/lib/routeParams"
-import { Cause, Option } from "effect"
+import { isNotFound } from "@/lib/routeErrors"
 import {
     dehydrateRegistry,
     playerProfileAtom,
@@ -70,19 +70,6 @@ export const Route = createFileRoute("/stats/players/$id")({
     },
     component: Layout,
 })
-
-const isNotFound = (error: unknown): boolean => {
-    if ((error as { _tag?: string } | null)?._tag === "NotFound") return true
-
-    const cause = (error as { cause?: Cause.Cause<unknown> } | null)?.cause
-
-    if (cause === undefined) return false
-
-    return Option.match(Cause.findErrorOption(cause), {
-        onNone: () => false,
-        onSome: (failure) => (failure as { _tag?: string })._tag === "NotFound",
-    })
-}
 
 /**
  * A failed preload must not be serialized: the browser atom has to run again
