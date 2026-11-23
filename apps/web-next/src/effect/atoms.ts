@@ -17,6 +17,7 @@ import {
     directRankings2v2,
     directRankings3v3,
 } from "@crh/domain/direct/rankings"
+import type { RotationLegend } from "@/lib/rotation"
 import { CorehallaClient } from "./client"
 import { isContractCompatible } from "./contract"
 import { runFallback } from "./fallback"
@@ -412,6 +413,24 @@ export const newsArticleAtom = (slug: string) =>
         serializationKey: `news:article:${slug}`,
         timeToLive: ttl,
     })
+
+export const weeklyRotationAtom = () =>
+    CorehallaClient.query("content", "getWeeklyRotation", {
+        serializationKey: "weekly-rotation",
+        timeToLive: ttl,
+    })
+
+/**
+ * The rotation band is decoration: a missing or failed fetch reads as an empty
+ * rotation so the landing renders placeholders instead of failing with it.
+ */
+export const weeklyRotationLegendsAtom: Atom.Atom<readonly RotationLegend[]> =
+    Atom.make((get) =>
+        Option.getOrElse(
+            AsyncResult.value(get(weeklyRotationAtom())),
+            () => [],
+        ),
+    )
 
 /** CMS slots change rarely; a long TTL keeps them off the API hot path. */
 const cmsTtl = "1 hour"

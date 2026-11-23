@@ -3,9 +3,11 @@ import { LandingHero } from "@/components/layout/LandingHero"
 import { SearchProvider } from "@/components/layout/Search"
 import { LatestNews } from "@/components/news/LatestNews"
 import { LandingLadder } from "@/components/views/LandingLadder"
-import { withRouter } from "@/storybook/decorators"
+import { WeeklyRotation } from "@/components/views/WeeklyRotation"
+import { withMockApi } from "@/storybook/decorators"
 import type { BHArticle } from "@crh/api-contract/schemas"
 import type { LadderRow } from "@/lib/ladderRows"
+import type { RotationLegend } from "@/lib/rotation"
 
 /** `LandingHero` embeds `SearchTrigger`, which requires the search provider. */
 const withSearchProvider: Decorator = (Story) => (
@@ -82,13 +84,42 @@ const articles: readonly BHArticle[] = [
     article("patch-7-11", "Patch 7.11 balance pass"),
 ]
 
+const rotationLegend = (
+    legendId: number,
+    nameKey: string,
+    bioName: string,
+): RotationLegend => ({
+    legend_id: legendId,
+    legend_name_key: nameKey,
+    bio_name: bioName,
+    bio_aka: "",
+    weapon_one: "Sword",
+    weapon_two: "Spear",
+    strength: "6",
+    dexterity: "5",
+    defense: "6",
+    speed: "5",
+})
+
+const rotation: readonly RotationLegend[] = [
+    rotationLegend(2, "bodvar", "Bödvar"),
+    rotationLegend(4, "brynn", "Brynn"),
+    rotationLegend(1, "ada", "Ada"),
+    rotationLegend(7, "artemis", "Artemis"),
+    rotationLegend(8, "asuri", "Asuri"),
+    rotationLegend(10, "azoth", "Azoth"),
+    rotationLegend(11, "barraza", "Barraza"),
+    rotationLegend(13, "caspian", "Caspian"),
+    rotationLegend(14, "cassidy", "Cassidy"),
+]
+
 /**
- * The landing page the route renders: hero, the two live ladders, then the
- * latest news.
+ * The landing page the route renders: hero, the weekly rotation, the two live
+ * ladders, then the latest news.
  */
 const meta = {
     title: "Views/Landing page",
-    decorators: [withRouter, withSearchProvider],
+    decorators: [withMockApi, withSearchProvider],
     parameters: { layout: "fullscreen" },
 } satisfies Meta
 
@@ -99,6 +130,7 @@ export const Default: Story = {
     render: () => (
         <main className="ch-page">
             <LandingHero />
+            <WeeklyRotation rotation={rotation} />
             <section aria-labelledby="live-rankings">
                 <p id="live-rankings" className="ch-kicker mt-8">
                     Live rankings

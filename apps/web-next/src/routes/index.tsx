@@ -1,17 +1,22 @@
 import { ClientOnly, createFileRoute } from "@tanstack/react-router"
+import { useAtomValue } from "@effect/atom-react"
 import { PageLoaderProbe } from "@/components/layout/PageLoader"
 import { LandingHero } from "@/components/layout/LandingHero"
 import { LandingLadder } from "@/components/views/LandingLadder"
+import { WeeklyRotation } from "@/components/views/WeeklyRotation"
 import { LatestNews } from "@/components/news/LatestNews"
 import { to1v1Rows, to2v2Rows } from "@/lib/ladderRows"
 import {
     newsArticlesAtom,
+    preloadAtom,
     preloadAtomsDegraded,
     rankings1v1Atom,
     rankings1v1QueryAtom,
     rankings2v2Atom,
     rankings2v2QueryAtom,
     useQuery,
+    weeklyRotationAtom,
+    weeklyRotationLegendsAtom,
 } from "@/effect/atoms"
 
 const LANDING_NEWS_COUNT = 3
@@ -29,12 +34,19 @@ export const Route = createFileRoute("/")({
             },
         ],
     }),
-    loader: ({ context }) =>
-        preloadAtomsDegraded(context, [
+    async loader({ context }) {
+        // The rotation is decoration: its failure must never degrade the page,
+        // so it is preloaded outside the group that gates the client fallback.
+        await preloadAtom(context.registry, weeklyRotationAtom()).catch(
+            () => undefined,
+        )
+
+        return preloadAtomsDegraded(context, [
             rankings1v1QueryAtom("all", 1),
             rankings2v2QueryAtom("all", 1),
             newsArticlesAtom("", 1, LANDING_NEWS_COUNT),
-        ]),
+        ])
+    },
     component: Page,
 })
 
@@ -42,10 +54,12 @@ function PageContent() {
     const oneVone = to1v1Rows(useQuery(rankings1v1Atom("all", 1)))
     const twoVtwo = to2v2Rows(useQuery(rankings2v2Atom("all", 1)))
     const { articles } = useQuery(newsArticlesAtom("", 1, LANDING_NEWS_COUNT))
+    const rotation = useAtomValue(weeklyRotationLegendsAtom)
 
     return (
         <main className="ch-page">
             <LandingHero />
+            <WeeklyRotation rotation={rotation} />
             <section aria-labelledby="live-rankings">
                 <p id="live-rankings" className="ch-kicker mt-8">
                     Live rankings
