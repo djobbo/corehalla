@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { LandingLadder } from "./LandingLadder"
 import { withRouter } from "@/storybook/decorators"
-import type { LadderRow } from "@/lib/ladderRows"
+import type { LadderLegend, LadderRow } from "@/lib/ladderRows"
 
 const row = (
     rank: number,
@@ -9,7 +9,7 @@ const row = (
     slug: string,
     rating: number,
     region: string,
-    legend?: { name: string; nameKey: string },
+    legend?: LadderLegend,
 ): LadderRow => ({
     key: slug,
     rank,
@@ -27,6 +27,7 @@ const rows: readonly LadderRow[] = [
     row(1, "Mordex", "mordex", 2104, "us-e", {
         name: "Bödvar",
         nameKey: "bodvar",
+        href: "/legends/3-bdvar",
     }),
     row(2, "Sandstorm", "sandstorm", 2061, "eu"),
     row(3, "Boomie", "boomie", 1988, "us-e"),

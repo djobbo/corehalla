@@ -22,6 +22,8 @@ import { Suspense, useMemo } from "react"
 const ROUTE_PATHS = [
     "/@me/favorites",
     "/leaderboard",
+    "/legends",
+    "/legends/$slug",
     "/news",
     "/news/$slug",
     "/news/category",

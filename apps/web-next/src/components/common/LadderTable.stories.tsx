@@ -24,7 +24,7 @@ const soloRows: readonly LadderRow[] = [
         wins: 96,
         region: "us-e",
         members: [{ id: 1, name: "Mordex", slug: "mordex" }],
-        legend: { name: "Bödvar", nameKey: "bodvar" },
+        legend: { name: "Bödvar", nameKey: "bodvar", href: "/legends/3-bdvar" },
     },
     {
         key: "sandstorm",
@@ -36,7 +36,11 @@ const soloRows: readonly LadderRow[] = [
         wins: 120,
         region: "eu",
         members: [{ id: 2, name: "Sandstorm", slug: "sandstorm" }],
-        legend: { name: "Mirage", nameKey: "mirage" },
+        legend: {
+            name: "Mirage",
+            nameKey: "mirage",
+            href: "/legends/33-mirage",
+        },
     },
     {
         key: "ldz",
@@ -48,7 +52,11 @@ const soloRows: readonly LadderRow[] = [
         wins: 44,
         region: "brz",
         members: [{ id: 3, name: "LDZ", slug: "ldz" }],
-        legend: { name: "Hattori", nameKey: "hattori" },
+        legend: {
+            name: "Hattori",
+            nameKey: "hattori",
+            href: "/legends/10-hattori",
+        },
     },
     {
         key: "freshlyplaced",
