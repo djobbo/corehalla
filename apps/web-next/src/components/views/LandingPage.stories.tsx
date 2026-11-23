@@ -1,4 +1,5 @@
 import type { Decorator, Meta, StoryObj } from "@storybook/react-vite"
+import { LandingFavorites } from "@/components/account/LandingFavorites"
 import { LandingHero } from "@/components/layout/LandingHero"
 import { SearchProvider } from "@/components/layout/Search"
 import { LatestNews } from "@/components/news/LatestNews"
@@ -118,8 +119,8 @@ const rotation: readonly RotationLegend[] = [
 ]
 
 /**
- * The landing page the route renders: hero, the weekly rotation, the two live
- * ladders, then the latest news.
+ * The landing page the route renders: hero, the weekly rotation, the visitor's
+ * favourites, the two live ladders, then the latest news.
  */
 const meta = {
     title: "Views/Landing page",
@@ -135,6 +136,7 @@ export const Default: Story = {
         <main className="ch-page">
             <LandingHero />
             <WeeklyRotation rotation={rotation} />
+            <LandingFavorites />
             <section aria-labelledby="live-rankings">
                 <p id="live-rankings" className="ch-kicker mt-8">
                     Live rankings
