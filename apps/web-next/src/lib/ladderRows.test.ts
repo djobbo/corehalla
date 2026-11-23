@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vite-plus/test"
+import { describe, expect, it } from "@effect/vitest"
 import { to1v1Rows, to2v2Rows, to3v3Rows } from "./ladderRows"
+import { winRate } from "./stats"
 import type {
     Rankings1v1Envelope,
     Rankings2v2Envelope,
@@ -109,6 +110,28 @@ describe("to1v1Rows", () => {
     it("labels a null tier rather than rendering nothing", () => {
         expect(to1v1Rows(oneVsOne)[1].tier).toBe("Unranked")
     })
+
+    it("carries the record, peak and region of the row", () => {
+        const [first] = to1v1Rows(oneVsOne)
+
+        expect(first).toMatchObject({
+            peakRating: 2600,
+            games: 76,
+            wins: 71,
+            region: "eu",
+        })
+    })
+
+    it("resolves the best legend to its name and icon key", () => {
+        expect(to1v1Rows(oneVsOne)[1].legend).toEqual({
+            name: "Bödvar",
+            nameKey: "bodvar",
+        })
+    })
+
+    it("leaves the legend off a row whose best legend is unknown", () => {
+        expect(to1v1Rows(oneVsOne)[0].legend).toBeUndefined()
+    })
 })
 
 describe("to2v2Rows", () => {
@@ -125,6 +148,18 @@ describe("to2v2Rows", () => {
     it("drops the phantom partner of a solo-queue row", () => {
         expect(to2v2Rows(twoVsTwo)[1].members).toHaveLength(1)
     })
+
+    it("carries the team record but no per-team legend", () => {
+        const [team] = to2v2Rows(twoVsTwo)
+
+        expect(team).toMatchObject({
+            peakRating: 2512,
+            games: 143,
+            wins: 123,
+            region: "us-e",
+        })
+        expect(team.legend).toBeUndefined()
+    })
 })
 
 describe("to3v3Rows", () => {
@@ -133,5 +168,31 @@ describe("to3v3Rows", () => {
 
         expect(row.key).toBe("7-three")
         expect(row.members).toHaveLength(1)
+    })
+
+    it("carries the record but no legend", () => {
+        const [row] = to3v3Rows(threeVsThree)
+
+        expect(row).toMatchObject({
+            peakRating: 2400,
+            games: 30,
+            wins: 20,
+            region: "brz",
+        })
+        expect(row.legend).toBeUndefined()
+    })
+})
+
+describe("winRate", () => {
+    it("reports the share of games won as a percentage", () => {
+        expect(winRate(3, 10)).toBe(30)
+    })
+
+    it("reports zero for a row with no games", () => {
+        expect(winRate(0, 0)).toBe(0)
+    })
+
+    it("never reports NaN", () => {
+        expect(Number.isNaN(winRate(5, 0))).toBe(false)
     })
 })

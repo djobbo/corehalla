@@ -7,3 +7,7 @@ export const percent = (value: number, total: number): number =>
 
 export const perGame = (value: number, games: number): number =>
     ratio(value, games)
+
+/** Share of games won as a percentage; an unplayed row is 0%, never NaN. */
+export const winRate = (wins: number, games: number): number =>
+    percent(wins, games)

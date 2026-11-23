@@ -1,14 +1,70 @@
-import { Link } from "@tanstack/react-router"
+import { Link, useNavigate } from "@tanstack/react-router"
 import { LadderTable } from "@/components/common/LadderTable"
 import { PageNav } from "@/components/common/PageNav"
 import { UpdatedAt } from "@/components/common/UpdatedAt"
+import { Input } from "@/components/ui/input"
 import { brackets, ladderHref, regionLabel, regions } from "@/lib/rankings"
 import { cn } from "@/lib/cn"
 import type { LadderRow } from "@/lib/ladderRows"
 import type { Bracket } from "@/lib/rankings"
 import type { RankedRegion } from "@crh/api-contract/schemas"
+import { useEffect, useRef, useState } from "react"
 
 type Region = typeof RankedRegion.Type
+
+/** Long enough to skip a burst of keystrokes, short enough to feel live. */
+const FILTER_DEBOUNCE_MS = 250
+
+/**
+ * The 1v1 name filter.
+ *
+ * The value is URL state, but the input has to feel immediate, so it keeps a
+ * local draft and pushes it up once typing settles. A value that arrives from
+ * outside (back/forward, a shared link) resets the draft unless the draft is
+ * what produced it.
+ */
+const PlayerFilter = ({
+    value,
+    onChange,
+}: {
+    readonly value: string
+    readonly onChange: (next: string) => void
+}) => {
+    const [draft, setDraft] = useState(value)
+    const committed = useRef(value)
+
+    useEffect(() => {
+        if (value === committed.current) return
+
+        committed.current = value
+        setDraft(value)
+    }, [value])
+
+    useEffect(() => {
+        const next = draft.trim()
+        if (next === value) return
+
+        const timer = setTimeout(() => {
+            committed.current = next
+            onChange(next)
+        }, FILTER_DEBOUNCE_MS)
+
+        return () => clearTimeout(timer)
+    }, [draft, value, onChange])
+
+    return (
+        <div className="mt-1.5">
+            <Input
+                type="search"
+                value={draft}
+                onChange={(event) => setDraft(event.target.value)}
+                placeholder="Filter by player name…"
+                aria-label="Filter players by name"
+                className="h-8 max-w-sm text-xs"
+            />
+        </div>
+    )
+}
 
 export type LadderViewProps = {
     readonly bracket: Bracket
@@ -17,6 +73,8 @@ export type LadderViewProps = {
     readonly rows: readonly LadderRow[]
     readonly hasNextPage: boolean
     readonly updatedAt: number
+    /** The 1v1 name filter's URL value; other boards never set it. */
+    readonly player?: string | undefined
 }
 
 export const LadderView = ({
@@ -26,7 +84,29 @@ export const LadderView = ({
     rows,
     hasNextPage,
     updatedAt,
+    player = "",
 }: LadderViewProps) => {
+    const navigate = useNavigate()
+    const filtered = player !== ""
+
+    /**
+     * Keep the filter, drop the page: a new query changes what every page
+     * holds, so the first page is the only one that means anything.
+     */
+    const changePlayer = (next: string) => {
+        void navigate({
+            to: "/rankings/live/1v1/{-$region}/{-$page}",
+            // Global has no segment of its own, and page 1 has no segment
+            // either: a filtered board has one canonical URL.
+            params: {
+                region: region === "all" ? undefined : region,
+                page: undefined,
+            },
+            search: { player: next === "" ? undefined : next },
+            replace: true,
+        })
+    }
+
     return (
         <div>
             <header className="ch-hero mb-3">
@@ -73,22 +153,33 @@ export const LadderView = ({
                         </Link>
                     ))}
                 </nav>
+                {bracket === "1v1" && (
+                    <PlayerFilter value={player} onChange={changePlayer} />
+                )}
             </div>
             <p className="mt-3 text-[0.66rem] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                {rows.length} rows
+                {filtered
+                    ? `${rows.length} players match “${player}”`
+                    : `${rows.length} rows`}
             </p>
-            <LadderTable rows={rows} className="mt-2" />
+            <LadderTable rows={rows} variant="full" className="mt-2" />
 
-            <PageNav
-                prevHref={
-                    page > 1 ? ladderHref(bracket, region, page - 1) : undefined
-                }
-                nextHref={
-                    hasNextPage
-                        ? ladderHref(bracket, region, page + 1)
-                        : undefined
-                }
-            />
+            {/* A filtered board has only the first page: the filter is a
+                prefix search, not a paged listing. */}
+            {filtered ? null : (
+                <PageNav
+                    prevHref={
+                        page > 1
+                            ? ladderHref(bracket, region, page - 1)
+                            : undefined
+                    }
+                    nextHref={
+                        hasNextPage
+                            ? ladderHref(bracket, region, page + 1)
+                            : undefined
+                    }
+                />
+            )}
         </div>
     )
 }

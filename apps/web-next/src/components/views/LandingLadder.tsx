@@ -32,7 +32,7 @@ export const LandingLadder = ({
                     </EmptyHeader>
                 </Empty>
             ) : (
-                <LadderTable rows={preview} />
+                <LadderTable rows={preview} variant="compact" />
             )}
 
             {hasMore ? (
