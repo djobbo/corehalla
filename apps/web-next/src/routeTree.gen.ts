@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CalcRouteImport } from './routes/calc'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AtmeFavoritesRouteImport } from './routes/@me/favorites'
 import { Route as NewsIndexRouteImport } from './routes/news/index'
 import { Route as NewsSlugRouteImport } from './routes/news/$slug'
@@ -62,6 +64,16 @@ const CalcRoute = CalcRouteImport.update({
 const LeaderboardRoute = LeaderboardRouteImport.update({
   id: '/leaderboard',
   path: '/leaderboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AtmeFavoritesRoute = AtmeFavoritesRouteImport.update({
@@ -274,6 +286,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/calc': typeof CalcRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/news/$slug': typeof NewsSlugRoute
   '/updates/$slug': typeof UpdatesSlugRoute
@@ -315,6 +329,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/calc': typeof CalcRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/news/$slug': typeof NewsSlugRoute
   '/updates/$slug': typeof UpdatesSlugRoute
@@ -356,6 +372,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/calc': typeof CalcRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/news/$slug': typeof NewsSlugRoute
   '/updates/$slug': typeof UpdatesSlugRoute
@@ -399,6 +417,8 @@ export interface FileRouteTypes {
     | '/'
     | '/calc'
     | '/leaderboard'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/@me/favorites'
     | '/news/$slug'
     | '/updates/$slug'
@@ -440,6 +460,8 @@ export interface FileRouteTypes {
     | '/'
     | '/calc'
     | '/leaderboard'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/@me/favorites'
     | '/news/$slug'
     | '/updates/$slug'
@@ -480,6 +502,8 @@ export interface FileRouteTypes {
     | '/'
     | '/calc'
     | '/leaderboard'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/@me/favorites'
     | '/news/$slug'
     | '/updates/$slug'
@@ -522,6 +546,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CalcRoute: typeof CalcRoute
   LeaderboardRoute: typeof LeaderboardRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AtmeFavoritesRoute: typeof AtmeFavoritesRoute
   NewsSlugRoute: typeof NewsSlugRoute
   UpdatesSlugRoute: typeof UpdatesSlugRoute
@@ -576,6 +602,20 @@ declare module '@tanstack/react-router' {
       path: '/leaderboard'
       fullPath: '/leaderboard'
       preLoaderRoute: typeof LeaderboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/@me/favorites': {
@@ -857,6 +897,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CalcRoute: CalcRoute,
   LeaderboardRoute: LeaderboardRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   AtmeFavoritesRoute: AtmeFavoritesRoute,
   NewsSlugRoute: NewsSlugRoute,
   UpdatesSlugRoute: UpdatesSlugRoute,

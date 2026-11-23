@@ -1,0 +1,164 @@
+import { describe, expect, it } from "@effect/vitest"
+import { legends } from "@crh/bhapi/legends"
+import { weapons } from "@crh/bhapi/constants"
+import { brackets, regions } from "./rankings"
+import { resolveLegendId, resolveWeapon } from "./routeParams"
+import {
+    normalizeOrigin,
+    renderRobots,
+    renderSitemap,
+    sitemapPaths,
+} from "./sitemap"
+
+describe("sitemapPaths", () => {
+    it("lists unique root-relative paths", () => {
+        const paths = sitemapPaths()
+
+        expect(new Set(paths).size).toBe(paths.length)
+        expect(paths.every((path) => path.startsWith("/"))).toBe(true)
+    })
+
+    it("includes the landing, news and updates pages", () => {
+        const paths = sitemapPaths()
+
+        expect(paths).toContain("/")
+        expect(paths).toContain("/news")
+        expect(paths).toContain("/updates")
+    })
+
+    it("includes every live ladder at page one", () => {
+        const ladderPaths = sitemapPaths().filter((path) =>
+            path.startsWith("/rankings/live/"),
+        )
+
+        expect(ladderPaths).toHaveLength(brackets.length * regions.length)
+        expect(ladderPaths).toContain("/rankings/live/1v1/eu")
+        expect(ladderPaths).not.toContain("/rankings/live/1v1/eu/2")
+    })
+
+    it("includes the power, clan and career boards", () => {
+        const paths = sitemapPaths()
+
+        expect(paths).toContain("/rankings/power/1v1")
+        expect(paths).toContain("/rankings/power/2v2")
+        expect(paths).toContain("/rankings/clans")
+        expect(paths).toContain("/rankings/guilds")
+        expect(paths).toContain("/rankings/career/players")
+        expect(paths).toContain("/rankings/career/legends")
+        expect(paths).toContain("/rankings/career/weapons")
+    })
+
+    it("includes one path per legend and one per weapon", () => {
+        const paths = sitemapPaths()
+
+        expect(
+            paths.filter((path) =>
+                path.startsWith("/rankings/career/legends/"),
+            ),
+        ).toHaveLength(legends.length)
+        expect(
+            paths.filter((path) =>
+                path.startsWith("/rankings/career/weapons/"),
+            ),
+        ).toHaveLength(weapons.length)
+    })
+
+    it("spells legend and weapon paths the way their routes render them", () => {
+        const paths = sitemapPaths()
+
+        expect(paths).toContain("/rankings/career/legends/3")
+        expect(paths).toContain("/rankings/career/weapons/Grapple%20Hammer")
+        expect(resolveLegendId("3")).toBe(3)
+        expect(resolveWeapon("Grapple Hammer")).toBe("Grapple Hammer")
+    })
+
+    it("omits private pages and paginated boards", () => {
+        const paths = sitemapPaths()
+
+        expect(paths).not.toContain("/@me/favorites")
+        expect(
+            paths.filter(
+                (path) =>
+                    /\/\d+$/.test(path) &&
+                    !path.startsWith("/rankings/career/legends/"),
+            ),
+        ).toEqual([])
+    })
+})
+
+describe("renderSitemap", () => {
+    it("places one url per path under the sitemap namespace", () => {
+        const paths = sitemapPaths()
+        const document = renderSitemap("https://corehalla.com", paths)
+
+        expect(document).toContain(
+            'xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
+        )
+        expect(document.match(/<url>/g)).toHaveLength(paths.length)
+        expect(document).toContain("<loc>https://corehalla.com/</loc>")
+        expect(document).toContain(
+            "<loc>https://corehalla.com/rankings/live/1v1/eu</loc>",
+        )
+    })
+
+    it("escapes reserved characters in a path", () => {
+        const document = renderSitemap("https://corehalla.com", [
+            "/news?tag=patch&page=1",
+        ])
+
+        expect(document).toContain(
+            "<loc>https://corehalla.com/news?tag=patch&amp;page=1</loc>",
+        )
+        expect(document).not.toContain("&amp;page=1</loc>&")
+    })
+
+    it("joins the origin and path with a single slash", () => {
+        const document = renderSitemap("https://corehalla.com/", ["/news"])
+
+        expect(document).toContain("<loc>https://corehalla.com/news</loc>")
+        expect(document).not.toContain("corehalla.com//news")
+    })
+
+    it("adds lastmod to every entry when given", () => {
+        const document = renderSitemap(
+            "https://corehalla.com",
+            ["/", "/news"],
+            "2026-11-23",
+        )
+
+        expect(document.match(/<lastmod>2026-11-23<\/lastmod>/g)).toHaveLength(
+            2,
+        )
+    })
+})
+
+describe("renderRobots", () => {
+    it("allows the site, disallows signed-in pages and points at the sitemap", () => {
+        const robots = renderRobots("https://corehalla.com")
+
+        expect(robots).toContain("User-agent: *")
+        expect(robots).toContain("Allow: /")
+        expect(robots).toContain("Disallow: /@me/")
+        expect(robots).toContain("Sitemap: https://corehalla.com/sitemap.xml")
+    })
+
+    it("keeps a single slash at the join", () => {
+        const robots = renderRobots("https://corehalla.com/")
+
+        expect(robots).toContain("Sitemap: https://corehalla.com/sitemap.xml")
+        expect(robots).not.toContain("corehalla.com//sitemap.xml")
+    })
+})
+
+describe("normalizeOrigin", () => {
+    it("treats a trailing slash as the same origin", () => {
+        expect(normalizeOrigin("https://corehalla.com/")).toBe(
+            normalizeOrigin("https://corehalla.com"),
+        )
+    })
+
+    it("falls back to the placeholder when no origin is configured", () => {
+        expect(normalizeOrigin()).toBe("https://corehalla.com")
+        expect(normalizeOrigin("   ")).toBe("https://corehalla.com")
+    })
+})
