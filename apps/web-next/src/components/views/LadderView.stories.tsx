@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { LadderView } from "./LadderView"
-import { withRouter } from "@/storybook/decorators"
+import { withMockApi } from "@/storybook/decorators"
 import type { LadderRow } from "@/lib/ladderRows"
 
 const meta = {
     title: "Views/Ladder view",
     component: LadderView,
-    decorators: [withRouter],
+    decorators: [withMockApi],
     parameters: { layout: "padded" },
 } satisfies Meta<typeof LadderView>
 
@@ -18,21 +18,35 @@ const rows: readonly LadderRow[] = [
         key: "mordex",
         rank: 1,
         rating: 2104,
+        peakRating: 2180,
         tier: "Valhallan",
+        games: 140,
+        wins: 96,
+        region: "us-e",
         members: [{ id: 1, name: "Mordex", slug: "mordex" }],
+        legend: { name: "Bödvar", nameKey: "bodvar" },
     },
     {
         key: "sandstorm",
         rank: 2,
         rating: 2061,
+        peakRating: 2100,
         tier: "Diamond",
+        games: 210,
+        wins: 120,
+        region: "eu",
         members: [{ id: 2, name: "Sandstorm", slug: "sandstorm" }],
+        legend: { name: "Mirage", nameKey: "mirage" },
     },
     {
         key: "duo",
         rank: 3,
         rating: 1988,
+        peakRating: 2000,
         tier: "Diamond",
+        games: 64,
+        wins: 34,
+        region: "brz",
         members: [
             { id: 3, name: "Boomie", slug: "boomie" },
             { id: 4, name: "Lucians", slug: "lucians" },
@@ -42,7 +56,11 @@ const rows: readonly LadderRow[] = [
         key: "unranked",
         rank: 4,
         rating: 1200,
+        peakRating: 1200,
         tier: "Unranked",
+        games: 0,
+        wins: 0,
+        region: "jpn",
         members: [{ id: 5, name: "FreshlyPlaced", slug: "freshlyplaced" }],
     },
 ]
@@ -57,6 +75,18 @@ export const Global: Story = {
         rows,
         hasNextPage: true,
         updatedAt,
+    },
+}
+
+export const Filtered: Story = {
+    args: {
+        bracket: "1v1",
+        region: "eu",
+        page: 1,
+        rows: rows.slice(0, 2),
+        hasNextPage: false,
+        updatedAt,
+        player: "mor",
     },
 }
 

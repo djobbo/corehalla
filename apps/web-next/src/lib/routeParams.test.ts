@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vite-plus/test"
-import { canonicalPath, resolveEntityId } from "./routeParams"
+import {
+    canonicalPath,
+    resolveEntityId,
+    resolvePlayerFilter,
+} from "./routeParams"
 
 describe("resolveEntityId", () => {
     it("reads the id at the head of a slug", () => {
@@ -58,5 +62,25 @@ describe("canonicalPath", () => {
                 "1234-boomie",
             ),
         ).toBe("/stats/players/1234-boomie")
+    })
+})
+
+describe("resolvePlayerFilter", () => {
+    it("keeps a player prefix", () => {
+        expect(resolvePlayerFilter("mord")).toBe("mord")
+    })
+
+    it("trims padding around the prefix", () => {
+        expect(resolvePlayerFilter("  mord ")).toBe("mord")
+    })
+
+    it("reads an empty input as no filter, so the parameter is dropped", () => {
+        expect(resolvePlayerFilter("")).toBeUndefined()
+        expect(resolvePlayerFilter("   ")).toBeUndefined()
+    })
+
+    it("ignores anything that is not a string", () => {
+        expect(resolvePlayerFilter(undefined)).toBeUndefined()
+        expect(resolvePlayerFilter(["mord"])).toBeUndefined()
     })
 })

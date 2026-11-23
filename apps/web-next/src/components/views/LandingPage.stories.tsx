@@ -25,7 +25,11 @@ const solo = (
     key: slug,
     rank,
     rating,
+    peakRating: rating + 40,
     tier: rank === 1 ? "Valhallan" : "Diamond",
+    games: 120,
+    wins: 70,
+    region: "us-e",
     members: [{ id: rank, name, slug }],
 })
 

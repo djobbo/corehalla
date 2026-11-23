@@ -3,52 +3,49 @@ import { LandingLadder } from "./LandingLadder"
 import { withRouter } from "@/storybook/decorators"
 import type { LadderRow } from "@/lib/ladderRows"
 
+const row = (
+    rank: number,
+    name: string,
+    slug: string,
+    rating: number,
+    region: string,
+    legend?: { name: string; nameKey: string },
+): LadderRow => ({
+    key: slug,
+    rank,
+    rating,
+    peakRating: rating + 40,
+    tier: rank === 1 ? "Valhallan" : "Diamond",
+    games: 120,
+    wins: 70,
+    region,
+    members: [{ id: rank, name, slug }],
+    legend,
+})
+
 const rows: readonly LadderRow[] = [
-    {
-        key: "mordex",
-        rank: 1,
-        rating: 2104,
-        tier: "Valhallan",
-        members: [{ id: 1456, name: "Mordex", slug: "mordex" }],
-    },
-    {
-        key: "sandstorm",
-        rank: 2,
-        rating: 2061,
-        tier: "Diamond",
-        members: [{ id: 2087, name: "Sandstorm", slug: "sandstorm" }],
-    },
-    {
-        key: "boomie",
-        rank: 3,
-        rating: 1988,
-        tier: "Diamond",
-        members: [{ id: 5312, name: "Boomie", slug: "boomie" }],
-    },
-    {
-        key: "lucians",
-        rank: 4,
-        rating: 1975,
-        tier: "Diamond",
-        members: [{ id: 6120, name: "Lucians", slug: "lucians" }],
-    },
+    row(1, "Mordex", "mordex", 2104, "us-e", {
+        name: "Bödvar",
+        nameKey: "bodvar",
+    }),
+    row(2, "Sandstorm", "sandstorm", 2061, "eu"),
+    row(3, "Boomie", "boomie", 1988, "us-e"),
+    row(4, "Lucians", "lucians", 1975, "brz"),
     {
         key: "sandstorm-duo",
         rank: 5,
         rating: 1930,
+        peakRating: 1970,
         tier: "Diamond",
+        games: 90,
+        wins: 50,
+        region: "eu",
         members: [
             { id: 2087, name: "Sandstorm", slug: "sandstorm" },
             { id: 1456, name: "Mordex", slug: "mordex" },
         ],
     },
-    {
-        key: "freshlyplaced",
-        rank: 6,
-        rating: 1200,
-        tier: "Unranked",
-        members: [{ id: 9001, name: "FreshlyPlaced", slug: "freshlyplaced" }],
-    },
+    row(6, "FreshlyPlaced", "freshlyplaced", 1200, "sea"),
 ]
 
 const meta = {

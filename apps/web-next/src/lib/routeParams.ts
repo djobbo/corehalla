@@ -24,6 +24,13 @@ export const resolvePage = (value?: string): number => {
     return Number.isFinite(page) && page > 0 ? page : 1
 }
 
+/** A blank or non-string filter is no filter at all, so the URL drops it. */
+export const resolvePlayerFilter = (value: unknown): string | undefined => {
+    const player = typeof value === "string" ? value.trim() : ""
+
+    return player === "" ? undefined : player
+}
+
 export const resolvePowerGameMode = (value?: string): PowerGameMode =>
     value === "2v2" ? "2v2" : "1v1"
 
