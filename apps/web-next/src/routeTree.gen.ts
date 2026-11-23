@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CalcRouteImport } from './routes/calc'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AtmeFavoritesRouteImport } from './routes/@me/favorites'
 import { Route as NewsIndexRouteImport } from './routes/news/index'
@@ -69,6 +70,11 @@ const LeaderboardRoute = LeaderboardRouteImport.update({
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
   id: '/robots.txt',
   path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -287,6 +293,7 @@ export interface FileRoutesByFullPath {
   '/calc': typeof CalcRoute
   '/leaderboard': typeof LeaderboardRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -330,6 +337,7 @@ export interface FileRoutesByTo {
   '/calc': typeof CalcRoute
   '/leaderboard': typeof LeaderboardRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -373,6 +381,7 @@ export interface FileRoutesById {
   '/calc': typeof CalcRoute
   '/leaderboard': typeof LeaderboardRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -418,6 +427,7 @@ export interface FileRouteTypes {
     | '/calc'
     | '/leaderboard'
     | '/robots.txt'
+    | '/search'
     | '/sitemap.xml'
     | '/@me/favorites'
     | '/news/$slug'
@@ -461,6 +471,7 @@ export interface FileRouteTypes {
     | '/calc'
     | '/leaderboard'
     | '/robots.txt'
+    | '/search'
     | '/sitemap.xml'
     | '/@me/favorites'
     | '/news/$slug'
@@ -503,6 +514,7 @@ export interface FileRouteTypes {
     | '/calc'
     | '/leaderboard'
     | '/robots.txt'
+    | '/search'
     | '/sitemap.xml'
     | '/@me/favorites'
     | '/news/$slug'
@@ -547,6 +559,7 @@ export interface RootRouteChildren {
   CalcRoute: typeof CalcRoute
   LeaderboardRoute: typeof LeaderboardRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AtmeFavoritesRoute: typeof AtmeFavoritesRoute
   NewsSlugRoute: typeof NewsSlugRoute
@@ -609,6 +622,13 @@ declare module '@tanstack/react-router' {
       path: '/robots.txt'
       fullPath: '/robots.txt'
       preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -898,6 +918,7 @@ const rootRouteChildren: RootRouteChildren = {
   CalcRoute: CalcRoute,
   LeaderboardRoute: LeaderboardRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
+  SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AtmeFavoritesRoute: AtmeFavoritesRoute,
   NewsSlugRoute: NewsSlugRoute,

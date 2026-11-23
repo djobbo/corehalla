@@ -31,6 +31,15 @@ export const resolvePlayerFilter = (value: unknown): string | undefined => {
     return player === "" ? undefined : player
 }
 
+export type LadderSearch = { player?: string | undefined }
+
+/** The 1v1 board's search schema, shared with the redirects that target it. */
+export const parseLadderSearch = (
+    search: Record<string, unknown>,
+): LadderSearch => ({
+    player: resolvePlayerFilter(search.player),
+})
+
 export const resolvePowerGameMode = (value?: string): PowerGameMode =>
     value === "2v2" ? "2v2" : "1v1"
 
