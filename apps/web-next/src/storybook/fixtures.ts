@@ -271,6 +271,38 @@ export const emptyPlayerEnvelope = {
     meta: { updated_at: UPDATED_AT },
 }
 
+/** Ranked, but short of the season's glory threshold — the panel's insufficient branch. */
+export const shortSeasonPlayerEnvelope = {
+    data: {
+        ...playerEnvelope.data,
+        id: 4244,
+        name: "SeasonStarter",
+        slug: "seasonstarter",
+        aliases: [],
+        ranked: {
+            ...playerEnvelope.data.ranked,
+            stats: {
+                games: 6,
+                wins: 2,
+                peak_rating: 1604,
+                glory: { from_wins: 0, from_peak_rating: 0, total: 0 },
+            },
+            "1v1": {
+                rating: 1530,
+                peak_rating: 1604,
+                is_placement_matches: false,
+                tier: "Gold 4",
+                wins: 2,
+                games: 6,
+                region: "eu",
+                rating_reset: 1510,
+            },
+            "2v2": null,
+        },
+    },
+    meta: { updated_at: UPDATED_AT },
+}
+
 const members = [
     {
         id: 4242,
@@ -577,6 +609,7 @@ const emptyEsportsEnvelope = {
 /** Player ids used across the player and clan stories. */
 export const PLAYER_ID = 4242
 export const EMPTY_PLAYER_ID = 4243
+export const SHORT_SEASON_PLAYER_ID = 4244
 
 /** Guild ids used across the clan stories. */
 export const GUILD_ID = 4242
@@ -589,6 +622,10 @@ export const playerMock = {
     ...sectionsFor(
         EMPTY_PLAYER_ID,
         emptyPlayerEnvelope as unknown as PlayerEnvelope,
+    ),
+    ...sectionsFor(
+        SHORT_SEASON_PLAYER_ID,
+        shortSeasonPlayerEnvelope as unknown as PlayerEnvelope,
     ),
 }
 

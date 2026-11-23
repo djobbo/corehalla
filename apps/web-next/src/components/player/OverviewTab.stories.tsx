@@ -1,7 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { OverviewTab } from "./OverviewTab"
 import { withMockApi } from "@/storybook/decorators"
-import { EMPTY_PLAYER_ID, PLAYER_ID, playerMock } from "@/storybook/fixtures"
+import {
+    EMPTY_PLAYER_ID,
+    PLAYER_ID,
+    SHORT_SEASON_PLAYER_ID,
+    playerMock,
+} from "@/storybook/fixtures"
 
 const meta = {
     title: "Features/Player/Overview tab",
@@ -19,4 +24,8 @@ export const Default: Story = {
 
 export const Empty: Story = {
     args: { playerId: EMPTY_PLAYER_ID },
+}
+
+export const BelowGloryThreshold: Story = {
+    args: { playerId: SHORT_SEASON_PLAYER_ID },
 }
