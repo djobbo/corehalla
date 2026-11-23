@@ -5,10 +5,12 @@ export const VIEW = 1000
 const PADDING = 10
 
 /**
- * Below this share of the largest value, a bubble packs to radius 0 and vanishes
- * from the chart entirely. Also keeps a metric the bubble has none of visible.
+ * A bubble weighs its share of the largest value, so one with none of the active
+ * metric weighs 0 and `d3.pack` draws it with radius 0 — a hole in the chart.
+ * The floor keeps it visible: at `1e-3` it packs to ~10 of the heaviest bubble's
+ * ~475 units, about 3px once the chart renders at its 304px width.
  */
-const MIN_SHARE = 0.0001
+const MIN_SHARE = 0.001
 
 /**
  * `d3.pack` gives a leaf radius proportional to the square root of its weight, so
