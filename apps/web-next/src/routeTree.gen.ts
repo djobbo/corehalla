@@ -16,6 +16,8 @@ import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AtmeFavoritesRouteImport } from './routes/@me/favorites'
+import { Route as LegendsIndexRouteImport } from './routes/legends/index'
+import { Route as LegendsSlugRouteImport } from './routes/legends/$slug'
 import { Route as NewsIndexRouteImport } from './routes/news/index'
 import { Route as NewsSlugRouteImport } from './routes/news/$slug'
 import { Route as RankingsIndexRouteImport } from './routes/rankings/index'
@@ -85,6 +87,16 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const AtmeFavoritesRoute = AtmeFavoritesRouteImport.update({
   id: '/@me/favorites',
   path: '/@me/favorites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegendsIndexRoute = LegendsIndexRouteImport.update({
+  id: '/legends/',
+  path: '/legends/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegendsSlugRoute = LegendsSlugRouteImport.update({
+  id: '/legends/$slug',
+  path: '/legends/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NewsIndexRoute = NewsIndexRouteImport.update({
@@ -296,8 +308,10 @@ export interface FileRoutesByFullPath {
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
+  '/legends/$slug': typeof LegendsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/updates/$slug': typeof UpdatesSlugRoute
+  '/legends/': typeof LegendsIndexRoute
   '/news/': typeof NewsIndexRoute
   '/rankings/': typeof RankingsIndexRoute
   '/updates/': typeof UpdatesIndexRoute
@@ -340,8 +354,10 @@ export interface FileRoutesByTo {
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
+  '/legends/$slug': typeof LegendsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/updates/$slug': typeof UpdatesSlugRoute
+  '/legends': typeof LegendsIndexRoute
   '/news': typeof NewsIndexRoute
   '/rankings': typeof RankingsIndexRoute
   '/updates': typeof UpdatesIndexRoute
@@ -384,8 +400,10 @@ export interface FileRoutesById {
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
+  '/legends/$slug': typeof LegendsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/updates/$slug': typeof UpdatesSlugRoute
+  '/legends/': typeof LegendsIndexRoute
   '/news/': typeof NewsIndexRoute
   '/rankings/': typeof RankingsIndexRoute
   '/updates/': typeof UpdatesIndexRoute
@@ -430,8 +448,10 @@ export interface FileRouteTypes {
     | '/search'
     | '/sitemap.xml'
     | '/@me/favorites'
+    | '/legends/$slug'
     | '/news/$slug'
     | '/updates/$slug'
+    | '/legends/'
     | '/news/'
     | '/rankings/'
     | '/updates/'
@@ -474,8 +494,10 @@ export interface FileRouteTypes {
     | '/search'
     | '/sitemap.xml'
     | '/@me/favorites'
+    | '/legends/$slug'
     | '/news/$slug'
     | '/updates/$slug'
+    | '/legends'
     | '/news'
     | '/rankings'
     | '/updates'
@@ -517,8 +539,10 @@ export interface FileRouteTypes {
     | '/search'
     | '/sitemap.xml'
     | '/@me/favorites'
+    | '/legends/$slug'
     | '/news/$slug'
     | '/updates/$slug'
+    | '/legends/'
     | '/news/'
     | '/rankings/'
     | '/updates/'
@@ -562,8 +586,10 @@ export interface RootRouteChildren {
   SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AtmeFavoritesRoute: typeof AtmeFavoritesRoute
+  LegendsSlugRoute: typeof LegendsSlugRoute
   NewsSlugRoute: typeof NewsSlugRoute
   UpdatesSlugRoute: typeof UpdatesSlugRoute
+  LegendsIndexRoute: typeof LegendsIndexRoute
   NewsIndexRoute: typeof NewsIndexRoute
   RankingsIndexRoute: typeof RankingsIndexRoute
   UpdatesIndexRoute: typeof UpdatesIndexRoute
@@ -643,6 +669,20 @@ declare module '@tanstack/react-router' {
       path: '/@me/favorites'
       fullPath: '/@me/favorites'
       preLoaderRoute: typeof AtmeFavoritesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legends/': {
+      id: '/legends/'
+      path: '/legends'
+      fullPath: '/legends/'
+      preLoaderRoute: typeof LegendsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legends/$slug': {
+      id: '/legends/$slug'
+      path: '/legends/$slug'
+      fullPath: '/legends/$slug'
+      preLoaderRoute: typeof LegendsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/news/': {
@@ -921,8 +961,10 @@ const rootRouteChildren: RootRouteChildren = {
   SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AtmeFavoritesRoute: AtmeFavoritesRoute,
+  LegendsSlugRoute: LegendsSlugRoute,
   NewsSlugRoute: NewsSlugRoute,
   UpdatesSlugRoute: UpdatesSlugRoute,
+  LegendsIndexRoute: LegendsIndexRoute,
   NewsIndexRoute: NewsIndexRoute,
   RankingsIndexRoute: RankingsIndexRoute,
   UpdatesIndexRoute: UpdatesIndexRoute,

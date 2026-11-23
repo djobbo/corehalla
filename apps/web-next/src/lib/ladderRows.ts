@@ -1,4 +1,5 @@
 import { legendsMap } from "@crh/bhapi/legends"
+import { legendHref } from "./legends"
 import type {
     Rankings1v1Envelope,
     Rankings2v2Envelope,
@@ -14,6 +15,7 @@ export type LadderMember = {
 export type LadderLegend = {
     readonly name: string
     readonly nameKey: string
+    readonly href: string
 }
 
 export type LadderRow = {
@@ -45,7 +47,11 @@ const legendOf = (best: BestLegend): LadderLegend | undefined => {
 
     return legend === undefined
         ? undefined
-        : { name: legend.bio_name, nameKey: legend.legend_name_key }
+        : {
+              name: legend.bio_name,
+              nameKey: legend.legend_name_key,
+              href: legendHref(legend),
+          }
 }
 
 export const to1v1Rows = (

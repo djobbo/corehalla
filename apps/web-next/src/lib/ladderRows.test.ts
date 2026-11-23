@@ -122,10 +122,11 @@ describe("to1v1Rows", () => {
         })
     })
 
-    it("resolves the best legend to its name and icon key", () => {
+    it("resolves the best legend to its name, icon key and page", () => {
         expect(to1v1Rows(oneVsOne)[1].legend).toEqual({
             name: "Bödvar",
             nameKey: "bodvar",
+            href: "/legends/3-bdvar",
         })
     })
 

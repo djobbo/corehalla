@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/card"
+import { Link } from "@tanstack/react-router"
 import { EntityLink } from "@/components/common/EntityLink"
 import {
     Table,
@@ -74,12 +75,18 @@ const StackedRecord = ({ row }: { readonly row: LadderRow }) => (
 
 /** The hook reads the CMS registry, so it needs a component of its own. */
 const LegendIcon = ({ legend }: { readonly legend: LadderLegend }) => (
-    <img
-        src={useLegendIcon(legend.nameKey, legendIconSrc(legend.nameKey))}
-        alt={legend.name}
-        title={legend.name}
-        className="size-6 shrink-0 object-contain"
-    />
+    <Link
+        to={legend.href}
+        aria-label={`${legend.name} legend page`}
+        className="shrink-0 transition-opacity hover:opacity-80"
+    >
+        <img
+            src={useLegendIcon(legend.nameKey, legendIconSrc(legend.nameKey))}
+            alt={legend.name}
+            title={legend.name}
+            className="size-6 object-contain"
+        />
+    </Link>
 )
 
 const RegionFlag = ({ region }: { readonly region: string }) => (

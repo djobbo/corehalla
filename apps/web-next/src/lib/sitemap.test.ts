@@ -63,6 +63,15 @@ describe("sitemapPaths", () => {
         ).toHaveLength(weapons.length)
     })
 
+    it("includes the legend index and one page per legend", () => {
+        const paths = sitemapPaths()
+        const legendPaths = paths.filter((path) => path.startsWith("/legends/"))
+
+        expect(paths).toContain("/legends")
+        expect(legendPaths).toHaveLength(legends.length)
+        expect(new Set(legendPaths).size).toBe(legendPaths.length)
+    })
+
     it("spells legend and weapon paths the way their routes render them", () => {
         const paths = sitemapPaths()
 

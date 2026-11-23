@@ -1,5 +1,6 @@
 import { weapons } from "@crh/bhapi/constants"
 import { legends } from "@crh/bhapi/legends"
+import { legendHref } from "./legends"
 import { brackets, ladderHref, regions } from "./rankings"
 
 const PLACEHOLDER_ORIGIN = "https://corehalla.com"
@@ -31,6 +32,8 @@ export const sitemapPaths = (): readonly string[] => {
             (weapon) =>
                 `/rankings/career/weapons/${encodeURIComponent(weapon)}`,
         ),
+        "/legends",
+        ...legends.map(legendHref),
     ]
 
     return [...new Set(paths)]
