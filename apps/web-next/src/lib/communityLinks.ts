@@ -3,15 +3,18 @@ export type CommunityLink = {
     readonly href: string
 }
 
+export const discordUrl = "https://discord.com/invite/eD248ez"
+export const githubUrl = "https://github.com/djobbo/corehalla"
+
 /**
  * The destinations the legacy `/discord`, `/twitter`, `/github` and `/donate`
  * stubs redirect to, resolved here to the external URL so the footer never
  * needs a hop through a redirect route.
  */
 export const communityLinks = [
-    { label: "Discord", href: "https://discord.com/invite/eD248ez" },
+    { label: "Discord", href: discordUrl },
     { label: "X (Twitter)", href: "https://twitter.com/Corehalla" },
-    { label: "GitHub", href: "https://github.com/djobbo/corehalla" },
+    { label: "GitHub", href: githubUrl },
     { label: "Ko-fi", href: "https://ko-fi.com/corehalla" },
 ] as const satisfies readonly CommunityLink[]
 
