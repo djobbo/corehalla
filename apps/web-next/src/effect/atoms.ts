@@ -505,17 +505,33 @@ export const preloadAtoms = (
 /**
  * Preload that never fails the route. A failed section streams the shell and
  * lets hydration rerun the plan in the browser.
+ *
+ * `decoration` atoms are fetched alongside the required ones and their values
+ * dehydrate too, but they cannot degrade the route: a failure is ignored. Every
+ * atom is awaited before dehydrating, so a slow decoration still makes it into
+ * the first HTML.
  */
 export const preloadAtomsDegraded = async (
     context: RouterContext,
     atoms: ReadonlyArray<Atom.Atom<any>>,
+    decoration: ReadonlyArray<Atom.Atom<any>> = [],
 ): Promise<{ dehydrated: DehydratedState; degraded: boolean }> => {
-    try {
-        const result = await preloadAtoms(context, atoms)
-        return { ...result, degraded: false }
-    } catch {
-        return { dehydrated: [], degraded: true }
-    }
+    const settle = (list: ReadonlyArray<Atom.Atom<any>>) =>
+        Promise.all(
+            list.map((atom) =>
+                preloadAtom(context.registry, atom).then(
+                    () => true,
+                    () => false,
+                ),
+            ),
+        )
+
+    const [required] = await Promise.all([settle(atoms), settle(decoration)])
+    const degraded = required.includes(false)
+
+    return import.meta.env.SSR && !degraded
+        ? { dehydrated: dehydrateRegistry(context.registry), degraded }
+        : { dehydrated: [], degraded }
 }
 
 export const useQuery = <A, E>(

@@ -8,7 +8,6 @@ import { LatestNews } from "@/components/news/LatestNews"
 import { to1v1Rows, to2v2Rows } from "@/lib/ladderRows"
 import {
     newsArticlesAtom,
-    preloadAtom,
     preloadAtomsDegraded,
     rankings1v1Atom,
     rankings1v1QueryAtom,
@@ -34,19 +33,17 @@ export const Route = createFileRoute("/")({
             },
         ],
     }),
-    async loader({ context }) {
-        // The rotation is decoration: its failure must never degrade the page,
-        // so it is preloaded outside the group that gates the client fallback.
-        await preloadAtom(context.registry, weeklyRotationAtom()).catch(
-            () => undefined,
-        )
-
-        return preloadAtomsDegraded(context, [
-            rankings1v1QueryAtom("all", 1),
-            rankings2v2QueryAtom("all", 1),
-            newsArticlesAtom("", 1, LANDING_NEWS_COUNT),
-        ])
-    },
+    loader: ({ context }) =>
+        preloadAtomsDegraded(
+            context,
+            [
+                rankings1v1QueryAtom("all", 1),
+                rankings2v2QueryAtom("all", 1),
+                newsArticlesAtom("", 1, LANDING_NEWS_COUNT),
+            ],
+            // Decoration: it may fail without degrading the page.
+            [weeklyRotationAtom()],
+        ),
     component: Page,
 })
 
