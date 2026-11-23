@@ -447,6 +447,88 @@
         padding: 1.25rem 1rem 4rem;
     }
 
+    /* --- footer ---------------------------------------------------------- */
+
+    /*
+     * Every page ends here, including the not-found panel the root outlet draws
+     * in place of a route. The strip is opaque and ruled off in ink so a long
+     * ladder table cannot bleed into the legal text above the fold, and the
+     * content is a plain column that wraps instead of shrinking: at 320px the
+     * link row stacks and the statements keep their line length, rather than
+     * being squeezed into unreadable slivers.
+     */
+    .ch-footer {
+        margin-top: 3rem;
+        border-top: 3px solid var(--color-ink);
+        background: var(--color-bgVar2);
+        padding: 1.75rem 1rem 2rem;
+    }
+
+    .ch-footer-inner {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        width: 100%;
+        max-width: 72rem;
+        margin-inline: auto;
+    }
+
+    .ch-footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0 1.5rem;
+        margin-top: 0.35rem;
+        list-style: none;
+    }
+
+    .ch-footer-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        min-height: 2.5rem;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--foreground);
+        transition: color 120ms ease;
+    }
+
+    .ch-footer-link::before {
+        content: "";
+        flex: none;
+        width: 0.4rem;
+        height: 0.4rem;
+        background: var(--primary);
+        transform: skewX(-12deg);
+    }
+
+    .ch-footer-link:hover {
+        color: var(--ring);
+    }
+
+    .ch-footer-legal {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        max-width: 46rem;
+        font-size: 0.78rem;
+        line-height: 1.6;
+        color: var(--muted-foreground);
+        text-wrap: pretty;
+    }
+
+    .ch-footer-copy {
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--color-panelDeep);
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted-foreground);
+    }
+
     /* --- rank badge ------------------------------------------------------ */
 
     .ch-rank {

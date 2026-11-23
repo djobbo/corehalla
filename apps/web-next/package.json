@@ -36,6 +36,7 @@
     },
     "devDependencies": {
         "@crh/tsconfig": "workspace:*",
+        "@effect/vitest": "catalog:",
         "@storybook/addon-a11y": "catalog:",
         "@storybook/addon-docs": "catalog:",
         "@storybook/react-vite": "catalog:",
@@ -50,6 +51,7 @@
         "tailwindcss": "catalog:",
         "tw-animate-css": "catalog:",
         "typescript": "catalog:",
-        "vite-plus": "catalog:"
+        "vite-plus": "catalog:",
+        "vitest": "catalog:"
     }
 }

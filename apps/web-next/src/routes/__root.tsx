@@ -13,6 +13,7 @@ import {
 import { HydrationBoundary, RegistryContext } from "@effect/atom-react"
 import { cmsMediaManifestAtom, preloadAtoms } from "@/effect/atoms"
 import { AccountControl } from "@/components/account/AccountControl"
+import { Footer } from "@/components/layout/Footer"
 import { LandingBackground } from "@/components/layout/LandingBackground"
 import { MainNav } from "@/components/layout/MainNav"
 import { NavigationProgress } from "@/components/layout/NavigationProgress"
@@ -38,13 +39,18 @@ export const Route = createRootRouteWithContext<RouterContext>()({
             { title: "Corehalla" },
         ],
     }),
-    loader: ({ context }) => preloadAtoms(context, [cmsMediaManifestAtom()]),
+    loader: async ({ context }) => ({
+        ...(await preloadAtoms(context, [cmsMediaManifestAtom()])),
+        // Read once per load, so a render either side of New Year cannot move it.
+        year: new Date().getFullYear(),
+    }),
     component: RootComponent,
     shellComponent: RootDocument,
 })
 
 function RootComponent() {
     const { registry } = Route.useRouteContext()
+    const { year } = Route.useLoaderData()
     const matches = useMatches()
 
     // Merge every matched route's dehydrated slice before the first client render.
@@ -90,6 +96,7 @@ function RootComponent() {
                             <Suspense fallback={<PageLoaderProbe />}>
                                 <Outlet />
                             </Suspense>
+                            <Footer year={year} />
                         </SearchProvider>
                         <NavigationProgress />
                         <PageLoader />
