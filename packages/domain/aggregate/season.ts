@@ -7,7 +7,7 @@ import {
 import type { Player3v3Ranked, PlayerRanked } from "@crh/bhapi/types"
 
 /** Games required before Brawlhalla awards any glory. */
-const GLORY_MIN_GAMES = 10
+export const GLORY_MIN_GAMES = 10
 
 export type SeasonSummary = {
     readonly games: number

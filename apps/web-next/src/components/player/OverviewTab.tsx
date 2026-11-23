@@ -7,11 +7,14 @@ import { LegendBubbleChart } from "@/components/charts/LegendBubbleChart"
 import { WeaponBubbleChart } from "@/components/charts/WeaponBubbleChart"
 import { playerProfileAtom, useQuery } from "@/effect/atoms"
 import { cn } from "@/lib/cn"
+import { tierColor } from "@/lib/rankings"
+import { eloReset, seasonGlory } from "@/lib/season"
 import { percent, perGame, ratio } from "@/lib/stats"
 import { formatTime } from "@crh/common/helpers/date"
 import type { Stat } from "@/components/common/StatGrid"
 import type { BreakdownEntry } from "@/components/common/Breakdown"
 import type { Player, PlayerRankedTeam } from "@crh/api-contract/schemas"
+import type { CSSProperties } from "react"
 
 type RankedBracket = NonNullable<NonNullable<Player["ranked"]>["1v1"]>
 
@@ -70,6 +73,87 @@ const Ranked3v3Panel = ({
             wins={ranked.wins}
             games={ranked.games}
         />
+    )
+}
+
+const RankedSeasonPanel = ({
+    ranked,
+}: {
+    readonly ranked: NonNullable<Player["ranked"]>
+}) => {
+    const glory = seasonGlory(ranked)
+    const reset = eloReset(ranked["1v1"])
+
+    const resetStats: readonly Stat[] =
+        reset === null
+            ? []
+            : [
+                  {
+                      title: "Next season 1v1",
+                      value: (
+                          <>
+                              {reset.rating.toLocaleString()}
+                              <span
+                                  className="ch-tier ml-2"
+                                  style={
+                                      {
+                                          "--ch-tier": tierColor(reset.tier),
+                                      } as CSSProperties
+                                  }
+                              >
+                                  {reset.tier}
+                              </span>
+                          </>
+                      ),
+                  },
+              ]
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Ranked Season</CardTitle>
+            </CardHeader>
+            <CardContent>
+                {glory.kind === "awarded" ? (
+                    <StatGrid
+                        stats={[
+                            {
+                                title: "Total glory",
+                                value: glory.total.toLocaleString(),
+                            },
+                            {
+                                title: "Glory from wins",
+                                value: glory.fromWins.toLocaleString(),
+                            },
+                            {
+                                title: "Glory from best rating",
+                                value: (
+                                    <>
+                                        {glory.fromRating.toLocaleString()}
+                                        <span className="ml-2 text-xs font-normal tracking-normal text-muted-foreground">
+                                            at{" "}
+                                            {glory.bestRating.toLocaleString()}{" "}
+                                            peak
+                                        </span>
+                                    </>
+                                ),
+                            },
+                            ...resetStats,
+                        ]}
+                    />
+                ) : (
+                    <div className="flex flex-col gap-3">
+                        <p className="text-sm text-muted-foreground">
+                            Glory unlocks at {glory.required} ranked games this
+                            season — {glory.games} played so far.
+                        </p>
+                        {resetStats.length > 0 ? (
+                            <StatGrid stats={resetStats} />
+                        ) : null}
+                    </div>
+                )}
+            </CardContent>
+        </Card>
     )
 }
 
@@ -385,6 +469,7 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
 
     return (
         <div className="flex flex-col gap-4">
+            {ranked !== null ? <RankedSeasonPanel ranked={ranked} /> : null}
             {rankedCardCount > 0 ? (
                 <div
                     className={cn(
