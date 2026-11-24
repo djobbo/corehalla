@@ -7,6 +7,7 @@ import { useRankedBanner } from "@/lib/media"
 import { tierColor } from "@/lib/rankings"
 import { percent } from "@/lib/stats"
 import type { Stat } from "@/components/common/StatGrid"
+import type { PlayerStanding } from "@crh/api-contract/schemas"
 import type { CSSProperties, ReactNode } from "react"
 
 export const RankedCard = ({
@@ -19,6 +20,7 @@ export const RankedCard = ({
     games,
     regionalRank,
     globalRank,
+    standing,
     stats,
     meta,
 }: {
@@ -31,6 +33,7 @@ export const RankedCard = ({
     readonly games: number
     readonly regionalRank?: number | null
     readonly globalRank?: number | null
+    readonly standing?: PlayerStanding | null
     readonly stats?: readonly Stat[]
     readonly meta?: ReactNode
 }) => {
@@ -84,6 +87,13 @@ export const RankedCard = ({
                     regionalRank={regionalRank}
                     globalRank={globalRank}
                 />
+                {standing ? (
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                        Top {standing.top_percent.toFixed(1)}% of{" "}
+                        {standing.sample_size.toLocaleString()} indexed ranked
+                        players
+                    </p>
+                ) : null}
                 <SplitProgress
                     className="mt-2"
                     parts={[

@@ -13,7 +13,11 @@ import { percent, perGame, ratio } from "@/lib/stats"
 import { formatTime } from "@crh/common/helpers/date"
 import type { Stat } from "@/components/common/StatGrid"
 import type { BreakdownEntry } from "@/components/common/Breakdown"
-import type { Player, PlayerRankedTeam } from "@crh/api-contract/schemas"
+import type {
+    Player,
+    PlayerRankedTeam,
+    PlayerStanding,
+} from "@crh/api-contract/schemas"
 import type { CSSProperties } from "react"
 
 type RankedBracket = NonNullable<NonNullable<Player["ranked"]>["1v1"]>
@@ -22,8 +26,10 @@ type Team = PlayerRankedTeam
 
 const Ranked1v1Panel = ({
     ranked,
+    standing,
 }: {
     readonly ranked: RankedBracket | null
+    readonly standing: PlayerStanding | null
 }) => {
     if (!ranked || ranked.games <= 0) return null
 
@@ -38,6 +44,7 @@ const Ranked1v1Panel = ({
             games={ranked.games}
             regionalRank={ranked.region_rank}
             globalRank={ranked.global_rank}
+            standing={standing}
         />
     )
 }
@@ -481,7 +488,10 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                         rankedCardCount > 2 && "@4xl:grid-cols-3",
                     )}
                 >
-                    <Ranked1v1Panel ranked={ranked1v1} />
+                    <Ranked1v1Panel
+                        ranked={ranked1v1}
+                        standing={profile.standing}
+                    />
                     {soloRecord ? <SoloQueuePanel solo={soloRecord} /> : null}
                     <Ranked3v3Panel ranked={ranked3v3} />
                 </div>
