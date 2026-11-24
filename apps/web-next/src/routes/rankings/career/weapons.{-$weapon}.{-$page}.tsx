@@ -3,6 +3,7 @@ import { CareerRankingsView } from "@/components/views/CareerRankingsView"
 import { CAREER_RANKINGS_PAGE_SIZE } from "@/lib/rankings"
 import { weaponBoard } from "@/lib/careerRankings"
 import { resolvePage, resolveWeapon, weaponOptions } from "@/lib/routeParams"
+import { careerWeaponTitle, seoTags } from "@/lib/seo"
 import { cn } from "@/lib/cn"
 import {
     careerWeaponRankingsAtom,
@@ -31,6 +32,16 @@ export const Route = createFileRoute(
                 resolvePage(params.page),
             ),
         ]),
+    head({ params }) {
+        const weapon = resolveWeapon(params.weapon)
+        const page = resolvePage(params.page)
+
+        return seoTags({
+            title: careerWeaponTitle(weapon, page),
+            description: `Career totals with the ${weapon}, page ${page}: the players with the most games, wins and KOs on it.`,
+            path: `/rankings/career/weapons/${encodeURIComponent(weapon)}${page > 1 ? `/${page}` : ""}`,
+        })
+    },
     component: Page,
 })
 

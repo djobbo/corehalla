@@ -14,6 +14,7 @@ import { PageNav } from "@/components/common/PageNav"
 import {
     brackets,
     playerHref,
+    queueHref,
     regionLabel,
     regions,
     tierColor,
@@ -192,11 +193,6 @@ export const RankedQueueView = ({
         <PageNav />
     </div>
 )
-
-export const queueHref = (bracket: Ladder, region: Region): string =>
-    region === "all"
-        ? `/rankings/queues/${bracket}`
-        : `/rankings/queues/${bracket}/${region}`
 
 const since = (queuedAt: number, now: number): string => {
     const minutes = Math.max(0, Math.round((now - queuedAt) / 60_000))

@@ -12,6 +12,7 @@ import { PlayerHeader } from "@/components/player/PlayerHeader"
 import { PlayerTabs } from "@/components/player/PlayerTabs"
 import { canonicalPath } from "@/lib/routeParams"
 import { isNotFound } from "@/lib/routeErrors"
+import { playerName, playerTitle, seoTags } from "@/lib/seo"
 import {
     dehydrateRegistry,
     playerProfileAtom,
@@ -61,12 +62,29 @@ export const Route = createFileRoute("/stats/players/$id")({
             }
         }
 
+        const name = envelope?.data.name
+
         return import.meta.env.SSR
             ? {
                   dehydrated: degradeSafe(degraded, context.registry),
                   degraded,
+                  name,
               }
-            : { dehydrated: [], degraded }
+            : { dehydrated: [], degraded, name }
+    },
+    head({ params, loaderData, matches }) {
+        const name = playerName(loaderData?.name, params.id)
+        // A tab is the leaf under this layout, so its URL is the one to index.
+        // An index match keeps the trailing slash its route declares.
+        const path = (
+            matches.at(-1)?.pathname ?? `/stats/players/${params.id}`
+        ).replace(/\/$/, "")
+
+        return seoTags({
+            title: playerTitle(name),
+            description: `Brawlhalla profile for ${name}: ranked ratings, legends, weapons and 2v2 teams.`,
+            path,
+        })
     },
     component: Layout,
 })

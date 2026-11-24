@@ -1,7 +1,8 @@
 import { ClientOnly, createFileRoute } from "@tanstack/react-router"
 import { PageLoaderProbe } from "@/components/layout/PageLoader"
 import { LadderView } from "@/components/views/LadderView"
-import { LADDER_PAGE_SIZE } from "@/lib/rankings"
+import { LADDER_PAGE_SIZE, ladderHref, regionLabel } from "@/lib/rankings"
+import { ladderTitle, seoTags } from "@/lib/seo"
 import { to2v2Rows } from "@/lib/ladderRows"
 import { resolvePage, resolveRegion } from "@/lib/routeParams"
 import {
@@ -19,6 +20,16 @@ export const Route = createFileRoute("/rankings/live/2v2/{-$region}/{-$page}")({
                 resolvePage(params.page),
             ),
         ]),
+    head({ params }) {
+        const region = resolveRegion(params.region)
+        const page = resolvePage(params.page)
+
+        return seoTags({
+            title: ladderTitle("2v2", region, page),
+            description: `Live 2v2 ranked ladder — ${regionLabel(region)}, page ${page}. Team ratings, wins and the pairs climbing fastest.`,
+            path: ladderHref("2v2", region, page),
+        })
+    },
     component: Page,
 })
 

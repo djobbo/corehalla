@@ -11,6 +11,8 @@ import {
     resolvePowerOrderBy,
     resolvePowerRegion,
 } from "@/lib/routeParams"
+import { powerHref } from "@/lib/rankings"
+import { powerTitle, seoTags } from "@/lib/seo"
 import {
     powerRankingsAtom,
     powerRankingsQueryAtom,
@@ -37,6 +39,17 @@ export const Route = createFileRoute(
                 deps.orderBy,
             ),
         ]),
+    head({ params }) {
+        const gameMode = resolvePowerGameMode(params.gameMode)
+        const region = resolvePowerRegion(params.region)
+        const page = resolvePage(params.page)
+
+        return seoTags({
+            title: powerTitle(gameMode, region, page),
+            description: `Brawlhalla ${gameMode} power rankings — ${region}, page ${page}. Tournament results, placements and earnings.`,
+            path: powerHref(gameMode, region, page),
+        })
+    },
     component: Page,
 })
 

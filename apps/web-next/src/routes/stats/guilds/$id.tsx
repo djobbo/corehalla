@@ -4,6 +4,7 @@ import { ClanBody } from "@/components/clan/ClanBody"
 import { ClanHeader } from "@/components/clan/ClanHeader"
 import { ProfileLayout } from "@/components/layout/ProfileLayout"
 import { canonicalPath } from "@/lib/routeParams"
+import { guildName, guildTitle, seoTags } from "@/lib/seo"
 import { dehydrateRegistry, guildAtom, preloadAtom } from "@/effect/atoms"
 import type { GuildEnvelope } from "@crh/api-contract/schemas"
 
@@ -39,8 +40,20 @@ export const Route = createFileRoute("/stats/guilds/$id")({
         }
 
         return import.meta.env.SSR
-            ? { dehydrated: dehydrateRegistry(context.registry) }
-            : { dehydrated: [] }
+            ? {
+                  dehydrated: dehydrateRegistry(context.registry),
+                  name: envelope.data.name,
+              }
+            : { dehydrated: [], name: envelope.data.name }
+    },
+    head({ params, loaderData }) {
+        const name = guildName(loaderData?.name, params.id)
+
+        return seoTags({
+            title: guildTitle(name),
+            description: `Brawlhalla guild profile for ${name}: level, XP, guild points and the member roster.`,
+            path: `/stats/guilds/${params.id}`,
+        })
     },
     component: Page,
 })
