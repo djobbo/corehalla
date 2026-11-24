@@ -15,7 +15,7 @@ export const ProfileLayout = ({
     readonly aside: ReactNode
     readonly children: ReactNode
 }) => (
-    <main className="ch-page">
+    <main id="main" tabIndex={-1} className="ch-page">
         <div className="flex flex-col gap-4">
             <div className="min-w-0">{aside}</div>
             <div className="@container flex min-w-0 flex-col">{children}</div>

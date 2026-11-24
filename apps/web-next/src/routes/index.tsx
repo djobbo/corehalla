@@ -56,7 +56,7 @@ function PageContent() {
     const rotation = useAtomValue(weeklyRotationLegendsAtom)
 
     return (
-        <main className="ch-page">
+        <main id="main" tabIndex={-1} className="ch-page">
             <LandingHero />
             <WeeklyRotation rotation={rotation} />
             <LandingFavorites />
@@ -76,7 +76,7 @@ function PageContent() {
 }
 
 const LandingShell = () => (
-    <main className="ch-page">
+    <main id="main" tabIndex={-1} className="ch-page">
         <PageLoaderProbe />
     </main>
 )

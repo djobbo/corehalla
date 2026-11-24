@@ -63,7 +63,7 @@ function Page() {
     const article = useQuery(newsArticleAtom(slug))
 
     return (
-        <main className="ch-page">
+        <main id="main" tabIndex={-1} className="ch-page">
             <article className="mx-auto max-w-3xl">
                 <Link to="/news" className="ch-kicker hover:text-foreground">
                     <span aria-hidden>&larr;</span> Brawlhalla news

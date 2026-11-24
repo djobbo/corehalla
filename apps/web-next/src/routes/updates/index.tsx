@@ -78,7 +78,7 @@ function Page() {
     const { articles } = useQuery(cmsArticlesAtom(1, PAGE_SIZE))
 
     return (
-        <main className="ch-page">
+        <main id="main" tabIndex={-1} className="ch-page">
             <p className="ch-kicker">Corehalla</p>
             <h1 className="ch-display mt-1 text-3xl md:text-4xl">Updates</h1>
             <p className="mt-3 max-w-2xl text-sm text-muted-foreground">

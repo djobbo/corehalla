@@ -33,7 +33,7 @@ const Code = ({ children }: { readonly children: string }) => (
 
 function PrivacyPage() {
     return (
-        <main className="ch-page">
+        <main id="main" tabIndex={-1} className="ch-page">
             <article className="ch-article mx-auto max-w-3xl">
                 <header className="ch-hero">
                     <p className="ch-kicker">Corehalla</p>

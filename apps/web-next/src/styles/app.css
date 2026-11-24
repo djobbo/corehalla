@@ -199,6 +199,13 @@
      */
     html {
         background-color: var(--background);
+        /*
+         * Native widgets follow the page rather than the OS: form controls,
+         * the scrollbar gutter and the browser's own UI render dark. The
+         * scrollbar above is styled by hand; this is what tells the browser
+         * the rest is not light.
+         */
+        color-scheme: dark;
     }
 
     /*
@@ -437,6 +444,34 @@
         outline-color: var(--color-warning);
     }
 
+    /* --- skip link ------------------------------------------------------- */
+
+    /*
+     * Off-canvas until it takes focus, and `position: fixed` so it never
+     * occupies flow space: a focusable link that appears must not push the
+     * masthead down by its own height. The warning plate is the poster's
+     * "look here" colour, and ink on it is the rank-1 pair.
+     */
+    .ch-skip {
+        position: fixed;
+        top: 0.5rem;
+        left: 0.5rem;
+        z-index: 70;
+        transform: translateY(calc(-100% - 1rem));
+        padding: 0.55rem 0.9rem;
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-ink);
+        background: var(--color-warning);
+        box-shadow: 3px 3px 0 var(--color-ink);
+    }
+
+    .ch-skip:focus {
+        transform: none;
+    }
+
     /* --- masthead -------------------------------------------------------- */
 
     .ch-masthead {
@@ -524,6 +559,16 @@
         max-width: 72rem;
         margin-inline: auto;
         padding: 1.25rem 1rem 4rem;
+    }
+
+    /*
+     * The skip target. Focus has to land on the column so the next Tab starts
+     * inside the content, but the column is not a control, and the base ring
+     * would draw a 72rem box around the whole page. The skip link paints its
+     * own ring while it is focused.
+     */
+    .ch-page:focus {
+        outline: none;
     }
 
     /* --- footer ---------------------------------------------------------- */

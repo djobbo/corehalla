@@ -29,7 +29,7 @@ function Page() {
 
     if (session._tag === "Initial") {
         return (
-            <main className="ch-page">
+            <main id="main" tabIndex={-1} className="ch-page">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Spinner />
                     <span aria-hidden>Loading…</span>
@@ -42,7 +42,11 @@ function Page() {
 
     if (!user) {
         return (
-            <main className="ch-page flex flex-col items-start gap-4">
+            <main
+                id="main"
+                tabIndex={-1}
+                className="ch-page flex flex-col items-start gap-4"
+            >
                 <h1 className="ch-display text-3xl">Favorites</h1>
                 <p className="text-sm text-muted-foreground">
                     Sign in to save players and clans, and to keep them across
@@ -70,7 +74,7 @@ const SignedIn = ({ username }: { readonly username: string }) => {
     const clans = favorites.filter((favorite) => favorite.type !== "player")
 
     return (
-        <main className="ch-page flex flex-col gap-6">
+        <main id="main" tabIndex={-1} className="ch-page flex flex-col gap-6">
             <header>
                 <h1 className="ch-display text-3xl">Favorites</h1>
                 <p className="mt-1 text-sm text-muted-foreground">

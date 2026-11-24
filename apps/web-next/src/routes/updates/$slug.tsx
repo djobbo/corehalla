@@ -65,7 +65,7 @@ function Page() {
     const { article } = Route.useLoaderData()
 
     return (
-        <main className="ch-page">
+        <main id="main" tabIndex={-1} className="ch-page">
             <article className="mx-auto max-w-3xl">
                 <p className="ch-kicker">Corehalla updates</p>
                 <h1 className="ch-display mt-2 text-3xl md:text-4xl">

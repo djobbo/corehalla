@@ -41,7 +41,7 @@ export const NewsFeed = ({
     const grid = isFirstPage && lead ? rest : articles
 
     return (
-        <main className="ch-page">
+        <main id="main" tabIndex={-1} className="ch-page">
             <header className="ch-hero">
                 <p className="ch-kicker">Brawlhalla</p>
                 <h1 className="ch-display mt-1 text-2xl">

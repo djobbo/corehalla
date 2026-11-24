@@ -10,7 +10,7 @@ export const LegendIndex = ({
 }: {
     readonly children?: ReactNode
 }) => (
-    <main className="ch-page">
+    <main id="main" tabIndex={-1} className="ch-page">
         <header className="ch-hero mb-3">
             <p className="ch-kicker">Brawlhalla roster</p>
             <h1 className="ch-display mt-1 text-2xl">Legends</h1>

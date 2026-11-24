@@ -99,7 +99,7 @@ const degradeSafe = (
 ) => (degraded ? [] : dehydrateRegistry(registry))
 
 const DegradedPlayerShell = () => (
-    <main className="ch-page">
+    <main id="main" tabIndex={-1} className="ch-page">
         <PageLoaderProbe />
     </main>
 )

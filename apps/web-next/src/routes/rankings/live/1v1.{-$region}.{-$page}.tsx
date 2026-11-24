@@ -52,7 +52,7 @@ function PageContent() {
     const rows = to1v1Rows(board)
 
     return (
-        <main className="ch-page">
+        <main id="main" tabIndex={-1} className="ch-page">
             <LadderView
                 bracket="1v1"
                 region={region}
@@ -67,7 +67,7 @@ function PageContent() {
 }
 
 const BoardShell = () => (
-    <main className="ch-page">
+    <main id="main" tabIndex={-1} className="ch-page">
         <PageLoaderProbe />
     </main>
 )
