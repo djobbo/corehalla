@@ -23,7 +23,7 @@ export const WeeklyRotation = ({
         <p id="weekly-rotation" className="ch-kicker">
             Free legends this week
         </p>
-        <ul className="mt-2 grid grid-cols-3 gap-2 rounded-2xl bg-card p-3 shadow-[4px_4px_0_0_var(--color-ink)] sm:grid-cols-5 lg:grid-cols-9 lg:gap-3 lg:p-4">
+        <ul className="mt-2 grid grid-cols-3 gap-2 rounded-none bg-card p-3 shadow-md sm:grid-cols-5 lg:grid-cols-9 lg:gap-3 lg:p-4">
             {rotationSlots(rotation).map((slot, index) => (
                 <li
                     key={slot ? slot.legend_id : `empty-${index}`}

@@ -37,7 +37,7 @@ export const TopContributors = ({
             </CardHeader>
             <CardContent>
                 {contributors.length === 0 ? (
-                    <Empty className="rounded-2xl bg-card py-8">
+                    <Empty className="rounded-none bg-card shadow-md py-8">
                         <EmptyHeader>
                             <EmptyTitle>Nothing to rank yet</EmptyTitle>
                             <EmptyDescription>

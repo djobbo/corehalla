@@ -48,7 +48,7 @@ export const CareerRankingsView = <K extends string>({
         />
 
         {rows.length === 0 ? (
-            <Empty className="mt-4 rounded-2xl bg-card py-10">
+            <Empty className="mt-4 rounded-none bg-card shadow-md py-10">
                 <EmptyHeader>
                     <EmptyDescription>
                         No players on this board yet.

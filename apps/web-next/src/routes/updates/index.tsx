@@ -40,7 +40,7 @@ const UpdateCard = ({ article }: { readonly article: CmsArticle }) => (
             <Link
                 to="/updates/$slug"
                 params={{ slug: article.slug }}
-                className="relative aspect-video overflow-hidden rounded-2xl bg-card"
+                className="relative aspect-video overflow-hidden rounded-none bg-card shadow-md"
             >
                 <CmsImage
                     image={article.heroImage}
