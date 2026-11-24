@@ -18,6 +18,10 @@ export const WithLink: Story = {
     args: { alertKey: "NEW_BH_WIKI" },
 }
 
+export const Resolved: Story = {
+    args: { alertKey: "AUTH_ISSUES_RESOLVED" },
+}
+
 export const Narrow: Story = {
     args: { alertKey: "BH_SERVER_ISSUE" },
     render: (args) => (

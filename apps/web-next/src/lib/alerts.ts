@@ -21,7 +21,6 @@ export type Alert = {
 export const alerts = {
     BH_MAINTENANCE: {
         text: "Brawlhalla is offline for scheduled maintenance. Live ladders may be stale until the servers return.",
-        link: { label: "Discord updates", href: discordUrl },
     },
     BH_SERVER_ISSUE: {
         text: "Brawlhalla's stats servers are struggling, so player and ranking data may lag behind. We're watching it.",
