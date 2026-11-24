@@ -2,7 +2,7 @@ import { describe, expect, it } from "@effect/vitest"
 import { clanMock } from "@crh/bhapi/mocks/clan"
 import { playerRankedMock } from "@crh/bhapi/mocks/playerRanked"
 import { playerStatsMock } from "@crh/bhapi/mocks/playerStats"
-import { buildPlayer } from "./player"
+import { buildPlayer, buildPlayerProfile } from "./player"
 import type { Player3v3Ranked } from "@crh/bhapi/types"
 import type { PlayerSources } from "./player"
 
@@ -156,5 +156,29 @@ describe("buildPlayer", () => {
         expect(clan?.id).toBe(playerStatsMock.clan?.clan_id)
         expect(clan?.xp).toBe(Number(clanMock.clan_xp))
         expect(clan?.joined_at).not.toBeUndefined()
+    })
+})
+
+describe("buildPlayerProfile", () => {
+    const sources = (
+        overrides: Partial<PlayerSources> = {},
+    ): PlayerSources => ({
+        stats: playerStatsMock,
+        ranked: playerRankedMock,
+        ranked3v3: null,
+        aliases: [],
+        ...overrides,
+    })
+
+    it("carries the archive standing into the profile", () => {
+        const standing = { rank: 4_182, sample_size: 214_300, top_percent: 2 }
+
+        expect(buildPlayerProfile(sources({ standing })).standing).toEqual(
+            standing,
+        )
+    })
+
+    it("has no standing when the archive read is unavailable", () => {
+        expect(buildPlayerProfile(sources()).standing).toBeNull()
     })
 })

@@ -24,6 +24,7 @@ import type {
     PlayerProfile,
     PlayerRanked2v2,
     PlayerRankedTeam,
+    PlayerStanding,
     PlayerWeapon,
     WeaponBubble,
 } from "@crh/api-contract/schemas"
@@ -319,6 +320,8 @@ export type PlayerSources = {
     readonly ranked: PlayerRanked | null
     readonly ranked3v3: Player3v3Ranked | null
     readonly aliases: readonly string[]
+    /** Archive-only; the direct v1 fallback has no database. */
+    readonly standing?: PlayerStanding | null
 }
 
 export type PlayerClanSources = PlayerSources & {
@@ -496,6 +499,7 @@ export const buildPlayerProfile = (sources: PlayerSources): PlayerProfile => {
         weapon_bubbles: toWeaponBubbles(weapons),
         has_2v2: teams.some((team) => team.paired),
         solo_2v2: teams.find((team) => !team.paired) ?? null,
+        standing: sources.standing ?? null,
         weapon_kos: weaponKos,
         thrown_kos: thrownKos,
         weapon_damage: weaponDamage,

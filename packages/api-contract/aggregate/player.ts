@@ -217,6 +217,19 @@ export const WeaponBubbleSchema = Schema.Struct({
 })
 
 /**
+ * Where a 1v1 rating sits among the ranked players Corehalla has indexed.
+ * Ties share a rank, so the count never inflates.
+ */
+export const PlayerStandingSchema = Schema.Struct({
+    /** One plus the indexed ranked players with a strictly higher rating. */
+    rank: Schema.Number,
+    /** Indexed players with at least one ranked game. */
+    sample_size: Schema.Number,
+    /** `rank` as a share of the sample, one decimal, floored at 0.1. */
+    top_percent: Schema.Number,
+})
+
+/**
  * The header + overview payload. `ranked.2v2.teams` is always empty here; the
  * lazy teams section owns the list. `has_2v2` / `solo_2v2` carry the two facts
  * the overview needs.
@@ -236,6 +249,8 @@ export const PlayerProfileSchema = Schema.Struct({
     weapon_bubbles: Schema.Array(WeaponBubbleSchema),
     has_2v2: Schema.Boolean,
     solo_2v2: Schema.NullOr(PlayerRankedTeamSchema),
+    /** Null when the archive has no ranked sample for this player. */
+    standing: Schema.NullOr(PlayerStandingSchema),
     weapon_kos: Schema.Number,
     /**
      * Remainder of `stats.kos` after reported sources; v1 does not report
@@ -274,6 +289,7 @@ export type PlayerRanked2v2 = typeof PlayerRanked2v2Schema.Type
 export type PlayerClan = typeof PlayerClanSchema.Type
 export type LegendBubble = typeof LegendBubbleSchema.Type
 export type WeaponBubble = typeof WeaponBubbleSchema.Type
+export type PlayerStanding = typeof PlayerStandingSchema.Type
 
 export const PlayerEnvelopeSchema = envelope(PlayerSchema)
 

@@ -2,7 +2,7 @@ import { DatabaseSync } from "node:sqlite"
 import { Effect } from "effect"
 import { describe, expect, it } from "@effect/vitest"
 import { buildLegendMeta } from "@crh/domain/aggregate/meta"
-import { Database, makeLayer } from "./archive"
+import { Database, makeLayer, topPercent } from "./archive"
 import type { D1Database } from "@crh/db/client"
 
 type Fixture = {
@@ -313,4 +313,144 @@ describe("getGuildStanding", () => {
             expect(standings).toEqual({ rank: null, total: 2 })
         }),
     )
+})
+
+type RankedRow = {
+    readonly id: string
+    readonly rating: number
+    readonly rankedGames: number
+}
+
+const rankedLayerFor = (rows: readonly RankedRow[]) => {
+    const sqlite = new DatabaseSync(":memory:")
+
+    sqlite.exec(`
+        CREATE TABLE "BHPlayerData" (
+            "id" TEXT PRIMARY KEY,
+            "rating" INTEGER NOT NULL,
+            "rankedGames" INTEGER NOT NULL
+        );
+    `)
+
+    const insert = sqlite.prepare(
+        `INSERT INTO "BHPlayerData" ("id", "rating", "rankedGames") VALUES (?, ?, ?)`,
+    )
+
+    for (const row of rows) insert.run(row.id, row.rating, row.rankedGames)
+
+    return makeLayer(toD1(sqlite))
+}
+
+const readRankedStanding = (rows: readonly RankedRow[], playerId: string) =>
+    Effect.gen(function* () {
+        const db = yield* Database
+
+        return yield* db.getRankedStanding(playerId)
+    }).pipe(Effect.provide(rankedLayerFor(rows)))
+
+describe("getRankedStanding", () => {
+    it.effect("counts the players ahead and the indexed ranked sample", () =>
+        Effect.gen(function* () {
+            const standing = yield* readRankedStanding(
+                [
+                    { id: "1", rating: 2400, rankedGames: 80 },
+                    { id: "2", rating: 2200, rankedGames: 12 },
+                    { id: "3", rating: 2000, rankedGames: 40 },
+                    { id: "4", rating: 1800, rankedGames: 5 },
+                ],
+                "3",
+            )
+
+            expect(standing).toEqual({
+                rank: 3,
+                sample_size: 4,
+                top_percent: 75,
+            })
+        }),
+    )
+
+    it.effect("gives equal ratings the same rank", () =>
+        Effect.gen(function* () {
+            const rows: readonly RankedRow[] = [
+                { id: "1", rating: 2200, rankedGames: 30 },
+                { id: "2", rating: 2200, rankedGames: 20 },
+                { id: "3", rating: 2000, rankedGames: 10 },
+            ]
+
+            expect(yield* readRankedStanding(rows, "1")).toEqual({
+                rank: 1,
+                sample_size: 3,
+                top_percent: 33.3,
+            })
+            expect(yield* readRankedStanding(rows, "2")).toEqual({
+                rank: 1,
+                sample_size: 3,
+                top_percent: 33.3,
+            })
+            expect(yield* readRankedStanding(rows, "3")).toEqual({
+                rank: 3,
+                sample_size: 3,
+                top_percent: 100,
+            })
+        }),
+    )
+
+    it.effect("excludes players with no ranked game", () =>
+        Effect.gen(function* () {
+            const standing = yield* readRankedStanding(
+                [
+                    { id: "1", rating: 2600, rankedGames: 0 },
+                    { id: "2", rating: 2000, rankedGames: 10 },
+                    { id: "3", rating: 1800, rankedGames: 3 },
+                ],
+                "2",
+            )
+
+            expect(standing).toEqual({
+                rank: 1,
+                sample_size: 2,
+                top_percent: 50,
+            })
+        }),
+    )
+
+    it.effect("has no standing for a player the archive never indexed", () =>
+        Effect.gen(function* () {
+            const standing = yield* readRankedStanding(
+                [
+                    { id: "1", rating: 2000, rankedGames: 10 },
+                    { id: "2", rating: 1800, rankedGames: 3 },
+                ],
+                "999",
+            )
+
+            expect(standing).toBeNull()
+        }),
+    )
+
+    it.effect("has no standing for an unranked player in the archive", () =>
+        Effect.gen(function* () {
+            const standing = yield* readRankedStanding(
+                [{ id: "1", rating: 0, rankedGames: 0 }],
+                "1",
+            )
+
+            expect(standing).toBeNull()
+        }),
+    )
+})
+
+describe("topPercent", () => {
+    it("rounds to one decimal", () => {
+        expect(topPercent(4182, 214_300)).toBe(2)
+        expect(topPercent(2, 3)).toBe(66.7)
+    })
+
+    it("floors the top of a large field at 0.1", () => {
+        expect(topPercent(7, 214_300)).toBe(0.1)
+    })
+
+    it("gives rank 1 of a one-player sample the whole field", () => {
+        expect(topPercent(1, 1)).toBe(100)
+    })
 })

@@ -56,6 +56,7 @@ import type {
     AliasSearchResultInput,
     CareerRankingInput,
     GuildStanding,
+    PlayerStanding,
 } from "@crh/api-contract/schemas"
 
 /** Nine rows × ~10 params must stay under D1's 100 bound-param limit. */
@@ -87,6 +88,11 @@ export class Database extends Context.Service<
         readonly getGuildStanding: (
             clanId: string,
         ) => Effect.Effect<GuildStanding, DatabaseError>
+
+        /** Where the player's 1v1 rating sits among indexed ranked players. */
+        readonly getRankedStanding: (
+            playerId: string,
+        ) => Effect.Effect<PlayerStanding | null, DatabaseError>
 
         readonly searchExactAliases: (
             alias: string,
@@ -161,6 +167,10 @@ export class Database extends Context.Service<
 >()("app/Database") {}
 
 export const searchKey = (value: string): string => value.trim().toLowerCase()
+
+/** One decimal, floored at 0.1 so the top of the field never reads as zero. */
+export const topPercent = (rank: number, sampleSize: number): number =>
+    Math.max(0.1, Math.round((rank / sampleSize) * 1000) / 10)
 
 export type BestLegendRow = {
     readonly playerId: string
@@ -287,6 +297,58 @@ export const layer = Layer.effect(
                         return {
                             rank: (ahead?.ahead ?? 0) + 1,
                             total: totals?.total ?? 0,
+                        }
+                    }),
+                ),
+
+            getRankedStanding: (playerId) =>
+                run(
+                    Effect.gen(function* () {
+                        const [player] = yield* db
+                            .select({
+                                rating: bhPlayerData.rating,
+                                rankedGames: bhPlayerData.rankedGames,
+                            })
+                            .from(bhPlayerData)
+                            .where(eq(bhPlayerData.id, playerId))
+                            .limit(1)
+
+                        if (player === undefined || player.rankedGames <= 0) {
+                            return null
+                        }
+
+                        const [[sample], [ahead]] = yield* Effect.all(
+                            [
+                                db
+                                    .select({ total: count() })
+                                    .from(bhPlayerData)
+                                    .where(gt(bhPlayerData.rankedGames, 0)),
+                                db
+                                    .select({ ahead: count() })
+                                    .from(bhPlayerData)
+                                    .where(
+                                        and(
+                                            gt(bhPlayerData.rankedGames, 0),
+                                            gt(
+                                                bhPlayerData.rating,
+                                                player.rating,
+                                            ),
+                                        ),
+                                    ),
+                            ],
+                            { concurrency: 2 },
+                        )
+
+                        const sampleSize = sample?.total ?? 0
+
+                        if (sampleSize === 0) return null
+
+                        const rank = (ahead?.ahead ?? 0) + 1
+
+                        return {
+                            rank,
+                            sample_size: sampleSize,
+                            top_percent: topPercent(rank, sampleSize),
                         }
                     }),
                 ),
