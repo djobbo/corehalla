@@ -30,7 +30,10 @@ export const directGuild = (
             return yield* Effect.fail(toSectionError(PLAN.guildProfile, parts))
         }
 
-        const envelope = buildGuild(clan.success, at)
+        const envelope = buildGuild(clan.success, at, {
+            rank: null,
+            total: null,
+        })
 
         return {
             data: envelope.data,

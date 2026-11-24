@@ -79,7 +79,9 @@ export const WeaponView = ({
     return (
         <main className="ch-page">
             <header className="ch-hero mb-3">
-                <p className="ch-kicker">Brawlhalla weapon</p>
+                <Link to="/weapons" className="ch-kicker hover:text-foreground">
+                    <span aria-hidden>&larr;</span> All weapons
+                </Link>
                 <div className="mt-2 flex items-center gap-3">
                     <img
                         src={weaponIconSrc(weapon)}

@@ -35,6 +35,7 @@ import { Route as RankingsIndexRouteImport } from './routes/rankings/index'
 import { Route as StatsMeRouteImport } from './routes/stats/me'
 import { Route as UpdatesIndexRouteImport } from './routes/updates/index'
 import { Route as UpdatesSlugRouteImport } from './routes/updates/$slug'
+import { Route as WeaponsIndexRouteImport } from './routes/weapons/index'
 import { Route as WeaponsSlugRouteImport } from './routes/weapons/$slug'
 import { Route as NewsCategoryIndexRouteImport } from './routes/news/category/index'
 import { Route as NewsPageChar123PageChar125RouteImport } from './routes/news/page.{-$page}'
@@ -195,6 +196,11 @@ const UpdatesIndexRoute = UpdatesIndexRouteImport.update({
 const UpdatesSlugRoute = UpdatesSlugRouteImport.update({
   id: '/updates/$slug',
   path: '/updates/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WeaponsIndexRoute = WeaponsIndexRouteImport.update({
+  id: '/weapons/',
+  path: '/weapons/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WeaponsSlugRoute = WeaponsSlugRouteImport.update({
@@ -406,6 +412,7 @@ export interface FileRoutesByFullPath {
   '/news/': typeof NewsIndexRoute
   '/rankings/': typeof RankingsIndexRoute
   '/updates/': typeof UpdatesIndexRoute
+  '/weapons/': typeof WeaponsIndexRoute
   '/news/page/{-$page}': typeof NewsPageChar123PageChar125Route
   '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
@@ -465,6 +472,7 @@ export interface FileRoutesByTo {
   '/news': typeof NewsIndexRoute
   '/rankings': typeof RankingsIndexRoute
   '/updates': typeof UpdatesIndexRoute
+  '/weapons': typeof WeaponsIndexRoute
   '/news/page/{-$page}': typeof NewsPageChar123PageChar125Route
   '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
@@ -524,6 +532,7 @@ export interface FileRoutesById {
   '/news/': typeof NewsIndexRoute
   '/rankings/': typeof RankingsIndexRoute
   '/updates/': typeof UpdatesIndexRoute
+  '/weapons/': typeof WeaponsIndexRoute
   '/news/page/{-$page}': typeof NewsPageChar123PageChar125Route
   '/queue/{-$bracket}/{-$region}': typeof QueueChar123BracketChar125Char123RegionChar125Route
   '/rankings/clans/{-$page}': typeof RankingsClansChar123PageChar125Route
@@ -585,6 +594,7 @@ export interface FileRouteTypes {
     | '/news/'
     | '/rankings/'
     | '/updates/'
+    | '/weapons/'
     | '/news/page/{-$page}'
     | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
@@ -644,6 +654,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/rankings'
     | '/updates'
+    | '/weapons'
     | '/news/page/{-$page}'
     | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
@@ -702,6 +713,7 @@ export interface FileRouteTypes {
     | '/news/'
     | '/rankings/'
     | '/updates/'
+    | '/weapons/'
     | '/news/page/{-$page}'
     | '/queue/{-$bracket}/{-$region}'
     | '/rankings/clans/{-$page}'
@@ -762,6 +774,7 @@ export interface RootRouteChildren {
   NewsIndexRoute: typeof NewsIndexRoute
   RankingsIndexRoute: typeof RankingsIndexRoute
   UpdatesIndexRoute: typeof UpdatesIndexRoute
+  WeaponsIndexRoute: typeof WeaponsIndexRoute
   NewsPageChar123PageChar125Route: typeof NewsPageChar123PageChar125Route
   QueueChar123BracketChar125Char123RegionChar125Route: typeof QueueChar123BracketChar125Char123RegionChar125Route
   RankingsClansChar123PageChar125Route: typeof RankingsClansChar123PageChar125Route
@@ -971,6 +984,13 @@ declare module '@tanstack/react-router' {
       path: '/updates/$slug'
       fullPath: '/updates/$slug'
       preLoaderRoute: typeof UpdatesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/weapons/': {
+      id: '/weapons/'
+      path: '/weapons'
+      fullPath: '/weapons/'
+      preLoaderRoute: typeof WeaponsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/weapons/$slug': {
@@ -1241,6 +1261,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsIndexRoute: NewsIndexRoute,
   RankingsIndexRoute: RankingsIndexRoute,
   UpdatesIndexRoute: UpdatesIndexRoute,
+  WeaponsIndexRoute: WeaponsIndexRoute,
   NewsPageChar123PageChar125Route: NewsPageChar123PageChar125Route,
   QueueChar123BracketChar125Char123RegionChar125Route:
     QueueChar123BracketChar125Char123RegionChar125Route,

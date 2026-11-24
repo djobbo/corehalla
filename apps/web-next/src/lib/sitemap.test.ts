@@ -73,11 +73,11 @@ describe("sitemapPaths", () => {
         expect(new Set(legendPaths).size).toBe(legendPaths.length)
     })
 
-    it("includes one page per weapon", () => {
-        const weaponPaths = sitemapPaths().filter((path) =>
-            path.startsWith("/weapons/"),
-        )
+    it("includes the weapon index and one page per weapon", () => {
+        const paths = sitemapPaths()
+        const weaponPaths = paths.filter((path) => path.startsWith("/weapons/"))
 
+        expect(paths).toContain("/weapons")
         expect(weaponPaths).toHaveLength(weapons.length)
         expect(new Set(weaponPaths).size).toBe(weaponPaths.length)
         expect(weaponPaths).toContain("/weapons/grapple-hammer")

@@ -1,10 +1,11 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
 import { CareerRankingsView } from "@/components/views/CareerRankingsView"
 import { CAREER_RANKINGS_PAGE_SIZE } from "@/lib/rankings"
 import { weaponBoard } from "@/lib/careerRankings"
 import { resolvePage, resolveWeapon, weaponOptions } from "@/lib/routeParams"
 import { careerWeaponTitle, seoTags } from "@/lib/seo"
 import { cn } from "@/lib/cn"
+import { weaponHref } from "@/lib/weapons"
 import {
     careerWeaponRankingsAtom,
     preloadAtoms,
@@ -72,7 +73,15 @@ function Page() {
         <main className="ch-page">
             <header className="ch-hero mb-3">
                 <p className="ch-kicker">Per weapon</p>
-                <h1 className="ch-display mt-1 text-2xl">{weapon} rankings</h1>
+                <h1 className="ch-display mt-1 text-2xl">
+                    <Link
+                        to={weaponHref(weapon)}
+                        className="transition-colors hover:text-primary"
+                    >
+                        {weapon}
+                    </Link>{" "}
+                    rankings
+                </h1>
                 <p className="mt-1 text-xs text-muted-foreground">
                     Totals with this weapon · page {page}
                 </p>

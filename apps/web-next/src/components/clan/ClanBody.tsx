@@ -1,5 +1,6 @@
 import { SortControl } from "@/components/common/SortControl"
 import { MemberCard } from "./MemberCard"
+import { TopContributors } from "./TopContributors"
 import { guildAtom, useQuery } from "@/effect/atoms"
 import { useSortBy } from "@/lib/useSortBy"
 import { formatUnixTime } from "@crh/common/helpers/date"
@@ -9,7 +10,7 @@ import type { SortOption } from "@/lib/useSortBy"
 
 type Member = GuildMember
 
-type MemberSort = "rank" | "xp" | "joined"
+type MemberSort = "rank" | "xp" | "points" | "joined"
 
 const rankWeight: Record<ClanRank, number> = {
     Leader: 0,
@@ -31,6 +32,14 @@ const sortOptions: Record<MemberSort, SortOption<Member>> = {
         compare: (a, b) => a.xp - b.xp,
         display: (member) => `${member.xp.toLocaleString()} XP`,
     },
+    points: {
+        label: "Guild points",
+        compare: (a, b) => (a.guild_points ?? 0) - (b.guild_points ?? 0),
+        display: (member) =>
+            member.guild_points === undefined
+                ? "No guild points reported"
+                : `${member.guild_points.toLocaleString()} guild points`,
+    },
     joined: {
         label: "Join date",
         compare: (a, b) => a.joined_at - b.joined_at,
@@ -39,7 +48,16 @@ const sortOptions: Record<MemberSort, SortOption<Member>> = {
 }
 
 const Roster = ({ guild }: { readonly guild: Guild }) => {
-    const sort = useSortBy(guild.members, sortOptions, "rank", "asc")
+    const sort = useSortBy<Member, MemberSort>(
+        guild.members,
+        sortOptions,
+        "rank",
+        "asc",
+    )
+
+    const reportsPoints = guild.members.some(
+        (member) => member.guild_points !== undefined,
+    )
 
     return (
         // Own `@container`: the roster's column count has to track the content
@@ -48,7 +66,9 @@ const Roster = ({ guild }: { readonly guild: Guild }) => {
             <SortControl
                 label="Sort members by"
                 value={sort.key}
-                choices={sort.choices}
+                choices={sort.choices.filter(
+                    (choice) => choice.value !== "points" || reportsPoints,
+                )}
                 onChange={sort.setKey}
                 direction={sort.direction}
                 onToggleDirection={sort.toggleDirection}
@@ -70,5 +90,10 @@ const Roster = ({ guild }: { readonly guild: Guild }) => {
 export const ClanBody = ({ clanId }: { readonly clanId: number }) => {
     const guild = useQuery(guildAtom(clanId))
 
-    return <Roster guild={guild.data} />
+    return (
+        <div className="flex flex-col gap-6">
+            <TopContributors members={guild.data.members} />
+            <Roster guild={guild.data} />
+        </div>
+    )
 }

@@ -33,3 +33,15 @@ export const legendsWithWeapon = (weapon: Weapon): readonly Legend[] =>
         (legend) =>
             legend.weapon_one === weapon || legend.weapon_two === weapon,
     )
+
+export type WeaponEntry = {
+    readonly weapon: Weapon
+    readonly wielders: readonly Legend[]
+}
+
+/** Every weapon with the legends that wield it, in roster order. */
+export const weaponIndex = (): readonly WeaponEntry[] =>
+    weapons.map((weapon) => ({
+        weapon,
+        wielders: legendsWithWeapon(weapon),
+    }))

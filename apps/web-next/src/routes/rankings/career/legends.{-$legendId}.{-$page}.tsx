@@ -1,7 +1,8 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
 import { CareerRankingsView } from "@/components/views/CareerRankingsView"
 import { CAREER_RANKINGS_PAGE_SIZE } from "@/lib/rankings"
 import { legendBoard } from "@/lib/careerRankings"
+import { legendHref } from "@/lib/legends"
 import { legendOptions, resolveLegendId, resolvePage } from "@/lib/routeParams"
 import { careerLegendTitle, seoTags } from "@/lib/seo"
 import { cn } from "@/lib/cn"
@@ -52,6 +53,8 @@ function Page() {
 
     const legendId = resolveLegendId(legendParam)
     const legend = String(legendId)
+    const legendEntry = legendsMap[legendId]
+    const legendName = legendEntry?.bio_name ?? "Legend"
     const page = resolvePage(pageParam)
     const rows = useQuery(careerLegendRankingsAtom(legendId, sortBy, page))
 
@@ -73,7 +76,17 @@ function Page() {
             <header className="ch-hero mb-3">
                 <p className="ch-kicker">Per legend</p>
                 <h1 className="ch-display mt-1 text-2xl">
-                    {legendsMap[legendId]?.bio_name ?? "Legend"} rankings
+                    {legendEntry === undefined ? (
+                        legendName
+                    ) : (
+                        <Link
+                            to={legendHref(legendEntry)}
+                            className="transition-colors hover:text-primary"
+                        >
+                            {legendName}
+                        </Link>
+                    )}{" "}
+                    rankings
                 </h1>
                 <p className="mt-1 text-xs text-muted-foreground">
                     Totals with this legend · page {page}

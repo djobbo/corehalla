@@ -3,9 +3,13 @@ import { guildLevel } from "./guild-levels"
 import type { Clan } from "@crh/bhapi/types"
 import { CONTRACT_VERSION } from "@crh/api-contract/schemas"
 import { PLAN } from "../sections/meta"
-import type { GuildEnvelope } from "@crh/api-contract/schemas"
+import type { GuildEnvelope, GuildStanding } from "@crh/api-contract/schemas"
 
-export const buildGuild = (clan: Clan, updatedAt: number): GuildEnvelope => {
+export const buildGuild = (
+    clan: Clan,
+    updatedAt: number,
+    standing: GuildStanding,
+): GuildEnvelope => {
     const xp = Number.parseInt(clan.clan_xp, 10)
     const { level, xpPercentage } = guildLevel(xp)
 
@@ -21,6 +25,7 @@ export const buildGuild = (clan: Clan, updatedAt: number): GuildEnvelope => {
             // Null, not zero: unknown lifetime XP ≠ earned none.
             lifetime_xp: clan.legacy_xp ?? null,
             guild_points: clan.guild_points ?? null,
+            standing,
             members: clan.clan.map((member) => ({
                 id: member.brawlhalla_id,
                 // Mapper may leave name as `""`; keep the row — client labels with `#id`.

@@ -406,6 +406,7 @@ export const guildEnvelope = {
         xp_percentage: 63.5,
         lifetime_xp: 40_000_000,
         guild_points: 26_400,
+        standing: { rank: 12, total: 4_509 },
         members,
     },
     meta: { updated_at: UPDATED_AT },
@@ -419,6 +420,7 @@ export const noPointsGuildEnvelope = {
         name: "Empty Den",
         slug: "empty-den",
         guild_points: null,
+        standing: { rank: null, total: 4_509 },
         members: members.map((member) => ({
             id: member.id,
             name: member.name,
@@ -443,6 +445,7 @@ export const emptyRosterGuildEnvelope = {
         xp_percentage: 4,
         lifetime_xp: null,
         guild_points: null,
+        standing: { rank: 4_431, total: 4_509 },
         members: [],
     },
     meta: { updated_at: UPDATED_AT },
