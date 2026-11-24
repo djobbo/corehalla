@@ -42,15 +42,15 @@ export type LegendPlayStyle = typeof LegendPlayStyleSchema.Type
  * shares of a non-empty board sum to (approximately) one.
  */
 export const LegendMetaRowSchema = Schema.Struct({
-    legendId: Schema.Number,
+    legendId: Schema.Finite,
     /** Links to the legend page; do not re-derive on the client. */
     slug: Schema.String,
-    games: Schema.Number,
-    wins: Schema.Number,
-    winRate: Schema.Number,
-    playShare: Schema.Number,
+    games: Schema.Finite,
+    wins: Schema.Finite,
+    winRate: Schema.Finite,
+    playShare: Schema.Finite,
     /** Indexed accounts with at least one game on this legend in the sample. */
-    accounts: Schema.Number,
+    accounts: Schema.Finite,
     playStyle: LegendPlayStyleSchema,
 })
 
@@ -60,8 +60,8 @@ export const LegendMetaSchema = Schema.Struct({
     data: Schema.Array(LegendMetaRowSchema),
     meta: Schema.Struct({
         /** Indexed accounts matching the floor. */
-        accounts: Schema.Number,
-        ratingFloor: Schema.NullOr(Schema.Number),
+        accounts: Schema.Finite,
+        ratingFloor: Schema.NullOr(Schema.Finite),
     }),
 })
 

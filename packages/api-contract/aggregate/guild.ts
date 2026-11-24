@@ -20,9 +20,9 @@ const GuildStandingSchema = Schema.Struct({
      * One plus the indexed guilds with more XP, so ties share the higher
      * position. Null when the archive has never indexed this guild.
      */
-    rank: Schema.NullOr(Schema.Number),
+    rank: Schema.NullOr(Schema.Finite),
     /** Indexed guilds the rank is measured against; null when unread. */
-    total: Schema.NullOr(Schema.Number),
+    total: Schema.NullOr(Schema.Finite),
 })
 
 export const GuildSchema = Schema.Struct({
