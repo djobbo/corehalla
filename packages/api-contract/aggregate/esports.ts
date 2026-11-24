@@ -8,10 +8,10 @@ import { envelope } from "./common"
  */
 
 export const EsportsIdentitySchema = Schema.Struct({
-    esportsId: Schema.Number,
+    esportsId: Schema.Finite,
     fullName: Schema.NullOr(Schema.String),
     pronoun: Schema.NullOr(Schema.String),
-    sggPlayerId: Schema.NullOr(Schema.Number),
+    sggPlayerId: Schema.NullOr(Schema.Finite),
     cmPlayerId: Schema.NullOr(Schema.String),
     twitter: Schema.NullOr(Schema.String),
     twitch: Schema.NullOr(Schema.String),
@@ -19,39 +19,39 @@ export const EsportsIdentitySchema = Schema.Struct({
 })
 
 export const EsportsPrSchema = Schema.Struct({
-    top8: Schema.Number,
-    top32: Schema.Number,
-    gold: Schema.Number,
-    silver: Schema.Number,
-    bronze: Schema.Number,
-    powerRanking: Schema.Number,
+    top8: Schema.Finite,
+    top32: Schema.Finite,
+    gold: Schema.Finite,
+    silver: Schema.Finite,
+    bronze: Schema.Finite,
+    powerRanking: Schema.Finite,
     region: Schema.String,
 })
 
 export const EsportsLegendSchema = Schema.Struct({
     name: Schema.String,
-    count: Schema.Number,
+    count: Schema.Finite,
 })
 
 export const EsportsTeammateSchema = Schema.Struct({
-    brawlhallaId: Schema.NullOr(Schema.Number),
+    brawlhallaId: Schema.NullOr(Schema.Finite),
     name: Schema.String,
     /** Player-stats slug; null when the teammate's Brawlhalla id is unknown. */
     slug: Schema.NullOr(Schema.String),
-    games: Schema.Number,
-    lastTeamedDate: Schema.Number,
+    games: Schema.Finite,
+    lastTeamedDate: Schema.Finite,
 })
 
 export const EsportsPlacementSchema = Schema.Struct({
-    placement: Schema.Number,
+    placement: Schema.Finite,
     tournamentId: Schema.String,
     tournamentName: Schema.String,
     eventName: Schema.NullOr(Schema.String),
-    year: Schema.Number,
+    year: Schema.Finite,
     isOfficial: Schema.Boolean,
     isTwos: Schema.Boolean,
     isOnline: Schema.Boolean,
-    startTime: Schema.Number,
+    startTime: Schema.Finite,
     host: Schema.NullOr(Schema.String),
 })
 

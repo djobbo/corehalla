@@ -2,26 +2,26 @@ import { Schema } from "effect"
 import { PlayerRefSchema, TierSchema, envelope } from "./common"
 
 const RankedRowSchema = Schema.Struct({
-    rank: Schema.Number,
-    rating: Schema.Number,
-    peak_rating: Schema.Number,
+    rank: Schema.Finite,
+    rating: Schema.Finite,
+    peak_rating: Schema.Finite,
     tier: TierSchema,
-    games: Schema.Number,
-    wins: Schema.Number,
+    games: Schema.Finite,
+    wins: Schema.Finite,
     region: Schema.String,
 })
 
 const BestLegendSchema = Schema.Struct({
-    id: Schema.Number,
+    id: Schema.Finite,
     name: Schema.String,
     slug: Schema.String,
-    games: Schema.Number,
-    wins: Schema.Number,
+    games: Schema.Finite,
+    wins: Schema.Finite,
 })
 
 export const Ranking1v1RowSchema = Schema.Struct({
     ...RankedRowSchema.fields,
-    id: Schema.Number,
+    id: Schema.Finite,
     name: Schema.String,
     slug: Schema.String,
     /** Null means unknown (v1 stopped sending it), not "no legend". */
@@ -35,7 +35,7 @@ export const Ranking2v2RowSchema = Schema.Struct({
 
 export const Ranking3v3RowSchema = Schema.Struct({
     ...RankedRowSchema.fields,
-    id: Schema.Number,
+    id: Schema.Finite,
     name: Schema.String,
     slug: Schema.String,
 })
@@ -64,11 +64,11 @@ export const CareerRankingSchema = Schema.Struct({
     name: Schema.String,
     slug: Schema.String,
     tier: Schema.String,
-    rating: Schema.Number,
+    rating: Schema.Finite,
     region: Schema.String,
-    peakRating: Schema.Number,
+    peakRating: Schema.Finite,
     /** Value of whichever column the request sorted by. */
-    prop: Schema.Number,
+    prop: Schema.Finite,
 })
 
 export type CareerRanking = typeof CareerRankingSchema.Type
@@ -91,16 +91,16 @@ export const QueuedEntrySchema = Schema.Struct({
             slug: Schema.String,
         }),
     ),
-    rating: Schema.Number,
-    peakRating: Schema.Number,
+    rating: Schema.Finite,
+    peakRating: Schema.Finite,
     tier: Schema.String,
-    games: Schema.Number,
-    wins: Schema.Number,
+    games: Schema.Finite,
+    wins: Schema.Finite,
     /** Epoch milliseconds; only compared against "now". */
-    queuedAt: Schema.Number,
-    rank: Schema.Number,
-    ratingDelta: Schema.Number,
-    rankDelta: Schema.Number,
+    queuedAt: Schema.Finite,
+    rank: Schema.Finite,
+    ratingDelta: Schema.Finite,
+    rankDelta: Schema.Finite,
 })
 
 export type QueuedEntry = typeof QueuedEntrySchema.Type
@@ -112,8 +112,8 @@ export const ClanRankingSchema = Schema.Struct({
     name: Schema.String,
     slug: Schema.String,
     nameLower: Schema.String,
-    created: Schema.NullOr(Schema.Number),
-    xp: Schema.Number,
+    created: Schema.NullOr(Schema.Finite),
+    xp: Schema.Finite,
 })
 
 export type ClanRanking = typeof ClanRankingSchema.Type
@@ -121,7 +121,7 @@ export type ClanRanking = typeof ClanRankingSchema.Type
 export const ClansSchema = Schema.Array(ClanRankingSchema)
 
 export const LegendSchema = Schema.Struct({
-    legend_id: Schema.Number,
+    legend_id: Schema.Finite,
     legend_name_key: Schema.String,
     bio_name: Schema.String,
     bio_aka: Schema.String,

@@ -3,68 +3,68 @@ import { PlayerRefSchema, TierSchema, envelope } from "./common"
 import { sectionEnvelope } from "./section"
 
 export const PlayerGadgetSchema = Schema.Struct({
-    damage_dealt: Schema.Number,
-    kos: Schema.Number,
+    damage_dealt: Schema.Finite,
+    kos: Schema.Finite,
 })
 
 export const PlayerWeaponLegendSchema = Schema.Struct({
-    id: Schema.Number,
+    id: Schema.Finite,
     name: Schema.String,
     slug: Schema.String,
-    kos: Schema.Number,
-    damage_dealt: Schema.Number,
-    time_held: Schema.Number,
+    kos: Schema.Finite,
+    damage_dealt: Schema.Finite,
+    time_held: Schema.Finite,
 })
 
 /** Derived from legends that hold the weapon — not reported by the API. */
 export const PlayerWeaponSchema = Schema.Struct({
     name: Schema.String,
     stats: Schema.Struct({
-        games: Schema.Number,
-        wins: Schema.Number,
-        kos: Schema.Number,
-        damage_dealt: Schema.Number,
-        time_held: Schema.Number,
-        level: Schema.Number,
-        xp: Schema.Number,
+        games: Schema.Finite,
+        wins: Schema.Finite,
+        kos: Schema.Finite,
+        damage_dealt: Schema.Finite,
+        time_held: Schema.Finite,
+        level: Schema.Finite,
+        xp: Schema.Finite,
     }),
     legends: Schema.Array(PlayerWeaponLegendSchema),
 })
 
 export const PlayerLegendWeaponSchema = Schema.Struct({
     name: Schema.String,
-    damage_dealt: Schema.Number,
-    kos: Schema.Number,
-    time_held: Schema.Number,
+    damage_dealt: Schema.Finite,
+    kos: Schema.Finite,
+    time_held: Schema.Finite,
 })
 
 export const PlayerLegendStatsSchema = Schema.Struct({
-    xp: Schema.Number,
-    level: Schema.Number,
-    xp_percentage: Schema.Number,
-    damage_dealt: Schema.Number,
-    damage_taken: Schema.Number,
-    kos: Schema.Number,
-    falls: Schema.Number,
-    suicides: Schema.Number,
-    team_kos: Schema.Number,
-    matchtime: Schema.Number,
-    games: Schema.Number,
-    wins: Schema.Number,
+    xp: Schema.Finite,
+    level: Schema.Finite,
+    xp_percentage: Schema.Finite,
+    damage_dealt: Schema.Finite,
+    damage_taken: Schema.Finite,
+    kos: Schema.Finite,
+    falls: Schema.Finite,
+    suicides: Schema.Finite,
+    team_kos: Schema.Finite,
+    matchtime: Schema.Finite,
+    games: Schema.Finite,
+    wins: Schema.Finite,
 })
 
 export const PlayerLegendRankedSchema = Schema.Struct({
-    rating: Schema.Number,
-    peak_rating: Schema.Number,
+    rating: Schema.Finite,
+    peak_rating: Schema.Finite,
     tier: TierSchema,
-    wins: Schema.Number,
-    games: Schema.Number,
-    rating_reset: Schema.Number,
+    wins: Schema.Finite,
+    games: Schema.Finite,
+    rating_reset: Schema.Finite,
 })
 
 /** Every roster legend appears; unused ones get a zeroed `stats` block. */
 export const PlayerLegendSchema = Schema.Struct({
-    id: Schema.Number,
+    id: Schema.Finite,
     name: Schema.String,
     name_key: Schema.String,
     slug: Schema.String,
@@ -72,9 +72,9 @@ export const PlayerLegendSchema = Schema.Struct({
     weapon_one: PlayerLegendWeaponSchema,
     weapon_two: PlayerLegendWeaponSchema,
     unarmed: Schema.Struct({
-        damage_dealt: Schema.Number,
-        kos: Schema.Number,
-        time_held: Schema.Number,
+        damage_dealt: Schema.Finite,
+        kos: Schema.Finite,
+        time_held: Schema.Finite,
     }),
     gadgets: PlayerGadgetSchema,
     weapon_throws: PlayerGadgetSchema,
@@ -82,18 +82,18 @@ export const PlayerLegendSchema = Schema.Struct({
 })
 
 export const PlayerRankedBracketSchema = Schema.Struct({
-    rating: Schema.Number,
-    peak_rating: Schema.Number,
+    rating: Schema.Finite,
+    peak_rating: Schema.Finite,
     /** True while placement matches hide the real rating. */
     is_placement_matches: Schema.Boolean,
     tier: TierSchema,
-    wins: Schema.Number,
-    games: Schema.Number,
+    wins: Schema.Finite,
+    games: Schema.Finite,
     region: Schema.NullOr(Schema.String),
     /** Ladder position, null when upstream reports zero or does not report it. */
-    global_rank: Schema.NullOr(Schema.Number),
-    region_rank: Schema.NullOr(Schema.Number),
-    rating_reset: Schema.Number,
+    global_rank: Schema.NullOr(Schema.Finite),
+    region_rank: Schema.NullOr(Schema.Finite),
+    rating_reset: Schema.Finite,
 })
 
 export const PlayerRankedTeamSchema = Schema.Struct({
@@ -103,32 +103,32 @@ export const PlayerRankedTeamSchema = Schema.Struct({
      * tuple so the row shape never varies.
      */
     paired: Schema.Boolean,
-    rating: Schema.Number,
-    peak_rating: Schema.Number,
+    rating: Schema.Finite,
+    peak_rating: Schema.Finite,
     tier: TierSchema,
-    wins: Schema.Number,
-    games: Schema.Number,
+    wins: Schema.Finite,
+    games: Schema.Finite,
     region: Schema.NullOr(Schema.String),
-    global_rank: Schema.NullOr(Schema.Number),
-    rating_reset: Schema.Number,
+    global_rank: Schema.NullOr(Schema.Finite),
+    rating_reset: Schema.Finite,
 })
 
 export const PlayerRanked2v2Schema = Schema.Struct({
-    games: Schema.Number,
-    wins: Schema.Number,
-    average_rating: Schema.Number,
-    average_peak_rating: Schema.Number,
+    games: Schema.Finite,
+    wins: Schema.Finite,
+    average_rating: Schema.Finite,
+    average_peak_rating: Schema.Finite,
     teams: Schema.Array(PlayerRankedTeamSchema),
 })
 
 export const PlayerRankedSeasonSchema = Schema.Struct({
-    games: Schema.Number,
-    wins: Schema.Number,
-    peak_rating: Schema.Number,
+    games: Schema.Finite,
+    wins: Schema.Finite,
+    peak_rating: Schema.Finite,
     glory: Schema.Struct({
-        from_wins: Schema.Number,
-        from_peak_rating: Schema.Number,
-        total: Schema.Number,
+        from_wins: Schema.Finite,
+        from_peak_rating: Schema.Finite,
+        total: Schema.Finite,
     }),
 })
 
@@ -144,76 +144,76 @@ export const PlayerRankedSchema = Schema.Struct({
 })
 
 export const PlayerClanSchema = Schema.Struct({
-    id: Schema.Number,
+    id: Schema.Finite,
     name: Schema.String,
     slug: Schema.String,
-    xp: Schema.Number,
-    personal_xp: Schema.Number,
+    xp: Schema.Finite,
+    personal_xp: Schema.Finite,
     rank: Schema.NullOr(Schema.String),
-    joined_at: Schema.NullOr(Schema.Number),
-    created_at: Schema.NullOr(Schema.Number),
-    members_count: Schema.NullOr(Schema.Number),
+    joined_at: Schema.NullOr(Schema.Finite),
+    created_at: Schema.NullOr(Schema.Finite),
+    members_count: Schema.NullOr(Schema.Finite),
 })
 
 export const PlayerStatsSchema = Schema.Struct({
-    xp: Schema.Number,
-    level: Schema.Number,
-    xp_percentage: Schema.Number,
-    games: Schema.Number,
-    wins: Schema.Number,
-    matchtime: Schema.Number,
-    kos: Schema.Number,
-    falls: Schema.Number,
-    suicides: Schema.Number,
-    team_kos: Schema.Number,
-    damage_dealt: Schema.Number,
-    damage_taken: Schema.Number,
+    xp: Schema.Finite,
+    level: Schema.Finite,
+    xp_percentage: Schema.Finite,
+    games: Schema.Finite,
+    wins: Schema.Finite,
+    matchtime: Schema.Finite,
+    kos: Schema.Finite,
+    falls: Schema.Finite,
+    suicides: Schema.Finite,
+    team_kos: Schema.Finite,
+    damage_dealt: Schema.Finite,
+    damage_taken: Schema.Finite,
 })
 
 export const PlayerUnarmedSchema = Schema.Struct({
-    damage_dealt: Schema.Number,
-    kos: Schema.Number,
-    time_held: Schema.Number,
+    damage_dealt: Schema.Finite,
+    kos: Schema.Finite,
+    time_held: Schema.Finite,
 })
 
 export const PlayerGadgetsSchema = Schema.Struct({
-    kos: Schema.Number,
-    damage_dealt: Schema.Number,
+    kos: Schema.Finite,
+    damage_dealt: Schema.Finite,
     bomb: Schema.NullOr(PlayerGadgetSchema),
     mine: Schema.NullOr(PlayerGadgetSchema),
     spikeball: Schema.NullOr(PlayerGadgetSchema),
     sidekick: Schema.NullOr(PlayerGadgetSchema),
     snowball: Schema.NullOr(
         Schema.Struct({
-            hits: Schema.Number,
-            kos: Schema.Number,
+            hits: Schema.Finite,
+            kos: Schema.Finite,
         }),
     ),
 })
 
 /** Everything the overview bubble charts need, without the per-legend rows. */
 export const LegendBubbleSchema = Schema.Struct({
-    id: Schema.Number,
+    id: Schema.Finite,
     name: Schema.String,
     name_key: Schema.String,
     slug: Schema.String,
-    level: Schema.Number,
-    matchtime: Schema.Number,
-    kos: Schema.Number,
-    damage_dealt: Schema.Number,
-    games: Schema.Number,
-    wins: Schema.Number,
+    level: Schema.Finite,
+    matchtime: Schema.Finite,
+    kos: Schema.Finite,
+    damage_dealt: Schema.Finite,
+    games: Schema.Finite,
+    wins: Schema.Finite,
 })
 
 /** Everything the weapon bubble chart needs, without the legend lists. */
 export const WeaponBubbleSchema = Schema.Struct({
     name: Schema.String,
-    level: Schema.Number,
-    time_held: Schema.Number,
-    kos: Schema.Number,
-    damage_dealt: Schema.Number,
-    games: Schema.Number,
-    wins: Schema.Number,
+    level: Schema.Finite,
+    time_held: Schema.Finite,
+    kos: Schema.Finite,
+    damage_dealt: Schema.Finite,
+    games: Schema.Finite,
+    wins: Schema.Finite,
 })
 
 /**
@@ -235,7 +235,7 @@ export const PlayerStandingSchema = Schema.Struct({
  * the overview needs.
  */
 export const PlayerProfileSchema = Schema.Struct({
-    id: Schema.Number,
+    id: Schema.Finite,
     name: Schema.String,
     slug: Schema.String,
     /** Former names, most recently first seen; current name excluded. */
@@ -251,18 +251,18 @@ export const PlayerProfileSchema = Schema.Struct({
     solo_2v2: Schema.NullOr(PlayerRankedTeamSchema),
     /** Null when the archive has no ranked sample for this player. */
     standing: Schema.NullOr(PlayerStandingSchema),
-    weapon_kos: Schema.Number,
+    weapon_kos: Schema.Finite,
     /**
      * Remainder of `stats.kos` after reported sources; v1 does not report
      * thrown-item KOs.
      */
-    thrown_kos: Schema.Number,
-    weapon_damage: Schema.Number,
+    thrown_kos: Schema.Finite,
+    weapon_damage: Schema.Finite,
 })
 
 /** The composed view used by stories and the client merge facade. */
 export const PlayerSchema = Schema.Struct({
-    id: Schema.Number,
+    id: Schema.Finite,
     name: Schema.String,
     slug: Schema.String,
     aliases: Schema.Array(Schema.String),
@@ -274,9 +274,9 @@ export const PlayerSchema = Schema.Struct({
     gadgets: PlayerGadgetsSchema,
     weapons: Schema.Array(PlayerWeaponSchema),
     legends: Schema.Array(PlayerLegendSchema),
-    weapon_kos: Schema.Number,
-    thrown_kos: Schema.Number,
-    weapon_damage: Schema.Number,
+    weapon_kos: Schema.Finite,
+    thrown_kos: Schema.Finite,
+    weapon_damage: Schema.Finite,
 })
 
 export type Player = typeof PlayerSchema.Type

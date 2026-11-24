@@ -5,14 +5,14 @@ import { Schema } from "effect"
  * time. Epoch ms to match `QueuedEntry.queuedAt`.
  */
 export const MetaSchema = Schema.Struct({
-    updated_at: Schema.Number,
+    updated_at: Schema.Finite,
 })
 
 export type Meta = typeof MetaSchema.Type
 
 /** id keys lists; slug builds links — do not re-derive either on the client. */
 export const PlayerRefSchema = Schema.Struct({
-    id: Schema.Number,
+    id: Schema.Finite,
     name: Schema.String,
     slug: Schema.String,
 })
