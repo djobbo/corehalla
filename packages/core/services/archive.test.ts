@@ -16,6 +16,15 @@ type Fixture = {
         readonly games: number
         readonly wins: number
     }[]
+    readonly weapons?: readonly {
+        readonly playerId: string
+        readonly weapon: string
+        readonly games: number
+        readonly wins: number
+        readonly damageDealt: number
+        readonly kos: number
+        readonly matchTime: number
+    }[]
 }
 
 /** Minimal D1 surface the Effect SQL client uses, over an in-memory SQLite. */
@@ -70,6 +79,16 @@ const layerFor = (fixture: Fixture) => {
             "wins" INTEGER NOT NULL,
             PRIMARY KEY ("player_id", "legend_id")
         );
+        CREATE TABLE "BHPlayerWeapon" (
+            "player_id" TEXT NOT NULL,
+            "weapon_name" TEXT NOT NULL,
+            "games" INTEGER NOT NULL,
+            "wins" INTEGER NOT NULL,
+            "damageDealt" INTEGER NOT NULL,
+            "kos" INTEGER NOT NULL,
+            "matchTime" INTEGER NOT NULL,
+            PRIMARY KEY ("player_id", "weapon_name")
+        );
     `)
 
     const insertAccount = sqlite.prepare(
@@ -78,6 +97,10 @@ const layerFor = (fixture: Fixture) => {
     const insertLegend = sqlite.prepare(
         `INSERT INTO "BHPlayerLegend" ("player_id", "legend_id", "games", "wins")
          VALUES (?, ?, ?, ?)`,
+    )
+    const insertWeapon = sqlite.prepare(
+        `INSERT INTO "BHPlayerWeapon" ("player_id", "weapon_name", "games", "wins", "damageDealt", "kos", "matchTime")
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
     )
 
     for (const account of fixture.accounts) {
@@ -90,6 +113,18 @@ const layerFor = (fixture: Fixture) => {
             legend.legendId,
             legend.games,
             legend.wins,
+        )
+    }
+
+    for (const weapon of fixture.weapons ?? []) {
+        insertWeapon.run(
+            weapon.playerId,
+            weapon.weapon,
+            weapon.games,
+            weapon.wins,
+            weapon.damageDealt,
+            weapon.kos,
+            weapon.matchTime,
         )
     }
 
@@ -215,6 +250,111 @@ describe("getLegendMeta", () => {
                 winRate: 0.4,
                 playShare: 1,
             })
+        }),
+    )
+})
+
+const readWeaponMeta = (fixture: Fixture) =>
+    Effect.gen(function* () {
+        const db = yield* Database
+
+        return yield* db.getWeaponMeta()
+    }).pipe(Effect.provide(layerFor(fixture)))
+
+const weaponSample: Fixture = {
+    accounts: [
+        { id: "1", rating: 2000 },
+        { id: "2", rating: 1800 },
+        { id: "3", rating: 1500 },
+    ],
+    legends: [],
+    weapons: [
+        {
+            playerId: "1",
+            weapon: "Sword",
+            games: 100,
+            wins: 60,
+            damageDealt: 30_000,
+            kos: 90,
+            matchTime: 6_000,
+        },
+        {
+            playerId: "1",
+            weapon: "Axe",
+            games: 40,
+            wins: 10,
+            damageDealt: 12_000,
+            kos: 30,
+            matchTime: 2_400,
+        },
+        {
+            playerId: "2",
+            weapon: "Sword",
+            games: 10,
+            wins: 5,
+            damageDealt: 3_000,
+            kos: 9,
+            matchTime: 600,
+        },
+        {
+            playerId: "3",
+            weapon: "Bow",
+            games: 0,
+            wins: 0,
+            damageDealt: 0,
+            kos: 0,
+            matchTime: 0,
+        },
+    ],
+}
+
+describe("getWeaponMeta", () => {
+    it.effect("sums games, wins, damage, time and KOs per weapon", () =>
+        Effect.gen(function* () {
+            const sample = yield* readWeaponMeta(weaponSample)
+
+            expect(sample.rows).toEqual([
+                {
+                    weapon: "Axe",
+                    games: 40,
+                    wins: 10,
+                    accounts: 1,
+                    damageDealt: 12_000,
+                    matchTime: 2_400,
+                    kos: 30,
+                },
+                {
+                    weapon: "Sword",
+                    games: 110,
+                    wins: 65,
+                    accounts: 2,
+                    damageDealt: 33_000,
+                    matchTime: 6_600,
+                    kos: 99,
+                },
+            ])
+        }),
+    )
+
+    it.effect("omits a weapon with no indexed games", () =>
+        Effect.gen(function* () {
+            const sample = yield* readWeaponMeta(weaponSample)
+
+            expect(sample.rows.map((row) => row.weapon)).not.toContain("Bow")
+        }),
+    )
+
+    it.effect("counts every indexed account as the sample size", () =>
+        Effect.gen(function* () {
+            expect((yield* readWeaponMeta(weaponSample)).accounts).toBe(3)
+        }),
+    )
+
+    it.effect("reads an empty archive as an empty sample", () =>
+        Effect.gen(function* () {
+            expect(
+                yield* readWeaponMeta({ accounts: [], legends: [] }),
+            ).toEqual({ rows: [], accounts: 0 })
         }),
     )
 })

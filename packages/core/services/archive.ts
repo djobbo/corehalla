@@ -110,6 +110,12 @@ export class Database extends Context.Service<
             minRating: number | null,
         ) => Effect.Effect<LegendMetaSample, DatabaseError>
 
+        /** One grouped read behind the weapon meta card. */
+        readonly getWeaponMeta: () => Effect.Effect<
+            WeaponMetaSample,
+            DatabaseError
+        >
+
         readonly searchAliases: (
             alias: string,
             page: number,
@@ -171,6 +177,22 @@ export type LegendMetaRowInput = {
 export type LegendMetaSample = {
     readonly rows: readonly LegendMetaRowInput[]
     /** Indexed accounts matching the requested rating floor. */
+    readonly accounts: number
+}
+
+export type WeaponMetaRowInput = {
+    readonly weapon: string
+    readonly games: number
+    readonly wins: number
+    readonly accounts: number
+    readonly damageDealt: number
+    readonly matchTime: number
+    readonly kos: number
+}
+
+export type WeaponMetaSample = {
+    readonly rows: readonly WeaponMetaRowInput[]
+    /** Indexed accounts in the sample. */
     readonly accounts: number
 }
 
@@ -768,6 +790,43 @@ export const layer = Layer.effect(
                                 games: Number(row.games),
                                 wins: Number(row.wins),
                                 accounts: Number(row.accounts),
+                            })),
+                            accounts: Number(counted[0]?.accounts ?? 0),
+                        }
+                    }),
+                ),
+
+            getWeaponMeta: () =>
+                run(
+                    Effect.gen(function* () {
+                        const rows = yield* db
+                            .select({
+                                weapon: bhPlayerWeapon.weapon_name,
+                                games: sql<number>`sum(${bhPlayerWeapon.games})`,
+                                wins: sql<number>`sum(${bhPlayerWeapon.wins})`,
+                                accounts: sql<number>`count(distinct ${bhPlayerWeapon.player_id})`,
+                                damageDealt: sql<number>`sum(${bhPlayerWeapon.damageDealt})`,
+                                matchTime: sql<number>`sum(${bhPlayerWeapon.matchTime})`,
+                                kos: sql<number>`sum(${bhPlayerWeapon.kos})`,
+                            })
+                            .from(bhPlayerWeapon)
+                            .groupBy(bhPlayerWeapon.weapon_name)
+                            .having(sql`sum(${bhPlayerWeapon.games}) > 0`)
+                            .orderBy(asc(bhPlayerWeapon.weapon_name))
+
+                        const counted = yield* db
+                            .select({ accounts: sql<number>`count(*)` })
+                            .from(bhPlayerData)
+
+                        return {
+                            rows: rows.map((row) => ({
+                                weapon: row.weapon,
+                                games: Number(row.games),
+                                wins: Number(row.wins),
+                                accounts: Number(row.accounts),
+                                damageDealt: Number(row.damageDealt),
+                                matchTime: Number(row.matchTime),
+                                kos: Number(row.kos),
                             })),
                             accounts: Number(counted[0]?.accounts ?? 0),
                         }

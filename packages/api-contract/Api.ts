@@ -55,6 +55,7 @@ import {
     SortableLegendProp,
     SortableWeaponProp,
     Weapon,
+    WeaponMetaSchema,
     WeeklyRotationSchema,
 } from "./schemas"
 
@@ -248,6 +249,10 @@ const meta = HttpApiGroup.make("meta").add(
     HttpApiEndpoint.get("getLegendMeta", "/api/v1/meta/legends", {
         query: { floor: LegendMetaFloor },
         success: LegendMetaSchema,
+        error: sectionErrors,
+    }),
+    HttpApiEndpoint.get("getWeaponMeta", "/api/v1/meta/weapons", {
+        success: WeaponMetaSchema,
         error: sectionErrors,
     }),
 )

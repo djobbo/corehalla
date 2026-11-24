@@ -1,6 +1,12 @@
 import { getEntitySlug } from "@crh/common/helpers/entitySlug"
 import { legendsMap } from "@crh/bhapi/legends"
-import type { LegendMeta, LegendMetaFloor } from "@crh/api-contract/schemas"
+import { weapons } from "@crh/bhapi/constants"
+import type {
+    LegendMeta,
+    LegendMetaFloor,
+    WeaponMeta,
+} from "@crh/api-contract/schemas"
+import type { Weapon } from "@crh/bhapi/constants"
 
 export type LegendMetaRowInput = {
     readonly legendId: number
@@ -46,5 +52,55 @@ export const buildLegendMeta = (
             accounts: sample.accounts,
             ratingFloor: sample.floor === "all" ? null : Number(sample.floor),
         },
+    }
+}
+
+export type WeaponMetaRowInput = {
+    readonly weapon: string
+    readonly games: number
+    readonly wins: number
+    readonly accounts: number
+    readonly damageDealt: number
+    readonly matchTime: number
+    readonly kos: number
+}
+
+export type WeaponMetaSample = {
+    readonly accounts: number
+}
+
+/** Two decimals of an average; null when there is nothing to divide by. */
+const perGame = (total: number, games: number): number | null =>
+    games <= 0 ? null : Math.round((total / games) * 100) / 100
+
+const nullableFraction = (part: number, whole: number): number | null =>
+    whole <= 0 ? null : Math.round((part / whole) * 10_000) / 10_000
+
+const isWeapon = (value: string): value is Weapon =>
+    (weapons as readonly string[]).includes(value)
+
+export const buildWeaponMeta = (
+    rows: readonly WeaponMetaRowInput[],
+    sample: WeaponMetaSample,
+): WeaponMeta => {
+    const kept = rows.filter(
+        (row): row is WeaponMetaRowInput & { readonly weapon: Weapon } =>
+            row.games > 0 && isWeapon(row.weapon),
+    )
+    const totalGames = kept.reduce((sum, row) => sum + row.games, 0)
+
+    return {
+        data: kept.map((row) => ({
+            weapon: row.weapon,
+            games: row.games,
+            wins: row.wins,
+            winRate: nullableFraction(row.wins, row.games),
+            playShare: nullableFraction(row.games, totalGames),
+            accounts: row.accounts,
+            damagePerGame: perGame(row.damageDealt, row.games),
+            timeHeldPerGame: perGame(row.matchTime, row.games),
+            kosPerGame: perGame(row.kos, row.games),
+        })),
+        meta: { accounts: sample.accounts },
     }
 }

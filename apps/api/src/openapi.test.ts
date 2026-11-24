@@ -11,6 +11,7 @@ describe("OpenAPI document", () => {
         expect(paths).toContain("/api/v1/guilds/{guildId}")
         expect(paths).toContain("/api/v1/rankings/1v1")
         expect(paths).toContain("/api/v1/meta/legends")
+        expect(paths).toContain("/api/v1/meta/weapons")
         expect(paths).toContain("/api/v1/search")
     })
 
