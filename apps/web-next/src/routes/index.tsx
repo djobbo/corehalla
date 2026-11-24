@@ -1,11 +1,12 @@
 import { ClientOnly, createFileRoute } from "@tanstack/react-router"
 import { useAtomValue } from "@effect/atom-react"
 import { LandingFavorites } from "@/components/account/LandingFavorites"
+import { CommunityCard } from "@/components/landing/CommunityCard"
 import { PageLoaderProbe } from "@/components/layout/PageLoader"
 import { LandingHero } from "@/components/layout/LandingHero"
+import { LatestNews } from "@/components/news/LatestNews"
 import { LandingLadder } from "@/components/views/LandingLadder"
 import { WeeklyRotation } from "@/components/views/WeeklyRotation"
-import { LatestNews } from "@/components/news/LatestNews"
 import { to1v1Rows, to2v2Rows } from "@/lib/ladderRows"
 import {
     newsArticlesAtom,
@@ -69,6 +70,7 @@ function PageContent() {
                 </div>
             </section>
             <LatestNews articles={articles} />
+            <CommunityCard />
         </main>
     )
 }

@@ -4,6 +4,7 @@ export type CommunityLink = {
 }
 
 export const discordUrl = "https://discord.com/invite/eD248ez"
+export const kofiUrl = "https://ko-fi.com/corehalla"
 export const githubUrl = "https://github.com/djobbo/corehalla"
 
 /**
@@ -15,7 +16,7 @@ export const communityLinks = [
     { label: "Discord", href: discordUrl },
     { label: "X (Twitter)", href: "https://twitter.com/Corehalla" },
     { label: "GitHub", href: githubUrl },
-    { label: "Ko-fi", href: "https://ko-fi.com/corehalla" },
+    { label: "Ko-fi", href: kofiUrl },
 ] as const satisfies readonly CommunityLink[]
 
 export const attribution =

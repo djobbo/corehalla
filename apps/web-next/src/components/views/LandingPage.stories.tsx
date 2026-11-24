@@ -1,5 +1,6 @@
 import type { Decorator, Meta, StoryObj } from "@storybook/react-vite"
 import { LandingFavorites } from "@/components/account/LandingFavorites"
+import { CommunityCard } from "@/components/landing/CommunityCard"
 import { LandingHero } from "@/components/layout/LandingHero"
 import { SearchProvider } from "@/components/layout/Search"
 import { LatestNews } from "@/components/news/LatestNews"
@@ -147,6 +148,7 @@ export const Default: Story = {
                 </div>
             </section>
             <LatestNews articles={articles} />
+            <CommunityCard />
         </main>
     ),
 }
