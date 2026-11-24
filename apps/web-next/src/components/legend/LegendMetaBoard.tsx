@@ -66,26 +66,27 @@ export const LegendMetaBoard = ({
                     </p>
                 </div>
 
-                <div
-                    role="group"
-                    aria-label="Rating floor"
-                    className="flex flex-wrap gap-1.5"
-                >
-                    {legendMetaFloors.map((option) => (
-                        <button
-                            key={option}
-                            type="button"
-                            aria-pressed={option === floor}
-                            onClick={() => onFloorChange?.(option)}
-                            className={cn(
-                                "ch-chip",
-                                option === floor ? "ch-chip-on" : "ch-chip-off",
-                            )}
-                        >
-                            {legendMetaFloorLabel(option)}
-                        </button>
-                    ))}
-                </div>
+                <fieldset className="flex min-w-0 flex-col gap-1">
+                    <legend className="ch-stat-label">Rating floor</legend>
+                    <div className="flex flex-wrap gap-1.5">
+                        {legendMetaFloors.map((option) => (
+                            <button
+                                key={option}
+                                type="button"
+                                aria-pressed={option === floor}
+                                onClick={() => onFloorChange?.(option)}
+                                className={cn(
+                                    "ch-chip",
+                                    option === floor
+                                        ? "ch-chip-on"
+                                        : "ch-chip-off",
+                                )}
+                            >
+                                {legendMetaFloorLabel(option)}
+                            </button>
+                        ))}
+                    </div>
+                </fieldset>
             </div>
 
             {sorted.length === 0 ? (
