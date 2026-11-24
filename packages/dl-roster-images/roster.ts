@@ -18,25 +18,25 @@ const RosterIcon = Schema.Struct({
 
 export type RosterIcon = typeof RosterIcon.Type
 
-export class EmptyRosterError extends Schema.TaggedError<EmptyRosterError>()(
-    "EmptyRosterError",
-    {},
-) {}
+export class EmptyRosterError extends Schema.TaggedError<
+    EmptyRosterError,
+    { readonly brand: unique symbol }
+>()("EmptyRosterError", {}) {}
 
-export class UnmatchedLegendError extends Schema.TaggedError<UnmatchedLegendError>()(
-    "UnmatchedLegendError",
-    {
-        names: Schema.String,
-    },
-) {}
+export class UnmatchedLegendError extends Schema.TaggedError<
+    UnmatchedLegendError,
+    { readonly brand: unique symbol }
+>()("UnmatchedLegendError", {
+    names: Schema.String,
+}) {}
 
-export class MissingSplashError extends Schema.TaggedError<MissingSplashError>()(
-    "MissingSplashError",
-    {
-        name: Schema.String,
-        page: Schema.String,
-    },
-) {}
+export class MissingSplashError extends Schema.TaggedError<
+    MissingSplashError,
+    { readonly brand: unique symbol }
+>()("MissingSplashError", {
+    legend: Schema.String,
+    page: Schema.String,
+}) {}
 
 const HttpsUrl = Schema.String.check(Schema.isStartingWith("https://"))
 
@@ -89,7 +89,7 @@ export const parseIcons = (html: string) => {
 
 export const parseSplash = (html: string) => {
     const src = load(html)("img.splash").first().attr("src")?.trim() ?? ""
-    return Schema.decodeUnknownEffect(HttpsUrl)(src)
+    return Schema.decodeEffect(HttpsUrl)(src)
 }
 
 export const legendFiles = Effect.fnUntraced(function* (
@@ -153,7 +153,7 @@ const readSplash = Effect.fn("roster.readSplash")(function* (
         Effect.mapError(
             () =>
                 new MissingSplashError({
-                    name: target.icon.name,
+                    legend: target.icon.name,
                     page: pageUrl,
                 }),
         ),

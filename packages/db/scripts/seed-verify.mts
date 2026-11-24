@@ -167,10 +167,10 @@ const scalar = (sql: string): number => {
 const plan = (sql: string): string =>
     (
         database.prepare(`EXPLAIN QUERY PLAN ${sql}`).all() as {
-            detail?: unknown
+            detail?: string
         }[]
     )
-        .map((row) => String(row.detail ?? ""))
+        .map((row) => row.detail ?? "")
         .join(" | ")
 
 let failures = 0
@@ -417,9 +417,9 @@ check("BHClan.nameLower mirrors name", clanLowerMismatch, 0)
 // Index must exist even when a broad prefix makes the planner prefer another.
 const aliasIndexes = (
     database.prepare(`PRAGMA index_list('BHPlayerAlias')`).all() as {
-        name?: unknown
+        name?: string
     }[]
-).map((row) => String(row.name ?? ""))
+).map((row) => row.name ?? "")
 
 check(
     "BHPlayerAlias has the aliasLower index",
@@ -429,9 +429,9 @@ check(
 
 const clanIndexes = (
     database.prepare(`PRAGMA index_list('BHClan')`).all() as {
-        name?: unknown
+        name?: string
     }[]
-).map((row) => String(row.name ?? ""))
+).map((row) => row.name ?? "")
 
 check(
     "BHClan has the nameLower index",

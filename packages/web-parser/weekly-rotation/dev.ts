@@ -1,4 +1,4 @@
 import { getWeeklyRotation } from "./getWeeklyRotation"
 import { logInfo } from "@crh/logger"
 
-getWeeklyRotation().then(logInfo)
+void getWeeklyRotation().then(logInfo)
