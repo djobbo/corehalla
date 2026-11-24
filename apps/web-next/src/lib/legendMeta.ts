@@ -26,6 +26,10 @@ export const legendMetaEmpty = (floor: LegendMetaFloor): string =>
         ? "No legend games are indexed yet."
         : `No legend games are indexed at ${floor}+ rating yet.`
 
+/** The sample is Corehalla's index, never the official ladder. */
+export const legendMetaDisclaimer =
+    "aggregated from Corehalla's index, not official Brawlhalla figures."
+
 /** Fractions of one; at most two decimals of a percent, without trailing zeros. */
 export const formatLegendMetaRate = (value: number): string =>
     `${(value * 100).toFixed(2).replace(/\.?0+$/, "")}%`

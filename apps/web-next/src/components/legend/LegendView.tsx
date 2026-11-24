@@ -21,8 +21,9 @@ import {
 import { weaponHref } from "@/lib/weapons"
 import { playerHref, tierColor } from "@/lib/rankings"
 import { LegendIcon } from "./LegendIcon"
+import { LegendPlayStyleCard } from "./LegendPlayStyleCard"
 import { cleanString } from "@crh/common/helpers/cleanString"
-import type { CareerRanking } from "@crh/api-contract/schemas"
+import type { CareerRanking, LegendPlayStyle } from "@crh/api-contract/schemas"
 import type { Legend } from "@crh/bhapi/types"
 import type { CSSProperties } from "react"
 
@@ -103,9 +104,11 @@ const MainRow = ({
 export const LegendView = ({
     legend,
     rows,
+    playStyle = null,
 }: {
     readonly legend: Legend
     readonly rows: readonly CareerRanking[]
+    readonly playStyle?: LegendPlayStyle | null
 }) => {
     const mains = rows.slice(0, TOP_MAIN_COUNT)
     const related = relatedLegends(legend, RELATED_LEGEND_COUNT)
@@ -152,6 +155,14 @@ export const LegendView = ({
                     </CardContent>
                 </Card>
             </div>
+
+            {playStyle === null ? null : (
+                <LegendPlayStyleCard
+                    legend={legend}
+                    playStyle={playStyle}
+                    className="mt-3"
+                />
+            )}
 
             <section className="mt-6">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">

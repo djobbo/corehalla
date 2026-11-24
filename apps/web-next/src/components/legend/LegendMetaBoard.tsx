@@ -21,6 +21,7 @@ import { legendHref } from "@/lib/legends"
 import {
     formatLegendMetaCount,
     formatLegendMetaRate,
+    legendMetaDisclaimer,
     legendMetaEmpty,
     legendMetaFloorLabel,
     legendMetaSample,
@@ -60,9 +61,8 @@ export const LegendMetaBoard = ({
                         Legend meta
                     </h2>
                     <p className="mt-1 max-w-prose text-xs text-muted-foreground">
-                        {legendMetaSample(board.meta.accounts, floor)} ·
-                        aggregated from Corehalla&apos;s index, not official
-                        Brawlhalla figures.
+                        {legendMetaSample(board.meta.accounts, floor)} ·{" "}
+                        {legendMetaDisclaimer}
                     </p>
                 </div>
 
