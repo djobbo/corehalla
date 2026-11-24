@@ -5,6 +5,7 @@ import { StatGrid } from "@/components/common/StatGrid"
 import { UpdatedAt } from "@/components/common/UpdatedAt"
 import { guildAtom, useQuery } from "@/effect/atoms"
 import { clanHref } from "@/lib/rankings"
+import { standingLabel } from "@/lib/guildStanding"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatUnixTime } from "@crh/common/helpers/date"
 import type { Stat } from "@/components/common/StatGrid"
@@ -26,6 +27,8 @@ export const ClanHeader = ({ clanId }: { readonly clanId: number }) => {
         : undefined
 
     const guildPoints = guild.guild_points ?? summedPoints
+
+    const standing = standingLabel(guild.standing)
 
     const stats: Stat[] = [
         {
@@ -78,11 +81,23 @@ export const ClanHeader = ({ clanId }: { readonly clanId: number }) => {
                 <FavoriteButton type="clan" id={String(guild.id)} name={name} />
                 <ShareButton name={name} path={clanHref(guild.slug)} />
             </div>
-            <Card className="@container bg-transparent p-4 shadow-none">
-                <CardContent className="p-0">
-                    <StatGrid maxColumns={5} stats={stats} />
-                </CardContent>
-            </Card>
+            <div className="@container grid gap-3 @3xl:grid-cols-[minmax(0,1fr)_minmax(0,15rem)]">
+                <Card className="bg-transparent p-4 shadow-none">
+                    <CardContent className="p-0">
+                        <StatGrid maxColumns={5} stats={stats} />
+                    </CardContent>
+                </Card>
+                {standing === null ? null : (
+                    <Card className="justify-center bg-transparent p-4 shadow-none">
+                        <CardContent className="flex flex-col gap-1 p-0">
+                            <span className="ch-stat-label">Standing</span>
+                            <span className="ch-stat-value text-balance">
+                                {standing}
+                            </span>
+                        </CardContent>
+                    </Card>
+                )}
+            </div>
         </header>
     )
 }
