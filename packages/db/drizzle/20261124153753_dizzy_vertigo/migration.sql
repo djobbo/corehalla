@@ -1,0 +1,1 @@
+CREATE INDEX `BHPlayerData_rating_idx` ON `BHPlayerData` (`rating`);

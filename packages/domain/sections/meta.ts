@@ -27,6 +27,7 @@ export const PLAN = {
     rankings3v3: "rankings/3v3@1",
     rankingsBoard: "rankings/board@1",
     powerRankings: "rankings/power@1",
+    legendMeta: "meta/legends@1",
 } as const
 
 export type PlanId = (typeof PLAN)[keyof typeof PLAN]

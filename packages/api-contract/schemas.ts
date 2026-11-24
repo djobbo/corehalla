@@ -220,6 +220,7 @@ export * from "./aggregate/player"
 export * from "./aggregate/esports"
 export * from "./aggregate/guild"
 export * from "./aggregate/rankings"
+export * from "./aggregate/meta"
 export * from "./aggregate/search"
 
 /** Shared by server (rejects below) and client ("keep typing" hint). */

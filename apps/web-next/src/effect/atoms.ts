@@ -24,6 +24,8 @@ import { runFallback } from "./fallback"
 import type { FallbackSection } from "./fallback"
 import type {
     Ladder,
+    LegendMeta,
+    LegendMetaFloor,
     PowerRankingsGameMode,
     PowerRankingsOrderBy,
     PowerRankingsRegion,
@@ -158,6 +160,24 @@ export const clansRankingsAtom = (name: string, page: number) =>
         serializationKey: `clans:${name}:${page}`,
         timeToLive: ttl,
     })
+
+export const legendMetaQueryAtom = (floor: LegendMetaFloor) =>
+    CorehallaClient.query("meta", "getLegendMeta", {
+        query: { floor },
+        serializationKey: `meta:legends:${floor}`,
+        timeToLive: ttl,
+    })
+
+/**
+ * Decoration on the legend index: a failed read hides the board instead of
+ * failing the page, so the roster grid keeps rendering.
+ */
+export const legendMetaAtom = (
+    floor: LegendMetaFloor,
+): Atom.Atom<LegendMeta | null> =>
+    Atom.make((get) =>
+        Option.getOrNull(AsyncResult.value(get(legendMetaQueryAtom(floor)))),
+    )
 
 export const powerRankingsQueryAtom = (
     gameMode: PowerMode,

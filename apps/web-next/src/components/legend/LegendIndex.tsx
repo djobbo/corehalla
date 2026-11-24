@@ -3,8 +3,13 @@ import { Card } from "@/components/ui/card"
 import { legendHref } from "@/lib/legends"
 import { LegendIcon } from "./LegendIcon"
 import { legends } from "@crh/bhapi/legends"
+import type { ReactNode } from "react"
 
-export const LegendIndex = () => (
+export const LegendIndex = ({
+    children,
+}: {
+    readonly children?: ReactNode
+}) => (
     <main className="ch-page">
         <header className="ch-hero mb-3">
             <p className="ch-kicker">Brawlhalla roster</p>
@@ -13,6 +18,8 @@ export const LegendIndex = () => (
                 Every legend in the roster, with the weapons they carry.
             </p>
         </header>
+
+        {children}
 
         <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {legends.map((legend) => (

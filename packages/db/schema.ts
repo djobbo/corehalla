@@ -183,6 +183,8 @@ export const bhPlayerData = sqliteTable(
         ...playerRankingColumns.map((column) =>
             index(`BHPlayerData_${column}_idx`).on(table[column]),
         ),
+        // Meta floors filter on ranked rating; no sort column covers it.
+        index("BHPlayerData_rating_idx").on(table.rating),
         index("BHPlayerData_lastUpdated_idx").on(table.lastUpdated),
     ],
 )
