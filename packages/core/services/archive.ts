@@ -1,9 +1,11 @@
 import {
     and,
     asc,
+    count,
     desc,
     eq,
     getTableColumns,
+    gt,
     gte,
     inArray,
     lt,
@@ -53,6 +55,7 @@ import type { RankedSnapshot } from "./player-writes"
 import type {
     AliasSearchResultInput,
     CareerRankingInput,
+    GuildStanding,
 } from "@crh/api-contract/schemas"
 
 /** Nine rows × ~10 params must stay under D1's 100 bound-param limit. */
@@ -79,6 +82,11 @@ export class Database extends Context.Service<
         readonly getClanXp: (
             clanId: string,
         ) => Effect.Effect<string | null, DatabaseError>
+
+        /** Where the guild sits by XP among every guild we have indexed. */
+        readonly getGuildStanding: (
+            clanId: string,
+        ) => Effect.Effect<GuildStanding, DatabaseError>
 
         readonly searchExactAliases: (
             alias: string,
@@ -252,6 +260,35 @@ export const layer = Layer.effect(
                         .limit(1),
                 ).pipe(
                     Effect.map((rows) => (rows[0] ? String(rows[0].xp) : null)),
+                ),
+
+            getGuildStanding: (clanId) =>
+                run(
+                    Effect.gen(function* () {
+                        const [guild] = yield* db
+                            .select({ xp: bhClan.xp })
+                            .from(bhClan)
+                            .where(eq(bhClan.id, clanId))
+                            .limit(1)
+
+                        const [totals] = yield* db
+                            .select({ total: count() })
+                            .from(bhClan)
+
+                        if (guild === undefined) {
+                            return { rank: null, total: totals?.total ?? 0 }
+                        }
+
+                        const [ahead] = yield* db
+                            .select({ ahead: count() })
+                            .from(bhClan)
+                            .where(gt(bhClan.xp, guild.xp))
+
+                        return {
+                            rank: (ahead?.ahead ?? 0) + 1,
+                            total: totals?.total ?? 0,
+                        }
+                    }),
                 ),
 
             upsertPlayerStats: (playerStats, ranked) =>

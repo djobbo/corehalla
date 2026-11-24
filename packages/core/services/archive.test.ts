@@ -218,3 +218,99 @@ describe("getLegendMeta", () => {
         }),
     )
 })
+
+type GuildRow = {
+    readonly id: string
+    readonly name: string
+    readonly xp: number
+}
+
+const guildLayerFor = (guilds: readonly GuildRow[]) => {
+    const sqlite = new DatabaseSync(":memory:")
+
+    sqlite.exec(`
+        CREATE TABLE "BHClan" (
+            "id" TEXT PRIMARY KEY,
+            "name" TEXT NOT NULL,
+            "nameLower" TEXT NOT NULL DEFAULT '',
+            "created" INTEGER DEFAULT -1,
+            "xp" INTEGER NOT NULL
+        );
+    `)
+
+    const insertGuild = sqlite.prepare(
+        `INSERT INTO "BHClan" ("id", "name", "nameLower", "xp") VALUES (?, ?, ?, ?)`,
+    )
+
+    for (const guild of guilds) {
+        insertGuild.run(
+            guild.id,
+            guild.name,
+            guild.name.toLowerCase(),
+            guild.xp,
+        )
+    }
+
+    return makeLayer(toD1(sqlite))
+}
+
+const readStanding = (guilds: readonly GuildRow[], clanId: string) =>
+    Effect.gen(function* () {
+        const db = yield* Database
+
+        return yield* db.getGuildStanding(clanId)
+    }).pipe(Effect.provide(guildLayerFor(guilds)))
+
+describe("getGuildStanding", () => {
+    it.effect("ranks a guild by XP from the top of the table", () =>
+        Effect.gen(function* () {
+            const standings = yield* readStanding(
+                [
+                    { id: "1", name: "First", xp: 900 },
+                    { id: "2", name: "Second", xp: 600 },
+                    { id: "3", name: "Third", xp: 300 },
+                ],
+                "2",
+            )
+
+            expect(standings).toEqual({ rank: 2, total: 3 })
+        }),
+    )
+
+    it.effect("gives tied guilds the higher position", () =>
+        Effect.gen(function* () {
+            const guilds: readonly GuildRow[] = [
+                { id: "1", name: "Tied A", xp: 900 },
+                { id: "2", name: "Tied B", xp: 900 },
+                { id: "3", name: "Behind", xp: 100 },
+            ]
+
+            expect(yield* readStanding(guilds, "1")).toEqual({
+                rank: 1,
+                total: 3,
+            })
+            expect(yield* readStanding(guilds, "2")).toEqual({
+                rank: 1,
+                total: 3,
+            })
+            expect(yield* readStanding(guilds, "3")).toEqual({
+                rank: 3,
+                total: 3,
+            })
+        }),
+    )
+
+    it.effect("has no rank for a guild the archive has never indexed", () =>
+        Effect.gen(function* () {
+            const standings = yield* readStanding(
+                [
+                    { id: "1", name: "Indexed", xp: 900 },
+                    { id: "2", name: "Also indexed", xp: 500 },
+                ],
+                "999",
+            )
+
+            expect(standings).toEqual({ rank: null, total: 2 })
+        }),
+    )
+})
