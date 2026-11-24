@@ -107,9 +107,7 @@ export const playersGroup = HttpApiBuilder.group(
                     }
 
                     if (stats._tag === "Failure") {
-                        return yield* Effect.fail(
-                            toSectionError(PLAN.playerProfile, parts),
-                        )
+                        return yield* toSectionError(PLAN.playerProfile, parts)
                     }
 
                     if (stats.success.value === null) {
@@ -126,9 +124,7 @@ export const playersGroup = HttpApiBuilder.group(
                     const aliases = yield* db
                         .getPlayerAliases(String(params.playerId))
                         .pipe(
-                            Effect.catch(() =>
-                                Effect.succeed([] as readonly string[]),
-                            ),
+                            Effect.orElseSucceed(() => [] as readonly string[]),
                         )
 
                     const data = buildPlayerProfile({
@@ -226,9 +222,7 @@ export const playersGroup = HttpApiBuilder.group(
                     }
 
                     if (stats._tag === "Failure") {
-                        return yield* Effect.fail(
-                            toSectionError(PLAN.playerLegends, parts),
-                        )
+                        return yield* toSectionError(PLAN.playerLegends, parts)
                     }
 
                     if (stats.success.value === null) {
@@ -279,9 +273,7 @@ export const playersGroup = HttpApiBuilder.group(
                     }
 
                     if (stats._tag === "Failure") {
-                        return yield* Effect.fail(
-                            toSectionError(PLAN.playerWeapons, parts),
-                        )
+                        return yield* toSectionError(PLAN.playerWeapons, parts)
                     }
 
                     if (stats.success.value === null) {
@@ -329,9 +321,7 @@ export const playersGroup = HttpApiBuilder.group(
                     }
 
                     if (teams._tag === "Failure") {
-                        return yield* Effect.fail(
-                            toSectionError(PLAN.playerTeams, parts),
-                        )
+                        return yield* toSectionError(PLAN.playerTeams, parts)
                     }
 
                     return {
@@ -372,9 +362,7 @@ export const playersGroup = HttpApiBuilder.group(
                     }
 
                     if (membership._tag === "Failure") {
-                        return yield* Effect.fail(
-                            toSectionError(PLAN.playerClan, parts),
-                        )
+                        return yield* toSectionError(PLAN.playerClan, parts)
                     }
 
                     const member = membership.success.value
@@ -407,9 +395,7 @@ export const playersGroup = HttpApiBuilder.group(
                     }
 
                     if (guild._tag === "Failure") {
-                        return yield* Effect.fail(
-                            toSectionError(PLAN.playerClan, all),
-                        )
+                        return yield* toSectionError(PLAN.playerClan, all)
                     }
 
                     if (guild.success.value === null) {

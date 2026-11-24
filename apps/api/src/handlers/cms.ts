@@ -10,7 +10,7 @@ export const cmsGroup = HttpApiBuilder.group(
         const cms = yield* Cms
 
         return handlers
-            .handle("getMediaManifest", () => cms.getMediaManifest())
+            .handle("getMediaManifest", () => cms.getMediaManifest)
             .handle("getCmsArticles", ({ query }) =>
                 cms.getArticles({
                     page: query.page,

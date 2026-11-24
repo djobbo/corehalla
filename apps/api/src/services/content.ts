@@ -26,7 +26,7 @@ export type GetArticlesOptions = {
 export class Content extends Context.Service<
     Content,
     {
-        readonly getWeeklyRotation: () => Effect.Effect<readonly Legend[]>
+        readonly getWeeklyRotation: Effect.Effect<readonly Legend[]>
         readonly getArticles: (
             options: GetArticlesOptions,
         ) => Effect.Effect<ArticlesPage>
@@ -43,7 +43,7 @@ const run = <A>(f: () => Promise<A>) =>
     }).pipe(Effect.orDie)
 
 export const layer = Layer.succeed(Content, {
-    getWeeklyRotation: () => run(() => getWeeklyRotationFn()),
+    getWeeklyRotation: run(() => getWeeklyRotationFn()),
 
     getArticles: ({ category, page, pageSize }) =>
         run(async () => {

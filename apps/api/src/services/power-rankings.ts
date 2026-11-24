@@ -20,7 +20,7 @@ const powerTtl: CacheWindow = {
 /** Cached payload; the schema re-validates KV/L1 hits (see `CacheRead`). */
 const PowerRankingsPageSchema = Schema.Struct({
     players: Schema.Array(PowerRankingsPlayerSchema),
-    totalPages: Schema.Number,
+    totalPages: Schema.Finite,
 })
 
 export type PowerRankingsShape = {
