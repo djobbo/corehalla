@@ -91,6 +91,20 @@ describe("packBubbles", () => {
         expect(radiusOf(packed, "2")).toBeGreaterThan(0)
     })
 
+    it("pins the floor so a zero-metric bubble renders visibly", () => {
+        const packed = packBubbles(
+            [bubble(1, 10_000, 0, 0), bubble(2, 0, 500, 0)],
+            "matchtime",
+            1.1,
+        )
+
+        // The chart caps the canvas at 304px (`max-w-76`), so anything under
+        // about 2px there reads as a speck rather than a bubble.
+        const renderedRadius = (radiusOf(packed, "2") * 304) / VIEW
+
+        expect(renderedRadius).toBeGreaterThan(2)
+    })
+
     it("weighs bubbles by the active metric", () => {
         const rows = [bubble(1, 100, 900, 0), bubble(2, 400, 10, 0)]
 
