@@ -1,4 +1,5 @@
 import { Schema } from "effect"
+import { weapons } from "@crh/bhapi/constants"
 
 /**
  * Rating floors over the archived population. `all` is the whole index; the
@@ -44,3 +45,33 @@ export const LegendMetaSchema = Schema.Struct({
 })
 
 export type LegendMeta = typeof LegendMetaSchema.Type
+
+/**
+ * `null` means the denominator was empty — the API never emits NaN or a
+ * fabricated zero. `playShare` divides by every weapon game in the sample, so a
+ * non-empty board sums to (approximately) one.
+ */
+export const WeaponMetaRowSchema = Schema.Struct({
+    weapon: Schema.Literals(weapons),
+    games: Schema.Number,
+    wins: Schema.Number,
+    winRate: Schema.NullOr(Schema.Number),
+    playShare: Schema.NullOr(Schema.Number),
+    /** Indexed accounts with at least one game on this weapon. */
+    accounts: Schema.Number,
+    damagePerGame: Schema.NullOr(Schema.Number),
+    timeHeldPerGame: Schema.NullOr(Schema.Number),
+    kosPerGame: Schema.NullOr(Schema.Number),
+})
+
+export type WeaponMetaRow = typeof WeaponMetaRowSchema.Type
+
+export const WeaponMetaSchema = Schema.Struct({
+    data: Schema.Array(WeaponMetaRowSchema),
+    meta: Schema.Struct({
+        /** Indexed accounts in the sample. */
+        accounts: Schema.Number,
+    }),
+})
+
+export type WeaponMeta = typeof WeaponMetaSchema.Type

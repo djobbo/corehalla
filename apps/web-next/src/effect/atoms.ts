@@ -45,6 +45,7 @@ import type {
     Rankings1v1Envelope,
     Rankings2v2Envelope,
     Rankings3v3Envelope,
+    WeaponMeta,
 } from "@crh/api-contract/schemas"
 import type { Weapon as WeaponName } from "@crh/bhapi/constants"
 
@@ -177,6 +178,21 @@ export const legendMetaAtom = (
 ): Atom.Atom<LegendMeta | null> =>
     Atom.make((get) =>
         Option.getOrNull(AsyncResult.value(get(legendMetaQueryAtom(floor)))),
+    )
+
+export const weaponMetaQueryAtom = () =>
+    CorehallaClient.query("meta", "getWeaponMeta", {
+        serializationKey: "meta:weapons",
+        timeToLive: ttl,
+    })
+
+/**
+ * Decoration on the weapon page: a failed read drops the card instead of
+ * failing the page, so the wielders and career board keep rendering.
+ */
+export const weaponMetaAtom = (): Atom.Atom<WeaponMeta | null> =>
+    Atom.make((get) =>
+        Option.getOrNull(AsyncResult.value(get(weaponMetaQueryAtom()))),
     )
 
 export const powerRankingsQueryAtom = (
