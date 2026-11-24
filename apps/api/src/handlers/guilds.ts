@@ -71,15 +71,25 @@ export const guildsGroup = HttpApiBuilder.group(
                     ),
                 )
 
-                const envelope = buildGuild(
-                    clan,
-                    cached.success.updatedAt,
-                    yield* db.getGuildStanding(clan.clan_id.toString()).pipe(
+                const standing = yield* db
+                    .getGuildStanding(clan.clan_id.toString())
+                    .pipe(
+                        Effect.tapError((error) =>
+                            Effect.logWarning(
+                                `guild standing read failed for ${clan.clan_id}`,
+                                error,
+                            ),
+                        ),
                         Effect.orElseSucceed(() => ({
                             rank: null,
                             total: null,
                         })),
-                    ),
+                    )
+
+                const envelope = buildGuild(
+                    clan,
+                    cached.success.updatedAt,
+                    standing,
                 )
 
                 return {
