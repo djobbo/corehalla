@@ -100,7 +100,7 @@ const LegendTile = ({
             <DropdownMenu>
                 <DropdownMenuTrigger
                     aria-label={`Move ${legend.bio_name} to a tier`}
-                    className="inline-flex size-6 shrink-0 items-center justify-center text-muted-foreground outline-none hover:bg-accent hover:text-foreground focus-visible:bg-accent focus-visible:text-foreground"
+                    className="inline-flex size-8 shrink-0 items-center justify-center text-muted-foreground hover:bg-accent hover:text-foreground"
                 >
                     <MoreVertical aria-hidden className="size-3" />
                 </DropdownMenuTrigger>
