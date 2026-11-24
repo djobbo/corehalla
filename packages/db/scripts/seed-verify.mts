@@ -350,6 +350,18 @@ checkIndex(
     "BHPlayerData_xp_idx",
 )
 
+checkIndex(
+    "legend meta (rating floor + GROUP BY legend_id)",
+    `SELECT legend_id, sum("BHPlayerLegend".games) AS games,
+            sum("BHPlayerLegend".wins) AS wins,
+            count(distinct player_id) AS accounts
+     FROM "BHPlayerLegend"
+     INNER JOIN "BHPlayerData" ON "BHPlayerData".id = "BHPlayerLegend".player_id
+     WHERE "BHPlayerData".rating >= 1800
+     GROUP BY legend_id`,
+    "BHPlayerData_rating_idx",
+)
+
 // Alias search: index range on aliasLower only — no full walk, no temp B-tree.
 const aliasPlan = plan(
     `SELECT "playerId", alias FROM "BHPlayerAlias"

@@ -1,6 +1,7 @@
 export { playersGroup } from "./players"
 export { guildsGroup } from "./guilds"
 export { rankingsGroup } from "./rankings"
+export { metaGroup } from "./meta"
 export { searchGroup } from "./search"
 export { contentGroup } from "./content"
 export { cmsGroup } from "./cms"

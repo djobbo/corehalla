@@ -104,6 +104,12 @@ export class Database extends Context.Service<
         readonly getBestLegends: (
             playerIds: readonly string[],
         ) => Effect.Effect<readonly BestLegendRow[], DatabaseError>
+
+        /** One grouped read behind the legend meta board; `null` is the whole index. */
+        readonly getLegendMeta: (
+            minRating: number | null,
+        ) => Effect.Effect<LegendMetaSample, DatabaseError>
+
         readonly searchAliases: (
             alias: string,
             page: number,
@@ -153,6 +159,19 @@ export type BestLegendRow = {
     readonly legendId: number
     readonly games: number
     readonly wins: number
+}
+
+export type LegendMetaRowInput = {
+    readonly legendId: number
+    readonly games: number
+    readonly wins: number
+    readonly accounts: number
+}
+
+export type LegendMetaSample = {
+    readonly rows: readonly LegendMetaRowInput[]
+    /** Indexed accounts matching the requested rating floor. */
+    readonly accounts: number
 }
 
 /** Half-open [prefix, nextCodePoint); undefined if no upper bound exists. */
@@ -710,6 +729,48 @@ export const layer = Layer.effect(
                             )
 
                         return rows
+                    }),
+                ),
+
+            getLegendMeta: (minRating) =>
+                run(
+                    Effect.gen(function* () {
+                        const where =
+                            minRating === null
+                                ? undefined
+                                : gte(bhPlayerData.rating, minRating)
+
+                        const rows = yield* db
+                            .select({
+                                legendId: bhPlayerLegend.legend_id,
+                                games: sql<number>`sum(${bhPlayerLegend.games})`,
+                                wins: sql<number>`sum(${bhPlayerLegend.wins})`,
+                                accounts: sql<number>`count(distinct ${bhPlayerLegend.player_id})`,
+                            })
+                            .from(bhPlayerLegend)
+                            .innerJoin(
+                                bhPlayerData,
+                                eq(bhPlayerLegend.player_id, bhPlayerData.id),
+                            )
+                            .where(where)
+                            .groupBy(bhPlayerLegend.legend_id)
+                            .having(sql`sum(${bhPlayerLegend.games}) > 0`)
+                            .orderBy(asc(bhPlayerLegend.legend_id))
+
+                        const counted = yield* db
+                            .select({ accounts: sql<number>`count(*)` })
+                            .from(bhPlayerData)
+                            .where(where)
+
+                        return {
+                            rows: rows.map((row) => ({
+                                legendId: row.legendId,
+                                games: Number(row.games),
+                                wins: Number(row.wins),
+                                accounts: Number(row.accounts),
+                            })),
+                            accounts: Number(counted[0]?.accounts ?? 0),
+                        }
                     }),
                 ),
 

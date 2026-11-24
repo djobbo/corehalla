@@ -21,6 +21,8 @@ import {
     FavoriteSchema,
     GuildEnvelopeSchema,
     Ladder,
+    LegendMetaFloor,
+    LegendMetaSchema,
     LookupResultsSchema,
     NewsCategory,
     Player3v3RankedSchema,
@@ -240,6 +242,16 @@ const rankings = HttpApiGroup.make("rankings")
         }),
     )
 
+const meta = HttpApiGroup.make("meta").add(
+    // Archive-only: the sample is the accounts Corehalla has indexed, not the
+    // live ladder. The whole board is one grouped read behind a section deadline.
+    HttpApiEndpoint.get("getLegendMeta", "/api/v1/meta/legends", {
+        query: { floor: LegendMetaFloor },
+        success: LegendMetaSchema,
+        error: sectionErrors,
+    }),
+)
+
 const search = HttpApiGroup.make("search")
     .add(
         HttpApiEndpoint.get("searchPlayerAlias", "/api/v1/search/players", {
@@ -445,6 +457,7 @@ export const CorehallaApi = HttpApi.make("CorehallaApi")
     .add(players)
     .add(guilds)
     .add(rankings)
+    .add(meta)
     .add(search)
     .add(content)
     .add(cms)
