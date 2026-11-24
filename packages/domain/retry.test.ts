@@ -142,8 +142,8 @@ describe("retryTransient", () => {
     it("retries a 429 and does not succeed", async () => {
         const { effect, attempts } = countingFailure(await statusError(429))
 
-        const exit = await Effect.runPromise(
-            Effect.exit(retryTransientWith(effect, fast)),
+        const exit = await Effect.runPromiseExit(
+            retryTransientWith(effect, fast),
         )
 
         expect(Exit.isFailure(exit)).toBe(true)
@@ -154,7 +154,7 @@ describe("retryTransient", () => {
     it("retries a 5xx and does not succeed", async () => {
         const { effect, attempts } = countingFailure(await statusError(503))
 
-        await Effect.runPromise(Effect.exit(retryTransientWith(effect, fast)))
+        await Effect.runPromiseExit(retryTransientWith(effect, fast))
 
         expect(attempts()).toBe(4)
     })
@@ -162,7 +162,7 @@ describe("retryTransient", () => {
     it("retries a transport failure", async () => {
         const { effect, attempts } = countingFailure(transportError())
 
-        await Effect.runPromise(Effect.exit(retryTransientWith(effect, fast)))
+        await Effect.runPromiseExit(retryTransientWith(effect, fast))
 
         expect(attempts()).toBe(4)
     })
@@ -170,8 +170,8 @@ describe("retryTransient", () => {
     it("does not retry a status that repetition cannot fix", async () => {
         const { effect, attempts } = countingFailure(await statusError(403))
 
-        const exit = await Effect.runPromise(
-            Effect.exit(retryTransientWith(effect, fast)),
+        const exit = await Effect.runPromiseExit(
+            retryTransientWith(effect, fast),
         )
 
         expect(Exit.isFailure(exit)).toBe(true)
@@ -181,7 +181,7 @@ describe("retryTransient", () => {
     it("does not retry a 404", async () => {
         const { effect, attempts } = countingFailure(await statusError(404))
 
-        await Effect.runPromise(Effect.exit(retryTransientWith(effect, fast)))
+        await Effect.runPromiseExit(retryTransientWith(effect, fast))
 
         expect(attempts()).toBe(1)
     })

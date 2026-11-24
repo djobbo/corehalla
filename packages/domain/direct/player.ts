@@ -13,7 +13,7 @@ import {
     sectionMeta,
     toSectionError,
 } from "../sections/meta"
-import type { PartEntries } from "../sections/meta"
+import type { PartEntries, PlanId } from "../sections/meta"
 import type { V1UpstreamShape } from "../upstream/client"
 import type {
     PlayerClanEnvelope,
@@ -28,7 +28,7 @@ export class PlayerNotFound extends Data.TaggedError("PlayerNotFound")<{
     readonly playerId: number
 }> {}
 
-const missing = (parts: PartEntries, plan: string) =>
+const missing = (parts: PartEntries, plan: PlanId) =>
     Effect.fail(toSectionError(plan, parts))
 
 /**
@@ -64,7 +64,7 @@ export const directPlayerProfile = (
         }
 
         if (stats.success === null) {
-            return yield* Effect.fail(new PlayerNotFound({ playerId }))
+            return yield* new PlayerNotFound({ playerId })
         }
 
         return {
@@ -107,7 +107,7 @@ export const directPlayerLegends = (
         }
 
         if (stats.success === null) {
-            return yield* Effect.fail(new PlayerNotFound({ playerId }))
+            return yield* new PlayerNotFound({ playerId })
         }
 
         return {
@@ -138,7 +138,7 @@ export const directPlayerWeapons = (
         }
 
         if (stats.success === null) {
-            return yield* Effect.fail(new PlayerNotFound({ playerId }))
+            return yield* new PlayerNotFound({ playerId })
         }
 
         return {

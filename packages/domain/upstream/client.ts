@@ -96,8 +96,9 @@ export const makeUpstream = (
                             `(${region} page ${page})`,
                     )
 
-                    return yield* Effect.fail(
-                        incomplete("getRankings", "incomplete leaderboard"),
+                    return yield* incomplete(
+                        "getRankings",
+                        "incomplete leaderboard",
                     )
                 }
 
@@ -119,8 +120,9 @@ export const makeUpstream = (
                         `v1 could not serve player ${playerId} stats`,
                     )
 
-                    return yield* Effect.fail(
-                        incomplete("getPlayerStats", "incomplete player stats"),
+                    return yield* incomplete(
+                        "getPlayerStats",
+                        "incomplete player stats",
                     )
                 }
 
@@ -188,11 +190,9 @@ export const makeUpstream = (
                             `${playerId}`,
                     )
 
-                    return yield* Effect.fail(
-                        incomplete(
-                            "getPlayer3v3Ranked",
-                            "incomplete 3v3 ranked",
-                        ),
+                    return yield* incomplete(
+                        "getPlayer3v3Ranked",
+                        "incomplete 3v3 ranked",
                     )
                 }
 
@@ -209,8 +209,9 @@ export const makeUpstream = (
                 if (guild === null) return null
 
                 if (members === null) {
-                    return yield* Effect.fail(
-                        incomplete("getClan", "guild members unavailable"),
+                    return yield* incomplete(
+                        "getClan",
+                        "guild members unavailable",
                     )
                 }
 
@@ -220,9 +221,7 @@ export const makeUpstream = (
 
                 yield* Effect.logDebug(`v1 could not serve guild ${clanId}`)
 
-                return yield* Effect.fail(
-                    incomplete("getClan", "incomplete guild"),
-                )
+                return yield* incomplete("getClan", "incomplete guild")
             }),
     }
 }

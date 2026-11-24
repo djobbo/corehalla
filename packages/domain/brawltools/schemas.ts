@@ -24,10 +24,10 @@ const optionalNullable = <S extends Schema.Constraint>(schema: S) =>
 
 export const PlayerSchema = Schema.Struct({
     /** Null for the placeholder row returned for an unknown ID. */
-    playerId: Schema.NullOr(Schema.Number),
-    sggPlayerId: optionalNullable(Schema.Number),
+    playerId: Schema.NullOr(Schema.Finite),
+    sggPlayerId: optionalNullable(Schema.Finite),
     cmPlayerId: optionalNullable(Schema.String),
-    brawlhallaId: optionalNullable(Schema.Number),
+    brawlhallaId: optionalNullable(Schema.Finite),
     name: optionalNullable(Schema.String),
     twitch: optionalNullable(Schema.String),
     twitter: optionalNullable(Schema.String),
@@ -38,12 +38,12 @@ export const PlayerSchema = Schema.Struct({
 export type Player = typeof PlayerSchema.Type
 
 export const PlayerPrSchema = Schema.Struct({
-    top8: Schema.Number,
-    top32: Schema.Number,
-    gold: Schema.Number,
-    silver: Schema.Number,
-    bronze: Schema.Number,
-    powerRanking: Schema.Number,
+    top8: Schema.Finite,
+    top32: Schema.Finite,
+    gold: Schema.Finite,
+    silver: Schema.Finite,
+    bronze: Schema.Finite,
+    powerRanking: Schema.Finite,
     region: Schema.String,
 })
 
@@ -51,7 +51,7 @@ export type PlayerPr = typeof PlayerPrSchema.Type
 
 export const LegendSchema = Schema.Struct({
     name: Schema.String,
-    count: Schema.Number,
+    count: Schema.Finite,
 })
 
 export type Legend = typeof LegendSchema.Type
@@ -60,11 +60,11 @@ export const TournamentSchema = Schema.Struct({
     id: Schema.String,
     tournamentName: Schema.String,
     eventName: optionalNullable(Schema.String),
-    year: Schema.Number,
+    year: Schema.Finite,
     isOfficial: Schema.Boolean,
     isTwos: Schema.Boolean,
     isOnline: Schema.Boolean,
-    startTime: Schema.Number,
+    startTime: Schema.Finite,
     host: Schema.optionalKey(TournamentHost),
 })
 
@@ -76,8 +76,8 @@ export const GetPlayerResponseSchema = Schema.Struct({ player: PlayerSchema })
 
 export const PlayerTeammateSchema = Schema.Struct({
     player: PlayerSchema,
-    games: Schema.Number,
-    lastTeamedDate: Schema.Number,
+    games: Schema.Finite,
+    lastTeamedDate: Schema.Finite,
 })
 
 export const GetPlayerTeammatesResponseSchema = Schema.Struct({
@@ -86,12 +86,12 @@ export const GetPlayerTeammatesResponseSchema = Schema.Struct({
 })
 
 export const GetPlayerPrResponseSchema = Schema.Struct({
-    earnings: Schema.Number,
+    earnings: Schema.Finite,
     pr: PlayerPrSchema,
 })
 
 export const PlayerPlacementSchema = Schema.Struct({
-    placement: Schema.Number,
+    placement: Schema.Finite,
     tournament: TournamentSchema,
 })
 
@@ -101,8 +101,8 @@ export const GetPlayerPlacementsResponseSchema = Schema.Struct({
 })
 
 export const PlayerMatchSchema = Schema.Struct({
-    matchId: Schema.Number,
-    scores: Schema.Tuple([Schema.Number, Schema.Number]),
+    matchId: Schema.Finite,
+    scores: Schema.Tuple([Schema.Finite, Schema.Finite]),
     legends: Schema.Array(Schema.Array(Schema.String)),
     maps: Schema.Array(Schema.String),
     opponent: Schema.Array(PlayerSchema),
@@ -125,7 +125,7 @@ export const SearchPlayerSchema = Schema.Struct({
     player: PlayerSchema,
     pr1v1: optionalNullable(PlayerPrSchema),
     pr2v2: optionalNullable(PlayerPrSchema),
-    earnings: Schema.Number,
+    earnings: Schema.Finite,
 })
 
 export const SearchPlayersResponseSchema = Schema.Struct({
@@ -134,8 +134,8 @@ export const SearchPlayersResponseSchema = Schema.Struct({
 })
 
 export const MatchupSchema = Schema.Struct({
-    matches: Schema.Tuple([Schema.Number, Schema.Number]),
-    games: Schema.Tuple([Schema.Number, Schema.Number]),
+    matches: Schema.Tuple([Schema.Finite, Schema.Finite]),
+    games: Schema.Tuple([Schema.Finite, Schema.Finite]),
     opponent: Schema.Array(PlayerSchema),
 })
 
@@ -145,7 +145,7 @@ export const GetMatchupResponseSchema = Schema.Struct({
 })
 
 export const MatchupPlacementSchema = Schema.Struct({
-    placements: Schema.Array(Schema.Number),
+    placements: Schema.Array(Schema.Finite),
     tournament: TournamentSchema,
 })
 
@@ -155,8 +155,8 @@ export const GetMatchupPlacementsResponseSchema = Schema.Struct({
 })
 
 export const MatchupMatchSchema = Schema.Struct({
-    matchId: Schema.Number,
-    scores: Schema.Array(Schema.Number),
+    matchId: Schema.Finite,
+    scores: Schema.Array(Schema.Finite),
     legends: Schema.Array(Schema.Array(Schema.String)),
     maps: Schema.Array(Schema.String),
 })
@@ -171,25 +171,25 @@ export const ListEventsResponseSchema = Schema.Struct({
 })
 
 export const ListPrPlayerSchema = Schema.Struct({
-    playerId: Schema.Number,
+    playerId: Schema.Finite,
     playerName: Schema.String,
     twitter: optionalNullable(Schema.String),
     twitch: optionalNullable(Schema.String),
-    top8: Schema.Number,
-    top32: Schema.Number,
-    gold: Schema.Number,
-    silver: Schema.Number,
-    bronze: Schema.Number,
-    powerRanking: Schema.Number,
-    points: Schema.Number,
-    earnings: Schema.Number,
+    top8: Schema.Finite,
+    top32: Schema.Finite,
+    gold: Schema.Finite,
+    silver: Schema.Finite,
+    bronze: Schema.Finite,
+    powerRanking: Schema.Finite,
+    points: Schema.Finite,
+    earnings: Schema.Finite,
 })
 
 export type ListPrPlayer = typeof ListPrPlayerSchema.Type
 
 export const ListPrResponseSchema = Schema.Struct({
     prPlayers: Schema.Array(ListPrPlayerSchema),
-    totalPages: Schema.Number,
+    totalPages: Schema.Finite,
 })
 
 export type ListPrResponse = typeof ListPrResponseSchema.Type

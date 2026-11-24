@@ -38,7 +38,7 @@ const isTerminal = (status: PartStatus): boolean =>
     status === "ok" || status === "not_found"
 
 export const sectionMeta = (
-    plan: PlanId | string,
+    plan: PlanId,
     parts: PartEntries,
     now: number = Date.now(),
 ): SectionMeta => {
@@ -86,7 +86,7 @@ export const partFromResult = <A>(
         : { status: statusFromError(result.failure), updated_at: updatedAt }
 
 /** Maps the first missing required source to the HTTP error the client patches on. */
-export const toSectionError = (plan: PlanId | string, parts: PartEntries) => {
+export const toSectionError = (plan: PlanId, parts: PartEntries) => {
     const statuses = Object.values(parts).map((entry) => entry.status)
     const payload = {
         plan,
