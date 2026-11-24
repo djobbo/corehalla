@@ -6,6 +6,7 @@ import {
     resolveWeaponSlug,
     weaponCareerHref,
     weaponHref,
+    weaponIndex,
     weaponSlug,
 } from "./weapons"
 
@@ -58,6 +59,18 @@ describe("weaponCareerHref", () => {
         expect(weaponCareerHref("Grapple Hammer", "wins")).toBe(
             "/rankings/career/weapons/Grapple%20Hammer?sortBy=wins",
         )
+    })
+})
+
+describe("weaponIndex", () => {
+    it("lists every weapon once, in roster order", () => {
+        expect(weaponIndex().map((entry) => entry.weapon)).toEqual([...weapons])
+    })
+
+    it("pairs each weapon with the legends that wield it", () => {
+        for (const entry of weaponIndex()) {
+            expect(entry.wielders).toEqual(legendsWithWeapon(entry.weapon))
+        }
     })
 })
 
