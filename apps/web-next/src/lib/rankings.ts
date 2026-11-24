@@ -6,9 +6,9 @@ import type {
 } from "@crh/api-contract/schemas"
 
 type Region = typeof RankedRegion.Type
-export type PowerRegion = typeof PowerRankingsRegion.Type
-type PowerOrder = typeof PowerRankingsOrderBy.Type
-export type PowerGameMode = typeof PowerRankingsGameMode.Type
+export type PowerRegion = PowerRankingsRegion
+type PowerOrder = PowerRankingsOrderBy
+export type PowerGameMode = PowerRankingsGameMode
 export type PowerOrderBy = PowerOrder
 
 export const brackets = ["1v1", "2v2", "3v3"] as const

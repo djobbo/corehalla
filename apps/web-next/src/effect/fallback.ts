@@ -122,14 +122,14 @@ export const runFallback = <A>(
 ): Effect.Effect<A, FallbackDisabled | FallbackOpen | FallbackFailed> =>
     Effect.gen(function* () {
         if (!fallbackEnabled()) {
-            return yield* Effect.fail(new FallbackDisabled())
+            return yield* new FallbackDisabled()
         }
 
         const source = sourceOf(section)
         const now = Date.now()
 
         if (breakerOpen(source, now)) {
-            return yield* Effect.fail(new FallbackOpen())
+            return yield* new FallbackOpen()
         }
 
         const started = now
@@ -172,7 +172,5 @@ export const runFallback = <A>(
             ),
         })
 
-        return yield* Effect.fail(
-            new FallbackFailed({ section, cause: result.failure }),
-        )
+        return yield* new FallbackFailed({ section, cause: result.failure })
     }).pipe(Effect.provide(FetchHttpClient.layer))

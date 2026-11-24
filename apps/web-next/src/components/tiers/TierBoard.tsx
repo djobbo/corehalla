@@ -298,11 +298,9 @@ export const TierBoard = ({ board, onPlace, onReset }: TierBoardProps) => {
                             <div
                                 aria-hidden
                                 className="flex w-9 shrink-0 items-center justify-center bg-card"
-                                style={
-                                    {
-                                        color: tierColors[tier],
-                                    } as CSSProperties
-                                }
+                                style={{
+                                    color: tierColors[tier],
+                                }}
                             >
                                 <span className="ch-display text-xl">
                                     {tier}

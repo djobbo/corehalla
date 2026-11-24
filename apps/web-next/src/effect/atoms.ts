@@ -34,17 +34,6 @@ import type {
     SortablePlayerProp,
     SortableWeaponProp,
     CmsMediaSlot,
-    GuildEnvelope,
-    PlayerClanEnvelope,
-    PlayerEsportsEnvelope,
-    PlayerLegendsEnvelope,
-    PlayerProfileEnvelope,
-    PlayerTeamsEnvelope,
-    PlayerWeaponsEnvelope,
-    PowerRankingsEnvelope,
-    Rankings1v1Envelope,
-    Rankings2v2Envelope,
-    Rankings3v3Envelope,
     WeaponMeta,
 } from "@crh/api-contract/schemas"
 import type { Weapon as WeaponName } from "@crh/bhapi/constants"
@@ -55,13 +44,13 @@ const ttl = "15 minutes"
 const searchTtl = "1 minute"
 
 type Region = typeof RankedRegion.Type
-type LadderType = typeof Ladder.Type
-type PowerMode = typeof PowerRankingsGameMode.Type
-type PowerRegion = typeof PowerRankingsRegion.Type
-type PowerOrder = typeof PowerRankingsOrderBy.Type
-type SortableProp = typeof SortablePlayerProp.Type
-type LegendProp = typeof SortableLegendProp.Type
-type WeaponProp = typeof SortableWeaponProp.Type
+type LadderType = Ladder
+type PowerMode = PowerRankingsGameMode
+type PowerRegion = PowerRankingsRegion
+type PowerOrder = PowerRankingsOrderBy
+type SortableProp = SortablePlayerProp
+type LegendProp = SortableLegendProp
+type WeaponProp = SortableWeaponProp
 
 // serializationKey is required for SSR dehydration; timeToLive covers loader dehydrate.
 export const rankings1v1QueryAtom = (
@@ -76,13 +65,10 @@ export const rankings1v1QueryAtom = (
     })
 
 export const rankings1v1Atom = (region: Region, page: number, name?: string) =>
-    sectionAtom<Rankings1v1Envelope>(
-        rankings1v1QueryAtom(region, page, name),
-        "rankings1v1",
-        () =>
-            runFallback("rankings1v1", (clients) =>
-                directRankings1v1(clients.v1, region, page, name),
-            ),
+    sectionAtom(rankings1v1QueryAtom(region, page, name), "rankings1v1", () =>
+        runFallback("rankings1v1", (clients) =>
+            directRankings1v1(clients.v1, region, page, name),
+        ),
     )
 
 export const rankings2v2QueryAtom = (region: Region, page: number) =>
@@ -93,13 +79,10 @@ export const rankings2v2QueryAtom = (region: Region, page: number) =>
     })
 
 export const rankings2v2Atom = (region: Region, page: number) =>
-    sectionAtom<Rankings2v2Envelope>(
-        rankings2v2QueryAtom(region, page),
-        "rankings2v2",
-        () =>
-            runFallback("rankings2v2", (clients) =>
-                directRankings2v2(clients.v1, region, page),
-            ),
+    sectionAtom(rankings2v2QueryAtom(region, page), "rankings2v2", () =>
+        runFallback("rankings2v2", (clients) =>
+            directRankings2v2(clients.v1, region, page),
+        ),
     )
 
 export const rankings3v3QueryAtom = (region: Region, page: number) =>
@@ -110,13 +93,10 @@ export const rankings3v3QueryAtom = (region: Region, page: number) =>
     })
 
 export const rankings3v3Atom = (region: Region, page: number) =>
-    sectionAtom<Rankings3v3Envelope>(
-        rankings3v3QueryAtom(region, page),
-        "rankings3v3",
-        () =>
-            runFallback("rankings3v3", (clients) =>
-                directRankings3v3(clients.v1, region, page),
-            ),
+    sectionAtom(rankings3v3QueryAtom(region, page), "rankings3v3", () =>
+        runFallback("rankings3v3", (clients) =>
+            directRankings3v3(clients.v1, region, page),
+        ),
     )
 
 export const careerRankingsAtom = (sortBy: SortableProp, page: number) =>
@@ -213,7 +193,7 @@ export const powerRankingsAtom = (
     page: number,
     orderBy: PowerOrder,
 ) =>
-    sectionAtom<PowerRankingsEnvelope>(
+    sectionAtom(
         powerRankingsQueryAtom(gameMode, region, page, orderBy),
         "power",
         () =>
@@ -245,12 +225,12 @@ const isNotFound = (cause: Cause.Cause<unknown>): boolean =>
  * same section from v1 in the browser. The server atom keeps its hydration and
  * TTL on the happy path — this wrapper is only the patch layer.
  */
-const sectionAtom = <A extends SectionEnvelope>(
-    server: Atom.Atom<AsyncResult.AsyncResult<A, unknown>>,
+const sectionAtom = <A extends SectionEnvelope, E, F>(
+    server: Atom.Atom<AsyncResult.AsyncResult<A, E>>,
     section: FallbackSection,
-    run: () => Effect.Effect<A, unknown>,
+    run: () => Effect.Effect<A, F>,
     merge?: (server: A, direct: A) => A,
-): Atom.Atom<AsyncResult.AsyncResult<A, unknown>> =>
+): Atom.Atom<AsyncResult.AsyncResult<A, E | F>> =>
     Atom.make((get) => {
         const result = get(server)
 
@@ -274,7 +254,7 @@ const sectionAtom = <A extends SectionEnvelope>(
                 Effect.map((value) =>
                     merge === undefined ? value : merge(result.value, value),
                 ),
-                Effect.catch(() => Effect.succeed(result.value)),
+                Effect.orElseSucceed(() => result.value),
             )
         }
 
@@ -298,7 +278,7 @@ const sectionAtom = <A extends SectionEnvelope>(
                     : Effect.succeed(previous.value),
             ),
         )
-    }) as unknown as Atom.Atom<AsyncResult.AsyncResult<A, unknown>>
+    }) as unknown as Atom.Atom<AsyncResult.AsyncResult<A, E | F>>
 
 export const playerProfileQueryAtom = (playerId: number) =>
     CorehallaClient.query("players", "getPlayer", {
@@ -308,7 +288,7 @@ export const playerProfileQueryAtom = (playerId: number) =>
     })
 
 export const playerProfileAtom = (playerId: number) =>
-    sectionAtom<PlayerProfileEnvelope>(
+    sectionAtom(
         playerProfileQueryAtom(playerId),
         "profile",
         () =>
@@ -331,13 +311,10 @@ export const playerLegendsQueryAtom = (playerId: number) =>
     })
 
 export const playerLegendsAtom = (playerId: number) =>
-    sectionAtom<PlayerLegendsEnvelope>(
-        playerLegendsQueryAtom(playerId),
-        "legends",
-        () =>
-            runFallback("legends", (clients) =>
-                directPlayerLegends(clients.v1, playerId),
-            ),
+    sectionAtom(playerLegendsQueryAtom(playerId), "legends", () =>
+        runFallback("legends", (clients) =>
+            directPlayerLegends(clients.v1, playerId),
+        ),
     )
 
 export const playerWeaponsQueryAtom = (playerId: number) =>
@@ -348,13 +325,10 @@ export const playerWeaponsQueryAtom = (playerId: number) =>
     })
 
 export const playerWeaponsAtom = (playerId: number) =>
-    sectionAtom<PlayerWeaponsEnvelope>(
-        playerWeaponsQueryAtom(playerId),
-        "weapons",
-        () =>
-            runFallback("weapons", (clients) =>
-                directPlayerWeapons(clients.v1, playerId),
-            ),
+    sectionAtom(playerWeaponsQueryAtom(playerId), "weapons", () =>
+        runFallback("weapons", (clients) =>
+            directPlayerWeapons(clients.v1, playerId),
+        ),
     )
 
 export const playerTeamsQueryAtom = (playerId: number) =>
@@ -365,13 +339,10 @@ export const playerTeamsQueryAtom = (playerId: number) =>
     })
 
 export const playerTeamsAtom = (playerId: number) =>
-    sectionAtom<PlayerTeamsEnvelope>(
-        playerTeamsQueryAtom(playerId),
-        "teams",
-        () =>
-            runFallback("teams", (clients) =>
-                directPlayerTeams(clients.v1, playerId),
-            ),
+    sectionAtom(playerTeamsQueryAtom(playerId), "teams", () =>
+        runFallback("teams", (clients) =>
+            directPlayerTeams(clients.v1, playerId),
+        ),
     )
 
 export const playerClanQueryAtom = (playerId: number) =>
@@ -382,7 +353,7 @@ export const playerClanQueryAtom = (playerId: number) =>
     })
 
 export const playerClanAtom = (playerId: number) =>
-    sectionAtom<PlayerClanEnvelope>(playerClanQueryAtom(playerId), "clan", () =>
+    sectionAtom(playerClanQueryAtom(playerId), "clan", () =>
         runFallback("clan", (clients) =>
             directPlayerClan(clients.v1, playerId),
         ),
@@ -396,13 +367,10 @@ export const playerEsportsQueryAtom = (playerId: number) =>
     })
 
 export const playerEsportsAtom = (playerId: number) =>
-    sectionAtom<PlayerEsportsEnvelope>(
-        playerEsportsQueryAtom(playerId),
-        "esports",
-        () =>
-            runFallback("esports", (clients) =>
-                directPlayerEsports(clients.brawltools, playerId),
-            ),
+    sectionAtom(playerEsportsQueryAtom(playerId), "esports", () =>
+        runFallback("esports", (clients) =>
+            directPlayerEsports(clients.brawltools, playerId),
+        ),
     )
 
 export const guildQueryAtom = (guildId: number) =>
@@ -413,7 +381,7 @@ export const guildQueryAtom = (guildId: number) =>
     })
 
 export const guildAtom = (guildId: number) =>
-    sectionAtom<GuildEnvelope>(guildQueryAtom(guildId), "guild", () =>
+    sectionAtom(guildQueryAtom(guildId), "guild", () =>
         runFallback("guild", (clients) => directGuild(clients.v1, guildId)),
     )
 
@@ -508,10 +476,10 @@ export type RouterContext = {
 
 export const makeRegistry = (): Registry => AtomRegistry.make()
 
-export const preloadAtom = (
+export const preloadAtom = <A, E>(
     registry: Registry,
-    atom: Atom.Atom<any>,
-): Promise<unknown> =>
+    atom: Atom.Atom<AsyncResult.AsyncResult<A, E>>,
+): Promise<A> =>
     Effect.runPromise(
         AtomRegistry.getResult(registry, atom, { suspendOnWaiting: true }),
     )
