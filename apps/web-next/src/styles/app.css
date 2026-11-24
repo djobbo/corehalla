@@ -310,6 +310,16 @@
         color: var(--color-warning);
     }
 
+    /*
+     * The same switch for a raised slab. `--ring` clears 4.5:1 on the canvas
+     * but not on `--popover`, which is where the nav popout and the entity
+     * hover card put their kickers.
+     */
+    [data-slot="hover-card-content"] .ch-kicker,
+    [data-slot="navigation-menu-content"] .ch-kicker {
+        color: var(--color-warning);
+    }
+
     /* A panel with a solid accent block along its top edge. */
 
     /* --- chips (parallelograms) ------------------------------------------ */
@@ -950,17 +960,20 @@
     }
 
     /*
-     * Links on the plate: white, then yellow on hover. The usual accent hover
-     * would be invisible here — it is the plate's own colour.
+     * Links on the plate: white, then ink on a warning field. The usual accent
+     * hover would be invisible here — it is the plate's own colour.
+     *
+     * The hover rule itself lives in the utilities layer at the end of this
+     * file. `EntityLink` adds `hover:text-ring` to every link it renders, and
+     * a utilities-layer declaration beats a components-layer one no matter how
+     * specific it is, which left the plate with blue on blue.
      */
     .ch-nameplate a {
         color: var(--primary-foreground);
         text-decoration: none;
-        transition: color 120ms ease;
-    }
-
-    .ch-nameplate a:hover {
-        color: var(--color-warning);
+        transition:
+            color 120ms ease,
+            background-color 120ms ease;
     }
 
     /*
@@ -1531,5 +1544,17 @@
     .ch-logo-center {
         animation: none;
         opacity: 1;
+    }
+}
+
+/*
+ * The nameplate's link hover sits in the utilities layer so it can beat
+ * `hover:text-ring`, which `EntityLink` puts on every link it renders. Ink on
+ * warning is 13.9:1; ring on the plate's own blue is 1.6:1.
+ */
+@layer utilities {
+    .ch-nameplate a:hover {
+        color: var(--color-ink);
+        background-color: var(--color-warning);
     }
 }
