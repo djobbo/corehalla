@@ -9,7 +9,7 @@ jobs:
             matrix:
                 include:
                     - name: Check
-                      action: vp check
+                      action: vp run check
                     - name: Check Types
                       action: vp run -r ts:check
         steps:

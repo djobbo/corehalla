@@ -422,8 +422,11 @@ diagnostic is an error. The editor language server is the same binary:
 `effect-tsgo tsrs`.
 
 Always invoke the gate through the wrapper (`effect-tsgo vp check`,
-`effect-tsgo vp lint`) so Oxlint loads the Effect-patched binding. Plain `vp
-check` still formats and type-checks, but has no Effect rules.
+`effect-tsgo vp lint`) so Oxlint loads the Effect-patched binding. The wrapper
+sets the environment the config looks for, so the `effecttsgo` plugin and its
+rules are registered only there; a bare `vp check` still formats, lints and
+type-checks without failing on an unknown plugin, but reports no Effect
+diagnostics.
 
 ```sh
 pnpm ci:install    # vp install --frozen-lockfile

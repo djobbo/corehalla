@@ -48,8 +48,9 @@ Use **`vp`** as the primary package manager and toolchain. It is pnpm under the 
 `vp check` is the single static gate: it type-checks every package with tsrs and
 runs the [@effect/tsgo](https://github.com/Effect-TS/tsgo) `strict` preset, where
 every recommended Effect diagnostic is an error. Run it through `effect-tsgo
-vp` so Oxlint loads the Effect-patched binding; plain `vp check` has no Effect
-rules. An experimental Effect module used on purpose (`effect/ai`,
+vp` so Oxlint loads the Effect-patched binding; that wrapper is what registers
+the plugin and its rules, so a bare `vp check` stays green but reports no
+Effect diagnostics. An experimental Effect module used on purpose (`effect/ai`,
 `effect/cli`, `effect/workflow`) is allowed per package through
 `allowedExperimentalApis` in that package's `tsconfig.json` — never by
 downgrading the diagnostic globally.

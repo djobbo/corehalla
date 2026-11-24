@@ -2,6 +2,16 @@ import { strict as effectStrict } from "@effect/tsgo/oxlint-presets"
 import { defineConfig } from "vite-plus"
 
 /**
+ * `@effect/tsgo` launches Vite+ with the Effect-patched Oxlint binding, which is
+ * the only build that knows the `effecttsgo` plugin. Detect that environment so
+ * a bare `vp check` / `vp lint` (editors, ad-hoc runs) still works with the
+ * stock rule set instead of failing on an unknown plugin. Every shipped entry
+ * point runs through `effect-tsgo vp ...`, so the Effect diagnostics still gate
+ * the workspace.
+ */
+const effectPatched = process.env.EFFECT_TSGO_OXLINT_BINDING !== undefined
+
+/**
  * Workspace root Vite+ configuration.
  *
  * Vite+ replaces the previous split tooling:
@@ -49,11 +59,11 @@ export default defineConfig({
             "jsx-a11y",
             "unicorn",
             "oxc",
-            // `@effect/tsgo` registers this plugin in the patched Oxlint
-            // binding it launches. Its type augmentation is only applied by
-            // `effect-tsgo patch`, which we do not run because it rewrites
-            // `node_modules`, so the name needs a cast.
-            "effecttsgo" as unknown as "oxc",
+            // The patched binding is the only one that registers this plugin.
+            // Its type augmentation is applied by `effect-tsgo patch`, which we
+            // do not run because it rewrites `node_modules`, so the name needs
+            // a cast.
+            ...(effectPatched ? ["effecttsgo" as unknown as "oxc"] : []),
         ],
         options: {
             // Type checking and the type-aware rules run on Vite+'s tsrs, so
@@ -69,8 +79,9 @@ export default defineConfig({
         },
         rules: {
             // `effect-tsgo`'s strict preset: every recommended Effect
-            // diagnostic is an error, not a warning.
-            ...effectStrict.rules,
+            // diagnostic is an error, not a warning. It only exists under the
+            // patched binding, like the plugin above.
+            ...(effectPatched ? effectStrict.rules : {}),
             // Ported from the previous `.eslintrc.yml`.
             "no-console": "error",
             "no-var": "error",
