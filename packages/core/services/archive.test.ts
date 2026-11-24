@@ -5,17 +5,27 @@ import { buildLegendMeta } from "@crh/domain/aggregate/meta"
 import { Database, makeLayer, topPercent } from "./archive"
 import type { D1Database } from "@crh/db/client"
 
+type LegendFixture = {
+    readonly playerId: string
+    readonly legendId: number
+    readonly games: number
+    readonly wins: number
+    readonly damageDealt?: number
+    readonly damageTaken?: number
+    readonly kos?: number
+    readonly falls?: number
+    readonly suicides?: number
+    readonly matchTime?: number
+    readonly timeHeldWeaponOne?: number
+    readonly timeHeldWeaponTwo?: number
+}
+
 type Fixture = {
     readonly accounts: readonly {
         readonly id: string
         readonly rating: number
     }[]
-    readonly legends: readonly {
-        readonly playerId: string
-        readonly legendId: number
-        readonly games: number
-        readonly wins: number
-    }[]
+    readonly legends: readonly LegendFixture[]
     readonly weapons?: readonly {
         readonly playerId: string
         readonly weapon: string
@@ -77,6 +87,14 @@ const layerFor = (fixture: Fixture) => {
             "legend_id" INTEGER NOT NULL,
             "games" INTEGER NOT NULL,
             "wins" INTEGER NOT NULL,
+            "damageDealt" INTEGER NOT NULL DEFAULT 0,
+            "damageTaken" INTEGER NOT NULL DEFAULT 0,
+            "kos" INTEGER NOT NULL DEFAULT 0,
+            "falls" INTEGER NOT NULL DEFAULT 0,
+            "suicides" INTEGER NOT NULL DEFAULT 0,
+            "matchTime" INTEGER NOT NULL DEFAULT 0,
+            "timeHeldWeaponOne" INTEGER NOT NULL DEFAULT 0,
+            "timeHeldWeaponTwo" INTEGER NOT NULL DEFAULT 0,
             PRIMARY KEY ("player_id", "legend_id")
         );
         CREATE TABLE "BHPlayerWeapon" (
@@ -95,8 +113,11 @@ const layerFor = (fixture: Fixture) => {
         `INSERT INTO "BHPlayerData" ("id", "rating") VALUES (?, ?)`,
     )
     const insertLegend = sqlite.prepare(
-        `INSERT INTO "BHPlayerLegend" ("player_id", "legend_id", "games", "wins")
-         VALUES (?, ?, ?, ?)`,
+        `INSERT INTO "BHPlayerLegend" (
+            "player_id", "legend_id", "games", "wins", "damageDealt",
+            "damageTaken", "kos", "falls", "suicides", "matchTime",
+            "timeHeldWeaponOne", "timeHeldWeaponTwo"
+         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     const insertWeapon = sqlite.prepare(
         `INSERT INTO "BHPlayerWeapon" ("player_id", "weapon_name", "games", "wins", "damageDealt", "kos", "matchTime")
@@ -113,6 +134,14 @@ const layerFor = (fixture: Fixture) => {
             legend.legendId,
             legend.games,
             legend.wins,
+            legend.damageDealt ?? 0,
+            legend.damageTaken ?? 0,
+            legend.kos ?? 0,
+            legend.falls ?? 0,
+            legend.suicides ?? 0,
+            legend.matchTime ?? 0,
+            legend.timeHeldWeaponOne ?? 0,
+            legend.timeHeldWeaponTwo ?? 0,
         )
     }
 
@@ -160,7 +189,7 @@ describe("getLegendMeta", () => {
         Effect.gen(function* () {
             const sample = yield* readMeta(ranked, 1800)
 
-            expect(sample.rows).toEqual([
+            expect(sample.rows).toMatchObject([
                 { legendId: 3, games: 110, wins: 65, accounts: 2 },
                 { legendId: 4, games: 40, wins: 10, accounts: 1 },
                 { legendId: 5, games: 50, wins: 25, accounts: 1 },
@@ -206,7 +235,7 @@ describe("getLegendMeta", () => {
             const sample = yield* readMeta(ranked, null)
 
             expect(sample.accounts).toBe(4)
-            expect(sample.rows[0]).toEqual({
+            expect(sample.rows[0]).toMatchObject({
                 legendId: 3,
                 games: 1011,
                 wins: 865,
@@ -250,6 +279,105 @@ describe("getLegendMeta", () => {
                 winRate: 0.4,
                 playShare: 1,
             })
+        }),
+    )
+
+    it.effect("sums the play-style totals per legend across accounts", () =>
+        Effect.gen(function* () {
+            const sample = yield* readMeta(twoAccounts, 1800)
+
+            expect(sample.rows[0]?.playStyle).toEqual({
+                accounts: 2,
+                damageDealt: 42_000,
+                damageTaken: 29_000,
+                kos: 210,
+                falls: 155,
+                suicides: 3,
+                matchTime: 30_000,
+                timeHeldWeaponOne: 7_000,
+                timeHeldWeaponTwo: 5_000,
+            })
+        }),
+    )
+
+    it.effect("divides the play-style totals per game", () =>
+        Effect.gen(function* () {
+            const sample = yield* readMeta(twoAccounts, 1800)
+            const board = buildLegendMeta(sample.rows, {
+                accounts: sample.accounts,
+                floor: "1800",
+            })
+
+            expect(board.data[0]?.playStyle).toEqual({
+                accounts: 2,
+                damageDealtPerGame: 280,
+                damageTakenPerGame: 193.33,
+                kosPerGame: 1.4,
+                fallsPerGame: 1.03,
+                suicidesPer100Games: 2,
+                averageMatchSeconds: 200,
+                weaponOneShare: 0.5833,
+                weaponTwoShare: 0.4167,
+            })
+        }),
+    )
+
+    it.effect("splits only the accounts that reported games", () =>
+        Effect.gen(function* () {
+            const sample = yield* readMeta(
+                {
+                    accounts: [
+                        { id: "1", rating: 2000 },
+                        { id: "2", rating: 1900 },
+                    ],
+                    legends: [
+                        {
+                            playerId: "1",
+                            legendId: 3,
+                            games: 10,
+                            wins: 4,
+                            suicides: 1,
+                        },
+                        {
+                            playerId: "2",
+                            legendId: 3,
+                            games: 0,
+                            wins: 0,
+                            suicides: 4,
+                        },
+                    ],
+                },
+                1800,
+            )
+
+            expect(sample.rows[0]).toMatchObject({
+                games: 10,
+                accounts: 2,
+                playStyle: { accounts: 1, suicides: 5 },
+            })
+        }),
+    )
+
+    it.effect("omits a legend whose games sum to zero", () =>
+        Effect.gen(function* () {
+            const sample = yield* readMeta(
+                {
+                    accounts: [{ id: "1", rating: 2000 }],
+                    legends: [
+                        {
+                            playerId: "1",
+                            legendId: 3,
+                            games: 0,
+                            wins: 0,
+                            damageDealt: 500,
+                            matchTime: 60,
+                        },
+                    ],
+                },
+                null,
+            )
+
+            expect(sample.rows).toEqual([])
         }),
     )
 })
@@ -594,3 +722,40 @@ describe("topPercent", () => {
         expect(topPercent(1, 1)).toBe(100)
     })
 })
+
+const twoAccounts: Fixture = {
+    accounts: [
+        { id: "1", rating: 2000 },
+        { id: "2", rating: 1950 },
+    ],
+    legends: [
+        {
+            playerId: "1",
+            legendId: 3,
+            games: 100,
+            wins: 60,
+            damageDealt: 30_000,
+            damageTaken: 20_000,
+            kos: 150,
+            falls: 100,
+            suicides: 2,
+            matchTime: 21_000,
+            timeHeldWeaponOne: 6_000,
+            timeHeldWeaponTwo: 3_000,
+        },
+        {
+            playerId: "2",
+            legendId: 3,
+            games: 50,
+            wins: 25,
+            damageDealt: 12_000,
+            damageTaken: 9_000,
+            kos: 60,
+            falls: 55,
+            suicides: 1,
+            matchTime: 9_000,
+            timeHeldWeaponOne: 1_000,
+            timeHeldWeaponTwo: 2_000,
+        },
+    ],
+}

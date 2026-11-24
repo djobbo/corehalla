@@ -185,11 +185,24 @@ export type BestLegendRow = {
     readonly wins: number
 }
 
+export type LegendPlayStyleTotals = {
+    readonly accounts: number
+    readonly damageDealt: number
+    readonly damageTaken: number
+    readonly kos: number
+    readonly falls: number
+    readonly suicides: number
+    readonly matchTime: number
+    readonly timeHeldWeaponOne: number
+    readonly timeHeldWeaponTwo: number
+}
+
 export type LegendMetaRowInput = {
     readonly legendId: number
     readonly games: number
     readonly wins: number
     readonly accounts: number
+    readonly playStyle: LegendPlayStyleTotals
 }
 
 export type LegendMetaSample = {
@@ -867,6 +880,15 @@ export const layer = Layer.effect(
                                 games: sql<number>`sum(${bhPlayerLegend.games})`,
                                 wins: sql<number>`sum(${bhPlayerLegend.wins})`,
                                 accounts: sql<number>`count(distinct ${bhPlayerLegend.player_id})`,
+                                damageDealt: sql<number>`sum(${bhPlayerLegend.damageDealt})`,
+                                damageTaken: sql<number>`sum(${bhPlayerLegend.damageTaken})`,
+                                kos: sql<number>`sum(${bhPlayerLegend.kos})`,
+                                falls: sql<number>`sum(${bhPlayerLegend.falls})`,
+                                suicides: sql<number>`sum(${bhPlayerLegend.suicides})`,
+                                matchTime: sql<number>`sum(${bhPlayerLegend.matchTime})`,
+                                timeHeldWeaponOne: sql<number>`sum(${bhPlayerLegend.timeHeldWeaponOne})`,
+                                timeHeldWeaponTwo: sql<number>`sum(${bhPlayerLegend.timeHeldWeaponTwo})`,
+                                playStyleAccounts: sql<number>`count(distinct case when ${bhPlayerLegend.games} > 0 then ${bhPlayerLegend.player_id} end)`,
                             })
                             .from(bhPlayerLegend)
                             .innerJoin(
@@ -889,6 +911,21 @@ export const layer = Layer.effect(
                                 games: Number(row.games),
                                 wins: Number(row.wins),
                                 accounts: Number(row.accounts),
+                                playStyle: {
+                                    accounts: Number(row.playStyleAccounts),
+                                    damageDealt: Number(row.damageDealt),
+                                    damageTaken: Number(row.damageTaken),
+                                    kos: Number(row.kos),
+                                    falls: Number(row.falls),
+                                    suicides: Number(row.suicides),
+                                    matchTime: Number(row.matchTime),
+                                    timeHeldWeaponOne: Number(
+                                        row.timeHeldWeaponOne,
+                                    ),
+                                    timeHeldWeaponTwo: Number(
+                                        row.timeHeldWeaponTwo,
+                                    ),
+                                },
                             })),
                             accounts: Number(counted[0]?.accounts ?? 0),
                         }
