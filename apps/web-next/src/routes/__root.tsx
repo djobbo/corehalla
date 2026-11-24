@@ -13,6 +13,7 @@ import {
 import { HydrationBoundary, RegistryContext } from "@effect/atom-react"
 import { cmsMediaManifestAtom, preloadAtoms } from "@/effect/atoms"
 import { AccountControl } from "@/components/account/AccountControl"
+import { AlertBar } from "@/components/layout/AlertBar"
 import { NotFoundPage } from "@/components/layout/ErrorPage"
 import { Footer } from "@/components/layout/Footer"
 import { LandingBackground } from "@/components/layout/LandingBackground"
@@ -103,6 +104,7 @@ function RootComponent() {
                     <PageLoaderProvider>
                         <LandingBackground className="ch-landing" />
                         <SearchProvider>
+                            <AlertBar />
                             <header className="ch-masthead">
                                 <Link
                                     to="/"

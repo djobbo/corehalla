@@ -358,6 +358,63 @@
         color: var(--foreground);
     }
 
+    /* --- announcement bar ------------------------------------------------ */
+
+    /*
+     * A one-line, build-time status strip above the masthead. It sits in normal
+     * flow rather than pinning itself, so it scrolls away and leaves both
+     * sticky bars exactly where `--ch-header-h` says they are.
+     *
+     * The layout wraps instead of truncating: an operator can deploy a long
+     * message, and at 320px it has to read as sentences rather than a clipped
+     * strip.
+     */
+    .ch-alert {
+        display: flex;
+        justify-content: center;
+        background: var(--color-brandDeep);
+        padding: 0.55rem 1rem;
+        font-size: 0.78rem;
+        line-height: 1.5;
+        color: var(--foreground);
+    }
+
+    .ch-alert-body {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem 0.6rem;
+        max-width: 72rem;
+        text-align: center;
+        text-wrap: pretty;
+    }
+
+    .ch-alert-mark {
+        flex: none;
+        width: 0.4rem;
+        height: 0.4rem;
+        background: var(--color-warning);
+        transform: skewX(-12deg);
+    }
+
+    .ch-alert-link {
+        font-weight: 800;
+        color: var(--color-warning);
+        text-decoration: underline;
+        text-underline-offset: 0.2em;
+        transition: color 120ms ease;
+    }
+
+    .ch-alert-link:hover {
+        color: var(--foreground);
+    }
+
+    /* The accent-blue ring disappears against the deep blue plate. */
+    .ch-alert-link:focus-visible {
+        outline-color: var(--color-warning);
+    }
+
     /* --- masthead -------------------------------------------------------- */
 
     .ch-masthead {

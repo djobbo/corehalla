@@ -241,6 +241,7 @@ export default Alchemy.Stack(
                     : { CMS: cmsResource }),
                 SITE_URL: setting("SITE_URL", "https://corehalla.com"),
                 VITE_SITE_URL: siteUrl,
+                VITE_ALERT: setting("VITE_ALERT"),
                 INTERNAL_ORIGIN: internalOrigin,
                 DISCORD_CLIENT_ID: setting("DISCORD_CLIENT_ID"),
                 DISCORD_CLIENT_SECRET: secret("DISCORD_CLIENT_SECRET"),
