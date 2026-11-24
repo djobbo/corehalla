@@ -24,7 +24,7 @@ export const startChannelSwitcher = async (
         await cloneGeneratorChannel(newState, client, options).then(
             async (channel) => {
                 if (!channel) return
-                newState.member?.voice.setChannel(channel)
+                void newState.member?.voice.setChannel(channel)
             },
         )
     })
@@ -42,15 +42,17 @@ export const startChannelSwitcher = async (
         if (!("send" in channel)) return
 
         if (isValidBrawlhallaRoomNumber(message.content)) {
-            saveRoomNumber(channel, message.content)
-            channel.send(`Room number was changed to: \`${message.content}\`.`)
+            void saveRoomNumber(channel, message.content)
+            void channel.send(
+                `Room number was changed to: \`${message.content}\`.`,
+            )
             return
         } else if (message.content === "room") {
             const roomNumber = getRoomNumber(channel)
             if (roomNumber) {
-                channel.send(`Room number is \`${roomNumber}\`.`)
+                void channel.send(`Room number is \`${roomNumber}\`.`)
             } else {
-                channel.send(
+                void channel.send(
                     `Room number is not yet set. Just type the room number in this channel to set it.`,
                 )
             }
