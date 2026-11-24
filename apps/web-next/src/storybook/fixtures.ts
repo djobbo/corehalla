@@ -692,16 +692,12 @@ export const playerMock = {
         sample_size: 214_300,
         top_percent: 2,
     }),
-    ...sectionsFor(
-        EMPTY_PLAYER_ID,
-        emptyPlayerEnvelope as unknown as PlayerEnvelope,
-        null,
-    ),
-    ...sectionsFor(
-        SHORT_SEASON_PLAYER_ID,
-        shortSeasonPlayerEnvelope as unknown as PlayerEnvelope,
-        { rank: 180_400, sample_size: 214_300, top_percent: 84.2 },
-    ),
+    ...sectionsFor(EMPTY_PLAYER_ID, emptyPlayerEnvelope, null),
+    ...sectionsFor(SHORT_SEASON_PLAYER_ID, shortSeasonPlayerEnvelope, {
+        rank: 180_400,
+        sample_size: 214_300,
+        top_percent: 84.2,
+    }),
 }
 
 /** Head-to-head: both profile endpoints, plus the picker's search results. */

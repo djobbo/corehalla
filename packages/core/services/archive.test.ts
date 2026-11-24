@@ -386,7 +386,7 @@ const readWeaponMeta = (fixture: Fixture) =>
     Effect.gen(function* () {
         const db = yield* Database
 
-        return yield* db.getWeaponMeta()
+        return yield* db.getWeaponMeta
     }).pipe(Effect.provide(layerFor(fixture)))
 
 const weaponSample: Fixture = {

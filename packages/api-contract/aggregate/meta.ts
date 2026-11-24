@@ -74,15 +74,15 @@ export type LegendMeta = typeof LegendMetaSchema.Type
  */
 export const WeaponMetaRowSchema = Schema.Struct({
     weapon: Schema.Literals(weapons),
-    games: Schema.Number,
-    wins: Schema.Number,
-    winRate: Schema.NullOr(Schema.Number),
-    playShare: Schema.NullOr(Schema.Number),
+    games: Schema.Finite,
+    wins: Schema.Finite,
+    winRate: Schema.NullOr(Schema.Finite),
+    playShare: Schema.NullOr(Schema.Finite),
     /** Indexed accounts with at least one game on this weapon. */
-    accounts: Schema.Number,
-    damagePerGame: Schema.NullOr(Schema.Number),
-    timeHeldPerGame: Schema.NullOr(Schema.Number),
-    kosPerGame: Schema.NullOr(Schema.Number),
+    accounts: Schema.Finite,
+    damagePerGame: Schema.NullOr(Schema.Finite),
+    timeHeldPerGame: Schema.NullOr(Schema.Finite),
+    kosPerGame: Schema.NullOr(Schema.Finite),
 })
 
 export type WeaponMetaRow = typeof WeaponMetaRowSchema.Type
@@ -91,7 +91,7 @@ export const WeaponMetaSchema = Schema.Struct({
     data: Schema.Array(WeaponMetaRowSchema),
     meta: Schema.Struct({
         /** Indexed accounts in the sample. */
-        accounts: Schema.Number,
+        accounts: Schema.Finite,
     }),
 })
 

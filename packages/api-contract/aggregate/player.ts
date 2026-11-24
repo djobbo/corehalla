@@ -222,11 +222,11 @@ export const WeaponBubbleSchema = Schema.Struct({
  */
 export const PlayerStandingSchema = Schema.Struct({
     /** One plus the indexed ranked players with a strictly higher rating. */
-    rank: Schema.Number,
+    rank: Schema.Finite,
     /** Indexed players with at least one ranked game. */
-    sample_size: Schema.Number,
+    sample_size: Schema.Finite,
     /** `rank` as a share of the sample, one decimal, floored at 0.1. */
-    top_percent: Schema.Number,
+    top_percent: Schema.Finite,
 })
 
 /**

@@ -46,7 +46,7 @@ export const metaGroup = HttpApiBuilder.group(
                 ),
             )
             .handle("getWeaponMeta", () =>
-                db.getWeaponMeta().pipe(
+                db.getWeaponMeta.pipe(
                     Effect.map((sample) =>
                         buildWeaponMeta(sample.rows, {
                             accounts: sample.accounts,

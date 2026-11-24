@@ -133,8 +133,8 @@ describe("buildPlayer", () => {
             ranked: {
                 ...playerRankedMock,
                 "2v2": [
-                    { ...playerRankedMock["2v2"][0]!, global_rank: 12 },
-                    playerRankedMock["2v2"][1]!,
+                    { ...playerRankedMock["2v2"][0], global_rank: 12 },
+                    playerRankedMock["2v2"][1],
                 ],
             },
         }).data.ranked?.["2v2"]?.teams
