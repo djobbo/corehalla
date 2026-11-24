@@ -240,7 +240,7 @@ The slab the stylesheet describes: solid `{colors.card}`, hard shadow, no outlin
 
 `Card` (`components/ui/card.tsx`) is that slab: `bg-card`, `rounded-none`, `shadow-md`. Catalogue links do not add a radius of their own. News frames, the updates list frame and the weekly-rotation plate use the same fill, square corners and `shadow-md`. The player header and clan header stat blocks use the primitive, so they are opaque. Images that are the first or last child of a card are `rounded-none`, so a square card clips them square.
 
-Nameplate (`.ch-nameplate`): a `{colors.brand}` plate, flag or rank cap on the left, names at `0.875rem` / weight 600. Links are `{colors.foreground}`, hover `{colors.warning}`. The ranked banner (`.ch-card-banner`) is `4.5rem` wide, uncut, `drop-shadow(3px 3px 0 {colors.ink})`, `pointer-events: none`.
+Nameplate (`.ch-nameplate`): a `{colors.brand}` plate, flag or rank cap on the left, names at `0.875rem` / weight 600. Links are `{colors.foreground}`, hover `{colors.ink}` on a `{colors.warning}` field. The ranked banner (`.ch-card-banner`) is `4.5rem` wide, uncut, `drop-shadow(3px 3px 0 {colors.ink})`, `pointer-events: none`.
 
 ### Inputs / Fields
 
@@ -306,7 +306,7 @@ The code disagrees with itself here. Do not pick a winner in a drive-by edit.
 1. **Article image radius.** Cards, catalogue links, news frames, the updates list and empty states are `{rounded.none}`, with buttons, dialogs, inputs and menus. `.ch-article` images, and the hero image on an article route, still use `border-radius: 0.75rem` / `rounded-2xl`, which is not a step on the scale. The community-card logo is still `rounded-2xl`.
 2. **Card fill — decided.** Slabs are opaque `bg-card` with `shadow-md`, so the landing pattern shows through the gaps between them. `bg-card/50` is gone. The player header and clan header use that primitive.
 3. **Section nav.** The `.ch-nav` comment describes parallelogram chips. `MainNav.tsx` renders a text menu. The overflow and the 3px rule were written for the chips.
-4. **Nameplate hover.** `.ch-nameplate a:hover` is `{colors.warning}` on `{colors.brand}` (about 3.5:1). Resting text is `{colors.foreground}` on `{colors.brand}` (about 4.9:1). No other palette colour both clears 4.5:1 on `{colors.brand}` and reads as a change from white.
-5. **Kicker on a solid slab.** `.ch-kicker` is `{colors.brand-bright}`. That clears 4.5:1 on the canvas and fails it on solid `{colors.card}` (hover card, nav popout). Cards are now that solid slab.
+4. **Nameplate hover — decided.** Links hover `{colors.ink}` on a `{colors.warning}` field (about 13.9:1); the field is what makes the change visible on the plate's own blue. The rule lives in the utilities layer, because `EntityLink` adds `hover:text-ring` and a components-layer rule loses to it no matter how specific it is.
+5. **Kicker on a solid slab — partly decided.** The nav popout (`[data-slot="navigation-menu-content"]`) and the entity hover card (`[data-slot="hover-card-content"]`) switch to `{colors.warning}` (about 9.3:1 on `{colors.card}`). Cards use the same solid fill, so a kicker on one still fails: `components/landing/CommunityCard.tsx` sits at about 4.1:1. Whether cards take the same switch, or kickers leave cards, is open.
 6. **Token names across apps.** `apps/web` calls the blue `--color-accent`. `apps/web-next` calls it `--color-brand` and uses `accent` for the hover well. Same hexes, different roles.
 7. **Shadow steps.** `--shadow-2xs` and `--shadow-xs` are both `2px 2px 0 0`. Every larger step grows by a pixel, except those two.
