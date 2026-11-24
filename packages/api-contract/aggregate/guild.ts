@@ -15,6 +15,16 @@ const GuildMemberSchema = Schema.Struct({
     guild_points: Schema.optionalKey(Schema.Number),
 })
 
+const GuildStandingSchema = Schema.Struct({
+    /**
+     * One plus the indexed guilds with more XP, so ties share the higher
+     * position. Null when the archive has never indexed this guild.
+     */
+    rank: Schema.NullOr(Schema.Number),
+    /** Indexed guilds the rank is measured against; null when unread. */
+    total: Schema.NullOr(Schema.Number),
+})
+
 export const GuildSchema = Schema.Struct({
     id: Schema.Number,
     name: Schema.String,
@@ -35,11 +45,14 @@ export const GuildSchema = Schema.Struct({
      * who ever contributed.
      */
     guild_points: Schema.NullOr(Schema.Number),
+    /** Archive standing by XP; independent of the live clan payload. */
+    standing: GuildStandingSchema,
     members: Schema.Array(GuildMemberSchema),
 })
 
 export type Guild = typeof GuildSchema.Type
 export type GuildMember = typeof GuildMemberSchema.Type
+export type GuildStanding = typeof GuildStandingSchema.Type
 
 export const GuildEnvelopeSchema = sectionEnvelope(GuildSchema)
 

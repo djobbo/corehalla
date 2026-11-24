@@ -71,7 +71,16 @@ export const guildsGroup = HttpApiBuilder.group(
                     ),
                 )
 
-                const envelope = buildGuild(clan, cached.success.updatedAt)
+                const envelope = buildGuild(
+                    clan,
+                    cached.success.updatedAt,
+                    yield* db.getGuildStanding(clan.clan_id.toString()).pipe(
+                        Effect.orElseSucceed(() => ({
+                            rank: null,
+                            total: null,
+                        })),
+                    ),
+                )
 
                 return {
                     data: envelope.data,
