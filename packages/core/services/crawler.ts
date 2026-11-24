@@ -160,17 +160,9 @@ export const layer = Layer.effect(
                     rows,
                     (row) =>
                         Effect.forEach(
-                            playerIdsForRow(
-                                target.bracket,
-                                row as Ranking1v1 | Ranking2v2 | Ranking3v3,
-                            ),
+                            playerIdsForRow(target.bracket, row),
                             (playerId) =>
-                                crawlPlayer(
-                                    target,
-                                    row as Ranking1v1 | Ranking2v2 | Ranking3v3,
-                                    playerId,
-                                    config,
-                                ),
+                                crawlPlayer(target, row, playerId, config),
                             { concurrency: 1 },
                         ),
                     { concurrency: config.playerConcurrency },
@@ -202,13 +194,7 @@ export const layer = Layer.effect(
 
                     if (rows.length === 0) break
 
-                    sampled.push(
-                        ...(rows as readonly (
-                            | Ranking1v1
-                            | Ranking2v2
-                            | Ranking3v3
-                        )[]),
-                    )
+                    sampled.push(...rows)
 
                     yield* Effect.sleep(config.requestSpacingMs)
                 }
@@ -272,7 +258,7 @@ export const layer = Layer.effect(
             Effect.gen(function* () {
                 const resume = yield* database
                     .getCrawlProgress(target.id)
-                    .pipe(Effect.catch(() => Effect.succeed(null)))
+                    .pipe(Effect.orElseSucceed(() => null))
 
                 const start =
                     resume === null || resume < 1 || resume > config.maxPage

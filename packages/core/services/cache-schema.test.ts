@@ -20,13 +20,13 @@ const fakeKv = () => {
     return { store, kv }
 }
 
-const inlineSchedule = (effect: Effect.Effect<unknown, unknown>) =>
+const inlineSchedule = <E>(effect: Effect.Effect<unknown, E>) =>
     effect.pipe(Effect.orDie, Effect.asVoid)
 
 /** Current shape of a cached row. */
 const RowSchema = Schema.Struct({
     name: Schema.String,
-    xp: Schema.Number,
+    xp: Schema.Finite,
 })
 
 type Row = typeof RowSchema.Type

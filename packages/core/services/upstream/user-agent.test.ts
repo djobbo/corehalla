@@ -37,7 +37,7 @@ describe("withUserAgent", () => {
 
         expect(requests).toHaveLength(1)
 
-        const agent = userAgentOf(requests[0]!)
+        const agent = userAgentOf(requests[0])
 
         expect(agent).toBe(USER_AGENT)
         expect(agent).toContain("Corehalla")
@@ -55,7 +55,7 @@ describe("withUserAgent", () => {
             ),
         )
 
-        expect(userAgentOf(requests[0]!)).toBe(USER_AGENT)
+        expect(userAgentOf(requests[0])).toBe(USER_AGENT)
     })
 })
 
@@ -68,7 +68,7 @@ describe("v1 client", () => {
         )
 
         expect(requests).toHaveLength(1)
-        expect(userAgentOf(requests[0]!)).toBe(USER_AGENT)
+        expect(userAgentOf(requests[0])).toBe(USER_AGENT)
     })
 
     it("sends it on a player read as well", async () => {
@@ -79,7 +79,7 @@ describe("v1 client", () => {
         )
 
         expect(requests).toHaveLength(1)
-        expect(userAgentOf(requests[0]!)).toBe(USER_AGENT)
+        expect(userAgentOf(requests[0])).toBe(USER_AGENT)
     })
 
     it("sends it on a player teams read", async () => {
@@ -90,6 +90,6 @@ describe("v1 client", () => {
         )
 
         expect(requests).toHaveLength(1)
-        expect(userAgentOf(requests[0]!)).toBe(USER_AGENT)
+        expect(userAgentOf(requests[0])).toBe(USER_AGENT)
     })
 })

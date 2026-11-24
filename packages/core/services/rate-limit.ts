@@ -10,7 +10,7 @@ export const allowRefresh = (key: string): Effect.Effect<boolean> =>
 
         const result = yield* Effect.tryPromise(() =>
             binding.limit({ key }),
-        ).pipe(Effect.catch(() => Effect.succeed(null)))
+        ).pipe(Effect.orElseSucceed(() => null))
 
         if (result === null) {
             yield* Effect.logWarning(

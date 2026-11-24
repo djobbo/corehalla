@@ -114,7 +114,7 @@ describe("toPlayerRanked", () => {
         const valhallan: V1PlayerTeams = {
             ...teams,
             teams: {
-                ranked_2v2: [{ ...teams.teams.ranked_2v2[0]!, tier: null }],
+                ranked_2v2: [{ ...teams.teams.ranked_2v2[0], tier: null }],
             },
         }
 

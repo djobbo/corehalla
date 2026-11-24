@@ -139,7 +139,7 @@ export const make = (
                 // KV TTL is retention; envelope staleUntil decides serveability.
                 { expirationTtl: options.staleSeconds },
             )
-        }).pipe(Effect.catch(() => Effect.void))
+        }).pipe(Effect.ignore)
 
     /** Reconstruct pre-`storedAt` envelopes: freshUntil − window (empty → emptyTtl). */
     const storedAtOf = (
@@ -240,13 +240,13 @@ export const make = (
                 if (!local && kv) {
                     const raw = yield* Effect.tryPromise(() =>
                         kv.get(key),
-                    ).pipe(Effect.catch(() => Effect.succeed(null)))
+                    ).pipe(Effect.orElseSucceed(() => null))
 
                     if (raw !== null) {
                         const envelope = yield* Effect.try({
                             try: () => JSON.parse(raw) as Envelope,
                             catch: () => null,
-                        }).pipe(Effect.catch(() => Effect.succeed(null)))
+                        }).pipe(Effect.orElseSucceed(() => null))
 
                         if (envelope) {
                             const decoded = decodeCached(
@@ -350,7 +350,7 @@ export const make = (
 
                 if (kv) {
                     yield* Effect.tryPromise(() => kv.delete(key)).pipe(
-                        Effect.catch(() => Effect.void),
+                        Effect.ignore,
                     )
                 }
             }),

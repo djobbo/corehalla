@@ -89,7 +89,7 @@ describe("snapshotFromRanked", () => {
             snapshotFromRanked({
                 ...noRankedRecord,
                 region: "us-e",
-            } as PlayerRanked),
+            }),
         ).toBeNull()
     })
 
@@ -98,7 +98,7 @@ describe("snapshotFromRanked", () => {
             snapshotFromRanked({
                 ...noRankedRecord,
                 rating: 1500,
-            } as PlayerRanked),
+            }),
         ).not.toBeNull()
     })
 })

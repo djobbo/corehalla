@@ -10,9 +10,7 @@ import { Context, Effect, Layer } from "effect"
  */
 export type BackgroundShape = {
     /** Failure becomes a defect — caller already answered; write is idempotent. */
-    readonly run: (
-        effect: Effect.Effect<unknown, unknown>,
-    ) => Effect.Effect<void>
+    readonly run: <A, E>(effect: Effect.Effect<A, E>) => Effect.Effect<void>
 }
 
 export class Background extends Context.Service<Background, BackgroundShape>()(
@@ -26,7 +24,7 @@ const InBackground = Context.Reference<boolean>("app/Background/InBackground", {
 
 const inFlight = new Set<Promise<unknown>>()
 
-const track = (effect: Effect.Effect<unknown, unknown>): void => {
+const track = <E>(effect: Effect.Effect<unknown, E>): void => {
     const promise = Effect.runPromise(
         effect.pipe(Effect.provideService(InBackground, true), Effect.orDie),
     )

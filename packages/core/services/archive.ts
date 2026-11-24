@@ -47,8 +47,6 @@ import type {
     NewBHRankedQueue,
     BHPlayerAlias,
     NewBHClan,
-    NewBHPlayerLegend,
-    NewBHPlayerWeapon,
 } from "@crh/db/schema"
 import type { PlayerStats } from "@crh/bhapi/types"
 import type { RankedSnapshot } from "./player-writes"
@@ -421,13 +419,10 @@ export const layer = Layer.effect(
                                         bhPlayerLegend.player_id,
                                         bhPlayerLegend.legend_id,
                                     ],
-                                    set: excludedSet(
-                                        legendRows[0] as unknown as Record<
-                                            string,
-                                            unknown
-                                        >,
-                                        ["player_id", "legend_id"],
-                                    ) as Partial<NewBHPlayerLegend>,
+                                    set: excludedSet(legendRows[0], [
+                                        "player_id",
+                                        "legend_id",
+                                    ]),
                                 })
                         }
 
@@ -442,13 +437,10 @@ export const layer = Layer.effect(
                                         bhPlayerWeapon.player_id,
                                         bhPlayerWeapon.weapon_name,
                                     ],
-                                    set: excludedSet(
-                                        weaponRows[0] as unknown as Record<
-                                            string,
-                                            unknown
-                                        >,
-                                        ["player_id", "weapon_name"],
-                                    ) as Partial<NewBHPlayerWeapon>,
+                                    set: excludedSet(weaponRows[0], [
+                                        "player_id",
+                                        "weapon_name",
+                                    ]),
                                 })
                         }
                     }),
@@ -509,13 +501,11 @@ export const layer = Layer.effect(
                                         bhRankedQueue.bracket,
                                     ],
                                     set: {
-                                        ...excludedSet(
-                                            batch[0] as unknown as Record<
-                                                string,
-                                                unknown
-                                            >,
-                                            ["entry_id", "bracket", "queuedAt"],
-                                        ),
+                                        ...excludedSet(batch[0], [
+                                            "entry_id",
+                                            "bracket",
+                                            "queuedAt",
+                                        ]),
                                         // Stamp queuedAt only when games increase (WHERE below).
                                         queuedAt: sql`excluded."lastUpdated"`,
                                         // Zero baseline is not a real previous value — do not invent a delta.

@@ -124,7 +124,7 @@ export const layer = Layer.effect(
         const database = yield* Database
 
         const soft = <A, E>(effect: Effect.Effect<A, E>) =>
-            effect.pipe(Effect.catch(() => Effect.succeed([] as A)))
+            effect.pipe(Effect.orElseSucceed(() => [] as A))
 
         return {
             search: (query, limit = DEFAULT_LOOKUP_LIMIT, region = "all") =>
