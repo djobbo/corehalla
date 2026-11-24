@@ -16,7 +16,8 @@ import { legendHref } from "@/lib/legends"
 import { playerHref, tierColor } from "@/lib/rankings"
 import { legendsWithWeapon, weaponCareerHref } from "@/lib/weapons"
 import { cleanString } from "@crh/common/helpers/cleanString"
-import type { CareerRanking } from "@crh/api-contract/schemas"
+import { WeaponMetaCard } from "./WeaponMetaCard"
+import type { CareerRanking, WeaponMeta } from "@crh/api-contract/schemas"
 import type { Weapon } from "@crh/bhapi/constants"
 import type { CSSProperties } from "react"
 
@@ -66,9 +67,11 @@ const PlayerRow = ({
 export const WeaponView = ({
     weapon,
     rows,
+    meta,
 }: {
     readonly weapon: Weapon
     readonly rows: readonly CareerRanking[]
+    readonly meta: WeaponMeta | null
 }) => {
     const wielders = legendsWithWeapon(weapon)
     const metric = weaponBoard.option(weaponBoard.defaultSort)
@@ -88,6 +91,10 @@ export const WeaponView = ({
                     </h1>
                 </div>
             </header>
+
+            {meta === null ? null : (
+                <WeaponMetaCard meta={meta} weapon={weapon} />
+            )}
 
             <section>
                 <h2 className="ch-display text-lg">Legends that wield it</h2>

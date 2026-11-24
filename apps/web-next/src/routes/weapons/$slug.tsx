@@ -1,12 +1,15 @@
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router"
+import { useAtomValue } from "@effect/atom-react"
 import { WeaponView } from "@/components/weapon/WeaponView"
 import { absoluteUrl } from "@/lib/assets"
 import { weaponBoard } from "@/lib/careerRankings"
 import { resolveWeaponSlug, weaponHref } from "@/lib/weapons"
 import {
     careerWeaponRankingsAtom,
-    preloadAtoms,
+    preloadAtomsDegraded,
     useQuery,
+    weaponMetaAtom,
+    weaponMetaQueryAtom,
 } from "@/effect/atoms"
 
 export const Route = createFileRoute("/weapons/$slug")({
@@ -26,9 +29,12 @@ export const Route = createFileRoute("/weapons/$slug")({
             })
         }
 
-        return preloadAtoms(context, [
-            careerWeaponRankingsAtom(weapon, weaponBoard.defaultSort, 1),
-        ])
+        return preloadAtomsDegraded(
+            context,
+            [careerWeaponRankingsAtom(weapon, weaponBoard.defaultSort, 1)],
+            // Decoration: a failed aggregate hides the card, never the page.
+            [weaponMetaQueryAtom()],
+        )
     },
     head({ params }) {
         const weapon = resolveWeaponSlug(params.slug)
@@ -64,6 +70,7 @@ function Page() {
     const rows = useQuery(
         careerWeaponRankingsAtom(weapon, weaponBoard.defaultSort, 1),
     )
+    const meta = useAtomValue(weaponMetaAtom())
 
-    return <WeaponView weapon={weapon} rows={rows} />
+    return <WeaponView weapon={weapon} rows={rows} meta={meta} />
 }
