@@ -637,6 +637,18 @@ const regionIndex = (region: string): number => {
     return index < 0 ? 0 : index + 1
 }
 
+/** v1 lists the account's rank per region; the record keeps only its own ladder. */
+const regionRankOf = (
+    ranks: readonly { region: string; rank: number }[] | undefined,
+    region: string | null | undefined,
+): number => {
+    const wanted = fromV1Region(region ?? "ALL")
+
+    return (
+        ranks?.find((entry) => fromV1Region(entry.region) === wanted)?.rank ?? 0
+    )
+}
+
 /**
  * The profile's ranked record, assembled from v1 alone: account and legend
  * ratings from `/player/stats?mode=ranked_1v1`, the 2v2 teams from
@@ -661,8 +673,7 @@ export const toPlayerRanked = (
         brawlhalla_id:
             account?.brawlhalla_id ?? teamRows[0]?.brawlhalla_id_one ?? 0,
         global_rank: account?.global_rank ?? 0,
-        // v1 sends a rank list, not the scalar v0 sent; nothing reads this field.
-        region_rank: 0,
+        region_rank: regionRankOf(account?.region_ranks, account?.region),
         legends: (account?.legends ?? []).map((legend) => ({
             legend_id: legend.legend_id,
             legend_name_key:

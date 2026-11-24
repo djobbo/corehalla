@@ -3,8 +3,10 @@ import { clanMock } from "@crh/bhapi/mocks/clan"
 import { playerRankedMock } from "@crh/bhapi/mocks/playerRanked"
 import { playerStatsMock } from "@crh/bhapi/mocks/playerStats"
 import { buildPlayer } from "./player"
+import type { Player3v3Ranked } from "@crh/bhapi/types"
+import type { PlayerSources } from "./player"
 
-const build = () =>
+const build = (overrides: Partial<PlayerSources> = {}) =>
     buildPlayer(
         {
             stats: playerStatsMock,
@@ -12,9 +14,21 @@ const build = () =>
             ranked3v3: null,
             aliases: ["Old Name", "djobbo.com", "old name", "  "],
             clan: clanMock,
+            ...overrides,
         },
         1_700_000_000_000,
     )
+
+const ranked3v3: Player3v3Ranked = {
+    brawlhalla_id: 257670,
+    name: "Moist | Boomie",
+    rating: 1988,
+    peak_rating: 2010,
+    tier: "Diamond",
+    wins: 60,
+    games: 100,
+    region: "US-E",
+}
 
 describe("buildPlayer", () => {
     it("stamps the envelope with the age it was handed, not its own clock", () => {
@@ -82,6 +96,50 @@ describe("buildPlayer", () => {
 
         expect(ranked?.["1v1"]?.region).toBe("us-e")
         expect(ranked?.["3v3"]).toBeNull()
+    })
+
+    it("carries the account's 1v1 ladder position", () => {
+        const ranked = build({
+            ranked: { ...playerRankedMock, global_rank: 41, region_rank: 1 },
+        }).data.ranked
+
+        expect(ranked?.["1v1"]).toMatchObject({
+            global_rank: 41,
+            region_rank: 1,
+        })
+    })
+
+    it("treats a zero ladder position as absent", () => {
+        const ranked = build().data.ranked
+
+        expect(ranked?.["1v1"]).toMatchObject({
+            global_rank: null,
+            region_rank: null,
+        })
+    })
+
+    it("leaves 3v3 without a ladder position", () => {
+        const ranked = build({ ranked3v3 }).data.ranked
+
+        expect(ranked?.["3v3"]).toMatchObject({
+            rating: 1988,
+            global_rank: null,
+            region_rank: null,
+        })
+    })
+
+    it("carries each 2v2 team's global position", () => {
+        const teams = build({
+            ranked: {
+                ...playerRankedMock,
+                "2v2": [
+                    { ...playerRankedMock["2v2"][0]!, global_rank: 12 },
+                    playerRankedMock["2v2"][1]!,
+                ],
+            },
+        }).data.ranked?.["2v2"]?.teams
+
+        expect(teams?.map((team) => team.global_rank)).toEqual([12, null])
     })
 
     it("marks the solo-queue row in a 2v2 list", () => {
