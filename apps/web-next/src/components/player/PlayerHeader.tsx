@@ -195,7 +195,7 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
                 </ul>
             ) : null}
 
-            <Card className="@container bg-transparent p-4 shadow-none">
+            <Card className="@container p-4">
                 <CardContent className="p-0">
                     <StatGrid
                         maxColumns={5}

@@ -176,7 +176,7 @@ export const LegendView = ({
                 </div>
 
                 {mains.length === 0 ? (
-                    <Empty className="mt-3 rounded-2xl bg-card py-10">
+                    <Empty className="mt-3 rounded-none bg-card shadow-md py-10">
                         <EmptyHeader>
                             <EmptyDescription>
                                 No players on this legend&apos;s board yet.

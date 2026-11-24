@@ -53,7 +53,7 @@ export const NewsCard = ({
             <div className={cn("flex items-start gap-4", className)}>
                 <Link
                     to={articleHref(article.slug)}
-                    className="relative aspect-video w-32 shrink-0 overflow-hidden rounded-xl bg-card sm:w-40"
+                    className="relative aspect-video w-32 shrink-0 overflow-hidden rounded-none bg-card shadow-md sm:w-40"
                 >
                     <img
                         src={articleCardImage(article)}
@@ -83,7 +83,7 @@ export const NewsCard = ({
         <article className={cn("flex flex-col gap-3", className)}>
             <Link
                 to={articleHref(article.slug)}
-                className="relative aspect-video overflow-hidden rounded-2xl bg-card"
+                className="relative aspect-video overflow-hidden rounded-none bg-card shadow-md"
             >
                 <img
                     src={
@@ -123,7 +123,7 @@ export const NewsCard = ({
 export const NewsHero = ({ article }: { readonly article: BHArticle }) => (
     <Link
         to={articleHref(article.slug)}
-        className="group relative block aspect-[2/1] overflow-hidden rounded-2xl bg-card md:aspect-[3/1]"
+        className="group relative block aspect-[2/1] overflow-hidden rounded-none bg-card shadow-md md:aspect-[3/1]"
     >
         <img
             src={articleHeroImage(article)}

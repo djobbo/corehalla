@@ -108,7 +108,7 @@ The source of truth is `apps/web-next/src/styles/app.css`. shadcn components in 
 
 The phrase is the stylesheet's own (`poster treatment`, `poster's slab`, `poster's bullet`). A page is a dark canvas with solid slabs lifted by an unblurred black offset, and small things cut as parallelograms so the layout leans without rotating the content. Type is one family, Montserrat, separated by weight, tracking and case. Numbers that change width use tabular figures.
 
-There is no second theme. `dark:` utilities in the shadcn components are inert: nothing sets `.dark`. The page colour sits on `html`, not `body`, so the landing pattern (negative z-index) can show through the gaps. Cards are supposed to be opaque. See Open questions for where the component disagrees.
+There is no second theme. `dark:` utilities in the shadcn components are inert: nothing sets `.dark`. The page colour sits on `html`, not `body`, so the landing pattern (negative z-index) can show through the gaps. Cards are opaque.
 
 **Key Characteristics:**
 
@@ -196,8 +196,8 @@ Flat fills, separated by a hard unblurred offset of `{colors.ink}`. The styleshe
 
 - **2xs / xs** (`2px 2px 0 0 {colors.ink}`): the two smallest steps are the same value.
 - **sm** (`3px 3px 0 0`): buttons, the masthead mark, rank badges, chip `drop-shadow`, nameplate `drop-shadow`, card banner `drop-shadow`.
-- **md** (`4px 4px 0 0`): dialogs, menus, the weekly-rotation plate.
-- **lg** (`5px 5px 0 0`), **xl** (`6px 6px 0 0`), **2xl** (`8px 8px 0 0`): further off the page. A dialog is `shadow-md`, a step above a card's `shadow-sm`.
+- **md** (`4px 4px 0 0`): cards, news frames, empty slabs, dialogs, menus, the weekly-rotation plate.
+- **lg** (`5px 5px 0 0`), **xl** (`6px 6px 0 0`), **2xl** (`8px 8px 0 0`): further off the page.
 
 `clip-path` removes `box-shadow`, so cut shapes use `filter: drop-shadow` at the same offset. Sticky bars do not use this shadow. They use `color-mix(... 92%, transparent)` plus `backdrop-filter: blur(10px)`. The nav adds `box-shadow: 0 3px 0 0 {colors.ink}` as a rule under the bar. The page loader scrim is the same frost at 82% and `blur(8px)`.
 
@@ -238,7 +238,7 @@ Used as links (ladder bracket and region), toggles (tier floor, favourite) and s
 
 The slab the stylesheet describes: solid `{colors.card}`, hard shadow, no outline. `.ch-hero` is the page-title plate: fill `{colors.brand-deep}`, padding `0.9rem 1rem`, kicker in `{colors.warning}`.
 
-The shadcn `Card` (`components/ui/card.tsx`) does not match that description yet. See Open questions.
+`Card` (`components/ui/card.tsx`) is that slab: `bg-card`, `rounded-none`, `shadow-md`. Catalogue links do not add a radius of their own. News frames, the updates list frame and the weekly-rotation plate use the same fill, square corners and `shadow-md`. The player header and clan header stat blocks use the primitive, so they are opaque. Images that are the first or last child of a card are `rounded-none`, so a square card clips them square.
 
 Nameplate (`.ch-nameplate`): a `{colors.brand}` plate, flag or rank cap on the left, names at `0.875rem` / weight 600. Links are `{colors.foreground}`, hover `{colors.warning}`. The ranked banner (`.ch-card-banner`) is `4.5rem` wide, uncut, `drop-shadow(3px 3px 0 {colors.ink})`, `pointer-events: none`.
 
@@ -258,7 +258,7 @@ Tabs (`.ch-tabline` / `.ch-tablink`): a groove of `inset 0 -3px 0 0 {colors.pane
 
 ### Empty
 
-`components/ui/empty.tsx` centres its content. Call sites pair it with `rounded-2xl bg-card`. The landing signed-out prompt is a centred dashed well with a heart icon (`components/account/LandingFavorites.tsx`).
+`components/ui/empty.tsx` centres its content. Call sites pair it with `rounded-none bg-card shadow-md`. The landing signed-out prompt is still a centred dashed well with a heart icon and `rounded-2xl` (`components/account/LandingFavorites.tsx`).
 
 ### Motion
 
@@ -303,10 +303,10 @@ These are the rules the stylesheet and the components already agree on.
 
 The code disagrees with itself here. Do not pick a winner in a drive-by edit.
 
-1. **Radius.** Buttons, dialogs, inputs and menus are `{rounded.none}`. `Card`, catalogue links, news frames and empty states use `rounded-2xl` (`{rounded.2xl}`). `.ch-article` images use `border-radius: 0.75rem`, which is not on the scale.
-2. **Card fill.** The stylesheet says slabs are opaque so the landing pattern shows through the gaps. `Card` sets `bg-card/50` and no shadow (`components/ui/card.tsx`). The player header card sets `bg-transparent shadow-none`.
+1. **Article image radius.** Cards, catalogue links, news frames, the updates list and empty states are `{rounded.none}`, with buttons, dialogs, inputs and menus. `.ch-article` images, and the hero image on an article route, still use `border-radius: 0.75rem` / `rounded-2xl`, which is not a step on the scale. The community-card logo is still `rounded-2xl`.
+2. **Card fill — decided.** Slabs are opaque `bg-card` with `shadow-md`, so the landing pattern shows through the gaps between them. `bg-card/50` is gone. The player header and clan header use that primitive.
 3. **Section nav.** The `.ch-nav` comment describes parallelogram chips. `MainNav.tsx` renders a text menu. The overflow and the 3px rule were written for the chips.
 4. **Nameplate hover.** `.ch-nameplate a:hover` is `{colors.warning}` on `{colors.brand}` (about 3.5:1). Resting text is `{colors.foreground}` on `{colors.brand}` (about 4.9:1). No other palette colour both clears 4.5:1 on `{colors.brand}` and reads as a change from white.
-5. **Kicker on a solid slab.** `.ch-kicker` is `{colors.brand-bright}`. That clears 4.5:1 on the canvas and fails it on solid `{colors.card}` (hover card, nav popout). On `bg-card/50` over the canvas it barely passes.
+5. **Kicker on a solid slab.** `.ch-kicker` is `{colors.brand-bright}`. That clears 4.5:1 on the canvas and fails it on solid `{colors.card}` (hover card, nav popout). Cards are now that solid slab.
 6. **Token names across apps.** `apps/web` calls the blue `--color-accent`. `apps/web-next` calls it `--color-brand` and uses `accent` for the hover well. Same hexes, different roles.
 7. **Shadow steps.** `--shadow-2xs` and `--shadow-xs` are both `2px 2px 0 0`. Every larger step grows by a pixel, except those two.

@@ -18,7 +18,7 @@ export const WeaponIndex = () => (
                 <li key={weapon}>
                     <Link
                         to={weaponHref(weapon)}
-                        className="block h-full rounded-2xl transition-transform hover:-translate-y-0.5 focus-visible:outline-2"
+                        className="block h-full transition-transform hover:-translate-y-0.5 focus-visible:outline-2"
                     >
                         <Card className="h-full py-0">
                             <span className="flex h-full items-center gap-3 p-3">

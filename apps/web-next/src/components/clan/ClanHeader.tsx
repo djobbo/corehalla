@@ -82,13 +82,13 @@ export const ClanHeader = ({ clanId }: { readonly clanId: number }) => {
                 <ShareButton name={name} path={clanHref(guild.slug)} />
             </div>
             <div className="@container grid gap-3 @3xl:grid-cols-[minmax(0,1fr)_minmax(0,15rem)]">
-                <Card className="bg-transparent p-4 shadow-none">
+                <Card className="p-4">
                     <CardContent className="p-0">
                         <StatGrid maxColumns={5} stats={stats} />
                     </CardContent>
                 </Card>
                 {standing === null ? null : (
-                    <Card className="justify-center bg-transparent p-4 shadow-none">
+                    <Card className="justify-center p-4">
                         <CardContent className="flex flex-col gap-1 p-0">
                             <span className="ch-stat-label">Standing</span>
                             <span className="ch-stat-value text-balance">

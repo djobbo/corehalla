@@ -111,7 +111,7 @@ export const WeaponsTab = ({ playerId }: { readonly playerId: number }) => {
 
     if (weapons.length === 0) {
         return (
-            <Empty className="rounded-2xl bg-card py-10">
+            <Empty className="rounded-none bg-card shadow-md py-10">
                 <EmptyHeader>
                     <EmptyDescription>
                         No weapon usage recorded.

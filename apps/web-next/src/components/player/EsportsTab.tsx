@@ -98,7 +98,7 @@ export const EsportsTab = ({ playerId }: { readonly playerId: number }) => {
 
     if (identity === null) {
         return (
-            <Empty className="rounded-2xl bg-card py-10">
+            <Empty className="rounded-none bg-card shadow-md py-10">
                 <EmptyHeader>
                     <EmptyDescription>
                         No esports record found for this player.

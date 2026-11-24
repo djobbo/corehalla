@@ -162,7 +162,7 @@ export const LegendsTab = ({ playerId }: { readonly playerId: number }) => {
                 />
             </div>
             {sort.sorted.length === 0 ? (
-                <Empty className="rounded-2xl bg-card py-10">
+                <Empty className="rounded-none bg-card shadow-md py-10">
                     <EmptyHeader>
                         <EmptyDescription>
                             No legends use {weaponFilter}.
