@@ -40,7 +40,7 @@ export const Spinner = ({
         top: 0,
         left: 0,
         animationFillMode: "both",
-        animation: `${puff[0]}, ${puff[1]}`,
+        animation: `${puff[0].toString()}, ${puff[1].toString()}`,
         animationDuration: `${2 / speedMultiplier}s`,
         animationIterationCount: "infinite",
         animationTimingFunction:

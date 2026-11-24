@@ -58,7 +58,7 @@ export const Weapon = ({
         },
         {
             name: `Time held`,
-            value: `${formatTime(weapon.matchtime)}`,
+            value: formatTime(weapon.matchtime),
             desc: `Time ${weaponName} was held`,
         },
         {

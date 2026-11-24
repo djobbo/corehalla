@@ -73,7 +73,7 @@ function ClansPage() {
         if (activeQuery === q) return
 
         committed.current = activeQuery
-        navigate({
+        void navigate({
             to: "/rankings/clans/{-$page}",
             params: { page: pageParam },
             search: { q: activeQuery },

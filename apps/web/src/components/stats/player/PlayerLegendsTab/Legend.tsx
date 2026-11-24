@@ -37,7 +37,7 @@ export const Legend = ({
         },
         {
             name: "Time played",
-            value: `${formatTime(legend.stats?.matchtime ?? 0)}`,
+            value: formatTime(legend.stats?.matchtime ?? 0),
             desc: "Time played with this legend",
         },
         {

@@ -82,9 +82,7 @@ export const deriveSearchContext = (pathname: string): SearchContext => {
             : "all"
 
     return {
-        bracket: isSearchableBracket(bracket ?? "")
-            ? (bracket as string)
-            : "1v1",
+        bracket: isSearchableBracket(bracket ?? "") ? bracket : "1v1",
         region,
     }
 }

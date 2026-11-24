@@ -32,10 +32,10 @@ export const unauthorized = () => new Response("Unauthorized", { status: 401 })
 export const privateJson = (value: unknown, init?: ResponseInit) =>
     Response.json(value, {
         ...init,
-        headers: {
-            "Cache-Control": "private, no-store",
-            ...init?.headers,
-        },
+        headers: [
+            ["Cache-Control", "private, no-store"],
+            ...new Headers(init?.headers),
+        ],
     })
 
 /** Cookie attributes shared by the session and OAuth-state cookies. */

@@ -9,7 +9,7 @@ type ImageProps = Omit<
     alt?: string
     containerClassName?: string
     Container?: "div" | "span" | null
-    position?: "absolute" | "relative" | "fixed" | string
+    position?: string
     sizes?: string
     /**
      * Accepted for parity with the previous `next/image` call sites. Static

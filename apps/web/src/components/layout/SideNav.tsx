@@ -240,7 +240,7 @@ export const SideNav = ({ className }: SideNavProps) => {
                                         })}
                                         active={pathname === href}
                                         onRemove={() => {
-                                            removeFavorite(favorite)
+                                            void removeFavorite(favorite)
                                         }}
                                     />
                                 )
@@ -254,7 +254,7 @@ export const SideNav = ({ className }: SideNavProps) => {
                                         name={cleanString(favorite.name)}
                                         active={pathname === href}
                                         onRemove={() => {
-                                            removeFavorite(favorite)
+                                            void removeFavorite(favorite)
                                         }}
                                     />
                                 )

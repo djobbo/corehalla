@@ -34,7 +34,7 @@ export const Paginator = ({
                     hidden: !responsive,
                 })}
                 onChange={(page) => {
-                    navigate({ to: getPageHref(page) as never })
+                    void navigate({ to: getPageHref(page) as never })
                 }}
                 value={currentPage}
                 options={pages.map((page) => ({
