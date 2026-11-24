@@ -4,6 +4,7 @@ import { weapons } from "@crh/bhapi/constants"
 import { brackets, regions } from "./rankings"
 import { resolveLegendId, resolveWeapon } from "./routeParams"
 import {
+    articlePaths,
     normalizeOrigin,
     renderRobots,
     renderSitemap,
@@ -87,6 +88,13 @@ describe("sitemapPaths", () => {
         expect(sitemapPaths()).toContain("/tiers")
     })
 
+    it("includes the calculator and comparison tools", () => {
+        const paths = sitemapPaths()
+
+        expect(paths).toContain("/calc")
+        expect(paths).toContain("/vs")
+    })
+
     it("spells legend and weapon paths the way their routes render them", () => {
         const paths = sitemapPaths()
 
@@ -152,6 +160,35 @@ describe("renderSitemap", () => {
 
         expect(document.match(/<lastmod>2026-11-23<\/lastmod>/g)).toHaveLength(
             2,
+        )
+    })
+
+    it("lists news and update articles as absolute escaped urls", () => {
+        const document = renderSitemap("https://corehalla.com", [
+            ...sitemapPaths(),
+            ...articlePaths(["patch&notes"], ["launch<day>"]),
+        ])
+
+        expect(document).toContain(
+            "<loc>https://corehalla.com/news/patch&amp;notes</loc>",
+        )
+        expect(document).toContain(
+            "<loc>https://corehalla.com/updates/launch&lt;day&gt;</loc>",
+        )
+        expect(document).toContain("<loc>https://corehalla.com/calc</loc>")
+        expect(document).toContain("<loc>https://corehalla.com/vs</loc>")
+    })
+
+    it("keeps every static path when the article lists are empty", () => {
+        const staticPaths = sitemapPaths()
+        const document = renderSitemap("https://corehalla.com", [
+            ...staticPaths,
+            ...articlePaths([], []),
+        ])
+
+        expect(document.match(/<url>/g)).toHaveLength(staticPaths.length)
+        expect(document).toContain(
+            "<loc>https://corehalla.com/rankings/clans</loc>",
         )
     })
 })
