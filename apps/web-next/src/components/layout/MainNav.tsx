@@ -80,6 +80,16 @@ const sections: readonly NavSection[] = [
         ],
     },
     {
+        label: "Legends",
+        href: "/legends",
+        match: ["/legends"],
+    },
+    {
+        label: "Weapons",
+        href: "/weapons",
+        match: ["/weapons"],
+    },
+    {
         label: "Guilds",
         href: "/rankings/guilds",
         match: ["/rankings/guilds"],

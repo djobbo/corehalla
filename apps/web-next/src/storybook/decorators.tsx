@@ -57,10 +57,11 @@ const ROUTE_PATHS = [
     "/stats/players/$id/legends",
     "/stats/players/$id/weapons",
     "/vs",
+    "/weapons",
     "/weapons/$slug",
 ] as const
 
-const buildRouter = () => {
+const buildRouter = (path = "/") => {
     const rootRoute = createRootRoute()
     const routes = ROUTE_PATHS.map((path) =>
         createRoute({ getParentRoute: () => rootRoute, path }),
@@ -68,7 +69,7 @@ const buildRouter = () => {
 
     return createRouter({
         routeTree: rootRoute.addChildren(routes),
-        history: createMemoryHistory({ initialEntries: ["/"] }),
+        history: createMemoryHistory({ initialEntries: [path] }),
         // The registered router context carries the atom registry; components
         // that read it (`Route.useRouteContext`) need it present.
         context: { registry: makeRegistry() },
@@ -78,10 +79,12 @@ const buildRouter = () => {
 /**
  * Provides a real TanStack Router context without rendering any route, so a
  * component that calls `<Link>`, `useNavigate` or `useLocation` can be storied
- * on its own.
+ * on its own. `parameters.routerPath` puts the router on a path, for components
+ * that render differently there (an active nav entry, a current tab).
  */
-export const withRouter: Decorator = (Story) => {
-    const router = useMemo(buildRouter, [])
+export const withRouter: Decorator = (Story, context) => {
+    const path = (context.parameters?.routerPath as string | undefined) ?? "/"
+    const router = useMemo(() => buildRouter(path), [path])
 
     return (
         <RouterContextProvider router={router}>

@@ -12,10 +12,15 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {
-    render: () => (
-        <div className="w-[760px] max-w-full bg-background p-4">
-            <MainNav />
-        </div>
-    ),
+const renderNav = () => (
+    <div className="w-[760px] max-w-full bg-background p-4">
+        <MainNav />
+    </div>
+)
+
+export const Default: Story = { render: renderNav }
+
+export const WeaponCatalogue: Story = {
+    parameters: { routerPath: "/weapons/grapple-hammer" },
+    render: renderNav,
 }
