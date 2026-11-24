@@ -36,6 +36,8 @@ const Ranked1v1Panel = ({
             peakRating={ranked.peak_rating}
             wins={ranked.wins}
             games={ranked.games}
+            regionalRank={ranked.region_rank}
+            globalRank={ranked.global_rank}
         />
     )
 }
@@ -52,6 +54,7 @@ const SoloQueuePanel = ({ solo }: { readonly solo: Team }) => {
             peakRating={solo.peak_rating}
             wins={solo.wins}
             games={solo.games}
+            globalRank={solo.global_rank}
         />
     )
 }

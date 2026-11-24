@@ -156,6 +156,10 @@ type PlayerRankedBracket = NonNullable<
     NonNullable<PlayerEnvelope["data"]["ranked"]>["1v1"]
 >
 
+/** Upstream reports "not ranked" as zero; the card leaves a zero position out. */
+const ladderPosition = (rank: number | null | undefined): number | null =>
+    rank !== null && rank !== undefined && rank > 0 ? rank : null
+
 const toBracket = (input: {
     readonly rating: number
     readonly peak_rating: number
@@ -163,6 +167,8 @@ const toBracket = (input: {
     readonly wins: number
     readonly games: number
     readonly region: string | null
+    readonly global_rank: number | null | undefined
+    readonly region_rank: number | null | undefined
 }): PlayerRankedBracket => ({
     rating: input.rating,
     peak_rating: input.peak_rating || input.rating,
@@ -172,6 +178,8 @@ const toBracket = (input: {
     wins: input.wins,
     games: input.games,
     region: input.region,
+    global_rank: ladderPosition(input.global_rank),
+    region_rank: ladderPosition(input.region_rank),
     rating_reset: personalRatingReset(input.rating),
 })
 
@@ -200,6 +208,7 @@ const to2v2Teams = (ranked: PlayerRanked): readonly PlayerRankedTeam[] => {
             wins: team.wins,
             games: team.games,
             region: regionOf(rankedRegions[team.region - 1]),
+            global_rank: ladderPosition(team.global_rank),
             rating_reset: legendRatingReset(team.rating),
         }
     })
@@ -241,6 +250,8 @@ const toRanked = (
                   wins: ranked.wins,
                   games: ranked.games,
                   region: regionOf(ranked.region),
+                  global_rank: ranked.global_rank,
+                  region_rank: ranked.region_rank,
               })
             : null
 
@@ -253,6 +264,8 @@ const toRanked = (
                   wins: ranked3v3.wins,
                   games: ranked3v3.games,
                   region: regionOf(ranked3v3.region),
+                  global_rank: null,
+                  region_rank: null,
               })
             : null
 

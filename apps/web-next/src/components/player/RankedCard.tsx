@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { SplitProgress } from "@/components/common/SplitProgress"
 import { StatGrid } from "@/components/common/StatGrid"
+import { RankPosition } from "./RankPosition"
 import { regionFlagSrc } from "@/lib/assets"
 import { useRankedBanner } from "@/lib/media"
 import { tierColor } from "@/lib/rankings"
@@ -16,6 +17,8 @@ export const RankedCard = ({
     peakRating,
     wins,
     games,
+    regionalRank,
+    globalRank,
     stats,
     meta,
 }: {
@@ -26,6 +29,8 @@ export const RankedCard = ({
     readonly peakRating: number
     readonly wins: number
     readonly games: number
+    readonly regionalRank?: number | null
+    readonly globalRank?: number | null
     readonly stats?: readonly Stat[]
     readonly meta?: ReactNode
 }) => {
@@ -73,6 +78,12 @@ export const RankedCard = ({
                         / {peakRating.toLocaleString()} peak
                     </span>
                 </span>
+                <RankPosition
+                    className="mt-1"
+                    region={region}
+                    regionalRank={regionalRank}
+                    globalRank={globalRank}
+                />
                 <SplitProgress
                     className="mt-2"
                     parts={[

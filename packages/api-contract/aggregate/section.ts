@@ -5,7 +5,7 @@ import { Schema } from "effect"
  * (`x-corehalla-contract`) and in every section body so the client can ignore a
  * payload built by an incompatible deploy.
  */
-export const CONTRACT_VERSION = 1
+export const CONTRACT_VERSION = 2
 
 /** Build id is stamped on every response for the "reload to update" prompt. */
 export const BUILD_ID: string =

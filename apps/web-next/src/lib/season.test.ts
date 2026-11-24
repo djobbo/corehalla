@@ -12,6 +12,8 @@ const bracket = (ratingReset: number): Bracket => ({
     wins: 214,
     games: 362,
     region: "eu",
+    global_rank: null,
+    region_rank: null,
     rating_reset: ratingReset,
 })
 

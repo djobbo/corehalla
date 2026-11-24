@@ -34,6 +34,22 @@ export const Valhallan: Story = {
     },
 }
 
+export const WithPosition: Story = {
+    args: {
+        ...Default.args,
+        regionalRank: 1,
+        globalRank: 41,
+    },
+}
+
+export const ZeroPosition: Story = {
+    args: {
+        ...Default.args,
+        regionalRank: 0,
+        globalRank: 0,
+    },
+}
+
 export const WithStats: Story = {
     args: {
         ...Default.args,

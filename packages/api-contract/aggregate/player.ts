@@ -90,6 +90,9 @@ export const PlayerRankedBracketSchema = Schema.Struct({
     wins: Schema.Number,
     games: Schema.Number,
     region: Schema.NullOr(Schema.String),
+    /** Ladder position, null when upstream reports zero or does not report it. */
+    global_rank: Schema.NullOr(Schema.Number),
+    region_rank: Schema.NullOr(Schema.Number),
     rating_reset: Schema.Number,
 })
 
@@ -106,6 +109,7 @@ export const PlayerRankedTeamSchema = Schema.Struct({
     wins: Schema.Number,
     games: Schema.Number,
     region: Schema.NullOr(Schema.String),
+    global_rank: Schema.NullOr(Schema.Number),
     rating_reset: Schema.Number,
 })
 

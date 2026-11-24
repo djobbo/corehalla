@@ -80,6 +80,18 @@ describe("toPlayerRanked", () => {
         expect(legend?.legend_name_key.length).toBeGreaterThan(0)
     })
 
+    it("resolves the account's regional rank from the v1 rank list", () => {
+        const ranked = toPlayerRanked(rankedStats, teams)
+
+        expect(ranked?.region_rank).toBe(64491)
+    })
+
+    it("leaves the regional rank at zero when the list omits the account's region", () => {
+        const ranked = toPlayerRanked({ ...rankedStats, region: "EU" }, teams)
+
+        expect(ranked?.region_rank).toBe(0)
+    })
+
     it("lifts the 2v2 team from /player/teams into the v0 team shape", () => {
         const team = toPlayerRanked(rankedStats, teams)?.["2v2"][0]
 
