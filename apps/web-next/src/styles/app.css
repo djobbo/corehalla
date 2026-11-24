@@ -343,6 +343,18 @@
         filter: drop-shadow(1px 1px 0 var(--color-ink));
     }
 
+    /*
+     * The nudge and the shadow's one-pixel grow are cues, not structure.
+     * Reduced motion keeps the parallelogram, the fill and the resting offset.
+     */
+    @media (prefers-reduced-motion: reduce) {
+        .ch-chip:hover,
+        .ch-chip:active {
+            transform: none;
+            filter: drop-shadow(3px 3px 0 var(--color-ink));
+        }
+    }
+
     .ch-chip-on {
         background: var(--primary);
         color: var(--primary-foreground);
