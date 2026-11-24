@@ -17,6 +17,9 @@ export const reportFallback = (report: FallbackReport): void => {
 
     void fetch("/api/telemetry", {
         method: "POST",
+        // The report is anonymous and the endpoint reads nothing from the
+        // session; without this the browser attaches `corehalla_session`.
+        credentials: "omit",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ event: "upstream_fallback", ...report }),
         keepalive: true,

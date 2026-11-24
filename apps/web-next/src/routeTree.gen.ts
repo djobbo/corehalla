@@ -11,18 +11,28 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CalcRouteImport } from './routes/calc'
+import { Route as DiscordRouteImport } from './routes/discord'
+import { Route as DonateRouteImport } from './routes/donate'
+import { Route as GithubRouteImport } from './routes/github'
+import { Route as KofiRouteImport } from './routes/kofi'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TiersRouteImport } from './routes/tiers'
+import { Route as TwitterRouteImport } from './routes/twitter'
 import { Route as VsRouteImport } from './routes/vs'
+import { Route as WikiRouteImport } from './routes/wiki'
 import { Route as AtmeFavoritesRouteImport } from './routes/@me/favorites'
+import { Route as CSplatRouteImport } from './routes/c.$'
 import { Route as LegendsIndexRouteImport } from './routes/legends/index'
 import { Route as LegendsSlugRouteImport } from './routes/legends/$slug'
 import { Route as NewsIndexRouteImport } from './routes/news/index'
 import { Route as NewsSlugRouteImport } from './routes/news/$slug'
+import { Route as PSplatRouteImport } from './routes/p.$'
 import { Route as RankingsIndexRouteImport } from './routes/rankings/index'
+import { Route as StatsMeRouteImport } from './routes/stats/me'
 import { Route as UpdatesIndexRouteImport } from './routes/updates/index'
 import { Route as UpdatesSlugRouteImport } from './routes/updates/$slug'
 import { Route as WeaponsSlugRouteImport } from './routes/weapons/$slug'
@@ -67,9 +77,34 @@ const CalcRoute = CalcRouteImport.update({
   path: '/calc',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiscordRoute = DiscordRouteImport.update({
+  id: '/discord',
+  path: '/discord',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DonateRoute = DonateRouteImport.update({
+  id: '/donate',
+  path: '/donate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GithubRoute = GithubRouteImport.update({
+  id: '/github',
+  path: '/github',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KofiRoute = KofiRouteImport.update({
+  id: '/kofi',
+  path: '/kofi',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LeaderboardRoute = LeaderboardRouteImport.update({
   id: '/leaderboard',
   path: '/leaderboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
@@ -92,14 +127,29 @@ const TiersRoute = TiersRouteImport.update({
   path: '/tiers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TwitterRoute = TwitterRouteImport.update({
+  id: '/twitter',
+  path: '/twitter',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VsRoute = VsRouteImport.update({
   id: '/vs',
   path: '/vs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WikiRoute = WikiRouteImport.update({
+  id: '/wiki',
+  path: '/wiki',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AtmeFavoritesRoute = AtmeFavoritesRouteImport.update({
   id: '/@me/favorites',
   path: '/@me/favorites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CSplatRoute = CSplatRouteImport.update({
+  id: '/c/$',
+  path: '/c/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LegendsIndexRoute = LegendsIndexRouteImport.update({
@@ -122,9 +172,19 @@ const NewsSlugRoute = NewsSlugRouteImport.update({
   path: '/news/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PSplatRoute = PSplatRouteImport.update({
+  id: '/p/$',
+  path: '/p/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RankingsIndexRoute = RankingsIndexRouteImport.update({
   id: '/rankings/',
   path: '/rankings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatsMeRoute = StatsMeRouteImport.update({
+  id: '/stats/me',
+  path: '/stats/me',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UpdatesIndexRoute = UpdatesIndexRouteImport.update({
@@ -321,15 +381,25 @@ const RankingsPowerChar123GameModeChar125Char123RegionChar125Char123PageChar125R
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/calc': typeof CalcRoute
+  '/discord': typeof DiscordRoute
+  '/donate': typeof DonateRoute
+  '/github': typeof GithubRoute
+  '/kofi': typeof KofiRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/privacy': typeof PrivacyRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tiers': typeof TiersRoute
+  '/twitter': typeof TwitterRoute
   '/vs': typeof VsRoute
+  '/wiki': typeof WikiRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
+  '/c/$': typeof CSplatRoute
   '/legends/$slug': typeof LegendsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
+  '/p/$': typeof PSplatRoute
+  '/stats/me': typeof StatsMeRoute
   '/updates/$slug': typeof UpdatesSlugRoute
   '/weapons/$slug': typeof WeaponsSlugRoute
   '/legends/': typeof LegendsIndexRoute
@@ -370,15 +440,25 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/calc': typeof CalcRoute
+  '/discord': typeof DiscordRoute
+  '/donate': typeof DonateRoute
+  '/github': typeof GithubRoute
+  '/kofi': typeof KofiRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/privacy': typeof PrivacyRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tiers': typeof TiersRoute
+  '/twitter': typeof TwitterRoute
   '/vs': typeof VsRoute
+  '/wiki': typeof WikiRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
+  '/c/$': typeof CSplatRoute
   '/legends/$slug': typeof LegendsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
+  '/p/$': typeof PSplatRoute
+  '/stats/me': typeof StatsMeRoute
   '/updates/$slug': typeof UpdatesSlugRoute
   '/weapons/$slug': typeof WeaponsSlugRoute
   '/legends': typeof LegendsIndexRoute
@@ -419,15 +499,25 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/calc': typeof CalcRoute
+  '/discord': typeof DiscordRoute
+  '/donate': typeof DonateRoute
+  '/github': typeof GithubRoute
+  '/kofi': typeof KofiRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/privacy': typeof PrivacyRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tiers': typeof TiersRoute
+  '/twitter': typeof TwitterRoute
   '/vs': typeof VsRoute
+  '/wiki': typeof WikiRoute
   '/@me/favorites': typeof AtmeFavoritesRoute
+  '/c/$': typeof CSplatRoute
   '/legends/$slug': typeof LegendsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
+  '/p/$': typeof PSplatRoute
+  '/stats/me': typeof StatsMeRoute
   '/updates/$slug': typeof UpdatesSlugRoute
   '/weapons/$slug': typeof WeaponsSlugRoute
   '/legends/': typeof LegendsIndexRoute
@@ -470,15 +560,25 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/calc'
+    | '/discord'
+    | '/donate'
+    | '/github'
+    | '/kofi'
     | '/leaderboard'
+    | '/privacy'
     | '/robots.txt'
     | '/search'
     | '/sitemap.xml'
     | '/tiers'
+    | '/twitter'
     | '/vs'
+    | '/wiki'
     | '/@me/favorites'
+    | '/c/$'
     | '/legends/$slug'
     | '/news/$slug'
+    | '/p/$'
+    | '/stats/me'
     | '/updates/$slug'
     | '/weapons/$slug'
     | '/legends/'
@@ -519,15 +619,25 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/calc'
+    | '/discord'
+    | '/donate'
+    | '/github'
+    | '/kofi'
     | '/leaderboard'
+    | '/privacy'
     | '/robots.txt'
     | '/search'
     | '/sitemap.xml'
     | '/tiers'
+    | '/twitter'
     | '/vs'
+    | '/wiki'
     | '/@me/favorites'
+    | '/c/$'
     | '/legends/$slug'
     | '/news/$slug'
+    | '/p/$'
+    | '/stats/me'
     | '/updates/$slug'
     | '/weapons/$slug'
     | '/legends'
@@ -567,15 +677,25 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/calc'
+    | '/discord'
+    | '/donate'
+    | '/github'
+    | '/kofi'
     | '/leaderboard'
+    | '/privacy'
     | '/robots.txt'
     | '/search'
     | '/sitemap.xml'
     | '/tiers'
+    | '/twitter'
     | '/vs'
+    | '/wiki'
     | '/@me/favorites'
+    | '/c/$'
     | '/legends/$slug'
     | '/news/$slug'
+    | '/p/$'
+    | '/stats/me'
     | '/updates/$slug'
     | '/weapons/$slug'
     | '/legends/'
@@ -617,15 +737,25 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CalcRoute: typeof CalcRoute
+  DiscordRoute: typeof DiscordRoute
+  DonateRoute: typeof DonateRoute
+  GithubRoute: typeof GithubRoute
+  KofiRoute: typeof KofiRoute
   LeaderboardRoute: typeof LeaderboardRoute
+  PrivacyRoute: typeof PrivacyRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TiersRoute: typeof TiersRoute
+  TwitterRoute: typeof TwitterRoute
   VsRoute: typeof VsRoute
+  WikiRoute: typeof WikiRoute
   AtmeFavoritesRoute: typeof AtmeFavoritesRoute
+  CSplatRoute: typeof CSplatRoute
   LegendsSlugRoute: typeof LegendsSlugRoute
   NewsSlugRoute: typeof NewsSlugRoute
+  PSplatRoute: typeof PSplatRoute
+  StatsMeRoute: typeof StatsMeRoute
   UpdatesSlugRoute: typeof UpdatesSlugRoute
   WeaponsSlugRoute: typeof WeaponsSlugRoute
   LegendsIndexRoute: typeof LegendsIndexRoute
@@ -675,11 +805,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CalcRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/discord': {
+      id: '/discord'
+      path: '/discord'
+      fullPath: '/discord'
+      preLoaderRoute: typeof DiscordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/donate': {
+      id: '/donate'
+      path: '/donate'
+      fullPath: '/donate'
+      preLoaderRoute: typeof DonateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/github': {
+      id: '/github'
+      path: '/github'
+      fullPath: '/github'
+      preLoaderRoute: typeof GithubRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kofi': {
+      id: '/kofi'
+      path: '/kofi'
+      fullPath: '/kofi'
+      preLoaderRoute: typeof KofiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/leaderboard': {
       id: '/leaderboard'
       path: '/leaderboard'
       fullPath: '/leaderboard'
       preLoaderRoute: typeof LeaderboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/robots.txt': {
@@ -710,6 +875,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TiersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/twitter': {
+      id: '/twitter'
+      path: '/twitter'
+      fullPath: '/twitter'
+      preLoaderRoute: typeof TwitterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/vs': {
       id: '/vs'
       path: '/vs'
@@ -717,11 +889,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wiki': {
+      id: '/wiki'
+      path: '/wiki'
+      fullPath: '/wiki'
+      preLoaderRoute: typeof WikiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/@me/favorites': {
       id: '/@me/favorites'
       path: '/@me/favorites'
       fullPath: '/@me/favorites'
       preLoaderRoute: typeof AtmeFavoritesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/c/$': {
+      id: '/c/$'
+      path: '/c/$'
+      fullPath: '/c/$'
+      preLoaderRoute: typeof CSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/legends/': {
@@ -752,11 +938,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/p/$': {
+      id: '/p/$'
+      path: '/p/$'
+      fullPath: '/p/$'
+      preLoaderRoute: typeof PSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rankings/': {
       id: '/rankings/'
       path: '/rankings'
       fullPath: '/rankings/'
       preLoaderRoute: typeof RankingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stats/me': {
+      id: '/stats/me'
+      path: '/stats/me'
+      fullPath: '/stats/me'
+      preLoaderRoute: typeof StatsMeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/updates/': {
@@ -1016,15 +1216,25 @@ const StatsPlayersIdRouteWithChildren = StatsPlayersIdRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CalcRoute: CalcRoute,
+  DiscordRoute: DiscordRoute,
+  DonateRoute: DonateRoute,
+  GithubRoute: GithubRoute,
+  KofiRoute: KofiRoute,
   LeaderboardRoute: LeaderboardRoute,
+  PrivacyRoute: PrivacyRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TiersRoute: TiersRoute,
+  TwitterRoute: TwitterRoute,
   VsRoute: VsRoute,
+  WikiRoute: WikiRoute,
   AtmeFavoritesRoute: AtmeFavoritesRoute,
+  CSplatRoute: CSplatRoute,
   LegendsSlugRoute: LegendsSlugRoute,
   NewsSlugRoute: NewsSlugRoute,
+  PSplatRoute: PSplatRoute,
+  StatsMeRoute: StatsMeRoute,
   UpdatesSlugRoute: UpdatesSlugRoute,
   WeaponsSlugRoute: WeaponsSlugRoute,
   LegendsIndexRoute: LegendsIndexRoute,
