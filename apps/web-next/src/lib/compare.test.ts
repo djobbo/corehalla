@@ -72,6 +72,7 @@ const profile = (overrides: Partial<PlayerProfile> = {}): PlayerProfile => ({
     weapon_bubbles: [],
     has_2v2: false,
     solo_2v2: null,
+    standing: null,
     weapon_kos: 13_400,
     thrown_kos: 420,
     weapon_damage: 1_910_000,

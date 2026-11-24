@@ -42,6 +42,24 @@ export const WithPosition: Story = {
     },
 }
 
+export const WithPercentile: Story = {
+    args: {
+        ...Default.args,
+        regionalRank: 12,
+        globalRank: 4_182,
+        standing: { rank: 4_182, sample_size: 214_300, top_percent: 2 },
+    },
+}
+
+export const AtTheTop: Story = {
+    args: {
+        ...Default.args,
+        regionalRank: 1,
+        globalRank: 1,
+        standing: { rank: 1, sample_size: 214_300, top_percent: 0.1 },
+    },
+}
+
 export const ZeroPosition: Story = {
     args: {
         ...Default.args,

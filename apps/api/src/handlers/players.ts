@@ -26,6 +26,8 @@ import type { PartEntries } from "@crh/domain/sections/meta"
 import type { Clan } from "@crh/bhapi/types"
 
 const SECTION_TIMEOUT = "5000 millis"
+/** The percentile is a nicety: drop it before it can blow the profile deadline. */
+const STANDING_TIMEOUT = "1000 millis"
 
 export const playersGroup = HttpApiBuilder.group(
     CorehallaApi,
@@ -40,7 +42,7 @@ export const playersGroup = HttpApiBuilder.group(
             .handle("getPlayer", ({ params }) =>
                 Effect.gen(function* () {
                     const now = Date.now()
-                    const [stats, account, ranked3v3, teams] =
+                    const [stats, account, ranked3v3, teams, standing] =
                         yield* Effect.all(
                             [
                                 brawlhalla
@@ -55,8 +57,26 @@ export const playersGroup = HttpApiBuilder.group(
                                 brawlhalla
                                     .getPlayerTeams(params.playerId)
                                     .pipe(Effect.result),
+                                db
+                                    .getRankedStanding(String(params.playerId))
+                                    .pipe(
+                                        Effect.tapError((error) =>
+                                            Effect.logWarning(
+                                                `ranked standing read failed for ${params.playerId}`,
+                                                error,
+                                            ),
+                                        ),
+                                        Effect.timeoutOrElse({
+                                            duration: STANDING_TIMEOUT,
+                                            orElse: () =>
+                                                Effect.logWarning(
+                                                    `ranked standing read timed out for ${params.playerId}`,
+                                                ).pipe(Effect.as(null)),
+                                        }),
+                                        Effect.orElseSucceed(() => null),
+                                    ),
                             ],
-                            { concurrency: 4 },
+                            { concurrency: 5 },
                         )
 
                     const parts: PartEntries = {
@@ -119,6 +139,7 @@ export const playersGroup = HttpApiBuilder.group(
                                 ? ranked3v3.success.value
                                 : null,
                         aliases,
+                        standing,
                     })
 
                     yield* background.run(

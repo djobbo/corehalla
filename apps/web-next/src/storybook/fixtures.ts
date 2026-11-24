@@ -551,6 +551,7 @@ import type {
     PlayerLegend,
     PlayerProfile,
     PlayerRanked2v2,
+    PlayerStanding,
     PlayerWeapon,
 } from "@crh/api-contract/schemas"
 
@@ -566,7 +567,10 @@ const section = <A>(plan: string, data: A) => ({
     },
 })
 
-const profileOf = (envelope: PlayerEnvelope): PlayerProfile => {
+const profileOf = (
+    envelope: PlayerEnvelope,
+    standing: PlayerStanding | null,
+): PlayerProfile => {
     const data = envelope.data
     const teams = data.ranked?.["2v2"]?.teams ?? []
 
@@ -616,6 +620,7 @@ const profileOf = (envelope: PlayerEnvelope): PlayerProfile => {
             })),
         has_2v2: teams.some((team) => team.paired),
         solo_2v2: teams.find((team) => !team.paired) ?? null,
+        standing,
         weapon_kos: data.weapon_kos,
         thrown_kos: data.thrown_kos,
         weapon_damage: data.weapon_damage,
@@ -631,8 +636,15 @@ const teamSection = (envelope: PlayerEnvelope): PlayerRanked2v2 =>
         teams: [],
     }
 
-const sectionsFor = (id: number, envelope: PlayerEnvelope) => ({
-    [`/api/v1/players/${id}`]: section("player/profile@1", profileOf(envelope)),
+const sectionsFor = (
+    id: number,
+    envelope: PlayerEnvelope,
+    standing: PlayerStanding | null,
+) => ({
+    [`/api/v1/players/${id}`]: section(
+        "player/profile@1",
+        profileOf(envelope, standing),
+    ),
     [`/api/v1/players/${id}/legends`]: section(
         "player/legends@1",
         envelope.data.legends satisfies readonly PlayerLegend[],
@@ -675,14 +687,20 @@ export const EMPTY_GUILD_ID = 4244
 
 /** `parameters.mockApi` maps, one per feature. */
 export const playerMock = {
-    ...sectionsFor(PLAYER_ID, playerEnvelope as unknown as PlayerEnvelope),
+    ...sectionsFor(PLAYER_ID, playerEnvelope as unknown as PlayerEnvelope, {
+        rank: 4_182,
+        sample_size: 214_300,
+        top_percent: 2,
+    }),
     ...sectionsFor(
         EMPTY_PLAYER_ID,
         emptyPlayerEnvelope as unknown as PlayerEnvelope,
+        null,
     ),
     ...sectionsFor(
         SHORT_SEASON_PLAYER_ID,
         shortSeasonPlayerEnvelope as unknown as PlayerEnvelope,
+        { rank: 180_400, sample_size: 214_300, top_percent: 84.2 },
     ),
 }
 
@@ -690,15 +708,23 @@ export const playerMock = {
 export const versusMock = {
     [`/api/v1/players/${PLAYER_ID}`]: section(
         "player/profile@1",
-        profileOf(playerEnvelope as unknown as PlayerEnvelope),
+        profileOf(playerEnvelope as unknown as PlayerEnvelope, {
+            rank: 4_182,
+            sample_size: 214_300,
+            top_percent: 2,
+        }),
     ),
     [`/api/v1/players/${EMPTY_PLAYER_ID}`]: section(
         "player/profile@1",
-        profileOf(emptyPlayerEnvelope as unknown as PlayerEnvelope),
+        profileOf(emptyPlayerEnvelope as unknown as PlayerEnvelope, null),
     ),
     [`/api/v1/players/${RIVAL_PLAYER_ID}`]: section(
         "player/profile@1",
-        profileOf(rivalPlayerEnvelope as unknown as PlayerEnvelope),
+        profileOf(rivalPlayerEnvelope as unknown as PlayerEnvelope, {
+            rank: 12_900,
+            sample_size: 214_300,
+            top_percent: 6,
+        }),
     ),
     // A clan sits beside the players to prove the picker drops it.
     "/api/v1/search": [
