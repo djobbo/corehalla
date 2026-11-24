@@ -15,7 +15,12 @@ type ErrorPageProps = {
  * an action that re-runs the route.
  */
 export const ErrorPage = ({ page, onRetry }: ErrorPageProps) => (
-    <main className="ch-page" aria-labelledby="error-page-title">
+    <main
+        id="main"
+        tabIndex={-1}
+        className="ch-page"
+        aria-labelledby="error-page-title"
+    >
         <section className="mx-auto flex max-w-3xl flex-col items-center py-10 text-center sm:py-16">
             <h1
                 id="error-page-title"

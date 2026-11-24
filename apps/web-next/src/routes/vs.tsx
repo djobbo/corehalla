@@ -71,7 +71,7 @@ export const Route = createFileRoute("/vs")({
 })
 
 const VersusShell = () => (
-    <main className="ch-page">
+    <main id="main" tabIndex={-1} className="ch-page">
         <PageLoaderProbe />
     </main>
 )
@@ -82,7 +82,7 @@ function PageContent() {
     const bId = b === undefined ? null : parseEntityId(b)
 
     return (
-        <main className="ch-page">
+        <main id="main" tabIndex={-1} className="ch-page">
             {aId !== null && bId !== null ? (
                 <VersusLoader aId={aId} bId={bId} aSlug={a} bSlug={b} />
             ) : (

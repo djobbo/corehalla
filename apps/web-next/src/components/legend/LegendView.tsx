@@ -114,7 +114,7 @@ export const LegendView = ({
     const related = relatedLegends(legend, RELATED_LEGEND_COUNT)
 
     return (
-        <main className="ch-page">
+        <main id="main" tabIndex={-1} className="ch-page">
             <header className="ch-hero mb-3">
                 <Link to="/legends" className="ch-kicker hover:text-foreground">
                     <span aria-hidden>&larr;</span> All legends

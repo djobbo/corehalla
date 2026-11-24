@@ -43,7 +43,7 @@ function Page() {
     }, [])
 
     return (
-        <main className="ch-page">
+        <main id="main" tabIndex={-1} className="ch-page">
             <RankedQueueView
                 bracket={bracket}
                 region={region}

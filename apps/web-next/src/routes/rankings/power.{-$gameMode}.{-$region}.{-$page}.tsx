@@ -68,7 +68,7 @@ function PageContent() {
     const board = useQuery(powerRankingsAtom(gameMode, region, page, orderBy))
 
     return (
-        <main className="ch-page">
+        <main id="main" tabIndex={-1} className="ch-page">
             <PowerRankingsView
                 gameMode={gameMode}
                 region={region}
@@ -92,7 +92,7 @@ function PageContent() {
 }
 
 const BoardShell = () => (
-    <main className="ch-page">
+    <main id="main" tabIndex={-1} className="ch-page">
         <PageLoaderProbe />
     </main>
 )

@@ -77,7 +77,7 @@ export const WeaponView = ({
     const metric = weaponBoard.option(weaponBoard.defaultSort)
 
     return (
-        <main className="ch-page">
+        <main id="main" tabIndex={-1} className="ch-page">
             <header className="ch-hero mb-3">
                 <Link to="/weapons" className="ch-kicker hover:text-foreground">
                     <span aria-hidden>&larr;</span> All weapons

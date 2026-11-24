@@ -111,7 +111,7 @@ export const CalcView = ({
     })
 
     return (
-        <main className="ch-page">
+        <main id="main" tabIndex={-1} className="ch-page">
             <header className="ch-hero mb-3">
                 <p className="ch-kicker">Tools</p>
                 <h1 className="ch-display mt-1 text-2xl md:text-3xl">

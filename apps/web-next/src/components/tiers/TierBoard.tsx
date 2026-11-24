@@ -232,7 +232,7 @@ export const TierBoard = ({ board, onPlace, onReset }: TierBoardProps) => {
     )
 
     return (
-        <main className="ch-page">
+        <main id="main" tabIndex={-1} className="ch-page">
             <header className="ch-hero mb-3">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">

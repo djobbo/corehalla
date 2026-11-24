@@ -42,7 +42,7 @@ function PageContent() {
     const rows = to3v3Rows(board)
 
     return (
-        <main className="ch-page">
+        <main id="main" tabIndex={-1} className="ch-page">
             <LadderView
                 bracket="3v3"
                 region={region}
@@ -56,7 +56,7 @@ function PageContent() {
 }
 
 const BoardShell = () => (
-    <main className="ch-page">
+    <main id="main" tabIndex={-1} className="ch-page">
         <PageLoaderProbe />
     </main>
 )

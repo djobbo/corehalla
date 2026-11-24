@@ -4,7 +4,7 @@ import { weaponIconSrc } from "@/lib/assets"
 import { weaponHref, weaponIndex } from "@/lib/weapons"
 
 export const WeaponIndex = () => (
-    <main className="ch-page">
+    <main id="main" tabIndex={-1} className="ch-page">
         <header className="ch-hero mb-3">
             <p className="ch-kicker">Brawlhalla arsenal</p>
             <h1 className="ch-display mt-1 text-2xl">Weapons</h1>

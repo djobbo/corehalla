@@ -25,6 +25,7 @@ import {
     PageLoaderProvider,
 } from "@/components/layout/PageLoader"
 import { SearchProvider, SearchTrigger } from "@/components/layout/Search"
+import { SkipLink } from "@/components/layout/SkipLink"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { errorPageFor, notFoundPage } from "@/lib/errorPage"
 import { Suspense, useMemo } from "react"
@@ -64,6 +65,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
                     name: "viewport",
                     content: "width=device-width, initial-scale=1",
                 },
+                // Paints the mobile browser toolbar in the page canvas colour.
+                { name: "theme-color", content: "#1e212c" },
                 ...(page?.meta ?? [{ title: "Corehalla" }]),
             ],
         }
@@ -104,6 +107,7 @@ function RootComponent() {
                     <PageLoaderProvider>
                         <LandingBackground className="ch-landing" />
                         <SearchProvider>
+                            <SkipLink />
                             <AlertBar />
                             <header className="ch-masthead">
                                 <Link
