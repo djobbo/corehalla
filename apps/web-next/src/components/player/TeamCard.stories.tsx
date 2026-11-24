@@ -25,11 +25,16 @@ const team: PlayerRankedTeam = {
     wins: 154,
     games: 260,
     region: "eu",
+    global_rank: null,
     rating_reset: 1950,
 }
 
 export const Default: Story = {
     args: { team },
+}
+
+export const WithPosition: Story = {
+    args: { team: { ...team, global_rank: 12 } },
 }
 
 export const NoRegion: Story = {

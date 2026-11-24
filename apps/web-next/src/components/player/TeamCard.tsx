@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { SplitProgress } from "@/components/common/SplitProgress"
 import { EntityLink } from "@/components/common/EntityLink"
+import { RankPosition } from "./RankPosition"
 import { regionFlagSrc } from "@/lib/assets"
 import { useRankedBanner } from "@/lib/media"
 import { playerHref } from "@/lib/rankings"
@@ -57,6 +58,7 @@ export const TeamCard = ({ team }: { readonly team: PlayerRankedTeam }) => {
                         / {team.peak_rating.toLocaleString()} peak
                     </span>
                 </p>
+                <RankPosition className="mt-1" globalRank={team.global_rank} />
                 <SplitProgress
                     className="mt-2"
                     parts={[
