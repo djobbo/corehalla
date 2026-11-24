@@ -1,11 +1,18 @@
 import { describe, expect, it } from "@effect/vitest"
+import { weapons } from "@crh/bhapi/constants"
+import { compareBy } from "./useSortBy"
 import type { WeaponMetaRow } from "./weaponMeta"
 import {
     formatWeaponMetaCount,
     formatWeaponMetaDuration,
     formatWeaponMetaRate,
+    weaponMetaAverage,
+    weaponMetaDefaultDirection,
+    weaponMetaDefaultSort,
     weaponMetaRankLabel,
     weaponMetaSample,
+    weaponMetaSorts,
+    weaponMetaTableRows,
     weaponPlayShareRank,
 } from "./weaponMeta"
 
@@ -55,6 +62,17 @@ describe("formatWeaponMetaCount", () => {
 
     it("renders a missing count as a dash", () => {
         expect(formatWeaponMetaCount(null)).toBe("—")
+    })
+})
+
+describe("weaponMetaAverage", () => {
+    it("keeps one decimal so a per-game spread stays visible", () => {
+        expect(weaponMetaAverage(0.94)).toBe("0.9")
+        expect(weaponMetaAverage(1.06)).toBe("1.1")
+    })
+
+    it("renders a missing average as a dash", () => {
+        expect(weaponMetaAverage(null)).toBe("—")
     })
 })
 
@@ -139,5 +157,71 @@ describe("weaponMetaRankLabel", () => {
         expect(weaponMetaRankLabel({ position: 4, total: 15 })).toBe(
             "#4 of 15 by play share",
         )
+    })
+})
+
+const tableRow = (
+    weapon: WeaponMetaRow["weapon"],
+    over: Partial<WeaponMetaRow> = {},
+): ReturnType<typeof weaponMetaTableRows>[number] => ({
+    weapon,
+    meta: row(weapon, over),
+})
+
+describe("weaponMetaTableRows", () => {
+    it("keeps every weapon in the catalogue, even one the sample skips", () => {
+        const rows = weaponMetaTableRows({
+            data: [row("Sword")],
+            meta: { accounts: 10 },
+        })
+
+        expect(rows.map((entry) => entry.weapon)).toEqual([...weapons])
+        expect(
+            rows.find((entry) => entry.weapon === "Sword")?.meta?.playShare,
+        ).toBe(0.25)
+        expect(
+            rows.find((entry) => entry.weapon === "Chakram")?.meta,
+        ).toBeNull()
+    })
+})
+
+describe("weaponMetaSorts", () => {
+    it("opens on play share, highest first", () => {
+        expect(weaponMetaDefaultSort).toBe("playShare")
+        expect(weaponMetaDefaultDirection).toBe("desc")
+    })
+
+    it("orders real values by the chosen metric", () => {
+        const rows = [
+            tableRow("Sword", { kosPerGame: 0.9 }),
+            tableRow("Gauntlets", { kosPerGame: 1.2 }),
+            tableRow("Axe", { kosPerGame: 0.4 }),
+        ]
+
+        expect(
+            [...rows]
+                .sort(compareBy(weaponMetaSorts.kosPerGame, "desc"))
+                .map((entry) => entry.weapon),
+        ).toEqual(["Gauntlets", "Sword", "Axe"])
+    })
+
+    it("sorts a weapon without the metric behind every weapon that has one", () => {
+        const rows = [
+            tableRow("Axe", { timeHeldPerGame: null }),
+            tableRow("Sword", { timeHeldPerGame: 90 }),
+            { weapon: "Chakram" as const, meta: null },
+        ]
+
+        expect(
+            [...rows]
+                .sort(compareBy(weaponMetaSorts.timeHeldPerGame, "desc"))
+                .map((entry) => entry.weapon),
+        ).toEqual(["Sword", "Axe", "Chakram"])
+
+        expect(
+            [...rows]
+                .sort(compareBy(weaponMetaSorts.timeHeldPerGame, "asc"))
+                .map((entry) => entry.weapon),
+        ).toEqual(["Sword", "Axe", "Chakram"])
     })
 })
