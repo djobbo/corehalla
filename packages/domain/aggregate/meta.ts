@@ -4,15 +4,30 @@ import { weapons } from "@crh/bhapi/constants"
 import type {
     LegendMeta,
     LegendMetaFloor,
+    LegendPlayStyle,
     WeaponMeta,
 } from "@crh/api-contract/schemas"
 import type { Weapon } from "@crh/bhapi/constants"
+
+export type LegendPlayStyleTotals = {
+    /** Accounts whose legend rows reported at least one game. */
+    readonly accounts: number
+    readonly damageDealt: number
+    readonly damageTaken: number
+    readonly kos: number
+    readonly falls: number
+    readonly suicides: number
+    readonly matchTime: number
+    readonly timeHeldWeaponOne: number
+    readonly timeHeldWeaponTwo: number
+}
 
 export type LegendMetaRowInput = {
     readonly legendId: number
     readonly games: number
     readonly wins: number
     readonly accounts: number
+    readonly playStyle: LegendPlayStyleTotals
 }
 
 export type LegendMetaSample = {
@@ -20,9 +35,48 @@ export type LegendMetaSample = {
     readonly floor: LegendMetaFloor
 }
 
+const round = (value: number, decimals: number): number => {
+    const factor = 10 ** decimals
+
+    return Math.round(value * factor) / factor
+}
+
 /** Four decimals of a fraction; a zero denominator reads as zero, never NaN. */
 const fraction = (part: number, whole: number): number =>
-    whole <= 0 ? 0 : Math.round((part / whole) * 10_000) / 10_000
+    whole <= 0 ? 0 : round(part / whole, 4)
+
+/** A fraction that has no meaningful value without a denominator reads as absent. */
+const nullableFraction = (part: number, whole: number): number | null =>
+    whole <= 0 ? null : fraction(part, whole)
+
+/** `null` instead of a division by zero — an absent metric, not a zero. */
+const perGame = (
+    total: number,
+    games: number,
+    decimals: number,
+): number | null => (games <= 0 ? null : round(total / games, decimals))
+
+const playStyle = (
+    totals: LegendPlayStyleTotals,
+    games: number,
+): LegendPlayStyle => {
+    const held = totals.timeHeldWeaponOne + totals.timeHeldWeaponTwo
+    const weaponOneShare =
+        held <= 0 ? null : round(totals.timeHeldWeaponOne / held, 4)
+
+    return {
+        accounts: totals.accounts,
+        damageDealtPerGame: perGame(totals.damageDealt, games, 2),
+        damageTakenPerGame: perGame(totals.damageTaken, games, 2),
+        kosPerGame: perGame(totals.kos, games, 2),
+        fallsPerGame: perGame(totals.falls, games, 2),
+        suicidesPer100Games: perGame(totals.suicides * 100, games, 2),
+        averageMatchSeconds: perGame(totals.matchTime, games, 0),
+        weaponOneShare,
+        weaponTwoShare:
+            weaponOneShare === null ? null : round(1 - weaponOneShare, 4),
+    }
+}
 
 export const buildLegendMeta = (
     rows: readonly LegendMetaRowInput[],
@@ -45,6 +99,7 @@ export const buildLegendMeta = (
                     winRate: fraction(row.wins, row.games),
                     playShare: fraction(row.games, totalGames),
                     accounts: row.accounts,
+                    playStyle: playStyle(row.playStyle, row.games),
                 },
             ]
         }),
@@ -69,13 +124,6 @@ export type WeaponMetaSample = {
     readonly accounts: number
 }
 
-/** Two decimals of an average; null when there is nothing to divide by. */
-const perGame = (total: number, games: number): number | null =>
-    games <= 0 ? null : Math.round((total / games) * 100) / 100
-
-const nullableFraction = (part: number, whole: number): number | null =>
-    whole <= 0 ? null : Math.round((part / whole) * 10_000) / 10_000
-
 const isWeapon = (value: string): value is Weapon =>
     (weapons as readonly string[]).includes(value)
 
@@ -97,9 +145,9 @@ export const buildWeaponMeta = (
             winRate: nullableFraction(row.wins, row.games),
             playShare: nullableFraction(row.games, totalGames),
             accounts: row.accounts,
-            damagePerGame: perGame(row.damageDealt, row.games),
-            timeHeldPerGame: perGame(row.matchTime, row.games),
-            kosPerGame: perGame(row.kos, row.games),
+            damagePerGame: perGame(row.damageDealt, row.games, 2),
+            timeHeldPerGame: perGame(row.matchTime, row.games, 2),
+            kosPerGame: perGame(row.kos, row.games, 2),
         })),
         meta: { accounts: sample.accounts },
     }

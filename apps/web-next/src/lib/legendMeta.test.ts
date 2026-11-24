@@ -21,6 +21,17 @@ const row = (
     winRate: 0.5,
     playShare: 0.25,
     accounts: 10,
+    playStyle: {
+        accounts: 10,
+        damageDealtPerGame: 412.75,
+        damageTakenPerGame: 380.2,
+        kosPerGame: 1.4,
+        fallsPerGame: 1.03,
+        suicidesPer100Games: 0.82,
+        averageMatchSeconds: 200,
+        weaponOneShare: 0.6,
+        weaponTwoShare: 0.4,
+    },
     ...over,
 })
 

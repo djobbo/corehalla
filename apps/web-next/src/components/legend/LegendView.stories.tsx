@@ -50,6 +50,22 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {}
 
+export const WithPlayStyle: Story = {
+    args: {
+        playStyle: {
+            accounts: 12_480,
+            damageDealtPerGame: 412.75,
+            damageTakenPerGame: 401.32,
+            kosPerGame: 1.42,
+            fallsPerGame: 1.21,
+            suicidesPer100Games: 0.82,
+            averageMatchSeconds: 208,
+            weaponOneShare: 0.5833,
+            weaponTwoShare: 0.4167,
+        },
+    },
+}
+
 export const NoMains: Story = {
     args: { rows: [] },
 }

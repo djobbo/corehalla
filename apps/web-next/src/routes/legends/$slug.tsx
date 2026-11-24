@@ -1,10 +1,13 @@
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router"
+import { useAtomValue } from "@effect/atom-react"
 import { LegendView } from "@/components/legend/LegendView"
 import { absoluteUrl } from "@/lib/assets"
 import { legendHref, resolveLegend } from "@/lib/legends"
 import {
     careerLegendRankingsAtom,
-    preloadAtoms,
+    legendMetaAtom,
+    legendMetaQueryAtom,
+    preloadAtomsDegraded,
     useQuery,
 } from "@/effect/atoms"
 
@@ -25,9 +28,12 @@ export const Route = createFileRoute("/legends/$slug")({
             })
         }
 
-        return preloadAtoms(context, [
-            careerLegendRankingsAtom(legend.legend_id, "games", 1),
-        ])
+        return preloadAtomsDegraded(
+            context,
+            [careerLegendRankingsAtom(legend.legend_id, "games", 1)],
+            // Decoration: a slow or failed aggregate drops the card, never the page.
+            [legendMetaQueryAtom("all")],
+        )
     },
     head({ params }) {
         const legend = resolveLegend(params.slug)
@@ -39,7 +45,7 @@ export const Route = createFileRoute("/legends/$slug")({
                 { title: `${legend.bio_name} — Brawlhalla legend — Corehalla` },
                 {
                     name: "description",
-                    content: `${legend.bio_name}, ${legend.bio_aka}. Fights with ${legend.weapon_one} and ${legend.weapon_two}. Its attributes and the players who main it.`,
+                    content: `${legend.bio_name}, ${legend.bio_aka}. Fights with ${legend.weapon_one} and ${legend.weapon_two}. Its attributes, how it plays and the players who main it.`,
                 },
             ],
             links: [
@@ -63,6 +69,10 @@ function Page() {
     const rows = useQuery(
         careerLegendRankingsAtom(legend.legend_id, "games", 1),
     )
+    const board = useAtomValue(legendMetaAtom("all"))
+    const playStyle =
+        board?.data.find((row) => row.legendId === legend.legend_id)
+            ?.playStyle ?? null
 
-    return <LegendView legend={legend} rows={rows} />
+    return <LegendView legend={legend} rows={rows} playStyle={playStyle} />
 }

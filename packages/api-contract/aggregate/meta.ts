@@ -17,6 +17,26 @@ export const legendMetaFloorRating = (floor: LegendMetaFloor): number | null =>
     floor === "all" ? null : Number(floor)
 
 /**
+ * Per-game play-style profile for one legend. Every metric is `null` when the
+ * sample has no input for it — the card renders a dash, never a made-up zero.
+ * Weapon shares are fractions of held weapon time and add up to one.
+ */
+export const LegendPlayStyleSchema = Schema.Struct({
+    /** Indexed accounts whose rows reported at least one game. */
+    accounts: Schema.Number,
+    damageDealtPerGame: Schema.NullOr(Schema.Number),
+    damageTakenPerGame: Schema.NullOr(Schema.Number),
+    kosPerGame: Schema.NullOr(Schema.Number),
+    fallsPerGame: Schema.NullOr(Schema.Number),
+    suicidesPer100Games: Schema.NullOr(Schema.Number),
+    averageMatchSeconds: Schema.NullOr(Schema.Number),
+    weaponOneShare: Schema.NullOr(Schema.Number),
+    weaponTwoShare: Schema.NullOr(Schema.Number),
+})
+
+export type LegendPlayStyle = typeof LegendPlayStyleSchema.Type
+
+/**
  * Rates are fractions of one, rounded to four decimals by the aggregate — not
  * percentages. `playShare` divides by every legend game in the sample, so the
  * shares of a non-empty board sum to (approximately) one.
@@ -31,6 +51,7 @@ export const LegendMetaRowSchema = Schema.Struct({
     playShare: Schema.Number,
     /** Indexed accounts with at least one game on this legend in the sample. */
     accounts: Schema.Number,
+    playStyle: LegendPlayStyleSchema,
 })
 
 export type LegendMetaRow = typeof LegendMetaRowSchema.Type

@@ -1,22 +1,47 @@
 import { describe, expect, it } from "@effect/vitest"
 import { buildLegendMeta, buildWeaponMeta } from "./meta"
+import type { LegendMetaRowInput } from "./meta"
 
 const sample = {
     accounts: 18_204,
     floor: "1800",
 } as const
 
+const playStyle = {
+    accounts: 10,
+    damageDealt: 30_000,
+    damageTaken: 29_000,
+    kos: 210,
+    falls: 155,
+    suicides: 3,
+    matchTime: 30_000,
+    timeHeldWeaponOne: 7_000,
+    timeHeldWeaponTwo: 5_000,
+} as const
+
+const row = (
+    legendId: number,
+    over: Partial<LegendMetaRowInput> = {},
+): LegendMetaRowInput => ({
+    legendId,
+    games: 150,
+    wins: 75,
+    accounts: 10,
+    playStyle,
+    ...over,
+})
+
 describe("buildLegendMeta", () => {
     it("rounds win rate and play share to four decimals", () => {
         const board = buildLegendMeta(
             [
-                { legendId: 3, games: 200, wins: 150, accounts: 120 },
-                { legendId: 4, games: 100, wins: 50, accounts: 80 },
+                row(3, { games: 200, wins: 150, accounts: 120 }),
+                row(4, { games: 100, wins: 50, accounts: 80 }),
             ],
             sample,
         )
 
-        expect(board.data).toEqual([
+        expect(board.data).toMatchObject([
             {
                 legendId: 3,
                 slug: "3-bdvar",
@@ -38,11 +63,81 @@ describe("buildLegendMeta", () => {
         ])
     })
 
-    it("guards a zero-game sample instead of producing NaN", () => {
+    it("divides the play-style totals per game, not per account", () => {
+        const board = buildLegendMeta([row(3)], sample)
+
+        expect(board.data[0]?.playStyle).toEqual({
+            accounts: 10,
+            damageDealtPerGame: 200,
+            damageTakenPerGame: 193.33,
+            kosPerGame: 1.4,
+            fallsPerGame: 1.03,
+            suicidesPer100Games: 2,
+            averageMatchSeconds: 200,
+            weaponOneShare: 0.5833,
+            weaponTwoShare: 0.4167,
+        })
+    })
+
+    it("rounds the average match length to whole seconds", () => {
         const board = buildLegendMeta(
-            [{ legendId: 3, games: 10, wins: 5, accounts: 1 }],
+            [
+                row(3, {
+                    games: 4,
+                    playStyle: { ...playStyle, matchTime: 1_234 },
+                }),
+            ],
             sample,
         )
+
+        expect(board.data[0]?.playStyle.averageMatchSeconds).toBe(309)
+    })
+
+    it("complements the weapon shares so the split sums to one", () => {
+        const board = buildLegendMeta(
+            [
+                row(3, {
+                    playStyle: {
+                        ...playStyle,
+                        timeHeldWeaponOne: 1,
+                        timeHeldWeaponTwo: 2,
+                    },
+                }),
+            ],
+            sample,
+        )
+
+        const split = board.data[0]?.playStyle
+
+        expect(split?.weaponOneShare).toBe(0.3333)
+        expect(split?.weaponTwoShare).toBe(0.6667)
+        expect(
+            (split?.weaponOneShare ?? 0) + (split?.weaponTwoShare ?? 0),
+        ).toBe(1)
+    })
+
+    it("leaves the weapon split null when no time was held", () => {
+        const board = buildLegendMeta(
+            [
+                row(3, {
+                    playStyle: {
+                        ...playStyle,
+                        timeHeldWeaponOne: 0,
+                        timeHeldWeaponTwo: 0,
+                    },
+                }),
+            ],
+            sample,
+        )
+
+        expect(board.data[0]?.playStyle).toMatchObject({
+            weaponOneShare: null,
+            weaponTwoShare: null,
+        })
+    })
+
+    it("guards a zero-game sample instead of producing NaN", () => {
+        const board = buildLegendMeta([row(3, { games: 10, wins: 5 })], sample)
 
         expect(board.data[0]?.playShare).toBe(1)
         expect(board.data[0]?.winRate).toBe(0.5)
@@ -50,22 +145,16 @@ describe("buildLegendMeta", () => {
 
     it("drops a legend with no games in the sample", () => {
         const board = buildLegendMeta(
-            [
-                { legendId: 3, games: 10, wins: 5, accounts: 1 },
-                { legendId: 4, games: 0, wins: 0, accounts: 1 },
-            ],
+            [row(3), row(4, { games: 0, wins: 0 })],
             sample,
         )
 
-        expect(board.data.map((row) => row.legendId)).toEqual([3])
+        expect(board.data.map((entry) => entry.legendId)).toEqual([3])
         expect(board.data[0]?.playShare).toBe(1)
     })
 
     it("drops an id that is not in the roster", () => {
-        const board = buildLegendMeta(
-            [{ legendId: 9999, games: 10, wins: 5, accounts: 1 }],
-            sample,
-        )
+        const board = buildLegendMeta([row(9999)], sample)
 
         expect(board.data).toEqual([])
     })
