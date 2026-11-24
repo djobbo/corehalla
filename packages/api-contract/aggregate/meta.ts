@@ -23,15 +23,15 @@ export const legendMetaFloorRating = (floor: LegendMetaFloor): number | null =>
  */
 export const LegendPlayStyleSchema = Schema.Struct({
     /** Indexed accounts whose rows reported at least one game. */
-    accounts: Schema.Number,
-    damageDealtPerGame: Schema.NullOr(Schema.Number),
-    damageTakenPerGame: Schema.NullOr(Schema.Number),
-    kosPerGame: Schema.NullOr(Schema.Number),
-    fallsPerGame: Schema.NullOr(Schema.Number),
-    suicidesPer100Games: Schema.NullOr(Schema.Number),
-    averageMatchSeconds: Schema.NullOr(Schema.Number),
-    weaponOneShare: Schema.NullOr(Schema.Number),
-    weaponTwoShare: Schema.NullOr(Schema.Number),
+    accounts: Schema.Finite,
+    damageDealtPerGame: Schema.NullOr(Schema.Finite),
+    damageTakenPerGame: Schema.NullOr(Schema.Finite),
+    kosPerGame: Schema.NullOr(Schema.Finite),
+    fallsPerGame: Schema.NullOr(Schema.Finite),
+    suicidesPer100Games: Schema.NullOr(Schema.Finite),
+    averageMatchSeconds: Schema.NullOr(Schema.Finite),
+    weaponOneShare: Schema.NullOr(Schema.Finite),
+    weaponTwoShare: Schema.NullOr(Schema.Finite),
 })
 
 export type LegendPlayStyle = typeof LegendPlayStyleSchema.Type
