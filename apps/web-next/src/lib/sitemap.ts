@@ -7,6 +7,12 @@ import { weaponHref } from "./weapons"
 const PLACEHOLDER_ORIGIN = "https://corehalla.com"
 const SITEMAP_NAMESPACE = "http://www.sitemaps.org/schemas/sitemap/0.9"
 
+const prefixedPaths = (prefix: string, slugs: readonly string[]): string[] =>
+    slugs
+        .map((slug) => slug.trim())
+        .filter((slug) => slug.length > 0)
+        .map((slug) => `${prefix}${slug}`)
+
 /**
  * Every canonical, indexable page the app renders. Paginated boards, private
  * `/@me` pages and the redirect-only legacy paths stay out.
@@ -37,10 +43,23 @@ export const sitemapPaths = (): readonly string[] => {
         ...legends.map(legendHref),
         ...weapons.map(weaponHref),
         "/tiers",
+        "/calc",
+        "/vs",
     ]
 
     return [...new Set(paths)]
 }
+
+/** `/news/<slug>` and `/updates/<slug>` for the lists the article endpoints return. */
+export const articlePaths = (
+    news: readonly string[],
+    updates: readonly string[],
+): readonly string[] => [
+    ...new Set([
+        ...prefixedPaths("/news/", news),
+        ...prefixedPaths("/updates/", updates),
+    ]),
+]
 
 export const normalizeOrigin = (url?: string): string => {
     const origin = url?.trim().replace(/\/+$/, "")
