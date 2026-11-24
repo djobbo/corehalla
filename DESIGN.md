@@ -258,7 +258,7 @@ Tabs (`.ch-tabline` / `.ch-tablink`): a groove of `inset 0 -3px 0 0 {colors.pane
 
 ### Empty
 
-`components/ui/empty.tsx` centres its content. Call sites pair it with `rounded-none bg-card shadow-md`. The landing signed-out prompt is still a centred dashed well with a heart icon and `rounded-2xl` (`components/account/LandingFavorites.tsx`).
+`components/ui/empty.tsx` is a start-aligned block on the page column: `items-start text-left`, a `.ch-kicker` title, one sentence, and the action on the same edge. No border and no icon tile. The call site decides the surface: a board pairs it with `rounded-none bg-card shadow-md`; the landing favourites slot leaves it on the canvas.
 
 ### Motion
 

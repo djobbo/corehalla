@@ -11,7 +11,6 @@ import {
     EmptyHeader,
     EmptyTitle,
 } from "@/components/ui/empty"
-import { Heart } from "lucide-react"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { getEntitySlug } from "@crh/common/helpers/entitySlug"
 import type { Favorite } from "@crh/api-contract/schemas"
@@ -35,10 +34,6 @@ export const FavoritesGrid = ({
         return (
             <Empty className="p-8">
                 <EmptyHeader>
-                    <Heart
-                        aria-hidden
-                        className="size-6 text-muted-foreground"
-                    />
                     <EmptyTitle>No favorites yet</EmptyTitle>
                     <EmptyDescription>
                         Open a player or clan and press &ldquo;Favorite&rdquo;.
