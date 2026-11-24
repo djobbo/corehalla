@@ -23,11 +23,11 @@ export const directGuild = (
         }
 
         if (clan._tag === "Failure") {
-            return yield* Effect.fail(toSectionError(PLAN.guildProfile, parts))
+            return yield* toSectionError(PLAN.guildProfile, parts)
         }
 
         if (clan.success === null) {
-            return yield* Effect.fail(toSectionError(PLAN.guildProfile, parts))
+            return yield* toSectionError(PLAN.guildProfile, parts)
         }
 
         const envelope = buildGuild(clan.success, at, {

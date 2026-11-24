@@ -17,7 +17,10 @@ import * as FetchHttpClient from "effect/http/FetchHttpClient"
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime"
 import * as NodeServices from "@effect/platform-node/NodeServices"
 
-class SeedError extends Schema.TaggedError<SeedError>()("SeedError", {
+class SeedError extends Schema.TaggedError<
+    SeedError,
+    { readonly brand: unique symbol }
+>()("SeedError", {
     message: Schema.String,
     cause: Schema.optionalKey(Schema.Defect()),
 }) {}
@@ -63,7 +66,7 @@ const ContentListResponse = Schema.Struct({
                 }),
             }),
         ),
-        total: Schema.Number,
+        total: Schema.Finite,
     }),
 })
 

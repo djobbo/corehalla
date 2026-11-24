@@ -6,7 +6,6 @@ import {
     getWeaponlessData,
     getWeaponsAccumulativeData,
 } from "@crh/bhapi/legends"
-import type { FullLegend } from "@crh/bhapi/legends"
 import type {
     BHPlayerData,
     NewBHPlayerLegend,
@@ -114,11 +113,7 @@ export const toPlayerDataRow = (
     playerStats: PlayerStats,
     ranked: RankedSnapshot | null,
 ): BHPlayerData => {
-    const legends = getFullLegends(
-        playerStats.legends,
-        undefined,
-        false,
-    ) as FullLegend[]
+    const legends = getFullLegends(playerStats.legends, undefined, false)
 
     const {
         matchtime,
@@ -274,11 +269,7 @@ export const toLegendRows = (
     playerId: string,
     playerStats: PlayerStats,
 ): NewBHPlayerLegend[] => {
-    const legends = getFullLegends(
-        playerStats.legends,
-        undefined,
-        false,
-    ) as FullLegend[]
+    const legends = getFullLegends(playerStats.legends, undefined, false)
     const seenAt = new Date()
 
     return legends
@@ -353,11 +344,7 @@ export const toWeaponRows = (
     playerId: string,
     playerStats: PlayerStats,
 ): NewBHPlayerWeapon[] => {
-    const legends = getFullLegends(
-        playerStats.legends,
-        undefined,
-        false,
-    ) as FullLegend[]
+    const legends = getFullLegends(playerStats.legends, undefined, false)
     const weapons = getWeaponsAccumulativeData(getFullWeapons(legends))
     const seenAt = new Date()
 

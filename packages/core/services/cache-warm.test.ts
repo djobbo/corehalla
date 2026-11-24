@@ -21,7 +21,7 @@ const fakeKv = () => {
     return { store, kv }
 }
 
-const inlineSchedule = (effect: Effect.Effect<unknown, unknown>) =>
+const inlineSchedule = <E>(effect: Effect.Effect<unknown, E>) =>
     effect.pipe(Effect.orDie, Effect.asVoid)
 
 const row = (id: number): Ranking1v1 => ({
@@ -201,7 +201,7 @@ describe("the freshness outcomes", () => {
                     async () => kv,
                     (effect) =>
                         Effect.sync(() => {
-                            scheduled = effect as Effect.Effect<void>
+                            scheduled = effect.pipe(Effect.orDie, Effect.asVoid)
                         }),
                 )
 

@@ -6,7 +6,7 @@
     "scripts": {
         "parse-bh-articles:dev": "tsnd --respawn ./bh-articles/dev.ts",
         "parse-weekly-rot:dev": "tsnd --respawn ./weekly-rotation/dev.ts",
-        "ts:check": "effect-tsgo tsrs --noEmit"
+        "ts:check": "effect-tsgo vp check --no-fmt --no-lint"
     },
     "dependencies": {
         "axios": "catalog:",

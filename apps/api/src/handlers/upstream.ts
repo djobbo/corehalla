@@ -103,9 +103,7 @@ export const upstreamGroup = HttpApiBuilder.group(
                     db
                         .getPlayerAliases(params.playerId.toString())
                         .pipe(
-                            Effect.catch(() =>
-                                Effect.succeed([] as readonly string[]),
-                            ),
+                            Effect.orElseSucceed(() => [] as readonly string[]),
                         ),
                 )
                 .handle("getClanStats", ({ params }) =>

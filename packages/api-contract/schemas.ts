@@ -74,7 +74,7 @@ export type PowerRankingsOrderBy = typeof PowerRankingsOrderBy.Type
 
 export const PowerRankingsPlayerSchema = Schema.Struct({
     /** brawltools' "esports" ID — not a Brawlhalla ID. */
-    esportsId: Schema.Number,
+    esportsId: Schema.Finite,
     playerName: Schema.String,
     /** brawltools' full display name (its `name`); null when unavailable. */
     fullName: Schema.NullOr(Schema.String),
@@ -84,22 +84,22 @@ export const PowerRankingsPlayerSchema = Schema.Struct({
      * brawltools identities. All nullable: `brawlhallaId` is unknown for some
      * players, and upstream omits socials/country when empty.
      */
-    brawlhallaId: Schema.NullOr(Schema.Number),
-    sggPlayerId: Schema.NullOr(Schema.Number),
+    brawlhallaId: Schema.NullOr(Schema.Finite),
+    sggPlayerId: Schema.NullOr(Schema.Finite),
     cmPlayerId: Schema.NullOr(Schema.String),
     twitter: Schema.NullOr(Schema.String),
     twitch: Schema.NullOr(Schema.String),
     country: Schema.NullOr(Schema.String),
     /** Player-stats slug; null when `brawlhallaId` is unknown (render unlinked). */
     slug: Schema.NullOr(Schema.String),
-    top8: Schema.Number,
-    top32: Schema.Number,
-    gold: Schema.Number,
-    silver: Schema.Number,
-    bronze: Schema.Number,
-    powerRanking: Schema.Number,
-    points: Schema.Number,
-    earnings: Schema.Number,
+    top8: Schema.Finite,
+    top32: Schema.Finite,
+    gold: Schema.Finite,
+    silver: Schema.Finite,
+    bronze: Schema.Finite,
+    powerRanking: Schema.Finite,
+    points: Schema.Finite,
+    earnings: Schema.Finite,
 })
 
 export type PowerRankingsPlayer = typeof PowerRankingsPlayerSchema.Type
@@ -109,8 +109,8 @@ export type PowerRankingsPlayer = typeof PowerRankingsPlayerSchema.Type
  * count and already accounts for the requested `max_results`.
  */
 export const PowerRankingsMetaSchema = Schema.Struct({
-    updated_at: Schema.Number,
-    total_pages: Schema.Number,
+    updated_at: Schema.Finite,
+    total_pages: Schema.Finite,
 })
 
 export const PowerRankingsEnvelopeSchema = Schema.Struct({
@@ -279,8 +279,8 @@ export type Connection = typeof ConnectionSchema.Type
 export const CmsImageSchema = Schema.Struct({
     url: Schema.String,
     alt: Schema.String,
-    width: Schema.NullOr(Schema.Number),
-    height: Schema.NullOr(Schema.Number),
+    width: Schema.NullOr(Schema.Finite),
+    height: Schema.NullOr(Schema.Finite),
     mimeType: Schema.NullOr(Schema.String),
     srcSet: Schema.optionalKey(Schema.String),
 })
@@ -334,8 +334,8 @@ export type CmsArticle = typeof CmsArticleSchema.Type
 
 export const CmsArticlesPageSchema = Schema.Struct({
     articles: Schema.Array(CmsArticleSchema),
-    page: Schema.Number,
-    totalPages: Schema.Number,
+    page: Schema.Finite,
+    totalPages: Schema.Finite,
     hasNextPage: Schema.Boolean,
 })
 

@@ -15,9 +15,9 @@ export const LookupResultSchema = Schema.Struct({
      */
     aliases: Schema.Array(Schema.String),
     /** `null` for a clan, or a player found only locally. */
-    rating: Schema.NullOr(Schema.Number),
+    rating: Schema.NullOr(Schema.Finite),
     /** `null` for a player. */
-    xp: Schema.NullOr(Schema.Number),
+    xp: Schema.NullOr(Schema.Finite),
     tier: Schema.NullOr(Schema.String),
     region: Schema.NullOr(Schema.String),
     /** On the wire so a silent upstream outage remains observable. */

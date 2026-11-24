@@ -127,10 +127,8 @@ export const rankingsGroup = HttpApiBuilder.group(
                                 ),
                             )
                             .pipe(
-                                Effect.catch(() =>
-                                    Effect.succeed(
-                                        [] as readonly BestLegendRow[],
-                                    ),
+                                Effect.orElseSucceed(
+                                    () => [] as readonly BestLegendRow[],
                                 ),
                             )
 

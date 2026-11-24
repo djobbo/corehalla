@@ -7,7 +7,7 @@
         "typescript": "catalog:"
     },
     "scripts": {
-        "ts:check": "effect-tsgo tsrs --noEmit"
+        "ts:check": "effect-tsgo vp check --no-fmt --no-lint"
     },
     "dependencies": {
         "@crh/common": "workspace:*",

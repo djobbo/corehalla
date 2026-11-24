@@ -45,7 +45,7 @@ export const PlayerOverviewTab = ({
     const generalStats: MiscStat[] = [
         {
             name: "Time unarmed",
-            value: `${formatTime(unarmed.matchtime)}`,
+            value: formatTime(unarmed.matchtime),
             desc: `Time played unarmed`,
         },
         {

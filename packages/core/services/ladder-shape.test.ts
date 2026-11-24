@@ -61,7 +61,7 @@ describe("3v3 ladder shape", () => {
     it("accepts a Valhallan row, whose v1 tier is null", () => {
         const valhallan: V1Leaderboard = {
             ...threeVsThree,
-            rankings: [{ ...threeVsThree.rankings[0]!, tier: null }],
+            rankings: [{ ...threeVsThree.rankings[0], tier: null }],
         }
 
         expect(isCompleteLeaderboard(valhallan, 1)).toBe(true)
@@ -69,7 +69,7 @@ describe("3v3 ladder shape", () => {
 
     it("renders a null tier as Valhallan rather than dropping the row", () => {
         const rows = toRankings3v3([
-            { ...threeVsThree.rankings[0]!, tier: null },
+            { ...threeVsThree.rankings[0], tier: null },
         ])
 
         expect(rows[0]?.tier).toBe("Valhallan")

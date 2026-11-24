@@ -5,6 +5,7 @@ import {
     buildRankings3v3,
 } from "../aggregate/rankings"
 import { PLAN, statusFromError, toSectionError } from "../sections/meta"
+import type { PlanId } from "../sections/meta"
 import type { V1UpstreamShape } from "../upstream/client"
 import type { V1Error } from "../upstream/v1"
 import type {
@@ -14,7 +15,7 @@ import type {
     RankedRegion,
 } from "@crh/api-contract/schemas"
 
-const fail = (plan: string, error: V1Error) =>
+const fail = (plan: PlanId, error: V1Error) =>
     toSectionError(plan, {
         board: { status: statusFromError(error), updated_at: Date.now() },
     })

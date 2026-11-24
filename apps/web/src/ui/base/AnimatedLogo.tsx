@@ -17,7 +17,7 @@ const centerAnimation = keyframes({
 
 const Center = styled("g", {
     transformOrigin: "center",
-    animation: `${centerAnimation} 2s linear infinite`,
+    animation: `${centerAnimation.toString()} 2s linear infinite`,
 })
 
 type AnimatedLogoProps = {

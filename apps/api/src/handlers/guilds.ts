@@ -39,9 +39,7 @@ export const guildsGroup = HttpApiBuilder.group(
                 }
 
                 if (cached._tag === "Failure") {
-                    return yield* Effect.fail(
-                        toSectionError(PLAN.guildProfile, parts),
-                    )
+                    return yield* toSectionError(PLAN.guildProfile, parts)
                 }
 
                 const clan = cached.success.value

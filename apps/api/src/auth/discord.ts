@@ -15,7 +15,7 @@ export const DISCORD_SCOPES = [
 const DiscordTokenSchema = Schema.Struct({
     access_token: Schema.String,
     refresh_token: Schema.optional(Schema.NullOr(Schema.String)),
-    expires_in: Schema.Number,
+    expires_in: Schema.Finite,
     scope: Schema.String,
     token_type: Schema.String,
 })

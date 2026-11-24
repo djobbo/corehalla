@@ -409,29 +409,44 @@ and a `CLOUDFLARE_API_TOKEN` with **D1: Edit** (wrangler also accepts
 The workspace is built and checked with [Vite+](https://viteplus.dev), which
 replaces the previous Turborepo + ESLint + Prettier setup with a single
 toolchain: Vite Task (`vp run`) for tasks, Oxlint for linting and Oxfmt for
-formatting. All configuration lives in the root `vite.config.ts`. Type checking
-uses [tsrs](https://github.com/oxc-project/tsrs) through
-[@effect/tsgo](https://github.com/Effect-TS/tsgo), whose patched build also runs
-the Effect language-service rules in the same pass. The editor language server
-is the same binary: `typescript.tsdk` points at `tools/tsrs-tsdk`, whose `tsgo`
-shim launches `effect-tsgo tsrs`.
+formatting. All configuration lives in the root `vite.config.ts`.
+
+`vp check` is the whole static gate: it formats, lints, and type-checks every
+workspace package in one pass. Types are checked with
+[tsrs](https://github.com/oxc-project/tsrs) (`lint.options.typeAware` +
+`typeCheck`), and the lint step runs through
+[@effect/tsgo](https://github.com/Effect-TS/tsgo), whose patched tsrs adds the
+Effect language-service rules at the `strict` preset — every recommended
+diagnostic is an error. The editor language server is the same binary:
+`typescript.tsdk` points at `tools/tsrs-tsdk`, whose `tsgo` shim launches
+`effect-tsgo tsrs`.
+
+Always invoke the gate through the wrapper (`effect-tsgo vp check`,
+`effect-tsgo vp lint`) so Oxlint loads the Effect-patched binding. The wrapper
+sets the environment the config looks for, so the `effecttsgo` plugin and its
+rules are registered only there; a bare `vp check` still formats, lints and
+type-checks without failing on an unknown plugin, but reports no Effect
+diagnostics.
 
 ```sh
 pnpm ci:install    # vp install --frozen-lockfile
 pnpm dev           # vp run -r --parallel dev (all packages)
 pnpm build         # vp run -r build
-pnpm check         # vp check — format + lint the whole workspace
-pnpm lint          # vp lint --fix
-pnpm ts:check      # effect-tsgo tsrs --noEmit, per package
-pnpm ci:lint       # vp lint (no fixes; used in CI)
+pnpm check         # effect-tsgo vp check — format + lint + type-check
+pnpm lint          # effect-tsgo vp lint --fix
+pnpm ts:check      # effect-tsgo vp check --no-fmt --no-lint
+pnpm ci:lint       # effect-tsgo vp lint (no fixes; used in CI)
 ```
 
 ### Notes and follow-ups
 
-- **Type-aware linting is off.** Vite+ recommends `typeAware: true` +
-  `typeCheck: true`. Types and Effect rules are checked per package by
-  `pnpm ts:check` (`effect-tsgo tsrs`, which runs the Effect rules in the same
-  pass), so Oxlint does not type-check the same projects again.
+- **Experimental Effect modules.** The `strict` preset reports
+  `experimentalApiUsage` as an error. Code that intentionally uses an
+  experimental module (`effect/ai`, `effect/cli`, `effect/workflow`, or an
+  `@stability experimental` export) must allow it explicitly in that package's
+  `tsconfig.json` `plugins` options — `allowedExperimentalApis: ["effect/ai"]`
+  — so the exemption stays scoped to the package that needs it. Never downgrade
+  the diagnostic globally.
 - **Lint warnings** are demoted so the migration lands green; fix them and the
   rules can become errors.
 - **`worker` is React 18** (`react-reconciler` / `reaccord`); its tsconfig pins

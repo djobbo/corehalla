@@ -52,9 +52,7 @@ export const runCrawler = async <A, E>(
     return Effect.runPromise(
         Effect.scoped(
             Effect.gen(function* () {
-                const context = yield* Layer.build(
-                    CrawlerFull as Layer.Layer<Crawler, unknown, never>,
-                )
+                const context = yield* Layer.build(CrawlerFull)
 
                 return yield* effect.pipe(Effect.provide(context))
             }),

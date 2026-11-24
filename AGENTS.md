@@ -36,12 +36,23 @@ This project is pre-release (no external consumers). **Delete** obsolete APIs an
 
 Use **`vp`** as the primary package manager and toolchain. It is pnpm under the hood. Do not use `pnpm`, `npm`, or `yarn` unless `vp` cannot do the job.
 
-| Command              | Purpose                                                                                                                            |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `vp i`               | Install dependencies                                                                                                               |
-| `vp check`           | Format and lint (oxc)                                                                                                              |
-| `vp check --fix`     | Same as `vp check`, applying auto-fixes                                                                                            |
-| `vp test`            | Run tests (Vitest)                                                                                                                 |
-| `vp run -r ts:check` | Type-check with [tsrs](https://github.com/oxc-project/tsrs) and Effect rules via [@effect/tsgo](https://github.com/Effect-TS/tsgo) |
+| Command                                   | Purpose                                                                                    |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `vp i`                                    | Install dependencies                                                                       |
+| `effect-tsgo vp check`                    | Format, lint and type-check the workspace with [tsrs](https://github.com/oxc-project/tsrs) |
+| `effect-tsgo vp check --fix`              | Same, applying auto-fixes                                                                  |
+| `effect-tsgo vp lint`                     | Lint only, with the Effect rules                                                           |
+| `vp test`                                 | Run tests (Vitest)                                                                         |
+| `effect-tsgo vp check --no-fmt --no-lint` | Type-check only (`ts:check`)                                                               |
 
-After code changes, run `vp check --fix`, `vp run -r ts:check`, and `vp test` in the affected package (or from the workspace root). Use `vp run <script>` only for `package.json` scripts / Vite+ tasks that are not built-in commands.
+`vp check` is the single static gate: it type-checks every package with tsrs and
+runs the [@effect/tsgo](https://github.com/Effect-TS/tsgo) `strict` preset, where
+every recommended Effect diagnostic is an error. Run it through `effect-tsgo
+vp` so Oxlint loads the Effect-patched binding; that wrapper is what registers
+the plugin and its rules, so a bare `vp check` stays green but reports no
+Effect diagnostics. An experimental Effect module used on purpose (`effect/ai`,
+`effect/cli`, `effect/workflow`) is allowed per package through
+`allowedExperimentalApis` in that package's `tsconfig.json` — never by
+downgrading the diagnostic globally.
+
+After code changes, run `effect-tsgo vp check --fix`, `vp run -r ts:check`, and `vp test` in the affected package (or from the workspace root). Use `vp run <script>` only for `package.json` scripts / Vite+ tasks that are not built-in commands.

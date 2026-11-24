@@ -16,9 +16,9 @@ import type { AuthError } from "./errors"
  * Each call builds a fresh D1 client and releases it when the request finishes;
  * the `DB` binding is resolved per call because it only exists inside the Worker.
  */
-const runScoped = <A, E, R>(
+const runScoped = <A, E, R, LE>(
     effect: Effect.Effect<A, E, R>,
-    layer: Layer.Layer<R, unknown, never>,
+    layer: Layer.Layer<R, LE>,
 ): Promise<A> =>
     Effect.runPromise(
         Effect.scoped(
@@ -38,9 +38,7 @@ export const runAuth = async <A, E>(
 ): Promise<A> =>
     runScoped(
         effect,
-        authLayer.pipe(
-            Layer.provide(sqlLayer(await resolve(override))),
-        ) as Layer.Layer<Auth, unknown, never>,
+        authLayer.pipe(Layer.provide(sqlLayer(await resolve(override)))),
     )
 
 /**

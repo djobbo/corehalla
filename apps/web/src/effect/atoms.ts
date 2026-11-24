@@ -21,8 +21,8 @@ import type {
 const ttl = "5 minutes"
 
 type Region = typeof RankedRegion.Type
-type ArticleCategoryType = typeof NewsCategory.Type
-type SortableProp = typeof SortablePlayerProp.Type
+type ArticleCategoryType = NewsCategory
+type SortableProp = SortablePlayerProp
 
 export const rankings1v1Atom = (region: Region, page: number, name?: string) =>
     CorehallaClient.query("upstream", "get1v1Rankings", {
@@ -115,10 +115,10 @@ export const makeRegistry = (): Registry => AtomRegistry.make()
  * Resolves an atom on the server (or during a client navigation) so the
  * matching component can render a settled value on its first pass.
  */
-export const preloadAtom = (
+export const preloadAtom = <A, E>(
     registry: Registry,
-    atom: Atom.Atom<any>,
-): Promise<unknown> =>
+    atom: Atom.Atom<AsyncResult.AsyncResult<A, E>>,
+): Promise<A> =>
     Effect.runPromise(
         AtomRegistry.getResult(registry, atom, { suspendOnWaiting: true }),
     )

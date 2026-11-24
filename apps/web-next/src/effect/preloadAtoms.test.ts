@@ -9,7 +9,7 @@ const numberAtom = (key: string, effect: Effect.Effect<number, string>) =>
     Atom.keepAlive(
         Atom.serializable(Atom.make(effect), {
             key,
-            schema: AsyncResult.Schema({ success: Schema.Number }),
+            schema: AsyncResult.Schema({ success: Schema.Finite }),
         }),
     )
 

@@ -58,7 +58,7 @@ export const StatsHeader = ({
                             onClick={() => {
                                 if (isItemFavorite)
                                     return removeFavorite(favorite)
-                                addFavorite(favorite)
+                                void addFavorite(favorite)
                             }}
                         >
                             {isItemFavorite ? (
@@ -83,7 +83,7 @@ export const StatsHeader = ({
                 <Button
                     buttonStyle="outline"
                     onClick={() => {
-                        copyToClipboard(window.location.href)
+                        void copyToClipboard(window.location.href)
                         toast("Copied link to clipboard!", {
                             icon: "📋",
                         })

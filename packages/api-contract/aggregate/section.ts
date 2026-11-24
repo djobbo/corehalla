@@ -29,9 +29,9 @@ export type PartStatus = typeof PartStatusSchema.Type
 export const SectionMetaSchema = Schema.Struct({
     /** e.g. `player/profile@1` — the plan that produced this section. */
     plan: Schema.String,
-    contract: Schema.Number,
+    contract: Schema.Finite,
     /** Oldest source behind the section, epoch ms. */
-    updated_at: Schema.Number,
+    updated_at: Schema.Finite,
     /** False when at least one non-definitive source is missing. */
     complete: Schema.Boolean,
     parts: Schema.Record(Schema.String, PartStatusSchema),
@@ -57,11 +57,14 @@ export type SectionUnavailableReason = typeof SectionUnavailableReason.Type
 
 const SectionErrorFields = {
     plan: Schema.String,
-    contract: Schema.Number,
+    contract: Schema.Finite,
     parts: Schema.Record(Schema.String, PartStatusSchema),
 }
 
-export class SectionFailed extends Schema.Error<SectionFailed>("SectionFailed")(
+export class SectionFailed extends Schema.Error<
+    SectionFailed,
+    { readonly brand: unique symbol }
+>("SectionFailed")(
     {
         _tag: Schema.tag("SectionFailed"),
         ...SectionErrorFields,
@@ -72,9 +75,10 @@ export class SectionFailed extends Schema.Error<SectionFailed>("SectionFailed")(
     },
 ) {}
 
-export class SectionRateLimited extends Schema.Error<SectionRateLimited>(
-    "SectionRateLimited",
-)(
+export class SectionRateLimited extends Schema.Error<
+    SectionRateLimited,
+    { readonly brand: unique symbol }
+>("SectionRateLimited")(
     {
         _tag: Schema.tag("SectionRateLimited"),
         ...SectionErrorFields,
@@ -85,9 +89,10 @@ export class SectionRateLimited extends Schema.Error<SectionRateLimited>(
     },
 ) {}
 
-export class SectionTimedOut extends Schema.Error<SectionTimedOut>(
-    "SectionTimedOut",
-)(
+export class SectionTimedOut extends Schema.Error<
+    SectionTimedOut,
+    { readonly brand: unique symbol }
+>("SectionTimedOut")(
     {
         _tag: Schema.tag("SectionTimedOut"),
         ...SectionErrorFields,

@@ -1,4 +1,15 @@
+import { strict as effectStrict } from "@effect/tsgo/oxlint-presets"
 import { defineConfig } from "vite-plus"
+
+/**
+ * `@effect/tsgo` launches Vite+ with the Effect-patched Oxlint binding, which is
+ * the only build that knows the `effecttsgo` plugin. Detect that environment so
+ * a bare `vp check` / `vp lint` (editors, ad-hoc runs) still works with the
+ * stock rule set instead of failing on an unknown plugin. Every shipped entry
+ * point runs through `effect-tsgo vp ...`, so the Effect diagnostics still gate
+ * the workspace.
+ */
+const effectPatched = process.env.EFFECT_TSGO_OXLINT_BINDING !== undefined
 
 /**
  * Workspace root Vite+ configuration.
@@ -22,10 +33,11 @@ export default defineConfig({
 
     run: {
         tasks: {
-            // Composite CI verification. Uses the built-in check pipeline plus
-            // every package's type check.
+            // `vp check` is the whole static gate: format, lint and type check.
+            // The `effect-tsgo` wrapper is what makes its Oxlint run load the
+            // patched binding that carries the Effect diagnostics.
             ci: {
-                command: ["vp check", "vp run -r ts:check"],
+                command: ["effect-tsgo vp check"],
                 cache: false,
             },
         },
@@ -37,28 +49,39 @@ export default defineConfig({
     // `vp staged` then runs this on every commit; `vp hooks disable` opts out.
     staged: {
         "*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,json,jsonc,css,md,yml,yaml}":
-            "vp check --fix",
+            "effect-tsgo vp check --fix",
     },
 
     lint: {
-        plugins: ["typescript", "react", "jsx-a11y", "unicorn", "oxc"],
+        plugins: [
+            "typescript",
+            "react",
+            "jsx-a11y",
+            "unicorn",
+            "oxc",
+            // The patched binding is the only one that registers this plugin.
+            // Its type augmentation is applied by `effect-tsgo patch`, which we
+            // do not run because it rewrites `node_modules`, so the name needs
+            // a cast.
+            ...(effectPatched ? ["effecttsgo" as unknown as "oxc"] : []),
+        ],
         options: {
-            // Vite+ recommends `typeAware: true` + `typeCheck: true` so that
-            // `vp check` is the single static-check command. Both stay off
-            // here: type checking and Effect rules run through
-            // `effect-tsgo tsrs` in each package's `ts:check` script. Oxlint's
-            // type-aware backend would check the same projects with a stock
-            // toolchain and would not apply the Effect rules.
-            //
-            // See the root `ts:check` script and the `run.tasks.ci` task.
-            typeAware: false,
-            typeCheck: false,
+            // Type checking and the type-aware rules run on Vite+'s tsrs, so
+            // `vp check` is the only static gate. Run it through `effect-tsgo`
+            // (`effect-tsgo vp check`) to get the Effect-patched tsrs and the
+            // Effect rules below.
+            typeAware: true,
+            typeCheck: true,
         },
         categories: {
             correctness: "error",
             suspicious: "warn",
         },
         rules: {
+            // `effect-tsgo`'s strict preset: every recommended Effect
+            // diagnostic is an error, not a warning. It only exists under the
+            // patched binding, like the plugin above.
+            ...(effectPatched ? effectStrict.rules : {}),
             // Ported from the previous `.eslintrc.yml`.
             "no-console": "error",
             "no-var": "error",
@@ -126,6 +149,12 @@ export default defineConfig({
                 // Logger helpers intentionally use short-circuit expressions.
                 files: ["packages/logger/**"],
                 rules: { "no-unused-expressions": "off" },
+            },
+            {
+                // The `effecttsgo` plugin name sits outside Vite+'s plugin
+                // schema until `effect-tsgo patch` adds its augmentation.
+                files: ["vite.config.ts"],
+                rules: { "typescript/no-unsafe-type-assertion": "off" },
             },
         ],
         ignorePatterns: [

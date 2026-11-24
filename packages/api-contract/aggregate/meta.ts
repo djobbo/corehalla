@@ -23,15 +23,15 @@ export const legendMetaFloorRating = (floor: LegendMetaFloor): number | null =>
  */
 export const LegendPlayStyleSchema = Schema.Struct({
     /** Indexed accounts whose rows reported at least one game. */
-    accounts: Schema.Number,
-    damageDealtPerGame: Schema.NullOr(Schema.Number),
-    damageTakenPerGame: Schema.NullOr(Schema.Number),
-    kosPerGame: Schema.NullOr(Schema.Number),
-    fallsPerGame: Schema.NullOr(Schema.Number),
-    suicidesPer100Games: Schema.NullOr(Schema.Number),
-    averageMatchSeconds: Schema.NullOr(Schema.Number),
-    weaponOneShare: Schema.NullOr(Schema.Number),
-    weaponTwoShare: Schema.NullOr(Schema.Number),
+    accounts: Schema.Finite,
+    damageDealtPerGame: Schema.NullOr(Schema.Finite),
+    damageTakenPerGame: Schema.NullOr(Schema.Finite),
+    kosPerGame: Schema.NullOr(Schema.Finite),
+    fallsPerGame: Schema.NullOr(Schema.Finite),
+    suicidesPer100Games: Schema.NullOr(Schema.Finite),
+    averageMatchSeconds: Schema.NullOr(Schema.Finite),
+    weaponOneShare: Schema.NullOr(Schema.Finite),
+    weaponTwoShare: Schema.NullOr(Schema.Finite),
 })
 
 export type LegendPlayStyle = typeof LegendPlayStyleSchema.Type
@@ -42,15 +42,15 @@ export type LegendPlayStyle = typeof LegendPlayStyleSchema.Type
  * shares of a non-empty board sum to (approximately) one.
  */
 export const LegendMetaRowSchema = Schema.Struct({
-    legendId: Schema.Number,
+    legendId: Schema.Finite,
     /** Links to the legend page; do not re-derive on the client. */
     slug: Schema.String,
-    games: Schema.Number,
-    wins: Schema.Number,
-    winRate: Schema.Number,
-    playShare: Schema.Number,
+    games: Schema.Finite,
+    wins: Schema.Finite,
+    winRate: Schema.Finite,
+    playShare: Schema.Finite,
     /** Indexed accounts with at least one game on this legend in the sample. */
-    accounts: Schema.Number,
+    accounts: Schema.Finite,
     playStyle: LegendPlayStyleSchema,
 })
 
@@ -60,8 +60,8 @@ export const LegendMetaSchema = Schema.Struct({
     data: Schema.Array(LegendMetaRowSchema),
     meta: Schema.Struct({
         /** Indexed accounts matching the floor. */
-        accounts: Schema.Number,
-        ratingFloor: Schema.NullOr(Schema.Number),
+        accounts: Schema.Finite,
+        ratingFloor: Schema.NullOr(Schema.Finite),
     }),
 })
 
@@ -74,15 +74,15 @@ export type LegendMeta = typeof LegendMetaSchema.Type
  */
 export const WeaponMetaRowSchema = Schema.Struct({
     weapon: Schema.Literals(weapons),
-    games: Schema.Number,
-    wins: Schema.Number,
-    winRate: Schema.NullOr(Schema.Number),
-    playShare: Schema.NullOr(Schema.Number),
+    games: Schema.Finite,
+    wins: Schema.Finite,
+    winRate: Schema.NullOr(Schema.Finite),
+    playShare: Schema.NullOr(Schema.Finite),
     /** Indexed accounts with at least one game on this weapon. */
-    accounts: Schema.Number,
-    damagePerGame: Schema.NullOr(Schema.Number),
-    timeHeldPerGame: Schema.NullOr(Schema.Number),
-    kosPerGame: Schema.NullOr(Schema.Number),
+    accounts: Schema.Finite,
+    damagePerGame: Schema.NullOr(Schema.Finite),
+    timeHeldPerGame: Schema.NullOr(Schema.Finite),
+    kosPerGame: Schema.NullOr(Schema.Finite),
 })
 
 export type WeaponMetaRow = typeof WeaponMetaRowSchema.Type
@@ -91,7 +91,7 @@ export const WeaponMetaSchema = Schema.Struct({
     data: Schema.Array(WeaponMetaRowSchema),
     meta: Schema.Struct({
         /** Indexed accounts in the sample. */
-        accounts: Schema.Number,
+        accounts: Schema.Finite,
     }),
 })
 

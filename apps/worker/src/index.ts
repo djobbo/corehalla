@@ -66,4 +66,4 @@ const main = async () => {
     logInfo("All services started")
 }
 
-main()
+void main()

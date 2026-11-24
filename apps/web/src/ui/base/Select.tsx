@@ -56,7 +56,7 @@ export const Select = <T extends string>({
                         ...styles,
                         backgroundColor: theme.colors.bgVar2.toString(),
                         borderRadius: "0.5rem",
-                        border: `thin solid ${theme.colors.bg}`,
+                        border: `thin solid ${theme.colors.bg.toString()}`,
                         cursor: "pointer",
                         padding: "0.25rem 0.5rem",
                     }),

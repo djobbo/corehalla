@@ -13,7 +13,7 @@ import type {
 export class Cms extends Context.Service<
     Cms,
     {
-        readonly getMediaManifest: () => Effect.Effect<CmsMediaManifest>
+        readonly getMediaManifest: Effect.Effect<CmsMediaManifest>
         readonly getArticles: (options: {
             readonly page?: number | undefined
             readonly pageSize?: number | undefined
@@ -26,8 +26,8 @@ export class Cms extends Context.Service<
 const CmsImageWire = Schema.Struct({
     url: Schema.String,
     alt: Schema.String,
-    width: Schema.NullOr(Schema.Number),
-    height: Schema.NullOr(Schema.Number),
+    width: Schema.NullOr(Schema.Finite),
+    height: Schema.NullOr(Schema.Finite),
     mimeType: Schema.NullOr(Schema.String),
 })
 
@@ -59,13 +59,13 @@ const CmsMediaManifestWire = Schema.Struct({
 
 const CmsArticlesPageWire = Schema.Struct({
     articles: Schema.Array(CmsArticleWire),
-    page: Schema.Number,
-    totalPages: Schema.Number,
+    page: Schema.Finite,
+    totalPages: Schema.Finite,
     hasNextPage: Schema.Boolean,
 })
 
 const decodeBody = <A>(
-    schema: Schema.ConstraintDecoder<A, never>,
+    schema: Schema.ConstraintDecoder<A>,
     body: unknown,
 ): Effect.Effect<A, ContentError> =>
     Schema.decodeUnknownEffect(schema)(body).pipe(
@@ -174,13 +174,10 @@ const article = Effect.fn("Cms.getArticle")(function* (slug: string) {
 })
 
 export const layer = Layer.succeed(Cms, {
-    getMediaManifest: () =>
-        manifest().pipe(
-            Effect.catchTag("ContentError", () =>
-                Effect.succeed({ slots: [] }),
-            ),
-            Effect.orDie,
-        ),
+    getMediaManifest: manifest().pipe(
+        Effect.catchTag("ContentError", () => Effect.succeed({ slots: [] })),
+        Effect.orDie,
+    ),
     getArticles: (options) =>
         articles(options).pipe(
             Effect.catchTag("ContentError", () =>

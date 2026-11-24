@@ -109,7 +109,7 @@ function Page() {
         if (activeQuery === q) return
 
         committed.current = activeQuery
-        navigate({
+        void navigate({
             to: "/rankings/1v1/{-$region}/{-$page}",
             params: { region: regionParam, page: pageParam },
             search: { q: activeQuery },

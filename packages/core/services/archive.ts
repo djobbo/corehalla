@@ -47,8 +47,6 @@ import type {
     NewBHRankedQueue,
     BHPlayerAlias,
     NewBHClan,
-    NewBHPlayerLegend,
-    NewBHPlayerWeapon,
 } from "@crh/db/schema"
 import type { PlayerStats } from "@crh/bhapi/types"
 import type { RankedSnapshot } from "./player-writes"
@@ -125,10 +123,7 @@ export class Database extends Context.Service<
         ) => Effect.Effect<LegendMetaSample, DatabaseError>
 
         /** One grouped read behind the weapon meta card. */
-        readonly getWeaponMeta: () => Effect.Effect<
-            WeaponMetaSample,
-            DatabaseError
-        >
+        readonly getWeaponMeta: Effect.Effect<WeaponMetaSample, DatabaseError>
 
         readonly searchAliases: (
             alias: string,
@@ -421,13 +416,10 @@ export const layer = Layer.effect(
                                         bhPlayerLegend.player_id,
                                         bhPlayerLegend.legend_id,
                                     ],
-                                    set: excludedSet(
-                                        legendRows[0] as unknown as Record<
-                                            string,
-                                            unknown
-                                        >,
-                                        ["player_id", "legend_id"],
-                                    ) as Partial<NewBHPlayerLegend>,
+                                    set: excludedSet(legendRows[0], [
+                                        "player_id",
+                                        "legend_id",
+                                    ]),
                                 })
                         }
 
@@ -442,13 +434,10 @@ export const layer = Layer.effect(
                                         bhPlayerWeapon.player_id,
                                         bhPlayerWeapon.weapon_name,
                                     ],
-                                    set: excludedSet(
-                                        weaponRows[0] as unknown as Record<
-                                            string,
-                                            unknown
-                                        >,
-                                        ["player_id", "weapon_name"],
-                                    ) as Partial<NewBHPlayerWeapon>,
+                                    set: excludedSet(weaponRows[0], [
+                                        "player_id",
+                                        "weapon_name",
+                                    ]),
                                 })
                         }
                     }),
@@ -509,13 +498,11 @@ export const layer = Layer.effect(
                                         bhRankedQueue.bracket,
                                     ],
                                     set: {
-                                        ...excludedSet(
-                                            batch[0] as unknown as Record<
-                                                string,
-                                                unknown
-                                            >,
-                                            ["entry_id", "bracket", "queuedAt"],
-                                        ),
+                                        ...excludedSet(batch[0], [
+                                            "entry_id",
+                                            "bracket",
+                                            "queuedAt",
+                                        ]),
                                         // Stamp queuedAt only when games increase (WHERE below).
                                         queuedAt: sql`excluded."lastUpdated"`,
                                         // Zero baseline is not a real previous value — do not invent a delta.
@@ -932,42 +919,41 @@ export const layer = Layer.effect(
                     }),
                 ),
 
-            getWeaponMeta: () =>
-                run(
-                    Effect.gen(function* () {
-                        const rows = yield* db
-                            .select({
-                                weapon: bhPlayerWeapon.weapon_name,
-                                games: sql<number>`sum(${bhPlayerWeapon.games})`,
-                                wins: sql<number>`sum(${bhPlayerWeapon.wins})`,
-                                accounts: sql<number>`count(distinct ${bhPlayerWeapon.player_id})`,
-                                damageDealt: sql<number>`sum(${bhPlayerWeapon.damageDealt})`,
-                                matchTime: sql<number>`sum(${bhPlayerWeapon.matchTime})`,
-                                kos: sql<number>`sum(${bhPlayerWeapon.kos})`,
-                            })
-                            .from(bhPlayerWeapon)
-                            .groupBy(bhPlayerWeapon.weapon_name)
-                            .having(sql`sum(${bhPlayerWeapon.games}) > 0`)
-                            .orderBy(asc(bhPlayerWeapon.weapon_name))
+            getWeaponMeta: run(
+                Effect.gen(function* () {
+                    const rows = yield* db
+                        .select({
+                            weapon: bhPlayerWeapon.weapon_name,
+                            games: sql<number>`sum(${bhPlayerWeapon.games})`,
+                            wins: sql<number>`sum(${bhPlayerWeapon.wins})`,
+                            accounts: sql<number>`count(distinct ${bhPlayerWeapon.player_id})`,
+                            damageDealt: sql<number>`sum(${bhPlayerWeapon.damageDealt})`,
+                            matchTime: sql<number>`sum(${bhPlayerWeapon.matchTime})`,
+                            kos: sql<number>`sum(${bhPlayerWeapon.kos})`,
+                        })
+                        .from(bhPlayerWeapon)
+                        .groupBy(bhPlayerWeapon.weapon_name)
+                        .having(sql`sum(${bhPlayerWeapon.games}) > 0`)
+                        .orderBy(asc(bhPlayerWeapon.weapon_name))
 
-                        const counted = yield* db
-                            .select({ accounts: sql<number>`count(*)` })
-                            .from(bhPlayerData)
+                    const counted = yield* db
+                        .select({ accounts: sql<number>`count(*)` })
+                        .from(bhPlayerData)
 
-                        return {
-                            rows: rows.map((row) => ({
-                                weapon: row.weapon,
-                                games: Number(row.games),
-                                wins: Number(row.wins),
-                                accounts: Number(row.accounts),
-                                damageDealt: Number(row.damageDealt),
-                                matchTime: Number(row.matchTime),
-                                kos: Number(row.kos),
-                            })),
-                            accounts: Number(counted[0]?.accounts ?? 0),
-                        }
-                    }),
-                ),
+                    return {
+                        rows: rows.map((row) => ({
+                            weapon: row.weapon,
+                            games: Number(row.games),
+                            wins: Number(row.wins),
+                            accounts: Number(row.accounts),
+                            damageDealt: Number(row.damageDealt),
+                            matchTime: Number(row.matchTime),
+                            kos: Number(row.kos),
+                        })),
+                        accounts: Number(counted[0]?.accounts ?? 0),
+                    }
+                }),
+            ),
 
             searchAliases: (alias, page) =>
                 run(

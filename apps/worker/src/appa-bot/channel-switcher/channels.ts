@@ -126,7 +126,7 @@ export const deleteChannelIfEmpty = async (
         .setTitle(channel.name)
         .addFields({
             name: "Event",
-            value: `${voiceState.member?.user} (${voiceState.member?.user.id}) left`,
+            value: `${voiceState.member?.user.tag} (${voiceState.member?.user.id}) left`,
         })
         .setTimestamp(new Date())
 
@@ -144,15 +144,15 @@ export const deleteChannelIfEmpty = async (
             .addFields({
                 name: "Players",
                 value: channel.members
-                    .map((member) => `${member.user} (${member.user.id})`)
+                    .map((member) => `${member.user.tag} (${member.user.id})`)
                     .join("\n"),
             })
 
         if (voiceLogsChannel) {
-            voiceLogsChannel.send({ embeds: [embed] })
+            void voiceLogsChannel.send({ embeds: [embed] })
         }
 
-        channel.send({
+        void channel.send({
             embeds: [
                 new EmbedBuilder()
                     .setColor("Orange")
@@ -177,7 +177,7 @@ export const deleteChannelIfEmpty = async (
         .setColor("Red")
 
     if (voiceLogsChannel) {
-        voiceLogsChannel.send({ embeds: [embed] })
+        void voiceLogsChannel.send({ embeds: [embed] })
     }
 }
 
@@ -220,11 +220,11 @@ export const cloneGeneratorChannel = async (
             .setTitle(channel.name)
             .addFields({
                 name: "Event",
-                value: `${voiceState.member?.user} (${voiceState.member?.user.id}) created ${genChannel.name}`,
+                value: `${voiceState.member?.user.tag} (${voiceState.member?.user.id}) created ${genChannel.name}`,
             })
             .setTimestamp(new Date())
             .setColor("Blue")
-        voiceLogsChannel.send({ embeds: [embed] })
+        void voiceLogsChannel.send({ embeds: [embed] })
     }
 
     return genChannel
@@ -239,7 +239,7 @@ export const logUserJoinedVoiceChannel = async (
 
     if (!isLobbyChannel(channel, options)) return
 
-    channel.send({
+    void channel.send({
         embeds: [
             new EmbedBuilder()
                 .setColor("Green")
@@ -254,8 +254,8 @@ export const logUserJoinedVoiceChannel = async (
     const roomNumber = getRoomNumber(channel)
 
     if (roomNumber) {
-        channel.send(
-            `${voiceState.member?.user}, the room number is \`${roomNumber}\``,
+        void channel.send(
+            `${voiceState.member?.user.tag}, the room number is \`${roomNumber}\``,
         )
     }
 
@@ -279,17 +279,20 @@ export const logUserJoinedVoiceChannel = async (
             .addFields(
                 {
                     name: "Event",
-                    value: `${voiceState.member?.user} (${voiceState.member?.user.id}) joined`,
+                    value: `${voiceState.member?.user.tag} (${voiceState.member?.user.id}) joined`,
                 },
                 {
                     name: "Players",
                     value: channel.members
-                        .map((member) => `${member.user} (${member.user.id})`)
+                        .map(
+                            (member) =>
+                                `${member.user.tag} (${member.user.id})`,
+                        )
                         .join("\n"),
                 },
             )
             .setTimestamp(new Date())
             .setColor("Green")
-        voiceLogsChannel.send({ embeds: [embed] })
+        void voiceLogsChannel.send({ embeds: [embed] })
     }
 }

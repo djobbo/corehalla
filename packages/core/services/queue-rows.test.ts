@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { toRankedQueueRows } from "./player-writes"
-import type { Ranking1v1, Ranking2v2, Ranking3v3 } from "@crh/bhapi/types"
+import type { Ranking1v1, Ranking2v2 } from "@crh/bhapi/types"
 
 const seenAt = new Date("2026-01-01T00:00:00Z")
 
@@ -125,8 +125,8 @@ describe("toRankedQueueRows", () => {
             "3v3",
             "brz",
             [
-                { ...solo(5, "Five", 9), rank: 1 } as Ranking3v3,
-                { ...solo(0, "Nobody", 9), rank: 2 } as Ranking3v3,
+                { ...solo(5, "Five", 9), rank: 1 },
+                { ...solo(0, "Nobody", 9), rank: 2 },
             ],
             seenAt,
         )

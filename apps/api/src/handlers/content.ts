@@ -10,7 +10,7 @@ export const contentGroup = HttpApiBuilder.group(
         const content = yield* Content
 
         return handlers
-            .handle("getWeeklyRotation", () => content.getWeeklyRotation())
+            .handle("getWeeklyRotation", () => content.getWeeklyRotation)
             .handle("getBHArticles", ({ query }) =>
                 content.getArticles({
                     category: query.category,

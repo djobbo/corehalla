@@ -288,8 +288,9 @@ const encode = (value: unknown): Sql => {
     if (typeof value === "number") return Number.isFinite(value) ? value : null
     // `jsonb` arrives parsed (UserFavorite.meta).
     if (typeof value === "object") return JSON.stringify(value)
+    if (typeof value === "string") return value
 
-    return String(value)
+    throw new TypeError(`Unsupported column value: ${typeof value}`)
 }
 
 const selectList = (spec: TableSpec): string =>
@@ -937,9 +938,7 @@ const main = async () => {
             text: `select to_regclass('auth.users') is not null as has_users,
                     to_regclass('auth.identities') is not null as has_identities`,
         })
-        const hasAuth =
-            auth.rows[0]?.has_users === true &&
-            auth.rows[0]?.has_identities === true
+        const hasAuth = auth.rows[0]?.has_users && auth.rows[0]?.has_identities
 
         if (!hasAuth) {
             console.warn(

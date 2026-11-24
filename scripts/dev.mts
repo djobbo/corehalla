@@ -3,7 +3,10 @@ import { ChildProcess } from "effect/process"
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime"
 import * as NodeServices from "@effect/platform-node/NodeServices"
 
-class DevError extends Schema.TaggedError<DevError>()("DevError", {
+class DevError extends Schema.TaggedError<
+    DevError,
+    { readonly brand: unique symbol }
+>()("DevError", {
     message: Schema.String,
 }) {}
 

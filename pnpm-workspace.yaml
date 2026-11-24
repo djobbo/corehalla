@@ -3,19 +3,19 @@ packages:
     - "packages/*"
 
 catalog:
-    "@alchemy.run/cloudflare": 2.0.0-beta.84
-    "@alchemy.run/frontend-frameworks": 2.0.0-beta.84
+    "@alchemy.run/cloudflare": 2.0.0-beta.87
+    "@alchemy.run/frontend-frameworks": 2.0.0-beta.87
     "@astrojs/check": ^0.9.12
     "@astrojs/cloudflare": 14.4.3
     "@astrojs/node": ^11.1.9
     "@astrojs/react": 7.1.2
     "@base-ui/react": ^1.9.0
     "@cloudflare/workers-types": ^5.20261030.1
-    "@effect/atom-react": 4.1.0
-    "@effect/platform-node": 4.1.0
-    "@effect/sql-d1": 4.1.0
-    "@effect/tsgo": 0.63.0
-    "@effect/vitest": 4.1.0
+    "@effect/atom-react": 4.1.5
+    "@effect/platform-node": 4.1.5
+    "@effect/sql-d1": 4.1.5
+    "@effect/tsgo": 0.73.4
+    "@effect/vitest": 4.1.5
     "@emdash-cms/cloudflare": ^1.4.0
     "@fontsource/montserrat": ^5.3.0
     "@portabletext/react": ^8.0.1
@@ -38,7 +38,7 @@ catalog:
     "@types/react-dom": ^19.3.0
     "@types/scheduler": ^0.28.0
     "@vitejs/plugin-react": ^6.1.2
-    alchemy: 2.0.0-beta.84
+    alchemy: 2.0.0-beta.87
     astro: 7.4.4
     axios: 1.21.0
     cheerio: 1.2.0
@@ -53,7 +53,7 @@ catalog:
     dotenv: ^18.0.9
     drizzle-kit: 1.0.0-rc.5
     drizzle-orm: 1.0.0-rc.5
-    effect: 4.1.0
+    effect: 4.1.5
     emdash: ^1.4.0
     kbar: ^1.0.0
     lucide-react: ^1.65.0
@@ -71,12 +71,12 @@ catalog:
     tailwindcss: ^4.3.3
     ts-node: ^10.9.2
     ts-node-dev: ^2.0.0
-    tsrs: 0.20.1-ts7.1.0-beta
+    tsrs: 7.1.0-beta.tsrs4
     tw-animate-css: ^1.4.0
     typescript: ^7.0.2
-    vite: npm:@voidzero-dev/vite-plus-core@1.4.0
-    vite-plus: 1.4.0
-    vitest: 5.0.5
+    vite: npm:@voidzero-dev/vite-plus-core@8.3.8001
+    vite-plus: 1.8.0
+    vitest: 5.1.1
     zod: ^4.6.7
 
 catalogs:
@@ -87,8 +87,8 @@ catalogs:
 overrides:
     "@types/react": ~19.3.0
     "@types/react-dom": ~19.3.0
-    "vite@*": npm:@voidzero-dev/vite-plus-core@1.4.0
-    "vitest": "5.0.5"
+    "vite@*": npm:@voidzero-dev/vite-plus-core@8.3.8001
+    "vitest": "5.1.1"
 
 # Dependency build scripts that are approved to run on install.
 allowBuilds:
@@ -98,19 +98,29 @@ allowBuilds:
 
 minimumReleaseAgeExclude:
     - "@cloudflare/workers-types@5.20261030.1"
-    - "@alchemy.run/cloudflare-runtime@2.0.0-beta.84"
-    - "@alchemy.run/frontend-frameworks@2.0.0-beta.84"
-    - "@alchemy.run/node-utils@2.0.0-beta.84"
+    - "@alchemy.run/cloudflare-runtime@2.0.0-beta.87"
+    - "@alchemy.run/frontend-frameworks@2.0.0-beta.87"
+    - "@alchemy.run/node-utils@2.0.0-beta.87"
     - "@distilled.cloud/aws4signer@1.0.0-rc.17"
     - "@distilled.cloud/aws@1.0.0-rc.17"
     - "@distilled.cloud/cloudflare@1.0.0-rc.17"
     - "@distilled.cloud/core@1.0.0-rc.17"
-    - alchemy@2.0.0-beta.84
-    - "@alchemy.run/acme@2.0.0-beta.84"
-    - "@alchemy.run/cloudflare@2.0.0-beta.84"
-    - "@alchemy.run/docker@2.0.0-beta.84"
-    - "@alchemy.run/sql@2.0.0-beta.84"
+    - alchemy@2.0.0-beta.87
+    - "@alchemy.run/acme@2.0.0-beta.87"
+    - "@alchemy.run/cloudflare@2.0.0-beta.87"
+    - "@alchemy.run/docker@2.0.0-beta.87"
+    - "@alchemy.run/sql@2.0.0-beta.87"
     - "@distilled.cloud/acme@1.0.0-rc.17"
     - "@distilled.cloud/iceberg@1.0.0-rc.17"
     - cn@0.5.1
     - lucide-react@1.65.0
+    - "@voidzero-dev/vite-plus-core@8.3.8001"
+    - "@voidzero-dev/vite-plus-darwin-arm64@1.8.0"
+    - "@voidzero-dev/vite-plus-darwin-x64@1.8.0"
+    - "@voidzero-dev/vite-plus-linux-arm64-gnu@1.8.0"
+    - "@voidzero-dev/vite-plus-linux-arm64-musl@1.8.0"
+    - "@voidzero-dev/vite-plus-linux-x64-gnu@1.8.0"
+    - "@voidzero-dev/vite-plus-linux-x64-musl@1.8.0"
+    - "@voidzero-dev/vite-plus-win32-arm64-msvc@1.8.0"
+    - "@voidzero-dev/vite-plus-win32-x64-msvc@1.8.0"
+    - vite-plus@1.8.0
