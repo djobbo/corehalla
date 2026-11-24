@@ -1,9 +1,9 @@
 import { Option, Schema } from "effect"
 
-export class CmsUnavailable extends Schema.TaggedError<CmsUnavailable>()(
-    "CmsUnavailable",
-    { cause: Schema.Defect() },
-) {}
+export class CmsUnavailable extends Schema.TaggedError<
+    CmsUnavailable,
+    { readonly brand: unique symbol }
+>()("CmsUnavailable", { cause: Schema.Defect() }) {}
 
 export const json = (data: unknown, status = 200): Response =>
     new Response(
@@ -26,8 +26,8 @@ const EmDashImage = Schema.Struct({
         }),
     ),
     alt: Schema.optionalKey(Schema.String),
-    width: Schema.optionalKey(Schema.Number),
-    height: Schema.optionalKey(Schema.Number),
+    width: Schema.optionalKey(Schema.Finite),
+    height: Schema.optionalKey(Schema.Finite),
     mimeType: Schema.optionalKey(Schema.String),
 })
 
@@ -57,8 +57,8 @@ const EmDashPostData = Schema.Struct({
 export const PublicImageSchema = Schema.Struct({
     url: Schema.String,
     alt: Schema.String,
-    width: Schema.NullOr(Schema.Number),
-    height: Schema.NullOr(Schema.Number),
+    width: Schema.NullOr(Schema.Finite),
+    height: Schema.NullOr(Schema.Finite),
     mimeType: Schema.NullOr(Schema.String),
 })
 
@@ -94,8 +94,8 @@ export const PublicMediaManifestSchema = Schema.Struct({
 
 export const PublicArticlesPageSchema = Schema.Struct({
     articles: Schema.Array(PublicArticleSchema),
-    page: Schema.Number,
-    totalPages: Schema.Number,
+    page: Schema.Finite,
+    totalPages: Schema.Finite,
     hasNextPage: Schema.Boolean,
 })
 
@@ -186,7 +186,7 @@ export const pageParam = (
     min: number,
     max: number,
 ): number => {
-    const parsed = Schema.decodeUnknownOption(PageNumber)(value ?? "")
+    const parsed = Schema.decodeOption(PageNumber)(value ?? "")
     if (Option.isNone(parsed)) return fallback
 
     return Math.min(Math.max(Math.trunc(parsed.value), min), max)
