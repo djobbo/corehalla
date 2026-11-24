@@ -250,7 +250,7 @@ Source: `components/ui/input.tsx`, `textarea.tsx`, `select.tsx`. Fill `{colors.c
 
 One indicator, drawn by the base `:focus-visible` rule: `2px solid {colors.brand-bright}`. Fields, buttons, the tier move control and the search field's wrapper use it at `outline-offset: 2px`; chips use `3px` so the ring clears their hard shadow; section-nav links use `-2px` so `.ch-nav`'s `overflow-y: hidden` cannot clip the ring. No `ring-*` focus style remains, and nothing that draws the ring is clipped.
 
-`components/ui/input-group.tsx` owns the ring for composed fields: the wrapper paints it when the input inside matches `:focus-visible`, and the inner input drops its own so there is one ring.
+`components/ui/input-group.tsx` owns the ring for composed fields: the wrapper paints it when the input or textarea inside matches `:focus-visible`, and that control drops its own so there is one ring.
 
 ### Navigation
 
