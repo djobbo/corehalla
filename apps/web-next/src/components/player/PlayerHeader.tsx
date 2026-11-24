@@ -3,6 +3,7 @@ import { ClientOnly, Link } from "@tanstack/react-router"
 import { useMemo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FavoriteButton } from "@/components/account/FavoriteButton"
+import { ShareButton } from "@/components/common/ShareButton"
 import { StatGrid } from "@/components/common/StatGrid"
 import { UpdatedAt } from "@/components/common/UpdatedAt"
 import { playerClanAtom, playerProfileAtom, useQuery } from "@/effect/atoms"
@@ -11,7 +12,7 @@ import { mediaSlotKey, useMediaSlot } from "@/lib/media"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatTime } from "@crh/common/helpers/date"
 import { EntityLink } from "@/components/common/EntityLink"
-import { clanHref } from "@/lib/rankings"
+import { clanHref, playerHref } from "@/lib/rankings"
 import { cn } from "@/lib/cn"
 import { percent } from "../../lib/stats"
 import type { PlayerClan } from "@crh/api-contract/schemas"
@@ -172,6 +173,7 @@ export const PlayerHeader = ({ playerId }: { readonly playerId: number }) => {
                             : {}
                     }
                 />
+                <ShareButton name={name} path={playerHref(profile.slug)} />
                 <Link
                     to="/vs"
                     search={{ a: profile.slug }}

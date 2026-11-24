@@ -1,8 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { FavoriteButton } from "@/components/account/FavoriteButton"
+import { ShareButton } from "@/components/common/ShareButton"
 import { StatGrid } from "@/components/common/StatGrid"
 import { UpdatedAt } from "@/components/common/UpdatedAt"
 import { guildAtom, useQuery } from "@/effect/atoms"
+import { clanHref } from "@/lib/rankings"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatUnixTime } from "@crh/common/helpers/date"
 import type { Stat } from "@/components/common/StatGrid"
@@ -74,6 +76,7 @@ export const ClanHeader = ({ clanId }: { readonly clanId: number }) => {
                 </span>
                 <h1 className="ch-display text-2xl sm:text-3xl">{name}</h1>
                 <FavoriteButton type="clan" id={String(guild.id)} name={name} />
+                <ShareButton name={name} path={clanHref(guild.slug)} />
             </div>
             <Card className="@container bg-transparent p-4 shadow-none">
                 <CardContent className="p-0">
