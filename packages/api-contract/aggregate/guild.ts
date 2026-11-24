@@ -1,5 +1,17 @@
 import { Schema } from "effect"
+import { TierSchema } from "./common"
 import { sectionEnvelope } from "./section"
+
+/**
+ * A member's 1v1 record from the archive, as it appears on the roster card.
+ */
+const GuildMemberRankedSchema = Schema.Struct({
+    rating: Schema.Finite,
+    peak_rating: Schema.Finite,
+    /** Null for Valhallan, like every other ranked tier in the contract. */
+    tier: TierSchema,
+    region: Schema.NullOr(Schema.String),
+})
 
 const GuildMemberSchema = Schema.Struct({
     id: Schema.Finite,
@@ -13,6 +25,8 @@ const GuildMemberSchema = Schema.Struct({
      * which active guilds can genuinely have.
      */
     guild_points: Schema.optionalKey(Schema.Finite),
+    /** Null when the archive has no ranked record for this member — not a zero rating. */
+    ranked: Schema.NullOr(GuildMemberRankedSchema),
 })
 
 const GuildStandingSchema = Schema.Struct({
@@ -52,6 +66,7 @@ export const GuildSchema = Schema.Struct({
 
 export type Guild = typeof GuildSchema.Type
 export type GuildMember = typeof GuildMemberSchema.Type
+export type GuildMemberRanked = typeof GuildMemberRankedSchema.Type
 export type GuildStanding = typeof GuildStandingSchema.Type
 
 export const GuildEnvelopeSchema = sectionEnvelope(GuildSchema)

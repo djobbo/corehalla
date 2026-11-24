@@ -365,6 +365,12 @@ const members = [
         joined_at: 1_690_000_000,
         xp: 4_820_000,
         guild_points: 12_400,
+        ranked: {
+            rating: 2_143,
+            peak_rating: 2_210,
+            tier: "Diamond",
+            region: "eu",
+        },
     },
     {
         id: 2,
@@ -374,6 +380,12 @@ const members = [
         joined_at: 1_695_000_000,
         xp: 3_900_000,
         guild_points: 9_800,
+        ranked: {
+            rating: 1_876,
+            peak_rating: 1_980,
+            tier: "Platinum 3",
+            region: "us-e",
+        },
     },
     {
         id: 3,
@@ -383,6 +395,12 @@ const members = [
         joined_at: 1_700_000_000,
         xp: 2_100_000,
         guild_points: 4_200,
+        ranked: {
+            rating: 2_010,
+            peak_rating: 2_065,
+            tier: "Diamond",
+            region: "brz",
+        },
     },
     {
         id: 4,
@@ -392,6 +410,7 @@ const members = [
         joined_at: 1_750_000_000,
         xp: 120_000,
         guild_points: 0,
+        ranked: null,
     },
 ]
 
@@ -428,7 +447,20 @@ export const noPointsGuildEnvelope = {
             rank: member.rank,
             joined_at: member.joined_at,
             xp: member.xp,
+            ranked: member.ranked,
         })),
+    },
+    meta: { updated_at: UPDATED_AT },
+}
+
+/** Every member outside the index — the roster renders a dash and no tier. */
+export const unratedGuildEnvelope = {
+    data: {
+        ...guildEnvelope.data,
+        id: 4245,
+        name: "Social Den",
+        slug: "social-den",
+        members: members.map((member) => ({ ...member, ranked: null })),
     },
     meta: { updated_at: UPDATED_AT },
 }
@@ -684,6 +716,7 @@ export const RIVAL_PLAYER_ID = 4245
 export const GUILD_ID = 4242
 export const NO_POINTS_GUILD_ID = 4243
 export const EMPTY_GUILD_ID = 4244
+export const UNRATED_GUILD_ID = 4245
 
 /** `parameters.mockApi` maps, one per feature. */
 export const playerMock = {
@@ -785,6 +818,7 @@ export const guildMock = {
     [`/api/v1/guilds/${EMPTY_GUILD_ID}`]: guildSection(
         emptyRosterGuildEnvelope,
     ),
+    [`/api/v1/guilds/${UNRATED_GUILD_ID}`]: guildSection(unratedGuildEnvelope),
 }
 
 export const esportsMock = {

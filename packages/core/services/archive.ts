@@ -41,6 +41,7 @@ import {
 } from "./player-writes"
 import type { D1Database } from "@crh/db/client"
 import type { SQLWrapper } from "@crh/db/query"
+import type { GuildMemberRating } from "@crh/domain/aggregate/guild"
 import type {
     BHClan,
     BHRankedQueue,
@@ -91,6 +92,11 @@ export class Database extends Context.Service<
         readonly getRankedStanding: (
             playerId: string,
         ) => Effect.Effect<PlayerStanding | null, DatabaseError>
+
+        /** The 1v1 record behind a guild roster, in one read. */
+        readonly getPlayerRatings: (
+            playerIds: readonly string[],
+        ) => Effect.Effect<readonly GuildMemberRating[], DatabaseError>
 
         readonly searchExactAliases: (
             alias: string,
@@ -380,6 +386,26 @@ export const layer = Layer.effect(
                             sample_size: sampleSize,
                             top_percent: topPercent(rank, sampleSize),
                         }
+                    }),
+                ),
+
+            getPlayerRatings: (playerIds) =>
+                run(
+                    Effect.gen(function* () {
+                        if (playerIds.length === 0) return []
+
+                        const rows = yield* db
+                            .select({
+                                playerId: bhPlayerData.id,
+                                rating: bhPlayerData.rating,
+                                peakRating: bhPlayerData.peakRating,
+                                tier: bhPlayerData.tier,
+                                region: bhPlayerData.region,
+                            })
+                            .from(bhPlayerData)
+                            .where(inArray(bhPlayerData.id, [...playerIds]))
+
+                        return rows
                     }),
                 ),
 

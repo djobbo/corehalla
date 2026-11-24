@@ -84,10 +84,27 @@ export const guildsGroup = HttpApiBuilder.group(
                         })),
                     )
 
+                const ratings = yield* db
+                    .getPlayerRatings(
+                        clan.clan.map((member) =>
+                            member.brawlhalla_id.toString(),
+                        ),
+                    )
+                    .pipe(
+                        Effect.tapError((error) =>
+                            Effect.logWarning(
+                                `guild rating read failed for ${clan.clan_id}`,
+                                error,
+                            ),
+                        ),
+                        Effect.orElseSucceed(() => []),
+                    )
+
                 const envelope = buildGuild(
                     clan,
                     cached.success.updatedAt,
                     standing,
+                    ratings,
                 )
 
                 return {
