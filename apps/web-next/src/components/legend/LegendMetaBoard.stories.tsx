@@ -147,7 +147,7 @@ export const Populated: Story = {
     parameters: {
         docs: {
             description: {
-                story: "The full board: play share, win rate, damage dealt per game, average match length, suicides per 100 games and games. Sorting opens on play share, highest first, and offers every metric.",
+                story: "The full board: play share, win rate, damage dealt per game, average match length, suicides per 100 games and games. Sorting opens on play share, highest first, and offers every metric. The download control beside the floor chips saves these rows in this order as corehalla-legends-1800.csv.",
             },
         },
     },
@@ -172,7 +172,7 @@ export const Empty: Story = {
     parameters: {
         docs: {
             description: {
-                story: "No indexed games clear the 2200+ floor: the board names the filter rather than showing bare columns.",
+                story: "No indexed games clear the 2200+ floor: the board names the filter rather than showing bare columns, and there is nothing to download so the control is absent.",
             },
         },
     },

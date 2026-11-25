@@ -72,7 +72,15 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Full: Story = {}
+export const Full: Story = {
+    parameters: {
+        docs: {
+            description: {
+                story: "The whole weapon board with the download control beside the floor chips: the file is corehalla-weapons-all.csv and keeps the board's current sort.",
+            },
+        },
+    },
+}
 
 /** The same board sliced to 2000+; the chip row names the active floor. */
 const filtered: WeaponMeta = {
@@ -125,7 +133,7 @@ export const EmptySlice: Story = {
     parameters: {
         docs: {
             description: {
-                story: "No indexed games clear the 2200+ floor: the empty state names the filter, the chip row stays usable and no zero-filled table renders.",
+                story: "No indexed games clear the 2200+ floor: the empty state names the filter, the chip row stays usable and no zero-filled table renders. With no rows the download control is absent.",
             },
         },
     },
