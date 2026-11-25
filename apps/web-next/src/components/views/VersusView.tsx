@@ -17,6 +17,7 @@ import {
 import { playerProfileAtom, lookupAtom, useQuery } from "@/effect/atoms"
 import { cn } from "@/lib/cn"
 import { comparePlayers } from "@/lib/compare"
+import { VersusModeSwitch } from "./VersusModeSwitch"
 import { MIN_LOOKUP_LENGTH } from "@crh/api-contract/schemas"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import type { ComparisonRow } from "@/lib/compare"
@@ -283,15 +284,18 @@ export const VersusView = ({ a, b, aSlug, bSlug }: VersusViewProps) => {
 
     return (
         <div>
-            <header className="ch-hero mb-3">
-                <p className="ch-kicker">Head to head</p>
-                <h1 className="ch-display mt-1 text-2xl">
-                    {both ? `${nameA} vs ${nameB}` : "Compare players"}
-                </h1>
-                <p className="mt-1 text-xs text-muted-foreground">
-                    Career totals and this season's ranked numbers, side by
-                    side.
-                </p>
+            <header className="ch-hero mb-3 flex flex-wrap items-end justify-between gap-3">
+                <div>
+                    <p className="ch-kicker">Head to head</p>
+                    <h1 className="ch-display mt-1 text-2xl">
+                        {both ? `${nameA} vs ${nameB}` : "Compare players"}
+                    </h1>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                        Career totals and this season's ranked numbers, side by
+                        side.
+                    </p>
+                </div>
+                <VersusModeSwitch mode="players" />
             </header>
             <Card className="p-4">
                 <VersusPicker
