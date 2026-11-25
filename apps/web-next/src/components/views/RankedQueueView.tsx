@@ -19,6 +19,7 @@ import {
     regions,
     tierColor,
 } from "@/lib/rankings"
+import { queueHighlights } from "@/lib/queueHighlights"
 import { cn } from "@/lib/cn"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import type { QueuedEntry } from "@crh/api-contract/schemas"
@@ -42,6 +43,115 @@ const Delta = ({ value }: { readonly value: number }) => {
 }
 
 type Region = typeof RankedRegion.Type
+
+const Members = ({ members }: { readonly members: QueuedEntry["members"] }) => (
+    <span className="flex min-w-0 flex-wrap items-center gap-x-2">
+        {members.map((member, index) => (
+            <span key={member.id} className="flex items-center gap-x-2">
+                {index > 0 ? (
+                    <span aria-hidden className="text-white/70">
+                        &
+                    </span>
+                ) : null}
+                <EntityLink
+                    type="player"
+                    id={member.id}
+                    href={playerHref(member.slug)}
+                    className="font-semibold"
+                >
+                    {cleanString(member.name)}
+                </EntityLink>
+            </span>
+        ))}
+    </span>
+)
+
+/**
+ * `rankDelta` is new rank minus old rank, so a negative delta is a climb. The
+ * arrow keeps it from reading as a second rating change beside the first.
+ */
+const RankMove = ({ delta }: { readonly delta: number }) => {
+    if (delta === 0) return null
+
+    const moved = -delta
+    const places = Math.abs(moved)
+
+    return (
+        <span
+            className="ml-2 text-xs font-bold text-muted-foreground tabular-nums"
+            aria-label={`Rank ${moved > 0 ? "up" : "down"} ${places} ${places === 1 ? "place" : "places"}`}
+        >
+            <span aria-hidden>
+                {moved > 0 ? "↑" : "↓"}
+                {places}
+            </span>
+        </span>
+    )
+}
+
+const HighlightList = ({
+    id,
+    title,
+    rows,
+}: {
+    readonly id: string
+    readonly title: string
+    readonly rows: readonly QueuedEntry[]
+}) => {
+    if (rows.length === 0) return null
+
+    return (
+        <section aria-labelledby={id} className="min-w-0">
+            <h2 id={id} className="ch-kicker">
+                {title}
+            </h2>
+            <Card className="mt-2 py-0">
+                <ol className="divide-y divide-border/50">
+                    {rows.map((row) => (
+                        <li
+                            key={row.id}
+                            className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 px-3 py-2"
+                        >
+                            <Members members={row.members} />
+                            <span className="flex shrink-0 items-baseline">
+                                <span className="font-bold tabular-nums">
+                                    {row.rating}
+                                </span>
+                                <Delta value={row.ratingDelta} />
+                                <RankMove delta={row.rankDelta} />
+                            </span>
+                        </li>
+                    ))}
+                </ol>
+            </Card>
+        </section>
+    )
+}
+
+const QueueHighlights = ({
+    rows,
+}: {
+    readonly rows: readonly QueuedEntry[]
+}) => {
+    const { climbers, drops } = queueHighlights(rows)
+
+    if (climbers.length === 0 && drops.length === 0) return null
+
+    return (
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <HighlightList
+                id="queue-climbers"
+                title="Biggest climbers"
+                rows={climbers}
+            />
+            <HighlightList
+                id="queue-drops"
+                title="Biggest drops"
+                rows={drops}
+            />
+        </div>
+    )
+}
 
 export const RankedQueueView = ({
     bracket,
@@ -131,33 +241,7 @@ export const RankedQueueView = ({
                                     <Delta value={-row.rankDelta} />
                                 </TableCell>
                                 <TableCell>
-                                    <span className="flex min-w-0 flex-wrap items-center gap-x-2">
-                                        {row.members.map((member, index) => (
-                                            <span
-                                                key={member.id}
-                                                className="flex items-center gap-x-2"
-                                            >
-                                                {index > 0 ? (
-                                                    <span
-                                                        aria-hidden
-                                                        className="text-white/70"
-                                                    >
-                                                        &
-                                                    </span>
-                                                ) : null}
-                                                <EntityLink
-                                                    type="player"
-                                                    id={member.id}
-                                                    href={playerHref(
-                                                        member.slug,
-                                                    )}
-                                                    className="font-semibold"
-                                                >
-                                                    {cleanString(member.name)}
-                                                </EntityLink>
-                                            </span>
-                                        ))}
-                                    </span>
+                                    <Members members={row.members} />
                                 </TableCell>
                                 <TableCell className="text-right">
                                     <span className="font-bold tabular-nums">
@@ -190,6 +274,7 @@ export const RankedQueueView = ({
                 </Table>
             </Card>
         )}
+        <QueueHighlights rows={rows} />
         <PageNav />
     </div>
 )
