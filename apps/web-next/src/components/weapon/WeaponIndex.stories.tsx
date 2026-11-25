@@ -40,7 +40,7 @@ const populated: WeaponMeta = {
         row("Battle Boots", 0.0323, 327.4, 92.3, 0.98),
         row("Chakram", 0.0201, 298.8, 101.2, 0.89),
     ],
-    meta: { accounts: 12_480 },
+    meta: { accounts: 12_480, ratingFloor: null },
 }
 
 const mixed: WeaponMeta = {
@@ -66,13 +66,34 @@ const meta = {
     component: WeaponIndex,
     decorators: [withRouter],
     parameters: { layout: "padded" },
-    args: { meta: populated },
+    args: { meta: populated, floor: "all", onFloorChange() {} },
 } satisfies Meta<typeof WeaponIndex>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
 export const Full: Story = {}
+
+/** The same board sliced to 2000+; the chip row names the active floor. */
+const filtered: WeaponMeta = {
+    data: populated.data.map((entry) => ({
+        ...entry,
+        games: Math.round(entry.games * 0.18),
+        accounts: Math.round(entry.accounts * 0.12),
+    })),
+    meta: { accounts: 1_240, ratingFloor: 2000 },
+}
+
+export const Filtered: Story = {
+    args: { meta: filtered, floor: "2000" },
+    parameters: {
+        docs: {
+            description: {
+                story: "A 2000+ slice: the sample line and the account column describe only the accounts at that rating, and the 2000+ chip reads as pressed.",
+            },
+        },
+    },
+}
 
 export const MixedNulls: Story = {
     args: { meta: mixed },
@@ -86,11 +107,25 @@ export const MixedNulls: Story = {
 }
 
 export const Empty: Story = {
-    args: { meta: { data: [], meta: { accounts: 0 } } },
+    args: { meta: { data: [], meta: { accounts: 0, ratingFloor: null } } },
     parameters: {
         docs: {
             description: {
                 story: "The index has no weapon games yet: the page names the gap instead of showing a table of dashes.",
+            },
+        },
+    },
+}
+
+export const EmptySlice: Story = {
+    args: {
+        meta: { data: [], meta: { accounts: 0, ratingFloor: 2200 } },
+        floor: "2200",
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: "No indexed games clear the 2200+ floor: the empty state names the filter, the chip row stays usable and no zero-filled table renders.",
             },
         },
     },

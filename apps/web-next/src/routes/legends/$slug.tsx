@@ -8,7 +8,7 @@ import { useAtomValue } from "@effect/atom-react"
 import { LegendView } from "@/components/legend/LegendView"
 import { absoluteUrl } from "@/lib/assets"
 import { legendHref, resolveLegend } from "@/lib/legends"
-import { isLegendMetaFloor, resolveLegendMetaFloor } from "@/lib/legendMeta"
+import { isMetaFloor, metaFloorSearch, resolveMetaFloor } from "@/lib/metaFloor"
 import {
     careerLegendRankingsAtom,
     legendMetaAtom,
@@ -16,17 +16,17 @@ import {
     preloadAtomsDegraded,
     useQuery,
 } from "@/effect/atoms"
-import type { LegendMetaFloor } from "@crh/api-contract/schemas"
+import type { MetaFloor } from "@crh/api-contract/schemas"
 
-type LegendSlugSearch = { floor?: LegendMetaFloor }
+type LegendSlugSearch = { floor?: MetaFloor }
 
 export const Route = createFileRoute("/legends/$slug")({
     // The floor lives in the URL, so a sliced page is shareable and a cold load
     // can be server-rendered from the same key the client hydrates.
     validateSearch: (search: Record<string, unknown>): LegendSlugSearch =>
-        isLegendMetaFloor(search.floor) ? { floor: search.floor } : {},
+        isMetaFloor(search.floor) ? { floor: search.floor } : {},
     loaderDeps: ({ search }) => ({
-        floor: resolveLegendMetaFloor(search.floor),
+        floor: resolveMetaFloor(search.floor),
     }),
     loader({ params, context, location, deps }) {
         const legend = resolveLegend(params.slug)
@@ -101,11 +101,11 @@ function Page() {
             playStyle={playStyle}
             meta={board}
             floor={floor}
-            onMetaFloorChange={(next) =>
+            onFloorChange={(next) =>
                 void navigate({
                     to: "/legends/$slug",
                     params: { slug },
-                    search: next === "all" ? {} : { floor: next },
+                    search: metaFloorSearch(next),
                     replace: true,
                 })
             }

@@ -1,6 +1,7 @@
 import { legendsMap } from "@crh/bhapi/legends"
 import { Link } from "@tanstack/react-router"
 import { Card } from "@/components/ui/card"
+import { MetaFloorChips } from "@/components/common/MetaFloorChips"
 import {
     Empty,
     EmptyDescription,
@@ -16,33 +17,32 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { SelectField } from "@/components/common/SelectField"
-import { cn } from "@/lib/cn"
 import { legendHref } from "@/lib/legends"
 import {
-    formatLegendMetaCount,
     formatLegendMetaRate,
     legendMetaDefaultDirection,
     legendMetaDefaultSort,
-    legendMetaDisclaimer,
-    legendMetaEmpty,
-    legendMetaFloorLabel,
-    legendMetaSample,
     legendMetaSorts,
 } from "@/lib/legendMeta"
+import {
+    formatMetaCount,
+    metaDisclaimer,
+    metaEmpty,
+    metaFloorSample,
+} from "@/lib/metaFloor"
 import {
     formatPlayStyleMatchLength,
     formatPlayStylePerGame,
 } from "@/lib/legendPlayStyle"
 import { useSortBy } from "@/lib/useSortBy"
-import { legendMetaFloors } from "@crh/api-contract/schemas"
 import { LegendIcon } from "./LegendIcon"
 import type { LegendMetaSort, LegendMetaRow } from "@/lib/legendMeta"
-import type { LegendMeta, LegendMetaFloor } from "@crh/api-contract/schemas"
+import type { LegendMeta, MetaFloor } from "@crh/api-contract/schemas"
 
 export type LegendMetaBoardProps = {
     readonly board: LegendMeta
-    readonly floor: LegendMetaFloor
-    readonly onFloorChange?: (floor: LegendMetaFloor) => void
+    readonly floor: MetaFloor
+    readonly onFloorChange?: (floor: MetaFloor) => void
 }
 
 /** The phone row: the columns the board stacks under the legend name. */
@@ -59,7 +59,7 @@ const PhoneRecord = ({ row }: { readonly row: LegendMetaRow }) => (
         <span>
             {formatPlayStylePerGame(row.playStyle.suicidesPer100Games)} suicides
         </span>
-        <span>{formatLegendMetaCount(row.games)} games</span>
+        <span>{formatMetaCount(row.games)} games</span>
     </span>
 )
 
@@ -90,32 +90,12 @@ export const LegendMetaBoard = ({
                         Legend meta
                     </h2>
                     <p className="mt-1 max-w-prose text-xs text-muted-foreground">
-                        {legendMetaSample(board.meta.accounts, floor)} ·{" "}
-                        {legendMetaDisclaimer}
+                        {metaFloorSample(board.meta.accounts, floor)} ·{" "}
+                        {metaDisclaimer}
                     </p>
                 </div>
 
-                <fieldset className="flex min-w-0 flex-col gap-1">
-                    <legend className="ch-stat-label">Rating floor</legend>
-                    <div className="flex flex-wrap gap-1.5">
-                        {legendMetaFloors.map((option) => (
-                            <button
-                                key={option}
-                                type="button"
-                                aria-pressed={option === floor}
-                                onClick={() => onFloorChange?.(option)}
-                                className={cn(
-                                    "ch-chip",
-                                    option === floor
-                                        ? "ch-chip-on"
-                                        : "ch-chip-off",
-                                )}
-                            >
-                                {legendMetaFloorLabel(option)}
-                            </button>
-                        ))}
-                    </div>
-                </fieldset>
+                <MetaFloorChips floor={floor} onFloorChange={onFloorChange} />
             </div>
 
             {sorted.length === 0 ? (
@@ -123,7 +103,7 @@ export const LegendMetaBoard = ({
                     <EmptyHeader>
                         <EmptyTitle>No sample</EmptyTitle>
                         <EmptyDescription>
-                            {legendMetaEmpty(floor)}
+                            {metaEmpty("legend", floor)}
                         </EmptyDescription>
                     </EmptyHeader>
                 </Empty>
@@ -216,9 +196,7 @@ export const LegendMetaBoard = ({
                                                 )}
                                             </TableCell>
                                             <TableCell className="hidden text-right tabular-nums text-muted-foreground sm:table-cell">
-                                                {formatLegendMetaCount(
-                                                    row.games,
-                                                )}
+                                                {formatMetaCount(row.games)}
                                             </TableCell>
                                         </TableRow>
                                     )

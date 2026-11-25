@@ -1,14 +1,11 @@
-import {
-    formatLegendMetaCount,
-    formatLegendMetaRate,
-    legendMetaDisclaimer,
-} from "./legendMeta"
+import { formatLegendMetaRate } from "./legendMeta"
 import {
     formatPlayStyleMatchLength,
     formatPlayStylePerGame,
     playStyleUnknown,
 } from "./legendPlayStyle"
 import { legendAttributes } from "./legends"
+import { formatMetaCount, metaDisclaimer } from "./metaFloor"
 import type { LegendMetaRow, LegendPlayStyle } from "@crh/api-contract/schemas"
 import type { Legend } from "@crh/bhapi/types"
 
@@ -100,7 +97,7 @@ const weaponSplit = (side: Side): string => {
 
 /** The sample the comparison reads: every indexed account, with no rating floor. */
 export const legendCompareSample = (accounts: number): string =>
-    `Across ${formatLegendMetaCount(accounts)} indexed accounts, all ratings · ${legendMetaDisclaimer}`
+    `Across ${formatMetaCount(accounts)} indexed accounts, all ratings · ${metaDisclaimer}`
 
 const metrics: readonly Metric[] = [
     attribute("Strength", "strength"),
@@ -114,8 +111,8 @@ const metrics: readonly Metric[] = [
         formatLegendMetaRate,
         "higher",
     ),
-    boardMetric("Games", (row) => row.games, formatLegendMetaCount),
-    boardMetric("Accounts", (row) => row.accounts, formatLegendMetaCount),
+    boardMetric("Games", (row) => row.games, formatMetaCount),
+    boardMetric("Accounts", (row) => row.accounts, formatMetaCount),
     playStyleMetric(
         "Damage dealt / game",
         (style) => style.damageDealtPerGame,

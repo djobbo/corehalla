@@ -1,25 +1,26 @@
 import { Link } from "@tanstack/react-router"
 import { Card } from "@/components/ui/card"
+import { MetaFloorChips } from "@/components/common/MetaFloorChips"
 import { StatGrid } from "@/components/common/StatGrid"
-import { cn } from "@/lib/cn"
-import { legendMetaFloors } from "@crh/api-contract/schemas"
 import {
-    formatLegendMetaCount,
     formatLegendMetaRate,
-    legendMetaDisclaimer,
-    legendMetaFloorLabel,
     legendMetaRank,
     legendMetaRankLabel,
-    legendMetaSample,
 } from "@/lib/legendMeta"
 import {
     formatPlayStyleMatchLength,
     formatPlayStylePerGame,
     playStyleUnknown,
 } from "@/lib/legendPlayStyle"
+import {
+    formatMetaCount,
+    metaDisclaimer,
+    metaFloorSample,
+    metaFloorSearch,
+} from "@/lib/metaFloor"
 import type { Stat } from "@/components/common/StatGrid"
 import type { LegendMetaMetric, LegendMetaRow } from "@/lib/legendMeta"
-import type { LegendMeta, LegendMetaFloor } from "@crh/api-contract/schemas"
+import type { LegendMeta, MetaFloor } from "@crh/api-contract/schemas"
 
 const TITLE_ID = "legend-meta-title"
 
@@ -43,12 +44,12 @@ const legendMetaMetrics: readonly MetricDefinition[] = [
     {
         metric: "games",
         title: "Games",
-        format: (row) => formatLegendMetaCount(row.games),
+        format: (row) => formatMetaCount(row.games),
     },
     {
         metric: "accounts",
         title: "Accounts",
-        format: (row) => formatLegendMetaCount(row.accounts),
+        format: (row) => formatMetaCount(row.accounts),
     },
     {
         metric: "damageDealtPerGame",
@@ -67,8 +68,8 @@ const legendMetaMetrics: readonly MetricDefinition[] = [
 export type LegendMetaCardProps = {
     readonly meta: LegendMeta | null
     readonly legendId: number
-    readonly floor: LegendMetaFloor
-    readonly onFloorChange?: (floor: LegendMetaFloor) => void
+    readonly floor: MetaFloor
+    readonly onFloorChange?: (floor: MetaFloor) => void
 }
 
 export const LegendMetaCard = ({
@@ -103,8 +104,7 @@ export const LegendMetaCard = ({
         },
     )
 
-    const boardSearch: { floor?: LegendMetaFloor } =
-        floor === "all" ? {} : { floor }
+    const boardSearch = metaFloorSearch(floor)
 
     return (
         <section aria-labelledby={TITLE_ID} className="mt-3">
@@ -115,8 +115,8 @@ export const LegendMetaCard = ({
                         Meta
                     </h2>
                     <p className="mt-1 max-w-prose text-xs text-muted-foreground">
-                        {legendMetaSample(meta.meta.accounts, floor)} ·{" "}
-                        {legendMetaDisclaimer}
+                        {metaFloorSample(meta.meta.accounts, floor)} ·{" "}
+                        {metaDisclaimer}
                     </p>
                     <Link
                         to="/legends"
@@ -127,27 +127,7 @@ export const LegendMetaCard = ({
                     </Link>
                 </div>
 
-                <fieldset className="flex min-w-0 flex-col gap-1">
-                    <legend className="ch-stat-label">Rating floor</legend>
-                    <div className="flex flex-wrap gap-1.5">
-                        {legendMetaFloors.map((option) => (
-                            <button
-                                key={option}
-                                type="button"
-                                aria-pressed={option === floor}
-                                onClick={() => onFloorChange?.(option)}
-                                className={cn(
-                                    "ch-chip",
-                                    option === floor
-                                        ? "ch-chip-on"
-                                        : "ch-chip-off",
-                                )}
-                            >
-                                {legendMetaFloorLabel(option)}
-                            </button>
-                        ))}
-                    </div>
-                </fieldset>
+                <MetaFloorChips floor={floor} onFloorChange={onFloorChange} />
             </div>
 
             <Card className="mt-3 p-4">

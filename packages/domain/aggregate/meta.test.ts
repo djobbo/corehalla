@@ -177,7 +177,7 @@ describe("buildLegendMeta", () => {
 })
 
 describe("buildWeaponMeta", () => {
-    const sample = { accounts: 18_204 }
+    const sample = { accounts: 18_204, floor: "all" } as const
 
     it("derives rates and per-game totals per weapon", () => {
         const board = buildWeaponMeta(
@@ -336,10 +336,16 @@ describe("buildWeaponMeta", () => {
         })
     })
 
-    it("carries the sample size onto the envelope", () => {
-        expect(buildWeaponMeta([], { accounts: 0 })).toEqual({
+    it("carries the sample size and floor onto the envelope", () => {
+        expect(buildWeaponMeta([], { accounts: 0, floor: "2000" })).toEqual({
             data: [],
-            meta: { accounts: 0 },
+            meta: { accounts: 0, ratingFloor: 2000 },
         })
+    })
+
+    it("reports a null floor for the whole index", () => {
+        expect(buildWeaponMeta([], { accounts: 4, floor: "all" }).meta).toEqual(
+            { accounts: 4, ratingFloor: null },
+        )
     })
 })

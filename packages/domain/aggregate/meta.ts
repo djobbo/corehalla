@@ -1,10 +1,11 @@
 import { getEntitySlug } from "@crh/common/helpers/entitySlug"
 import { legendsMap } from "@crh/bhapi/legends"
 import { weapons } from "@crh/bhapi/constants"
+import { metaFloorRating } from "@crh/api-contract/schemas"
 import type {
     LegendMeta,
-    LegendMetaFloor,
     LegendPlayStyle,
+    MetaFloor,
     WeaponMeta,
 } from "@crh/api-contract/schemas"
 import type { Weapon } from "@crh/bhapi/constants"
@@ -32,7 +33,7 @@ export type LegendMetaRowInput = {
 
 export type LegendMetaSample = {
     readonly accounts: number
-    readonly floor: LegendMetaFloor
+    readonly floor: MetaFloor
 }
 
 const round = (value: number, decimals: number): number => {
@@ -105,7 +106,7 @@ export const buildLegendMeta = (
         }),
         meta: {
             accounts: sample.accounts,
-            ratingFloor: sample.floor === "all" ? null : Number(sample.floor),
+            ratingFloor: metaFloorRating(sample.floor),
         },
     }
 }
@@ -122,6 +123,7 @@ export type WeaponMetaRowInput = {
 
 export type WeaponMetaSample = {
     readonly accounts: number
+    readonly floor: MetaFloor
 }
 
 const isWeapon = (value: string): value is Weapon =>
@@ -149,6 +151,9 @@ export const buildWeaponMeta = (
             timeHeldPerGame: perGame(row.matchTime, row.games, 2),
             kosPerGame: perGame(row.kos, row.games, 2),
         })),
-        meta: { accounts: sample.accounts },
+        meta: {
+            accounts: sample.accounts,
+            ratingFloor: metaFloorRating(sample.floor),
+        },
     }
 }

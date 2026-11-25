@@ -25,7 +25,7 @@ import type { FallbackSection } from "./fallback"
 import type {
     Ladder,
     LegendMeta,
-    LegendMetaFloor,
+    MetaFloor,
     PowerRankingsGameMode,
     PowerRankingsOrderBy,
     PowerRankingsRegion,
@@ -142,7 +142,7 @@ export const clansRankingsAtom = (name: string, page: number) =>
         timeToLive: ttl,
     })
 
-export const legendMetaQueryAtom = (floor: LegendMetaFloor) =>
+export const legendMetaQueryAtom = (floor: MetaFloor) =>
     CorehallaClient.query("meta", "getLegendMeta", {
         query: { floor },
         serializationKey: `meta:legends:${floor}`,
@@ -154,15 +154,16 @@ export const legendMetaQueryAtom = (floor: LegendMetaFloor) =>
  * failing the page, so the roster grid keeps rendering.
  */
 export const legendMetaAtom = (
-    floor: LegendMetaFloor,
+    floor: MetaFloor,
 ): Atom.Atom<LegendMeta | null> =>
     Atom.make((get) =>
         Option.getOrNull(AsyncResult.value(get(legendMetaQueryAtom(floor)))),
     )
 
-export const weaponMetaQueryAtom = () =>
+export const weaponMetaQueryAtom = (floor: MetaFloor) =>
     CorehallaClient.query("meta", "getWeaponMeta", {
-        serializationKey: "meta:weapons",
+        query: { floor },
+        serializationKey: `meta:weapons:${floor}`,
         timeToLive: ttl,
     })
 
@@ -170,9 +171,11 @@ export const weaponMetaQueryAtom = () =>
  * Decoration on the weapon page: a failed read drops the card instead of
  * failing the page, so the wielders and career board keep rendering.
  */
-export const weaponMetaAtom = (): Atom.Atom<WeaponMeta | null> =>
+export const weaponMetaAtom = (
+    floor: MetaFloor,
+): Atom.Atom<WeaponMeta | null> =>
     Atom.make((get) =>
-        Option.getOrNull(AsyncResult.value(get(weaponMetaQueryAtom()))),
+        Option.getOrNull(AsyncResult.value(get(weaponMetaQueryAtom(floor)))),
     )
 
 export const powerRankingsQueryAtom = (

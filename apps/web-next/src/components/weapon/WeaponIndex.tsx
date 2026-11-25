@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router"
+import { MetaFloorChips } from "@/components/common/MetaFloorChips"
 import { SelectField } from "@/components/common/SelectField"
 import { Card } from "@/components/ui/card"
 import {
@@ -16,6 +17,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { weaponIconSrc } from "@/lib/assets"
+import { metaDisclaimer, metaEmpty, metaFloorSample } from "@/lib/metaFloor"
 import { weaponHref, weaponIndex } from "@/lib/weapons"
 import {
     formatWeaponMetaCount,
@@ -24,13 +26,11 @@ import {
     weaponMetaAverage,
     weaponMetaDefaultDirection,
     weaponMetaDefaultSort,
-    weaponMetaDisclaimer,
-    weaponMetaEmpty,
-    weaponMetaSample,
     weaponMetaSorts,
     weaponMetaTableRows,
 } from "@/lib/weaponMeta"
 import { useSortBy } from "@/lib/useSortBy"
+import type { MetaFloor } from "@crh/api-contract/schemas"
 import type {
     WeaponMeta,
     WeaponMetaSort,
@@ -39,6 +39,8 @@ import type {
 
 export type WeaponIndexProps = {
     readonly meta: WeaponMeta | null
+    readonly floor: MetaFloor
+    readonly onFloorChange?: (floor: MetaFloor) => void
 }
 
 /** The phone row: the columns the board stacks under the weapon name. */
@@ -57,7 +59,15 @@ const PhoneRecord = ({ row }: { readonly row: WeaponMetaTableRow }) => (
     </span>
 )
 
-const MetaTable = ({ meta }: { readonly meta: WeaponMeta }) => {
+const MetaTable = ({
+    meta,
+    floor,
+    onFloorChange,
+}: {
+    readonly meta: WeaponMeta
+    readonly floor: MetaFloor
+    readonly onFloorChange?: (floor: MetaFloor) => void
+}) => {
     const { sorted, key, setKey, choices } = useSortBy<
         WeaponMetaTableRow,
         WeaponMetaSort
@@ -70,112 +80,128 @@ const MetaTable = ({ meta }: { readonly meta: WeaponMeta }) => {
 
     return (
         <section aria-labelledby="weapon-meta-title">
-            <div>
-                <p className="ch-kicker">Play share and win rate</p>
-                <h2 id="weapon-meta-title" className="ch-display mt-1 text-lg">
-                    Weapon meta
-                </h2>
-                <p className="mt-1 max-w-prose text-xs text-muted-foreground">
-                    {weaponMetaSample(meta.meta.accounts)} ·{" "}
-                    {weaponMetaDisclaimer}
-                </p>
+            <div className="flex flex-wrap items-end justify-between gap-3">
+                <div>
+                    <p className="ch-kicker">Play share and win rate</p>
+                    <h2
+                        id="weapon-meta-title"
+                        className="ch-display mt-1 text-lg"
+                    >
+                        Weapon meta
+                    </h2>
+                    <p className="mt-1 max-w-prose text-xs text-muted-foreground">
+                        {metaFloorSample(meta.meta.accounts, floor)} ·{" "}
+                        {metaDisclaimer}
+                    </p>
+                </div>
+
+                <MetaFloorChips floor={floor} onFloorChange={onFloorChange} />
             </div>
 
-            <SelectField
-                label="Sort by"
-                value={key}
-                options={choices}
-                onChange={setKey}
-                className="mt-3 sm:max-w-xs"
-            />
+            {meta.data.length === 0 ? (
+                <NoSample floor={floor} />
+            ) : (
+                <>
+                    <SelectField
+                        label="Sort by"
+                        value={key}
+                        options={choices}
+                        onChange={setKey}
+                        className="mt-3 sm:max-w-xs"
+                    />
 
-            <Card className="mt-3 overflow-hidden py-0">
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Weapon</TableHead>
-                            <TableHead className="w-20 text-right">
-                                Play share
-                            </TableHead>
-                            <TableHead className="hidden w-20 text-right sm:table-cell">
-                                Win rate
-                            </TableHead>
-                            <TableHead className="hidden w-28 text-right sm:table-cell">
-                                Damage / game
-                            </TableHead>
-                            <TableHead className="hidden w-32 text-right sm:table-cell">
-                                Time held / game
-                            </TableHead>
-                            <TableHead className="hidden w-24 text-right sm:table-cell">
-                                KOs / game
-                            </TableHead>
-                            <TableHead className="hidden w-20 text-right sm:table-cell">
-                                Games
-                            </TableHead>
-                            <TableHead className="hidden w-20 text-right sm:table-cell">
-                                Accounts
-                            </TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {sorted.map((row) => (
-                            <TableRow key={row.weapon}>
-                                <TableCell className="whitespace-normal">
-                                    <Link
-                                        to={weaponHref(row.weapon)}
-                                        className="flex items-center gap-2 font-semibold transition-colors hover:text-ring"
-                                    >
-                                        <img
-                                            src={weaponIconSrc(row.weapon)}
-                                            alt=""
-                                            className="size-7 shrink-0 object-contain"
-                                        />
-                                        <span className="flex min-w-0 flex-col">
-                                            {row.weapon}
-                                            <PhoneRecord row={row} />
-                                        </span>
-                                    </Link>
-                                </TableCell>
-                                <TableCell className="text-right font-bold tabular-nums">
-                                    {formatWeaponMetaRate(
-                                        row.meta?.playShare ?? null,
-                                    )}
-                                </TableCell>
-                                <TableCell className="hidden text-right tabular-nums sm:table-cell">
-                                    {formatWeaponMetaRate(
-                                        row.meta?.winRate ?? null,
-                                    )}
-                                </TableCell>
-                                <TableCell className="hidden text-right tabular-nums sm:table-cell">
-                                    {weaponMetaAverage(
-                                        row.meta?.damagePerGame ?? null,
-                                    )}
-                                </TableCell>
-                                <TableCell className="hidden text-right tabular-nums sm:table-cell">
-                                    {formatWeaponMetaDuration(
-                                        row.meta?.timeHeldPerGame ?? null,
-                                    )}
-                                </TableCell>
-                                <TableCell className="hidden text-right tabular-nums sm:table-cell">
-                                    {weaponMetaAverage(
-                                        row.meta?.kosPerGame ?? null,
-                                    )}
-                                </TableCell>
-                                <TableCell className="hidden text-right tabular-nums text-muted-foreground sm:table-cell">
-                                    {formatWeaponMetaCount(
-                                        row.meta?.games ?? null,
-                                    )}
-                                </TableCell>
-                                <TableCell className="hidden text-right tabular-nums text-muted-foreground sm:table-cell">
-                                    {formatWeaponMetaCount(
-                                        row.meta?.accounts ?? null,
-                                    )}
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </Card>
+                    <Card className="mt-3 overflow-hidden py-0">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Weapon</TableHead>
+                                    <TableHead className="w-20 text-right">
+                                        Play share
+                                    </TableHead>
+                                    <TableHead className="hidden w-20 text-right sm:table-cell">
+                                        Win rate
+                                    </TableHead>
+                                    <TableHead className="hidden w-28 text-right sm:table-cell">
+                                        Damage / game
+                                    </TableHead>
+                                    <TableHead className="hidden w-32 text-right sm:table-cell">
+                                        Time held / game
+                                    </TableHead>
+                                    <TableHead className="hidden w-24 text-right sm:table-cell">
+                                        KOs / game
+                                    </TableHead>
+                                    <TableHead className="hidden w-20 text-right sm:table-cell">
+                                        Games
+                                    </TableHead>
+                                    <TableHead className="hidden w-20 text-right sm:table-cell">
+                                        Accounts
+                                    </TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {sorted.map((row) => (
+                                    <TableRow key={row.weapon}>
+                                        <TableCell className="whitespace-normal">
+                                            <Link
+                                                to={weaponHref(row.weapon)}
+                                                className="flex items-center gap-2 font-semibold transition-colors hover:text-ring"
+                                            >
+                                                <img
+                                                    src={weaponIconSrc(
+                                                        row.weapon,
+                                                    )}
+                                                    alt=""
+                                                    className="size-7 shrink-0 object-contain"
+                                                />
+                                                <span className="flex min-w-0 flex-col">
+                                                    {row.weapon}
+                                                    <PhoneRecord row={row} />
+                                                </span>
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell className="text-right font-bold tabular-nums">
+                                            {formatWeaponMetaRate(
+                                                row.meta?.playShare ?? null,
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="hidden text-right tabular-nums sm:table-cell">
+                                            {formatWeaponMetaRate(
+                                                row.meta?.winRate ?? null,
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="hidden text-right tabular-nums sm:table-cell">
+                                            {weaponMetaAverage(
+                                                row.meta?.damagePerGame ?? null,
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="hidden text-right tabular-nums sm:table-cell">
+                                            {formatWeaponMetaDuration(
+                                                row.meta?.timeHeldPerGame ??
+                                                    null,
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="hidden text-right tabular-nums sm:table-cell">
+                                            {weaponMetaAverage(
+                                                row.meta?.kosPerGame ?? null,
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="hidden text-right tabular-nums text-muted-foreground sm:table-cell">
+                                            {formatWeaponMetaCount(
+                                                row.meta?.games ?? null,
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="hidden text-right tabular-nums text-muted-foreground sm:table-cell">
+                                            {formatWeaponMetaCount(
+                                                row.meta?.accounts ?? null,
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </Card>
+                </>
+            )}
         </section>
     )
 }
@@ -212,16 +238,20 @@ const Catalogue = () => (
     </ul>
 )
 
-const NoSample = () => (
-    <Empty className="rounded-none bg-card py-10 shadow-md">
+const NoSample = ({ floor }: { readonly floor: MetaFloor }) => (
+    <Empty className="mt-4 rounded-none bg-card py-10 shadow-md">
         <EmptyHeader>
             <EmptyTitle>No sample</EmptyTitle>
-            <EmptyDescription>{weaponMetaEmpty}</EmptyDescription>
+            <EmptyDescription>{metaEmpty("weapon", floor)}</EmptyDescription>
         </EmptyHeader>
     </Empty>
 )
 
-export const WeaponIndex = ({ meta }: WeaponIndexProps) => (
+export const WeaponIndex = ({
+    meta,
+    floor,
+    onFloorChange,
+}: WeaponIndexProps) => (
     <main id="main" tabIndex={-1} className="ch-page">
         <header className="ch-hero mb-3">
             <p className="ch-kicker">Brawlhalla arsenal</p>
@@ -234,10 +264,12 @@ export const WeaponIndex = ({ meta }: WeaponIndexProps) => (
 
         {meta === null ? (
             <Catalogue />
-        ) : meta.data.length === 0 ? (
-            <NoSample />
         ) : (
-            <MetaTable meta={meta} />
+            <MetaTable
+                meta={meta}
+                floor={floor}
+                onFloorChange={onFloorChange}
+            />
         )}
     </main>
 )

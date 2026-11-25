@@ -398,11 +398,11 @@ describe("getLegendMeta", () => {
     )
 })
 
-const readWeaponMeta = (fixture: Fixture) =>
+const readWeaponMeta = (fixture: Fixture, minRating: number | null) =>
     Effect.gen(function* () {
         const db = yield* Database
 
-        return yield* db.getWeaponMeta
+        return yield* db.getWeaponMeta(minRating)
     }).pipe(Effect.provide(layerFor(fixture)))
 
 const weaponSample: Fixture = {
@@ -455,7 +455,7 @@ const weaponSample: Fixture = {
 describe("getWeaponMeta", () => {
     it.effect("sums games, wins, damage, time and KOs per weapon", () =>
         Effect.gen(function* () {
-            const sample = yield* readWeaponMeta(weaponSample)
+            const sample = yield* readWeaponMeta(weaponSample, null)
 
             expect(sample.rows).toEqual([
                 {
@@ -482,7 +482,7 @@ describe("getWeaponMeta", () => {
 
     it.effect("omits a weapon with no indexed games", () =>
         Effect.gen(function* () {
-            const sample = yield* readWeaponMeta(weaponSample)
+            const sample = yield* readWeaponMeta(weaponSample, null)
 
             expect(sample.rows.map((row) => row.weapon)).not.toContain("Bow")
         }),
@@ -490,14 +490,79 @@ describe("getWeaponMeta", () => {
 
     it.effect("counts every indexed account as the sample size", () =>
         Effect.gen(function* () {
-            expect((yield* readWeaponMeta(weaponSample)).accounts).toBe(3)
+            expect((yield* readWeaponMeta(weaponSample, null)).accounts).toBe(3)
+        }),
+    )
+
+    it.effect("counts only the accounts matching the floor", () =>
+        Effect.gen(function* () {
+            const sample = yield* readWeaponMeta(weaponSample, 1800)
+
+            expect(sample.rows).toEqual([
+                {
+                    weapon: "Axe",
+                    games: 40,
+                    wins: 10,
+                    accounts: 1,
+                    damageDealt: 12_000,
+                    matchTime: 2_400,
+                    kos: 30,
+                },
+                {
+                    weapon: "Sword",
+                    games: 110,
+                    wins: 65,
+                    accounts: 2,
+                    damageDealt: 33_000,
+                    matchTime: 6_600,
+                    kos: 99,
+                },
+            ])
+            expect(sample.accounts).toBe(2)
+        }),
+    )
+
+    it.effect("includes an account sitting exactly on the floor", () =>
+        Effect.gen(function* () {
+            const sample = yield* readWeaponMeta(weaponSample, 2000)
+
+            expect(sample.rows).toEqual([
+                {
+                    weapon: "Axe",
+                    games: 40,
+                    wins: 10,
+                    accounts: 1,
+                    damageDealt: 12_000,
+                    matchTime: 2_400,
+                    kos: 30,
+                },
+                {
+                    weapon: "Sword",
+                    games: 100,
+                    wins: 60,
+                    accounts: 1,
+                    damageDealt: 30_000,
+                    matchTime: 6_000,
+                    kos: 90,
+                },
+            ])
+            expect(sample.accounts).toBe(1)
+        }),
+    )
+
+    it.effect("reads an empty slice as an empty sample", () =>
+        Effect.gen(function* () {
+            expect(yield* readWeaponMeta(weaponSample, 2200)).toEqual({
+                rows: [],
+                accounts: 0,
+            })
         }),
     )
 
     it.effect("reads an empty archive as an empty sample", () =>
         Effect.gen(function* () {
             expect(
-                yield* readWeaponMeta({ accounts: [], legends: [] }),
+                yield* readWeaponMeta({ accounts: [], legends: [] }, null),
             ).toEqual({ rows: [], accounts: 0 })
         }),
     )

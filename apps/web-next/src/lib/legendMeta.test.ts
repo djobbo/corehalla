@@ -3,17 +3,12 @@ import { compareBy } from "./useSortBy"
 import type { LegendMetaRow } from "./legendMeta"
 import type { LegendPlayStyle } from "@crh/api-contract/schemas"
 import {
-    formatLegendMetaCount,
     formatLegendMetaRate,
     legendMetaDefaultDirection,
     legendMetaDefaultSort,
-    legendMetaEmpty,
-    legendMetaFloorLabel,
     legendMetaRank,
     legendMetaRankLabel,
-    legendMetaSample,
     legendMetaSorts,
-    resolveLegendMetaFloor,
 } from "./legendMeta"
 
 const playStyle = (over: Partial<LegendPlayStyle> = {}): LegendPlayStyle => ({
@@ -58,55 +53,6 @@ describe("formatLegendMetaRate", () => {
 
     it("renders an empty sample as zero, not NaN", () => {
         expect(formatLegendMetaRate(0)).toBe("0%")
-    })
-})
-
-describe("formatLegendMetaCount", () => {
-    it("groups thousands the same way on both sides of the render", () => {
-        expect(formatLegendMetaCount(18204)).toBe("18,204")
-        expect(formatLegendMetaCount(0)).toBe("0")
-    })
-})
-
-describe("legendMetaSample", () => {
-    it("states the whole indexed population", () => {
-        expect(legendMetaSample(18204, "all")).toBe(
-            "Across 18,204 indexed accounts",
-        )
-    })
-
-    it("names the rating floor", () => {
-        expect(legendMetaSample(18204, "1800")).toBe(
-            "Across 18,204 indexed accounts at 1800+ rating",
-        )
-    })
-})
-
-describe("legendMetaEmpty", () => {
-    it("names the filter that has no rows", () => {
-        expect(legendMetaEmpty("2200")).toBe(
-            "No legend games are indexed at 2200+ rating yet.",
-        )
-        expect(legendMetaEmpty("all")).toBe("No legend games are indexed yet.")
-    })
-})
-
-describe("legendMetaFloorLabel", () => {
-    it("labels every floor in the filter", () => {
-        expect(legendMetaFloorLabel("all")).toBe("All")
-        expect(legendMetaFloorLabel("1500")).toBe("1500+")
-    })
-})
-
-describe("resolveLegendMetaFloor", () => {
-    it("accepts every floor the API offers", () => {
-        expect(resolveLegendMetaFloor("1800")).toBe("1800")
-        expect(resolveLegendMetaFloor("all")).toBe("all")
-    })
-
-    it("falls back to the whole index for an unknown filter", () => {
-        expect(resolveLegendMetaFloor("9999")).toBe("all")
-        expect(resolveLegendMetaFloor(undefined)).toBe("all")
     })
 })
 

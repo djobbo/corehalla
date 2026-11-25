@@ -7,19 +7,19 @@ import {
     legendMetaQueryAtom,
     preloadAtomsDegraded,
 } from "@/effect/atoms"
-import { isLegendMetaFloor, resolveLegendMetaFloor } from "@/lib/legendMeta"
+import { isMetaFloor, metaFloorSearch, resolveMetaFloor } from "@/lib/metaFloor"
 import { absoluteUrl } from "@/lib/assets"
-import type { LegendMetaFloor } from "@crh/api-contract/schemas"
+import type { MetaFloor } from "@crh/api-contract/schemas"
 
-type LegendIndexSearch = { floor?: LegendMetaFloor }
+type LegendIndexSearch = { floor?: MetaFloor }
 
 export const Route = createFileRoute("/legends/")({
     // The floor lives in the URL, so a filtered board is shareable and a cold
     // load can be server-rendered from the same key the client hydrates.
     validateSearch: (search: Record<string, unknown>): LegendIndexSearch =>
-        isLegendMetaFloor(search.floor) ? { floor: search.floor } : {},
+        isMetaFloor(search.floor) ? { floor: search.floor } : {},
     loaderDeps: ({ search }) => ({
-        floor: resolveLegendMetaFloor(search.floor),
+        floor: resolveMetaFloor(search.floor),
     }),
     loader: ({ deps, context }) =>
         // Decoration: a failed aggregate hides the board, never the roster.
@@ -53,7 +53,7 @@ function Page() {
                     onFloorChange={(next) =>
                         void navigate({
                             to: "/legends",
-                            search: next === "all" ? {} : { floor: next },
+                            search: metaFloorSearch(next),
                             replace: true,
                         })
                     }
