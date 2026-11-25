@@ -1,8 +1,14 @@
-import { createFileRoute, notFound, redirect } from "@tanstack/react-router"
+import {
+    createFileRoute,
+    notFound,
+    redirect,
+    useNavigate,
+} from "@tanstack/react-router"
 import { useAtomValue } from "@effect/atom-react"
 import { LegendView } from "@/components/legend/LegendView"
 import { absoluteUrl } from "@/lib/assets"
 import { legendHref, resolveLegend } from "@/lib/legends"
+import { isLegendMetaFloor, resolveLegendMetaFloor } from "@/lib/legendMeta"
 import {
     careerLegendRankingsAtom,
     legendMetaAtom,
@@ -10,9 +16,19 @@ import {
     preloadAtomsDegraded,
     useQuery,
 } from "@/effect/atoms"
+import type { LegendMetaFloor } from "@crh/api-contract/schemas"
+
+type LegendSlugSearch = { floor?: LegendMetaFloor }
 
 export const Route = createFileRoute("/legends/$slug")({
-    loader({ params, context, location }) {
+    // The floor lives in the URL, so a sliced page is shareable and a cold load
+    // can be server-rendered from the same key the client hydrates.
+    validateSearch: (search: Record<string, unknown>): LegendSlugSearch =>
+        isLegendMetaFloor(search.floor) ? { floor: search.floor } : {},
+    loaderDeps: ({ search }) => ({
+        floor: resolveLegendMetaFloor(search.floor),
+    }),
+    loader({ params, context, location, deps }) {
         const legend = resolveLegend(params.slug)
 
         if (legend === null) {
@@ -32,7 +48,7 @@ export const Route = createFileRoute("/legends/$slug")({
             context,
             [careerLegendRankingsAtom(legend.legend_id, "games", 1)],
             // Decoration: a slow or failed aggregate drops the card, never the page.
-            [legendMetaQueryAtom("all")],
+            [legendMetaQueryAtom(deps.floor)],
         )
     },
     head({ params }) {
@@ -60,7 +76,11 @@ export const Route = createFileRoute("/legends/$slug")({
 })
 
 function Page() {
-    const legend = resolveLegend(Route.useParams().slug)
+    const { slug } = Route.useParams()
+    const { floor: selected } = Route.useSearch()
+    const floor = selected ?? "all"
+    const navigate = useNavigate()
+    const legend = resolveLegend(slug)
 
     if (legend === null) {
         throw notFound()
@@ -69,10 +89,26 @@ function Page() {
     const rows = useQuery(
         careerLegendRankingsAtom(legend.legend_id, "games", 1),
     )
-    const board = useAtomValue(legendMetaAtom("all"))
+    const board = useAtomValue(legendMetaAtom(floor))
     const playStyle =
         board?.data.find((row) => row.legendId === legend.legend_id)
             ?.playStyle ?? null
 
-    return <LegendView legend={legend} rows={rows} playStyle={playStyle} />
+    return (
+        <LegendView
+            legend={legend}
+            rows={rows}
+            playStyle={playStyle}
+            meta={board}
+            floor={floor}
+            onMetaFloorChange={(next) =>
+                void navigate({
+                    to: "/legends/$slug",
+                    params: { slug },
+                    search: next === "all" ? {} : { floor: next },
+                    replace: true,
+                })
+            }
+        />
+    )
 }
