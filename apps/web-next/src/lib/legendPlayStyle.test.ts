@@ -1,5 +1,6 @@
 import { describe, expect, it } from "@effect/vitest"
 import {
+    damageSplitEntries,
     formatPlayStyleMatchLength,
     formatPlayStylePerGame,
     formatPlayStyleShare,
@@ -48,6 +49,78 @@ describe("formatPlayStyleShare", () => {
 
     it("renders a dash when no time was held", () => {
         expect(formatPlayStyleShare(null)).toBe(playStyleUnknown)
+    })
+})
+
+describe("damageSplitEntries", () => {
+    const weapons = { one: "Bow", two: "Gauntlets" } as const
+
+    it("labels each damage bucket with its percentage", () => {
+        const entries = damageSplitEntries(
+            {
+                weaponOne: 0.6667,
+                weaponTwo: 0.1905,
+                unarmed: 0.0833,
+                gadgets: 0.0405,
+                thrownItem: 0.019,
+            },
+            weapons,
+        )
+
+        expect(entries?.map((entry) => [entry.label, entry.formatted])).toEqual(
+            [
+                ["Bow", "66.67%"],
+                ["Gauntlets", "19.05%"],
+                ["Unarmed", "8.33%"],
+                ["Gadgets", "4.05%"],
+                ["Thrown items", "1.9%"],
+            ],
+        )
+    })
+
+    it("gives every bucket its own bar colour", () => {
+        const entries = damageSplitEntries(
+            {
+                weaponOne: 0.4,
+                weaponTwo: 0.3,
+                unarmed: 0.15,
+                gadgets: 0.1,
+                thrownItem: 0.05,
+            },
+            weapons,
+        )
+
+        expect(new Set(entries?.map((entry) => entry.intent)).size).toBe(5)
+    })
+
+    it("renders no split when every share is absent", () => {
+        expect(
+            damageSplitEntries(
+                {
+                    weaponOne: null,
+                    weaponTwo: null,
+                    unarmed: null,
+                    gadgets: null,
+                    thrownItem: null,
+                },
+                weapons,
+            ),
+        ).toBeNull()
+    })
+
+    it("renders no split when any share is missing", () => {
+        expect(
+            damageSplitEntries(
+                {
+                    weaponOne: 0.9,
+                    weaponTwo: 0.1,
+                    unarmed: null,
+                    gadgets: 0,
+                    thrownItem: 0,
+                },
+                weapons,
+            ),
+        ).toBeNull()
     })
 })
 

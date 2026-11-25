@@ -16,6 +16,13 @@ const playStyle: LegendPlayStyle = {
     averageMatchSeconds: 200,
     weaponOneShare: 0.6,
     weaponTwoShare: 0.4,
+    damageSplit: {
+        weaponOne: 0.62,
+        weaponTwo: 0.21,
+        unarmed: 0.1,
+        gadgets: 0.04,
+        thrownItem: 0.03,
+    },
 }
 
 const row = (

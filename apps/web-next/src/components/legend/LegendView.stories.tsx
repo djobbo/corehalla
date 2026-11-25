@@ -62,6 +62,13 @@ export const WithPlayStyle: Story = {
             averageMatchSeconds: 208,
             weaponOneShare: 0.5833,
             weaponTwoShare: 0.4167,
+            damageSplit: {
+                weaponOne: 0.541,
+                weaponTwo: 0.219,
+                unarmed: 0.15,
+                gadgets: 0.06,
+                thrownItem: 0.03,
+            },
         },
     },
 }
