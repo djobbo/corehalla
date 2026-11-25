@@ -2,6 +2,7 @@ import { ClientOnly, createFileRoute } from "@tanstack/react-router"
 import { useAtomValue } from "@effect/atom-react"
 import { LandingFavorites } from "@/components/account/LandingFavorites"
 import { CommunityCard } from "@/components/landing/CommunityCard"
+import { MostPlayedLegends } from "@/components/landing/MostPlayedLegends"
 import { PageLoaderProbe } from "@/components/layout/PageLoader"
 import { LandingHero } from "@/components/layout/LandingHero"
 import { LatestNews } from "@/components/news/LatestNews"
@@ -9,6 +10,8 @@ import { LandingLadder } from "@/components/views/LandingLadder"
 import { WeeklyRotation } from "@/components/views/WeeklyRotation"
 import { to1v1Rows, to2v2Rows } from "@/lib/ladderRows"
 import {
+    legendMetaAtom,
+    legendMetaQueryAtom,
     newsArticlesAtom,
     preloadAtomsDegraded,
     rankings1v1Atom,
@@ -44,7 +47,7 @@ export const Route = createFileRoute("/")({
                 newsArticlesAtom("", 1, LANDING_NEWS_COUNT),
             ],
             // Decoration: it may fail without degrading the page.
-            [weeklyRotationAtom()],
+            [weeklyRotationAtom(), legendMetaQueryAtom("all")],
         ),
     component: Page,
 })
@@ -54,6 +57,7 @@ function PageContent() {
     const twoVtwo = to2v2Rows(useQuery(rankings2v2Atom("all", 1)))
     const { articles } = useQuery(newsArticlesAtom("", 1, LANDING_NEWS_COUNT))
     const rotation = useAtomValue(weeklyRotationLegendsAtom)
+    const legendMeta = useAtomValue(legendMetaAtom("all"))
 
     return (
         <main id="main" tabIndex={-1} className="ch-page">
@@ -69,6 +73,7 @@ function PageContent() {
                     <LandingLadder bracket="2v2" rows={twoVtwo} />
                 </div>
             </section>
+            <MostPlayedLegends board={legendMeta} />
             <LatestNews articles={articles} />
             <CommunityCard />
         </main>

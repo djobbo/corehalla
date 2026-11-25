@@ -579,6 +579,9 @@ export const esportsEnvelope = {
 }
 
 import type {
+    LegendMeta,
+    LegendMetaRow,
+    LegendPlayStyle,
     PlayerEnvelope,
     PlayerLegend,
     PlayerProfile,
@@ -824,4 +827,48 @@ export const guildMock = {
 export const esportsMock = {
     [`/api/v1/players/${PLAYER_ID}/esports`]: esportsEnvelope,
     [`/api/v1/players/${EMPTY_PLAYER_ID}/esports`]: emptyEsportsEnvelope,
+}
+
+const legendPlayStyle: LegendPlayStyle = {
+    accounts: 4_870,
+    damageDealtPerGame: 412.75,
+    damageTakenPerGame: 401.32,
+    kosPerGame: 1.42,
+    fallsPerGame: 1.21,
+    suicidesPer100Games: 0.82,
+    averageMatchSeconds: 208,
+    weaponOneShare: 0.5833,
+    weaponTwoShare: 0.4167,
+}
+
+const legendMetaRow = (
+    legendId: number,
+    playShare: number,
+    winRate: number,
+): LegendMetaRow => ({
+    legendId,
+    slug: `${legendId}-legend`,
+    games: 1_000_000,
+    wins: 500_000,
+    winRate,
+    playShare,
+    accounts: 3_942,
+    playStyle: legendPlayStyle,
+})
+
+/** Ten rows of a whole-index board, unordered, so the strip proves its own sort. */
+export const landingLegendBoard: LegendMeta = {
+    data: [
+        legendMetaRow(5, 0.0632, 0.48),
+        legendMetaRow(3, 0.1342, 0.52),
+        legendMetaRow(12, 0.0411, 0.5142),
+        legendMetaRow(6, 0.1149, 0.5077),
+        legendMetaRow(9, 0.0387, 0.4965),
+        legendMetaRow(4, 0.0828, 0.52),
+        legendMetaRow(8, 0.0459, 0.5031),
+        legendMetaRow(7, 0.0299, 0.5285),
+        legendMetaRow(11, 0.0334, 0.4871),
+        legendMetaRow(10, 0.0256, 0.5391),
+    ],
+    meta: { accounts: 18_204, ratingFloor: null },
 }
