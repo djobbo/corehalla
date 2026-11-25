@@ -110,7 +110,7 @@ pnpm db:generate   # drizzle-kit generate (dialect: sqlite)
 
 Migrations are applied by **Alchemy** at deploy — `apps/infra/alchemy.run.ts` declares
 `Cloudflare.D1.Database("CorehallaDb", { name: "corehalla", migrations:
-"../packages/db/drizzle" })` — and to the local simulator by `alchemy dev`. There
+"packages/db/drizzle" })` — and to the local simulator by `alchemy dev`. There
 is no Node migrator any more.
 
 ## Seeding

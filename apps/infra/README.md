@@ -36,7 +36,10 @@ carries the CMS skip rule for both `cms.corehalla.com` and
 deploy.
 
 `IMPORT_SUPABASE_SEED=1` stays off in dev: that dump is a copy of production.
-Only prod and the local simulator may replay it.
+Only prod and the local simulator may replay it. The import bookkeeping is keyed
+by the path string the stack passes, and those paths are absolute now, so an
+existing prod database would see every seed file as new: keep the flag off on the
+first prod deploy and import by hand if the data is needed.
 
 ## Local
 
@@ -58,8 +61,8 @@ stack's environments:
 ALCHEMY_STAGE=dev SITE_URL=https://dev.corehalla.com vp run -F @crh/infra plan --env-file ../../.env
 ```
 
-`vp run dev:cloud` (`alchemy dev`, from the root) runs the same program against
-the local simulator rather than Cloudflare.
+`vp run dev` (`alchemy dev`, from the root) runs the same program against the
+local simulator rather than Cloudflare.
 
 ## CI
 
