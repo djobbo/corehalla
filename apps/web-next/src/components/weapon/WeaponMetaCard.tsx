@@ -4,6 +4,7 @@ import {
     formatWeaponMetaCount,
     formatWeaponMetaDuration,
     formatWeaponMetaRate,
+    weaponMetaDisclaimer,
     weaponMetaRankLabel,
     weaponMetaSample,
     weaponPlayShareRank,
@@ -50,8 +51,8 @@ export const WeaponMetaCard = ({ meta, weapon }: WeaponMetaCardProps) => {
                         Meta
                     </h2>
                     <p className="mt-1 max-w-prose text-xs text-muted-foreground">
-                        {weaponMetaSample(meta.meta.accounts)} · aggregated from
-                        Corehalla&apos;s index, not official Brawlhalla figures.
+                        {weaponMetaSample(meta.meta.accounts)} ·{" "}
+                        {weaponMetaDisclaimer}
                     </p>
                 </div>
 

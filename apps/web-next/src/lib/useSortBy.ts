@@ -6,6 +6,8 @@ export type SortDirection = "asc" | "desc"
 export type SortOption<T> = {
     readonly label: string
     readonly compare: (a: T, b: T) => number
+    /** Items the metric has no value for sort behind every item that has one. */
+    readonly isMissing?: (item: T) => boolean
     readonly display?: (item: T) => ReactNode
 }
 
@@ -13,6 +15,22 @@ export type SortChoice<K extends string> = {
     readonly value: K
     readonly label: string
 }
+
+export const compareBy =
+    <T>(option: SortOption<T>, direction: SortDirection) =>
+    (left: T, right: T): number => {
+        if (option.isMissing !== undefined) {
+            const leftMissing = option.isMissing(left)
+            const rightMissing = option.isMissing(right)
+
+            if (leftMissing !== rightMissing) return leftMissing ? 1 : -1
+            if (leftMissing) return 0
+        }
+
+        const factor = direction === "asc" ? 1 : -1
+
+        return option.compare(left, right) * factor
+    }
 
 /** Sorts every render on purpose — lists are small; memoizing options is a trap. */
 export const useSortBy = <T, K extends string>(
@@ -24,10 +42,7 @@ export const useSortBy = <T, K extends string>(
     const [key, setKey] = useState<K>(initialKey)
     const [direction, setDirection] = useState<SortDirection>(initialDirection)
 
-    const factor = direction === "asc" ? 1 : -1
-    const sorted = [...items].sort(
-        (a, b) => options[key].compare(a, b) * factor,
-    )
+    const sorted = [...items].sort(compareBy(options[key], direction))
 
     const choices = (Object.keys(options) as K[]).map((value) => ({
         value,
