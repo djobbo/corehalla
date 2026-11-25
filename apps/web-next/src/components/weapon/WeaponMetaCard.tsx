@@ -29,20 +29,27 @@ export const WeaponMetaCard = ({
     const row = meta.data.find((entry) => entry.weapon === weapon)
     const rank = weaponPlayShareRank(meta.data, weapon)
 
-    if (row === undefined || rank === null) return null
-
     const stats: readonly Stat[] = [
-        { title: "Play share", value: formatWeaponMetaRate(row.playShare) },
-        { title: "Win rate", value: formatWeaponMetaRate(row.winRate) },
-        { title: "Games", value: formatWeaponMetaCount(row.games) },
-        { title: "Accounts", value: formatWeaponMetaCount(row.accounts) },
+        {
+            title: "Play share",
+            value: formatWeaponMetaRate(row?.playShare ?? null),
+        },
+        {
+            title: "Win rate",
+            value: formatWeaponMetaRate(row?.winRate ?? null),
+        },
+        { title: "Games", value: formatWeaponMetaCount(row?.games ?? null) },
+        {
+            title: "Accounts",
+            value: formatWeaponMetaCount(row?.accounts ?? null),
+        },
         {
             title: "Damage per game",
-            value: formatWeaponMetaCount(row.damagePerGame),
+            value: formatWeaponMetaCount(row?.damagePerGame ?? null),
         },
         {
             title: "Time held per game",
-            value: formatWeaponMetaDuration(row.timeHeldPerGame),
+            value: formatWeaponMetaDuration(row?.timeHeldPerGame ?? null),
         },
     ]
 
@@ -68,9 +75,11 @@ export const WeaponMetaCard = ({
                         floor={floor}
                         onFloorChange={onFloorChange}
                     />
-                    <p className="ch-chip ch-chip-off">
-                        {weaponMetaRankLabel(rank)}
-                    </p>
+                    {rank === null ? null : (
+                        <p className="ch-chip ch-chip-off">
+                            {weaponMetaRankLabel(rank)}
+                        </p>
+                    )}
                 </div>
             </div>
 

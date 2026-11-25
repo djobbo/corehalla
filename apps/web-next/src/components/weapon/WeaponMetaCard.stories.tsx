@@ -106,7 +106,21 @@ export const Omitted: Story = {
     parameters: {
         docs: {
             description: {
-                story: "The sample has no games on this weapon, so the card renders nothing rather than empty or fabricated figures.",
+                story: "The sample has no games on this weapon: the card keeps its sample line and chips so the floor is still changeable, and every figure reads as a dash instead of a fabricated zero.",
+            },
+        },
+    },
+}
+
+export const EmptySlice: Story = {
+    args: {
+        floor: "2200",
+        meta: { data: [], meta: { accounts: 0, ratingFloor: 2200 } },
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: "No indexed weapon games clear 2200+, so the card names the empty slice and keeps the chips usable instead of dropping the whole section.",
             },
         },
     },
