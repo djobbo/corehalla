@@ -2,7 +2,7 @@ import { ClientOnly, createFileRoute } from "@tanstack/react-router"
 import { useAtomValue } from "@effect/atom-react"
 import { LandingFavorites } from "@/components/account/LandingFavorites"
 import { CommunityCard } from "@/components/landing/CommunityCard"
-import { MostPlayedLegends } from "@/components/landing/MostPlayedLegends"
+import { LandingLegends } from "@/components/landing/LandingLegends"
 import { PageLoaderProbe } from "@/components/layout/PageLoader"
 import { LandingHero } from "@/components/layout/LandingHero"
 import { LatestNews } from "@/components/news/LatestNews"
@@ -46,8 +46,12 @@ export const Route = createFileRoute("/")({
                 rankings2v2QueryAtom("all", 1),
                 newsArticlesAtom("", 1, LANDING_NEWS_COUNT),
             ],
-            // Decoration: it may fail without degrading the page.
-            [weeklyRotationAtom(), legendMetaQueryAtom("all")],
+            // Decoration: they may fail without degrading the page.
+            [
+                weeklyRotationAtom(),
+                legendMetaQueryAtom("all"),
+                legendMetaQueryAtom("2200"),
+            ],
         ),
     component: Page,
 })
@@ -58,6 +62,7 @@ function PageContent() {
     const { articles } = useQuery(newsArticlesAtom("", 1, LANDING_NEWS_COUNT))
     const rotation = useAtomValue(weeklyRotationLegendsAtom)
     const legendMeta = useAtomValue(legendMetaAtom("all"))
+    const metaLegendMeta = useAtomValue(legendMetaAtom("2200"))
 
     return (
         <main id="main" tabIndex={-1} className="ch-page">
@@ -73,7 +78,18 @@ function PageContent() {
                     <LandingLadder bracket="2v2" rows={twoVtwo} />
                 </div>
             </section>
-            <MostPlayedLegends board={legendMeta} />
+            <LandingLegends
+                board={legendMeta}
+                floor="all"
+                title="Most played legends"
+                titleId="landing-legends"
+            />
+            <LandingLegends
+                board={metaLegendMeta}
+                floor="2200"
+                title="Meta legends"
+                titleId="landing-meta-legends"
+            />
             <LatestNews articles={articles} />
             <CommunityCard />
         </main>
