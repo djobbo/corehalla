@@ -1,6 +1,10 @@
 import { rankedTiersComplete } from "@crh/bhapi/constants"
 import { percent, perGame } from "./stats"
-import type { PlayerProfile, PlayerRanked } from "@crh/api-contract/schemas"
+import type {
+    LegendBubble,
+    PlayerProfile,
+    PlayerRanked,
+} from "@crh/api-contract/schemas"
 
 type Bracket = NonNullable<PlayerRanked["1v1"]>
 
@@ -31,6 +35,80 @@ const perGameOf = (value: number, games: number): number | null =>
 
 const percentOf = (value: number, total: number): number | null =>
     total === 0 ? null : percent(value, total)
+
+/** The most shared legends one screen lists before stating the remainder. */
+export const SHARED_LEGEND_LIMIT = 10
+
+export type SharedLegendSide = {
+    readonly games: number
+    readonly wins: number
+    readonly level: number
+}
+
+export type SharedLegendRow = {
+    readonly id: number
+    readonly name: string
+    readonly nameKey: string
+    readonly slug: string
+    readonly a: SharedLegendSide
+    readonly b: SharedLegendSide
+    readonly combinedGames: number
+}
+
+export type SharedLegends = {
+    readonly rows: readonly SharedLegendRow[]
+    /** Overlapping legends the cap leaves out. */
+    readonly hidden: number
+}
+
+export const legendWinRate = (side: SharedLegendSide): string =>
+    side.games === 0 ? MISSING : asPercent(percent(side.wins, side.games))
+
+const sideOf = (legend: LegendBubble): SharedLegendSide => ({
+    games: legend.games,
+    wins: legend.wins,
+    level: legend.level,
+})
+
+const sharedRow = (
+    legend: LegendBubble,
+    opponent: LegendBubble,
+): SharedLegendRow => ({
+    id: legend.id,
+    name: legend.name,
+    nameKey: legend.name_key,
+    slug: legend.slug,
+    a: sideOf(legend),
+    b: sideOf(opponent),
+    combinedGames: legend.games + opponent.games,
+})
+
+/** The legends both players have played, heaviest combined pool first. */
+export const sharedLegends = (
+    a: PlayerProfile,
+    b: PlayerProfile,
+): SharedLegends => {
+    const opponentById = new Map(
+        b.legend_bubbles.map((legend) => [legend.id, legend]),
+    )
+
+    const shared = a.legend_bubbles
+        .flatMap((legend) => {
+            const opponent = opponentById.get(legend.id)
+
+            return opponent === undefined ||
+                legend.games <= 0 ||
+                opponent.games <= 0
+                ? []
+                : [sharedRow(legend, opponent)]
+        })
+        .sort((left, right) => right.combinedGames - left.combinedGames)
+
+    return {
+        rows: shared.slice(0, SHARED_LEGEND_LIMIT),
+        hidden: Math.max(0, shared.length - SHARED_LEGEND_LIMIT),
+    }
+}
 
 const betterOf = (
     a: number,

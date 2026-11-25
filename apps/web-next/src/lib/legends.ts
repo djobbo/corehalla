@@ -5,8 +5,10 @@ import type { Legend } from "@crh/bhapi/types"
 export const legendSlug = (legend: Legend): string =>
     getEntitySlug(legend.legend_id, legend.bio_name)
 
+export const legendPageHref = (slug: string): string => `/legends/${slug}`
+
 export const legendHref = (legend: Legend): string =>
-    `/legends/${legendSlug(legend)}`
+    legendPageHref(legendSlug(legend))
 
 export const legendBoardHref = (legend: Legend): string =>
     `/rankings/career/legends/${legend.legend_id}`

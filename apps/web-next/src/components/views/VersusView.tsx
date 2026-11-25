@@ -1,5 +1,5 @@
 import { useAtomValue } from "@effect/atom-react"
-import { useNavigate } from "@tanstack/react-router"
+import { Link, useNavigate } from "@tanstack/react-router"
 import { Atom } from "effect/reactivity"
 import * as AsyncResult from "effect/reactivity/AsyncResult"
 import { useId, useMemo, useState } from "react"
@@ -15,12 +15,19 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { playerProfileAtom, lookupAtom, useQuery } from "@/effect/atoms"
+import { legendIconSrc } from "@/lib/assets"
 import { cn } from "@/lib/cn"
-import { comparePlayers } from "@/lib/compare"
+import { comparePlayers, legendWinRate, sharedLegends } from "@/lib/compare"
+import { legendPageHref } from "@/lib/legends"
+import { useLegendIcon } from "@/lib/media"
 import { VersusModeSwitch } from "./VersusModeSwitch"
 import { MIN_LOOKUP_LENGTH } from "@crh/api-contract/schemas"
 import { cleanString } from "@crh/common/helpers/cleanString"
-import type { ComparisonRow } from "@/lib/compare"
+import type {
+    ComparisonRow,
+    SharedLegendRow,
+    SharedLegendSide,
+} from "@/lib/compare"
 import type { LookupResult, PlayerProfile } from "@crh/api-contract/schemas"
 
 const PICKER_LIMIT = 6
@@ -270,6 +277,175 @@ const VersusTable = ({
     )
 }
 
+const legendCount = (value: number): string => value.toLocaleString("en-US")
+
+const SideRecord = ({
+    name,
+    side,
+}: {
+    readonly name: string
+    readonly side: SharedLegendSide
+}) => (
+    <span className="flex flex-wrap items-baseline gap-x-2">
+        <span className="font-semibold text-foreground">{name}</span>
+        <span>{legendCount(side.games)} games</span>
+        <span>{legendWinRate(side)} win rate</span>
+        <span>level {legendCount(side.level)}</span>
+    </span>
+)
+
+const SideColumns = ({ side }: { readonly side: SharedLegendSide }) => (
+    <>
+        <TableCell className="hidden text-right tabular-nums sm:table-cell">
+            {legendCount(side.games)}
+        </TableCell>
+        <TableCell className="hidden text-right tabular-nums sm:table-cell">
+            {legendWinRate(side)}
+        </TableCell>
+        <TableCell className="hidden text-right tabular-nums text-muted-foreground sm:table-cell">
+            {legendCount(side.level)}
+        </TableCell>
+    </>
+)
+
+/** The icon hook needs a component of its own. */
+const SharedLegendLink = ({ row }: { readonly row: SharedLegendRow }) => {
+    const src = useLegendIcon(row.nameKey, legendIconSrc(row.nameKey))
+
+    return (
+        <Link
+            to={legendPageHref(row.slug)}
+            className="flex items-center gap-2 font-semibold transition-colors hover:text-ring"
+        >
+            <img src={src} alt="" className="size-6 shrink-0 object-contain" />
+            {row.name}
+        </Link>
+    )
+}
+
+const legendColumnLabels = [
+    "Games",
+    "Win rate",
+    "Level",
+    "Games",
+    "Win rate",
+    "Level",
+] as const
+
+const sharedLegendsEmpty = (
+    nameA: string,
+    nameB: string,
+    poolA: boolean,
+    poolB: boolean,
+): string => {
+    if (!poolA && !poolB)
+        return `${nameA} and ${nameB} have no legend games yet.`
+
+    if (!poolA) return `${nameA} has no legend games yet.`
+
+    if (!poolB) return `${nameB} has no legend games yet.`
+
+    return `${nameA} and ${nameB} have not played any of the same legends.`
+}
+
+const SharedLegendsPanel = ({
+    a,
+    b,
+}: {
+    readonly a: PlayerProfile
+    readonly b: PlayerProfile
+}) => {
+    const nameA = cleanString(a.name)
+    const nameB = cleanString(b.name)
+    const { rows, hidden } = sharedLegends(a, b)
+    const poolA = a.legend_bubbles.some((legend) => legend.games > 0)
+    const poolB = b.legend_bubbles.some((legend) => legend.games > 0)
+
+    return (
+        <section aria-labelledby="shared-legends-title" className="mt-6">
+            <p className="ch-kicker">Legend pool</p>
+            <h2 id="shared-legends-title" className="ch-display mt-1 text-lg">
+                Shared legends
+            </h2>
+            <p className="mt-1 max-w-prose text-xs text-muted-foreground">
+                Legends both players have played, ordered by their combined
+                games.
+            </p>
+            {rows.length === 0 ? (
+                <p className="mt-3 text-sm text-muted-foreground">
+                    {sharedLegendsEmpty(nameA, nameB, poolA, poolB)}
+                </p>
+            ) : (
+                <>
+                    <Card className="mt-3 overflow-hidden py-0">
+                        <Table>
+                            <TableHeader className="hidden sm:table-header-group">
+                                <TableRow>
+                                    <TableHead
+                                        rowSpan={2}
+                                        className="align-bottom shadow-none"
+                                    >
+                                        Legend
+                                    </TableHead>
+                                    <TableHead
+                                        colSpan={3}
+                                        className="text-right shadow-none"
+                                    >
+                                        {nameA}
+                                    </TableHead>
+                                    <TableHead
+                                        colSpan={3}
+                                        className="text-right shadow-none"
+                                    >
+                                        {nameB}
+                                    </TableHead>
+                                </TableRow>
+                                <TableRow>
+                                    {legendColumnLabels.map((label, index) => (
+                                        <TableHead
+                                            key={`${label}-${index}`}
+                                            className="w-20 text-right"
+                                        >
+                                            {label}
+                                        </TableHead>
+                                    ))}
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {rows.map((row) => (
+                                    <TableRow key={row.id}>
+                                        <TableCell className="whitespace-normal">
+                                            <SharedLegendLink row={row} />
+                                            <span className="mt-1 flex flex-col gap-0.5 text-[0.66rem] text-muted-foreground sm:hidden">
+                                                <SideRecord
+                                                    name={nameA}
+                                                    side={row.a}
+                                                />
+                                                <SideRecord
+                                                    name={nameB}
+                                                    side={row.b}
+                                                />
+                                            </span>
+                                        </TableCell>
+                                        <SideColumns side={row.a} />
+                                        <SideColumns side={row.b} />
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </Card>
+                    {hidden > 0 ? (
+                        <p className="mt-2 text-xs text-muted-foreground">
+                            {hidden} more shared legend
+                            {hidden === 1 ? "" : "s"} not shown.
+                        </p>
+                    ) : null}
+                </>
+            )}
+        </section>
+    )
+}
+
 export type VersusViewProps = {
     readonly a: PlayerProfile | null
     readonly b: PlayerProfile | null
@@ -306,7 +482,10 @@ export const VersusView = ({ a, b, aSlug, bSlug }: VersusViewProps) => {
                 />
             </Card>
             {a !== null && b !== null ? (
-                <VersusTable a={a} b={b} />
+                <>
+                    <VersusTable a={a} b={b} />
+                    <SharedLegendsPanel a={a} b={b} />
+                </>
             ) : (
                 <p className="mt-4 text-sm text-muted-foreground">
                     Pick{" "}

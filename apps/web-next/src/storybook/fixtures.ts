@@ -26,7 +26,7 @@ const legend = (
     id,
     name,
     name_key: name.toLowerCase(),
-    slug: name.toLowerCase().replace(/\s/g, ""),
+    slug: `${id}-${name.toLowerCase().replaceAll(" ", "-")}`,
     stats: {
         xp: 4_820_000,
         level: 78,
@@ -58,6 +58,11 @@ const legend = (
     weapon_throws: { damage_dealt: 28_000, kos: 0 },
     ranked: legendRanked,
 })
+
+const legendPlayed = (
+    entry: ReturnType<typeof legend>,
+    stats: { games: number; wins: number; level: number },
+) => ({ ...entry, stats: { ...entry.stats, ...stats } })
 
 const team = (
     partner: { id: number; name: string; slug: string },
@@ -352,6 +357,53 @@ export const rivalPlayerEnvelope = {
         },
         has_2v2: false,
         solo_2v2: null,
+        legends: [
+            legendPlayed(legend(12, "Mordex", ranked(1876, 1980, 128, 240)), {
+                games: 1_860,
+                wins: 1_040,
+                level: 56,
+            }),
+            legendPlayed(legend(34, "Ragnir", null), {
+                games: 640,
+                wins: 300,
+                level: 31,
+            }),
+            legendPlayed(legend(99, "Queen Nai", null), {
+                games: 120,
+                wins: 52,
+                level: 18,
+            }),
+            // Only Sandstorm has played Brynn: a shared-legends row must not exist.
+            legendPlayed(legend(4, "Brynn", null), {
+                games: 900,
+                wins: 400,
+                level: 40,
+            }),
+        ],
+    },
+    meta: { updated_at: UPDATED_AT },
+}
+
+/** A third player for the head-to-head stories: no legend in common. */
+export const noOverlapPlayerEnvelope = {
+    data: {
+        ...playerEnvelope.data,
+        id: 4246,
+        name: "Boomie",
+        slug: "boomie",
+        aliases: [],
+        legends: [
+            legendPlayed(legend(1, "Ada", null), {
+                games: 2_400,
+                wins: 1_300,
+                level: 60,
+            }),
+            legendPlayed(legend(14, "Cassidy", null), {
+                games: 1_100,
+                wins: 520,
+                level: 44,
+            }),
+        ],
     },
     meta: { updated_at: UPDATED_AT },
 }
@@ -714,6 +766,7 @@ export const PLAYER_ID = 4242
 export const EMPTY_PLAYER_ID = 4243
 export const SHORT_SEASON_PLAYER_ID = 4244
 export const RIVAL_PLAYER_ID = 4245
+export const NO_OVERLAP_PLAYER_ID = 4246
 
 /** Guild ids used across the clan stories. */
 export const GUILD_ID = 4242
@@ -756,6 +809,14 @@ export const versusMock = {
             rank: 12_900,
             sample_size: 214_300,
             top_percent: 6,
+        }),
+    ),
+    [`/api/v1/players/${NO_OVERLAP_PLAYER_ID}`]: section(
+        "player/profile@1",
+        profileOf(noOverlapPlayerEnvelope as unknown as PlayerEnvelope, {
+            rank: 30_400,
+            sample_size: 214_300,
+            top_percent: 14,
         }),
     ),
     // A clan sits beside the players to prove the picker drops it.
