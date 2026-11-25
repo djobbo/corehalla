@@ -55,7 +55,7 @@ function NavigationMenuItem({
 }
 
 const navigationMenuTriggerStyle = cva(
-    "group/navigation-menu-trigger inline-flex h-full w-max items-center justify-center gap-1 bg-transparent px-2.5 text-[0.7rem] font-extrabold tracking-[0.08em] whitespace-nowrap text-muted-foreground uppercase transition-colors hover:text-foreground focus-visible:-outline-offset-2 disabled:pointer-events-none disabled:opacity-50 data-popup-open:text-foreground data-open:text-foreground",
+    "group/navigation-menu-trigger inline-flex h-full w-max items-center justify-center gap-1 rounded-md bg-transparent px-2.5 text-sm font-semibold tracking-[-0.011em] whitespace-nowrap text-muted-foreground transition-colors hover:bg-bgVar2 hover:text-foreground focus-visible:-outline-offset-2 disabled:pointer-events-none disabled:opacity-50 data-popup-open:text-foreground data-open:text-foreground",
 )
 
 function NavigationMenuTrigger({
@@ -131,7 +131,7 @@ function NavigationMenuLink({
         <NavigationMenuPrimitive.Link
             data-slot="navigation-menu-link"
             className={cn(
-                "flex items-center gap-1.5 p-2 text-[0.7rem] font-extrabold tracking-[0.08em] whitespace-nowrap text-muted-foreground uppercase transition-colors hover:bg-bgVar2 hover:text-foreground focus-visible:-outline-offset-2 data-[active=true]:text-foreground [&_svg:not([class*='size-'])]:size-3.5",
+                "flex items-center gap-1.5 rounded-md p-2 text-sm font-semibold tracking-[-0.011em] whitespace-nowrap text-muted-foreground transition-colors hover:bg-bgVar2 hover:text-foreground focus-visible:-outline-offset-2 data-[active=true]:text-foreground [&_svg:not([class*='size-'])]:size-3.5",
                 className,
             )}
             {...props}

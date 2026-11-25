@@ -35,12 +35,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * The brand palette, unchanged.
- *
- * These are the same values `apps/web` ships, so the two apps still read as one
- * product. The flat-vector treatment adds only neutrals: `ink` for the hard
- * shadow, `panelDeep` for inset surfaces, and `brandDeep` for the solid hero
- * plate.
+ * Neutrals are a warm daylight canvas. The blue family is unchanged: it is the
+ * data accent and the fill of the slanted pieces, not the page.
  *
  * The accent family is named `brand` rather than `accent` on purpose. shadcn
  * spends `accent` on the hover/active surface token, and two meanings for one
@@ -48,11 +44,11 @@
  * product is actually built around, which shadcn calls `primary`.
  */
 @theme {
-    --color-bgVar2: #1a1b23;
-    --color-bgVar1: #1e212c;
-    --color-bg: #2b3043;
-    --color-textVar1: #ccd0d6;
-    --color-text: #ffffff;
+    --color-bgVar2: #e8e5de;
+    --color-bgVar1: #f6f5f1;
+    --color-bg: #ffffff;
+    --color-textVar1: #5c564c;
+    --color-text: #1c1b19;
 
     --color-brand: #3861fb;
     --color-brandVar1: #2095f2;
@@ -64,29 +60,25 @@
     --color-danger: #ed7853;
     --color-warning: #f3da57;
 
-    --color-ink: #0b0c12;
-    --color-panelDeep: #232838;
+    --color-ink: #141311;
+    --color-panelDeep: #eceae4;
 
     --font-display: "Montserrat", sans-serif;
     --font-sans: "Montserrat", sans-serif;
     --font-heading: "Montserrat", sans-serif;
 
     /*
-     * The hard shadow, applied by redefining Tailwind's own scale.
-     *
-     * Every shadcn component reaches for `shadow-sm`, `shadow-md` or `shadow-lg`
-     * to lift itself off the page. Redefining those tokens here is what turns a
-     * soft drop shadow into Corehalla's unblurred black offset — without editing
-     * a single component and without a `className` at any call site. The steps
-     * stay distinct so a dialog still reads as further off the page than a card.
+     * Overlays only. Slabs do not use this scale: a card is a hairline, and the
+     * hard offset lives on the slanted pieces (chips, the mark, rank, art tiles),
+     * where `clip-path` forces a `drop-shadow` instead of `box-shadow`.
      */
-    --shadow-2xs: 2px 2px 0 0 var(--color-ink);
-    --shadow-xs: 2px 2px 0 0 var(--color-ink);
-    --shadow-sm: 3px 3px 0 0 var(--color-ink);
-    --shadow-md: 4px 4px 0 0 var(--color-ink);
-    --shadow-lg: 5px 5px 0 0 var(--color-ink);
-    --shadow-xl: 6px 6px 0 0 var(--color-ink);
-    --shadow-2xl: 8px 8px 0 0 var(--color-ink);
+    --shadow-2xs: 0 1px 1px rgb(20 19 17 / 0.05);
+    --shadow-xs: 0 1px 1px rgb(20 19 17 / 0.06);
+    --shadow-sm: 0 1px 2px rgb(20 19 17 / 0.06);
+    --shadow-md: 0 12px 32px rgb(20 19 17 / 0.1);
+    --shadow-lg: 0 16px 40px rgb(20 19 17 / 0.12);
+    --shadow-xl: 0 24px 48px rgb(20 19 17 / 0.14);
+    --shadow-2xl: 0 32px 64px rgb(20 19 17 / 0.16);
 }
 
 /*
@@ -102,32 +94,32 @@
  *   border      the near-black row rule          ring  the focus blue
  */
 :root {
-    --background: #1e212c;
-    --foreground: #ffffff;
+    --background: #f6f5f1;
+    --foreground: #1c1b19;
 
-    --card: #2b3043;
-    --card-foreground: #ffffff;
+    --card: #ffffff;
+    --card-foreground: #1c1b19;
 
-    --popover: #2b3043;
-    --popover-foreground: #ffffff;
+    --popover: #ffffff;
+    --popover-foreground: #1c1b19;
 
     --primary: #3861fb;
     --primary-foreground: #ffffff;
 
-    --secondary: #232838;
-    --secondary-foreground: #ffffff;
+    --secondary: #eceae4;
+    --secondary-foreground: #1c1b19;
 
-    --muted: #232838;
-    --muted-foreground: #ccd0d6;
+    --muted: #eceae4;
+    --muted-foreground: #5c564c;
 
-    --accent: #1a1b23;
-    --accent-foreground: #ffffff;
+    --accent: #e8e5de;
+    --accent-foreground: #1c1b19;
 
     --destructive: #ed7853;
 
-    --border: rgb(11 12 18 / 0.55);
-    --input: rgb(11 12 18 / 0.55);
-    --ring: #2095f2;
+    --border: rgb(28 27 25 / 0.12);
+    --input: rgb(28 27 25 / 0.16);
+    --ring: #2440b8;
 
     /*
      * The bar roles, in the order the fill vocabulary lists them. A breakdown
@@ -200,12 +192,11 @@
     html {
         background-color: var(--background);
         /*
-         * Native widgets follow the page rather than the OS: form controls,
-         * the scrollbar gutter and the browser's own UI render dark. The
-         * scrollbar above is styled by hand; this is what tells the browser
-         * the rest is not light.
+         * Native widgets follow the page. Form controls, the scrollbar gutter
+         * and the browser's own UI render light. The scrollbar above is styled
+         * by hand; this is what tells the browser the rest matches.
          */
-        color-scheme: dark;
+        color-scheme: light;
     }
 
     /*
@@ -227,6 +218,16 @@
         --ch-masthead-h: 3.5rem;
         --ch-nav-h: 2.5rem;
         --ch-header-h: calc(var(--ch-masthead-h) + var(--ch-nav-h));
+    }
+
+    /*
+     * At the rail breakpoint the section nav leaves the sticky stack and sits
+     * beside the page, so a ladder filter docks under the masthead alone.
+     */
+    @media (min-width: 64rem) {
+        :root {
+            --ch-header-h: var(--ch-masthead-h);
+        }
     }
 
     body {
@@ -253,7 +254,7 @@
     }
 
     ::-webkit-scrollbar-thumb {
-        background: var(--color-bg);
+        background: #c9c4ba;
     }
 
     ::-webkit-scrollbar-thumb:hover {
@@ -283,19 +284,19 @@
         display: inline-flex;
         align-items: center;
         gap: 0.4rem;
-        font-size: 0.64rem;
-        font-weight: 800;
-        letter-spacing: 0.24em;
-        text-transform: uppercase;
-        color: var(--ring);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: -0.011em;
+        text-transform: none;
+        color: var(--color-brandDeep);
     }
 
     .ch-display {
         font-family: var(--font-display);
         font-weight: 800;
-        letter-spacing: -0.01em;
-        line-height: 0.98;
-        text-transform: uppercase;
+        letter-spacing: -0.03em;
+        line-height: 1.05;
+        text-transform: none;
         color: var(--foreground);
     }
 
@@ -304,30 +305,18 @@
     /* --- surfaces -------------------------------------------------------- */
 
     /*
-     * The page hero: a solid accent plate. The kicker switches to warning
-     * yellow because the accent blue it normally wears would sit on top of a
-     * blue field.
+     * Page title stack. The plate used to be a solid blue field; on the light
+     * canvas the title carries itself, and the slanted chips under it are the
+     * accent.
      */
     .ch-hero {
-        background: var(--color-brandDeep);
-        padding: 0.9rem 1rem;
+        background: transparent;
+        padding: 0;
     }
 
     .ch-hero .ch-kicker {
-        color: var(--color-warning);
+        color: var(--color-brandDeep);
     }
-
-    /*
-     * The same switch for a raised slab. `--ring` clears 4.5:1 on the canvas
-     * but not on `--popover`, which is where the nav popout and the entity
-     * hover card put their kickers.
-     */
-    [data-slot="hover-card-content"] .ch-kicker,
-    [data-slot="navigation-menu-content"] .ch-kicker {
-        color: var(--color-warning);
-    }
-
-    /* A panel with a solid accent block along its top edge. */
 
     /* --- chips (parallelograms) ------------------------------------------ */
 
@@ -448,7 +437,7 @@
         padding: 0.55rem 1rem;
         font-size: 0.78rem;
         line-height: 1.5;
-        color: var(--foreground);
+        color: #ffffff;
     }
 
     .ch-alert-body {
@@ -479,7 +468,7 @@
     }
 
     .ch-alert-link:hover {
-        color: var(--foreground);
+        color: #ffffff;
     }
 
     /* The accent-blue ring disappears against the deep blue plate. */
@@ -526,8 +515,8 @@
         gap: 0.75rem;
         height: var(--ch-masthead-h);
         padding-inline: 1rem;
-        background: color-mix(in srgb, var(--color-bgVar2) 92%, transparent);
-        backdrop-filter: blur(10px);
+        background: var(--background);
+        border-bottom: 1px solid var(--border);
     }
 
     /*
@@ -556,9 +545,8 @@
         overflow-x: auto;
         overflow-y: hidden;
         padding-inline: 1rem;
-        background: color-mix(in srgb, var(--color-bgVar2) 92%, transparent);
-        box-shadow: 0 3px 0 0 var(--color-ink);
-        backdrop-filter: blur(10px);
+        background: var(--background);
+        border-bottom: 1px solid var(--border);
     }
 
     .ch-nav > * {
@@ -626,8 +614,8 @@
      */
     .ch-footer {
         margin-top: 3rem;
-        border-top: 3px solid var(--color-ink);
-        background: var(--color-bgVar2);
+        border-top: 1px solid var(--border);
+        background: transparent;
         padding: 1.75rem 1rem 2rem;
     }
 
@@ -654,11 +642,11 @@
         align-items: center;
         gap: 0.45rem;
         min-height: 2.5rem;
-        font-size: 0.72rem;
-        font-weight: 800;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: var(--foreground);
+        font-size: 0.875rem;
+        font-weight: 600;
+        letter-spacing: -0.011em;
+        text-transform: none;
+        color: var(--muted-foreground);
         transition: color 120ms ease;
     }
 
@@ -672,7 +660,7 @@
     }
 
     .ch-footer-link:hover {
-        color: var(--ring);
+        color: var(--foreground);
     }
 
     .ch-footer-legal {
@@ -751,16 +739,19 @@
     /* --- stat tiles ------------------------------------------------------ */
 
     .ch-stat-label {
-        font-size: 0.6rem;
-        font-weight: 800;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: -0.011em;
+        text-transform: none;
         color: var(--muted-foreground);
     }
 
     .ch-stat-value {
-        font-size: 0.98rem;
-        font-weight: 800;
+        margin-top: 0.15rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
         font-variant-numeric: tabular-nums;
         color: var(--foreground);
     }
@@ -1124,19 +1115,19 @@
     .ch-tabline {
         display: flex;
         overflow-x: auto;
-        box-shadow: inset 0 -3px 0 0 var(--color-panelDeep);
+        border-bottom: 1px solid var(--border);
     }
 
     .ch-tablink {
         position: relative;
         display: inline-flex;
         align-items: center;
-        height: 3rem;
-        padding-inline: 1rem;
-        font-size: 0.72rem;
-        font-weight: 800;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
+        height: 2.75rem;
+        padding-inline: 0.9rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        letter-spacing: -0.011em;
+        text-transform: none;
         white-space: nowrap;
         color: var(--muted-foreground);
         transition:
@@ -1152,7 +1143,8 @@
         bottom: 0;
         height: 3px;
         background: var(--primary);
-        transform: scaleX(0);
+        transform: scaleX(0) skewX(-14deg);
+        transform-origin: left center;
         transition: transform 150ms ease;
     }
 
@@ -1162,7 +1154,7 @@
     }
 
     .ch-tablink:hover::after {
-        transform: scaleX(0.35);
+        transform: scaleX(0.35) skewX(-14deg);
     }
 
     .ch-tablink-on {
@@ -1170,7 +1162,7 @@
     }
 
     .ch-tablink-on::after {
-        transform: scaleX(1);
+        transform: scaleX(1) skewX(-14deg);
     }
 
     /* --- landing background --------------------------------------------- */
@@ -1199,6 +1191,11 @@
         height: 83.3333vh;
         pointer-events: none;
         mask-image: linear-gradient(0deg, transparent 0%, #000 40%);
+        stroke: rgb(28 27 25 / 0.35);
+    }
+
+    .ch-landing path[fill="#212531"] {
+        fill: rgb(28 27 25 / 0.05);
     }
 
     /* --- page loader ----------------------------------------------------- */
@@ -1656,5 +1653,109 @@
     .ch-nameplate a:hover {
         color: var(--color-ink);
         background-color: var(--color-warning);
+    }
+}
+
+/*
+ * Slabs take a hairline and a 12px corner. Elevation from the shadow scale is
+ * reserved for overlays, and even those stay on the line: a soft shadow under
+ * a border reads as a second surface. Slanted pieces keep their own offset.
+ */
+.bg-card:not([data-slot="button"]) {
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    box-shadow: none;
+}
+
+.bg-popover,
+[data-slot="dialog-content"],
+[data-slot="dropdown-menu-content"],
+[data-slot="select-content"],
+[data-slot="hover-card-content"] {
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    box-shadow: none;
+}
+
+[data-slot="input"],
+[data-slot="select-trigger"] {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background-color: var(--card);
+}
+
+[data-slot="textarea"] {
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background-color: var(--card);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ch-tablink::after {
+        transition: none;
+    }
+}
+
+@media (min-width: 64rem) {
+    .ch-shell {
+        display: grid;
+        grid-template-columns: 15rem minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr);
+        min-height: 100dvh;
+    }
+
+    .ch-masthead {
+        grid-column: 1 / -1;
+    }
+
+    .ch-nav {
+        grid-row: 2;
+        align-self: start;
+        height: calc(100dvh - var(--ch-masthead-h));
+        overflow: auto;
+        padding: 0.75rem;
+        border-bottom: 0;
+        border-right: 1px solid var(--border);
+    }
+
+    .ch-nav > * {
+        height: auto;
+        width: 100%;
+        align-items: stretch;
+    }
+
+    .ch-frame {
+        grid-column: 2;
+        grid-row: 2;
+        min-width: 0;
+    }
+
+    .ch-nav [data-slot="navigation-menu"] {
+        max-width: none;
+        width: 100%;
+        flex: none;
+        justify-content: flex-start;
+    }
+
+    .ch-nav [data-slot="navigation-menu-list"] {
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        width: 100%;
+        gap: 0.125rem;
+    }
+
+    .ch-nav [data-slot="navigation-menu-trigger"],
+    .ch-nav [data-slot="navigation-menu-link"] {
+        width: 100%;
+        height: 2.25rem;
+        justify-content: flex-start;
+        border-radius: 0.5rem;
+    }
+
+    .ch-nav [aria-current="page"] {
+        background: var(--card);
+        color: var(--foreground);
+        box-shadow: inset 0 0 0 1px var(--border);
     }
 }

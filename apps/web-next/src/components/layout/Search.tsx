@@ -492,7 +492,7 @@ export const SearchTrigger = ({
             onClick={open}
             data-search-trigger
             className={cn(
-                "h-auto w-full justify-between gap-2 bg-card px-2.5 py-1.5 text-sm font-normal tracking-normal normal-case text-muted-foreground hover:bg-bgVar2 hover:text-foreground",
+                "h-auto w-full justify-between gap-2 border-border bg-card px-3 py-1.5 text-sm font-normal tracking-normal text-muted-foreground hover:bg-bgVar2 hover:text-foreground",
                 className,
             )}
         >

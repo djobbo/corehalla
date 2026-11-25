@@ -3,29 +3,19 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "cn"
 
 const buttonVariants = cva(
-    "group/button inline-flex shrink-0 items-center justify-center rounded-none border border-transparent bg-clip-padding text-xs font-semibold tracking-widest whitespace-nowrap uppercase transition-[translate,box-shadow,background-color,color] duration-[120ms] ease-[ease] select-none disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 motion-reduce:hover:translate-none motion-reduce:active:not-aria-[haspopup]:translate-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
+    "group/button inline-flex shrink-0 items-center justify-center rounded-full border border-transparent bg-clip-padding text-sm font-semibold tracking-[-0.011em] whitespace-nowrap transition-[background-color,color,border-color] duration-[120ms] ease-[ease] select-none disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
     {
         variants: {
             variant: {
-                /*
-                 * The poster's slab: a solid fill that lifts on hover and slams down on
-                 * press, with the hard offset shadow doing the lifting. `shadow-sm` here
-                 * is Corehalla's unblurred step from `styles/app.css`, and the press
-                 * drops the shadow entirely so the button reads as flat against the page
-                 * for the moment it is held.
-                 */
-                default:
-                    "bg-card text-foreground shadow-sm hover:-translate-x-px hover:-translate-y-px hover:bg-primary hover:text-primary-foreground active:not-aria-[haspopup]:translate-x-[3px] active:not-aria-[haspopup]:translate-y-[3px] active:not-aria-[haspopup]:shadow-none",
-                /* The same slab on the deeper surface, for a quieter second action. */
+                /* One ink action. The slanted pieces carry the accent, not the button. */
+                default: "bg-ink text-white hover:bg-foreground",
                 secondary:
-                    "bg-secondary text-secondary-foreground shadow-sm hover:-translate-x-px hover:-translate-y-px hover:bg-card hover:text-foreground active:not-aria-[haspopup]:translate-x-[3px] active:not-aria-[haspopup]:translate-y-[3px] active:not-aria-[haspopup]:shadow-none",
-                /* A slab with no fill: the shape is still there to press. */
+                    "border-border bg-card text-foreground hover:bg-bgVar2",
                 outline:
-                    "bg-transparent text-foreground shadow-sm hover:bg-card hover:text-foreground aria-expanded:bg-card",
+                    "border-border bg-card text-foreground hover:bg-bgVar2 aria-expanded:bg-bgVar2",
                 ghost: "bg-transparent text-muted-foreground hover:bg-accent hover:text-foreground aria-expanded:bg-accent aria-expanded:text-foreground",
-                destructive:
-                    "bg-destructive text-ink shadow-sm hover:-translate-x-px hover:-translate-y-px active:not-aria-[haspopup]:translate-x-[3px] active:not-aria-[haspopup]:translate-y-[3px] active:not-aria-[haspopup]:shadow-none",
-                link: "text-primary underline underline-offset-4 hover:underline",
+                destructive: "bg-destructive text-ink hover:bg-destructive/90",
+                link: "text-brandDeep underline underline-offset-4 hover:underline",
             },
             size: {
                 default:

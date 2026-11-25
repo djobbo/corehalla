@@ -1,14 +1,14 @@
 ---
 name: Corehalla
-description: Brawlhalla stats on a dark poster. Hard ink shadows, parallelogram chips, one Montserrat.
+description: Brawlhalla stats on a warm light desk. Hairline slabs, ink pills, parallelogram chips, one Montserrat.
 colors:
-    canvas: "#1e212c"
-    canvas-deep: "#1a1b23"
-    card: "#2b3043"
-    panel: "#232838"
-    ink: "#0b0c12"
-    foreground: "#ffffff"
-    muted: "#ccd0d6"
+    canvas: "#f6f5f1"
+    canvas-deep: "#e8e5de"
+    card: "#ffffff"
+    panel: "#eceae4"
+    ink: "#141311"
+    foreground: "#1c1b19"
+    muted: "#5c564c"
     brand: "#3861fb"
     brand-bright: "#2095f2"
     brand-deep: "#2440b8"
@@ -17,7 +17,7 @@ colors:
     success: "#24cd7c"
     danger: "#ed7853"
     warning: "#f3da57"
-    border: "rgb(11 12 18 / 0.55)"
+    border: "rgb(28 27 25 / 0.12)"
 typography:
     display:
         fontFamily: "Montserrat, sans-serif"
@@ -100,23 +100,27 @@ components:
 
 # Design System: Corehalla
 
-The source of truth is `apps/web-next/src/styles/app.css`. shadcn components in `apps/web-next/src/components/ui` supply structure, keyboard behaviour and ARIA. The stylesheet decides what their tokens mean, and it owns the shapes no kit ships: the parallelogram cut, the hard offset shadow, the sheared art tile. `apps/web` is the previous client. It shares these hex values under different names. Do not extend it.
+The source of truth is `apps/web-next/src/styles/app.css`. shadcn components in `apps/web-next/src/components/ui` are Base UI primitives (`@base-ui/react`) plus keyboard behaviour and ARIA. The stylesheet decides what their tokens mean. `apps/web` is the previous client. Do not extend it.
 
 ## Overview
 
-**Creative North Star: "The poster"**
+**Creative North Star: "A quiet desk, with a cut corner"**
 
-The phrase is the stylesheet's own (`poster treatment`, `poster's slab`, `poster's bullet`). A page is a dark canvas with solid slabs lifted by an unblurred black offset, and small things cut as parallelograms so the layout leans without rotating the content. Type is one family, Montserrat, separated by weight, tracking and case. Numbers that change width use tabular figures.
+The page is a warm off-white canvas. Slabs are white, separated by a 1px ink line at 12% and a 12px corner. Actions are ink pills. Type is one family, Montserrat, in sentence case: titles at 800 and `-0.03em`, labels at 600 and `-0.011em`. Numbers stay tabular.
 
-There is no second theme. `dark:` utilities in the shadcn components are inert: nothing sets `.dark`. The page colour sits on `html`, not `body`, so the landing pattern (negative z-index) can show through the gaps. Cards are opaque.
+The diagonal is reserved. Chips, the masthead mark, rank badges, art tiles, progress and the footer tick stay parallelograms with a 3px ink offset. Nothing else leans.
+
+From `64rem` the section nav is a `15rem` left rail. Below that it is a horizontal bar under the masthead. There is one theme, light. `dark:` utilities stay inert. The page colour sits on `html`, not `body`.
+
+Where a paragraph below still describes a dark poster slab, a hard offset on a rectangle, or uppercase chrome, the stylesheet wins.
 
 **Key Characteristics:**
 
-- One blue (`{colors.brand}`). The shadcn token `accent` is not that blue.
-- Shadows are hard offsets of `{colors.ink}`. No blur.
+- One blue (`{colors.brand}`), for data, links and slanted fills. The shadcn token `accent` is the hover well, not that blue. The ink pill is the action.
+- Slabs use a hairline. The hard offset is only on a slanted piece.
 - Parallelograms for chips, ranks, progress and art tiles. Artwork stays upright inside the cut.
-- Uppercase tracked labels for kickers, chips, tabs and table heads.
-- One column, `{spacing.column}`.
+- Sentence case for chrome.
+- One content column, `{spacing.column}`, beside the rail from `64rem`.
 
 ## Colors
 
@@ -287,19 +291,18 @@ These are the rules the stylesheet and the components already agree on.
 
 ### Do:
 
-- **Do** lift a control with the hard ink shadow, and cancel it on press (`translate(3px, 3px)` against `shadow-sm`).
+- **Do** lift a slanted piece with the hard ink offset, and keep rectangles on a 1px border.
 - **Do** cut chips, tiles and plates with `clip-path`. Keep flags and faces upright.
 - **Do** put the page colour on `html`. Leave `body` transparent.
 - **Do** set stat values and ladder numbers in `tabular-nums`.
 - **Do** use `{colors.ink}` text on `{colors.warning}` and on `{colors.danger}` fills.
-- **Do** switch the kicker to `{colors.warning}` on `{colors.brand-deep}`. Brand-bright disappears there.
 - **Do** keep the filter row on `top: var(--ch-header-h)`. Do not hardcode `top-14`.
 
 ### Don't:
 
-- **Don't** use shadcn `accent` or `bg-accent` for the brand blue. That token is `{colors.canvas-deep}`.
+- **Don't** use shadcn `accent` or `bg-accent` for the brand blue. That token is the hover well.
+- **Don't** put the hard offset on a rectangle. It belongs to a slanted piece.
 - **Don't** paint the page with `bg-bg` or `bg-card`. `bg-bg` is the slab.
-- **Don't** add a blurred `box-shadow`. The scale was replaced so you would not.
 - **Don't** skew a portrait, a flag or a weapon icon.
 - **Don't** put `{colors.foreground}` on `{colors.danger}`. The destructive button uses `{colors.ink}`.
 - **Don't** introduce a second typeface, a font CDN, or an icon set. Icons already come from `lucide-react`.

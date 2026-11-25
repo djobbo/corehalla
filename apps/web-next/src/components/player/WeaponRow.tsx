@@ -112,7 +112,7 @@ export const WeaponRow = ({
     return (
         <Card size="sm">
             <Collapsible>
-                <CollapsibleTrigger className="flex w-full flex-1 items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-bgVar2 data-[panel-open]:shadow-[0_3px_0_0_var(--color-ink)]">
+                <CollapsibleTrigger className="flex w-full flex-1 items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-bgVar2">
                     <span className="flex min-w-0 flex-1 items-center justify-between gap-3">
                         <span className="flex min-w-0 items-center gap-2">
                             <span className="w-6 shrink-0 text-right text-xs text-muted-foreground">

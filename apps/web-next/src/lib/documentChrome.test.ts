@@ -34,12 +34,12 @@ describe("document chrome", () => {
 
         expect(head({ matches: [] }).meta).toContainEqual({
             name: "theme-color",
-            content: "#1e212c",
+            content: "#f6f5f1",
         })
     })
 
-    it("tells the browser the document is dark", () => {
-        expect(stylesheet).toMatch(/html\s*\{[^}]*color-scheme:\s*dark/)
+    it("tells the browser the document is light", () => {
+        expect(stylesheet).toMatch(/html\s*\{[^}]*color-scheme:\s*light/)
     })
 
     it("renders a skip link that targets the page main", () => {
