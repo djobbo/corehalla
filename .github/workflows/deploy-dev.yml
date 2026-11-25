@@ -58,5 +58,8 @@ jobs:
               run: vp run -r ts:check
             - name: Test
               run: vp run -r test
+            # `--yes` approves the plan without a terminal and lets the state
+            # store be created or upgraded: without it Alchemy refuses a
+            # non-empty plan on a runner and nothing would be applied.
             - name: Deploy dev
-              run: vp run -F @crh/infra deploy
+              run: vp run -F @crh/infra deploy --yes
