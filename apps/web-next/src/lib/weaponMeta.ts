@@ -10,6 +10,23 @@ export type WeaponMetaRank = {
     readonly total: number
 }
 
+export type WeaponMetaMetric =
+    | "playShare"
+    | "winRate"
+    | "games"
+    | "accounts"
+    | "damagePerGame"
+    | "timeHeldPerGame"
+
+const weaponMetaMetricName: Record<WeaponMetaMetric, string> = {
+    playShare: "play share",
+    winRate: "win rate",
+    games: "games",
+    accounts: "accounts",
+    damagePerGame: "damage per game",
+    timeHeldPerGame: "time held per game",
+}
+
 /** Locale pinned: the card is server-rendered, so both sides must agree. */
 export const formatWeaponMetaCount = (value: number | null): string =>
     value === null ? "—" : Math.round(value).toLocaleString("en-US")
@@ -106,29 +123,34 @@ export const weaponMetaSorts: Record<
     kosPerGame: metric("KOs per game", (row) => row?.kosPerGame ?? null),
 }
 
-export const weaponMetaRankLabel = ({
-    position,
-    total,
-}: WeaponMetaRank): string => `#${position} of ${total} by play share`
+export const weaponMetaRankLabel = (
+    { position, total }: WeaponMetaRank,
+    metric: WeaponMetaMetric,
+): string => `#${position} of ${total} by ${weaponMetaMetricName[metric]}`
 
 /**
- * Ties share a position: the rank counts the rows strictly ahead, so two
- * weapons on the same play share land on the same number.
+ * Ties share a position: the rank counts the weapons strictly ahead, and the
+ * sample is every weapon that reports the metric at all.
  */
-export const weaponPlayShareRank = (
+export const weaponMetaRank = (
     rows: readonly WeaponMetaRow[],
     weapon: WeaponMetaRow["weapon"],
+    metric: WeaponMetaMetric,
 ): WeaponMetaRank | null => {
-    const share = rows.find((row) => row.weapon === weapon)?.playShare
+    const row = rows.find((entry) => entry.weapon === weapon)
 
-    if (share === undefined || share === null) return null
+    if (row === undefined) return null
+
+    const value = row[metric]
+
+    if (value === null) return null
+
+    const reported = rows
+        .map((entry) => entry[metric])
+        .filter((entry): entry is number => entry !== null)
 
     return {
-        position:
-            1 +
-            rows.filter(
-                (row) => row.playShare !== null && row.playShare > share,
-            ).length,
-        total: rows.length,
+        position: 1 + reported.filter((entry) => entry > value).length,
+        total: reported.length,
     }
 }
