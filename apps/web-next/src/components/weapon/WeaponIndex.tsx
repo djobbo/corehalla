@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router"
+import { MetaCsvDownload } from "@/components/common/MetaCsvDownload"
 import { MetaFloorChips } from "@/components/common/MetaFloorChips"
 import { SelectField } from "@/components/common/SelectField"
 import { Card } from "@/components/ui/card"
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/table"
 import { weaponIconSrc } from "@/lib/assets"
 import { metaDisclaimer, metaEmpty, metaFloorSample } from "@/lib/metaFloor"
+import { metaCsvFilename, weaponMetaCsv } from "@/lib/metaCsv"
 import { weaponHref, weaponIndex } from "@/lib/weapons"
 import {
     formatWeaponMetaCount,
@@ -78,6 +80,8 @@ const MetaTable = ({
         weaponMetaDefaultDirection,
     )
 
+    const csv = weaponMetaCsv(sorted)
+
     return (
         <section aria-labelledby="weapon-meta-title">
             <div className="flex flex-wrap items-end justify-between gap-3">
@@ -95,7 +99,18 @@ const MetaTable = ({
                     </p>
                 </div>
 
-                <MetaFloorChips floor={floor} onFloorChange={onFloorChange} />
+                <div className="flex flex-wrap items-end gap-3">
+                    <MetaFloorChips
+                        floor={floor}
+                        onFloorChange={onFloorChange}
+                    />
+                    {meta.data.length === 0 ? null : (
+                        <MetaCsvDownload
+                            filename={metaCsvFilename("weapons", floor)}
+                            csv={csv}
+                        />
+                    )}
+                </div>
             </div>
 
             {meta.data.length === 0 ? (

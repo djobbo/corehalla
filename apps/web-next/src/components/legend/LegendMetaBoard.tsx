@@ -1,6 +1,7 @@
 import { legendsMap } from "@crh/bhapi/legends"
 import { Link } from "@tanstack/react-router"
 import { Card } from "@/components/ui/card"
+import { MetaCsvDownload } from "@/components/common/MetaCsvDownload"
 import { MetaFloorChips } from "@/components/common/MetaFloorChips"
 import {
     Empty,
@@ -30,6 +31,7 @@ import {
     metaEmpty,
     metaFloorSample,
 } from "@/lib/metaFloor"
+import { legendMetaCsv, metaCsvFilename } from "@/lib/metaCsv"
 import {
     formatPlayStyleMatchLength,
     formatPlayStylePerGame,
@@ -78,6 +80,16 @@ export const LegendMetaBoard = ({
         legendMetaDefaultDirection,
     )
 
+    const displayed = sorted.flatMap((row) => {
+        const legend = legendsMap[row.legendId]
+
+        return legend === undefined ? [] : [{ legend, row }]
+    })
+
+    const csv = legendMetaCsv(
+        displayed.map(({ legend, row }) => ({ name: legend.bio_name, row })),
+    )
+
     return (
         <section aria-labelledby="legend-meta-title" className="mb-6">
             <div className="flex flex-wrap items-end justify-between gap-3">
@@ -95,10 +107,21 @@ export const LegendMetaBoard = ({
                     </p>
                 </div>
 
-                <MetaFloorChips floor={floor} onFloorChange={onFloorChange} />
+                <div className="flex flex-wrap items-end gap-3">
+                    <MetaFloorChips
+                        floor={floor}
+                        onFloorChange={onFloorChange}
+                    />
+                    {displayed.length === 0 ? null : (
+                        <MetaCsvDownload
+                            filename={metaCsvFilename("legends", floor)}
+                            csv={csv}
+                        />
+                    )}
+                </div>
             </div>
 
-            {sorted.length === 0 ? (
+            {displayed.length === 0 ? (
                 <Empty className="mt-4 rounded-none bg-card shadow-md py-10">
                     <EmptyHeader>
                         <EmptyTitle>No sample</EmptyTitle>
@@ -143,64 +166,54 @@ export const LegendMetaBoard = ({
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {sorted.map((row) => {
-                                    const legend = legendsMap[row.legendId]
-
-                                    if (legend === undefined) return null
-
-                                    return (
-                                        <TableRow key={row.legendId}>
-                                            <TableCell className="whitespace-normal">
-                                                <Link
-                                                    to={legendHref(legend)}
-                                                    className="flex items-center gap-2 font-semibold transition-colors hover:text-ring"
-                                                >
-                                                    <LegendIcon
-                                                        legend={legend}
-                                                        className="size-7 shrink-0 object-contain"
-                                                    />
-                                                    <span className="flex min-w-0 flex-col">
-                                                        {legend.bio_name}
-                                                        <PhoneRecord
-                                                            row={row}
-                                                        />
-                                                    </span>
-                                                </Link>
-                                            </TableCell>
-                                            <TableCell className="text-right font-bold tabular-nums">
-                                                {formatLegendMetaRate(
-                                                    row.playShare,
-                                                )}
-                                            </TableCell>
-                                            <TableCell className="hidden text-right tabular-nums sm:table-cell">
-                                                {formatLegendMetaRate(
-                                                    row.winRate,
-                                                )}
-                                            </TableCell>
-                                            <TableCell className="hidden text-right tabular-nums sm:table-cell">
-                                                {formatPlayStylePerGame(
-                                                    row.playStyle
-                                                        .damageDealtPerGame,
-                                                )}
-                                            </TableCell>
-                                            <TableCell className="hidden text-right tabular-nums sm:table-cell">
-                                                {formatPlayStyleMatchLength(
-                                                    row.playStyle
-                                                        .averageMatchSeconds,
-                                                )}
-                                            </TableCell>
-                                            <TableCell className="hidden text-right tabular-nums sm:table-cell">
-                                                {formatPlayStylePerGame(
-                                                    row.playStyle
-                                                        .suicidesPer100Games,
-                                                )}
-                                            </TableCell>
-                                            <TableCell className="hidden text-right tabular-nums text-muted-foreground sm:table-cell">
-                                                {formatMetaCount(row.games)}
-                                            </TableCell>
-                                        </TableRow>
-                                    )
-                                })}
+                                {displayed.map(({ legend, row }) => (
+                                    <TableRow key={row.legendId}>
+                                        <TableCell className="whitespace-normal">
+                                            <Link
+                                                to={legendHref(legend)}
+                                                className="flex items-center gap-2 font-semibold transition-colors hover:text-ring"
+                                            >
+                                                <LegendIcon
+                                                    legend={legend}
+                                                    className="size-7 shrink-0 object-contain"
+                                                />
+                                                <span className="flex min-w-0 flex-col">
+                                                    {legend.bio_name}
+                                                    <PhoneRecord row={row} />
+                                                </span>
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell className="text-right font-bold tabular-nums">
+                                            {formatLegendMetaRate(
+                                                row.playShare,
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="hidden text-right tabular-nums sm:table-cell">
+                                            {formatLegendMetaRate(row.winRate)}
+                                        </TableCell>
+                                        <TableCell className="hidden text-right tabular-nums sm:table-cell">
+                                            {formatPlayStylePerGame(
+                                                row.playStyle
+                                                    .damageDealtPerGame,
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="hidden text-right tabular-nums sm:table-cell">
+                                            {formatPlayStyleMatchLength(
+                                                row.playStyle
+                                                    .averageMatchSeconds,
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="hidden text-right tabular-nums sm:table-cell">
+                                            {formatPlayStylePerGame(
+                                                row.playStyle
+                                                    .suicidesPer100Games,
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="hidden text-right tabular-nums text-muted-foreground sm:table-cell">
+                                            {formatMetaCount(row.games)}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
                             </TableBody>
                         </Table>
                     </Card>
