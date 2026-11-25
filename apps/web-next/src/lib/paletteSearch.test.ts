@@ -17,8 +17,13 @@ describe("matchLegends", () => {
         expect(legendNames("Hattori")).toEqual(["Hattori"])
     })
 
-    it("ranks a prefix match above a mid-name substring match", () => {
-        expect(legendNames("hat")).toEqual(["Hattori", "Thatch"])
+    it("ranks prefix matches above earlier roster entries", () => {
+        expect(legendNames("ra")).toEqual([
+            "Ragnir",
+            "Rayman",
+            "Ransom",
+            "Orion",
+        ])
     })
 
     it("finds a legend by a fragment in the middle of its name", () => {
@@ -81,7 +86,11 @@ describe("matchLegends", () => {
 })
 
 describe("matchWeapons", () => {
-    it("ranks an exact name above a name that only contains it", () => {
+    it("ranks a prefix match above an earlier weapon that contains it", () => {
+        expect(weaponNames("or")).toEqual(["Orb", "Sword", "Greatsword"])
+    })
+
+    it("lists the exact name first even though another name contains it", () => {
         expect(weaponNames("Sword")).toEqual(["Sword", "Greatsword"])
     })
 
