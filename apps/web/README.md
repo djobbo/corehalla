@@ -9,7 +9,7 @@ been removed.
 - **Framework:** TanStack Start + TanStack Router (file-based routes)
 - **Runtime/data:** [Effect v4](https://effect.website) — `HttpApi` + `HttpClient`
   on the server, `Atom` + `@effect/atom-react` on the client
-- **Deployment:** Cloudflare Workers via [Alchemy](https://alchemy.run) (`Cloudflare.Website.Vite` + `Cloudflare.D1.Database`); the stack lives at the repo root (`../alchemy.run.ts`)
+- **Deployment:** Cloudflare Workers via [Alchemy](https://alchemy.run) (`Cloudflare.Website.Vite` + `Cloudflare.D1.Database`); the stack lives in `apps/infra` (`alchemy.run.ts`)
 - **UI:** React 19, Tailwind CSS v4 (CSS-first config), Stitches, Radix, kbar
 - **TypeScript:** [tsrs](https://github.com/oxc-project/tsrs) with Effect diagnostics via [@effect/tsgo](https://github.com/Effect-TS/tsgo)
 
@@ -220,7 +220,7 @@ the `alchemy profile edit` OAuth alternative.
 
 ## Deployment (Cloudflare via Alchemy)
 
-The root `alchemy.run.ts` declares the deployment:
+`apps/infra/alchemy.run.ts` declares the deployment:
 
 - `Cloudflare.D1.Database("CorehallaDb", { name: "corehalla", migrations })`
   creates the SQLite database and applies `packages/db/drizzle` at deploy (and to
