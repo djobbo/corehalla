@@ -227,7 +227,7 @@ Source: `apps/web-next/src/components/ui/button.tsx`. Square (`rounded-none`). L
 
 ### Chips
 
-Source: `.ch-chip` in `app.css`. Inline-flex, the 7px cut, `drop-shadow(3px 3px 0 {colors.ink})`. Hover lifts to `-1px -1px` and `4px` shadow. Press drops to `2px 2px` and `1px` shadow. Transition is `transform, filter, background-color, color` at `120ms ease`.
+Source: `.ch-chip` in `app.css`. Inline-flex, the 7px cut and `drop-shadow(3px 3px 0 {colors.ink})` on a `::before` fill layer, so the control itself stays unclipped and can draw its focus ring. Hover lifts to `-1px -1px` and `4px` shadow. Press drops to `2px 2px` and `1px` shadow. Transition is `transform, color` on the control and `filter, background-color` on the fill, at `120ms ease`.
 
 - **On:** `{colors.brand}` / `{colors.foreground}`.
 - **Off:** `{colors.panel}` / `{colors.muted}`, hover fill `{colors.card}` and text `{colors.foreground}`.
@@ -245,6 +245,12 @@ Nameplate (`.ch-nameplate`): a `{colors.brand}` plate, flag or rank cap on the l
 ### Inputs / Fields
 
 Source: `components/ui/input.tsx`, `textarea.tsx`, `select.tsx`. Fill `{colors.canvas-deep}`, text `{colors.foreground}`, placeholder `{colors.muted}`, height `2.5rem` (select `sm` is `2.25rem`), square. Invalid state draws `outline: 2px solid {colors.danger}`. The base layer also sets `:focus-visible { outline: 2px solid {colors.brand-bright}; outline-offset: 2px }`.
+
+### Focus
+
+One indicator, drawn by the base `:focus-visible` rule: `2px solid {colors.brand-bright}`. Fields, buttons, the tier move control and the search field's wrapper use it at `outline-offset: 2px`; chips use `3px` so the ring clears their hard shadow; section-nav links use `-2px` so `.ch-nav`'s `overflow-y: hidden` cannot clip the ring. No `ring-*` focus style remains, and nothing that draws the ring is clipped.
+
+`components/ui/input-group.tsx` owns the ring for composed fields: the wrapper paints it when the input or textarea inside matches `:focus-visible`, and that control drops its own so there is one ring.
 
 ### Navigation
 

@@ -88,7 +88,7 @@ export const ShareButton = ({ name, path }: ShareButtonProps) => {
                 aria-label={`Share ${name}'s profile`}
                 onClick={() => void share()}
                 className={cn(
-                    "ch-chip focus-visible:outline-2 focus-visible:outline-ring",
+                    "ch-chip",
                     confirmed ? "ch-chip-on" : "ch-chip-off",
                 )}
             >

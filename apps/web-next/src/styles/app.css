@@ -331,7 +331,15 @@
 
     /* --- chips (parallelograms) ------------------------------------------ */
 
+    /*
+     * The cut and the hard offset shadow live on a fill layer rather than the
+     * control itself: `clip-path` clips outlines, so the focus ring has to be
+     * drawn by an unclipped element. The ring sits at 3px so it clears the
+     * shadow underneath it.
+     */
     .ch-chip {
+        position: relative;
+        isolation: isolate;
         display: inline-flex;
         align-items: center;
         gap: 0.3rem;
@@ -341,50 +349,85 @@
         letter-spacing: 0.08em;
         text-transform: uppercase;
         white-space: nowrap;
+        transition:
+            transform 120ms ease,
+            color 120ms ease;
+    }
+
+    .ch-chip::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background-color: transparent;
         clip-path: polygon(7px 0, 100% 0, calc(100% - 7px) 100%, 0 100%);
         filter: drop-shadow(3px 3px 0 var(--color-ink));
         transition:
-            transform 120ms ease,
             filter 120ms ease,
-            background-color 120ms ease,
-            color 120ms ease;
+            background-color 120ms ease;
+    }
+
+    .ch-chip:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 3px;
     }
 
     .ch-chip:hover {
         transform: translate(-1px, -1px);
+    }
+
+    .ch-chip:hover::before {
         filter: drop-shadow(4px 4px 0 var(--color-ink));
     }
 
     .ch-chip:active {
         transform: translate(2px, 2px);
+    }
+
+    .ch-chip:active::before {
         filter: drop-shadow(1px 1px 0 var(--color-ink));
     }
 
     /*
      * The nudge and the shadow's one-pixel grow are cues, not structure.
      * Reduced motion keeps the parallelogram, the fill and the resting offset.
+     * The shadow moved to the fill layer with the cut, so the override follows
+     * it there.
      */
     @media (prefers-reduced-motion: reduce) {
         .ch-chip:hover,
         .ch-chip:active {
             transform: none;
+        }
+
+        .ch-chip:hover::before,
+        .ch-chip:active::before {
             filter: drop-shadow(3px 3px 0 var(--color-ink));
         }
     }
 
     .ch-chip-on {
-        background: var(--primary);
         color: var(--primary-foreground);
     }
 
+    .ch-chip-on::before {
+        background-color: var(--primary);
+    }
+
     .ch-chip-off {
-        background: var(--color-panelDeep);
         color: var(--muted-foreground);
     }
 
+    .ch-chip-off::before {
+        background-color: var(--color-panelDeep);
+    }
+
     .ch-chip-off:hover {
-        background: var(--card);
         color: var(--foreground);
+    }
+
+    .ch-chip-off:hover::before {
+        background-color: var(--card);
     }
 
     /* --- announcement bar ------------------------------------------------ */

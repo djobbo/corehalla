@@ -13,7 +13,7 @@ function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
         <div
             data-slot="input-group"
             className={cn(
-                "group/input-group relative flex h-10 w-full min-w-0 items-center rounded-none bg-bgVar2 transition-colors outline-none in-data-[slot=combobox-content]:focus-within:border-inherit in-data-[slot=combobox-content]:focus-within:ring-0 has-data-[align=block-end]:rounded-none has-data-[align=block-start]:rounded-none has-[[data-slot][aria-invalid=true]]:outline-2 has-[[data-slot][aria-invalid=true]]:outline-destructive has-[textarea]:rounded-none has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>textarea]:h-auto has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3",
+                "group/input-group relative flex h-10 w-full min-w-0 items-center rounded-none bg-bgVar2 transition-colors has-[>:is(input,textarea):focus-visible]:outline-2 has-[>:is(input,textarea):focus-visible]:outline-offset-2 has-[>:is(input,textarea):focus-visible]:outline-ring in-data-[slot=combobox-content]:focus-within:border-inherit in-data-[slot=combobox-content]:focus-within:ring-0 has-data-[align=block-end]:rounded-none has-data-[align=block-start]:rounded-none has-[[data-slot][aria-invalid=true]]:outline-2 has-[[data-slot][aria-invalid=true]]:outline-destructive has-[textarea]:rounded-none has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>textarea]:h-auto has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3",
                 className,
             )}
             {...props}
@@ -121,7 +121,7 @@ function InputGroupInput({
         <Input
             data-slot="input-group-control"
             className={cn(
-                "flex-1 border-0 bg-transparent ring-0 group-has-[>[data-align=inline-end]]/input-group:pr-2 group-has-[>[data-align=inline-start]]/input-group:pl-2 focus-visible:ring-0 aria-invalid:ring-0 dark:bg-transparent",
+                "flex-1 border-0 bg-transparent ring-0 group-has-[>[data-align=inline-end]]/input-group:pr-2 group-has-[>[data-align=inline-start]]/input-group:pl-2 focus-visible:outline-none focus-visible:ring-0 aria-invalid:ring-0 dark:bg-transparent",
                 className,
             )}
             {...props}
@@ -137,7 +137,7 @@ function InputGroupTextarea({
         <Textarea
             data-slot="input-group-control"
             className={cn(
-                "flex-1 resize-none border-0 bg-transparent py-2.5 ring-0 focus-visible:ring-0 aria-invalid:ring-0 dark:bg-transparent",
+                "flex-1 resize-none border-0 bg-transparent py-2.5 ring-0 focus-visible:outline-none focus-visible:ring-0 aria-invalid:ring-0 dark:bg-transparent",
                 className,
             )}
             {...props}
