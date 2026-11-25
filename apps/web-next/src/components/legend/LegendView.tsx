@@ -21,9 +21,15 @@ import {
 import { weaponHref } from "@/lib/weapons"
 import { playerHref, tierColor } from "@/lib/rankings"
 import { LegendIcon } from "./LegendIcon"
+import { LegendMetaCard } from "./LegendMetaCard"
 import { LegendPlayStyleCard } from "./LegendPlayStyleCard"
 import { cleanString } from "@crh/common/helpers/cleanString"
-import type { CareerRanking, LegendPlayStyle } from "@crh/api-contract/schemas"
+import type {
+    CareerRanking,
+    LegendMeta,
+    LegendMetaFloor,
+    LegendPlayStyle,
+} from "@crh/api-contract/schemas"
 import type { Legend } from "@crh/bhapi/types"
 import type { CSSProperties } from "react"
 
@@ -105,10 +111,16 @@ export const LegendView = ({
     legend,
     rows,
     playStyle = null,
+    meta = null,
+    floor = "all",
+    onMetaFloorChange,
 }: {
     readonly legend: Legend
     readonly rows: readonly CareerRanking[]
     readonly playStyle?: LegendPlayStyle | null
+    readonly meta?: LegendMeta | null
+    readonly floor?: LegendMetaFloor
+    readonly onMetaFloorChange?: (floor: LegendMetaFloor) => void
 }) => {
     const mains = rows.slice(0, TOP_MAIN_COUNT)
     const related = relatedLegends(legend, RELATED_LEGEND_COUNT)
@@ -135,7 +147,14 @@ export const LegendView = ({
                 </div>
             </header>
 
-            <div className="grid gap-3 md:grid-cols-2">
+            <LegendMetaCard
+                meta={meta}
+                legendId={legend.legend_id}
+                floor={floor}
+                onFloorChange={onMetaFloorChange}
+            />
+
+            <div className="mt-3 grid gap-3 md:grid-cols-2">
                 <Card>
                     <CardHeader>
                         <CardTitle>Weapons</CardTitle>

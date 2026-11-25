@@ -1,14 +1,30 @@
 import { describe, expect, it } from "@effect/vitest"
 import type { LegendMetaRow } from "./legendMeta"
+import type { LegendPlayStyle } from "@crh/api-contract/schemas"
 import {
     formatLegendMetaCount,
     formatLegendMetaRate,
     legendMetaEmpty,
     legendMetaFloorLabel,
+    legendMetaRank,
+    legendMetaRankLabel,
     legendMetaSample,
     legendMetaSorts,
     resolveLegendMetaFloor,
 } from "./legendMeta"
+
+const playStyle = (over: Partial<LegendPlayStyle> = {}): LegendPlayStyle => ({
+    accounts: 10,
+    damageDealtPerGame: 412.75,
+    damageTakenPerGame: 380.2,
+    kosPerGame: 1.4,
+    fallsPerGame: 1.03,
+    suicidesPer100Games: 0.82,
+    averageMatchSeconds: 200,
+    weaponOneShare: 0.6,
+    weaponTwoShare: 0.4,
+    ...over,
+})
 
 const row = (
     legendId: number,
@@ -21,17 +37,7 @@ const row = (
     winRate: 0.5,
     playShare: 0.25,
     accounts: 10,
-    playStyle: {
-        accounts: 10,
-        damageDealtPerGame: 412.75,
-        damageTakenPerGame: 380.2,
-        kosPerGame: 1.4,
-        fallsPerGame: 1.03,
-        suicidesPer100Games: 0.82,
-        averageMatchSeconds: 200,
-        weaponOneShare: 0.6,
-        weaponTwoShare: 0.4,
-    },
+    playStyle: playStyle(),
     ...over,
 })
 
@@ -147,5 +153,81 @@ describe("legendMetaSorts", () => {
                 .sort(legendMetaSorts.playShare.compare)
                 .map((r) => r.legendId),
         ).toEqual([3, 5])
+    })
+})
+
+describe("legendMetaRank", () => {
+    it("counts the legends ahead on the metric", () => {
+        const rows = [
+            row(3, { playShare: 0.4 }),
+            row(4, { playShare: 0.25 }),
+            row(5, { playShare: 0.1 }),
+        ]
+
+        expect(legendMetaRank(rows, 4, "playShare")).toEqual({
+            position: 2,
+            total: 3,
+        })
+    })
+
+    it("gives tied legends the same position", () => {
+        const rows = [
+            row(3, { winRate: 0.53 }),
+            row(4, { winRate: 0.5 }),
+            row(5, { winRate: 0.5 }),
+        ]
+
+        expect(legendMetaRank(rows, 4, "winRate")).toEqual({
+            position: 2,
+            total: 3,
+        })
+        expect(legendMetaRank(rows, 5, "winRate")).toEqual({
+            position: 2,
+            total: 3,
+        })
+    })
+
+    it("gives a one-row board the first position", () => {
+        expect(legendMetaRank([row(3, { games: 10 })], 3, "games")).toEqual({
+            position: 1,
+            total: 1,
+        })
+    })
+
+    it("returns nothing for a legend the board does not list", () => {
+        expect(legendMetaRank([row(3)], 4, "playShare")).toBeNull()
+        expect(legendMetaRank([], 3, "playShare")).toBeNull()
+    })
+
+    it("returns nothing for a metric the legend does not report", () => {
+        const rows = [
+            row(3, { playStyle: playStyle({ damageDealtPerGame: null }) }),
+            row(4, { playStyle: playStyle({ damageDealtPerGame: 300 }) }),
+        ]
+
+        expect(legendMetaRank(rows, 3, "damageDealtPerGame")).toBeNull()
+    })
+
+    it("measures a play-style metric against the reporting legends", () => {
+        const rows = [
+            row(3, { playStyle: playStyle({ averageMatchSeconds: 240 }) }),
+            row(4, { playStyle: playStyle({ averageMatchSeconds: 180 }) }),
+            row(5, { playStyle: playStyle({ averageMatchSeconds: null }) }),
+        ]
+
+        expect(legendMetaRank(rows, 3, "averageMatchSeconds")).toEqual({
+            position: 1,
+            total: 2,
+        })
+        expect(legendMetaRank(rows, 4, "averageMatchSeconds")).toEqual({
+            position: 2,
+            total: 2,
+        })
+    })
+})
+
+describe("legendMetaRankLabel", () => {
+    it("names the position and the legends that report the metric", () => {
+        expect(legendMetaRankLabel({ position: 4, total: 15 })).toBe("#4 of 15")
     })
 })
