@@ -1,24 +1,31 @@
 import { Card } from "@/components/ui/card"
+import { MetaFloorChips } from "@/components/common/MetaFloorChips"
 import { StatGrid } from "@/components/common/StatGrid"
+import { metaDisclaimer, metaFloorSample } from "@/lib/metaFloor"
 import {
     formatWeaponMetaCount,
     formatWeaponMetaDuration,
     formatWeaponMetaRate,
-    weaponMetaDisclaimer,
     weaponMetaRankLabel,
-    weaponMetaSample,
     weaponPlayShareRank,
 } from "@/lib/weaponMeta"
 import type { Stat } from "@/components/common/StatGrid"
-import type { WeaponMeta } from "@crh/api-contract/schemas"
+import type { MetaFloor, WeaponMeta } from "@crh/api-contract/schemas"
 import type { Weapon } from "@crh/bhapi/constants"
 
 export type WeaponMetaCardProps = {
     readonly meta: WeaponMeta
     readonly weapon: Weapon
+    readonly floor: MetaFloor
+    readonly onFloorChange?: (floor: MetaFloor) => void
 }
 
-export const WeaponMetaCard = ({ meta, weapon }: WeaponMetaCardProps) => {
+export const WeaponMetaCard = ({
+    meta,
+    weapon,
+    floor,
+    onFloorChange,
+}: WeaponMetaCardProps) => {
     const row = meta.data.find((entry) => entry.weapon === weapon)
     const rank = weaponPlayShareRank(meta.data, weapon)
 
@@ -41,7 +48,7 @@ export const WeaponMetaCard = ({ meta, weapon }: WeaponMetaCardProps) => {
 
     return (
         <section aria-labelledby="weapon-meta-title" className="mb-6">
-            <div className="flex flex-wrap items-end justify-between gap-2">
+            <div className="flex flex-wrap items-end justify-between gap-3">
                 <div>
                     <p className="ch-kicker">Play share and win rate</p>
                     <h2
@@ -51,14 +58,20 @@ export const WeaponMetaCard = ({ meta, weapon }: WeaponMetaCardProps) => {
                         Meta
                     </h2>
                     <p className="mt-1 max-w-prose text-xs text-muted-foreground">
-                        {weaponMetaSample(meta.meta.accounts)} ·{" "}
-                        {weaponMetaDisclaimer}
+                        {metaFloorSample(meta.meta.accounts, floor)} ·{" "}
+                        {metaDisclaimer}
                     </p>
                 </div>
 
-                <p className="ch-chip ch-chip-off">
-                    {weaponMetaRankLabel(rank)}
-                </p>
+                <div className="flex flex-wrap items-end gap-3">
+                    <MetaFloorChips
+                        floor={floor}
+                        onFloorChange={onFloorChange}
+                    />
+                    <p className="ch-chip ch-chip-off">
+                        {weaponMetaRankLabel(rank)}
+                    </p>
+                </div>
             </div>
 
             <Card className="mt-3 p-4">

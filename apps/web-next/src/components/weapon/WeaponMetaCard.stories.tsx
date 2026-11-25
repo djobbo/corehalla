@@ -60,20 +60,46 @@ const populated: WeaponMeta = {
             kosPerGame: 0.91,
         },
     ],
-    meta: { accounts: 12_480 },
+    meta: { accounts: 12_480, ratingFloor: null },
 }
 
 const meta = {
     title: "Features/Weapon/Meta card",
     component: WeaponMetaCard,
     parameters: { layout: "padded" },
-    args: { meta: populated, weapon: "Gauntlets" },
+    args: {
+        meta: populated,
+        weapon: "Gauntlets",
+        floor: "all",
+        onFloorChange() {},
+    },
 } satisfies Meta<typeof WeaponMetaCard>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
 export const Populated: Story = {}
+
+export const Filtered: Story = {
+    args: {
+        floor: "2000",
+        meta: {
+            data: populated.data.map((entry) => ({
+                ...entry,
+                games: Math.round(entry.games * 0.18),
+                accounts: Math.round(entry.accounts * 0.12),
+            })),
+            meta: { accounts: 1_240, ratingFloor: 2000 },
+        },
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: "The 2000+ slice: the card states the floor it summarizes and the chip row shows it as the active filter.",
+            },
+        },
+    },
+}
 
 export const Omitted: Story = {
     args: { weapon: "Chakram" },

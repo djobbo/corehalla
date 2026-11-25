@@ -49,15 +49,6 @@ export const formatWeaponMetaDuration = (value: number | null): string => {
     return rest === 0 ? `${hours}h` : `${hours}h ${rest}m`
 }
 
-export const weaponMetaSample = (accounts: number): string =>
-    `Across ${formatWeaponMetaCount(accounts)} indexed accounts`
-
-/** The sample is Corehalla's index, never the official game figures. */
-export const weaponMetaDisclaimer =
-    "aggregated from Corehalla's index, not official Brawlhalla figures."
-
-export const weaponMetaEmpty = "No weapon games are indexed yet."
-
 export type WeaponMetaSort =
     | "playShare"
     | "winRate"

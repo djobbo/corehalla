@@ -94,7 +94,7 @@ const meta: WeaponMeta = {
             kosPerGame: 0.91,
         },
     ],
-    meta: { accounts: 12_480 },
+    meta: { accounts: 12_480, ratingFloor: null },
 }
 
 const story = {

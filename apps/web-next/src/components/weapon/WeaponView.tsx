@@ -17,7 +17,11 @@ import { playerHref, tierColor } from "@/lib/rankings"
 import { legendsWithWeapon, weaponCareerHref } from "@/lib/weapons"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { WeaponMetaCard } from "./WeaponMetaCard"
-import type { CareerRanking, WeaponMeta } from "@crh/api-contract/schemas"
+import type {
+    CareerRanking,
+    MetaFloor,
+    WeaponMeta,
+} from "@crh/api-contract/schemas"
 import type { Weapon } from "@crh/bhapi/constants"
 import type { CSSProperties } from "react"
 
@@ -68,10 +72,14 @@ export const WeaponView = ({
     weapon,
     rows,
     meta,
+    floor = "all",
+    onFloorChange,
 }: {
     readonly weapon: Weapon
     readonly rows: readonly CareerRanking[]
     readonly meta: WeaponMeta | null
+    readonly floor?: MetaFloor
+    readonly onFloorChange?: (floor: MetaFloor) => void
 }) => {
     const wielders = legendsWithWeapon(weapon)
     const metric = weaponBoard.option(weaponBoard.defaultSort)
@@ -95,7 +103,12 @@ export const WeaponView = ({
             </header>
 
             {meta === null ? null : (
-                <WeaponMetaCard meta={meta} weapon={weapon} />
+                <WeaponMetaCard
+                    meta={meta}
+                    weapon={weapon}
+                    floor={floor}
+                    onFloorChange={onFloorChange}
+                />
             )}
 
             <section>

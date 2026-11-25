@@ -1,8 +1,5 @@
-import {
-    formatLegendMetaCount,
-    formatLegendMetaRate,
-    legendMetaDisclaimer,
-} from "./legendMeta"
+import { formatLegendMetaRate } from "./legendMeta"
+import { formatMetaCount, metaDisclaimer } from "./metaFloor"
 
 export type { LegendPlayStyle } from "@crh/api-contract/schemas"
 
@@ -28,4 +25,4 @@ export const formatPlayStyleShare = (share: number | null): string =>
     share === null ? playStyleUnknown : formatLegendMetaRate(share)
 
 export const playStyleSample = (accounts: number): string =>
-    `Across ${formatLegendMetaCount(accounts)} indexed accounts · ${legendMetaDisclaimer}`
+    `Across ${formatMetaCount(accounts)} indexed accounts · ${metaDisclaimer}`

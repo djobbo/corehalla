@@ -10,7 +10,6 @@ import {
     weaponMetaDefaultDirection,
     weaponMetaDefaultSort,
     weaponMetaRankLabel,
-    weaponMetaSample,
     weaponMetaSorts,
     weaponMetaTableRows,
     weaponPlayShareRank,
@@ -97,12 +96,6 @@ describe("formatWeaponMetaDuration", () => {
     })
 })
 
-describe("weaponMetaSample", () => {
-    it("names the indexed population", () => {
-        expect(weaponMetaSample(12_480)).toBe("Across 12,480 indexed accounts")
-    })
-})
-
 describe("weaponPlayShareRank", () => {
     it("counts the weapons with a larger play share", () => {
         const rows = [
@@ -172,7 +165,7 @@ describe("weaponMetaTableRows", () => {
     it("keeps every weapon in the catalogue, even one the sample skips", () => {
         const rows = weaponMetaTableRows({
             data: [row("Sword")],
-            meta: { accounts: 10 },
+            meta: { accounts: 10, ratingFloor: null },
         })
 
         expect(rows.map((entry) => entry.weapon)).toEqual([...weapons])

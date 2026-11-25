@@ -2,7 +2,8 @@ import { Link } from "@tanstack/react-router"
 import { LegendIcon } from "@/components/legend/LegendIcon"
 import { Card } from "@/components/ui/card"
 import { landingLegends } from "@/lib/landingLegends"
-import { formatLegendMetaRate, legendMetaSample } from "@/lib/legendMeta"
+import { formatLegendMetaRate } from "@/lib/legendMeta"
+import { metaFloorSample } from "@/lib/metaFloor"
 import { legendHref } from "@/lib/legends"
 import type { LegendMeta } from "@crh/api-contract/schemas"
 
@@ -44,7 +45,7 @@ export const MostPlayedLegends = ({
                 </Link>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-                {legendMetaSample(board.meta.accounts, "all")}
+                {metaFloorSample(board.meta.accounts, "all")}
             </p>
 
             <Card className="mt-2 py-0">

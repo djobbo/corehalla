@@ -6,15 +6,15 @@ import { weapons } from "@crh/bhapi/constants"
  * numeric entries are inclusive lower bounds on the account's ranked 1v1
  * rating.
  */
-export const legendMetaFloors = ["all", "1500", "1800", "2000", "2200"] as const
+export const metaFloors = ["all", "1500", "1800", "2000", "2200"] as const
 
-export const LegendMetaFloor = Schema.Literals(legendMetaFloors)
+export const MetaFloor = Schema.Literals(metaFloors)
 
-export type LegendMetaFloor = typeof LegendMetaFloor.Type
+export type MetaFloor = typeof MetaFloor.Type
 
 /** `null` for the whole index, otherwise the inclusive rating bound. */
-export const legendMetaFloorRating = (floor: LegendMetaFloor): number | null =>
-    floor === "all" ? null : Number(floor)
+export const metaFloorRating = (floor: MetaFloor | undefined): number | null =>
+    floor === undefined || floor === "all" ? null : Number(floor)
 
 /**
  * Per-game play-style profile for one legend. Every metric is `null` when the
@@ -90,8 +90,9 @@ export type WeaponMetaRow = typeof WeaponMetaRowSchema.Type
 export const WeaponMetaSchema = Schema.Struct({
     data: Schema.Array(WeaponMetaRowSchema),
     meta: Schema.Struct({
-        /** Indexed accounts in the sample. */
+        /** Indexed accounts matching the floor. */
         accounts: Schema.Finite,
+        ratingFloor: Schema.NullOr(Schema.Finite),
     }),
 })
 

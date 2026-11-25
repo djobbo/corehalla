@@ -1,7 +1,7 @@
 import { Effect } from "effect"
 import { HttpApiBuilder } from "effect/http-api"
 import { CorehallaApi } from "@crh/api-contract/Api"
-import { legendMetaFloorRating } from "@crh/api-contract/schemas"
+import { metaFloorRating } from "@crh/api-contract/schemas"
 import { Database } from "@crh/core/services/archive"
 import { buildLegendMeta, buildWeaponMeta } from "@crh/domain/aggregate/meta"
 import { PLAN, toSectionError } from "@crh/domain/sections/meta"
@@ -16,7 +16,7 @@ export const metaGroup = HttpApiBuilder.group(
 
         return handlers
             .handle("getLegendMeta", ({ query }) =>
-                db.getLegendMeta(legendMetaFloorRating(query.floor)).pipe(
+                db.getLegendMeta(metaFloorRating(query.floor)).pipe(
                     Effect.map((sample) =>
                         buildLegendMeta(sample.rows, {
                             accounts: sample.accounts,
@@ -45,11 +45,14 @@ export const metaGroup = HttpApiBuilder.group(
                     }),
                 ),
             )
-            .handle("getWeaponMeta", () =>
-                db.getWeaponMeta.pipe(
+            .handle("getWeaponMeta", ({ query }) => {
+                const floor = query.floor ?? "all"
+
+                return db.getWeaponMeta(metaFloorRating(floor)).pipe(
                     Effect.map((sample) =>
                         buildWeaponMeta(sample.rows, {
                             accounts: sample.accounts,
+                            floor,
                         }),
                     ),
                     Effect.mapError(() =>
@@ -72,7 +75,7 @@ export const metaGroup = HttpApiBuilder.group(
                                 }),
                             ),
                     }),
-                ),
-            )
+                )
+            })
     }),
 )

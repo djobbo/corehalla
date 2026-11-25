@@ -15,6 +15,26 @@ describe("OpenAPI document", () => {
         expect(paths).toContain("/api/v1/search")
     })
 
+    it("publishes the rating floor on both meta endpoints", () => {
+        const floorOf = (path: string) => {
+            const parameters = spec.paths[path]?.get?.parameters ?? []
+
+            return parameters.find(
+                (parameter) =>
+                    "name" in parameter &&
+                    parameter.name === "floor" &&
+                    parameter.in === "query",
+            )
+        }
+
+        expect(floorOf("/api/v1/meta/legends")).toMatchObject({
+            required: true,
+        })
+        expect(floorOf("/api/v1/meta/weapons")).toMatchObject({
+            required: false,
+        })
+    })
+
     it("keeps the raw Brawlhalla surface under one prefix", () => {
         expect(paths).toContain(
             "/api/v1/upstream/brawlhalla/player/{playerId}/stats",
