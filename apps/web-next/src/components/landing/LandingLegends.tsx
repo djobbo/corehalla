@@ -3,11 +3,16 @@ import { LegendIcon } from "@/components/legend/LegendIcon"
 import { Card } from "@/components/ui/card"
 import { landingLegends } from "@/lib/landingLegends"
 import { formatLegendMetaRate } from "@/lib/legendMeta"
-import { metaFloorSample } from "@/lib/metaFloor"
+import { metaFloorSample, metaFloorSearch } from "@/lib/metaFloor"
 import { legendHref } from "@/lib/legends"
-import type { LegendMeta } from "@crh/api-contract/schemas"
+import type { LegendMeta, MetaFloor } from "@crh/api-contract/schemas"
 
-const TITLE_ID = "landing-legends"
+export type LandingLegendsProps = {
+    readonly board: LegendMeta | null
+    readonly floor: MetaFloor
+    readonly title: string
+    readonly titleId: string
+}
 
 const Metric = ({
     label,
@@ -22,30 +27,32 @@ const Metric = ({
     </span>
 )
 
-export const MostPlayedLegends = ({
+export const LandingLegends = ({
     board,
-}: {
-    readonly board: LegendMeta | null
-}) => {
-    const legends = landingLegends(board)
+    floor,
+    title,
+    titleId,
+}: LandingLegendsProps) => {
+    const legends = landingLegends(board, floor)
 
     if (board === null || legends.length === 0) return null
 
     return (
-        <section aria-labelledby={TITLE_ID} className="mt-10">
+        <section aria-labelledby={titleId} className="mt-10">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <p id={TITLE_ID} className="ch-kicker">
-                    Most played legends
+                <p id={titleId} className="ch-kicker">
+                    {title}
                 </p>
                 <Link
                     to="/legends"
+                    search={metaFloorSearch(floor)}
                     className="text-xs font-bold tracking-[0.12em] text-muted-foreground uppercase transition-colors hover:text-foreground"
                 >
                     All legends <span aria-hidden>&rarr;</span>
                 </Link>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-                {metaFloorSample(board.meta.accounts, "all")}
+                {metaFloorSample(board.meta.accounts, floor)}
             </p>
 
             <Card className="mt-2 py-0">

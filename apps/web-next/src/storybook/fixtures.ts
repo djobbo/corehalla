@@ -940,3 +940,19 @@ export const landingLegendBoard: LegendMeta = {
     ],
     meta: { accounts: 18_204, ratingFloor: null },
 }
+
+/** The 2200+ slice: a thinner sample with its own play-share order. */
+export const metaLegendBoard: LegendMeta = {
+    data: [
+        legendMetaRow(6, 0.1512, 0.5284),
+        legendMetaRow(3, 0.1387, 0.5177),
+        legendMetaRow(4, 0.0914, 0.5203),
+        legendMetaRow(5, 0.0833, 0.4958),
+        legendMetaRow(12, 0.0621, 0.5312),
+        legendMetaRow(8, 0.0479, 0.5088),
+        legendMetaRow(7, 0.0416, 0.5401),
+        legendMetaRow(11, 0.0338, 0.4914),
+        legendMetaRow(9, 0.0287, 0.5033),
+    ],
+    meta: { accounts: 1_284, ratingFloor: 2_200 },
+}
