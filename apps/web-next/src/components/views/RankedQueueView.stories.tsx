@@ -82,6 +82,53 @@ const teams: readonly QueuedEntry[] = [
     },
 ]
 
+const mover = (
+    id: string,
+    name: string,
+    rating: number,
+    ratingDelta: number,
+    rankDelta = 0,
+): QueuedEntry => ({
+    id,
+    members: [{ id, name, slug: name.toLowerCase() }],
+    rating,
+    peakRating: rating + 20,
+    tier: "Diamond",
+    games: 120,
+    wins: 70,
+    queuedAt: NOW - 3 * 60_000,
+    rank: 10,
+    ratingDelta,
+    rankDelta,
+})
+
+const movers: readonly QueuedEntry[] = [
+    {
+        id: "mordex-sandstorm",
+        members: [
+            { id: "1456", name: "Mordex", slug: "mordex" },
+            { id: "2087", name: "Sandstorm", slug: "sandstorm" },
+        ],
+        rating: 2210,
+        peakRating: 2231,
+        tier: "Valhallan",
+        games: 96,
+        wins: 61,
+        queuedAt: NOW - 4 * 60_000,
+        rank: 2,
+        ratingDelta: 18,
+        rankDelta: -4,
+    },
+    mover("boomie", "Boomie", 2148, 9, -1),
+    mover("lucians", "Lucians", 2120, 9),
+    mover("diana", "Diana", 2094, 4, 1),
+    mover("hattori", "Hattori", 2081, 2, -1),
+    mover("koji", "Koji", 2069, 1),
+    mover("xull", "Xull", 2103, -11, 3),
+    mover("asuri", "Asuri", 1996, -3),
+    mover("cassidy", "Cassidy", 1982, -1, 2),
+]
+
 const meta = {
     title: "Views/Ranked queue",
     component: RankedQueueView,
@@ -100,3 +147,29 @@ export const Teams: Story = {
 }
 
 export const Empty: Story = { args: { bracket: "3v3", rows: [] } }
+
+export const Highlights: Story = {
+    args: { bracket: "2v2", rows: movers },
+}
+
+export const DropsOnly: Story = {
+    args: {
+        bracket: "1v1",
+        rows: [
+            mover("xull", "Xull", 2103, -11, 3),
+            mover("asuri", "Asuri", 1996, -3),
+            mover("cassidy", "Cassidy", 1982, -1, 2),
+        ],
+    },
+}
+
+export const NoMovement: Story = {
+    args: {
+        bracket: "1v1",
+        rows: [
+            mover("boomie", "Boomie", 2148, 0),
+            mover("lucians", "Lucians", 2120, 0),
+            mover("diana", "Diana", 2094, 0),
+        ],
+    },
+}
