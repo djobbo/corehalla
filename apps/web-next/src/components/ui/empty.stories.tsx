@@ -1,31 +1,54 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { SearchIcon } from "lucide-react"
 import { Button } from "./button"
 import {
     Empty,
     EmptyContent,
     EmptyDescription,
     EmptyHeader,
-    EmptyMedia,
     EmptyTitle,
 } from "./empty"
 
 const meta = {
     title: "Components/Empty",
     component: Empty,
-    parameters: { layout: "centered" },
+    parameters: { layout: "padded" },
 } satisfies Meta<typeof Empty>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {
-    render: ({ ...args }) => (
-        <Empty {...args} className="w-96 border border-border">
+/** A board that failed to load: one sentence, no label. */
+export const SentenceOnly: Story = {
+    render: () => (
+        <Empty className="rounded-none bg-card shadow-md">
             <EmptyHeader>
-                <EmptyMedia variant="icon">
-                    <SearchIcon />
-                </EmptyMedia>
+                <EmptyDescription>
+                    The 1v1 ladder could not be read right now.
+                </EmptyDescription>
+            </EmptyHeader>
+        </Empty>
+    ),
+}
+
+/** A titled state: one kicker, one sentence. */
+export const KickerAndSentence: Story = {
+    render: () => (
+        <Empty className="rounded-none bg-card shadow-md">
+            <EmptyHeader>
+                <EmptyTitle>No favorites yet</EmptyTitle>
+                <EmptyDescription>
+                    Open a player or clan and press &ldquo;Favorite&rdquo;.
+                </EmptyDescription>
+            </EmptyHeader>
+        </Empty>
+    ),
+}
+
+/** The same shape with the recovery action on the start edge. */
+export const WithAction: Story = {
+    render: () => (
+        <Empty className="rounded-none bg-card shadow-md">
+            <EmptyHeader>
                 <EmptyTitle>No players found</EmptyTitle>
                 <EmptyDescription>
                     Try a different name or clear the active filters.
@@ -40,28 +63,18 @@ export const Default: Story = {
     ),
 }
 
-export const TitleOnly: Story = {
-    render: ({ ...args }) => (
-        <Empty {...args} className="w-96 border border-border">
+/** Without a slab, for an empty state that sits directly in the page column. */
+export const InPageColumn: Story = {
+    render: () => (
+        <Empty>
             <EmptyHeader>
-                <EmptyTitle>Nothing here yet</EmptyTitle>
-            </EmptyHeader>
-        </Empty>
-    ),
-}
-
-export const WithMedia: Story = {
-    render: ({ ...args }) => (
-        <Empty {...args} className="w-96 border border-border">
-            <EmptyHeader>
-                <EmptyMedia>
-                    <SearchIcon className="size-10" />
-                </EmptyMedia>
-                <EmptyTitle>Search the ladder</EmptyTitle>
                 <EmptyDescription>
-                    Enter a player name to see their ranked history.
+                    Sign in to save the players and clans you follow.
                 </EmptyDescription>
             </EmptyHeader>
+            <EmptyContent>
+                <Button>Sign in with Discord</Button>
+            </EmptyContent>
         </Empty>
     ),
 }

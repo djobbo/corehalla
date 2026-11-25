@@ -1,8 +1,14 @@
 import { ClientOnly, Link } from "@tanstack/react-router"
 import { useAtomValue } from "@effect/atom-react"
-import { Heart } from "lucide-react"
 import { FavoritesGrid } from "@/components/account/FavoritesGrid"
+import { FavoritesEmpty } from "@/components/account/FavoritesEmpty"
 import { Button } from "@/components/ui/button"
+import {
+    Empty,
+    EmptyContent,
+    EmptyDescription,
+    EmptyHeader,
+} from "@/components/ui/empty"
 import { favoritesAtom, sessionAtom, signIn } from "@/effect/account"
 import { landingFavorites } from "@/lib/landingFavorites"
 
@@ -57,16 +63,18 @@ const SignedIn = () => {
         <section aria-labelledby="landing-favorites" className="mt-10">
             <Kicker manage />
             {favorites.length === 0 ? (
-                <div className="mt-2 flex flex-col items-center gap-3">
-                    <FavoritesGrid favorites={[]} />
-                    <Button
-                        variant="secondary"
-                        nativeButton={false}
-                        render={<Link to="/rankings" />}
-                    >
-                        View rankings
-                    </Button>
-                </div>
+                <FavoritesEmpty
+                    className="mt-2 p-0"
+                    action={
+                        <Button
+                            variant="secondary"
+                            nativeButton={false}
+                            render={<Link to="/rankings" />}
+                        >
+                            View rankings
+                        </Button>
+                    }
+                />
             ) : (
                 <div className="mt-2 flex flex-col gap-2">
                     <FavoritesGrid favorites={shown} />
@@ -90,15 +98,18 @@ const SignedIn = () => {
 const SignedOutPrompt = () => (
     <section aria-labelledby="landing-favorites" className="mt-10">
         <Kicker />
-        <div className="mt-2 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border p-6 text-center">
-            <Heart aria-hidden className="size-6 text-muted-foreground" />
-            <p className="max-w-md text-sm text-muted-foreground">
-                Sign in to save the players and clans you follow — your
-                favorites show up here.
-            </p>
-            <Button type="button" onClick={signIn}>
-                Sign in with Discord
-            </Button>
-        </div>
+        <Empty className="mt-2 p-0">
+            <EmptyHeader>
+                <EmptyDescription>
+                    Sign in to save the players and clans you follow — your
+                    favorites show up here.
+                </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+                <Button type="button" onClick={signIn}>
+                    Sign in with Discord
+                </Button>
+            </EmptyContent>
+        </Empty>
     </section>
 )
