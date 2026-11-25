@@ -21,6 +21,12 @@ const member: GuildMember = {
     joined_at: 1_690_000_000,
     xp: 4_820_000,
     guild_points: 12_400,
+    ranked: {
+        rating: 2_143,
+        peak_rating: 2_210,
+        tier: "Diamond",
+        region: "eu",
+    },
 }
 
 const clanXp = 12_400_000
@@ -42,4 +48,9 @@ export const Recruit: Story = {
         },
         clanXp,
     },
+}
+
+/** A member the archive does not know: a dash instead of a rating, no tier. */
+export const Unrated: Story = {
+    args: { member: { ...member, ranked: null }, clanXp },
 }

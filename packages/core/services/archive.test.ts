@@ -24,6 +24,9 @@ type Fixture = {
     readonly accounts: readonly {
         readonly id: string
         readonly rating: number
+        readonly peakRating?: number
+        readonly tier?: string
+        readonly region?: string
     }[]
     readonly legends: readonly LegendFixture[]
     readonly weapons?: readonly {
@@ -81,7 +84,13 @@ const layerFor = (fixture: Fixture) => {
     const sqlite = new DatabaseSync(":memory:")
 
     sqlite.exec(`
-        CREATE TABLE "BHPlayerData" ("id" TEXT PRIMARY KEY, "rating" INTEGER NOT NULL);
+        CREATE TABLE "BHPlayerData" (
+            "id" TEXT PRIMARY KEY,
+            "rating" INTEGER NOT NULL,
+            "peakRating" INTEGER NOT NULL DEFAULT 0,
+            "tier" TEXT NOT NULL DEFAULT '',
+            "region" TEXT NOT NULL DEFAULT ''
+        );
         CREATE TABLE "BHPlayerLegend" (
             "player_id" TEXT NOT NULL,
             "legend_id" INTEGER NOT NULL,
@@ -110,7 +119,8 @@ const layerFor = (fixture: Fixture) => {
     `)
 
     const insertAccount = sqlite.prepare(
-        `INSERT INTO "BHPlayerData" ("id", "rating") VALUES (?, ?)`,
+        `INSERT INTO "BHPlayerData" ("id", "rating", "peakRating", "tier", "region")
+         VALUES (?, ?, ?, ?, ?)`,
     )
     const insertLegend = sqlite.prepare(
         `INSERT INTO "BHPlayerLegend" (
@@ -125,7 +135,13 @@ const layerFor = (fixture: Fixture) => {
     )
 
     for (const account of fixture.accounts) {
-        insertAccount.run(account.id, account.rating)
+        insertAccount.run(
+            account.id,
+            account.rating,
+            account.peakRating ?? 0,
+            account.tier ?? "",
+            account.region ?? "",
+        )
     }
 
     for (const legend of fixture.legends) {
@@ -705,6 +721,75 @@ describe("getRankedStanding", () => {
 
             expect(standing).toBeNull()
         }),
+    )
+})
+
+const ratingFixture: Fixture = {
+    accounts: [
+        {
+            id: "1",
+            rating: 2_100,
+            peakRating: 2_250,
+            tier: "Diamond",
+            region: "eu",
+        },
+        {
+            id: "2",
+            rating: 1_900,
+            peakRating: 1_980,
+            tier: "Platinum 3",
+            region: "us-e",
+        },
+    ],
+    legends: [],
+}
+
+const readPlayerRatings = (fixture: Fixture, ids: readonly string[]) =>
+    Effect.gen(function* () {
+        const db = yield* Database
+
+        return yield* db.getPlayerRatings(ids)
+    }).pipe(Effect.provide(layerFor(fixture)))
+
+describe("getPlayerRatings", () => {
+    it.effect("returns the four rating columns for the ids it knows", () =>
+        Effect.gen(function* () {
+            const rows = yield* readPlayerRatings(ratingFixture, ["1"])
+
+            expect(rows).toEqual([
+                {
+                    playerId: "1",
+                    rating: 2_100,
+                    peakRating: 2_250,
+                    tier: "Diamond",
+                    region: "eu",
+                },
+            ])
+        }),
+    )
+
+    it.effect("leaves an id the archive has never indexed out", () =>
+        Effect.gen(function* () {
+            const rows = yield* readPlayerRatings(ratingFixture, ["1", "999"])
+
+            expect(rows.map((row) => row.playerId)).toEqual(["1"])
+        }),
+    )
+
+    it.effect("performs no query for an empty id list", () =>
+        Effect.gen(function* () {
+            const db = yield* Database
+
+            expect(yield* db.getPlayerRatings([])).toEqual([])
+        }).pipe(
+            Effect.provide(
+                makeLayer({
+                    prepare() {
+                        throw new Error("an empty id list ran a query")
+                    },
+                } as unknown as D1Database),
+            ),
+        ),
     )
 })
 

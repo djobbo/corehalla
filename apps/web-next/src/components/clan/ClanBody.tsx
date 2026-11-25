@@ -2,6 +2,7 @@ import { SortControl } from "@/components/common/SortControl"
 import { MemberCard } from "./MemberCard"
 import { TopContributors } from "./TopContributors"
 import { guildAtom, useQuery } from "@/effect/atoms"
+import { compareMemberRating } from "@/lib/guildRatings"
 import { useSortBy } from "@/lib/useSortBy"
 import { formatUnixTime } from "@crh/common/helpers/date"
 import type { Guild, GuildMember } from "@crh/api-contract/schemas"
@@ -10,7 +11,7 @@ import type { SortOption } from "@/lib/useSortBy"
 
 type Member = GuildMember
 
-type MemberSort = "rank" | "xp" | "points" | "joined"
+type MemberSort = "rank" | "rating" | "xp" | "points" | "joined"
 
 const rankWeight: Record<ClanRank, number> = {
     Leader: 0,
@@ -26,6 +27,14 @@ const sortOptions: Record<MemberSort, SortOption<Member>> = {
             rankWeight[a.rank as ClanRank] - rankWeight[b.rank as ClanRank] ||
             a.joined_at - b.joined_at,
         display: (member) => member.rank,
+    },
+    rating: {
+        label: "Rating",
+        compare: compareMemberRating,
+        display: (member) =>
+            member.ranked === null
+                ? "No 1v1 rating in Corehalla's index"
+                : `${member.ranked.rating.toLocaleString()} rating`,
     },
     xp: {
         label: "XP",

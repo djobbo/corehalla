@@ -18,6 +18,7 @@ describe("topContributors", () => {
         rank: "Member",
         joined_at: 1_700_000_000,
         xp,
+        ranked: null,
         ...(guildPoints === undefined ? {} : { guild_points: guildPoints }),
     })
 

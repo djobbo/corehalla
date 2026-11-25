@@ -5,6 +5,7 @@ import {
     EMPTY_GUILD_ID,
     GUILD_ID,
     NO_POINTS_GUILD_ID,
+    UNRATED_GUILD_ID,
     guildMock,
 } from "@/storybook/fixtures"
 
@@ -18,6 +19,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+/** Mixed roster: rated members show a tier and rating, the rest show a dash. */
 export const Default: Story = {
     args: { clanId: GUILD_ID },
 }
@@ -25,6 +27,11 @@ export const Default: Story = {
 /** No member reports points: contributors fall back to XP and the roster loses its points order. */
 export const WithoutGuildPoints: Story = {
     args: { clanId: NO_POINTS_GUILD_ID },
+}
+
+/** Every member is outside the index, so the rating sort has nothing to order. */
+export const WithoutRatedMembers: Story = {
+    args: { clanId: UNRATED_GUILD_ID },
 }
 
 export const EmptyRoster: Story = {

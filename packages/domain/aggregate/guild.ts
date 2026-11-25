@@ -3,15 +3,49 @@ import { guildLevel } from "./guild-levels"
 import type { Clan } from "@crh/bhapi/types"
 import { CONTRACT_VERSION } from "@crh/api-contract/schemas"
 import { PLAN } from "../sections/meta"
-import type { GuildEnvelope, GuildStanding } from "@crh/api-contract/schemas"
+import type {
+    GuildEnvelope,
+    GuildMemberRanked,
+    GuildStanding,
+} from "@crh/api-contract/schemas"
+
+/** One archive row for a member: the contract's ranked shape plus its id. */
+export type GuildMemberRating = {
+    readonly playerId: string
+    readonly rating: number
+    readonly peakRating: number
+    readonly tier: string
+    readonly region: string
+}
+
+/**
+ * Zero is how the archive spells "no ranked season", so it is not a rating to
+ * show. Blank tier and region are the same absence.
+ */
+const toMemberRanked = (
+    rated: GuildMemberRating | undefined,
+): GuildMemberRanked | null => {
+    if (rated === undefined || rated.rating <= 0) return null
+
+    return {
+        rating: rated.rating,
+        peak_rating: Math.max(rated.rating, rated.peakRating),
+        tier: rated.tier === "" ? null : rated.tier,
+        region: rated.region === "" ? null : rated.region,
+    }
+}
 
 export const buildGuild = (
     clan: Clan,
     updatedAt: number,
     standing: GuildStanding,
+    ratings: readonly GuildMemberRating[],
 ): GuildEnvelope => {
     const xp = Number.parseInt(clan.clan_xp, 10)
     const { level, xpPercentage } = guildLevel(xp)
+    const ratedById = new Map(
+        ratings.map((rated) => [rated.playerId, rated] as const),
+    )
 
     return {
         data: {
@@ -38,6 +72,9 @@ export const buildGuild = (
                 ...(member.guild_points === undefined
                     ? {}
                     : { guild_points: member.guild_points }),
+                ranked: toMemberRanked(
+                    ratedById.get(member.brawlhalla_id.toString()),
+                ),
             })),
         },
         meta: {
