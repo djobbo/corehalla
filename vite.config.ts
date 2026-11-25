@@ -127,9 +127,9 @@ export default defineConfig({
                 // Node-only packages may log to the console.
                 files: [
                     "apps/worker/**",
+                    "apps/infra/**",
                     "scripts/**",
                     "setup.zx.mjs",
-                    "alchemy.run.ts",
                     "packages/db/**",
                     "packages/logger/**",
                     "packages/web-parser/**",

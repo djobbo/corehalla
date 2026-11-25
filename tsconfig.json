@@ -1,6 +1,7 @@
 {
-    // Type-checks `alchemy.run.ts` only. Each package checks its own sources.
-    "include": ["alchemy.run.ts", "scripts"],
+    // Type-checks the root `scripts` only. Each package, including
+    // `apps/infra`, checks its own sources.
+    "include": ["scripts"],
     "exclude": ["node_modules"],
     "compilerOptions": {
         "strict": true,

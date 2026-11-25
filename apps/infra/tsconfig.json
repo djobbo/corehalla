@@ -1,0 +1,24 @@
+{
+    "extends": "@crh/tsconfig/base.json",
+    "include": ["alchemy.run.ts", "src", "vite.config.ts"],
+    "exclude": ["node_modules"],
+    "compilerOptions": {
+        "noEmit": true,
+        "types": ["node"],
+        "plugins": [
+            {
+                "name": "@effect/language-service",
+                "diagnostics": true,
+                "allowedUnstableApis": [
+                    "effect/FileSystem",
+                    "effect/Path",
+                    "effect/process",
+                    "@effect/platform-node",
+                    "@effect/vitest"
+                ],
+                "includeSuggestionsInTsc": false,
+                "ignoreEffectWarningsInTscExitCode": true
+            }
+        ]
+    }
+}

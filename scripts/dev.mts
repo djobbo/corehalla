@@ -32,13 +32,15 @@ const run = (name: string, args: ReadonlyArray<string>, cwd: string) =>
 const main = Effect.gen(function* () {
     const path = yield* Path.Path
     const root = path.resolve(".")
+    // The stack lives in `apps/infra`; its entrypoint is found from there.
+    const infra = path.join(root, "apps/infra")
 
     yield* Effect.all(
         [
             run(
                 "stack",
-                ["exec", "alchemy", "dev", "--env-file", ".env"],
-                root,
+                ["exec", "alchemy", "dev", "--env-file", "../../.env"],
+                infra,
             ),
             run("cms", ["run", "--filter", "@crh/cms", "dev"], root),
         ],
