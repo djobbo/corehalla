@@ -17,6 +17,21 @@ export const metaFloorRating = (floor: MetaFloor | undefined): number | null =>
     floor === undefined || floor === "all" ? null : Number(floor)
 
 /**
+ * Where a legend's damage comes from: fractions of the damage it dealt with
+ * its weapons, unarmed, gadgets and thrown items. Every share is `null` when
+ * the sample reported no damage at all.
+ */
+export const LegendDamageSplitSchema = Schema.Struct({
+    weaponOne: Schema.NullOr(Schema.Finite),
+    weaponTwo: Schema.NullOr(Schema.Finite),
+    unarmed: Schema.NullOr(Schema.Finite),
+    gadgets: Schema.NullOr(Schema.Finite),
+    thrownItem: Schema.NullOr(Schema.Finite),
+})
+
+export type LegendDamageSplit = typeof LegendDamageSplitSchema.Type
+
+/**
  * Per-game play-style profile for one legend. Every metric is `null` when the
  * sample has no input for it — the card renders a dash, never a made-up zero.
  * Weapon shares are fractions of held weapon time and add up to one.
@@ -32,6 +47,7 @@ export const LegendPlayStyleSchema = Schema.Struct({
     averageMatchSeconds: Schema.NullOr(Schema.Finite),
     weaponOneShare: Schema.NullOr(Schema.Finite),
     weaponTwoShare: Schema.NullOr(Schema.Finite),
+    damageSplit: LegendDamageSplitSchema,
 })
 
 export type LegendPlayStyle = typeof LegendPlayStyleSchema.Type

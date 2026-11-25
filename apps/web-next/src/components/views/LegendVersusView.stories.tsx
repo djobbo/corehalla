@@ -29,6 +29,13 @@ const metaRow = (
         averageMatchSeconds: 208,
         weaponOneShare: 0.5833,
         weaponTwoShare: 0.4167,
+        damageSplit: {
+            weaponOne: 0.62,
+            weaponTwo: 0.21,
+            unarmed: 0.1,
+            gadgets: 0.04,
+            thrownItem: 0.03,
+        },
     },
     ...overrides,
 })
@@ -52,6 +59,13 @@ const fullMeta: LegendMeta = {
                 averageMatchSeconds: 187,
                 weaponOneShare: 0.6111,
                 weaponTwoShare: 0.3889,
+                damageSplit: {
+                    weaponOne: 0.58,
+                    weaponTwo: 0.24,
+                    unarmed: 0.11,
+                    gadgets: 0.045,
+                    thrownItem: 0.025,
+                },
             },
         }),
     ],

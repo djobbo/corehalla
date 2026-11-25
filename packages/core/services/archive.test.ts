@@ -18,6 +18,11 @@ type LegendFixture = {
     readonly matchTime?: number
     readonly timeHeldWeaponOne?: number
     readonly timeHeldWeaponTwo?: number
+    readonly damageWeaponOne?: number
+    readonly damageWeaponTwo?: number
+    readonly damageUnarmed?: number
+    readonly damageGadgets?: number
+    readonly damageThrownItem?: number
 }
 
 type Fixture = {
@@ -104,6 +109,11 @@ const layerFor = (fixture: Fixture) => {
             "matchTime" INTEGER NOT NULL DEFAULT 0,
             "timeHeldWeaponOne" INTEGER NOT NULL DEFAULT 0,
             "timeHeldWeaponTwo" INTEGER NOT NULL DEFAULT 0,
+            "damageWeaponOne" INTEGER NOT NULL DEFAULT 0,
+            "damageWeaponTwo" INTEGER NOT NULL DEFAULT 0,
+            "damageUnarmed" INTEGER NOT NULL DEFAULT 0,
+            "damageGadgets" INTEGER NOT NULL DEFAULT 0,
+            "damageThrownItem" INTEGER NOT NULL DEFAULT 0,
             PRIMARY KEY ("player_id", "legend_id")
         );
         CREATE TABLE "BHPlayerWeapon" (
@@ -126,8 +136,10 @@ const layerFor = (fixture: Fixture) => {
         `INSERT INTO "BHPlayerLegend" (
             "player_id", "legend_id", "games", "wins", "damageDealt",
             "damageTaken", "kos", "falls", "suicides", "matchTime",
-            "timeHeldWeaponOne", "timeHeldWeaponTwo"
-         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            "timeHeldWeaponOne", "timeHeldWeaponTwo",
+            "damageWeaponOne", "damageWeaponTwo", "damageUnarmed",
+            "damageGadgets", "damageThrownItem"
+         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     const insertWeapon = sqlite.prepare(
         `INSERT INTO "BHPlayerWeapon" ("player_id", "weapon_name", "games", "wins", "damageDealt", "kos", "matchTime")
@@ -158,6 +170,11 @@ const layerFor = (fixture: Fixture) => {
             legend.matchTime ?? 0,
             legend.timeHeldWeaponOne ?? 0,
             legend.timeHeldWeaponTwo ?? 0,
+            legend.damageWeaponOne ?? 0,
+            legend.damageWeaponTwo ?? 0,
+            legend.damageUnarmed ?? 0,
+            legend.damageGadgets ?? 0,
+            legend.damageThrownItem ?? 0,
         )
     }
 
@@ -312,6 +329,11 @@ describe("getLegendMeta", () => {
                 matchTime: 30_000,
                 timeHeldWeaponOne: 7_000,
                 timeHeldWeaponTwo: 5_000,
+                damageWeaponOne: 28_000,
+                damageWeaponTwo: 8_000,
+                damageUnarmed: 3_500,
+                damageGadgets: 1_700,
+                damageThrownItem: 800,
             })
         }),
     )
@@ -334,6 +356,13 @@ describe("getLegendMeta", () => {
                 averageMatchSeconds: 200,
                 weaponOneShare: 0.5833,
                 weaponTwoShare: 0.4167,
+                damageSplit: {
+                    weaponOne: 0.6667,
+                    weaponTwo: 0.1905,
+                    unarmed: 0.0833,
+                    gadgets: 0.0405,
+                    thrownItem: 0.019,
+                },
             })
         }),
     )
@@ -892,6 +921,11 @@ const twoAccounts: Fixture = {
             matchTime: 21_000,
             timeHeldWeaponOne: 6_000,
             timeHeldWeaponTwo: 3_000,
+            damageWeaponOne: 20_000,
+            damageWeaponTwo: 6_000,
+            damageUnarmed: 2_500,
+            damageGadgets: 1_000,
+            damageThrownItem: 500,
         },
         {
             playerId: "2",
@@ -906,6 +940,11 @@ const twoAccounts: Fixture = {
             matchTime: 9_000,
             timeHeldWeaponOne: 1_000,
             timeHeldWeaponTwo: 2_000,
+            damageWeaponOne: 8_000,
+            damageWeaponTwo: 2_000,
+            damageUnarmed: 1_000,
+            damageGadgets: 700,
+            damageThrownItem: 300,
         },
     ],
 }

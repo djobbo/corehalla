@@ -8,16 +8,48 @@ import { SplitProgress } from "@/components/common/SplitProgress"
 import { StatGrid } from "@/components/common/StatGrid"
 import { fillClass } from "@/lib/fill"
 import {
+    damageSplitEntries,
+    damageSplitSummary,
     formatPlayStyleMatchLength,
     formatPlayStylePerGame,
     formatPlayStyleShare,
     playStyleSample,
+    playStyleUnknown,
 } from "@/lib/legendPlayStyle"
 import { cn } from "@/lib/cn"
+import type { FillIntent } from "@/lib/fill"
 import type { LegendPlayStyle } from "@/lib/legendPlayStyle"
 import type { Legend } from "@crh/bhapi/types"
 
 const TITLE_ID = "legend-play-style-title"
+
+const SplitLegend = ({
+    entries,
+}: {
+    readonly entries: readonly {
+        readonly key: string
+        readonly label: string
+        readonly intent: FillIntent
+        readonly text: string
+    }[]
+}) => (
+    <ul className="flex flex-wrap gap-x-6 gap-y-1">
+        {entries.map((entry) => (
+            <li key={entry.key} className="flex items-center gap-2">
+                <span
+                    aria-hidden
+                    className={cn("ch-dot", fillClass[entry.intent])}
+                />
+                <span className="text-sm font-bold tabular-nums">
+                    {entry.text}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                    {entry.label}
+                </span>
+            </li>
+        ))}
+    </ul>
+)
 
 export const LegendPlayStyleCard = ({
     legend,
@@ -28,7 +60,7 @@ export const LegendPlayStyleCard = ({
     readonly playStyle: LegendPlayStyle
     readonly className?: string
 }) => {
-    const split =
+    const heldSplit =
         playStyle.weaponOneShare === null || playStyle.weaponTwoShare === null
             ? null
             : ([
@@ -45,6 +77,10 @@ export const LegendPlayStyleCard = ({
                       intent: "cyan",
                   },
               ] as const)
+    const damageSplit = damageSplitEntries(playStyle.damageSplit, {
+        one: legend.weapon_one,
+        two: legend.weapon_two,
+    })
 
     return (
         <section aria-labelledby={TITLE_ID} className={className}>
@@ -103,41 +139,55 @@ export const LegendPlayStyleCard = ({
                         ]}
                     />
 
-                    {split === null ? null : (
+                    {heldSplit === null ? null : (
                         <div className="flex flex-col gap-2">
                             <p className="ch-stat-label">Held weapon time</p>
                             <SplitProgress
-                                label={`Held weapon time: ${formatPlayStyleShare(split[0].share)} on ${split[0].weapon}, ${formatPlayStyleShare(split[1].share)} on ${split[1].weapon}`}
-                                parts={split.map((entry) => ({
+                                label={`Held weapon time: ${formatPlayStyleShare(heldSplit[0].share)} on ${heldSplit[0].weapon}, ${formatPlayStyleShare(heldSplit[1].share)} on ${heldSplit[1].weapon}`}
+                                parts={heldSplit.map((entry) => ({
                                     key: entry.key,
                                     value: entry.share,
                                     intent: entry.intent,
                                 }))}
                             />
-                            <ul className="flex flex-wrap gap-x-6 gap-y-1">
-                                {split.map((entry) => (
-                                    <li
-                                        key={entry.key}
-                                        className="flex items-center gap-2"
-                                    >
-                                        <span
-                                            aria-hidden
-                                            className={cn(
-                                                "ch-dot",
-                                                fillClass[entry.intent],
-                                            )}
-                                        />
-                                        <span className="text-sm font-bold tabular-nums">
-                                            {formatPlayStyleShare(entry.share)}
-                                        </span>
-                                        <span className="text-xs text-muted-foreground">
-                                            {entry.weapon}
-                                        </span>
-                                    </li>
-                                ))}
-                            </ul>
+                            <SplitLegend
+                                entries={heldSplit.map((entry) => ({
+                                    key: entry.key,
+                                    label: entry.weapon,
+                                    intent: entry.intent,
+                                    text: formatPlayStyleShare(entry.share),
+                                }))}
+                            />
                         </div>
                     )}
+
+                    <div className="flex flex-col gap-2">
+                        <p className="ch-stat-label">Damage split</p>
+                        {damageSplit === null ? (
+                            <p className="text-sm font-bold tabular-nums text-muted-foreground">
+                                {playStyleUnknown}
+                            </p>
+                        ) : (
+                            <>
+                                <SplitProgress
+                                    label={damageSplitSummary(damageSplit)}
+                                    parts={damageSplit.map((entry) => ({
+                                        key: entry.key,
+                                        value: entry.share,
+                                        intent: entry.intent,
+                                    }))}
+                                />
+                                <SplitLegend
+                                    entries={damageSplit.map((entry) => ({
+                                        key: entry.key,
+                                        label: entry.label,
+                                        intent: entry.intent,
+                                        text: entry.formatted,
+                                    }))}
+                                />
+                            </>
+                        )}
+                    </div>
                 </CardContent>
             </Card>
         </section>

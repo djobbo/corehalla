@@ -17,6 +17,11 @@ const playStyle = {
     matchTime: 30_000,
     timeHeldWeaponOne: 7_000,
     timeHeldWeaponTwo: 5_000,
+    damageWeaponOne: 20_000,
+    damageWeaponTwo: 6_000,
+    damageUnarmed: 2_500,
+    damageGadgets: 1_000,
+    damageThrownItem: 500,
 } as const
 
 const row = (
@@ -76,6 +81,13 @@ describe("buildLegendMeta", () => {
             averageMatchSeconds: 200,
             weaponOneShare: 0.5833,
             weaponTwoShare: 0.4167,
+            damageSplit: {
+                weaponOne: 0.6667,
+                weaponTwo: 0.2,
+                unarmed: 0.0833,
+                gadgets: 0.0333,
+                thrownItem: 0.0167,
+            },
         })
     })
 
@@ -133,6 +145,100 @@ describe("buildLegendMeta", () => {
         expect(board.data[0]?.playStyle).toMatchObject({
             weaponOneShare: null,
             weaponTwoShare: null,
+        })
+    })
+
+    it("splits damage across weapons, unarmed, gadgets and throws", () => {
+        const board = buildLegendMeta(
+            [
+                row(3, {
+                    playStyle: {
+                        ...playStyle,
+                        damageWeaponOne: 60_000,
+                        damageWeaponTwo: 30_000,
+                        damageUnarmed: 5_000,
+                        damageGadgets: 3_000,
+                        damageThrownItem: 2_000,
+                    },
+                }),
+            ],
+            sample,
+        )
+
+        const split = board.data[0]?.playStyle.damageSplit
+
+        expect(split).toEqual({
+            weaponOne: 0.6,
+            weaponTwo: 0.3,
+            unarmed: 0.05,
+            gadgets: 0.03,
+            thrownItem: 0.02,
+        })
+        const shares = [
+            split?.weaponOne,
+            split?.weaponTwo,
+            split?.unarmed,
+            split?.gadgets,
+            split?.thrownItem,
+        ]
+
+        expect(
+            Math.abs(
+                shares.reduce<number>((sum, share) => sum + (share ?? 0), 0) -
+                    1,
+            ),
+        ).toBeLessThanOrEqual(0.0005)
+    })
+
+    it("rounds every damage share to four decimals", () => {
+        const board = buildLegendMeta(
+            [
+                row(3, {
+                    playStyle: {
+                        ...playStyle,
+                        damageWeaponOne: 1,
+                        damageWeaponTwo: 2,
+                        damageUnarmed: 0,
+                        damageGadgets: 0,
+                        damageThrownItem: 0,
+                    },
+                }),
+            ],
+            sample,
+        )
+
+        expect(board.data[0]?.playStyle.damageSplit).toEqual({
+            weaponOne: 0.3333,
+            weaponTwo: 0.6667,
+            unarmed: 0,
+            gadgets: 0,
+            thrownItem: 0,
+        })
+    })
+
+    it("leaves every damage share null when the sample dealt no damage", () => {
+        const board = buildLegendMeta(
+            [
+                row(3, {
+                    playStyle: {
+                        ...playStyle,
+                        damageWeaponOne: 0,
+                        damageWeaponTwo: 0,
+                        damageUnarmed: 0,
+                        damageGadgets: 0,
+                        damageThrownItem: 0,
+                    },
+                }),
+            ],
+            sample,
+        )
+
+        expect(board.data[0]?.playStyle.damageSplit).toEqual({
+            weaponOne: null,
+            weaponTwo: null,
+            unarmed: null,
+            gadgets: null,
+            thrownItem: null,
         })
     })
 

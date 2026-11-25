@@ -13,6 +13,13 @@ const playStyle = {
     averageMatchSeconds: 208,
     weaponOneShare: 0.5833,
     weaponTwoShare: 0.4167,
+    damageSplit: {
+        weaponOne: 0.62,
+        weaponTwo: 0.21,
+        unarmed: 0.1,
+        gadgets: 0.04,
+        thrownItem: 0.03,
+    },
 } as const
 
 const row = (

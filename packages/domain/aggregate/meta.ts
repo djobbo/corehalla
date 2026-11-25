@@ -21,6 +21,11 @@ export type LegendPlayStyleTotals = {
     readonly matchTime: number
     readonly timeHeldWeaponOne: number
     readonly timeHeldWeaponTwo: number
+    readonly damageWeaponOne: number
+    readonly damageWeaponTwo: number
+    readonly damageUnarmed: number
+    readonly damageGadgets: number
+    readonly damageThrownItem: number
 }
 
 export type LegendMetaRowInput = {
@@ -64,6 +69,12 @@ const playStyle = (
     const held = totals.timeHeldWeaponOne + totals.timeHeldWeaponTwo
     const weaponOneShare =
         held <= 0 ? null : round(totals.timeHeldWeaponOne / held, 4)
+    const damage =
+        totals.damageWeaponOne +
+        totals.damageWeaponTwo +
+        totals.damageUnarmed +
+        totals.damageGadgets +
+        totals.damageThrownItem
 
     return {
         accounts: totals.accounts,
@@ -76,6 +87,13 @@ const playStyle = (
         weaponOneShare,
         weaponTwoShare:
             weaponOneShare === null ? null : round(1 - weaponOneShare, 4),
+        damageSplit: {
+            weaponOne: nullableFraction(totals.damageWeaponOne, damage),
+            weaponTwo: nullableFraction(totals.damageWeaponTwo, damage),
+            unarmed: nullableFraction(totals.damageUnarmed, damage),
+            gadgets: nullableFraction(totals.damageGadgets, damage),
+            thrownItem: nullableFraction(totals.damageThrownItem, damage),
+        },
     }
 }
 
