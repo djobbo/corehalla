@@ -677,6 +677,7 @@ export const esportsEnvelope = {
 }
 
 import type {
+    ClanRanking,
     LegendMeta,
     LegendMetaRow,
     LegendPlayStyle,
@@ -1004,3 +1005,23 @@ export const metaLegendBoard: LegendMeta = {
     ],
     meta: { accounts: 1_284, ratingFloor: 2_200 },
 }
+
+/** Seven guilds, already in board order, each on its own XP step. */
+const clanRanking = (id: number, name: string, xp: number): ClanRanking => ({
+    id: String(id),
+    name,
+    slug: name.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-"),
+    nameLower: name.toLowerCase(),
+    created: Date.UTC(2017, 9, 31),
+    xp,
+})
+
+export const landingGuildBoard: readonly ClanRanking[] = [
+    clanRanking(9_001, "Iron Legion", 48_120_000),
+    clanRanking(9_002, "Nidhogg's Chosen", 46_620_000),
+    clanRanking(9_003, "Sons of Ivaldi", 45_120_000),
+    clanRanking(9_004, "The Fang Gang", 43_620_000),
+    clanRanking(9_005, "Ragnarok Rookies", 42_120_000),
+    clanRanking(9_006, "Valhalla Bound", 40_620_000),
+    clanRanking(9_007, "Brawl Street Boys", 39_120_000),
+]

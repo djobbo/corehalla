@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vite-plus/test"
-import { clanHref, playerHref, tierColor, tierLabel } from "./rankings"
+import {
+    clanHref,
+    guildRankingsHref,
+    playerHref,
+    tierColor,
+    tierLabel,
+} from "./rankings"
 import { parseEntityId } from "@crh/common/helpers/entitySlug"
 
 describe("playerHref", () => {
@@ -31,6 +37,17 @@ describe("clanHref", () => {
 
     it("still accepts a bare id", () => {
         expect(clanHref(9)).toBe("/stats/guilds/9")
+    })
+})
+
+describe("guildRankingsHref", () => {
+    it("leaves page one without a segment", () => {
+        expect(guildRankingsHref()).toBe("/rankings/guilds")
+        expect(guildRankingsHref(1)).toBe("/rankings/guilds")
+    })
+
+    it("appends later pages", () => {
+        expect(guildRankingsHref(3)).toBe("/rankings/guilds/3")
     })
 })
 
