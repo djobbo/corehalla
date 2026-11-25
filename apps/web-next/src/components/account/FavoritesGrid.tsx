@@ -5,12 +5,7 @@ import { legendIconSrc } from "@/lib/assets"
 import { useLegendIcon } from "@/lib/media"
 import { clanHref, playerHref } from "@/lib/rankings"
 import { Card, CardContent } from "@/components/ui/card"
-import {
-    Empty,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyTitle,
-} from "@/components/ui/empty"
+import { FavoritesEmpty } from "@/components/account/FavoritesEmpty"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { getEntitySlug } from "@crh/common/helpers/entitySlug"
 import type { Favorite } from "@crh/api-contract/schemas"
@@ -31,16 +26,7 @@ export const FavoritesGrid = ({
     const remove = useAtomSet(removeFavoriteAtom)
 
     if (favorites.length === 0) {
-        return (
-            <Empty className="p-8">
-                <EmptyHeader>
-                    <EmptyTitle>No favorites yet</EmptyTitle>
-                    <EmptyDescription>
-                        Open a player or clan and press &ldquo;Favorite&rdquo;.
-                    </EmptyDescription>
-                </EmptyHeader>
-            </Empty>
-        )
+        return <FavoritesEmpty className="p-8" />
     }
 
     return (
