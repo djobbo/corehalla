@@ -19,6 +19,14 @@ import {
     searchRegionAtom,
 } from "@/effect/search"
 import { clanHref, playerHref, regions } from "@/lib/rankings"
+import { legendIconSrc, weaponIconSrc } from "@/lib/assets"
+import { legendHref } from "@/lib/legends"
+import { legendsWithWeapon, weaponHref } from "@/lib/weapons"
+import { mediaSlotKey, useLegendIcon, useMediaSlot } from "@/lib/media"
+import {
+    MIN_CATALOGUE_QUERY_LENGTH,
+    catalogueMatches,
+} from "@/lib/paletteSearch"
 import { cn } from "@/lib/cn"
 import { Button } from "@/components/ui/button"
 import {
@@ -34,6 +42,8 @@ import { Kbd } from "@/components/ui/kbd"
 import { MIN_LOOKUP_LENGTH } from "@crh/api-contract/schemas"
 import { getEntitySlug } from "@crh/common/helpers/entitySlug"
 import type { AliasSearchResult, LookupResult } from "@crh/api-contract/schemas"
+import type { Legend } from "@crh/bhapi/types"
+import type { Weapon } from "@crh/bhapi/constants"
 import type { ReactNode } from "react"
 
 type SearchContextValue = {
@@ -241,22 +251,34 @@ const SearchOverlay = () => {
         [recents],
     )
 
+    const trimmedQuery = query.trim()
+    const catalogue = useMemo(
+        () => catalogueMatches(trimmedQuery),
+        [trimmedQuery],
+    )
+
+    const goToHref = useCallback(
+        (href: string) => {
+            close()
+            void navigate({ to: href })
+        },
+        [close, navigate],
+    )
+
     const go = useCallback(
         (row: Row) => {
             setRecents(withRecent(recents, row.entry))
-            close()
-            void navigate({ to: row.href })
+            goToHref(row.href)
         },
-        [close, navigate, recents, setRecents],
+        [goToHref, recents, setRecents],
     )
 
     return (
         <CommandDialog
             open={isOpen}
             onOpenChange={(next) => !next && close()}
-            title="Search players and clans"
-            description="Type a player or clan name to open its profile."
-
+            title="Search players, clans, legends and weapons"
+            description="Type a player, clan, legend or weapon name to open its page."
             className="top-16 w-[95vw] max-w-xl translate-y-0"
         >
             <Command shouldFilter={false} loop>
@@ -266,8 +288,8 @@ const SearchOverlay = () => {
                     autoFocus
                     value={query}
                     onValueChange={setQuery}
-                    placeholder="Search players and clans…"
-                    aria-label="Search players and clans"
+                    placeholder="Search players, clans, legends and weapons…"
+                    aria-label="Search players, clans, legends and weapons"
                 />
                 <div className="flex flex-wrap gap-1.5 px-3 pb-2">
                     {regions.map((option) => (
@@ -311,13 +333,35 @@ const SearchOverlay = () => {
                         </CommandGroup>
                     )}
 
+                    {catalogue.legends.length > 0 && (
+                        <CommandGroup heading="Legends">
+                            {catalogue.legends.map((legend) => (
+                                <LegendOption
+                                    key={`legend:${legend.legend_id}`}
+                                    legend={legend}
+                                    onSelect={goToHref}
+                                />
+                            ))}
+                        </CommandGroup>
+                    )}
+
+                    {catalogue.weapons.length > 0 && (
+                        <CommandGroup heading="Weapons">
+                            {catalogue.weapons.map((weapon) => (
+                                <WeaponOption
+                                    key={`weapon:${weapon}`}
+                                    weapon={weapon}
+                                    onSelect={goToHref}
+                                />
+                            ))}
+                        </CommandGroup>
+                    )}
+
                     <CommandEmpty className="px-3 py-4 text-left text-sm text-muted-foreground">
-                        {!searching && (
-                            <>
-                                Type at least {MIN_LOOKUP_LENGTH} characters to
-                                search players and clans.
-                            </>
-                        )}
+                        {!searching &&
+                            (trimmedQuery.length >= MIN_CATALOGUE_QUERY_LENGTH
+                                ? `No legends or weapons match “${trimmedQuery}”. Type at least ${MIN_LOOKUP_LENGTH} characters to search players and clans.`
+                                : `Type at least ${MIN_CATALOGUE_QUERY_LENGTH} characters to search legends and weapons, or ${MIN_LOOKUP_LENGTH} to search players and clans.`)}
 
                         {searching &&
                             result._tag === "Initial" &&
@@ -334,9 +378,9 @@ const SearchOverlay = () => {
                                 </>
                             ) : (
                                 <>
-                                    No players or clans match “{active}”. Try a
-                                    shorter spelling, or the start of the name
-                                    rather than the middle.
+                                    No players, clans, legends or weapons match
+                                    “{active}”. Try a shorter spelling, or the
+                                    start of the name rather than the middle.
                                 </>
                             ))}
                     </CommandEmpty>
@@ -363,6 +407,77 @@ const Row = ({
     </CommandItem>
 )
 
+const LegendOption = ({
+    legend,
+    onSelect,
+}: {
+    readonly legend: Legend
+    readonly onSelect: (href: string) => void
+}) => {
+    const icon = useLegendIcon(
+        legend.legend_name_key,
+        legendIconSrc(legend.legend_name_key),
+    )
+
+    return (
+        <CatalogueOption
+            value={`legend:${legend.legend_id}`}
+            icon={icon}
+            name={legend.bio_name}
+            meta={`${legend.weapon_one} · ${legend.weapon_two}`}
+            onSelect={() => onSelect(legendHref(legend))}
+        />
+    )
+}
+
+const WeaponOption = ({
+    weapon,
+    onSelect,
+}: {
+    readonly weapon: Weapon
+    readonly onSelect: (href: string) => void
+}) => {
+    const icon = useMediaSlot(
+        mediaSlotKey("weapon.icon", weapon),
+        weaponIconSrc(weapon),
+    )
+    const wielders = legendsWithWeapon(weapon).length
+
+    return (
+        <CatalogueOption
+            value={`weapon:${weapon}`}
+            icon={icon}
+            name={weapon}
+            meta={`${wielders} legend${wielders === 1 ? "" : "s"}`}
+            onSelect={() => onSelect(weaponHref(weapon))}
+        />
+    )
+}
+
+const CatalogueOption = ({
+    value,
+    icon,
+    name,
+    meta,
+    onSelect,
+}: {
+    readonly value: string
+    readonly icon: string
+    readonly name: string
+    readonly meta: string
+    readonly onSelect: () => void
+}) => (
+    <CommandItem value={value} onSelect={onSelect}>
+        <img src={icon} alt="" className="size-7 shrink-0 object-contain" />
+        <span className="flex min-w-0 flex-col gap-0.5">
+            <span className="truncate text-sm font-semibold">{name}</span>
+            <span className="truncate text-xs text-muted-foreground">
+                {meta}
+            </span>
+        </span>
+    </CommandItem>
+)
+
 export const SearchTrigger = ({
     className,
 }: {
@@ -383,7 +498,9 @@ export const SearchTrigger = ({
         >
             <span className="flex min-w-0 items-center gap-2">
                 <SearchIcon data-icon="inline-start" />
-                <span className="truncate">Search players and clans</span>
+                <span className="truncate">
+                    Search players, clans, legends and weapons
+                </span>
             </span>
             <Kbd>/</Kbd>
         </Button>
