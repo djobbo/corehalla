@@ -1,7 +1,16 @@
 import { describe, expect, it } from "@effect/vitest"
-import { comparePlayers } from "./compare"
+import {
+    SHARED_LEGEND_LIMIT,
+    comparePlayers,
+    legendWinRate,
+    sharedLegends,
+} from "./compare"
 import type { ComparisonRow } from "./compare"
-import type { PlayerProfile, PlayerRanked } from "@crh/api-contract/schemas"
+import type {
+    LegendBubble,
+    PlayerProfile,
+    PlayerRanked,
+} from "@crh/api-contract/schemas"
 
 const bracket = (
     overrides: Partial<NonNullable<PlayerRanked["1v1"]>> = {},
@@ -78,6 +87,34 @@ const profile = (overrides: Partial<PlayerProfile> = {}): PlayerProfile => ({
     weapon_damage: 1_910_000,
     ...overrides,
 })
+
+const bubble = (overrides: Partial<LegendBubble> = {}): LegendBubble => ({
+    id: 12,
+    name: "Mordex",
+    name_key: "Mordex",
+    slug: "12-mordex",
+    level: 78,
+    matchtime: 984_000,
+    kos: 24_600,
+    damage_dealt: 3_410_000,
+    games: 3_820,
+    wins: 2_270,
+    ...overrides,
+})
+
+const pool = (
+    count: number,
+    games: (index: number) => number,
+): readonly LegendBubble[] =>
+    Array.from({ length: count }, (_, index) =>
+        bubble({
+            id: index + 1,
+            name: `Legend ${index + 1}`,
+            name_key: `legend ${index + 1}`,
+            slug: `${index + 1}-legend-${index + 1}`,
+            games: games(index),
+        }),
+    )
 
 const row = (rows: readonly ComparisonRow[], label: string): ComparisonRow => {
     const found = rows.find((entry) => entry.label === label)
@@ -263,5 +300,143 @@ describe("comparePlayers", () => {
         const rows = comparePlayers(profile(), profile())
 
         expect(rows.filter((entry) => entry.winner !== null)).toEqual([])
+    })
+})
+
+describe("sharedLegends", () => {
+    it("keeps only the legends both players have played", () => {
+        const { rows } = sharedLegends(
+            profile({
+                legend_bubbles: [
+                    bubble(),
+                    bubble({ id: 34, name: "Ragnir", name_key: "Ragnir" }),
+                ],
+            }),
+            profile({
+                legend_bubbles: [
+                    bubble(),
+                    bubble({
+                        id: 99,
+                        name: "Queen Nai",
+                        name_key: "Queen Nai",
+                    }),
+                ],
+            }),
+        )
+
+        expect(rows.map((entry) => entry.name)).toEqual(["Mordex"])
+    })
+
+    it("carries each side's games, wins and level", () => {
+        const { rows } = sharedLegends(
+            profile({ legend_bubbles: [bubble()] }),
+            profile({
+                legend_bubbles: [
+                    bubble({ games: 1_528, wins: 764, level: 42 }),
+                ],
+            }),
+        )
+
+        expect(rows[0]?.a).toEqual({ games: 3_820, wins: 2_270, level: 78 })
+        expect(rows[0]?.b).toEqual({ games: 1_528, wins: 764, level: 42 })
+    })
+
+    it("orders by combined games across both profiles", () => {
+        const { rows } = sharedLegends(
+            profile({
+                legend_bubbles: [
+                    bubble({ id: 34, name: "Ragnir", games: 100, wins: 50 }),
+                    bubble({ id: 12, name: "Mordex", games: 40, wins: 20 }),
+                    bubble({
+                        id: 99,
+                        name: "Queen Nai",
+                        games: 500,
+                        wins: 250,
+                    }),
+                ],
+            }),
+            profile({
+                legend_bubbles: [
+                    bubble({ id: 34, name: "Ragnir", games: 300, wins: 150 }),
+                    bubble({ id: 12, name: "Mordex", games: 10, wins: 5 }),
+                    bubble({ id: 99, name: "Queen Nai", games: 20, wins: 10 }),
+                ],
+            }),
+        )
+
+        expect(rows.map((entry) => entry.name)).toEqual([
+            "Queen Nai",
+            "Ragnir",
+            "Mordex",
+        ])
+    })
+
+    it("caps the list and reports how many legends the cap hides", () => {
+        const { rows, hidden } = sharedLegends(
+            profile({ legend_bubbles: pool(12, (index) => (index + 1) * 10) }),
+            profile({ legend_bubbles: pool(12, () => 1) }),
+        )
+
+        expect(rows).toHaveLength(SHARED_LEGEND_LIMIT)
+        expect(hidden).toBe(12 - SHARED_LEGEND_LIMIT)
+        expect(rows[0]?.name).toBe("Legend 12")
+        expect(rows.at(-1)?.name).toBe("Legend 3")
+    })
+
+    it("reports nothing hidden when the overlap fits under the cap", () => {
+        const { hidden } = sharedLegends(
+            profile({ legend_bubbles: [bubble()] }),
+            profile({ legend_bubbles: [bubble()] }),
+        )
+
+        expect(hidden).toBe(0)
+    })
+
+    it("drops a legend either side has not played", () => {
+        const { rows, hidden } = sharedLegends(
+            profile({
+                legend_bubbles: [
+                    bubble({ id: 34, name: "Ragnir", games: 0, wins: 0 }),
+                    bubble(),
+                ],
+            }),
+            profile({
+                legend_bubbles: [
+                    bubble(),
+                    bubble({ id: 34, name: "Ragnir", games: 200, wins: 100 }),
+                    bubble({
+                        id: 99,
+                        name: "Queen Nai",
+                        games: 400,
+                        wins: 200,
+                    }),
+                ],
+            }),
+        )
+
+        expect(rows.map((entry) => entry.name)).toEqual(["Mordex"])
+        expect(hidden).toBe(0)
+    })
+
+    it("returns no rows when neither player has a legend pool", () => {
+        const { rows, hidden } = sharedLegends(profile(), profile())
+
+        expect(rows).toEqual([])
+        expect(hidden).toBe(0)
+    })
+})
+
+describe("legendWinRate", () => {
+    it("derives the rate from that side's wins and games", () => {
+        expect(legendWinRate({ games: 3_820, wins: 2_270, level: 78 })).toBe(
+            "59.42%",
+        )
+        expect(legendWinRate({ games: 1_528, wins: 764, level: 42 })).toBe(
+            "50.00%",
+        )
+    })
+
+    it("dashes an unplayed side instead of reading zero", () => {
+        expect(legendWinRate({ games: 0, wins: 0, level: 1 })).toBe("—")
     })
 })
