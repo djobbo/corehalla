@@ -78,7 +78,15 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Populated: Story = {}
+export const Populated: Story = {
+    parameters: {
+        docs: {
+            description: {
+                story: "Every stat carries its standing among the weapons that report it: play share, win rate, games, accounts, damage per game and time held per game.",
+            },
+        },
+    },
+}
 
 export const Filtered: Story = {
     args: {
@@ -106,7 +114,28 @@ export const Omitted: Story = {
     parameters: {
         docs: {
             description: {
-                story: "The sample has no games on this weapon: the card keeps its sample line and chips so the floor is still changeable, and every figure reads as a dash instead of a fabricated zero.",
+                story: "The sample has no games on this weapon: the card keeps its sample line and chips so the floor is still changeable, and every figure reads as a dash with no rank instead of a fabricated zero.",
+            },
+        },
+    },
+}
+
+export const MissingMetrics: Story = {
+    args: {
+        weapon: "Scythe",
+        meta: {
+            data: populated.data.map((entry) =>
+                entry.weapon === "Scythe"
+                    ? { ...entry, damagePerGame: null, timeHeldPerGame: null }
+                    : entry,
+            ),
+            meta: populated.meta,
+        },
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: "Two metrics the sample cannot answer read as dashes with no rank, while the metrics it does answer still rank the weapon against the other reporting weapons.",
             },
         },
     },
@@ -120,7 +149,7 @@ export const EmptySlice: Story = {
     parameters: {
         docs: {
             description: {
-                story: "No indexed weapon games clear 2200+, so the card names the empty slice and keeps the chips usable instead of dropping the whole section.",
+                story: "No indexed weapon games clear 2200+, so the card names the empty slice, keeps the chips usable and shows every stat as a dash with no rank instead of dropping the whole section.",
             },
         },
     },

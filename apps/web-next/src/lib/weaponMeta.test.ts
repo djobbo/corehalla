@@ -9,10 +9,10 @@ import {
     weaponMetaAverage,
     weaponMetaDefaultDirection,
     weaponMetaDefaultSort,
+    weaponMetaRank,
     weaponMetaRankLabel,
     weaponMetaSorts,
     weaponMetaTableRows,
-    weaponPlayShareRank,
 } from "./weaponMeta"
 
 const row = (
@@ -96,60 +96,124 @@ describe("formatWeaponMetaDuration", () => {
     })
 })
 
-describe("weaponPlayShareRank", () => {
-    it("counts the weapons with a larger play share", () => {
-        const rows = [
-            row("Sword", { playShare: 0.4 }),
-            row("Axe", { playShare: 0.3 }),
-            row("Bow", { playShare: 0.2 }),
-        ]
+const rankedRows = [
+    row("Sword", {
+        playShare: 0.4,
+        winRate: 0.51,
+        games: 300,
+        accounts: 30,
+        damagePerGame: 300,
+        timeHeldPerGame: 90,
+    }),
+    row("Axe", {
+        playShare: 0.3,
+        winRate: 0.53,
+        games: 200,
+        accounts: 20,
+        damagePerGame: 400,
+        timeHeldPerGame: 120,
+    }),
+    row("Bow", {
+        playShare: 0.2,
+        winRate: 0.5,
+        games: 100,
+        accounts: 10,
+        damagePerGame: 350,
+        timeHeldPerGame: 60,
+    }),
+]
 
-        expect(weaponPlayShareRank(rows, "Axe")).toEqual({
+describe("weaponMetaRank", () => {
+    it("ranks the weapon on every metric the card shows", () => {
+        expect(weaponMetaRank(rankedRows, "Bow", "playShare")).toEqual({
+            position: 3,
+            total: 3,
+        })
+        expect(weaponMetaRank(rankedRows, "Bow", "winRate")).toEqual({
+            position: 3,
+            total: 3,
+        })
+        expect(weaponMetaRank(rankedRows, "Bow", "games")).toEqual({
+            position: 3,
+            total: 3,
+        })
+        expect(weaponMetaRank(rankedRows, "Bow", "accounts")).toEqual({
+            position: 3,
+            total: 3,
+        })
+        expect(weaponMetaRank(rankedRows, "Bow", "damagePerGame")).toEqual({
             position: 2,
+            total: 3,
+        })
+        expect(weaponMetaRank(rankedRows, "Bow", "timeHeldPerGame")).toEqual({
+            position: 3,
             total: 3,
         })
     })
 
     it("gives tied weapons the same position", () => {
         const rows = [
-            row("Sword", { playShare: 0.4 }),
-            row("Axe", { playShare: 0.3 }),
-            row("Bow", { playShare: 0.3 }),
+            row("Sword", { winRate: 0.53 }),
+            row("Axe", { winRate: 0.5 }),
+            row("Bow", { winRate: 0.5 }),
         ]
 
-        expect(weaponPlayShareRank(rows, "Axe")).toEqual({
+        expect(weaponMetaRank(rows, "Axe", "winRate")).toEqual({
             position: 2,
             total: 3,
         })
-        expect(weaponPlayShareRank(rows, "Bow")).toEqual({
+        expect(weaponMetaRank(rows, "Bow", "winRate")).toEqual({
             position: 2,
             total: 3,
         })
+    })
+
+    it("measures a metric against the weapons that report it", () => {
+        const rows = [
+            row("Sword", { damagePerGame: 400 }),
+            row("Axe", { damagePerGame: null }),
+            row("Bow", { damagePerGame: 300 }),
+        ]
+
+        expect(weaponMetaRank(rows, "Bow", "damagePerGame")).toEqual({
+            position: 2,
+            total: 2,
+        })
+        expect(weaponMetaRank(rows, "Axe", "damagePerGame")).toBeNull()
     })
 
     it("gives a one-weapon sample the first position", () => {
         expect(
-            weaponPlayShareRank([row("Sword", { playShare: 1 })], "Sword"),
+            weaponMetaRank([row("Sword", { games: 10 })], "Sword", "games"),
         ).toEqual({ position: 1, total: 1 })
     })
 
     it("returns nothing when the weapon is absent from the sample", () => {
-        expect(weaponPlayShareRank([row("Sword")], "Axe")).toBeNull()
-        expect(weaponPlayShareRank([], "Sword")).toBeNull()
-    })
-
-    it("returns nothing for a row without a play share", () => {
-        expect(
-            weaponPlayShareRank([row("Sword", { playShare: null })], "Sword"),
-        ).toBeNull()
+        expect(weaponMetaRank([row("Sword")], "Axe", "playShare")).toBeNull()
+        expect(weaponMetaRank([], "Sword", "playShare")).toBeNull()
     })
 })
 
 describe("weaponMetaRankLabel", () => {
-    it("names the position and the sample it is measured against", () => {
-        expect(weaponMetaRankLabel({ position: 4, total: 15 })).toBe(
-            "#4 of 15 by play share",
+    it("names the position, the sample and the metric", () => {
+        expect(
+            weaponMetaRankLabel({ position: 4, total: 15 }, "playShare"),
+        ).toBe("#4 of 15 by play share")
+        expect(
+            weaponMetaRankLabel({ position: 11, total: 15 }, "winRate"),
+        ).toBe("#11 of 15 by win rate")
+        expect(weaponMetaRankLabel({ position: 2, total: 15 }, "games")).toBe(
+            "#2 of 15 by games",
         )
+        expect(
+            weaponMetaRankLabel({ position: 3, total: 15 }, "accounts"),
+        ).toBe("#3 of 15 by accounts")
+        expect(
+            weaponMetaRankLabel({ position: 5, total: 15 }, "damagePerGame"),
+        ).toBe("#5 of 15 by damage per game")
+        expect(
+            weaponMetaRankLabel({ position: 6, total: 15 }, "timeHeldPerGame"),
+        ).toBe("#6 of 15 by time held per game")
     })
 })
 
