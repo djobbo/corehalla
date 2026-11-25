@@ -63,7 +63,7 @@ export const RankedQueueView = ({
                 last 30 minutes
             </p>
         </header>
-        <div className="sticky top-[var(--ch-header-h)] z-20 -mx-4 bg-background/95 px-4 py-2 shadow-[0_3px_0_0_var(--color-ink)] backdrop-blur">
+        <div className="sticky top-[var(--ch-header-h)] z-20 -mx-4 border-b border-border bg-background px-4 py-2">
             <nav aria-label="Bracket" className="flex flex-wrap gap-1.5">
                 {brackets.map((option) => (
                     <Link
@@ -140,7 +140,7 @@ export const RankedQueueView = ({
                                                 {index > 0 ? (
                                                     <span
                                                         aria-hidden
-                                                        className="text-white/70"
+                                                        className="text-muted-foreground"
                                                     >
                                                         &
                                                     </span>

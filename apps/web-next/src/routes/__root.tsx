@@ -66,7 +66,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
                     content: "width=device-width, initial-scale=1",
                 },
                 // Paints the mobile browser toolbar in the page canvas colour.
-                { name: "theme-color", content: "#1e212c" },
+                { name: "theme-color", content: "#f6f5f1" },
                 ...(page?.meta ?? [{ title: "Corehalla" }]),
             ],
         }
@@ -109,29 +109,33 @@ function RootComponent() {
                         <SearchProvider>
                             <SkipLink />
                             <AlertBar />
-                            <header className="ch-masthead">
-                                <Link
-                                    to="/"
-                                    className="flex items-center gap-2"
-                                >
-                                    <span aria-hidden className="ch-mark">
-                                        <span>C</span>
-                                    </span>
-                                    <span className="ch-display text-lg tracking-[0.02em]">
-                                        Corehalla
-                                    </span>
-                                </Link>
-                                <SearchTrigger className="flex-1" />
-                                {/* Session is HttpOnly; server would always paint signed-out. */}
-                                <ClientOnly>
-                                    <AccountControl />
-                                </ClientOnly>
-                            </header>
-                            <MainNav />
-                            <Suspense fallback={<PageLoaderProbe />}>
-                                <Outlet />
-                            </Suspense>
-                            <Footer year={year} />
+                            <div className="ch-shell">
+                                <header className="ch-masthead">
+                                    <Link
+                                        to="/"
+                                        className="flex items-center gap-2"
+                                    >
+                                        <span aria-hidden className="ch-mark">
+                                            <span>C</span>
+                                        </span>
+                                        <span className="text-[1.05rem] font-bold tracking-[-0.03em]">
+                                            Corehalla
+                                        </span>
+                                    </Link>
+                                    <SearchTrigger className="flex-1" />
+                                    {/* Session is HttpOnly; server would always paint signed-out. */}
+                                    <ClientOnly>
+                                        <AccountControl />
+                                    </ClientOnly>
+                                </header>
+                                <MainNav />
+                                <div className="ch-frame">
+                                    <Suspense fallback={<PageLoaderProbe />}>
+                                        <Outlet />
+                                    </Suspense>
+                                    <Footer year={year} />
+                                </div>
+                            </div>
                         </SearchProvider>
                         <NavigationProgress />
                         <PageLoader />

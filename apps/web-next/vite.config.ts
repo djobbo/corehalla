@@ -8,9 +8,9 @@ import { defineConfig } from "vite-plus"
  * `web-next` — the UX study, and the seed of the future main app.
  *
  * Same stack as `apps/web` (TanStack Start + Tailwind v4 + Effect atoms), built
- * to test the interaction design. The visual design is the flat-vector "poster"
- * language defined in `src/styles/app.css`: Corehalla's palette, applied to
- * outlined slabs, hard offset shadows and parallelogram controls.
+ * to test the interaction design. The visual design lives in `src/styles/app.css`:
+ * a warm light canvas, hairline slabs, ink pills, and parallelograms on the
+ * slanted pieces only.
  *
  * ## How it reaches the API
  *

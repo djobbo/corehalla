@@ -1,9 +1,11 @@
 import type { Decorator, Meta, StoryObj } from "@storybook/react-vite"
+import { Link } from "@tanstack/react-router"
 import { LandingFavorites } from "@/components/account/LandingFavorites"
 import { CommunityCard } from "@/components/landing/CommunityCard"
 import { MostPlayedLegends } from "@/components/landing/MostPlayedLegends"
 import { LandingHero } from "@/components/layout/LandingHero"
-import { SearchProvider } from "@/components/layout/Search"
+import { MainNav } from "@/components/layout/MainNav"
+import { SearchProvider, SearchTrigger } from "@/components/layout/Search"
 import { LatestNews } from "@/components/news/LatestNews"
 import { LandingLadder } from "@/components/views/LandingLadder"
 import { WeeklyRotation } from "@/components/views/WeeklyRotation"
@@ -137,22 +139,38 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
     render: () => (
-        <main className="ch-page">
-            <LandingHero />
-            <WeeklyRotation rotation={rotation} />
-            <LandingFavorites />
-            <section aria-labelledby="live-rankings">
-                <p id="live-rankings" className="ch-kicker mt-8">
-                    Live rankings
-                </p>
-                <div className="mt-2 grid gap-6 lg:grid-cols-2">
-                    <LandingLadder bracket="1v1" rows={rows} />
-                    <LandingLadder bracket="2v2" rows={rows} />
-                </div>
-            </section>
-            <MostPlayedLegends board={landingLegendBoard} />
-            <LatestNews articles={articles} />
-            <CommunityCard />
-        </main>
+        <div className="ch-shell -m-6 min-h-svh bg-background">
+            <header className="ch-masthead">
+                <Link to="/" className="flex items-center gap-2">
+                    <span aria-hidden className="ch-mark">
+                        <span>C</span>
+                    </span>
+                    <span className="text-[1.05rem] font-bold tracking-[-0.03em]">
+                        Corehalla
+                    </span>
+                </Link>
+                <SearchTrigger className="flex-1" />
+            </header>
+            <MainNav />
+            <div className="ch-frame">
+                <main className="ch-page">
+                    <LandingHero />
+                    <WeeklyRotation rotation={rotation} />
+                    <LandingFavorites />
+                    <section aria-labelledby="live-rankings">
+                        <p id="live-rankings" className="ch-kicker mt-8">
+                            Live rankings
+                        </p>
+                        <div className="mt-2 grid gap-6 lg:grid-cols-2">
+                            <LandingLadder bracket="1v1" rows={rows} />
+                            <LandingLadder bracket="2v2" rows={rows} />
+                        </div>
+                    </section>
+                    <MostPlayedLegends board={landingLegendBoard} />
+                    <LatestNews articles={articles} />
+                    <CommunityCard />
+                </main>
+            </div>
+        </div>
     ),
 }

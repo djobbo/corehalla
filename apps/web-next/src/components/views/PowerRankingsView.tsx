@@ -108,7 +108,7 @@ export const PowerRankingsView = ({
             <UpdatedAt at={updatedAt} className="block" />
         </header>
 
-        <div className="sticky top-[var(--ch-header-h)] z-20 -mx-4 bg-background/95 px-4 py-2 shadow-[0_3px_0_0_var(--color-ink)] backdrop-blur">
+        <div className="sticky top-[var(--ch-header-h)] z-20 -mx-4 border-b border-border bg-background px-4 py-2">
             <nav aria-label="Game mode" className="flex flex-wrap gap-1.5">
                 {powerGameModes.map((option) => (
                     <Link
