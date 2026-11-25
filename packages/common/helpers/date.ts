@@ -1,11 +1,12 @@
-import { unix } from "dayjs"
+import dayjs from "dayjs"
 
 /**
- * @error returns different dates in client or ssr mode
- * @issue https://github.com/iamkun/dayjs/issues/1690
+ * Default import on purpose. `import { unix } from "dayjs"` is invisible to
+ * Vite's SSR module runner, because dayjs is CommonJS. `apps/web/src/lib/date.ts`
+ * already vendors this for the same reason.
  */
 export const getDateFromUnixTime = (unixTime: number, template?: string) =>
-    unix(unixTime).format(template)
+    dayjs.unix(unixTime).format(template)
 
 type HMSTime = {
     hours: number
