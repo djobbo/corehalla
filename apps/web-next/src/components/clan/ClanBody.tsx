@@ -1,4 +1,5 @@
 import { SortControl } from "@/components/common/SortControl"
+import { GuildRankedStrength } from "./GuildRankedStrength"
 import { MemberCard } from "./MemberCard"
 import { TopContributors } from "./TopContributors"
 import { guildAtom, useQuery } from "@/effect/atoms"
@@ -101,7 +102,10 @@ export const ClanBody = ({ clanId }: { readonly clanId: number }) => {
 
     return (
         <div className="flex flex-col gap-6">
-            <TopContributors members={guild.data.members} />
+            <div className="grid gap-6 lg:grid-cols-2">
+                <TopContributors members={guild.data.members} />
+                <GuildRankedStrength members={guild.data.members} />
+            </div>
             <Roster guild={guild.data} />
         </div>
     )
