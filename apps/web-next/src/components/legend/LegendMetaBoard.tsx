@@ -21,12 +21,18 @@ import { legendHref } from "@/lib/legends"
 import {
     formatLegendMetaCount,
     formatLegendMetaRate,
+    legendMetaDefaultDirection,
+    legendMetaDefaultSort,
     legendMetaDisclaimer,
     legendMetaEmpty,
     legendMetaFloorLabel,
     legendMetaSample,
     legendMetaSorts,
 } from "@/lib/legendMeta"
+import {
+    formatPlayStyleMatchLength,
+    formatPlayStylePerGame,
+} from "@/lib/legendPlayStyle"
 import { useSortBy } from "@/lib/useSortBy"
 import { legendMetaFloors } from "@crh/api-contract/schemas"
 import { LegendIcon } from "./LegendIcon"
@@ -39,6 +45,24 @@ export type LegendMetaBoardProps = {
     readonly onFloorChange?: (floor: LegendMetaFloor) => void
 }
 
+/** The phone row: the columns the board stacks under the legend name. */
+const PhoneRecord = ({ row }: { readonly row: LegendMetaRow }) => (
+    <span className="mt-0.5 flex flex-wrap gap-x-2 gap-y-0.5 text-[0.66rem] text-muted-foreground sm:hidden">
+        <span>{formatLegendMetaRate(row.winRate)} win rate</span>
+        <span>
+            {formatPlayStylePerGame(row.playStyle.damageDealtPerGame)} damage
+        </span>
+        <span>
+            {formatPlayStyleMatchLength(row.playStyle.averageMatchSeconds)}{" "}
+            match
+        </span>
+        <span>
+            {formatPlayStylePerGame(row.playStyle.suicidesPer100Games)} suicides
+        </span>
+        <span>{formatLegendMetaCount(row.games)} games</span>
+    </span>
+)
+
 export const LegendMetaBoard = ({
     board,
     floor,
@@ -47,7 +71,12 @@ export const LegendMetaBoard = ({
     const { sorted, key, setKey, choices } = useSortBy<
         LegendMetaRow,
         LegendMetaSort
-    >(board.data, legendMetaSorts, "playShare")
+    >(
+        board.data,
+        legendMetaSorts,
+        legendMetaDefaultSort,
+        legendMetaDefaultDirection,
+    )
 
     return (
         <section aria-labelledby="legend-meta-title" className="mb-6">
@@ -113,17 +142,23 @@ export const LegendMetaBoard = ({
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>Legend</TableHead>
-                                    <TableHead className="w-24 text-right">
+                                    <TableHead className="w-20 text-right">
                                         Play share
                                     </TableHead>
-                                    <TableHead className="w-24 text-right">
+                                    <TableHead className="hidden w-20 text-right sm:table-cell">
                                         Win rate
                                     </TableHead>
-                                    <TableHead className="w-20 text-right">
-                                        Games
+                                    <TableHead className="hidden w-28 text-right sm:table-cell">
+                                        Damage / game
                                     </TableHead>
-                                    <TableHead className="w-24 text-right">
-                                        Accounts
+                                    <TableHead className="hidden w-24 text-right sm:table-cell">
+                                        Average match
+                                    </TableHead>
+                                    <TableHead className="hidden w-24 text-right sm:table-cell">
+                                        Suicides / 100
+                                    </TableHead>
+                                    <TableHead className="hidden w-20 text-right sm:table-cell">
+                                        Games
                                     </TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -135,7 +170,7 @@ export const LegendMetaBoard = ({
 
                                     return (
                                         <TableRow key={row.legendId}>
-                                            <TableCell>
+                                            <TableCell className="whitespace-normal">
                                                 <Link
                                                     to={legendHref(legend)}
                                                     className="flex items-center gap-2 font-semibold transition-colors hover:text-ring"
@@ -144,7 +179,12 @@ export const LegendMetaBoard = ({
                                                         legend={legend}
                                                         className="size-7 shrink-0 object-contain"
                                                     />
-                                                    {legend.bio_name}
+                                                    <span className="flex min-w-0 flex-col">
+                                                        {legend.bio_name}
+                                                        <PhoneRecord
+                                                            row={row}
+                                                        />
+                                                    </span>
                                                 </Link>
                                             </TableCell>
                                             <TableCell className="text-right font-bold tabular-nums">
@@ -152,19 +192,32 @@ export const LegendMetaBoard = ({
                                                     row.playShare,
                                                 )}
                                             </TableCell>
-                                            <TableCell className="text-right tabular-nums">
+                                            <TableCell className="hidden text-right tabular-nums sm:table-cell">
                                                 {formatLegendMetaRate(
                                                     row.winRate,
                                                 )}
                                             </TableCell>
-                                            <TableCell className="text-right tabular-nums">
-                                                {formatLegendMetaCount(
-                                                    row.games,
+                                            <TableCell className="hidden text-right tabular-nums sm:table-cell">
+                                                {formatPlayStylePerGame(
+                                                    row.playStyle
+                                                        .damageDealtPerGame,
                                                 )}
                                             </TableCell>
-                                            <TableCell className="text-right tabular-nums text-muted-foreground">
+                                            <TableCell className="hidden text-right tabular-nums sm:table-cell">
+                                                {formatPlayStyleMatchLength(
+                                                    row.playStyle
+                                                        .averageMatchSeconds,
+                                                )}
+                                            </TableCell>
+                                            <TableCell className="hidden text-right tabular-nums sm:table-cell">
+                                                {formatPlayStylePerGame(
+                                                    row.playStyle
+                                                        .suicidesPer100Games,
+                                                )}
+                                            </TableCell>
+                                            <TableCell className="hidden text-right tabular-nums text-muted-foreground sm:table-cell">
                                                 {formatLegendMetaCount(
-                                                    row.accounts,
+                                                    row.games,
                                                 )}
                                             </TableCell>
                                         </TableRow>
