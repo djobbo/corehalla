@@ -1,12 +1,14 @@
 import type { Decorator, Meta, StoryObj } from "@storybook/react-vite"
 import { LandingFavorites } from "@/components/account/LandingFavorites"
 import { CommunityCard } from "@/components/landing/CommunityCard"
+import { MostPlayedLegends } from "@/components/landing/MostPlayedLegends"
 import { LandingHero } from "@/components/layout/LandingHero"
 import { SearchProvider } from "@/components/layout/Search"
 import { LatestNews } from "@/components/news/LatestNews"
 import { LandingLadder } from "@/components/views/LandingLadder"
 import { WeeklyRotation } from "@/components/views/WeeklyRotation"
 import { withMockApi } from "@/storybook/decorators"
+import { landingLegendBoard } from "@/storybook/fixtures"
 import type { BHArticle } from "@crh/api-contract/schemas"
 import type { LadderRow } from "@/lib/ladderRows"
 import type { RotationLegend } from "@/lib/rotation"
@@ -121,7 +123,8 @@ const rotation: readonly RotationLegend[] = [
 
 /**
  * The landing page the route renders: hero, the weekly rotation, the visitor's
- * favourites, the two live ladders, then the latest news.
+ * favourites, the two live ladders, the most played legends, then the latest
+ * news.
  */
 const meta = {
     title: "Views/Landing page",
@@ -147,6 +150,7 @@ export const Default: Story = {
                     <LandingLadder bracket="2v2" rows={rows} />
                 </div>
             </section>
+            <MostPlayedLegends board={landingLegendBoard} />
             <LatestNews articles={articles} />
             <CommunityCard />
         </main>
