@@ -1,15 +1,18 @@
 import { legendMetaFloors } from "@crh/api-contract/schemas"
 import type { LegendMetaFloor, LegendMetaRow } from "@crh/api-contract/schemas"
-import type { SortOption } from "./useSortBy"
+import type { SortDirection, SortOption } from "./useSortBy"
 
 export type { LegendMetaRow } from "@crh/api-contract/schemas"
 
-export type LegendMetaSort = "playShare" | "winRate" | "games" | "accounts"
-
-export type LegendMetaMetric =
-    | LegendMetaSort
+export type LegendMetaSort =
+    | "playShare"
+    | "winRate"
     | "damageDealtPerGame"
     | "averageMatchSeconds"
+    | "suicidesPer100Games"
+    | "games"
+
+export type LegendMetaMetric = LegendMetaSort | "accounts"
 
 export type LegendMetaRank = {
     readonly position: number
@@ -55,6 +58,20 @@ const ascending =
     (left: LegendMetaRow, right: LegendMetaRow): number =>
         pick(left) - pick(right)
 
+/** Ascending; a metric the sample cannot answer sorts behind every row that answers it. */
+const playStyleMetric = (
+    label: string,
+    pick: (row: LegendMetaRow) => number | null,
+): SortOption<LegendMetaRow> => ({
+    label,
+    compare: (left, right) => (pick(left) ?? 0) - (pick(right) ?? 0),
+    isMissing: (row) => pick(row) === null,
+})
+
+/** Play share answers the question a visitor opens the board with. */
+export const legendMetaDefaultSort: LegendMetaSort = "playShare"
+export const legendMetaDefaultDirection: SortDirection = "desc"
+
 /** Ascending comparators: `useSortBy` applies the direction. */
 export const legendMetaSorts: Record<
     LegendMetaSort,
@@ -65,15 +82,28 @@ export const legendMetaSorts: Record<
         compare: ascending((row) => row.playShare),
     },
     winRate: { label: "Win rate", compare: ascending((row) => row.winRate) },
+    damageDealtPerGame: playStyleMetric(
+        "Damage dealt per game",
+        (row) => row.playStyle.damageDealtPerGame,
+    ),
+    averageMatchSeconds: playStyleMetric(
+        "Match length",
+        (row) => row.playStyle.averageMatchSeconds,
+    ),
+    suicidesPer100Games: playStyleMetric(
+        "Suicides per 100 games",
+        (row) => row.playStyle.suicidesPer100Games,
+    ),
     games: { label: "Games", compare: ascending((row) => row.games) },
-    accounts: { label: "Accounts", compare: ascending((row) => row.accounts) },
 }
 
 const legendMetaMetricValue = (
     row: LegendMetaRow,
     metric: LegendMetaMetric,
 ): number | null =>
-    metric === "damageDealtPerGame" || metric === "averageMatchSeconds"
+    metric === "damageDealtPerGame" ||
+    metric === "averageMatchSeconds" ||
+    metric === "suicidesPer100Games"
         ? row.playStyle[metric]
         : row[metric]
 

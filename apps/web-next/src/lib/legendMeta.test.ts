@@ -1,9 +1,12 @@
 import { describe, expect, it } from "@effect/vitest"
+import { compareBy } from "./useSortBy"
 import type { LegendMetaRow } from "./legendMeta"
 import type { LegendPlayStyle } from "@crh/api-contract/schemas"
 import {
     formatLegendMetaCount,
     formatLegendMetaRate,
+    legendMetaDefaultDirection,
+    legendMetaDefaultSort,
     legendMetaEmpty,
     legendMetaFloorLabel,
     legendMetaRank,
@@ -108,13 +111,20 @@ describe("resolveLegendMetaFloor", () => {
 })
 
 describe("legendMetaSorts", () => {
-    it("offers play share, win rate, games and accounts", () => {
+    it("offers play share, win rate and the play-style metrics", () => {
         expect(Object.keys(legendMetaSorts)).toEqual([
             "playShare",
             "winRate",
+            "damageDealtPerGame",
+            "averageMatchSeconds",
+            "suicidesPer100Games",
             "games",
-            "accounts",
         ])
+    })
+
+    it("opens on play share, highest first", () => {
+        expect(legendMetaDefaultSort).toBe("playShare")
+        expect(legendMetaDefaultDirection).toBe("desc")
     })
 
     it("compares play share and win rate numerically", () => {
@@ -127,22 +137,68 @@ describe("legendMetaSorts", () => {
         ).toEqual([4, 3])
     })
 
-    it("compares games and accounts numerically", () => {
-        const rows = [
-            row(3, { games: 10, accounts: 2 }),
-            row(4, { games: 400, accounts: 90 }),
-        ]
+    it("compares games numerically", () => {
+        const rows = [row(3, { games: 10 }), row(4, { games: 400 })]
 
         expect(
             [...rows]
                 .sort(legendMetaSorts.games.compare)
                 .map((r) => r.legendId),
         ).toEqual([3, 4])
+    })
+
+    it("compares damage, match length and suicides numerically", () => {
+        const rows = [
+            row(3, {
+                playStyle: playStyle({
+                    damageDealtPerGame: 412.75,
+                    averageMatchSeconds: 200,
+                    suicidesPer100Games: 0.82,
+                }),
+            }),
+            row(4, {
+                playStyle: playStyle({
+                    damageDealtPerGame: 380.2,
+                    averageMatchSeconds: 240,
+                    suicidesPer100Games: 0.4,
+                }),
+            }),
+        ]
+
         expect(
             [...rows]
-                .sort(legendMetaSorts.accounts.compare)
+                .sort(legendMetaSorts.damageDealtPerGame.compare)
+                .map((r) => r.legendId),
+        ).toEqual([4, 3])
+        expect(
+            [...rows]
+                .sort(legendMetaSorts.averageMatchSeconds.compare)
                 .map((r) => r.legendId),
         ).toEqual([3, 4])
+        expect(
+            [...rows]
+                .sort(legendMetaSorts.suicidesPer100Games.compare)
+                .map((r) => r.legendId),
+        ).toEqual([4, 3])
+    })
+
+    it("sorts a legend without the metric behind every legend that has one", () => {
+        const rows = [
+            row(3, { playStyle: playStyle({ damageDealtPerGame: null }) }),
+            row(4, { playStyle: playStyle({ damageDealtPerGame: 300 }) }),
+            row(5, { playStyle: playStyle({ damageDealtPerGame: 500 }) }),
+        ]
+
+        expect(
+            [...rows]
+                .sort(compareBy(legendMetaSorts.damageDealtPerGame, "asc"))
+                .map((r) => r.legendId),
+        ).toEqual([4, 5, 3])
+        expect(
+            [...rows]
+                .sort(compareBy(legendMetaSorts.damageDealtPerGame, "desc"))
+                .map((r) => r.legendId),
+        ).toEqual([5, 4, 3])
     })
 
     it("keeps the incoming order on a tie", () => {
