@@ -88,9 +88,9 @@ export default Alchemy.Stack(
     },
     Effect.gen(function* () {
         const target = yield* deployment()
-        const { isProd, stage, siteUrl, hostname, cmsHostname, uiHostname } =
+        const { isProd, stage, siteUrl, hostname, cmsHostname, cmsSkipHosts } =
             target
-        const { names } = target
+        const { uiHostname, names } = target
 
         const path = yield* Path.Path
         const repoRoot = path.resolve(import.meta.dirname, "../..")
@@ -107,7 +107,7 @@ export default Alchemy.Stack(
         )
         const internalOrigin = isDev ? `http://localhost:${DEV_PORT}` : siteUrl
 
-        if (isProd && !isDev) {
+        if (cmsSkipHosts !== undefined && !isDev) {
             // WAF is zone-scoped while the CMS is a subdomain. Adopt the
             // existing zone instead of trying to create it.
             const zone = yield* Cloudflare.Zone.Zone("CorehallaZone", {
@@ -118,7 +118,6 @@ export default Alchemy.Stack(
             // declares it — dev resources live in the same zone. Any existing
             // custom rules must be represented in `rules` here. The dev CMS is
             // in that zone too, so its skip rule belongs to this ruleset.
-            const cmsHosts = [cmsHostname, `cms.dev.${hostname}`]
             yield* Cloudflare.Ruleset.Ruleset("CmsApiSkipChallenge", {
                 zone,
                 phase: "http_request_firewall_custom",
@@ -127,7 +126,7 @@ export default Alchemy.Stack(
                 rules: [
                     {
                         description: "Skip WAF and bot checks for CMS APIs",
-                        expression: `(${cmsHosts.map((host) => `http.host eq "${host}"`).join(" or ")}) and (starts_with(lower(http.request.uri.path), "/_emdash/api/") or starts_with(lower(http.request.uri.path), "/api/public/"))`,
+                        expression: `(${cmsSkipHosts.map((host) => `http.host eq "${host}"`).join(" or ")}) and (starts_with(lower(http.request.uri.path), "/_emdash/api/") or starts_with(lower(http.request.uri.path), "/api/public/"))`,
                         action: "skip",
                         actionParameters: {
                             ruleset: "current",

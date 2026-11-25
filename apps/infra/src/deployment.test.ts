@@ -47,6 +47,7 @@ describe("deployment", () => {
                 hostname: "corehalla.com",
                 cmsHostname: "cms.corehalla.com",
                 uiHostname: "ui.corehalla.com",
+                cmsSkipHosts: ["cms.corehalla.com", "cms.dev.corehalla.com"],
                 names: prodNames,
             })
         }),
@@ -67,6 +68,8 @@ describe("deployment", () => {
                 uiHostname: "ui.dev.corehalla.com",
                 names: suffixed("-dev"),
             })
+            // The zone and its single WAF ruleset belong to prod alone.
+            expect(target.cmsSkipHosts).toBeUndefined()
         }),
     )
 
@@ -79,6 +82,10 @@ describe("deployment", () => {
             expect(target.siteUrl).toBe("https://example.com")
             expect(target.hostname).toBe("example.com")
             expect(target.cmsHostname).toBe("cms.example.com")
+            expect(target.cmsSkipHosts).toEqual([
+                "cms.example.com",
+                "cms.dev.example.com",
+            ])
             expect(target.names).toEqual(prodNames)
         }),
     )

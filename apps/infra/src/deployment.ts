@@ -32,6 +32,12 @@ export interface Deployment {
     readonly hostname: string
     readonly cmsHostname: string
     readonly uiHostname: string
+    /**
+     * Hosts the zone's CMS skip rule must cover. `undefined` outside prod: the
+     * zone has one custom-firewall entrypoint, so only prod declares it, and
+     * the dev CMS lives in that same zone.
+     */
+    readonly cmsSkipHosts: readonly string[] | undefined
     readonly names: ResourceNames
 }
 
@@ -90,6 +96,9 @@ export const deployment = Effect.fnUntraced(function* () {
         hostname,
         cmsHostname: `cms.${hostname}`,
         uiHostname: `ui.${hostname}`,
+        cmsSkipHosts: isProd
+            ? [`cms.${hostname}`, `cms.dev.${hostname}`]
+            : undefined,
         names: names(isProd),
     }
 })
