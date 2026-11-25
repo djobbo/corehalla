@@ -198,6 +198,11 @@ export type LegendPlayStyleTotals = {
     readonly matchTime: number
     readonly timeHeldWeaponOne: number
     readonly timeHeldWeaponTwo: number
+    readonly damageWeaponOne: number
+    readonly damageWeaponTwo: number
+    readonly damageUnarmed: number
+    readonly damageGadgets: number
+    readonly damageThrownItem: number
 }
 
 export type LegendMetaRowInput = {
@@ -903,6 +908,11 @@ export const layer = Layer.effect(
                                 matchTime: sql<number>`sum(${bhPlayerLegend.matchTime})`,
                                 timeHeldWeaponOne: sql<number>`sum(${bhPlayerLegend.timeHeldWeaponOne})`,
                                 timeHeldWeaponTwo: sql<number>`sum(${bhPlayerLegend.timeHeldWeaponTwo})`,
+                                damageWeaponOne: sql<number>`sum(${bhPlayerLegend.damageWeaponOne})`,
+                                damageWeaponTwo: sql<number>`sum(${bhPlayerLegend.damageWeaponTwo})`,
+                                damageUnarmed: sql<number>`sum(${bhPlayerLegend.damageUnarmed})`,
+                                damageGadgets: sql<number>`sum(${bhPlayerLegend.damageGadgets})`,
+                                damageThrownItem: sql<number>`sum(${bhPlayerLegend.damageThrownItem})`,
                                 playStyleAccounts: sql<number>`count(distinct case when ${bhPlayerLegend.games} > 0 then ${bhPlayerLegend.player_id} end)`,
                             })
                             .from(bhPlayerLegend)
@@ -939,6 +949,17 @@ export const layer = Layer.effect(
                                     ),
                                     timeHeldWeaponTwo: Number(
                                         row.timeHeldWeaponTwo,
+                                    ),
+                                    damageWeaponOne: Number(
+                                        row.damageWeaponOne,
+                                    ),
+                                    damageWeaponTwo: Number(
+                                        row.damageWeaponTwo,
+                                    ),
+                                    damageUnarmed: Number(row.damageUnarmed),
+                                    damageGadgets: Number(row.damageGadgets),
+                                    damageThrownItem: Number(
+                                        row.damageThrownItem,
                                     ),
                                 },
                             })),
