@@ -4,18 +4,21 @@ import {
     DAILY_STORAGE_KEY,
     MAX_DAILY_GUESSES,
     dailyAnswer,
-    dailyAnswerKeys,
+    dailyAnswerPools,
     dailyDateKey,
     dailyGuessRow,
     dailyGuessScores,
     dailyOutcome,
+    dailyRosterCutover,
     dailyShareText,
     decodeDailyState,
     encodeDailyState,
     findLegend,
     freshDailyState,
     loadDailyState,
+    missingAnswerKeys,
     normaliseLegendName,
+    reachableAnswerKeys,
     recordDailyGuess,
     resumeDailyState,
     saveDailyState,
@@ -32,6 +35,20 @@ const legend = (key: string) => {
 }
 
 const TODAY = "2026-11-26"
+
+const DAY_MS = 86_400_000
+
+const addDays = (dateKey: string, days: number): string =>
+    new Date(Date.parse(`${dateKey}T00:00:00.000Z`) + days * DAY_MS)
+        .toISOString()
+        .slice(0, 10)
+
+const daysBetween = (from: string, to: string): number =>
+    Math.round(
+        (Date.parse(`${to}T00:00:00.000Z`) -
+            Date.parse(`${from}T00:00:00.000Z`)) /
+            DAY_MS,
+    )
 
 const play = (state: DailyState, keys: readonly string[], answerId: number) =>
     keys.reduce(
@@ -67,11 +84,70 @@ describe("dailyAnswer", () => {
     })
 
     it("answers with a legend the roster still ships", () => {
-        expect(dailyAnswerKeys).toHaveLength(40)
-
-        for (const key of dailyAnswerKeys) {
+        for (const key of dailyAnswerPools.flatMap((pool) => pool.keys)) {
             expect(legendsMap[legend(key).legend_id]).toBeDefined()
         }
+    })
+})
+
+describe("answer rotation", () => {
+    const [legacyPool, rosterPool] = dailyAnswerPools
+
+    it("answers every date before the cutover from the untouched 40-key pool", () => {
+        expect(legacyPool.keys).toHaveLength(40)
+
+        const days = daysBetween(legacyPool.from, dailyRosterCutover)
+
+        for (let offset = 0; offset < days; offset += 1) {
+            expect(
+                dailyAnswer(addDays(legacyPool.from, offset)).legend_name_key,
+            ).toBe(legacyPool.keys[offset % legacyPool.keys.length])
+        }
+    })
+
+    it("keeps today's answer while the cutover is still ahead", () => {
+        expect(TODAY < dailyRosterCutover).toBe(true)
+        expect(dailyAnswer(TODAY).legend_name_key).toBe("jiro")
+    })
+
+    it("switches to the roster pool on the cutover date", () => {
+        expect(rosterPool.from).toBe(dailyRosterCutover)
+        expect(dailyAnswer(dailyRosterCutover).legend_name_key).toBe(
+            rosterPool.keys[0],
+        )
+    })
+
+    it("reaches every legend in the roster after the cutover", () => {
+        const reachable = reachableAnswerKeys(
+            dailyRosterCutover,
+            legends.length,
+        )
+        const missing = missingAnswerKeys(
+            legends.map((entry) => entry.legend_name_key),
+            reachable,
+        )
+
+        expect(
+            missing,
+            `Legends with no date in the rotation: ${missing.join(", ")}`,
+        ).toEqual([])
+    })
+
+    it("answers with legends the 40-key pool never used", () => {
+        const legacyKeys = new Set(legacyPool.keys)
+        const fresh = reachableAnswerKeys(
+            dailyRosterCutover,
+            legends.length,
+        ).filter((key) => !legacyKeys.has(key))
+
+        expect(fresh.length).toBeGreaterThan(0)
+    })
+
+    it("names the roster keys a rotation cannot reach", () => {
+        expect(missingAnswerKeys(["bodvar", "mordex"], ["bodvar"])).toEqual([
+            "mordex",
+        ])
+        expect(missingAnswerKeys(["bodvar"], ["bodvar"])).toEqual([])
     })
 })
 
