@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CalcRouteImport } from './routes/calc'
+import { Route as DailyRouteImport } from './routes/daily'
 import { Route as DiscordRouteImport } from './routes/discord'
 import { Route as DonateRouteImport } from './routes/donate'
 import { Route as GithubRouteImport } from './routes/github'
@@ -76,6 +77,11 @@ const IndexRoute = IndexRouteImport.update({
 const CalcRoute = CalcRouteImport.update({
   id: '/calc',
   path: '/calc',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DailyRoute = DailyRouteImport.update({
+  id: '/daily',
+  path: '/daily',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiscordRoute = DiscordRouteImport.update({
@@ -387,6 +393,7 @@ const RankingsPowerChar123GameModeChar125Char123RegionChar125Char123PageChar125R
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/calc': typeof CalcRoute
+  '/daily': typeof DailyRoute
   '/discord': typeof DiscordRoute
   '/donate': typeof DonateRoute
   '/github': typeof GithubRoute
@@ -447,6 +454,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/calc': typeof CalcRoute
+  '/daily': typeof DailyRoute
   '/discord': typeof DiscordRoute
   '/donate': typeof DonateRoute
   '/github': typeof GithubRoute
@@ -507,6 +515,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/calc': typeof CalcRoute
+  '/daily': typeof DailyRoute
   '/discord': typeof DiscordRoute
   '/donate': typeof DonateRoute
   '/github': typeof GithubRoute
@@ -569,6 +578,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/calc'
+    | '/daily'
     | '/discord'
     | '/donate'
     | '/github'
@@ -629,6 +639,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/calc'
+    | '/daily'
     | '/discord'
     | '/donate'
     | '/github'
@@ -688,6 +699,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/calc'
+    | '/daily'
     | '/discord'
     | '/donate'
     | '/github'
@@ -749,6 +761,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CalcRoute: typeof CalcRoute
+  DailyRoute: typeof DailyRoute
   DiscordRoute: typeof DiscordRoute
   DonateRoute: typeof DonateRoute
   GithubRoute: typeof GithubRoute
@@ -816,6 +829,13 @@ declare module '@tanstack/react-router' {
       path: '/calc'
       fullPath: '/calc'
       preLoaderRoute: typeof CalcRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/daily': {
+      id: '/daily'
+      path: '/daily'
+      fullPath: '/daily'
+      preLoaderRoute: typeof DailyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/discord': {
@@ -1236,6 +1256,7 @@ const StatsPlayersIdRouteWithChildren = StatsPlayersIdRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CalcRoute: CalcRoute,
+  DailyRoute: DailyRoute,
   DiscordRoute: DiscordRoute,
   DonateRoute: DonateRoute,
   GithubRoute: GithubRoute,

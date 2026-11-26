@@ -84,8 +84,11 @@ describe("sitemapPaths", () => {
         expect(weaponPaths).toContain("/weapons/battle-boots")
     })
 
-    it("includes the tier list maker", () => {
-        expect(sitemapPaths()).toContain("/tiers")
+    it("includes the tier list maker and the daily puzzle", () => {
+        const paths = sitemapPaths()
+
+        expect(paths).toContain("/tiers")
+        expect(paths).toContain("/daily")
     })
 
     it("includes the calculator and comparison tools", () => {
