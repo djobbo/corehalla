@@ -19,7 +19,7 @@ import {
     regions,
     tierColor,
 } from "@/lib/rankings"
-import { queueHighlights } from "@/lib/queueHighlights"
+import { queueHighlights, sessionRecord } from "@/lib/queueHighlights"
 import { cn } from "@/lib/cn"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import type { QueuedEntry } from "@crh/api-contract/schemas"
@@ -41,6 +41,15 @@ const Delta = ({ value }: { readonly value: number }) => {
         </span>
     )
 }
+
+const TierBadge = ({ tier }: { readonly tier: string }) => (
+    <span
+        className="ch-tier"
+        style={{ "--ch-tier": tierColor(tier) } as CSSProperties}
+    >
+        {tier}
+    </span>
+)
 
 type Region = typeof RankedRegion.Type
 
@@ -93,10 +102,12 @@ const HighlightList = ({
     id,
     title,
     rows,
+    metric = "movement",
 }: {
     readonly id: string
     readonly title: string
     readonly rows: readonly QueuedEntry[]
+    readonly metric?: "movement" | "games"
 }) => {
     if (rows.length === 0) return null
 
@@ -117,8 +128,16 @@ const HighlightList = ({
                                 <span className="font-bold tabular-nums">
                                     {row.rating}
                                 </span>
-                                <Delta value={row.ratingDelta} />
-                                <RankMove delta={row.rankDelta} />
+                                {metric === "games" ? (
+                                    <span className="ml-1.5 text-xs font-bold text-muted-foreground tabular-nums">
+                                        {row.games} games
+                                    </span>
+                                ) : (
+                                    <>
+                                        <Delta value={row.ratingDelta} />
+                                        <RankMove delta={row.rankDelta} />
+                                    </>
+                                )}
                             </span>
                         </li>
                     ))}
@@ -133,12 +152,13 @@ const QueueHighlights = ({
 }: {
     readonly rows: readonly QueuedEntry[]
 }) => {
-    const { climbers, drops } = queueHighlights(rows)
+    const { climbers, drops, mostGames } = queueHighlights(rows)
 
-    if (climbers.length === 0 && drops.length === 0) return null
+    if (climbers.length === 0 && drops.length === 0 && mostGames.length === 0)
+        return null
 
     return (
-        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <div className="mt-4 grid gap-4 sm:grid-cols-3">
             <HighlightList
                 id="queue-climbers"
                 title="Biggest climbers"
@@ -148,6 +168,12 @@ const QueueHighlights = ({
                 id="queue-drops"
                 title="Biggest drops"
                 rows={drops}
+            />
+            <HighlightList
+                id="queue-most-games"
+                title="Most games"
+                rows={mostGames}
+                metric="games"
             />
         </div>
     )
@@ -223,10 +249,16 @@ export const RankedQueueView = ({
                             <TableHead className="w-24 text-right">
                                 Rating
                             </TableHead>
-                            <TableHead className="w-24 text-right">
+                            <TableHead className="hidden w-20 text-right sm:table-cell">
+                                Record
+                            </TableHead>
+                            <TableHead className="hidden w-20 text-right sm:table-cell">
+                                Peak
+                            </TableHead>
+                            <TableHead className="hidden w-24 text-right sm:table-cell">
                                 Tier
                             </TableHead>
-                            <TableHead className="w-20 text-right">
+                            <TableHead className="hidden w-20 text-right sm:table-cell">
                                 Queued
                             </TableHead>
                         </TableRow>
@@ -241,7 +273,25 @@ export const RankedQueueView = ({
                                     <Delta value={-row.rankDelta} />
                                 </TableCell>
                                 <TableCell>
-                                    <Members members={row.members} />
+                                    <span className="flex min-w-0 flex-col">
+                                        <Members members={row.members} />
+                                        <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.66rem] text-muted-foreground tabular-nums sm:hidden">
+                                            {row.tier ? (
+                                                <TierBadge tier={row.tier} />
+                                            ) : null}
+                                            <span>
+                                                {sessionRecord(
+                                                    row.games,
+                                                    row.wins,
+                                                )}
+                                            </span>
+                                            {now === 0 ? null : (
+                                                <span>
+                                                    {since(row.queuedAt, now)}
+                                                </span>
+                                            )}
+                                        </span>
+                                    </span>
                                 </TableCell>
                                 <TableCell className="text-right">
                                     <span className="font-bold tabular-nums">
@@ -249,23 +299,18 @@ export const RankedQueueView = ({
                                     </span>
                                     <Delta value={row.ratingDelta} />
                                 </TableCell>
-                                <TableCell className="text-right">
+                                <TableCell className="hidden text-right tabular-nums sm:table-cell">
+                                    {sessionRecord(row.games, row.wins)}
+                                </TableCell>
+                                <TableCell className="hidden text-right tabular-nums text-muted-foreground sm:table-cell">
+                                    {row.peakRating}
+                                </TableCell>
+                                <TableCell className="hidden text-right sm:table-cell">
                                     {row.tier ? (
-                                        <span
-                                            className="ch-tier"
-                                            style={
-                                                {
-                                                    "--ch-tier": tierColor(
-                                                        row.tier,
-                                                    ),
-                                                } as CSSProperties
-                                            }
-                                        >
-                                            {row.tier}
-                                        </span>
+                                        <TierBadge tier={row.tier} />
                                     ) : null}
                                 </TableCell>
-                                <TableCell className="text-right text-xs text-muted-foreground">
+                                <TableCell className="hidden text-right text-xs text-muted-foreground sm:table-cell">
                                     {now === 0 ? "" : since(row.queuedAt, now)}
                                 </TableCell>
                             </TableRow>

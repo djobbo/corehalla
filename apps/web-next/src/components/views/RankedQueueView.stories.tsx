@@ -88,14 +88,16 @@ const mover = (
     rating: number,
     ratingDelta: number,
     rankDelta = 0,
+    games = 120,
+    wins = 70,
 ): QueuedEntry => ({
     id,
     members: [{ id, name, slug: name.toLowerCase() }],
     rating,
     peakRating: rating + 20,
     tier: "Diamond",
-    games: 120,
-    wins: 70,
+    games,
+    wins,
     queuedAt: NOW - 3 * 60_000,
     rank: 10,
     ratingDelta,
@@ -119,14 +121,14 @@ const movers: readonly QueuedEntry[] = [
         ratingDelta: 18,
         rankDelta: -4,
     },
-    mover("boomie", "Boomie", 2148, 9, -1),
-    mover("lucians", "Lucians", 2120, 9),
-    mover("diana", "Diana", 2094, 4, 1),
-    mover("hattori", "Hattori", 2081, 2, -1),
-    mover("koji", "Koji", 2069, 1),
-    mover("xull", "Xull", 2103, -11, 3),
-    mover("asuri", "Asuri", 1996, -3),
-    mover("cassidy", "Cassidy", 1982, -1, 2),
+    mover("boomie", "Boomie", 2148, 9, -1, 128, 77),
+    mover("lucians", "Lucians", 2120, 9, 0, 128, 70),
+    mover("diana", "Diana", 2094, 4, 1, 112, 60),
+    mover("hattori", "Hattori", 2081, 2, -1, 88, 44),
+    mover("koji", "Koji", 2069, 1, 0, 12, 5),
+    mover("xull", "Xull", 2103, -11, 3, 41, 18),
+    mover("asuri", "Asuri", 1996, -3, 0, 7, 2),
+    mover("cassidy", "Cassidy", 1982, -1, 2, 0, 0),
 ]
 
 const meta = {
@@ -171,5 +173,32 @@ export const NoMovement: Story = {
             mover("lucians", "Lucians", 2120, 0),
             mover("diana", "Diana", 2094, 0),
         ],
+    },
+}
+
+export const UnplayedSession: Story = {
+    args: {
+        bracket: "1v1",
+        rows: [
+            mover("koji", "Koji", 2069, 6, -1, 0, 0),
+            mover("diana", "Diana", 2094, 0, 0, 4, 3),
+            mover("hattori", "Hattori", 2081, -2, 1, 2, 0),
+        ],
+    },
+}
+
+export const Narrow: Story = {
+    args: { bracket: "2v2", rows: movers },
+    globals: { viewport: "phone390" },
+    parameters: {
+        viewport: {
+            options: {
+                phone390: {
+                    name: "Phone (390px)",
+                    styles: { width: "390px", height: "844px" },
+                    type: "mobile",
+                },
+            },
+        },
     },
 }
