@@ -5,84 +5,216 @@ import { legendAttributes } from "./legends"
 
 export const MAX_DAILY_GUESSES = 6
 
-/**
- * The answers, in rotation order. The list is written out rather than derived
- * from the roster so that adding a legend never re-rolls an answer that has
- * already shipped; `dailyPuzzle.test.ts` pins the dates.
- */
-export const dailyAnswerKeys = [
-    "bodvar",
-    "mordex",
-    "queen nai",
-    "koji",
-    "cassidy",
-    "mirage",
-    "thatch",
-    "diana",
-    "orion",
-    "jiro",
-    "gnash",
-    "artemis",
-    "lord vraxx",
-    "yumiko",
-    "hattori",
-    "caspian",
-    "sir roland",
-    "xull",
-    "scarlet",
-    "kaya",
-    "ada",
-    "fait",
-    "sentinel",
-    "dusk",
-    "lucien",
-    "petra",
-    "teros",
-    "volkov",
-    "brynn",
-    "onyx",
-    "asuri",
-    "jaeyun",
-    "barraza",
-    "mako",
-    "ember",
-    "magyar",
-    "azoth",
-    "reno",
-    "ulgrim",
-    "munin",
-] as const
+/** A stretch of the calendar answered by one ordered pool of keys. */
+export type DailyAnswerPool = {
+    readonly from: string
+    readonly keys: readonly string[]
+}
 
-/** Day zero of the rotation, so `2026-01-01` answers with the first key. */
-export const dailyEpoch = "2026-01-01"
+/**
+ * The first date answered from the whole roster instead of the 40 keys the
+ * puzzle launched with. It stays ahead of any round a player can have played.
+ */
+export const dailyRosterCutover = "2027-01-01"
+
+/**
+ * The pools, in calendar order. Inside a pool the answer is
+ * `daysSince(from) % keys.length`, so a pool's keys are frozen once dates in it
+ * have shipped: appending a key changes the cycle length and rewrites every
+ * answer in that pool, including rounds already played.
+ *
+ * To bring a new legend into the rotation, add it to a pool whose `from` is
+ * still in the future and that lists the whole roster in its new order; once a
+ * pool has started, the addition belongs in a new pool further down the list.
+ * Never edit the 2026 pool.
+ */
+export const dailyAnswerPools: readonly DailyAnswerPool[] = [
+    {
+        from: "2026-01-01",
+        keys: [
+            "bodvar",
+            "mordex",
+            "queen nai",
+            "koji",
+            "cassidy",
+            "mirage",
+            "thatch",
+            "diana",
+            "orion",
+            "jiro",
+            "gnash",
+            "artemis",
+            "lord vraxx",
+            "yumiko",
+            "hattori",
+            "caspian",
+            "sir roland",
+            "xull",
+            "scarlet",
+            "kaya",
+            "ada",
+            "fait",
+            "sentinel",
+            "dusk",
+            "lucien",
+            "petra",
+            "teros",
+            "volkov",
+            "brynn",
+            "onyx",
+            "asuri",
+            "jaeyun",
+            "barraza",
+            "mako",
+            "ember",
+            "magyar",
+            "azoth",
+            "reno",
+            "ulgrim",
+            "munin",
+        ],
+    },
+    {
+        from: dailyRosterCutover,
+        keys: [
+            "bodvar",
+            "cassidy",
+            "orion",
+            "lord vraxx",
+            "gnash",
+            "queen nai",
+            "hattori",
+            "sir roland",
+            "scarlet",
+            "thatch",
+            "ada",
+            "sentinel",
+            "lucien",
+            "teros",
+            "brynn",
+            "asuri",
+            "barraza",
+            "ember",
+            "azoth",
+            "koji",
+            "ulgrim",
+            "diana",
+            "jhala",
+            "kor",
+            "wu shang",
+            "val",
+            "ragnir",
+            "cross",
+            "mirage",
+            "nix",
+            "mordex",
+            "yumiko",
+            "artemis",
+            "caspian",
+            "sidra",
+            "xull",
+            "kaya",
+            "isaiah",
+            "jiro",
+            "lin fei",
+            "zariel",
+            "rayman",
+            "dusk",
+            "fait",
+            "thor",
+            "petra",
+            "vector",
+            "volkov",
+            "onyx",
+            "jaeyun",
+            "mako",
+            "magyar",
+            "reno",
+            "munin",
+            "arcadia",
+            "ezio",
+            "tezca",
+            "thea",
+            "redraptor",
+            "loki",
+            "seven",
+            "vivi",
+            "imugi",
+            "king zuva",
+            "priya",
+            "ransom",
+            "lady vera",
+            "rupture",
+            "aurus",
+            "qinghua & baobao",
+        ],
+    },
+]
 
 const DAY_MS = 86_400_000
 
-const answerLegends: readonly Legend[] = dailyAnswerKeys.flatMap((key) => {
-    const legend = legends.find((entry) => entry.legend_name_key === key)
+const dayTime = (dateKey: string): number =>
+    Date.parse(`${dateKey}T00:00:00.000Z`)
 
-    return legend === undefined ? [] : [legend]
-})
+const poolLegends = dailyAnswerPools.map((pool) => ({
+    from: pool.from,
+    legends: pool.keys.flatMap((key) => {
+        const legend = legends.find((entry) => entry.legend_name_key === key)
+
+        return legend === undefined ? [] : [legend]
+    }),
+}))
+
+/** A date before the first pool keeps wrapping through it, as it always has. */
+const poolFor = (dateKey: string) => {
+    for (let index = poolLegends.length - 1; index >= 0; index -= 1) {
+        const pool = poolLegends[index]
+
+        if (pool.from <= dateKey) return pool
+    }
+
+    return poolLegends[0]
+}
 
 /** The UTC calendar day a moment belongs to, as `YYYY-MM-DD`. */
 export const dailyDateKey = (date: Date): string =>
     date.toISOString().slice(0, 10)
 
 const previousDateKey = (dateKey: string): string =>
-    dailyDateKey(new Date(Date.parse(`${dateKey}T00:00:00.000Z`) - DAY_MS))
-
-const dayNumber = (dateKey: string): number =>
-    Math.round(
-        (Date.parse(`${dateKey}T00:00:00.000Z`) -
-            Date.parse(`${dailyEpoch}T00:00:00.000Z`)) /
-            DAY_MS,
-    )
+    dailyDateKey(new Date(dayTime(dateKey) - DAY_MS))
 
 export const dailyAnswer = (dateKey: string): Legend => {
-    const index = dayNumber(dateKey) % answerLegends.length
+    const pool = poolFor(dateKey)
+    const index =
+        Math.round((dayTime(dateKey) - dayTime(pool.from)) / DAY_MS) %
+        pool.legends.length
 
-    return answerLegends[index < 0 ? index + answerLegends.length : index]
+    return pool.legends[index < 0 ? index + pool.legends.length : index]
 }
+
+/** The distinct legends the rotation reaches over `days` days from `fromDateKey`. */
+export const reachableAnswerKeys = (
+    fromDateKey: string,
+    days: number,
+): readonly string[] => {
+    const keys: string[] = []
+
+    for (let offset = 0; offset < days; offset += 1) {
+        const key = dailyAnswer(
+            dailyDateKey(new Date(dayTime(fromDateKey) + offset * DAY_MS)),
+        ).legend_name_key
+
+        if (!keys.includes(key)) keys.push(key)
+    }
+
+    return keys
+}
+
+/** The roster keys no answer in `reachableKeys` covers; empty means full coverage. */
+export const missingAnswerKeys = (
+    rosterKeys: readonly string[],
+    reachableKeys: readonly string[],
+): readonly string[] => rosterKeys.filter((key) => !reachableKeys.includes(key))
 
 /**
  * Typed names are folded to the roster's spelling: `Bödvar`, `bödvar` and
