@@ -1,10 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import { expect, within } from "storybook/test"
 import { OverviewTab } from "./OverviewTab"
 import { withMockApi } from "@/storybook/decorators"
 import {
     EMPTY_PLAYER_ID,
     PLAYER_ID,
     SHORT_SEASON_PLAYER_ID,
+    UNPLACED_PLAYER_ID,
     playerMock,
 } from "@/storybook/fixtures"
 
@@ -28,4 +30,21 @@ export const Empty: Story = {
 
 export const BelowGloryThreshold: Story = {
     args: { playerId: SHORT_SEASON_PLAYER_ID },
+}
+
+/** An unplaced 1v1 card beside the placed 3v3 card: no tier, rating or percentile. */
+export const InPlacements: Story = {
+    args: { playerId: UNPLACED_PLAYER_ID },
+    async play({ canvasElement }) {
+        const canvas = within(canvasElement)
+
+        await expect(
+            await canvas.findByText(
+                "The rating appears once placement matches are complete.",
+            ),
+        ).toBeVisible()
+        await expect(canvas.getByText("Placements")).toBeVisible()
+        await expect(canvas.getByText("Platinum 3")).toBeVisible()
+        await expect(canvas.queryByText("0 / 0 peak")).toBeNull()
+    },
 }

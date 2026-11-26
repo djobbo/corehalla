@@ -23,6 +23,7 @@ export const RankedCard = ({
     standing,
     stats,
     meta,
+    isPlacementMatches = false,
 }: {
     readonly title: string
     readonly tier?: string | null
@@ -36,6 +37,7 @@ export const RankedCard = ({
     readonly standing?: PlayerStanding | null
     readonly stats?: readonly Stat[]
     readonly meta?: ReactNode
+    readonly isPlacementMatches?: boolean
 }) => {
     const losses = games - wins
 
@@ -44,7 +46,14 @@ export const RankedCard = ({
 
     return (
         <Card className="relative z-0 overflow-visible">
-            <img src={banner} alt="" aria-hidden className="ch-card-banner" />
+            {isPlacementMatches ? null : (
+                <img
+                    src={banner}
+                    alt=""
+                    aria-hidden
+                    className="ch-card-banner"
+                />
+            )}
             <CardHeader>
                 <CardTitle className="sr-only">{title}</CardTitle>
                 <div className="flex flex-wrap items-center gap-2 pr-12">
@@ -61,39 +70,60 @@ export const RankedCard = ({
                             <h3>{title}</h3>
                         </div>
                     </div>
-                    <span
-                        className="ch-tier shrink-0"
-                        style={
-                            {
-                                "--ch-tier": tierColor(label),
-                            } as CSSProperties
-                        }
-                    >
-                        {label}
-                    </span>
+                    {isPlacementMatches ? (
+                        <span className="ch-tier shrink-0">Placements</span>
+                    ) : (
+                        <span
+                            className="ch-tier shrink-0"
+                            style={
+                                {
+                                    "--ch-tier": tierColor(label),
+                                } as CSSProperties
+                            }
+                        >
+                            {label}
+                        </span>
+                    )}
                     {meta}
                 </div>
             </CardHeader>
             <CardContent className="flex flex-col">
-                <span className="ch-display text-3xl">
-                    {rating.toLocaleString()}
-                    <span className="ml-2 text-sm font-normal tracking-normal text-muted-foreground">
-                        / {peakRating.toLocaleString()} peak
-                    </span>
-                </span>
-                <RankPosition
-                    className="mt-1"
-                    region={region}
-                    regionalRank={regionalRank}
-                    globalRank={globalRank}
-                />
-                {standing ? (
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                        Top {standing.top_percent.toFixed(1)}% of{" "}
-                        {standing.sample_size.toLocaleString()} indexed ranked
-                        players
-                    </p>
-                ) : null}
+                {isPlacementMatches ? (
+                    <>
+                        <p className="text-sm text-muted-foreground">
+                            The rating appears once placement matches are
+                            complete.
+                        </p>
+                        <span className="ch-display mt-2 text-3xl">
+                            {games.toLocaleString()}
+                            <span className="ml-2 text-sm font-normal tracking-normal text-muted-foreground">
+                                games
+                            </span>
+                        </span>
+                    </>
+                ) : (
+                    <>
+                        <span className="ch-display text-3xl">
+                            {rating.toLocaleString()}
+                            <span className="ml-2 text-sm font-normal tracking-normal text-muted-foreground">
+                                / {peakRating.toLocaleString()} peak
+                            </span>
+                        </span>
+                        <RankPosition
+                            className="mt-1"
+                            region={region}
+                            regionalRank={regionalRank}
+                            globalRank={globalRank}
+                        />
+                        {standing ? (
+                            <p className="mt-0.5 text-xs text-muted-foreground">
+                                Top {standing.top_percent.toFixed(1)}% of{" "}
+                                {standing.sample_size.toLocaleString()} indexed
+                                ranked players
+                            </p>
+                        ) : null}
+                    </>
+                )}
                 <SplitProgress
                     className="mt-2"
                     parts={[

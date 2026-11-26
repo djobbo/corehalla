@@ -384,6 +384,52 @@ export const rivalPlayerEnvelope = {
     meta: { updated_at: UPDATED_AT },
 }
 
+/** A 1v1 still in placements beside a placed 3v3: the overview's placement state. */
+export const unplacedPlayerEnvelope = {
+    data: {
+        ...playerEnvelope.data,
+        id: 4247,
+        name: "PlacementRun",
+        slug: "placementrun",
+        aliases: [],
+        ranked: {
+            ...playerEnvelope.data.ranked,
+            stats: {
+                games: 9,
+                wins: 4,
+                peak_rating: 0,
+                glory: { from_wins: 0, from_peak_rating: 0, total: 0 },
+            },
+            "1v1": {
+                rating: 0,
+                peak_rating: 0,
+                is_placement_matches: true,
+                tier: "Valhallan",
+                wins: 4,
+                games: 9,
+                region: "eu",
+                global_rank: null,
+                region_rank: null,
+                rating_reset: 0,
+            },
+            "3v3": {
+                rating: 1876,
+                peak_rating: 1980,
+                is_placement_matches: false,
+                tier: "Platinum 3",
+                wins: 128,
+                games: 240,
+                region: "eu",
+                global_rank: 512,
+                region_rank: 24,
+                rating_reset: 1830,
+            },
+            "2v2": null,
+        },
+    },
+    meta: { updated_at: UPDATED_AT },
+}
+
 /** A third player for the head-to-head stories: no legend in common. */
 export const noOverlapPlayerEnvelope = {
     data: {
@@ -767,6 +813,7 @@ export const EMPTY_PLAYER_ID = 4243
 export const SHORT_SEASON_PLAYER_ID = 4244
 export const RIVAL_PLAYER_ID = 4245
 export const NO_OVERLAP_PLAYER_ID = 4246
+export const UNPLACED_PLAYER_ID = 4247
 
 /** Guild ids used across the clan stories. */
 export const GUILD_ID = 4242
@@ -787,6 +834,7 @@ export const playerMock = {
         sample_size: 214_300,
         top_percent: 84.2,
     }),
+    ...sectionsFor(UNPLACED_PLAYER_ID, unplacedPlayerEnvelope, null),
 }
 
 /** Head-to-head: both profile endpoints, plus the picker's search results. */

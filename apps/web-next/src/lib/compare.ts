@@ -1,6 +1,6 @@
 import { rankedTiersComplete } from "@crh/bhapi/constants"
+import { rankedBracketState } from "./season"
 import { percent, perGame } from "./stats"
-import { tierLabel } from "./rankings"
 import type {
     LegendBubble,
     PlayerProfile,
@@ -156,8 +156,17 @@ const bracketOf = (profile: PlayerProfile): Bracket | null =>
 const seasonOf = (profile: PlayerProfile): PlayerRanked["stats"] | null =>
     profile.ranked?.stats ?? null
 
-const tierOf = (bracket: Bracket | null): string | null =>
-    bracket === null ? null : tierLabel(bracket.tier)
+const PLACEMENTS = "Placements"
+
+const tierOf = (bracket: Bracket | null): string | null => {
+    const state = rankedBracketState(bracket)
+
+    return state.kind === "missing"
+        ? null
+        : state.kind === "placements"
+          ? PLACEMENTS
+          : state.tier
+}
 
 /** Lower rank index is the better tier; Valhallan sits above the listed ladder. */
 const tierRank = (tier: string): number => {
@@ -171,6 +180,16 @@ const tierRank = (tier: string): number => {
 const tierRow = (a: Bracket | null, b: Bracket | null): ComparisonRow => {
     const left = tierOf(a)
     const right = tierOf(b)
+
+    // A placement hides the rating, so the row can neither rank nor award it.
+    if (left === PLACEMENTS || right === PLACEMENTS) {
+        return {
+            label: "1v1 tier",
+            a: left ?? MISSING,
+            b: right ?? MISSING,
+            winner: null,
+        }
+    }
 
     return toRow(
         "1v1 tier",
