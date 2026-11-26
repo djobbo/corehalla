@@ -25,8 +25,9 @@ import { legendsWithWeapon, weaponHref } from "@/lib/weapons"
 import { mediaSlotKey, useLegendIcon, useMediaSlot } from "@/lib/media"
 import {
     MIN_CATALOGUE_QUERY_LENGTH,
-    catalogueMatches,
+    paletteSections,
 } from "@/lib/paletteSearch"
+import type { IdAction, PaletteEntityRow } from "@/lib/paletteSearch"
 import { cn } from "@/lib/cn"
 import { Button } from "@/components/ui/button"
 import {
@@ -74,19 +75,7 @@ const idleAliasAtom = Atom.make(
 
 const LOOKUP_LIMIT = 10
 
-type Row = {
-    readonly key: string
-    readonly name: string
-    readonly meta: string
-    readonly href: string
-    readonly entry: {
-        readonly type: "player" | "clan"
-        readonly id: string
-        readonly name: string
-    }
-}
-
-const rowFromResult = (result: LookupResult): Row => {
+const rowFromResult = (result: LookupResult): PaletteEntityRow => {
     const parts: string[] = [result.type === "player" ? "Player" : "Clan"]
 
     if (result.type === "player") {
@@ -115,7 +104,7 @@ const rowFromResult = (result: LookupResult): Row => {
 }
 
 /** Archived (alias-only) player from the secondary scan, without ladder data. */
-const rowFromAlias = (result: AliasSearchResult): Row => {
+const rowFromAlias = (result: AliasSearchResult): PaletteEntityRow => {
     const parts = ["Archived"]
 
     if (result.otherAliases.length > 0) {
@@ -209,12 +198,6 @@ const SearchOverlay = () => {
 
     const result = useAtomValue(lookup)
 
-    const leaderboardRows = useMemo(
-        () =>
-            result._tag === "Success" ? result.value.map(rowFromResult) : [],
-        [result],
-    )
-
     // Secondary scan in its own request: a slow or flaky alias lookup never
     // delays or breaks the leaderboard results above.
     const archive = useMemo(
@@ -224,19 +207,7 @@ const SearchOverlay = () => {
 
     const archiveResult = useAtomValue(archive)
 
-    const archivedRows = useMemo(() => {
-        if (archiveResult._tag !== "Success") return []
-
-        const found = new Set(
-            result._tag === "Success" ? result.value.map((row) => row.id) : [],
-        )
-
-        return archiveResult.value
-            .map(rowFromAlias)
-            .filter((row) => !found.has(row.entry.id))
-    }, [archiveResult, result])
-
-    const recentRows = useMemo<readonly Row[]>(
+    const recentRows = useMemo<readonly PaletteEntityRow[]>(
         () =>
             recents.map((entry) => ({
                 key: `${entry.type}:${entry.id}`,
@@ -252,9 +223,21 @@ const SearchOverlay = () => {
     )
 
     const trimmedQuery = query.trim()
-    const catalogue = useMemo(
-        () => catalogueMatches(trimmedQuery),
-        [trimmedQuery],
+    const sections = useMemo(
+        () =>
+            paletteSections({
+                query: trimmedQuery,
+                recents: searching ? [] : recentRows,
+                leaderboard:
+                    result._tag === "Success"
+                        ? result.value.map(rowFromResult)
+                        : [],
+                archive:
+                    archiveResult._tag === "Success"
+                        ? archiveResult.value.map(rowFromAlias)
+                        : [],
+            }),
+        [trimmedQuery, searching, recentRows, result, archiveResult],
     )
 
     const goToHref = useCallback(
@@ -266,7 +249,7 @@ const SearchOverlay = () => {
     )
 
     const go = useCallback(
-        (row: Row) => {
+        (row: PaletteEntityRow) => {
             setRecents(withRecent(recents, row.entry))
             goToHref(row.href)
         },
@@ -309,53 +292,70 @@ const SearchOverlay = () => {
                     ))}
                 </div>
                 <CommandList className="max-h-[60vh]">
-                    {!searching && recentRows.length > 0 && (
-                        <CommandGroup heading="Recent">
-                            {recentRows.map((row) => (
-                                <Row key={row.key} row={row} onSelect={go} />
-                            ))}
-                        </CommandGroup>
-                    )}
-
-                    {searching && leaderboardRows.length > 0 && (
-                        <CommandGroup heading="Rankings">
-                            {leaderboardRows.map((row) => (
-                                <Row key={row.key} row={row} onSelect={go} />
-                            ))}
-                        </CommandGroup>
-                    )}
-
-                    {searching && archivedRows.length > 0 && (
-                        <CommandGroup heading="Archived players">
-                            {archivedRows.map((row) => (
-                                <Row key={row.key} row={row} onSelect={go} />
-                            ))}
-                        </CommandGroup>
-                    )}
-
-                    {catalogue.legends.length > 0 && (
-                        <CommandGroup heading="Legends">
-                            {catalogue.legends.map((legend) => (
-                                <LegendOption
-                                    key={`legend:${legend.legend_id}`}
-                                    legend={legend}
-                                    onSelect={goToHref}
-                                />
-                            ))}
-                        </CommandGroup>
-                    )}
-
-                    {catalogue.weapons.length > 0 && (
-                        <CommandGroup heading="Weapons">
-                            {catalogue.weapons.map((weapon) => (
-                                <WeaponOption
-                                    key={`weapon:${weapon}`}
-                                    weapon={weapon}
-                                    onSelect={goToHref}
-                                />
-                            ))}
-                        </CommandGroup>
-                    )}
+                    {sections.map((section) => {
+                        switch (section.kind) {
+                            case "entities":
+                                return (
+                                    <CommandGroup
+                                        key={section.heading}
+                                        heading={section.heading}
+                                    >
+                                        {section.rows.map((row) => (
+                                            <Row
+                                                key={row.key}
+                                                row={row}
+                                                onSelect={go}
+                                            />
+                                        ))}
+                                    </CommandGroup>
+                                )
+                            case "legends":
+                                return (
+                                    <CommandGroup
+                                        key={section.heading}
+                                        heading={section.heading}
+                                    >
+                                        {section.rows.map((legend) => (
+                                            <LegendOption
+                                                key={`legend:${legend.legend_id}`}
+                                                legend={legend}
+                                                onSelect={goToHref}
+                                            />
+                                        ))}
+                                    </CommandGroup>
+                                )
+                            case "weapons":
+                                return (
+                                    <CommandGroup
+                                        key={section.heading}
+                                        heading={section.heading}
+                                    >
+                                        {section.rows.map((weapon) => (
+                                            <WeaponOption
+                                                key={`weapon:${weapon}`}
+                                                weapon={weapon}
+                                                onSelect={goToHref}
+                                            />
+                                        ))}
+                                    </CommandGroup>
+                                )
+                            case "ids":
+                                return (
+                                    <CommandGroup
+                                        key={section.heading}
+                                        heading={section.heading}
+                                    >
+                                        {section.rows.map((action) => (
+                                            <IdOption
+                                                key={`id:${action.href}`}
+                                                action={action}
+                                                onSelect={goToHref}
+                                            />
+                                        ))}
+                                    </CommandGroup>
+                                )
+                        }
+                    })}
 
                     <CommandEmpty className="px-3 py-4 text-left text-sm text-muted-foreground">
                         {!searching &&
@@ -369,8 +369,7 @@ const SearchOverlay = () => {
 
                         {searching &&
                             result._tag !== "Initial" &&
-                            leaderboardRows.length === 0 &&
-                            archivedRows.length === 0 &&
+                            sections.length === 0 &&
                             (archiveResult._tag === "Initial" ? (
                                 <>
                                     No leaderboard matches for “{active}”.
@@ -390,20 +389,43 @@ const SearchOverlay = () => {
     )
 }
 
+const OptionText = ({
+    name,
+    meta,
+}: {
+    readonly name: string
+    readonly meta: string
+}) => (
+    <span className="flex min-w-0 flex-col gap-0.5">
+        <span className="truncate text-sm font-semibold">{name}</span>
+        <span className="truncate text-xs text-muted-foreground">{meta}</span>
+    </span>
+)
+
 const Row = ({
     row,
     onSelect,
 }: {
-    readonly row: Row
-    readonly onSelect: (row: Row) => void
+    readonly row: PaletteEntityRow
+    readonly onSelect: (row: PaletteEntityRow) => void
 }) => (
     <CommandItem value={row.key} onSelect={() => onSelect(row)}>
-        <span className="flex min-w-0 flex-col gap-0.5">
-            <span className="truncate text-sm font-semibold">{row.name}</span>
-            <span className="truncate text-xs text-muted-foreground">
-                {row.meta}
-            </span>
-        </span>
+        <OptionText name={row.name} meta={row.meta} />
+    </CommandItem>
+)
+
+const IdOption = ({
+    action,
+    onSelect,
+}: {
+    readonly action: IdAction
+    readonly onSelect: (href: string) => void
+}) => (
+    <CommandItem
+        value={`id:${action.href}`}
+        onSelect={() => onSelect(action.href)}
+    >
+        <OptionText name={action.name} meta={action.meta} />
     </CommandItem>
 )
 
@@ -469,12 +491,7 @@ const CatalogueOption = ({
 }) => (
     <CommandItem value={value} onSelect={onSelect}>
         <img src={icon} alt="" className="size-7 shrink-0 object-contain" />
-        <span className="flex min-w-0 flex-col gap-0.5">
-            <span className="truncate text-sm font-semibold">{name}</span>
-            <span className="truncate text-xs text-muted-foreground">
-                {meta}
-            </span>
-        </span>
+        <OptionText name={name} meta={meta} />
     </CommandItem>
 )
 

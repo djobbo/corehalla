@@ -2,10 +2,14 @@ import { describe, expect, it } from "@effect/vitest"
 import {
     CATALOGUE_GROUP_LIMIT,
     MIN_CATALOGUE_QUERY_LENGTH,
+    MIN_ID_QUERY_LENGTH,
     catalogueMatches,
+    idLookup,
     matchLegends,
     matchWeapons,
+    paletteSections,
 } from "./paletteSearch"
+import type { PaletteEntityRow } from "./paletteSearch"
 
 const legendNames = (query: string) =>
     matchLegends(query).map((legend) => legend.bio_name)
@@ -120,6 +124,97 @@ describe("matchWeapons", () => {
 
     it("returns nothing when no weapon matches", () => {
         expect(matchWeapons("zzzz")).toEqual([])
+    })
+})
+
+describe("idLookup", () => {
+    it("offers a player and a guild action once the query reaches the floor", () => {
+        const actions = idLookup("123")
+
+        expect(actions.map((action) => action.name)).toEqual([
+            "Open player #123",
+            "Open guild #123",
+        ])
+        expect(actions.map((action) => action.href)).toEqual([
+            "/stats/players/123",
+            "/stats/guilds/123",
+        ])
+    })
+
+    it("stays empty below the digit floor", () => {
+        expect(MIN_ID_QUERY_LENGTH).toBe(3)
+        expect(idLookup("12")).toEqual([])
+        expect(idLookup("1")).toEqual([])
+    })
+
+    it("accepts a leading hash and surrounding whitespace", () => {
+        expect(idLookup("#123")).toEqual(idLookup("123"))
+        expect(idLookup(" #123 ")).toEqual(idLookup("123"))
+        expect(idLookup("# 123")).toEqual(idLookup("123"))
+        expect(idLookup("  123  ")).toEqual(idLookup("123"))
+    })
+
+    it("opens the id without its leading zeros", () => {
+        const [player] = idLookup("000123")
+
+        expect(player?.name).toBe("Open player #123")
+        expect(player?.href).toBe("/stats/players/123")
+    })
+
+    it("returns nothing for anything that is not a pasted id", () => {
+        for (const query of ["mordex", "#", "", "123abc", "abc123", "12 34"]) {
+            expect(idLookup(query), query).toEqual([])
+        }
+    })
+})
+
+const entityRow = (id: string, name: string): PaletteEntityRow => ({
+    key: `player:${id}`,
+    name,
+    meta: "Player",
+    href: `/stats/players/${id}`,
+    entry: { type: "player", id, name },
+})
+
+describe("paletteSections", () => {
+    it("keeps a name match above the id actions when the digits name a player", () => {
+        const sections = paletteSections({
+            query: "123456",
+            recents: [],
+            leaderboard: [entityRow("123456", "123456")],
+            archive: [],
+        })
+
+        expect(sections.map((section) => section.heading)).toEqual([
+            "Rankings",
+            "Open by ID",
+        ])
+        expect(sections[0]?.kind).toBe("entities")
+        expect(sections[1]?.kind).toBe("ids")
+    })
+
+    it("drops an archived row the leaderboard already returned", () => {
+        const sections = paletteSections({
+            query: "zzzz",
+            recents: [],
+            leaderboard: [entityRow("42", "Mordex")],
+            archive: [entityRow("42", "Mordex")],
+        })
+
+        expect(sections.map((section) => section.heading)).toEqual(["Rankings"])
+    })
+
+    it("offers the id actions when the digits match no catalogue entry", () => {
+        const sections = paletteSections({
+            query: "123",
+            recents: [],
+            leaderboard: [],
+            archive: [],
+        })
+
+        expect(sections.map((section) => section.heading)).toEqual([
+            "Open by ID",
+        ])
     })
 })
 

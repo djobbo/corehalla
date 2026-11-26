@@ -93,3 +93,53 @@ export const CatalogueGroups: Story = {
         ),
     },
 }
+
+const EMPTY_SEARCH = {
+    "/api/v1/search": [],
+    "/api/v1/search/players": [],
+}
+
+/** A player whose name carries the same digits, so the id actions follow it. */
+const MOCK_DIGITS_LOOKUP = [
+    {
+        type: "player",
+        id: "123456",
+        name: "Mordex123456",
+        slug: "123456-mordex123456",
+        aliases: [],
+        rating: null,
+        xp: null,
+        tier: null,
+        region: null,
+        source: "rankings",
+    },
+]
+
+const openedWith = (value: string) => ({
+    children: (
+        <>
+            <SearchTrigger className="max-w-xl" />
+            <OpenWithQuery value={value} />
+        </>
+    ),
+})
+
+export const IdActions: Story = {
+    parameters: {
+        mockApi: {
+            "/api/v1/search": MOCK_DIGITS_LOOKUP,
+            "/api/v1/search/players": [],
+        },
+    },
+    args: openedWith("123456"),
+}
+
+export const IdActionsAtFloor: Story = {
+    parameters: { mockApi: EMPTY_SEARCH },
+    args: openedWith("123"),
+}
+
+export const NoIdActions: Story = {
+    parameters: { mockApi: EMPTY_SEARCH },
+    args: openedWith("ord"),
+}
