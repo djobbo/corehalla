@@ -1,3 +1,5 @@
+import { tierLabel } from "./rankings"
+
 export const legendIconSrc = (legendNameKey: string): string =>
     `/images/icons/roster/legends/${legendNameKey}.png`
 
@@ -8,7 +10,7 @@ export const regionFlagSrc = (region: string): string =>
     `/images/icons/flags/${region.toUpperCase()}.png`
 
 export const rankedBannerSrc = (tier: string | null | undefined): string =>
-    `/images/ranked-banners/${tier ?? "Valhallan"}.png`
+    `/images/ranked-banners/${tierLabel(tier)}.png`
 
 /** CMS media is published site-relative; social scrapers need an origin. */
 export const absoluteUrl = (url: string): string => {

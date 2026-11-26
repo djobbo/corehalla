@@ -4,7 +4,7 @@ import { EntityLink } from "@/components/common/EntityLink"
 import { RankPosition } from "./RankPosition"
 import { regionFlagSrc } from "@/lib/assets"
 import { useRankedBanner } from "@/lib/media"
-import { playerHref } from "@/lib/rankings"
+import { playerHref, tierLabel } from "@/lib/rankings"
 import { percent } from "@/lib/stats"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import type { PlayerRankedTeam } from "@crh/api-contract/schemas"
@@ -12,7 +12,7 @@ import type { PlayerRankedTeam } from "@crh/api-contract/schemas"
 export const TeamCard = ({ team }: { readonly team: PlayerRankedTeam }) => {
     const [first, second] = team.team
     const region = team.region?.toUpperCase() ?? "ALL"
-    const tier = team.tier ?? "Valhallan"
+    const tier = tierLabel(team.tier)
     const banner = useRankedBanner(tier)
     const losses = team.games - team.wins
 

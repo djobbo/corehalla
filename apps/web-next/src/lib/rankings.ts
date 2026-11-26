@@ -111,6 +111,14 @@ export const LADDER_PAGE_SIZE = 50
 export const CAREER_RANKINGS_PAGE_SIZE = 50
 export const CLAN_RANKINGS_PAGE_SIZE = 50
 
+/**
+ * Both ranked upstreams report the top tier as null, so a null label is
+ * Valhallan. Every surface uses this mapping: a null tier is a rank, not a
+ * missing record.
+ */
+export const tierLabel = (tier: string | null | undefined): string =>
+    tier ?? "Valhallan"
+
 export const tierColor = (tier: string): string => {
     // Numbered tiers (`Platinum 3`) share their family's colour.
     switch (

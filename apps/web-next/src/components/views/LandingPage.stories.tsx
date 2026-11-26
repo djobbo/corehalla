@@ -30,7 +30,7 @@ const solo = (
     rank,
     rating,
     peakRating: rating + 40,
-    tier: rank === 1 ? "Valhallan" : "Diamond",
+    tier: rank <= 2 ? "Valhallan" : "Diamond",
     games: 120,
     wins: 70,
     region: "us-e",

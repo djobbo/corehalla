@@ -1,5 +1,6 @@
 import { useAtomValue } from "@effect/atom-react"
 import { rankedBannerSrc } from "@/lib/assets"
+import { tierLabel } from "@/lib/rankings"
 import { mediaSlotsAtom } from "@/effect/atoms"
 import { mediaSlotKey } from "./mediaSlot"
 
@@ -25,7 +26,7 @@ export const useLegendIcon = (nameKey: string, fallback: string): string =>
     useMediaSlot(mediaSlotKey("legend.icon", nameKey), fallback)
 
 export const useRankedBanner = (tier: string | null | undefined): string => {
-    const label = tier ?? "Valhallan"
+    const label = tierLabel(tier)
 
     return useMediaSlot(
         mediaSlotKey("ranked.banner", label),

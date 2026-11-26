@@ -2,7 +2,7 @@ import { useAtomValue } from "@effect/atom-react"
 import { Link } from "@tanstack/react-router"
 import { useMemo } from "react"
 import { guildAtom, playerClanAtom, playerProfileAtom } from "@/effect/atoms"
-import { clanHref, playerHref } from "@/lib/rankings"
+import { clanHref, playerHref, tierLabel } from "@/lib/rankings"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatUnixTime } from "@crh/common/helpers/date"
 
@@ -45,9 +45,9 @@ const PlayerPreview = ({ playerId }: { readonly playerId: number }) => {
             {ranked ? (
                 <Row
                     label="1v1"
-                    value={`${ranked.rating} · ${
-                        ranked.tier ?? "Unranked"
-                    } · ${(ranked.region ?? "all").toUpperCase()}`}
+                    value={`${ranked.rating} · ${tierLabel(
+                        ranked.tier,
+                    )} · ${(ranked.region ?? "all").toUpperCase()}`}
                 />
             ) : (
                 <p className="text-xs text-muted-foreground">

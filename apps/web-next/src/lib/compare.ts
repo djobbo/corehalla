@@ -1,5 +1,6 @@
 import { rankedTiersComplete } from "@crh/bhapi/constants"
 import { percent, perGame } from "./stats"
+import { tierLabel } from "./rankings"
 import type {
     LegendBubble,
     PlayerProfile,
@@ -156,7 +157,7 @@ const seasonOf = (profile: PlayerProfile): PlayerRanked["stats"] | null =>
     profile.ranked?.stats ?? null
 
 const tierOf = (bracket: Bracket | null): string | null =>
-    bracket === null ? null : (bracket.tier ?? "Valhallan")
+    bracket === null ? null : tierLabel(bracket.tier)
 
 /** Lower rank index is the better tier; Valhallan sits above the listed ladder. */
 const tierRank = (tier: string): number => {

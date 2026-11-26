@@ -4,7 +4,7 @@ import { StatGrid } from "@/components/common/StatGrid"
 import { RankPosition } from "./RankPosition"
 import { regionFlagSrc } from "@/lib/assets"
 import { useRankedBanner } from "@/lib/media"
-import { tierColor } from "@/lib/rankings"
+import { tierColor, tierLabel } from "@/lib/rankings"
 import { percent } from "@/lib/stats"
 import type { Stat } from "@/components/common/StatGrid"
 import type { PlayerStanding } from "@crh/api-contract/schemas"
@@ -39,8 +39,8 @@ export const RankedCard = ({
 }) => {
     const losses = games - wins
 
-    const tierLabel = tier ?? "Valhallan"
-    const banner = useRankedBanner(tierLabel)
+    const label = tierLabel(tier)
+    const banner = useRankedBanner(label)
 
     return (
         <Card className="relative z-0 overflow-visible">
@@ -65,11 +65,11 @@ export const RankedCard = ({
                         className="ch-tier shrink-0"
                         style={
                             {
-                                "--ch-tier": tierColor(tierLabel),
+                                "--ch-tier": tierColor(label),
                             } as CSSProperties
                         }
                     >
-                        {tierLabel}
+                        {label}
                     </span>
                     {meta}
                 </div>
