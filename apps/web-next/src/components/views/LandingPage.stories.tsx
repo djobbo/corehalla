@@ -2,13 +2,18 @@ import type { Decorator, Meta, StoryObj } from "@storybook/react-vite"
 import { LandingFavorites } from "@/components/account/LandingFavorites"
 import { CommunityCard } from "@/components/landing/CommunityCard"
 import { LandingLegends } from "@/components/landing/LandingLegends"
+import { TopGuilds } from "@/components/landing/TopGuilds"
 import { LandingHero } from "@/components/layout/LandingHero"
 import { SearchProvider } from "@/components/layout/Search"
 import { LatestNews } from "@/components/news/LatestNews"
 import { LandingLadder } from "@/components/views/LandingLadder"
 import { WeeklyRotation } from "@/components/views/WeeklyRotation"
 import { withMockApi } from "@/storybook/decorators"
-import { landingLegendBoard, metaLegendBoard } from "@/storybook/fixtures"
+import {
+    landingGuildBoard,
+    landingLegendBoard,
+    metaLegendBoard,
+} from "@/storybook/fixtures"
 import type { BHArticle } from "@crh/api-contract/schemas"
 import type { LadderRow } from "@/lib/ladderRows"
 import type { RotationLegend } from "@/lib/rotation"
@@ -123,8 +128,8 @@ const rotation: readonly RotationLegend[] = [
 
 /**
  * The landing page the route renders: hero, the weekly rotation, the visitor's
- * favourites, the two live ladders, the most played legends, the 2200+ meta
- * legends, then the latest news.
+ * favourites, the two live ladders beside the guild board, the most played
+ * legends, the 2200+ meta legends, then the latest news.
  */
 const meta = {
     title: "Views/Landing page",
@@ -145,9 +150,10 @@ export const Default: Story = {
                 <p id="live-rankings" className="ch-kicker mt-8">
                     Live rankings
                 </p>
-                <div className="mt-2 grid gap-6 lg:grid-cols-2">
+                <div className="mt-2 grid gap-6 lg:grid-cols-3">
                     <LandingLadder bracket="1v1" rows={rows} />
                     <LandingLadder bracket="2v2" rows={rows} />
+                    <TopGuilds board={landingGuildBoard} />
                 </div>
             </section>
             <LandingLegends

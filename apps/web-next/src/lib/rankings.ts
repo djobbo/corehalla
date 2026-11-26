@@ -57,6 +57,10 @@ export const queueHref = (bracket: Bracket, region: Region): string =>
 export const clanHref = (clanId: number | string): string =>
     `/stats/guilds/${clanId}`
 
+/** The guild board has no segment on page one, only on later pages. */
+export const guildRankingsHref = (page = 1): string =>
+    page <= 1 ? "/rankings/guilds" : `/rankings/guilds/${page}`
+
 export const powerGameModes: readonly {
     readonly value: PowerGameMode
     readonly label: string

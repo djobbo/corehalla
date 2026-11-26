@@ -186,7 +186,7 @@ Page rhythm below the hero is Tailwind's default scale, used at a few steps: sec
 
 The intentional break is the overhang. `.ch-nameplate` pulls `1.65rem` past the card padding (`margin-left: -1.65rem`) and reserves `3rem` on the right for the ranked banner. `.ch-card-banner` hangs `0.32rem` off the top. Both stay inside the team grid's `gap-4`.
 
-Catalogue grids go 1 / 2 / 3 columns (`sm` / `lg`). The landing ladders go one column, then two at `lg`. The section nav scrolls horizontally; it does not wrap.
+Catalogue grids go 1 / 2 / 3 columns (`sm` / `lg`). The landing's live rankings go one column, then three at `lg`: the 1v1 ladder, the 2v2 ladder and the guild board. The section nav scrolls horizontally; it does not wrap.
 
 ## Elevation & Depth
 

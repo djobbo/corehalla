@@ -23,6 +23,7 @@ import { isContractCompatible } from "./contract"
 import { runFallback } from "./fallback"
 import type { FallbackSection } from "./fallback"
 import type {
+    ClanRanking,
     Ladder,
     LegendMeta,
     MetaFloor,
@@ -141,6 +142,15 @@ export const clansRankingsAtom = (name: string, page: number) =>
         serializationKey: `clans:${name}:${page}`,
         timeToLive: ttl,
     })
+
+/**
+ * Decoration on the landing: a failed or slow guild board hides the preview
+ * card instead of failing the page, so the ladders and news keep rendering.
+ */
+export const landingGuildsAtom: Atom.Atom<readonly ClanRanking[] | null> =
+    Atom.make((get) =>
+        Option.getOrNull(AsyncResult.value(get(clansRankingsAtom("", 1)))),
+    )
 
 export const legendMetaQueryAtom = (floor: MetaFloor) =>
     CorehallaClient.query("meta", "getLegendMeta", {
