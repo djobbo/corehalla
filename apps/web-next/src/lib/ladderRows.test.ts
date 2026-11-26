@@ -49,6 +49,19 @@ const oneVsOne: Rankings1v1Envelope = {
                 wins: 5,
             },
         },
+        {
+            rank: 3,
+            rating: 2300,
+            peak_rating: 2350,
+            tier: "Diamond",
+            games: 50,
+            wins: 30,
+            region: "eu",
+            id: 44,
+            name: "Three",
+            slug: "44-three",
+            best_legend: null,
+        },
     ],
     meta,
 }
@@ -59,7 +72,7 @@ const twoVsTwo: Rankings2v2Envelope = {
             rank: 1,
             rating: 2512,
             peak_rating: 2512,
-            tier: "Valhallan",
+            tier: null,
             games: 143,
             wins: 123,
             region: "us-e",
@@ -85,13 +98,25 @@ const threeVsThree: Rankings3v3Envelope = {
             rank: 1,
             rating: 2400,
             peak_rating: 2400,
-            tier: "Diamond",
+            tier: null,
             games: 30,
             wins: 20,
             region: "brz",
             id: 7,
             name: "Three",
             slug: "7-three",
+        },
+        {
+            rank: 2,
+            rating: 2100,
+            peak_rating: 2200,
+            tier: "Diamond",
+            games: 40,
+            wins: 22,
+            region: "eu",
+            id: 8,
+            name: "Four",
+            slug: "8-four",
         },
     ],
     meta,
@@ -107,8 +132,12 @@ describe("to1v1Rows", () => {
         ])
     })
 
-    it("labels a null tier rather than rendering nothing", () => {
-        expect(to1v1Rows(oneVsOne)[1].tier).toBe("Unranked")
+    it("labels a null tier as the top tier", () => {
+        expect(to1v1Rows(oneVsOne)[1].tier).toBe("Valhallan")
+    })
+
+    it("passes an explicit tier through unchanged", () => {
+        expect(to1v1Rows(oneVsOne)[2].tier).toBe("Diamond")
     })
 
     it("carries the record, peak and region of the row", () => {
@@ -150,6 +179,14 @@ describe("to2v2Rows", () => {
         expect(to2v2Rows(twoVsTwo)[1].members).toHaveLength(1)
     })
 
+    it("labels a null tier as the top tier", () => {
+        expect(to2v2Rows(twoVsTwo)[0].tier).toBe("Valhallan")
+    })
+
+    it("passes an explicit tier through unchanged", () => {
+        expect(to2v2Rows(twoVsTwo)[1].tier).toBe("Diamond")
+    })
+
     it("carries the team record but no per-team legend", () => {
         const [team] = to2v2Rows(twoVsTwo)
 
@@ -181,6 +218,14 @@ describe("to3v3Rows", () => {
             region: "brz",
         })
         expect(row.legend).toBeUndefined()
+    })
+
+    it("labels a null tier as the top tier", () => {
+        expect(to3v3Rows(threeVsThree)[0].tier).toBe("Valhallan")
+    })
+
+    it("passes an explicit tier through unchanged", () => {
+        expect(to3v3Rows(threeVsThree)[1].tier).toBe("Diamond")
     })
 })
 

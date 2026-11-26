@@ -3,7 +3,7 @@ import { SplitProgress } from "@/components/common/SplitProgress"
 import { EntityLink } from "@/components/common/EntityLink"
 import { ClanRankIcon } from "./ClanRankIcon"
 import { regionFlagSrc } from "@/lib/assets"
-import { playerHref, tierColor } from "@/lib/rankings"
+import { playerHref, tierColor, tierLabel } from "@/lib/rankings"
 import { percent } from "@/lib/stats"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import { formatUnixTime } from "@crh/common/helpers/date"
@@ -59,12 +59,12 @@ export const MemberCard = ({
                             style={
                                 {
                                     "--ch-tier": tierColor(
-                                        ranked.tier ?? "Valhallan",
+                                        tierLabel(ranked.tier),
                                     ),
                                 } as CSSProperties
                             }
                         >
-                            {ranked.tier ?? "Valhallan"}
+                            {tierLabel(ranked.tier)}
                         </span>
                         <span
                             className="text-sm font-bold"

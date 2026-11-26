@@ -1,5 +1,6 @@
 import { legendsMap } from "@crh/bhapi/legends"
 import { legendHref } from "./legends"
+import { tierLabel } from "./rankings"
 import type {
     Rankings1v1Envelope,
     Rankings2v2Envelope,
@@ -62,7 +63,7 @@ export const to1v1Rows = (
         rank: row.rank,
         rating: row.rating,
         peakRating: row.peak_rating,
-        tier: row.tier ?? "Unranked",
+        tier: tierLabel(row.tier),
         games: row.games,
         wins: row.wins,
         region: row.region,
@@ -78,7 +79,7 @@ export const to2v2Rows = (
         rank: row.rank,
         rating: row.rating,
         peakRating: row.peak_rating,
-        tier: row.tier ?? "Unranked",
+        tier: tierLabel(row.tier),
         games: row.games,
         wins: row.wins,
         region: row.region,
@@ -94,7 +95,7 @@ export const to3v3Rows = (
         rank: row.rank,
         rating: row.rating,
         peakRating: row.peak_rating,
-        tier: row.tier ?? "Unranked",
+        tier: tierLabel(row.tier),
         games: row.games,
         wins: row.wins,
         region: row.region,

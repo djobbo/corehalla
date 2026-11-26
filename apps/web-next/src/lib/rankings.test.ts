@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vite-plus/test"
-import { clanHref, playerHref, tierColor } from "./rankings"
+import { clanHref, playerHref, tierColor, tierLabel } from "./rankings"
 import { parseEntityId } from "@crh/common/helpers/entitySlug"
 
 describe("playerHref", () => {
@@ -31,6 +31,17 @@ describe("clanHref", () => {
 
     it("still accepts a bare id", () => {
         expect(clanHref(9)).toBe("/stats/guilds/9")
+    })
+})
+
+describe("tierLabel", () => {
+    it("reads a null tier as the top tier", () => {
+        expect(tierLabel(null)).toBe("Valhallan")
+    })
+
+    it("keeps an explicit tier unchanged", () => {
+        expect(tierLabel("Diamond")).toBe("Diamond")
+        expect(tierLabel("Valhallan")).toBe("Valhallan")
     })
 })
 
