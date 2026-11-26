@@ -1,5 +1,5 @@
 import { describe, expect, it } from "@effect/vitest"
-import { eloReset, seasonGlory } from "./season"
+import { eloReset, rankedBracketState, seasonGlory } from "./season"
 import type { PlayerRanked } from "@crh/api-contract/schemas"
 
 type Bracket = NonNullable<PlayerRanked["1v1"]>
@@ -60,6 +60,41 @@ describe("seasonGlory", () => {
             fromRating: 900,
             bestRating: 2104,
         })
+    })
+})
+
+describe("rankedBracketState", () => {
+    it("reports placements for a bracket whose rating placements still hide", () => {
+        // The domain writes a Valhallan name over an unplaced bracket; the flag wins.
+        const placement = {
+            ...bracket(0),
+            rating: 0,
+            peak_rating: 0,
+            is_placement_matches: true,
+            tier: "Valhallan",
+            wins: 4,
+            games: 9,
+        }
+
+        expect(rankedBracketState(placement)).toEqual({ kind: "placements" })
+    })
+
+    it("reports the tier of a placed bracket", () => {
+        expect(rankedBracketState(bracket(1950))).toEqual({
+            kind: "rated",
+            tier: "Diamond",
+        })
+    })
+
+    it("keeps the payload's null tier as Valhallan once placements are done", () => {
+        expect(rankedBracketState({ ...bracket(1950), tier: null })).toEqual({
+            kind: "rated",
+            tier: "Valhallan",
+        })
+    })
+
+    it("reports a missing bracket instead of inventing a tier", () => {
+        expect(rankedBracketState(null)).toEqual({ kind: "missing" })
     })
 })
 

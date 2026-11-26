@@ -1,5 +1,6 @@
 import { getTierFromRating } from "@crh/bhapi/helpers/getTierFromRating"
 import { GLORY_MIN_GAMES } from "@crh/domain/aggregate/season"
+import { tierLabel } from "./rankings"
 import type { TierLabel } from "./calc"
 import type { PlayerRanked } from "@crh/api-contract/schemas"
 
@@ -40,6 +41,25 @@ export const seasonGlory = (ranked: PlayerRanked): SeasonGlory => {
 export type EloReset = {
     readonly rating: number
     readonly tier: TierLabel
+}
+
+export type RankedBracketState =
+    | { readonly kind: "missing" }
+    | { readonly kind: "placements" }
+    | { readonly kind: "rated"; readonly tier: string }
+
+/**
+ * Placements hide the rating, so the payload's tier is not a claim yet. The
+ * flag is the only signal: a placed bracket with a null tier stays Valhallan.
+ */
+export const rankedBracketState = (
+    bracket: NonNullable<PlayerRanked["1v1"]> | null,
+): RankedBracketState => {
+    if (bracket === null) return { kind: "missing" }
+
+    if (bracket.is_placement_matches) return { kind: "placements" }
+
+    return { kind: "rated", tier: tierLabel(bracket.tier) }
 }
 
 export const eloReset = (

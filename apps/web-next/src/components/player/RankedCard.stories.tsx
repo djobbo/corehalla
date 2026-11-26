@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import { expect, within } from "storybook/test"
 import { EmptyRankedCard, RankedCard } from "./RankedCard"
 
 const meta = {
@@ -31,6 +32,39 @@ export const Valhallan: Story = {
         peakRating: 2180,
         wins: 96,
         games: 140,
+    },
+}
+
+export const Placements: Story = {
+    // The payload still carries the placeholder tier; the flag has to win.
+    args: {
+        title: "Ranked 1v1",
+        tier: "Valhallan",
+        region: "eu",
+        rating: 0,
+        peakRating: 0,
+        wins: 4,
+        games: 9,
+        regionalRank: 0,
+        globalRank: 0,
+        standing: { rank: 0, sample_size: 214_300, top_percent: 0 },
+        isPlacementMatches: true,
+    },
+    async play({ canvasElement }) {
+        const canvas = within(canvasElement)
+
+        await expect(canvas.getByText("Placements")).toBeVisible()
+        await expect(
+            canvas.getByText(
+                "The rating appears once placement matches are complete.",
+            ),
+        ).toBeVisible()
+        await expect(canvas.getByText("9 games")).toBeVisible()
+        await expect(canvas.getByText(/4W/)).toBeVisible()
+        await expect(canvas.getByText(/5L/)).toBeVisible()
+        await expect(canvas.queryByText("Valhallan")).toBeNull()
+        await expect(canvas.queryByText(/peak/)).toBeNull()
+        await expect(canvas.queryByText(/indexed ranked players/)).toBeNull()
     },
 }
 

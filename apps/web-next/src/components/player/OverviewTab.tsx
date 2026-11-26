@@ -45,6 +45,7 @@ const Ranked1v1Panel = ({
             regionalRank={ranked.region_rank}
             globalRank={ranked.global_rank}
             standing={standing}
+            isPlacementMatches={ranked.is_placement_matches}
         />
     )
 }
@@ -82,6 +83,7 @@ const Ranked3v3Panel = ({
             peakRating={ranked.peak_rating}
             wins={ranked.wins}
             games={ranked.games}
+            isPlacementMatches={ranked.is_placement_matches}
         />
     )
 }

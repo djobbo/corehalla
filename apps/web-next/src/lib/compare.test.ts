@@ -168,6 +168,67 @@ describe("comparePlayers", () => {
         })
     })
 
+    it("reads an unplaced side as Placements and awards the tier row to neither", () => {
+        const unplaced = bracket({
+            rating: 0,
+            peak_rating: 0,
+            is_placement_matches: true,
+            tier: "Valhallan",
+            wins: 4,
+            games: 9,
+        })
+
+        const rows = comparePlayers(
+            profile({ ranked: ranked({ "1v1": unplaced }) }),
+            profile(),
+        )
+
+        expect(row(rows, "1v1 tier")).toEqual({
+            label: "1v1 tier",
+            a: "Placements",
+            b: "Diamond",
+            winner: null,
+        })
+    })
+
+    it("leaves two unplaced sides level on the tier row", () => {
+        const unplaced = bracket({
+            rating: 0,
+            peak_rating: 0,
+            is_placement_matches: true,
+            tier: "Valhallan",
+            wins: 4,
+            games: 9,
+        })
+
+        const rows = comparePlayers(
+            profile({ ranked: ranked({ "1v1": unplaced }) }),
+            profile({ ranked: ranked({ "1v1": unplaced }) }),
+        )
+
+        expect(row(rows, "1v1 tier")).toEqual({
+            label: "1v1 tier",
+            a: "Placements",
+            b: "Placements",
+            winner: null,
+        })
+    })
+
+    it("ranks a placed Valhallan above Diamond", () => {
+        const rows = comparePlayers(
+            profile({
+                ranked: ranked({ "1v1": bracket({ tier: "Valhallan" }) }),
+            }),
+            profile(),
+        )
+
+        expect(row(rows, "1v1 tier")).toMatchObject({
+            a: "Valhallan",
+            b: "Diamond",
+            winner: "a",
+        })
+    })
+
     it("leaves equal values without a winner", () => {
         const rows = comparePlayers(profile(), profile())
 
