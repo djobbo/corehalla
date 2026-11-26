@@ -842,6 +842,18 @@ export const legends: Legend[] = [
         "dexterity": "4",
         "defense": "5",
         "speed": "8"
+    },
+    {
+        "legend_id": 73,
+        "legend_name_key": "morgwyn",
+        "bio_name": "Morgwyn",
+        "bio_aka": "The Dreadknight",
+        "weapon_one": "Greatsword",
+        "weapon_two": "Gauntlets",
+        "strength": 5,
+        "dexterity": 8,
+        "defense": 3,
+        "speed": 6
     }
 ]
 
