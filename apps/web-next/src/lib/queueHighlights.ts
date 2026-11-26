@@ -7,6 +7,8 @@ export type QueueHighlights = {
     readonly climbers: readonly QueuedEntry[]
     /** Largest rating loss first. */
     readonly drops: readonly QueuedEntry[]
+    /** Most games played first. */
+    readonly mostGames: readonly QueuedEntry[]
 }
 
 const byId = (a: QueuedEntry, b: QueuedEntry): number =>
@@ -33,4 +35,12 @@ export const queueHighlights = (
         .filter((row) => row.ratingDelta < 0)
         .sort((a, b) => a.ratingDelta - b.ratingDelta || byTieBreak(a, b))
         .slice(0, limit),
+    mostGames: rows
+        .filter((row) => row.games > 0)
+        .sort((a, b) => b.games - a.games || byTieBreak(a, b))
+        .slice(0, limit),
 })
+
+/** A queue entry that has not played yet has no record to show, only a dash. */
+export const sessionRecord = (games: number, wins: number): string =>
+    games <= 0 ? "—" : `${wins}W ${games - wins}L`

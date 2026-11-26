@@ -1,5 +1,5 @@
 import { describe, expect, it } from "@effect/vitest"
-import { queueHighlights } from "./queueHighlights"
+import { queueHighlights, sessionRecord } from "./queueHighlights"
 import type { QueuedEntry } from "@crh/api-contract/schemas"
 
 const entry = (
@@ -100,8 +100,66 @@ describe("queueHighlights", () => {
         expect(drops).toEqual([])
     })
 
-    it("returns two empty lists for an empty queue", () => {
-        expect(queueHighlights([])).toEqual({ climbers: [], drops: [] })
+    it("returns empty lists for an empty queue", () => {
+        expect(queueHighlights([])).toEqual({
+            climbers: [],
+            drops: [],
+            mostGames: [],
+        })
+    })
+
+    it("orders the busiest entries by games descending", () => {
+        const { mostGames } = queueHighlights([
+            entry({ id: "quiet", games: 12 }),
+            entry({ id: "busy", games: 40 }),
+            entry({ id: "steady", games: 25 }),
+        ])
+
+        expect(mostGames.map((row) => row.id)).toEqual([
+            "busy",
+            "steady",
+            "quiet",
+        ])
+    })
+
+    it("breaks most-games ties on the higher rating, then the entry id", () => {
+        const { mostGames } = queueHighlights([
+            entry({ id: "d", games: 30, rating: 1900 }),
+            entry({ id: "b", games: 30, rating: 2100 }),
+            entry({ id: "a", games: 30, rating: 2100 }),
+            entry({ id: "c", games: 30, rating: 2050 }),
+        ])
+
+        expect(mostGames.map((row) => row.id)).toEqual(["a", "b", "c", "d"])
+    })
+
+    it("leaves entries with no games out of the busiest list", () => {
+        const { mostGames } = queueHighlights([
+            entry({ id: "unplayed", games: 0, wins: 0 }),
+            entry({ id: "played", games: 3 }),
+        ])
+
+        expect(mostGames.map((row) => row.id)).toEqual(["played"])
+    })
+
+    it("caps the busiest list at five entries", () => {
+        const rows = Array.from({ length: 7 }, (_, index) =>
+            entry({ id: `player-${index}`, games: 10 + index }),
+        )
+
+        const { mostGames } = queueHighlights(rows)
+
+        expect(mostGames).toHaveLength(5)
+        expect(mostGames[0]?.id).toBe("player-6")
+        expect(mostGames[4]?.id).toBe("player-2")
+    })
+
+    it("returns an empty busiest list when nobody has played", () => {
+        const { mostGames } = queueHighlights([
+            entry({ id: "fresh", games: 0, wins: 0 }),
+        ])
+
+        expect(mostGames).toEqual([])
     })
 
     it("keeps both members of a team entry", () => {
@@ -120,5 +178,23 @@ describe("queueHighlights", () => {
             "1456",
             "2087",
         ])
+    })
+})
+
+describe("sessionRecord", () => {
+    it("formats wins and losses from the games played", () => {
+        expect(sessionRecord(7, 4)).toBe("4W 3L")
+    })
+
+    it("formats a single win", () => {
+        expect(sessionRecord(1, 1)).toBe("1W 0L")
+    })
+
+    it("formats a losing record", () => {
+        expect(sessionRecord(5, 1)).toBe("1W 4L")
+    })
+
+    it("renders a dash when the entry has no games", () => {
+        expect(sessionRecord(0, 0)).toBe("—")
     })
 })
