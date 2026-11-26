@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/empty"
 import { Input } from "@/components/ui/input"
 import { GuildRankedStrength } from "./GuildRankedStrength"
+import { GuildStrongestMembers } from "./GuildStrongestMembers"
 import { MemberCard } from "./MemberCard"
 import { TopContributors } from "./TopContributors"
 import { guildAtom, useQuery } from "@/effect/atoms"
@@ -245,9 +246,10 @@ export const ClanBody = ({ clanId }: { readonly clanId: number }) => {
 
     return (
         <div className="flex flex-col gap-6">
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
                 <TopContributors members={guild.data.members} />
                 <GuildRankedStrength members={guild.data.members} />
+                <GuildStrongestMembers members={guild.data.members} />
             </div>
             <Roster guild={guild.data} />
         </div>
