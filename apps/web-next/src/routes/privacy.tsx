@@ -80,6 +80,12 @@ function PrivacyPage() {
                     them again. They never leave your device.
                 </p>
                 <p>
+                    <strong>Daily legend.</strong> Today's round, your guesses
+                    and your streak are kept in your browser's local storage
+                    under <Code>corehalla:daily</Code>, so a reload resumes the
+                    same round. They never leave your device.
+                </p>
+                <p>
                     <strong>Failure reports.</strong> When a stats request
                     cannot be served, the page sends a short same-origin report
                     to our own worker: which section failed, how long it took,

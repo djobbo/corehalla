@@ -20,6 +20,14 @@ export const LandingHero = () => (
             >
                 Browse the leaderboards
             </Button>
+            <Button
+                size="lg"
+                variant="secondary"
+                nativeButton={false}
+                render={<Link to="/daily" />}
+            >
+                Play the daily legend
+            </Button>
         </div>
     </section>
 )
