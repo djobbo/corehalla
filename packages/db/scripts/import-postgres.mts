@@ -1034,7 +1034,7 @@ Next steps:
      pnpm db:seed:verify -- --dir=${relative(repoDir, options.out)}
 
 2. Import once, remotely. Either let Alchemy ingest the files above
-   (the root alchemy.run.ts attaches this directory to \`importFiles\` when the flag
+   (apps/infra/alchemy.run.ts attaches this directory to \`importFiles\` when the flag
    is set, and Cloudflare applies them in order):
 
      IMPORT_SUPABASE_SEED=1 pnpm deploy

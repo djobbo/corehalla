@@ -11,8 +11,8 @@
         "db:seed": "vp run --filter @crh/db db:seed",
         "db:seed:verify": "vp run --filter @crh/db db:seed:verify",
         "db:import:supabase": "vp run --filter @crh/db db:import:supabase",
-        "deploy": "alchemy deploy --env-file .env",
-        "destroy": "alchemy destroy --env-file .env",
+        "deploy": "vp run -F @crh/infra deploy --env-file \"$PWD/.env\"",
+        "destroy": "vp run -F @crh/infra destroy --env-file \"$PWD/.env\"",
         "dl-roster": "vp run -r dl-roster",
         "ts:check": "effect-tsgo vp check --no-fmt --no-lint",
         "check": "effect-tsgo vp check",
@@ -24,11 +24,9 @@
         "cms:seed:media": "vp run --filter @crh/cms seed:media"
     },
     "devDependencies": {
-        "@alchemy.run/cloudflare": "catalog:",
         "@effect/platform-node": "catalog:",
         "@effect/tsgo": "catalog:",
         "@types/node": "catalog:",
-        "alchemy": "catalog:",
         "effect": "catalog:",
         "tsrs": "catalog:",
         "typescript": "catalog:",

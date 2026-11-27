@@ -8,15 +8,18 @@ import * as Effect from "effect/Effect"
 import * as FileSystem from "effect/FileSystem"
 import * as Path from "effect/Path"
 import * as Redacted from "effect/Redacted"
+import { deployment } from "./src/deployment"
 
 /**
- * Cloudflare stack for the workspace. Paths are repo-relative.
- * `Website.Vite` supplies the Cloudflare plugin, so the app configs must not
- * add `@cloudflare/vite-plugin` themselves.
+ * Cloudflare stack for the workspace. Every repo path resolves from
+ * `repoRoot`, so the stack declares the same resources whether the CLI runs
+ * from the repo root or from `apps/infra`.
  *
- * Worker settings are `Config` values. Alchemy reads them from the repo-root
- * `.env` (`dev` / `deploy` / `destroy` pass `--env-file .env`) and binds them
- * onto the Worker.
+ * Worker settings are `Config` values. Locally, Alchemy reads them from the
+ * repo-root `.env` (`vp run deploy` passes it with `--env-file`); in CI they
+ * come from the job environment. `SITE_URL` and `ALCHEMY_STAGE` pick the
+ * environment: `prod` keeps the bare resource names, every other stage is
+ * suffixed `-dev` (see `./src/deployment`).
  */
 
 const supabaseSeedDir = "packages/db/seed/generated/supabase"
@@ -35,14 +38,28 @@ const setting = (key: string, fallback = "") =>
 const secret = (key: string) =>
     Config.Redacted(key).pipe(Config.withDefault(Redacted.make("")))
 
-/** Opt-in: the SQL is gitignored. Dropping `importFiles` later drops hashes, not rows. */
-const supabaseImportFiles = Effect.fnUntraced(function* () {
+/**
+ * Opt-in: the SQL is gitignored. Dropping `importFiles` later drops hashes,
+ * not rows. The dump is a copy of production, so only prod and the local
+ * simulator may import it; the dev stage keeps its own empty database.
+ */
+const supabaseImportFiles = Effect.fnUntraced(function* (
+    repoRoot: string,
+    canImport: boolean,
+) {
     const enabled = yield* setting("IMPORT_SUPABASE_SEED")
     if (enabled !== "1") return undefined
+    if (!canImport) {
+        return yield* Effect.fail(
+            configError(
+                "IMPORT_SUPABASE_SEED=1 is not supported outside prod: the dev stage keeps its own empty database.",
+            ),
+        )
+    }
 
     const fs = yield* FileSystem.FileSystem
     const path = yield* Path.Path
-    const directory = path.resolve(import.meta.dirname, supabaseSeedDir)
+    const directory = path.resolve(repoRoot, supabaseSeedDir)
     if (!(yield* fs.exists(directory))) {
         return yield* Effect.fail(
             configError(
@@ -56,66 +73,51 @@ const supabaseImportFiles = Effect.fnUntraced(function* () {
         .map((entry) => path.basename(entry))
         .filter((file) => file.endsWith(".sql"))
         .sort()
-        .map((file) => `${supabaseSeedDir}/${file}`)
+        .map((file) => path.resolve(directory, file))
 })
 
 /** Alchemy's local Vite port. `internalOrigin` refers to it under `alchemy dev`. */
 const DEV_PORT = 1337
 
-/** Cached payloads tolerate KV's eventual consistency. */
-export const CorehallaCache = Cloudflare.KV.Namespace("CorehallaCache", {
-    title: "corehalla-api-cache",
-})
-
-/**
- * The ladder walk and the activity sampler have separate lanes so neither
- * waits on the other. The walk keeps its original queue name.
- */
-export const CorehallaCrawlQueue = Cloudflare.Queues.Queue(
-    "CorehallaCrawlQueue",
-    {
-        name: "corehalla-crawl",
-    },
-)
-
-/** The sampler's lane. A shared FIFO put every sample behind the walk. */
-export const CorehallaSampleQueue = Cloudflare.Queues.Queue(
-    "CorehallaSampleQueue",
-    {
-        name: "corehalla-crawl-samples",
-    },
-)
-
 export default Alchemy.Stack(
     "Corehalla",
     {
         providers: Cloudflare.providers(),
-        // Remote state, shared by CI and local runs.
+        // Remote state, shared by CI and local runs, keyed by stack + stage.
         state: Cloudflare.state(),
     },
     Effect.gen(function* () {
-        const siteUrl = yield* setting("SITE_URL", "https://corehalla.com")
-        const importFiles = yield* supabaseImportFiles().pipe(
+        const target = yield* deployment()
+        const { isProd, stage, siteUrl, hostname, cmsHostname, cmsSkipHosts } =
+            target
+        const { uiHostname, names } = target
+
+        const path = yield* Path.Path
+        const repoRoot = path.resolve(import.meta.dirname, "../..")
+        const isDev = yield* Alchemy.ALCHEMY_DEV
+        const importFiles = yield* supabaseImportFiles(
+            repoRoot,
+            isProd || isDev,
+        ).pipe(
             Effect.mapError((cause) =>
                 cause instanceof ConfigError
                     ? cause
                     : configError("Could not list Supabase seed files", cause),
             ),
         )
-        const isDev = yield* Alchemy.ALCHEMY_DEV
         const internalOrigin = isDev ? `http://localhost:${DEV_PORT}` : siteUrl
-        const hostname = siteUrl.replace(/^https?:\/\//, "").replace(/\/+$/, "")
-        const uiHostname = `ui.${hostname}`
 
-        if (!isDev) {
+        if (cmsSkipHosts !== undefined && !isDev) {
             // WAF is zone-scoped while the CMS is a subdomain. Adopt the
             // existing zone instead of trying to create it.
             const zone = yield* Cloudflare.Zone.Zone("CorehallaZone", {
                 name: yield* setting("CLOUDFLARE_ZONE", "corehalla.com"),
             }).pipe(adopt(true))
 
-            // This owns the entire custom-firewall phase entrypoint. Any
-            // existing custom rules must be represented in `rules` here.
+            // The zone owns a single custom-firewall entrypoint, so only prod
+            // declares it — dev resources live in the same zone. Any existing
+            // custom rules must be represented in `rules` here. The dev CMS is
+            // in that zone too, so its skip rule belongs to this ruleset.
             yield* Cloudflare.Ruleset.Ruleset("CmsApiSkipChallenge", {
                 zone,
                 phase: "http_request_firewall_custom",
@@ -124,7 +126,7 @@ export default Alchemy.Stack(
                 rules: [
                     {
                         description: "Skip WAF and bot checks for CMS APIs",
-                        expression: `http.host eq "cms.${hostname}" and (starts_with(lower(http.request.uri.path), "/_emdash/api/") or starts_with(lower(http.request.uri.path), "/api/public/"))`,
+                        expression: `(${cmsSkipHosts.map((host) => `http.host eq "${host}"`).join(" or ")}) and (starts_with(lower(http.request.uri.path), "/_emdash/api/") or starts_with(lower(http.request.uri.path), "/api/public/"))`,
                         action: "skip",
                         actionParameters: {
                             ruleset: "current",
@@ -147,52 +149,69 @@ export default Alchemy.Stack(
             })
         }
 
+        const cache = Cloudflare.KV.Namespace("CorehallaCache", {
+            title: names.cacheNamespace,
+        })
+
+        /**
+         * The ladder walk and the activity sampler have separate lanes so
+         * neither waits on the other.
+         */
+        const crawlQueue = Cloudflare.Queues.Queue("CorehallaCrawlQueue", {
+            name: names.crawlQueue,
+        })
+
+        /** The sampler's lane. A shared FIFO put every sample behind the walk. */
+        const sampleQueue = Cloudflare.Queues.Queue("CorehallaSampleQueue", {
+            name: names.sampleQueue,
+        })
+
         // Read replication stays off so session reads are not served stale.
         const dbResource = Cloudflare.D1.Database("CorehallaDb", {
-            name: "corehalla",
-            migrations: "packages/db/drizzle",
+            name: names.database,
+            migrations: path.resolve(repoRoot, "packages/db/drizzle"),
             importFiles,
         })
         // EmDash owns its core schema; it migrates D1 on first request.
         const cmsDbResource = Cloudflare.D1.Database("CorehallaEmDashDb", {
-            name: "corehalla-emdash",
+            name: names.cmsDatabase,
         })
         const cmsMediaResource = Cloudflare.R2.Bucket("CorehallaMedia", {
-            name: "corehalla-media",
+            name: names.mediaBucket,
         })
         const cmsResource = Cloudflare.Website.Astro("CorehallaCms", {
-            rootDir: `${import.meta.dirname}/apps/cms`,
-            name: "corehalla-cms",
-            domain: `cms.${hostname}`,
+            rootDir: path.resolve(repoRoot, "apps/cms"),
+            name: names.cmsWorker,
+            domain: cmsHostname,
             env: {
                 DB: cmsDbResource,
                 MEDIA: cmsMediaResource,
                 IMAGES: Cloudflare.Images.Images("IMAGES"),
                 // Explicit canonical origin: behind a proxy the request
                 // origin can be the internal http:// Worker URL.
-                EMDASH_SITE_URL: `https://cms.${hostname}`,
+                EMDASH_SITE_URL: `https://${cmsHostname}`,
             },
         })
         const cms = isDev ? undefined : yield* cmsResource
         const cmsDevUrl = "http://localhost:3002"
 
         const apiResource = Cloudflare.Worker("CorehallaApi", {
-            name: "corehalla-api",
-            main: "apps/api/src/index.ts",
+            name: names.apiWorker,
+            main: path.resolve(repoRoot, "apps/api/src/index.ts"),
             routes: [{ pattern: `${hostname}/api/v1/*` }],
             compatibility: {
                 flags: ["enable_request_signal"],
             },
             env: {
                 DB: dbResource,
-                CACHE: CorehallaCache,
+                CACHE: cache,
                 // Per-colo burst damper. Enforcement is eventually consistent,
                 // so the global total can exceed this.
                 RATE_LIMITER: Cloudflare.RateLimit("RATE_LIMITER", {
                     namespaceId: 1001,
                     simple: { limit: 30, period: 10 },
                 }),
-                SITE_URL: setting("SITE_URL", "https://corehalla.com"),
+                SITE_URL: siteUrl,
                 ...(cms === undefined
                     ? { CMS_DEV_URL: cmsDevUrl }
                     : { CMS: cmsResource }),
@@ -201,8 +220,8 @@ export default Alchemy.Stack(
             },
         })
         const crawlerResource = Cloudflare.Worker("CorehallaCrawler", {
-            name: "corehalla-crawler",
-            main: "apps/crawler/src/index.ts",
+            name: names.crawlerWorker,
+            main: path.resolve(repoRoot, "apps/crawler/src/index.ts"),
             // `*/10` samples activity; `*/30` also runs the full crawl.
             crons: ["*/10 * * * *", "*/30 * * * *"],
             compatibility: {
@@ -210,27 +229,27 @@ export default Alchemy.Stack(
             },
             env: {
                 DB: dbResource,
-                CACHE: CorehallaCache,
-                CRAWL_QUEUE: CorehallaCrawlQueue,
-                CRAWL_SAMPLE_QUEUE: CorehallaSampleQueue,
-                SITE_URL: setting("SITE_URL", "https://corehalla.com"),
+                CACHE: cache,
+                CRAWL_QUEUE: crawlQueue,
+                CRAWL_SAMPLE_QUEUE: sampleQueue,
+                SITE_URL: siteUrl,
             },
         })
         const db = yield* dbResource
         const api = yield* apiResource
         const crawler = yield* crawlerResource
-        const crawlQueue = yield* CorehallaCrawlQueue
-        const sampleQueue = yield* CorehallaSampleQueue
+        const { queueId: crawlQueueId } = yield* crawlQueue
+        const { queueId: sampleQueueId } = yield* sampleQueue
 
         // web-next is now the main web app. It keeps its own worker name so
         // the old `corehalla-web` worker is removed in the same apply.
         const website = yield* Cloudflare.Website.Vite("CorehallaWebNext", {
-            rootDir: "./apps/web-next",
+            rootDir: path.resolve(repoRoot, "apps/web-next"),
             dev: { port: DEV_PORT },
             compatibility: {
                 flags: ["enable_request_signal"],
             },
-            name: "corehalla-web-next",
+            name: names.webWorker,
             domain: hostname,
             env: {
                 API: apiResource,
@@ -239,7 +258,7 @@ export default Alchemy.Stack(
                 ...(cms === undefined
                     ? { CMS_DEV_URL: cmsDevUrl }
                     : { CMS: cmsResource }),
-                SITE_URL: setting("SITE_URL", "https://corehalla.com"),
+                SITE_URL: siteUrl,
                 VITE_SITE_URL: siteUrl,
                 VITE_ALERT: setting("VITE_ALERT"),
                 INTERNAL_ORIGIN: internalOrigin,
@@ -268,10 +287,10 @@ export default Alchemy.Stack(
         const storybook = yield* Cloudflare.Website.StaticSite(
             "CorehallaWebNextStorybook",
             {
-                cwd: "./apps/web-next",
+                cwd: path.resolve(repoRoot, "apps/web-next"),
                 command: "vp run build-storybook",
                 outdir: "storybook-static",
-                name: "corehalla-web-next-storybook",
+                name: names.storybookWorker,
                 domain: uiHostname,
                 dev: {
                     command: "vp run storybook",
@@ -284,7 +303,7 @@ export default Alchemy.Stack(
         // queue id and the worker script name. One invocation per lane: extra
         // concurrency multiplies the shared per-IP upstream rate.
         yield* Cloudflare.Queues.Consumer("CorehallaCrawlConsumer", {
-            queueId: crawlQueue.queueId,
+            queueId: crawlQueueId,
             scriptName: crawler.workerName,
             settings: {
                 batchSize: 1,
@@ -295,7 +314,7 @@ export default Alchemy.Stack(
         })
 
         yield* Cloudflare.Queues.Consumer("CorehallaCrawlSampleConsumer", {
-            queueId: sampleQueue.queueId,
+            queueId: sampleQueueId,
             scriptName: crawler.workerName,
             settings: {
                 batchSize: 1,
@@ -306,6 +325,7 @@ export default Alchemy.Stack(
         })
 
         return {
+            stage,
             url: website.url,
             cmsUrl: cms === undefined ? cmsDevUrl : cms.url,
             storybookUrl: storybook.url,

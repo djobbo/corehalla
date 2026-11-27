@@ -10,7 +10,7 @@ import type { D1Database } from "@crh/db/client"
  */
 
 type WorkerEnvironment = {
-    /** The D1 database binding (see `alchemy.run.ts` at the repo root). */
+    /** The D1 database binding (see `apps/infra/alchemy.run.ts`). */
     DB?: D1Database
     /**
      * Service binding to the API worker (`@crh/api`).

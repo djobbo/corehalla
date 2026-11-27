@@ -108,9 +108,9 @@ crawler's write volume in mind when adding more.
 pnpm db:generate   # drizzle-kit generate (dialect: sqlite)
 ```
 
-Migrations are applied by **Alchemy** at deploy — the root `alchemy.run.ts` declares
+Migrations are applied by **Alchemy** at deploy — `apps/infra/alchemy.run.ts` declares
 `Cloudflare.D1.Database("CorehallaDb", { name: "corehalla", migrations:
-"../packages/db/drizzle" })` — and to the local simulator by `alchemy dev`. There
+"packages/db/drizzle" })` — and to the local simulator by `alchemy dev`. There
 is no Node migrator any more.
 
 ## Seeding
@@ -238,7 +238,7 @@ database — it does not wipe it — and hash-tracks each file so a redeploy ski
 what it already applied. `alchemy dev` runs the same files against the local
 simulator.
 
-The root `alchemy.run.ts` attaches the generated directory when the opt-in flag is
+`apps/infra/alchemy.run.ts` attaches the generated directory when the opt-in flag is
 set, so the whole import is one command:
 
 ```sh
@@ -324,7 +324,7 @@ in that row — refreshed server-side shortly before they expire. Set
 
 ## Deployment (Alchemy → Cloudflare)
 
-The root `alchemy.run.ts` declares the whole deployment:
+`apps/infra/alchemy.run.ts` declares the whole deployment:
 
 - `Cloudflare.D1.Database("CorehallaDb", { name: "corehalla", migrations })` —
   the SQLite database, with the Drizzle migrations applied at deploy. Read
@@ -334,8 +334,16 @@ The root `alchemy.run.ts` declares the whole deployment:
   with `DB: CorehallaDb` and the Discord/Brawlhalla secrets bound in `env`.
 
 ```sh
-pnpm deploy      # alchemy deploy --env-file .env
+pnpm deploy      # vp run deploy — apps/infra against the repo-root .env
+pnpm destroy     # vp run destroy — same stack, same stage
 ```
+
+The stack lives in `apps/infra`; the root `deploy` / `destroy` scripts are thin
+aliases that pass the repo-root `.env` as `--env-file`. `ALCHEMY_STAGE` picks
+the environment: `feat/rewrite` deploys stage `dev` to `https://dev.corehalla.com`
+from GitHub Actions (`.github/workflows/deploy-dev.yml`), and stage `prod` keeps
+the production names for a later `main` cutover. See `apps/infra/README.md` for
+the stage table and the state store.
 
 The secrets it binds are read from the repo-root `.env` (see below). The
 scripts pass `--env-file .env` so the website build children see that file too.
@@ -380,9 +388,9 @@ SITE_URL=https://corehalla.com
 ```
 
 Environment credentials take precedence over a profile, so a stale `.env` will
-mask an OAuth login. A bare `alchemy deploy` from the repo root still reads
-`.env` for the stack; pass `--env-file .env` (as the scripts do) so the website
-build children see it too.
+mask an OAuth login. `pnpm deploy` passes the repo-root `.env` as `--env-file`
+so the stack and its website build children read it; a bare `alchemy deploy`
+inside `apps/infra` reads a local `.env` if one exists.
 
 For an account-scoped API token, start from Cloudflare's **Edit Cloudflare
 Workers** template and add:

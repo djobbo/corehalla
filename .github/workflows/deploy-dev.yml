@@ -1,0 +1,65 @@
+name: Deploy dev
+
+# A merge is a push, so one trigger covers both. `next` later: add it to
+# `branches` and drop `feat/rewrite` in the same change — both are stage `dev`,
+# so only one of them may be enabled at a time.
+on:
+    push:
+        branches: [feat/rewrite]
+    workflow_dispatch:
+
+# Never cancel a half-applied deploy; queue the next push behind it.
+concurrency:
+    group: deploy-dev
+    cancel-in-progress: false
+
+permissions:
+    contents: read
+
+jobs:
+    deploy:
+        name: Deploy dev
+        runs-on: ubuntu-latest
+        # Repository values plus whatever lives on the `development` environment
+        # (notably `SITE_URL`). Nothing here is written to the repo.
+        environment: development
+        env:
+            ALCHEMY_STAGE: dev
+            SITE_URL: ${{ vars.SITE_URL }}
+            CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+            CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+            CLOUDFLARE_ZONE: ${{ vars.CLOUDFLARE_ZONE }}
+            DISCORD_CLIENT_ID: ${{ vars.DISCORD_CLIENT_ID }}
+            DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }}
+            VITE_ENABLE_UPSTREAM_FALLBACK: ${{ vars.VITE_ENABLE_UPSTREAM_FALLBACK }}
+            VITE_GA_TRACKING_ID: ${{ vars.VITE_GA_TRACKING_ID }}
+            VITE_CF_BEACON_TOKEN: ${{ vars.VITE_CF_BEACON_TOKEN }}
+            VITE_ADSENSE_ID: ${{ vars.VITE_ADSENSE_ID }}
+            VITE_ALERT: ${{ vars.VITE_ALERT }}
+            VITE_ADSENSE_SLOT_PROFILE_HEADER: ${{ vars.VITE_ADSENSE_SLOT_PROFILE_HEADER }}
+            VITE_ADSENSE_SLOT_PROFILE_BOTTOM: ${{ vars.VITE_ADSENSE_SLOT_PROFILE_BOTTOM }}
+            VITE_ADSENSE_SLOT_ARTICLES: ${{ vars.VITE_ADSENSE_SLOT_ARTICLES }}
+            VITE_ADSENSE_SLOT_RANKINGS: ${{ vars.VITE_ADSENSE_SLOT_RANKINGS }}
+            VITE_ADSENSE_SLOT_LANDING: ${{ vars.VITE_ADSENSE_SLOT_LANDING }}
+            VITE_BUILD_ID: ${{ github.sha }}
+        steps:
+            - uses: actions/checkout@v4
+            - uses: voidzero-dev/setup-vp@v1.21.0
+              with:
+                  node-version: "24"
+                  cache: true
+            - name: Install
+              run: vp install --frozen-lockfile
+            # A broken tree must never reach Cloudflare. The deploy only runs
+            # when every gate below is green.
+            - name: Check
+              run: vp run check
+            - name: Check types
+              run: vp run -r ts:check
+            - name: Test
+              run: vp run -r test
+            # `--yes` approves the plan without a terminal and lets the state
+            # store be created or upgraded: without it Alchemy refuses a
+            # non-empty plan on a runner and nothing would be applied.
+            - name: Deploy dev
+              run: vp run -F @crh/infra deploy --yes
