@@ -136,7 +136,9 @@ const meta = {
     args: {
         board: populated,
         floor: "1800",
+        weapon: "all",
         onFloorChange() {},
+        onWeaponChange() {},
     },
 } satisfies Meta<typeof LegendMetaBoard>
 
@@ -159,6 +161,28 @@ export const MixedNulls: Story = {
         docs: {
             description: {
                 story: "Lord Vraxx has no damage or suicide denominator and Orion no match-length denominator: each cell reads as an em dash, and each row sorts behind the legends that report the metric. Below `sm` the low-value columns fold into the line under the legend name.",
+            },
+        },
+    },
+}
+
+export const WeaponSelected: Story = {
+    args: { weapon: "Grapple Hammer" },
+    parameters: {
+        docs: {
+            description: {
+                story: "A weapon is selected: only the legends carrying it in either slot stay on the board, the line under the title names the weapon and how much of the board it keeps, and the download saves just these rows. Sorting still applies within the filtered set.",
+            },
+        },
+    },
+}
+
+export const WeaponWithoutMatches: Story = {
+    args: { weapon: "Katars" },
+    parameters: {
+        docs: {
+            description: {
+                story: "No legend on this board carries Katars: the board names the weapon and the floor instead of rendering an empty table, and the weapon selector stays reachable so the visitor can widen the filter again.",
             },
         },
     },

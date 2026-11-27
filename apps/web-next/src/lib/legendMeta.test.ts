@@ -1,14 +1,21 @@
 import { describe, expect, it } from "@effect/vitest"
+import { weapons } from "@crh/bhapi/constants"
 import { compareBy } from "./useSortBy"
 import type { LegendMetaRow } from "./legendMeta"
 import type { LegendPlayStyle } from "@crh/api-contract/schemas"
 import {
+    filterLegendMetaByWeapon,
     formatLegendMetaRate,
     legendMetaDefaultDirection,
     legendMetaDefaultSort,
     legendMetaRank,
     legendMetaRankLabel,
     legendMetaSorts,
+    legendMetaWeaponEmpty,
+    legendMetaWeaponOptions,
+    legendMetaWeaponSample,
+    legendMetaWeaponSearch,
+    resolveLegendMetaWeapon,
 } from "./legendMeta"
 
 const playStyle = (over: Partial<LegendPlayStyle> = {}): LegendPlayStyle => ({
@@ -238,5 +245,139 @@ describe("legendMetaRank", () => {
 describe("legendMetaRankLabel", () => {
     it("names the position and the legends that report the metric", () => {
         expect(legendMetaRankLabel({ position: 4, total: 15 })).toBe("#4 of 15")
+    })
+})
+
+describe("legendMetaWeaponOptions", () => {
+    it("opens with All and then every weapon in roster order", () => {
+        expect(legendMetaWeaponOptions.map((option) => option.value)).toEqual([
+            "all",
+            ...weapons,
+        ])
+    })
+
+    it("labels each option with the weapon's name", () => {
+        expect(legendMetaWeaponOptions[0]?.label).toBe("All weapons")
+
+        for (const weapon of weapons) {
+            expect(
+                legendMetaWeaponOptions.find(
+                    (option) => option.value === weapon,
+                )?.label,
+            ).toBe(weapon)
+        }
+    })
+})
+
+describe("resolveLegendMetaWeapon", () => {
+    it("round-trips every weapon through its URL value", () => {
+        for (const weapon of weapons) {
+            expect(
+                resolveLegendMetaWeapon(legendMetaWeaponSearch(weapon).weapon),
+            ).toBe(weapon)
+        }
+    })
+
+    it("accepts the display name as well as the slug", () => {
+        expect(resolveLegendMetaWeapon("grapple-hammer")).toBe("Grapple Hammer")
+        expect(resolveLegendMetaWeapon("Grapple%20Hammer")).toBe(
+            "Grapple Hammer",
+        )
+    })
+
+    it("resolves an invalid, absent or non-string value to All", () => {
+        expect(resolveLegendMetaWeapon("laser-sword")).toBe("all")
+        expect(resolveLegendMetaWeapon("")).toBe("all")
+        expect(resolveLegendMetaWeapon(undefined)).toBe("all")
+        expect(resolveLegendMetaWeapon(null)).toBe("all")
+        expect(resolveLegendMetaWeapon(42)).toBe("all")
+    })
+})
+
+describe("legendMetaWeaponSearch", () => {
+    it("leaves All out of the URL", () => {
+        expect(legendMetaWeaponSearch("all")).toEqual({})
+    })
+
+    it("writes the weapon's kebab-case slug", () => {
+        expect(legendMetaWeaponSearch("Grapple Hammer")).toEqual({
+            weapon: "grapple-hammer",
+        })
+    })
+})
+
+describe("filterLegendMetaByWeapon", () => {
+    // Bödvar wields a Grapple Hammer and a Sword, Cassidy Blasters and a
+    // Grapple Hammer, Orion a Rocket Lance and a Spear.
+    const board = [row(3), row(4), row(5)]
+
+    it("matches the first weapon slot", () => {
+        expect(
+            filterLegendMetaByWeapon(board, "Blasters").map(
+                (entry) => entry.legendId,
+            ),
+        ).toEqual([4])
+    })
+
+    it("matches the second weapon slot", () => {
+        expect(
+            filterLegendMetaByWeapon(board, "Sword").map(
+                (entry) => entry.legendId,
+            ),
+        ).toEqual([3])
+    })
+
+    it("passes every row for All", () => {
+        expect(filterLegendMetaByWeapon(board, "all")).toBe(board)
+    })
+
+    it("preserves the incoming order", () => {
+        expect(
+            filterLegendMetaByWeapon(
+                [row(4), row(3), row(7)],
+                "Grapple Hammer",
+            ).map((entry) => entry.legendId),
+        ).toEqual([4, 3, 7])
+    })
+
+    it("returns an empty board when no legend wields the weapon", () => {
+        expect(filterLegendMetaByWeapon(board, "Katars")).toEqual([])
+    })
+
+    it("drops a row whose legend the roster does not list", () => {
+        expect(
+            filterLegendMetaByWeapon([row(3), row(9999)], "Sword").map(
+                (entry) => entry.legendId,
+            ),
+        ).toEqual([3])
+    })
+})
+
+describe("legendMetaWeaponSample", () => {
+    it("states how many legends the weapon keeps out of the board", () => {
+        expect(legendMetaWeaponSample(3, 58, "Grapple Hammer")).toBe(
+            "3 of 58 legends wield Grapple Hammer",
+        )
+    })
+
+    it("groups large counts like the rest of the board", () => {
+        expect(legendMetaWeaponSample(1_204, 12_000, "Sword")).toBe(
+            "1,204 of 12,000 legends wield Sword",
+        )
+    })
+
+    it("says nothing when the whole board is shown", () => {
+        expect(legendMetaWeaponSample(58, 58, "all")).toBeNull()
+    })
+})
+
+describe("legendMetaWeaponEmpty", () => {
+    it("names the weapon and the rating floor with no rows", () => {
+        expect(legendMetaWeaponEmpty("Katars", "2200")).toBe(
+            "No legend wielding Katars has indexed games at 2200+ rating yet.",
+        )
+        expect(legendMetaWeaponEmpty("Katars", "all")).toBe(
+            "No legend wielding Katars has indexed games yet.",
+        )
     })
 })
