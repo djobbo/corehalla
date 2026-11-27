@@ -6,6 +6,7 @@ export type CommunityLink = {
 export const discordUrl = "https://discord.com/invite/eD248ez"
 export const kofiUrl = "https://ko-fi.com/corehalla"
 export const githubUrl = "https://github.com/djobbo/corehalla"
+export const wikiUrl = "https://brawlhalla.wiki.gg"
 
 /**
  * The destinations the legacy `/discord`, `/twitter`, `/github` and `/donate`

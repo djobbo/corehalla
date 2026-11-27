@@ -91,6 +91,14 @@ describe("sitemapPaths", () => {
         expect(paths).toContain("/daily")
     })
 
+    it("lists the privacy policy exactly once", () => {
+        const privacyPaths = sitemapPaths().filter(
+            (path) => path === "/privacy",
+        )
+
+        expect(privacyPaths).toHaveLength(1)
+    })
+
     it("includes the calculator and comparison tools", () => {
         const paths = sitemapPaths()
 
