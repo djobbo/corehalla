@@ -23,6 +23,7 @@ export const RankedCard = ({
     standing,
     stats,
     meta,
+    footer,
     isPlacementMatches = false,
 }: {
     readonly title: string
@@ -37,6 +38,7 @@ export const RankedCard = ({
     readonly standing?: PlayerStanding | null
     readonly stats?: readonly Stat[]
     readonly meta?: ReactNode
+    readonly footer?: ReactNode
     readonly isPlacementMatches?: boolean
 }) => {
     const losses = games - wins
@@ -146,6 +148,7 @@ export const RankedCard = ({
                     </span>
                 </div>
                 {stats && <StatGrid className="mt-3" stats={stats} />}
+                {footer}
             </CardContent>
         </Card>
     )

@@ -17,6 +17,8 @@ import {
     directRankings2v2,
     directRankings3v3,
 } from "@crh/domain/direct/rankings"
+import { bestTeamSummary } from "@/lib/teams"
+import type { BestTeamSummary } from "@/lib/teams"
 import type { RotationLegend } from "@/lib/rotation"
 import { CorehallaClient } from "./client"
 import { isContractCompatible } from "./contract"
@@ -357,6 +359,21 @@ export const playerTeamsAtom = (playerId: number) =>
             directPlayerTeams(clients.v1, playerId),
         ),
     )
+
+/**
+ * Decoration on the overview: the lazy teams read never blocks the page. While
+ * it is pending, or when it fails, the card is simply absent.
+ */
+export const playerBestTeamAtom = Atom.family(
+    (playerId: number): Atom.Atom<BestTeamSummary | null> =>
+        Atom.make((get) =>
+            bestTeamSummary(
+                Option.getOrNull(
+                    AsyncResult.value(get(playerTeamsAtom(playerId))),
+                )?.data ?? null,
+            ),
+        ),
+)
 
 export const playerClanQueryAtom = (playerId: number) =>
     CorehallaClient.query("players", "getPlayerClan", {
