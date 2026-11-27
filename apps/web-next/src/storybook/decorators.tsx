@@ -127,6 +127,9 @@ const requestPath = (input: RequestInfo | URL): string => {
  */
 let activeRoutes: Record<string, unknown> = {}
 
+/** Paths a story wants to fail, answered as a section failure. */
+let activeFailures: readonly string[] = []
+
 let fetchMockInstalled = false
 
 /**
@@ -139,6 +142,13 @@ const installFetchMock = () => {
     if (fetchMockInstalled) return
     fetchMockInstalled = true
 
+    // Stories never dial upstream: a failed or unregistered section stays failed.
+    try {
+        localStorage.setItem("corehalla:upstream-fallback", "off")
+    } catch {
+        // Storage can be unavailable; the story still renders.
+    }
+
     const original = globalThis.fetch.bind(globalThis)
     const json = (body: unknown) =>
         new Response(JSON.stringify(body), {
@@ -150,6 +160,15 @@ const installFetchMock = () => {
         const path = requestPath(input)
 
         if (!path.startsWith("/api/v1/")) return original(input, init)
+
+        if (activeFailures.includes(path)) {
+            return Promise.resolve(
+                new Response(null, {
+                    status: 502,
+                    headers: { "x-corehalla-section-error": "1" },
+                }),
+            )
+        }
 
         if (path in activeRoutes) {
             return Promise.resolve(json(activeRoutes[path]))
@@ -192,6 +211,10 @@ export const withMockApi: Decorator = (Story, context) => {
     activeRoutes =
         (context.parameters?.mockApi as Record<string, unknown> | undefined) ??
         {}
+    activeFailures =
+        (context.parameters?.mockApiFailures as
+            | readonly string[]
+            | undefined) ?? []
     installFetchMock()
 
     const router = useMemo(buildRouter, [])

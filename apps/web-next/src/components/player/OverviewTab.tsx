@@ -2,10 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Breakdown } from "@/components/common/Breakdown"
 import { SplitProgress } from "@/components/common/SplitProgress"
 import { StatGrid } from "@/components/common/StatGrid"
+import { BestTeamCard } from "./BestTeamCard"
 import { RankedCard } from "./RankedCard"
 import { LegendBubbleChart } from "@/components/charts/LegendBubbleChart"
 import { WeaponBubbleChart } from "@/components/charts/WeaponBubbleChart"
-import { playerProfileAtom, useQuery } from "@/effect/atoms"
+import { playerBestTeamAtom, playerProfileAtom, useQuery } from "@/effect/atoms"
+import { useAtomValue } from "@effect/atom-react"
 import { cn } from "@/lib/cn"
 import { tierColor } from "@/lib/rankings"
 import { eloReset, seasonGlory } from "@/lib/season"
@@ -419,6 +421,7 @@ const BreakdownPanel = ({
 
 export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
     const profile = useQuery(playerProfileAtom(playerId)).data
+    const best2v2 = useAtomValue(playerBestTeamAtom(playerId))
 
     const {
         stats,
@@ -445,6 +448,7 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
 
     const ranked1v1 = ranked?.["1v1"] ?? null
     const ranked3v3 = ranked?.["3v3"] ?? null
+    const ranked2v2 = ranked?.["2v2"] ?? null
     const soloRecord = profile.solo_2v2
     const has1v1 = ranked1v1 !== null
     const has3v3 = ranked3v3 !== null
@@ -459,9 +463,12 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
     // Games is always drawn, so the widest row is games + both distributions.
     const distributionCount = 1 + Number(hasLegendPlay) + Number(hasWeaponPlay)
 
-    const rankedCardCount = [has1v1, soloRecord !== undefined, has3v3].filter(
-        Boolean,
-    ).length
+    const rankedCardCount = [
+        has1v1,
+        soloRecord !== null,
+        has3v3,
+        best2v2 !== null,
+    ].filter(Boolean).length
 
     const koCounts = (weapon: {
         kos: number
@@ -487,7 +494,7 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                     className={cn(
                         "grid gap-4",
                         rankedCardCount > 1 && "@2xl:grid-cols-2",
-                        rankedCardCount > 2 && "@4xl:grid-cols-3",
+                        rankedCardCount === 3 && "@4xl:grid-cols-3",
                     )}
                 >
                     <Ranked1v1Panel
@@ -495,6 +502,14 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                         standing={profile.standing}
                     />
                     {soloRecord ? <SoloQueuePanel solo={soloRecord} /> : null}
+                    {best2v2 ? (
+                        <BestTeamCard
+                            team={best2v2.team}
+                            pairedTeams={best2v2.pairedTeams}
+                            summary={ranked2v2}
+                            playerSlug={profile.slug}
+                        />
+                    ) : null}
                     <Ranked3v3Panel ranked={ranked3v3} />
                 </div>
             ) : null}

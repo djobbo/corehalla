@@ -430,6 +430,52 @@ export const unplacedPlayerEnvelope = {
     meta: { updated_at: UPDATED_AT },
 }
 
+/** A 2v2 player with no fixed partner: only the solo-queue phantom entry. */
+export const soloQueuePlayerEnvelope = {
+    data: {
+        ...playerEnvelope.data,
+        id: 4248,
+        name: "SoloGrinder",
+        slug: "sologrinder",
+        ranked: {
+            ...playerEnvelope.data.ranked,
+            "2v2": {
+                ...playerEnvelope.data.ranked["2v2"],
+                games: 160,
+                wins: 88,
+                average_rating: 1_830,
+                average_peak_rating: 1_872,
+                teams: [
+                    {
+                        team: [
+                            {
+                                id: 4248,
+                                name: "SoloGrinder",
+                                slug: "sologrinder",
+                            },
+                            {
+                                id: 0,
+                                name: "Solo queue",
+                                slug: "0-solo-queue",
+                            },
+                        ],
+                        paired: false,
+                        rating: 1_830,
+                        peak_rating: 1_872,
+                        tier: "Platinum 2",
+                        wins: 88,
+                        games: 160,
+                        region: "eu",
+                        global_rank: null,
+                        rating_reset: 1_790,
+                    },
+                ],
+            },
+        },
+    },
+    meta: { updated_at: UPDATED_AT },
+}
+
 /** A third player for the head-to-head stories: no legend in common. */
 export const noOverlapPlayerEnvelope = {
     data: {
@@ -815,6 +861,7 @@ export const SHORT_SEASON_PLAYER_ID = 4244
 export const RIVAL_PLAYER_ID = 4245
 export const NO_OVERLAP_PLAYER_ID = 4246
 export const UNPLACED_PLAYER_ID = 4247
+export const SOLO_QUEUE_PLAYER_ID = 4248
 
 /** Guild ids used across the clan stories. */
 export const GUILD_ID = 4242
@@ -836,6 +883,11 @@ export const playerMock = {
         top_percent: 84.2,
     }),
     ...sectionsFor(UNPLACED_PLAYER_ID, unplacedPlayerEnvelope, null),
+    ...sectionsFor(
+        SOLO_QUEUE_PLAYER_ID,
+        soloQueuePlayerEnvelope as unknown as PlayerEnvelope,
+        null,
+    ),
 }
 
 /** Head-to-head: both profile endpoints, plus the picker's search results. */
