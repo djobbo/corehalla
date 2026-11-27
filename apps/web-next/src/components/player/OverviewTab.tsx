@@ -504,6 +504,7 @@ export const OverviewTab = ({ playerId }: { readonly playerId: number }) => {
                     {soloRecord ? <SoloQueuePanel solo={soloRecord} /> : null}
                     {best2v2 ? (
                         <BestTeamCard
+                            playerId={profile.id}
                             team={best2v2.team}
                             pairedTeams={best2v2.pairedTeams}
                             summary={ranked2v2}

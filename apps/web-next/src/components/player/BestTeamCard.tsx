@@ -3,6 +3,7 @@ import { EntityLink } from "@/components/common/EntityLink"
 import { RankedCard } from "./RankedCard"
 import { playerHref } from "@/lib/rankings"
 import { percent } from "@/lib/stats"
+import { teamPartner } from "@/lib/teams"
 import { cleanString } from "@crh/common/helpers/cleanString"
 import type {
     PlayerRanked2v2,
@@ -14,17 +15,19 @@ import type {
  * player's whole 2v2 summary, linking to the full record.
  */
 export const BestTeamCard = ({
+    playerId,
     team,
     pairedTeams,
     summary,
     playerSlug,
 }: {
+    readonly playerId: number
     readonly team: PlayerRankedTeam
     readonly pairedTeams: number
     readonly summary: PlayerRanked2v2 | null
     readonly playerSlug: string
 }) => {
-    const partner = team.team[1]
+    const partner = teamPartner(playerId, team)
 
     return (
         <RankedCard

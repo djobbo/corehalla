@@ -8,6 +8,19 @@ export const pairedTeams = (
     teams: readonly PlayerRankedTeam[],
 ): readonly PlayerRankedTeam[] => teams.filter((team) => team.paired)
 
+/**
+ * The other half of a pair. Upstream does not order the tuple around the queried
+ * player, so the partner is whichever ref is not the player.
+ */
+export const teamPartner = (
+    playerId: number,
+    team: PlayerRankedTeam,
+): PlayerRankedTeam["team"][number] => {
+    const [first, second] = team.team
+
+    return first.id === playerId ? second : first
+}
+
 const outranks = (
     candidate: PlayerRankedTeam,
     current: PlayerRankedTeam,

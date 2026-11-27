@@ -1,5 +1,5 @@
 import { describe, expect, it } from "@effect/vitest"
-import { bestTeam, bestTeamSummary, pairedTeams } from "./teams"
+import { bestTeam, bestTeamSummary, pairedTeams, teamPartner } from "./teams"
 import type {
     PlayerRanked2v2,
     PlayerRankedTeam,
@@ -116,5 +116,23 @@ describe("bestTeamSummary", () => {
 
         expect(partnerOf(summary?.team ?? null)).toBe(3)
         expect(summary?.pairedTeams).toBe(2)
+    })
+})
+
+describe("teamPartner", () => {
+    it("returns the second ref when the player sits first", () => {
+        expect(teamPartner(4242, team(2)).id).toBe(2)
+    })
+
+    it("returns the first ref when upstream puts the player second", () => {
+        const reversed: PlayerRankedTeam = {
+            ...team(2),
+            team: [
+                { id: 2, name: "Partner 2", slug: "2-p" },
+                { id: 4242, name: "Mordex", slug: "4242-mordex" },
+            ],
+        }
+
+        expect(teamPartner(4242, reversed).id).toBe(2)
     })
 })

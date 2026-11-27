@@ -132,7 +132,22 @@ export const playerEnvelope = {
                 average_rating: 1950,
                 average_peak_rating: 1998,
                 teams: [
-                    team({ id: 2, name: "Sandstorm", slug: "sandstorm" }),
+                    {
+                        ...team({
+                            id: 2,
+                            name: "Sandstorm",
+                            slug: "sandstorm",
+                        }),
+                        // Upstream does not order the pair around the queried player.
+                        team: [
+                            {
+                                id: 2,
+                                name: "Sandstorm",
+                                slug: "sandstorm",
+                            },
+                            { id: 4242, name: "Mordex", slug: "mordex" },
+                        ],
+                    },
                     team(
                         { id: 3, name: "Boomie", slug: "boomie" },
                         {
