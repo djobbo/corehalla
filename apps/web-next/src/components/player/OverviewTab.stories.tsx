@@ -55,7 +55,9 @@ export const BestTeam: Story = {
     args: { playerId: PLAYER_ID },
     async play({ canvasElement }) {
         const canvas = within(canvasElement)
-        const title = await canvas.findByText("Best 2v2 team")
+        const title = await canvas.findByRole("heading", {
+            name: "Best 2v2 team",
+        })
         const card = title.closest("[data-slot='card']")
 
         await expect(card).not.toBeNull()
@@ -83,9 +85,13 @@ export const SoloQueueOnly: Story = {
     async play({ canvasElement }) {
         const canvas = within(canvasElement)
 
-        await expect(await canvas.findByText("Solo queue")).toBeVisible()
+        await expect(
+            await canvas.findByRole("heading", { name: "Solo queue" }),
+        ).toBeVisible()
         await waitFor(() =>
-            expect(canvas.queryByText("Best 2v2 team")).toBeNull(),
+            expect(
+                canvas.queryByRole("heading", { name: "Best 2v2 team" }),
+            ).toBeNull(),
         )
     },
 }
@@ -99,10 +105,14 @@ export const TeamsReadFailed: Story = {
     async play({ canvasElement }) {
         const canvas = within(canvasElement)
 
-        await expect(await canvas.findByText("Ranked 1v1")).toBeVisible()
+        await expect(
+            await canvas.findByRole("heading", { name: "Ranked 1v1" }),
+        ).toBeVisible()
         await expect(canvas.getByText("Ranked Season")).toBeVisible()
         await waitFor(() =>
-            expect(canvas.queryByText("Best 2v2 team")).toBeNull(),
+            expect(
+                canvas.queryByRole("heading", { name: "Best 2v2 team" }),
+            ).toBeNull(),
         )
     },
 }
