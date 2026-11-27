@@ -1,5 +1,6 @@
 import { describe, expect, it } from "@effect/vitest"
 import { legendMetaCsv, metaCsvFilename, weaponMetaCsv } from "./metaCsv"
+import { filterLegendMetaByWeapon } from "./legendMeta"
 import type { LegendMetaCsvRow } from "./metaCsv"
 import type { LegendMetaRow } from "./legendMeta"
 import type { LegendPlayStyle } from "@crh/api-contract/schemas"
@@ -142,6 +143,31 @@ describe("legendMetaCsv", () => {
                 .slice(1, 4)
                 .map((line) => line.split(",")[0]),
         ).toEqual(["Cassidy", "Bödvar", "Orion"])
+    })
+
+    it("exports only the legends the weapon filter keeps", () => {
+        const names = new Map([
+            [3, "Bödvar"],
+            [4, "Cassidy"],
+            [5, "Orion"],
+        ])
+
+        const csv = legendMetaCsv(
+            filterLegendMetaByWeapon(
+                [
+                    legendRow({ legendId: 3 }),
+                    legendRow({ legendId: 4 }),
+                    legendRow({ legendId: 5 }),
+                ],
+                "Sword",
+            ).map((row) => ({ name: names.get(row.legendId) ?? "", row })),
+        )
+
+        expect(
+            lines(csv)
+                .slice(1, -1)
+                .map((line) => line.split(",")[0]),
+        ).toEqual(["Bödvar"])
     })
 })
 

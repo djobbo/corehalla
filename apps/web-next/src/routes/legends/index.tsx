@@ -8,16 +8,23 @@ import {
     preloadAtomsDegraded,
 } from "@/effect/atoms"
 import { isMetaFloor, metaFloorSearch, resolveMetaFloor } from "@/lib/metaFloor"
+import {
+    legendMetaWeaponSearch,
+    resolveLegendMetaWeapon,
+} from "@/lib/legendMeta"
 import { absoluteUrl } from "@/lib/assets"
 import type { MetaFloor } from "@crh/api-contract/schemas"
 
-type LegendIndexSearch = { floor?: MetaFloor }
+type LegendIndexSearch = { floor?: MetaFloor; weapon?: string }
 
 export const Route = createFileRoute("/legends/")({
-    // The floor lives in the URL, so a filtered board is shareable and a cold
-    // load can be server-rendered from the same key the client hydrates.
-    validateSearch: (search: Record<string, unknown>): LegendIndexSearch =>
-        isMetaFloor(search.floor) ? { floor: search.floor } : {},
+    // The floor and the weapon live in the URL, so a filtered board is
+    // shareable and a cold load can be server-rendered from the same key the
+    // client hydrates.
+    validateSearch: (search: Record<string, unknown>): LegendIndexSearch => ({
+        ...(isMetaFloor(search.floor) ? { floor: search.floor } : {}),
+        ...legendMetaWeaponSearch(resolveLegendMetaWeapon(search.weapon)),
+    }),
     loaderDeps: ({ search }) => ({
         floor: resolveMetaFloor(search.floor),
     }),
@@ -39,8 +46,9 @@ export const Route = createFileRoute("/legends/")({
 })
 
 function Page() {
-    const { floor: selected } = Route.useSearch()
+    const { floor: selected, weapon: selectedWeapon } = Route.useSearch()
     const floor = selected ?? "all"
+    const weapon = resolveLegendMetaWeapon(selectedWeapon)
     const navigate = useNavigate()
     const board = useAtomValue(legendMetaAtom(floor))
 
@@ -50,10 +58,24 @@ function Page() {
                 <LegendMetaBoard
                     board={board}
                     floor={floor}
+                    weapon={weapon}
                     onFloorChange={(next) =>
                         void navigate({
                             to: "/legends",
-                            search: metaFloorSearch(next),
+                            search: {
+                                ...metaFloorSearch(next),
+                                ...legendMetaWeaponSearch(weapon),
+                            },
+                            replace: true,
+                        })
+                    }
+                    onWeaponChange={(next) =>
+                        void navigate({
+                            to: "/legends",
+                            search: {
+                                ...metaFloorSearch(floor),
+                                ...legendMetaWeaponSearch(next),
+                            },
                             replace: true,
                         })
                     }

@@ -20,10 +20,14 @@ import {
 import { SelectField } from "@/components/common/SelectField"
 import { legendHref } from "@/lib/legends"
 import {
+    filterLegendMetaByWeapon,
     formatLegendMetaRate,
     legendMetaDefaultDirection,
     legendMetaDefaultSort,
     legendMetaSorts,
+    legendMetaWeaponEmpty,
+    legendMetaWeaponOptions,
+    legendMetaWeaponSample,
 } from "@/lib/legendMeta"
 import {
     formatMetaCount,
@@ -38,13 +42,19 @@ import {
 } from "@/lib/legendPlayStyle"
 import { useSortBy } from "@/lib/useSortBy"
 import { LegendIcon } from "./LegendIcon"
-import type { LegendMetaSort, LegendMetaRow } from "@/lib/legendMeta"
+import type {
+    LegendMetaRow,
+    LegendMetaSort,
+    LegendMetaWeapon,
+} from "@/lib/legendMeta"
 import type { LegendMeta, MetaFloor } from "@crh/api-contract/schemas"
 
 export type LegendMetaBoardProps = {
     readonly board: LegendMeta
     readonly floor: MetaFloor
+    readonly weapon: LegendMetaWeapon
     readonly onFloorChange?: (floor: MetaFloor) => void
+    readonly onWeaponChange?: (weapon: LegendMetaWeapon) => void
 }
 
 /** The phone row: the columns the board stacks under the legend name. */
@@ -68,13 +78,16 @@ const PhoneRecord = ({ row }: { readonly row: LegendMetaRow }) => (
 export const LegendMetaBoard = ({
     board,
     floor,
+    weapon,
     onFloorChange,
+    onWeaponChange,
 }: LegendMetaBoardProps) => {
+    const filtered = filterLegendMetaByWeapon(board.data, weapon)
     const { sorted, key, setKey, choices } = useSortBy<
         LegendMetaRow,
         LegendMetaSort
     >(
-        board.data,
+        filtered,
         legendMetaSorts,
         legendMetaDefaultSort,
         legendMetaDefaultDirection,
@@ -85,6 +98,12 @@ export const LegendMetaBoard = ({
 
         return legend === undefined ? [] : [{ legend, row }]
     })
+
+    const weaponSample = legendMetaWeaponSample(
+        displayed.length,
+        board.data.length,
+        weapon,
+    )
 
     const csv = legendMetaCsv(
         displayed.map(({ legend, row }) => ({ name: legend.bio_name, row })),
@@ -105,12 +124,24 @@ export const LegendMetaBoard = ({
                         {metaFloorSample(board.meta.accounts, floor)} ·{" "}
                         {metaDisclaimer}
                     </p>
+                    {weaponSample === null ? null : (
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            {weaponSample}
+                        </p>
+                    )}
                 </div>
 
                 <div className="flex flex-wrap items-end gap-3">
                     <MetaFloorChips
                         floor={floor}
                         onFloorChange={onFloorChange}
+                    />
+                    <SelectField
+                        label="Weapon"
+                        value={weapon}
+                        options={legendMetaWeaponOptions}
+                        onChange={(next) => onWeaponChange?.(next)}
+                        className="w-48"
                     />
                     {displayed.length === 0 ? null : (
                         <MetaCsvDownload
@@ -126,7 +157,9 @@ export const LegendMetaBoard = ({
                     <EmptyHeader>
                         <EmptyTitle>No sample</EmptyTitle>
                         <EmptyDescription>
-                            {metaEmpty("legend", floor)}
+                            {weapon === "all"
+                                ? metaEmpty("legend", floor)
+                                : legendMetaWeaponEmpty(weapon, floor)}
                         </EmptyDescription>
                     </EmptyHeader>
                 </Empty>
