@@ -1,8 +1,10 @@
+import { Link } from "@tanstack/react-router"
 import {
     attribution,
     communityLinks,
     disclaimer,
     trademark,
+    wikiUrl,
 } from "@/lib/communityLinks"
 
 type FooterProps = {
@@ -27,6 +29,26 @@ export const Footer = ({ year }: FooterProps) => (
                             </a>
                         </li>
                     ))}
+                </ul>
+            </div>
+            <div>
+                <p className="ch-kicker">Site</p>
+                <ul className="ch-footer-links">
+                    <li>
+                        <Link className="ch-footer-link" to="/privacy">
+                            Privacy Policy
+                        </Link>
+                    </li>
+                    <li>
+                        <a
+                            className="ch-footer-link"
+                            href={wikiUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            Brawlhalla Wiki
+                        </a>
+                    </li>
                 </ul>
             </div>
             <div className="ch-footer-legal">

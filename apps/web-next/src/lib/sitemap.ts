@@ -47,6 +47,7 @@ export const sitemapPaths = (): readonly string[] => {
         "/daily",
         "/calc",
         "/vs",
+        "/privacy",
     ]
 
     return [...new Set(paths)]

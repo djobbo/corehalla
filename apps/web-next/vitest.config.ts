@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url"
  *
  * A **separate** file from `vite.config.ts` on purpose. That one registers the
  * TanStack Start, React and Tailwind plugins for the app build, and the unit
- * tests under `src/lib` do not need them. The `@` alias is restated here because
+ * tests under `src` do not need them. The `@` alias is restated here because
  * `legacyRedirects.test.ts` imports the generated route tree — the route modules
  * it pulls in resolve `@/` — and the app build's alias lives in the other file.
  * Vitest prefers `vitest.config.ts` when both exist, so the app build is
@@ -23,6 +23,6 @@ export default defineConfig({
     },
     test: {
         environment: "node",
-        include: ["src/**/*.test.ts"],
+        include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
     },
 })

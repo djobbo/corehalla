@@ -29,6 +29,7 @@ const ROUTE_PATHS = [
     "/news/category",
     "/news/category/$category/{-$page}",
     "/news/page/{-$page}",
+    "/privacy",
     "/queue/{-$bracket}/{-$region}",
     "/rankings",
     "/rankings/1v1/{-$region}/{-$page}",
